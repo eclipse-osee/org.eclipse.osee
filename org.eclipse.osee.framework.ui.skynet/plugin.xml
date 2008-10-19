@@ -696,7 +696,7 @@
 	<extension
        point="org.eclipse.osee.framework.ui.skynet.TemplateProvider">
     <TemplateProvider
-          classname="org.eclipse.osee.framework.ui.skynet.templates.SimpleTemplateProvider">
+          classname="org.eclipse.osee.framework.ui.skynet.templates.ArtifactTemplateProvider">
     </TemplateProvider>
  </extension>
  <extension

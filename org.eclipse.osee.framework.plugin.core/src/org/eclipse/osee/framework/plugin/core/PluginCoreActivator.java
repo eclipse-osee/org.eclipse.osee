@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.plugin.core;
 
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osgi.framework.internal.core.AbstractBundle;
 import org.osgi.framework.Bundle;
@@ -35,7 +34,6 @@ public class PluginCoreActivator extends OseeActivator {
       pluginInstance = this;
    }
 
-   
    /* (non-Javadoc)
     * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
     */
@@ -45,14 +43,13 @@ public class PluginCoreActivator extends OseeActivator {
       packageAdminTracker.close();
    }
 
-
    /**
     * Returns the shared instance.
     */
    public static PluginCoreActivator getInstance() {
       return pluginInstance;
    }
-   
+
    public PackageAdmin getPackageAdmin() {
       return (PackageAdmin) packageAdminTracker.getService();
    }
@@ -66,7 +63,7 @@ public class PluginCoreActivator extends OseeActivator {
 
       packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
       packageAdminTracker.open();
-      
+
       for (Bundle bundle : context.getBundles()) {
          checkForEarlyStartup(bundle);
       }

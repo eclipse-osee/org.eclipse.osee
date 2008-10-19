@@ -308,7 +308,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          previewComposite.addProgressListener(new BrowserProgressListener(previewComposite, back, forward));
       }
 
-      RendererManager.getInstance().previewInComposite(previewComposite, artifact);
+      RendererManager.previewInComposite(previewComposite, artifact);
    }
 
    private int createAttributesPage() {
@@ -462,7 +462,11 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            RendererManager.getInstance().editInJob(artifact);
+            try {
+               RendererManager.editInJob(artifact);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
       item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()));
@@ -473,7 +477,11 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            RendererManager.getInstance().previewInJob(artifact);
+            try {
+               RendererManager.previewInJob(artifact);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
 

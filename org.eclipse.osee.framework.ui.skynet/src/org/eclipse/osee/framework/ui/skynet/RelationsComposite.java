@@ -406,7 +406,11 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             Object object = selection.getFirstElement();
 
             if (object instanceof Artifact) {
-               RendererManager.getInstance().editInJob((Artifact) object);
+               try {
+                  RendererManager.editInJob((Artifact) object);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
             }
          }
       });

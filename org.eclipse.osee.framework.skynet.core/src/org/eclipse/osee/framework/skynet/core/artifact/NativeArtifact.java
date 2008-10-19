@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class NativeArtifact extends Artifact {
    public static final String CONTENT_NAME = "Native Content";
+   public static final String EXTENSION = "Extension";
 
    /**
     * @param parentFactory
@@ -56,7 +57,7 @@ public class NativeArtifact extends Artifact {
    }
 
    public String getFileExtension() throws OseeCoreException {
-      return getSoleAttributeValue("Extension", "");
+      return getSoleAttributeValue(EXTENSION, "");
    }
 
    public InputStream getNativeContent() throws OseeCoreException {

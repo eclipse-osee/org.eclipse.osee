@@ -75,7 +75,6 @@ import org.eclipse.ui.part.ViewPart;
  * @author Donald G. Dunne
  */
 public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IFrameworkTransactionEventListener {
-   private static final RendererManager rendererManager = RendererManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
    public static String HELP_CONTEXT_ID = "Merge_Manager_View";
@@ -383,7 +382,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                try {
                   if (MergeUtility.okToOverwriteEditedValue(attributeConflict,
                         Display.getCurrent().getActiveShell().getShell(), false)) {
-                     RendererManager.getInstance().editInJob(attributeConflict.getArtifact(), "EDIT_ARTIFACT");
+                     RendererManager.editInJob(attributeConflict.getArtifact());
                      attributeConflict.markStatusToReflectEdit();
                   }
                } catch (Exception ex) {
@@ -595,7 +594,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    private class PreviewHandler extends AbstractSelectionEnabledHandler {
-      private static final String PREVIEW_ARTIFACT = "PREVIEW_ARTIFACT";
       private final int partToPreview;
       private List<Artifact> artifacts;
 
@@ -607,7 +605,11 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       @Override
       public Object execute(ExecutionEvent event) throws ExecutionException {
          if (!artifacts.isEmpty()) {
-            rendererManager.previewInJob(artifacts, PREVIEW_ARTIFACT);
+            try {
+               RendererManager.previewInJob(artifacts);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
          return null;
       }

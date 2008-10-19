@@ -271,6 +271,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
+    * Currently this method provides support for quasi artifact type inheritance
+    * 
     * @param artifactType
     * @return whether this artifact's type or any of its super-types are the specified type
     */
@@ -278,6 +280,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       if (artifactType.equals("Abstract Software Requirement") && (getArtifactTypeName().equals(
             Requirements.SOFTWARE_REQUIREMENT) || getArtifactTypeName().equals(
             Requirements.INDIRECT_SOFTWARE_REQUIREMENT))) {
+         return true;
+      }
+      if (artifactType.equals("Native") && (this instanceof NativeArtifact || getArtifactTypeName().equals(
+            "Renderer Template"))) {
          return true;
       }
       return getArtifactTypeName().equals(artifactType);

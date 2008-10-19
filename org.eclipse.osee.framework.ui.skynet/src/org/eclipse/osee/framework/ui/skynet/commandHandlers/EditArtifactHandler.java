@@ -11,15 +11,19 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.ui.PlatformUI;
 
@@ -28,7 +32,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class EditArtifactHandler extends AbstractHandler {
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
-   private static final RendererManager rendererManager = RendererManager.getInstance();
    private List<Artifact> artifacts;
 
    /*
@@ -39,7 +42,11 @@ public class EditArtifactHandler extends AbstractHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
-         rendererManager.editInJob(artifacts);
+         try {
+            RendererManager.editInJob(artifacts);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
 
          dispose();
       }

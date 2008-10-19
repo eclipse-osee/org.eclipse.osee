@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
+
 /**
  * @author Jeff C. Phillips
  */
 public class PreviewArtifactWithRecurseHandler extends PreviewArtifactHandler {
-   private static final String PREVIEW_WITH_RECURSE = "PREVIEW_WITH_RECURSE";
-
    /*
     * (non-Javadoc)
     * 
     * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactHandler#getPreviewType()
     */
    @Override
-   protected String getPreviewType() {
-      return PREVIEW_WITH_RECURSE;
+   protected String[] getPreviewOptions() {
+      return ITemplateRenderer.PREVIEW_WITH_RECURSE;
    }
 }

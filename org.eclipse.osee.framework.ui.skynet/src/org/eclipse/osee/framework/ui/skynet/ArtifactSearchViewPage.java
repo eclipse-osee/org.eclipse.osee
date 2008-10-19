@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -67,6 +66,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
+import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.search.report.RelationMatrixExportJob;
@@ -274,7 +274,11 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            RendererManager.getInstance().editInJob(getSelectedArtifacts(viewer));
+            try {
+               RendererManager.editInJob(getSelectedArtifacts(viewer));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
             return null;
          }
 
@@ -329,7 +333,11 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            RendererManager.getInstance().previewInJob(getSelectedArtifacts(viewer), "PREVIEW_ARTIFACT");
+            try {
+               RendererManager.previewInJob(getSelectedArtifacts(viewer));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
             return null;
          }
 
@@ -359,7 +367,11 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            RendererManager.getInstance().previewInJob(getSelectedArtifacts(viewer), "PREVIEW_WITH_RECURSE");
+            try {
+               RendererManager.previewInJob(getSelectedArtifacts(viewer), ITemplateRenderer.PREVIEW_WITH_RECURSE);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
             return null;
          }
 

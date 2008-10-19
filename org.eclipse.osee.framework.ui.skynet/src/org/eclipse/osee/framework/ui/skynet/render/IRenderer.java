@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Jeff C. Phillips
@@ -26,37 +27,33 @@ public interface IRenderer {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
-   public abstract void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException;
+   public abstract void edit(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
 
-   public abstract void edit(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException;
-
-   public List<String> getEditOptions() throws OseeCoreException;
+   public abstract void edit(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
 
    public boolean supportsEdit();
 
-   public abstract void preview(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException;
+   public abstract void preview(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
 
-   public abstract void preview(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException;
+   public abstract void preview(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
 
-   public abstract String generateHtml(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
+   public abstract String generateHtml(Artifact artifact) throws OseeCoreException;
 
-   public List<String> getPreviewOptions() throws OseeCoreException;
+   public abstract String generateHtml(List<Artifact> artifacts) throws OseeCoreException;
 
    public boolean supportsPreview();
 
-   public abstract void print(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException;
+   public abstract void print(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
 
-   public abstract void print(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException;
-
-   public List<String> getPrintOptions() throws OseeCoreException;
+   public abstract void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
 
    public boolean supportsPrint();
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws OseeCoreException;
+   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException;
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws OseeCoreException;
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException;
 
-   public List<String> getCompareOptions() throws OseeCoreException;
+   public void compareArtifacts(List<Artifact> baseArtifacts, List<Artifact> newerArtifact, IProgressMonitor monitor, Branch branch, PresentationType presentationType) throws OseeCoreException;
 
    public boolean supportsCompare();
 
@@ -66,17 +63,11 @@ public interface IRenderer {
 
    public abstract String getArtifactUrl(Artifact artifact) throws OseeCoreException;
 
-   public abstract void setId(String rendererId);
-
    public abstract String getId();
 
-   /**
-    * These options are in effect until setRendererOptions() is called again, so clean up after yourself by calling
-    * setDefaultOptions().
-    * 
-    * @param options
-    */
-   public abstract void setRendererOptions(String[] options);
+   public abstract void setOptions(String... optionArgs);
 
-   public abstract void setDefaultOptions();
+   public abstract String getOption(String key);
+
+   public abstract IRenderer newInstance() throws OseeCoreException;
 }

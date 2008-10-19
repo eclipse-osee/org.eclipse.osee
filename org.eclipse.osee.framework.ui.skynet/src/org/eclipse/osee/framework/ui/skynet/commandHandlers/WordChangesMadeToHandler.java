@@ -33,9 +33,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Paul K. Waldfogel
  */
 public class WordChangesMadeToHandler extends AbstractHandler {
-   private static final ArtifactPersistenceManager myArtifactPersistenceManager =
-         ArtifactPersistenceManager.getInstance();
-   private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
    private List<ArtifactChange> mySelectedArtifactChangeList;
 
    public WordChangesMadeToHandler() {
@@ -60,13 +57,13 @@ public class WordChangesMadeToHandler extends AbstractHandler {
 
    public void execute(ArtifactChange artifactChange) throws Exception {
       Artifact firstArtifact =
-            artifactChange.getModType() == NEW ? null : myArtifactPersistenceManager.getArtifactFromId(
+            artifactChange.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
       Artifact secondArtifact =
-            artifactChange.getModType() == DELETED ? null : myArtifactPersistenceManager.getArtifactFromId(
+            artifactChange.getModType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId());
 
-      RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
+      RendererManager.diffInJob(firstArtifact, secondArtifact, null);
    }
 
    @Override

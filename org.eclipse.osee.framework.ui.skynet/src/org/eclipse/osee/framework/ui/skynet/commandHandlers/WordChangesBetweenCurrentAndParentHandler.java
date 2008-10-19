@@ -11,11 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
@@ -34,13 +38,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
-   private static final ArtifactPersistenceManager myArtifactPersistenceManager =
-         ArtifactPersistenceManager.getInstance();
-   private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
    private ArtifactChange artifactChange;
-
-   public WordChangesBetweenCurrentAndParentHandler() {
-   }
 
    /*
     * (non-Javadoc)
@@ -51,12 +49,11 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
          Artifact secondArtifact =
-               myArtifactPersistenceManager.getArtifactFromId(artifactChange.getArtifact().getArtId(),
+               ArtifactPersistenceManager.getInstance().getArtifactFromId(artifactChange.getArtifact().getArtId(),
                      artifactChange.getToTransactionId());
-         RendererManager.getInstance().compareInJob(artifactChange.getConflictingModArtifact(), secondArtifact,
-               DIFF_ARTIFACT);
-      } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, false);
+         RendererManager.diffInJob(artifactChange.getConflictingModArtifact(), secondArtifact, null);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }

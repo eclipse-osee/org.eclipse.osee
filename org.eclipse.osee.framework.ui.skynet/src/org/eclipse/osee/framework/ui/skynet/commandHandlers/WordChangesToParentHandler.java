@@ -36,8 +36,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Paul K. Waldfogel
  */
 public class WordChangesToParentHandler extends AbstractHandler {
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
    private List<ArtifactChange> mySelectedArtifactChangeList;
 
    public WordChangesToParentHandler() {
@@ -54,7 +52,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
          ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
          try {
             Artifact firstArtifact =
-                  selectedArtifactChange.getModType() == NEW ? null : artifactManager.getArtifactFromId(
+                  selectedArtifactChange.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                         selectedArtifactChange.getArtifact().getArtId(),
                         selectedArtifactChange.getBaselineTransactionId());
 
@@ -65,7 +63,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
                   selectedArtifactChange.getModType() == DELETED ? null : ArtifactQuery.getArtifactFromId(
                         selectedArtifactChange.getArtifact().getArtId(), parentBranch);
 
-            RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
+            RendererManager.diffInJob(firstArtifact, secondArtifact, null);
 
          } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, true);

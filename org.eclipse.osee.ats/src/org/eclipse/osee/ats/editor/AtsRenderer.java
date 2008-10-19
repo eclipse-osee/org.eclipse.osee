@@ -23,12 +23,26 @@ import org.eclipse.osee.framework.ui.skynet.render.Renderer;
  * @author Ryan D. Brooks
  */
 public class AtsRenderer extends Renderer {
+   /**
+    * @param rendererId
+    */
+   public AtsRenderer(String rendererId) {
+      super(rendererId);
+   }
+
+   /* (non-Javadoc)
+   * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
+   */
+   @Override
+   public AtsRenderer newInstance() throws OseeCoreException {
+      return new AtsRenderer(getId());
+   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
+   public void edit(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       try {
          OseeAts.getAtsLib().openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {

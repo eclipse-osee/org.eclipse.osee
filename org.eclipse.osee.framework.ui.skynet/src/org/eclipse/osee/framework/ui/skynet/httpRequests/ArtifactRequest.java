@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -37,10 +38,8 @@ import org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotManager;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.Renderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
@@ -160,13 +159,13 @@ public class ArtifactRequest implements IHttpServerRequest {
    }
 
    private void sendAsNative(Artifact artifact, HttpResponse httpResponse) throws Exception {
-      IRenderer render = RendererManager.getInstance().getBestRenderer(PresentationType.EDIT, artifact);
-      if (render instanceof FileSystemRenderer) {
-         FileSystemRenderer fileSystemRenderer = (FileSystemRenderer) render;
+      try {
+         FileRenderer fileRenderer = RendererManager.getBestFileRenderer(PresentationType.EDIT, artifact);
+
          Branch branch = artifact.getBranch();
-         IFolder baseFolder = fileSystemRenderer.getRenderFolder(branch, PresentationType.EDIT);
+         IFolder baseFolder = fileRenderer.getRenderFolder(branch, PresentationType.EDIT);
          IFile iFile =
-               fileSystemRenderer.renderToFileSystem(new NullProgressMonitor(), baseFolder, artifact, branch, null,
+               fileRenderer.renderToFileSystem(new NullProgressMonitor(), baseFolder, artifact, branch,
                      PresentationType.EDIT);
 
          File file = iFile.getLocation().toFile();
@@ -182,7 +181,7 @@ public class ArtifactRequest implements IHttpServerRequest {
          httpResponse.sendBody(new FileInputStream(file));
 
          iFile.delete(true, new NullProgressMonitor());
-      } else if (render instanceof Renderer) {
+      } catch (OseeArgumentException ex) {
          sendAsHTML(artifact, false, httpResponse);
       }
    }

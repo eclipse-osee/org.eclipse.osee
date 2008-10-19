@@ -21,7 +21,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.Renderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
@@ -135,8 +133,7 @@ public class HtmlReportJob extends Job {
    public String processAttributes(Artifact artifact, boolean recurseChildren, Collection<String> onlyAttributeNames) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(90));
-      sb.append(AHTML.addRowSpanMultiColumnTable(((Renderer) RendererManager.getInstance().getBestRenderer(
-            PresentationType.PREVIEW, artifact)).generateHtml(artifact, new NullProgressMonitor()), 2));
+      sb.append(AHTML.addRowSpanMultiColumnTable(RendererManager.renderToHtml(artifact), 2));
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();
    }

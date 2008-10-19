@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -651,7 +650,11 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          public void widgetSelected(SelectionEvent ev) {
             LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
             TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
-            RendererManager.getInstance().editInJob(selectedItems);
+            try {
+               RendererManager.editInJob(selectedItems);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
    }

@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.group;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
@@ -122,7 +123,11 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    private void handleDoubleClick() {
       GroupExplorerItem item = getSelectedItem();
       if (item != null) {
-         RendererManager.getInstance().editInJob(item.getArtifact());
+         try {
+            RendererManager.editInJob(item.getArtifact());
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
       }
    }
 

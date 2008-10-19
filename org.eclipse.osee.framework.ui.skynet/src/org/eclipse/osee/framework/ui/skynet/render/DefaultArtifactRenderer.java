@@ -19,11 +19,27 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
  * @author Ryan D. Brooks
  */
 public class DefaultArtifactRenderer extends Renderer {
+
+   /**
+    * @param rendererId
+    */
+   public DefaultArtifactRenderer(String rendererId) {
+      super(rendererId);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
+    */
+   @Override
+   public DefaultArtifactRenderer newInstance() throws OseeCoreException {
+      return new DefaultArtifactRenderer(getId());
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
+   public void edit(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       ArtifactEditor.editArtifact(artifact);
    }
 
@@ -31,7 +47,7 @@ public class DefaultArtifactRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#preview(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void preview(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
+   public void preview(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       ArtifactEditor.editArtifact(artifact);
    }
 

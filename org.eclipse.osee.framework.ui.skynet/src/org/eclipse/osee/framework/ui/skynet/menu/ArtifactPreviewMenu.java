@@ -13,9 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.menu;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -24,6 +27,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
@@ -41,10 +46,6 @@ import org.eclipse.swt.widgets.MenuItem;
  * @author Jeff C. Phillips
  */
 public class ArtifactPreviewMenu {
-   private static final RendererManager rendererManager = RendererManager.getInstance();
-
-   private static final String PREVIEW_WITH_RECURSE = "PREVIEW_WITH_RECURSE";
-   private static final String PREVIEW_ARTIFACT = "PREVIEW_ARTIFACT";
 
    public static void createPreviewMenuItem(Menu parentMenu, final Viewer viewer) {
       final MenuItem previewMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
@@ -59,7 +60,7 @@ public class ArtifactPreviewMenu {
       previewArtifact.addSelectionListener(new SelectionAdapter() {
 
          public void widgetSelected(SelectionEvent ev) {
-            rendererManager.previewInJob(getSelectedArtifacts(viewer), PREVIEW_ARTIFACT);
+            preview(viewer);
          }
       });
 
@@ -67,9 +68,8 @@ public class ArtifactPreviewMenu {
       previewWithChildRecursionItem.setText("Preview with child recursion");
 
       previewWithChildRecursionItem.addSelectionListener(new SelectionAdapter() {
-
          public void widgetSelected(SelectionEvent ev) {
-            rendererManager.previewInJob(getSelectedArtifacts(viewer), PREVIEW_WITH_RECURSE);
+            preview(viewer, ITemplateRenderer.PREVIEW_WITH_RECURSE);
          }
       });
 
@@ -121,6 +121,14 @@ public class ArtifactPreviewMenu {
             previewMenuItem.setEnabled(permitted);
          }
       });
+   }
+
+   private static void preview(Viewer viewer, String... options) {
+      try {
+         RendererManager.previewInJob(getSelectedArtifacts(viewer), options);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    private static List<Artifact> getSelectedArtifacts(Viewer viewer) {

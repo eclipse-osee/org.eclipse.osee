@@ -28,6 +28,22 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribu
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 public class WholeDocumentRenderer extends WordRenderer {
+
+   /**
+    * @param rendererId
+    */
+   public WholeDocumentRenderer(String rendererId) {
+      super(rendererId);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
+    */
+   @Override
+   public WholeDocumentRenderer newInstance() throws OseeCoreException {
+      return new WholeDocumentRenderer(getId());
+   }
+
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
          return SUBTYPE_TYPE_MATCH;
@@ -39,7 +55,7 @@ public class WholeDocumentRenderer extends WordRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor, java.util.List, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       throw new UnsupportedOperationException();
    }
 
@@ -47,7 +63,7 @@ public class WholeDocumentRenderer extends WordRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       if (artifact != null) {
          Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
          if (attribute == null) {
@@ -77,7 +93,7 @@ public class WholeDocumentRenderer extends WordRenderer {
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
       if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -87,29 +103,29 @@ public class WholeDocumentRenderer extends WordRenderer {
 
       if (baseVersion != null) {
          if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            baseFile = renderForMerge(monitor, baseVersion, option, presentationType);
+            baseFile = renderForMerge(monitor, baseVersion, presentationType);
          } else {
-            baseFile = renderForDiff(monitor, baseVersion, option);
+            baseFile = renderForDiff(monitor, baseVersion);
          }
       } else {
-         baseFile = renderForDiff(monitor, branch, option);
+         baseFile = renderForDiff(monitor, branch);
       }
 
       if (newerVersion != null) {
          if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            newerFile = renderForMerge(monitor, newerVersion, option, presentationType);
+            newerFile = renderForMerge(monitor, newerVersion, presentationType);
          } else {
-            newerFile = renderForDiff(monitor, newerVersion, option);
+            newerFile = renderForDiff(monitor, newerVersion);
          }
       } else {
-         newerFile = renderForDiff(monitor, branch, null);
+         newerFile = renderForDiff(monitor, branch);
       }
 
-      return compare(baseVersion, newerVersion, baseFile, newerFile, fileName, presentationType);
+      return compare(baseVersion, newerVersion, baseFile, newerFile, fileName, presentationType, show);
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
       String diffPath;
 
       if (fileName == null || fileName.equals("")) {
@@ -141,5 +157,4 @@ public class WholeDocumentRenderer extends WordRenderer {
 
       return diffPath;
    }
-
 }

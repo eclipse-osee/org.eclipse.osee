@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+
 /**
  * @author Jeff C. Phillips
  */
 public class PreviewArtifactNoRecurseHandler extends PreviewArtifactHandler {
-   private static final String PREVIEW_ARTIFACT = "PREVIEW_ARTIFACT";
+   public static String[] options = new String[0];
 
    /*
     * (non-Javadoc)
@@ -22,7 +23,7 @@ public class PreviewArtifactNoRecurseHandler extends PreviewArtifactHandler {
     * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactHandler#getPreviewType()
     */
    @Override
-   protected String getPreviewType() {
-      return PREVIEW_ARTIFACT;
+   protected String[] getPreviewOptions() {
+      return options;
    }
 }

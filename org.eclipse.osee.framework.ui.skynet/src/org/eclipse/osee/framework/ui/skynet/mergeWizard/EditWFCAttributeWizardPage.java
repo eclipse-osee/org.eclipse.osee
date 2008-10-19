@@ -81,7 +81,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
 
          try {
             if (event.widget == editButton) {
-               RendererManager.getInstance().editInJob(conflict.getArtifact(), "EDIT_ARTIFACT");
+               RendererManager.editInJob(conflict.getArtifact());
                conflict.markStatusToReflectEdit();
             } else if (event.widget == clearButton) {
                MergeUtility.clearValue(conflict, getShell(), true);

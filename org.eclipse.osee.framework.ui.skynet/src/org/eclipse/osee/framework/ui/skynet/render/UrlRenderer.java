@@ -33,9 +33,18 @@ public class UrlRenderer extends Renderer {
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
-   public UrlRenderer() throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public UrlRenderer(String rendererId) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      super(rendererId);
       descriptors =
             ConfigurationPersistenceManager.getArtifactTypesFromAttributeType(AttributeTypeManager.getType("Content URL"));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
+    */
+   @Override
+   public UrlRenderer newInstance() throws OseeCoreException {
+      return new UrlRenderer(getId());
    }
 
    @Override

@@ -17,9 +17,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
  * @author Jeff C. Phillips
@@ -30,26 +29,21 @@ public class PublishRequirements extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      RendererManager rendererManager = RendererManager.getInstance();
-      boolean updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers");
+      String updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers").toString();
 
       for (Artifact artifact : variableMap.getArtifacts("artifacts")) {
          if (monitor.isCanceled()) {
             return;
          }
          if (artifact.isOfType("Folder")) {
-            List<Artifact> arts = artifact.getChildren();
-            if (arts.size() > 0) {
-               IRenderer renderer = rendererManager.getBestRenderer(PresentationType.PREVIEW, arts.get(0));
-               renderer.setRendererOptions(new String[] {"updateParagraphNumber=" + updateParagraphNumber});
-               renderer.preview(arts, "PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", monitor);
-               renderer.setDefaultOptions();
+            List<Artifact> artifacts = artifact.getChildren();
+            if (artifacts.size() > 0) {
+               RendererManager.previewInJob(artifacts, WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
+                     updateParagraphNumber);
             }
          } else {
-            IRenderer renderer = rendererManager.getBestRenderer(PresentationType.PREVIEW, artifact);
-            renderer.setRendererOptions(new String[] {"updateParagraphNumber=" + updateParagraphNumber});
-            renderer.preview(artifact, "PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", monitor);
-            renderer.setDefaultOptions();
+            RendererManager.preview(artifact, monitor, WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
+                  updateParagraphNumber);
          }
       }
    }

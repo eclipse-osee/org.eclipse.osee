@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -33,6 +32,20 @@ import org.eclipse.osee.framework.ui.skynet.render.word.template.WordTemplateMan
  * @author b1528444
  */
 public class TisRenderer extends WordTemplateRenderer {
+   /**
+    * @param rendererId
+    */
+   public TisRenderer(String rendererId) {
+      super(rendererId);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
+    */
+   @Override
+   public TisRenderer newInstance() throws OseeCoreException {
+      return new TisRenderer(getId());
+   }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if ("Test Information Sheet".equals(artifact.getArtifactTypeName())) {
@@ -49,19 +62,19 @@ public class TisRenderer extends WordTemplateRenderer {
     *      org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       if (PresentationType.EDIT == presentationType) {
-         return super.getRenderInputStream(monitor, artifacts, option, presentationType);
+         return super.getRenderInputStream(artifacts, presentationType);
       }
       final BlamVariableMap variableMap = new BlamVariableMap();
       String template;
 
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
-         template = getTemplate(null, presentationType, option);
+         template = getTemplate(null, presentationType);
       } else {
          Artifact firstArtifact = artifacts.iterator().next();
-         template = getTemplate(firstArtifact, presentationType, option);
+         template = getTemplate(firstArtifact, presentationType);
       }
 
       variableMap.setValue(DEFAULT_SET_NAME, artifacts);

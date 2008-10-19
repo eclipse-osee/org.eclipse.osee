@@ -33,7 +33,7 @@ public class TemplateManager {
       templateProviders = extensionDefinedObjects.getObjects();
    }
 
-   public static String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeCoreException {
+   public static Artifact getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeCoreException {
       ITemplateProvider bestTemplateProvider = null;
       int highestRating = 0;
       for (ITemplateProvider templateProvider : instance.templateProviders) {
@@ -43,7 +43,6 @@ public class TemplateManager {
             highestRating = rating;
          }
       }
-      String template = bestTemplateProvider.getTemplate(renderer, artifact, presentationType, option);
-      return template;
+      return bestTemplateProvider.getTemplate(renderer, artifact, presentationType, option);
    }
 }

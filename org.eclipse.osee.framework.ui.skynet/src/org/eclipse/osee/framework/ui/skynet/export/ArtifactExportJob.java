@@ -18,12 +18,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -85,14 +85,12 @@ public class ArtifactExportJob extends Job {
             writeArtifactPreview(folder, monitor, child, presentationType);
          }
       } else {
-         IRenderer render = RendererManager.getInstance().getBestRenderer(presentationType, artifact);
-         if (render instanceof FileRenderer) {
-            FileRenderer fileRenderer = (FileRenderer) render;
+         try {
+            FileRenderer fileRenderer = RendererManager.getBestFileRenderer(presentationType, artifact);
             String fileName = artifact.getSafeName() + "." + fileRenderer.getAssociatedExtension(artifact);
-            InputStream inputStream =
-                  fileRenderer.getRenderInputStream(monitor, artifact, "PREVIEW_ARTIFACT", presentationType);
+            InputStream inputStream = fileRenderer.getRenderInputStream(artifact, presentationType);
             Lib.inputStreamToFile(inputStream, new File(exportPath, fileName));
-         } else {
+         } catch (OseeArgumentException ex) {
             OSEELog.logWarning(SkynetGuiPlugin.class, "Artifact requires a FileRenderer", true);
          }
       }

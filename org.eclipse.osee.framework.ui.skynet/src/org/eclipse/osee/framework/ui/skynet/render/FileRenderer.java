@@ -32,34 +32,36 @@ import org.eclipse.osee.framework.ui.plugin.util.AIFile;
  * @author Jeff C. Phillips
  */
 public abstract class FileRenderer extends FileSystemRenderer {
-   private ResourceAttributes readonlyfileAttributes;
-   private Random generator = new Random();
+   private static final ResourceAttributes readonlyfileAttributes = new ResourceAttributes();
+   private static Random generator = new Random();
    private static final FileWatcher watcher = new FileWatcher(3, TimeUnit.SECONDS);
    static {
+      readonlyfileAttributes.setReadOnly(true);
       watcher.addListener(new ArtifactEditFileWatcher());
       watcher.start();
    }
 
-   public FileRenderer() {
-      super();
-      readonlyfileAttributes = new ResourceAttributes();
-      readonlyfileAttributes.setReadOnly(true);
+   /**
+    * @param rendererId
+    */
+   public FileRenderer(String rendererId) {
+      super(rendererId);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#renderToFileSystem(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.resources.IFolder, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, Artifact artifact, Branch branch, String option, PresentationType presentationType) throws OseeCoreException {
+   public IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
       return renderToFile(baseFolder, getFilenameFromArtifact(artifact, presentationType), branch,
-            getRenderInputStream(monitor, artifact, option, presentationType), presentationType);
+            getRenderInputStream(artifact, presentationType), presentationType);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#renderToFileSystem(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.resources.IFolder, java.util.List, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
+   public IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       Branch initialBranch = null;
       for (Artifact artifact : artifacts) {
          if (initialBranch == null) {
@@ -72,7 +74,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
       }
 
       return renderToFile(baseFolder, getFilenameFromArtifact(null, presentationType), initialBranch,
-            getRenderInputStream(monitor, artifacts, option, presentationType), presentationType);
+            getRenderInputStream(artifacts, presentationType), presentationType);
    }
 
    protected IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, InputStream renderInputStream, PresentationType presentationType) throws OseeCoreException {
@@ -126,9 +128,9 @@ public abstract class FileRenderer extends FileSystemRenderer {
       return name.toString();
    }
 
-   public abstract InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException;
+   public abstract InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException;
 
-   public abstract InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws OseeCoreException;
+   public abstract InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException;
 
    public abstract String getAssociatedExtension(Artifact artifact) throws OseeCoreException;
 }

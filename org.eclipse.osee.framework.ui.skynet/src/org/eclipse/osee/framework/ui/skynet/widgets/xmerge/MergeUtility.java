@@ -34,9 +34,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -121,9 +118,7 @@ public class MergeUtility {
     */
    public static String showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
       if (art1 == null || art2 == null) return " ";
-      IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, art1);
-      String filename = renderer.compare(art1, art2, "", null, fileName, PresentationType.DIFF);
-      return filename;
+      return RendererManager.diff(art1, art2, fileName, true);
    }
 
    /*
@@ -132,9 +127,7 @@ public class MergeUtility {
     */
    public static String CreateMergeDiffFile(Artifact art1, Artifact art2, String fileName) throws Exception {
       if (art1 == null || art2 == null) return " ";
-      IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, art1);
-      String filename = renderer.compare(art1, art2, "", null, fileName, PresentationType.MERGE);
-      return filename;
+      return RendererManager.merge(art1, art2, fileName, false);
    }
 
    /*
@@ -143,13 +136,8 @@ public class MergeUtility {
     */
    public static void mergeEditableDiffFiles(Artifact art1, String art1FileName, String art2FileName, String fileName, boolean show, boolean editable) throws Exception {
       if (art1 == null) return;
-      IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, art1);
-      String compareFile =
-            renderer.compare(art1, null, AIFile.constructIFile(art1FileName), AIFile.constructIFile(art2FileName),
-                  fileName.substring(fileName.lastIndexOf('\\') + 1), PresentationType.MERGE_EDIT);
-      if (show) {
-         showDiff(art1, compareFile);
-      }
+      RendererManager.merge(art1, null, AIFile.constructIFile(art1FileName), AIFile.constructIFile(art2FileName),
+            fileName.substring(fileName.lastIndexOf('\\') + 1), show);
    }
 
    public static Artifact getStartArtifact(Conflict conflict) {
@@ -162,17 +150,6 @@ public class MergeUtility {
          OSEELog.logException(MergeUtility.class, ex, false);
       }
       return null;
-   }
-
-   private static void showDiff(Artifact artifact, String diffFile) {
-      try {
-         IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, artifact);
-         if (renderer instanceof FileSystemRenderer) {
-            ((FileSystemRenderer) renderer).getAssociatedProgram(artifact).execute(diffFile);
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(MergeUtility.class, ex, false);
-      }
    }
 
    /**
@@ -289,7 +266,7 @@ public class MergeUtility {
                Jobs.startJob(job);
 
             } else if (response == 2) {
-               RendererManager.getInstance().editInJob(attributeConflict.getArtifact(), "EDIT_ARTIFACT");
+               RendererManager.editInJob(attributeConflict.getArtifact());
                attributeConflict.markStatusToReflectEdit();
             }
          }

@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
@@ -34,9 +33,6 @@ public class ArtifactDiffMenu {
    public enum DiffTypes {
       CONFLICT, PARENT
    }
-
-   private static final RendererManager rendererManager = RendererManager.getInstance();
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
    private static boolean validSelection;
@@ -129,6 +125,6 @@ public class ArtifactDiffMenu {
                         secondTransactionData.getAssociatedArtId(), secondTransactionData.getTransactionId());
          }
       }
-      rendererManager.compareInJob(firstArtifact, secondArtifact, option);
+      RendererManager.diffInJob(secondArtifact, firstArtifact, null);
    }
 }

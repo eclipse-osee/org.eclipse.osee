@@ -10,16 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
-import org.eclipse.swt.widgets.Composite;
-
 /**
  * @author Ryan D. Brooks
  */
 public interface ITemplateRenderer extends IRenderer {
-   public abstract void renderInComposite(Composite composite, BlamVariableMap variableMap, boolean readOnly, IProgressMonitor monitor) throws Exception;
-
-   public abstract void renderToFolder(IFolder folder, BlamVariableMap variableMap, boolean readOnly, IProgressMonitor monitor) throws Exception;
+   public static final String TEMPLATE_OPTION = "template";
+   public static final String[] PREVIEW_WITH_RECURSE = new String[] {TEMPLATE_OPTION, "PREVIEW_WITH_RECURSE"};
 }

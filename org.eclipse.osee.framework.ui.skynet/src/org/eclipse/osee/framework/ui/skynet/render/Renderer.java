@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
 
 /**
@@ -24,26 +26,29 @@ import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
  */
 public abstract class Renderer implements IRenderer {
    private String rendererId;
+   private final HashMap<String, String> options = new HashMap<String, String>();
 
    /**
-    * @param applicableArtifactTypes
+    * @param rendererId
     */
-   public Renderer() {
+   public Renderer(String rendererId) {
       super();
+      this.rendererId = rendererId;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
+   public void edit(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+      throw new UnsupportedOperationException();
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#edit(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void edit(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException {
+   public void edit(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         edit(artifact, option, monitor);
+         edit(artifact, monitor);
       }
    }
 
@@ -57,30 +62,32 @@ public abstract class Renderer implements IRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void preview(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
+   public void preview(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+      throw new UnsupportedOperationException();
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void preview(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException {
+   public void preview(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         preview(artifact, option, monitor);
+         preview(artifact, monitor);
       }
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#print(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void print(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
+   public void print(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+      throw new UnsupportedOperationException();
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#print(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void print(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException {
+   public void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         print(artifact, option, monitor);
+         print(artifact, monitor);
       }
    }
 
@@ -109,55 +116,38 @@ public abstract class Renderer implements IRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#generateHtml(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public String generateHtml(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+   public String generateHtml(Artifact artifact) throws OseeCoreException {
       return "<b>" + artifact.getDescriptiveName() + " - " + artifact.getHumanReadableId() + "</b>";
    }
 
-   public String generateHtml(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
+   @Override
+   public String generateHtml(List<Artifact> artifacts) throws OseeCoreException {
       StringBuilder result = new StringBuilder();
       for (Artifact artifact : artifacts) {
-         result.append(generateHtml(artifact, monitor));
+         result.append(generateHtml(artifact));
       }
       return result.toString();
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getEditOptions()
-    */
-   public List<String> getEditOptions() throws OseeCoreException {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getPreviewOptions()
-    */
-   public List<String> getPreviewOptions() throws OseeCoreException {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getPrintOptions()
-    */
-   public List<String> getPrintOptions() throws OseeCoreException {
-      return null;
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#compare(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws OseeCoreException {
-      return null;
+   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
+      throw new UnsupportedOperationException();
    }
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws OseeCoreException {
-      return null;
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
+      throw new UnsupportedOperationException();
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getCompareOptions()
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#compareArtifacts(java.util.List, java.util.List, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.ui.skynet.render.PresentationType)
     */
-   public List<String> getCompareOptions() throws OseeCoreException {
-      return null;
+   @Override
+   public void compareArtifacts(List<Artifact> baseArtifacts, List<Artifact> newerArtifacts, IProgressMonitor monitor, Branch branch, PresentationType presentationType) throws OseeCoreException {
+      for (int i = 0; i < baseArtifacts.size(); i++) {
+         compare(baseArtifacts.get(i), newerArtifacts.get(i), monitor, null, presentationType, true);
+      }
    }
 
    /* (non-Javadoc)
@@ -192,14 +182,17 @@ public abstract class Renderer implements IRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#setRendererOptions(java.lang.String[])
     */
    @Override
-   public void setRendererOptions(String[] options) {
-      throw new UnsupportedOperationException();
+   public void setOptions(String... optionArgs) {
+      for (int i = 0; i < optionArgs.length; i += 2) {
+         options.put(optionArgs[i], optionArgs[i + 1]);
+      }
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#setDefaultOptions()
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getOption(java.lang.String[])
     */
    @Override
-   public void setDefaultOptions() {
+   public String getOption(String key) {
+      return options.get(key);
    }
 }

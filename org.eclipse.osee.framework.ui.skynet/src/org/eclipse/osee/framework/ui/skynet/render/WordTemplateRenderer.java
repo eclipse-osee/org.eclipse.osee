@@ -56,7 +56,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  * 
  * @author Jeff C. Phillips
  */
-public class WordTemplateRenderer extends WordRenderer {
+public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
    public static final String WORD_RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.word";
    public static final String DEFAULT_SET_NAME = "Default";
    public static final String ARTIFACT_NAME = "Word Renderer";
@@ -68,6 +68,7 @@ public class WordTemplateRenderer extends WordRenderer {
    private static final String OLE_START = "<w:docOleData>";
    private static final String OLE_END = "</w:docOleData>";
    private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
+   public static final String UPDATE_PARAGRAPH_NUMBER_OPTION = "updateParagraphNumber";
 
    private static final Pattern pattern =
          Pattern.compile("<v:imagedata[^>]*src=\"wordml://(\\d+\\.\\w+)\"[^>]*>",
@@ -75,10 +76,26 @@ public class WordTemplateRenderer extends WordRenderer {
    private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor();
 
    /**
+    * @param rendererId
+    */
+   public WordTemplateRenderer(String rendererId) {
+      super(rendererId);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
+    */
+   @Override
+   public WordTemplateRenderer newInstance() throws OseeCoreException {
+      return new WordTemplateRenderer(getId());
+   }
+
+   /**
     * Creates a difference report for each artifact between baseArtifact and newerArtifact. Then produces a single
     * report by combining each of the difference reports together for a single report.
     */
-   public void compareArtifacts(final List<Artifact> baseArtifacts, final List<Artifact> newerArtifact, final String option, IProgressMonitor monitor, final Branch branch) throws OseeCoreException {
+   @Override
+   public void compareArtifacts(final List<Artifact> baseArtifacts, final List<Artifact> newerArtifact, IProgressMonitor monitor, final Branch branch, PresentationType presentationType) throws OseeCoreException {
       if (branch == null) {
          throw new OseeArgumentException("Branch can not be null");
       }
@@ -104,12 +121,10 @@ public class WordTemplateRenderer extends WordRenderer {
                for (int i = 0; i < newerArtifact.size(); i++) {
                   IFile baseFile =
                         renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
-                              getRenderInputStream(monitor, baseArtifacts.get(i), option, PresentationType.DIFF),
-                              PresentationType.DIFF);
+                              getRenderInputStream(baseArtifacts.get(i), PresentationType.DIFF), PresentationType.DIFF);
                   IFile newerFile =
                         renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
-                              getRenderInputStream(monitor, newerArtifact.get(i), option, PresentationType.DIFF),
-                              PresentationType.DIFF);
+                              getRenderInputStream(newerArtifact.get(i), PresentationType.DIFF), PresentationType.DIFF);
 
                   baseFileStr = changeReportFolder.getLocation().toOSString();
                   fileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
@@ -186,7 +201,7 @@ public class WordTemplateRenderer extends WordRenderer {
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
       if (baseVersion == null && newerVersion == null) throw new OseeArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -196,29 +211,29 @@ public class WordTemplateRenderer extends WordRenderer {
 
       if (baseVersion != null) {
          if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            baseFile = renderForMerge(monitor, baseVersion, option, presentationType);
+            baseFile = renderForMerge(monitor, baseVersion, presentationType);
          } else {
-            baseFile = renderForDiff(monitor, baseVersion, option);
+            baseFile = renderForDiff(monitor, baseVersion);
          }
       } else {
-         baseFile = renderForDiff(monitor, branch, option);
+         baseFile = renderForDiff(monitor, branch);
       }
 
       if (newerVersion != null) {
          if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            newerFile = renderForMerge(monitor, newerVersion, option, presentationType);
+            newerFile = renderForMerge(monitor, newerVersion, presentationType);
          } else {
-            newerFile = renderForDiff(monitor, newerVersion, option);
+            newerFile = renderForDiff(monitor, newerVersion);
          }
       } else {
-         newerFile = renderForDiff(monitor, branch, null);
+         newerFile = renderForDiff(monitor, branch);
       }
 
-      return compare(baseVersion, newerVersion, baseFile, newerFile, fileName, presentationType);
+      return compare(baseVersion, newerVersion, baseFile, newerFile, fileName, presentationType, show);
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
       String diffPath;
 
       if (fileName == null || fileName.equals("")) {
@@ -297,33 +312,9 @@ public class WordTemplateRenderer extends WordRenderer {
     */
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact()) {
-         return SUBTYPE_TYPE_MATCH;
+         return ARTIFACT_TYPE_MATCH;
       }
       return NO_MATCH;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getEditOptions()
-    */
-   @Override
-   public List<String> getEditOptions() throws OseeCoreException {
-      return getTemplateOptions();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getPreviewOptions()
-    */
-   @Override
-   public List<String> getPreviewOptions() throws OseeCoreException {
-      return getTemplateOptions();
-   }
-
-   private List<String> getTemplateOptions() {
-      return null;
    }
 
    /*
@@ -334,12 +325,12 @@ public class WordTemplateRenderer extends WordRenderer {
     *      org.eclipse.osee.framework.ui.skynet.render.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
       if (artifact != null) {
          artifacts.add(artifact);
       }
-      return getRenderInputStream(monitor, artifacts, option, presentationType);
+      return getRenderInputStream(artifacts, presentationType);
    }
 
    /*
@@ -350,16 +341,16 @@ public class WordTemplateRenderer extends WordRenderer {
     *      org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<Artifact>();
       String template;
 
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
-         template = getTemplate(null, presentationType, option);
+         template = getTemplate(null, presentationType);
       } else {
          Artifact firstArtifact = artifacts.iterator().next();
-         template = getTemplate(firstArtifact, presentationType, option);
+         template = getTemplate(firstArtifact, presentationType);
 
          for (Artifact artifact : artifacts) {
             Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
@@ -394,30 +385,19 @@ public class WordTemplateRenderer extends WordRenderer {
       }
 
       template = WordUtil.removeGUIDFromTemplate(template);
+      setsetSaveParagraphNumOnArtifact();
       return templateProcessor.applyTemplate(artifacts, template, null, presentationType);
    }
 
-   protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws OseeCoreException {
-      return TemplateManager.getTemplate(this, artifact, presentationType.name(), option);
+   protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      return TemplateManager.getTemplate(this, artifact, presentationType.name(), getOption(TEMPLATE_OPTION)).getSoleAttributeValue(
+            WordAttribute.WHOLE_WORD_CONTENT);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#setRendererOptions(java.lang.String[])
-    */
-   @Override
-   public void setRendererOptions(String[] options) {
-      for (String option : options) {
-         if (option.startsWith("updateParagraphNumber=")) {
-            templateProcessor.setSaveParagraphNumOnArtifact(option.endsWith("true"));
-         }
+   private void setsetSaveParagraphNumOnArtifact() {
+      String updateNums = getOption(UPDATE_PARAGRAPH_NUMBER_OPTION);
+      if (updateNums != null) {
+         templateProcessor.setSaveParagraphNumOnArtifact(Boolean.parseBoolean(updateNums));
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#setDefaultOptions()
-    */
-   @Override
-   public void setDefaultOptions() {
-      templateProcessor.setSaveParagraphNumOnArtifact(false);
    }
 }
