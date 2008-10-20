@@ -72,7 +72,6 @@ public final class IndexCollector {
             if (Strings.isValid(value)) {
                ids.add(Long.valueOf(value));
             }
-            removeFalsePositives();
          }
       }
       List<String> intersect = Collections.setIntersection(aliases, fieldMap.keySet());
@@ -98,7 +97,7 @@ public final class IndexCollector {
       values.add(value);
    }
 
-   private void removeFalsePositives() {
+   protected void removeFalsePositives() {
       if (!notFound.isEmpty()) {
          List<String> keysToRemove = new ArrayList<String>();
          for (String key : notFound.keySet()) {

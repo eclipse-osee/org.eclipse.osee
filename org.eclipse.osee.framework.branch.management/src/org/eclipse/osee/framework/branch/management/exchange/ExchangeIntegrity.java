@@ -16,9 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
@@ -27,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.resource.common.Activator;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 
 /**
@@ -35,11 +31,9 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
  */
 public class ExchangeIntegrity {
    private final IResourceLocator locator;
-   private List<String> errorList;
 
    public ExchangeIntegrity(IResourceLocator locator) {
       this.locator = locator;
-      this.errorList = new ArrayList<String>();
    }
 
    public void execute() throws Exception {
@@ -55,35 +49,10 @@ public class ExchangeIntegrity {
          filesToCheck.add(manifestSaxHandler.getBranchDefinitionsFile());
 
          final List<IndexCollector> checkList = ExchangeDb.getCheckList();
-         List<Future<?>> futures = new ArrayList<Future<?>>();
-
-         ExecutorService executorService =
-               Executors.newFixedThreadPool(2, Activator.getInstance().createNewThreadFactory(
-                     "branch.export.verification.worker"));
-         try {
-            for (final ImportFile importFile : filesToCheck) {
-               futures.add(executorService.submit(new Runnable() {
-                  public void run() {
-                     try {
-                        ExchangeUtil.readExchange(exchange, importFile.getFileName(), new CheckSaxHandler(checkList,
-                              importFile.getFileName()));
-                     } catch (Exception ex) {
-                        errorList.add(Lib.exceptionToString(ex));
-                     }
-                  }
-               }));
-            }
-            for (Future<?> future : futures) {
-               future.get();
-               if (this.errorList.size() > 0) {
-                  throw new Exception(errorList.toString());
-               }
-            }
-         } finally {
-            executorService.shutdown();
-            executorService = null;
+         for (final ImportFile importFile : filesToCheck) {
+            ExchangeUtil.readExchange(exchange, importFile.getFileName(), new CheckSaxHandler(checkList,
+                  importFile.getFileName()));
          }
-
          writeResults(exchange.getParentFile(), exchange.getName() + ".verify.xml", checkList);
       } finally {
          ExchangeUtil.cleanUpTempExchangeFile(exchange, tempExchange.object1);
@@ -150,6 +119,17 @@ public class ExchangeIntegrity {
          for (IndexCollector integrityCheck : checkList) {
             integrityCheck.processData(fileBeingProcessed, fieldMap);
          }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseExportImportSaxHandler#finishData()
+       */
+      @Override
+      protected void finishData() {
+         for (IndexCollector integrityCheck : checkList) {
+            integrityCheck.removeFalsePositives();
+         }
+         super.finishData();
       }
    }
 }
