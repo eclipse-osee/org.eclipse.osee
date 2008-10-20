@@ -26,4 +26,6 @@ public interface IBranchExchange {
    public void importBranch(IResourceLocator fileToImport, Options options, int... branchIds) throws Exception;
 
    public void importBranch(IResourceLocator fileToImport, Options options, List<Integer> branchIds) throws Exception;
+
+   public void checkIntegrity(IResourceLocator fileToCheck) throws Exception;
 }

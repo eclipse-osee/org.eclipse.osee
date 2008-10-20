@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
+import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
@@ -26,12 +27,6 @@ import org.eclipse.osee.framework.resource.management.Options;
 public class Translator {
    private static final String INSERT_INTO_IMPORT_MAP =
          "INSERT INTO osee_import_map (import_id, sequence_id, sequence_name) VALUES (?, ?, ?)";
-
-   private static final String[] ARTIFACT_ID_ALIASES =
-         new String[] {"art_id", "associated_art_id", "a_order", "b_order", "a_order_value", "b_order_value",
-               "a_art_id", "b_art_id", "commit_art_id", "author"};
-
-   private static final String[] BRANCH_ID_ALIASES = new String[] {"branch_id", "parent_branch_id", "mapped_branch_id"};
 
    private final List<TranslatedIdMap> translators;
    private final Map<String, TranslatedIdMap> translatorMap;
@@ -57,15 +52,15 @@ public class Translator {
 
    private List<TranslatedIdMap> createTranslators() {
       List<TranslatedIdMap> translators = new ArrayList<TranslatedIdMap>();
-      translators.add(new TranslatedIdMap(SequenceManager.GAMMA_ID_SEQ, "gamma_id"));
-      translators.add(new TranslatedIdMap(SequenceManager.TRANSACTION_ID_SEQ, "transaction_id"));
-      translators.add(new TranslatedIdMap(SequenceManager.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
-      translators.add(new TranslatedIdMap(SequenceManager.ATTR_ID_SEQ, "attr_id"));
-      translators.add(new TranslatedIdMap(SequenceManager.REL_LINK_ID_SEQ, "rel_link_id"));
-      translators.add(new TranslatedIdMap(SequenceManager.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
-      translators.add(new TranslatedIdMap(SequenceManager.ART_TYPE_ID_SEQ, "art_type_id"));
-      translators.add(new TranslatedIdMap(SequenceManager.ATTR_TYPE_ID_SEQ, "attr_type_id"));
-      translators.add(new TranslatedIdMap(SequenceManager.REL_LINK_TYPE_ID_SEQ, "rel_link_type_id"));
+      translators.add(new TranslatedIdMap(SequenceManager.GAMMA_ID_SEQ, ExchangeDb.GAMMA_ID));
+      translators.add(new TranslatedIdMap(SequenceManager.TRANSACTION_ID_SEQ, ExchangeDb.TRANSACTION_ID));
+      translators.add(new TranslatedIdMap(SequenceManager.ART_ID_SEQ, ExchangeDb.ARTIFACT_ID_ALIASES));
+      translators.add(new TranslatedIdMap(SequenceManager.ATTR_ID_SEQ, ExchangeDb.ATTRIBUTE_ID));
+      translators.add(new TranslatedIdMap(SequenceManager.REL_LINK_ID_SEQ, ExchangeDb.RELATION_ID));
+      translators.add(new TranslatedIdMap(SequenceManager.BRANCH_ID_SEQ, ExchangeDb.BRANCH_ID_ALIASES));
+      translators.add(new TranslatedIdMap(SequenceManager.ART_TYPE_ID_SEQ, ExchangeDb.ARTIFACT_TYPE_ID));
+      translators.add(new TranslatedIdMap(SequenceManager.ATTR_TYPE_ID_SEQ, ExchangeDb.ATTRIBUTE_TYPE_ID));
+      translators.add(new TranslatedIdMap(SequenceManager.REL_LINK_TYPE_ID_SEQ, ExchangeDb.RELATION_TYPE_ID));
       return translators;
    }
 

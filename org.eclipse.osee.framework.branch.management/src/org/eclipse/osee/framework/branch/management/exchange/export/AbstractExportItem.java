@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
+import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -103,21 +101,12 @@ public abstract class AbstractExportItem implements Runnable {
       this.exportListeners.clear();
    }
 
-   private Writer createXmlWriter(File tempFolder, String name, int bufferSize) throws Exception {
-      File indexFile = new File(tempFolder, name);
-      Writer writer =
-            new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), ExportImportXml.XML_ENCODING),
-                  bufferSize);
-      writer.write(ExportImportXml.XML_HEADER);
-      return writer;
-   }
-
    public final void run() {
       notifyOnExportItemStarted();
       long startTime = System.currentTimeMillis();
       Writer writer = null;
       try {
-         writer = createXmlWriter(getWriteLocation(), getFileName(), getBufferSize());
+         writer = ExchangeUtil.createXmlWriter(getWriteLocation(), getFileName(), getBufferSize());
          ExportImportXml.openXmlNode(writer, ExportImportXml.DATA);
          if (isCancel() != true) {
             try {

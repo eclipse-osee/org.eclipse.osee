@@ -36,6 +36,14 @@ public class BranchManagementCommandProvider implements CommandProvider {
       BranchCommands.getInstance().stopBranchImport(ci);
    }
 
+   public void _check_exchange(CommandInterpreter ci) {
+      BranchCommands.getInstance().startBranchIntegrityCheck(ci);
+   }
+
+   public void _check_exchange_stop(CommandInterpreter ci) {
+      BranchCommands.getInstance().stopBranchIntegrityCheck(ci);
+   }
+
    public void _configini(CommandInterpreter ci) {
       StringBuilder sb = new StringBuilder();
       sb.append("eclipse.ignoreApp=true\n");
@@ -64,7 +72,8 @@ public class BranchManagementCommandProvider implements CommandProvider {
       sb.append("        export_branch <exchangeFileName> [-compress] [-minTx <value>] [-maxTx <value>] [-exclude_baseline_txs] [-includeArchivedBranches][<branchId>]+ - export a specific set of branches into an exchange zip file.\n");
       sb.append("        export_branch_stop - stop branch export\n");
       sb.append("        import_branch <exchangeFilePath> [-exclude_baseline_txs] [-allAsRootBranches] [-minTx <value>] [-maxTx <value>] [-clean] [<branchId>]+ - import a specific set of branches from an exchange zip file.\n");
-      sb.append("        import_branch_stop - stop branch import\n");
+      sb.append("        check_exchange <exchangeFilePath> - checks an exchange file to ensure data integrity\n");
+      sb.append("        check_exchange_stop - stop exchange integrity check\n");
       return sb.toString();
    }
 

@@ -65,4 +65,13 @@ public class BranchExchange implements IBranchExchange {
       }
       importBranch(fileToImport, options, branchIdsArray);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.branch.management.IBranchExchange#checkIntegrity(org.eclipse.osee.framework.resource.management.IResourceLocator)
+    */
+   @Override
+   public void checkIntegrity(IResourceLocator fileToCheck) throws Exception {
+      ExchangeIntegrity exchangeIntegrityCheck = new ExchangeIntegrity(fileToCheck);
+      exchangeIntegrityCheck.execute();
+   }
 }

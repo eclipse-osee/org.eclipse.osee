@@ -19,7 +19,7 @@ import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.Activator;
-import org.eclipse.osee.framework.branch.management.exchange.BranchExportTaskConfig;
+import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -97,7 +97,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
       ConnectionHandlerStatement chStmt = null;
       try {
          ObjectPair<String, Object[]> sqlData =
-               BranchExportTaskConfig.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
+               ExchangeDb.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
          chStmt = ConnectionHandler.runPreparedQuery(getConnection(), sqlData.object1, sqlData.object2);
          while (chStmt.next()) {
             processData(appendable, chStmt);

@@ -20,6 +20,7 @@ public class BranchCommands {
    private static BranchCommands instance = null;
    private BranchExportWorker branchExportWorker;
    private BranchImportWorker branchImportWorker;
+   private ExchangeIntegrityWorker integrityWorker;
 
    public static BranchCommands getInstance() {
       if (instance == null) {
@@ -34,10 +35,13 @@ public class BranchCommands {
 
       this.branchImportWorker = new BranchImportWorker();
       this.branchImportWorker.setExecutionAllowed(true);
+
+      this.integrityWorker = new ExchangeIntegrityWorker();
+      this.integrityWorker.setExecutionAllowed(true);
    }
 
    public void startBranchExport(CommandInterpreter ci) {
-      if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning()) {
+      if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning() && !this.integrityWorker.isRunning()) {
          this.branchExportWorker.setCommandInterpreter(ci);
          this.branchExportWorker.setExecutionAllowed(true);
          Thread th = new Thread(branchExportWorker);
@@ -49,6 +53,9 @@ public class BranchCommands {
          }
          if (this.branchImportWorker.isRunning()) {
             ci.println("Branch Import is already running.");
+         }
+         if (this.integrityWorker.isRunning()) {
+            ci.println("Branch Integrity Check is already running.");
          }
       }
    }
@@ -62,7 +69,7 @@ public class BranchCommands {
    }
 
    public void startBranchImport(CommandInterpreter ci) {
-      if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning()) {
+      if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning() && !this.integrityWorker.isRunning()) {
          this.branchImportWorker.setCommandInterpreter(ci);
          this.branchImportWorker.setExecutionAllowed(true);
          Thread th = new Thread(branchImportWorker);
@@ -75,6 +82,9 @@ public class BranchCommands {
          if (this.branchImportWorker.isRunning()) {
             ci.println("Branch Import is already running.");
          }
+         if (this.integrityWorker.isRunning()) {
+            ci.println("Branch Integrity Check is already running.");
+         }
       }
    }
 
@@ -83,6 +93,34 @@ public class BranchCommands {
          this.branchImportWorker.setExecutionAllowed(false);
       } else {
          ci.println("Branch Import is not running.");
+      }
+   }
+
+   public void startBranchIntegrityCheck(CommandInterpreter ci) {
+      if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning() && !this.integrityWorker.isRunning()) {
+         this.integrityWorker.setCommandInterpreter(ci);
+         this.integrityWorker.setExecutionAllowed(true);
+         Thread th = new Thread(integrityWorker);
+         th.setName("Branch Integrity Check");
+         th.start();
+      } else {
+         if (this.branchExportWorker.isRunning()) {
+            ci.println("Branch Export is already running.");
+         }
+         if (this.branchImportWorker.isRunning()) {
+            ci.println("Branch Import is already running.");
+         }
+         if (this.integrityWorker.isRunning()) {
+            ci.println("Branch Integrity Check is already running.");
+         }
+      }
+   }
+
+   public void stopBranchIntegrityCheck(CommandInterpreter ci) {
+      if (this.integrityWorker.isRunning()) {
+         this.integrityWorker.setExecutionAllowed(false);
+      } else {
+         ci.println("Branch Integrity Check is not running.");
       }
    }
 }

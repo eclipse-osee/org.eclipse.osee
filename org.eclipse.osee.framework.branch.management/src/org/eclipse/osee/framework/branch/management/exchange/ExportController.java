@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
-import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
@@ -41,7 +40,6 @@ import org.eclipse.osee.framework.resource.management.exception.MalformedLocator
  */
 final class ExportController extends DbTransaction implements IExchangeTaskListener {
    private static final String ZIP_EXTENSION = ".zip";
-   private static final String TEMP_NAME_PREFIX = "branch.xchng.";
 
    private String exportName;
    private final Options options;
@@ -86,13 +84,10 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    }
 
    private File createTempFolder() {
-      String basePath = ExchangeProvider.getExchangeFilePath();
-      String fileName = TEMP_NAME_PREFIX + Lib.getDateTimeString();
+      File rootDirectory = ExchangeUtil.createTempFolder();
       if (!Strings.isValid(exportName)) {
-         this.exportName = fileName;
+         this.exportName = rootDirectory.getName();
       }
-      File rootDirectory = new File(basePath + fileName + File.separator);
-      rootDirectory.mkdirs();
       return rootDirectory;
    }
 
@@ -103,8 +98,8 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       }
       joinQuery.store(connection);
 
-      long maxTx = ConnectionHandler.runPreparedQueryFetchLong(connection, -1, BranchExportTaskConfig.GET_MAX_TX);
-      long userMaxTx = BranchExportTaskConfig.getMaxTransaction(options);
+      long maxTx = ConnectionHandler.runPreparedQueryFetchLong(connection, -1, ExchangeDb.GET_MAX_TX);
+      long userMaxTx = ExchangeDb.getMaxTransaction(options);
       if (userMaxTx == Long.MIN_VALUE || userMaxTx > maxTx) {
          options.put(ExportOptions.MAX_TXS.name(), Long.toString(maxTx));
       }
@@ -129,7 +124,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    @Override
    protected void handleTxWork(Connection connection) throws Exception {
       long startTime = System.currentTimeMillis();
-      List<AbstractExportItem> taskList = BranchExportTaskConfig.getTaskList();
+      List<AbstractExportItem> taskList = ExchangeDb.getTaskList();
       try {
          File tempFolder = createTempFolder();
          setUp(connection, taskList, tempFolder);

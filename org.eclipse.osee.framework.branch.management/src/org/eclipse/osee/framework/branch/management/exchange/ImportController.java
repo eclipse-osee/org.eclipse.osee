@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -24,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
@@ -36,7 +32,6 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalS
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalTypeCheckSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.Translator;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
-import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
@@ -47,15 +42,11 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -73,7 +64,6 @@ final class ImportController {
    private static final String QUERY_SAVE_POINTS_FROM_IMPORT_MAP =
          "SELECT save_point_name from osee_import_save_point oisp, osee_import_source ois WHERE ois.import_id = oisp.import_id AND oisp.status = 1 AND ois.db_source_guid = ? AND ois.source_export_date = ?";
 
-   private static final String TEMP_NAME_PREFIX = "branch.imp.xchng.";
    private final IResourceLocator locator;
    private final Options options;
    private final int[] branchesToImport;
@@ -97,32 +87,6 @@ final class ImportController {
       this.savePoints = new LinkedHashMap<String, SavePoint>();
    }
 
-   private File createTempFolder() {
-      String basePath = ExchangeProvider.getExchangeFilePath();
-      String fileName = TEMP_NAME_PREFIX + Lib.getDateTimeString();
-      File rootDirectory = new File(basePath, fileName + File.separator);
-      rootDirectory.mkdirs();
-      return rootDirectory;
-   }
-
-   private void setupImportSourceFolder() throws Exception {
-      importSource = null;
-      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
-      File source = new File(resource.getLocation());
-      if (source.isFile()) {
-         currentSavePoint = "extract.zip";
-         wasZipExtractionRequired = true;
-         importSource = createTempFolder();
-         OseeLog.log(this.getClass(), Level.INFO, String.format("Extracting Branch Import File: [%s] to [%s]",
-               source.getName(), importSource));
-         Lib.decompressStream(new FileInputStream(source), importSource);
-         wasZipExtractionRequired = true;
-      } else {
-         wasZipExtractionRequired = false;
-         importSource = source;
-      }
-   }
-
    private void checkPreconditions() throws OseeCoreException {
       OseeConnection connection = null;
       try {
@@ -138,7 +102,10 @@ final class ImportController {
    }
 
    private void setup() throws Exception {
-      setupImportSourceFolder();
+      currentSavePoint = "sourceSetup";
+      ObjectPair<Boolean, File> result = ExchangeUtil.getTempExchangeFile(locator);
+      wasZipExtractionRequired = result.object1;
+      importSource = result.object2;
 
       currentSavePoint = "setup";
       translator = new Translator();
@@ -147,12 +114,12 @@ final class ImportController {
       // Process manifest
       currentSavePoint = "manifest";
       manifestHandler = new ManifestSaxHandler();
-      processImportFile(importSource, "export.manifest.xml", manifestHandler);
+      ExchangeUtil.readExchange(importSource, "export.manifest.xml", manifestHandler);
 
       // Process database meta data
       currentSavePoint = manifestHandler.getMetadataFile();
       metadataHandler = new MetaDataSaxHandler();
-      processImportFile(importSource, manifestHandler.getMetadataFile(), metadataHandler);
+      ExchangeUtil.readExchange(importSource, manifestHandler.getMetadataFile(), metadataHandler);
       metadataHandler.checkAndLoadTargetDbMetadata();
 
       // Load Import Indexes
@@ -163,11 +130,7 @@ final class ImportController {
    }
 
    private void cleanup() throws Exception {
-      if (wasZipExtractionRequired && importSource != null && importSource.exists() && importSource.getAbsolutePath() != ExchangeProvider.getExchangeFilePath()) {
-         OseeLog.log(this.getClass(), Level.INFO, String.format("Deleting Branch Import Temp Folder - [%s]",
-               importSource));
-         Lib.deleteDir(importSource);
-      }
+      ExchangeUtil.cleanUpTempExchangeFile(importSource, wasZipExtractionRequired);
       translator = null;
       manifestHandler = null;
       metadataHandler = null;
@@ -220,7 +183,7 @@ final class ImportController {
    private void process(BaseDbSaxHandler handler, Connection connection, ImportFile importSourceFile) throws Exception {
       MetaData metadata = checkMetadata(importSourceFile);
       initializeHandler(connection, handler, metadata);
-      processImportFile(importSource, importSourceFile.getFileName(), handler);
+      ExchangeUtil.readExchange(importSource, importSourceFile.getFileName(), handler);
    }
 
    private MetaData checkMetadata(ImportFile importFile) {
@@ -249,7 +212,7 @@ final class ImportController {
                               item.getSource()));
                      }
                   }
-                  processImportFile(importSource, item.getFileName(), handler);
+                  ExchangeUtil.readExchange(importSource, item.getFileName(), handler);
                   handler.store();
                   handler.reset();
                   addSavePoint(currentSavePoint);
@@ -259,21 +222,6 @@ final class ImportController {
          } else {
             OseeLog.log(this.getClass(), Level.INFO, String.format("Save point found for: [%s] - skipping",
                   item.getSource()));
-         }
-      }
-   }
-
-   private void processImportFile(File zipFile, String fileToProcess, ContentHandler handler) throws Exception {
-      InputStream inputStream = null;
-      try {
-         File entry = new File(zipFile, fileToProcess);
-         inputStream = new BufferedInputStream(new FileInputStream(entry));
-         XMLReader reader = XMLReaderFactory.createXMLReader();
-         reader.setContentHandler(handler);
-         reader.parse(new InputSource(inputStream));
-      } finally {
-         if (inputStream != null) {
-            inputStream.close();
          }
       }
    }

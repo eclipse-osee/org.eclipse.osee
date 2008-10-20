@@ -11,7 +11,10 @@
 package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExportItem;
@@ -27,11 +30,42 @@ import org.eclipse.osee.framework.resource.management.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchExportTaskConfig {
+public class ExchangeDb {
 
-   private static final String ARTIFACT_TYPE_ID = "art_type_id";
-   private static final String ATTRIBUTE_TYPE_ID = "attr_type_id";
-   private static final String RELATION_TYPE_ID = "rel_link_type_id";
+   public static final String ARTIFACT_TYPE_ID = "art_type_id";
+   public static final String ATTRIBUTE_TYPE_ID = "attr_type_id";
+   public static final String RELATION_TYPE_ID = "rel_link_type_id";
+   public static final String GAMMA_ID = "gamma_id";
+   public static final String TRANSACTION_ID = "transaction_id";
+   public static final String ATTRIBUTE_ID = "attr_id";
+   public static final String ARTIFACT_ID = "art_id";
+   public static final String RELATION_ID = "rel_link_id";
+   public static final String BRANCH_ID = "branch_id";
+
+   private static final String[] BRANCH_ID_NEG_ONE_ALIASES = new String[] {"parent_branch_id"};
+
+   private static final String[] BRANCH_ID_REG_ALIASES = new String[] {"mapped_branch_id"};
+
+   private static final String[] ARTIFACT_ID_NEG_ONE_ALIASES =
+         new String[] {"associated_art_id", "a_order", "b_order", "author"};
+
+   private static final String[] ARTIFACT_ID_REG_ALIASES = new String[] {"a_art_id", "b_art_id"};
+
+   public static final String[] ARTIFACT_ID_ALIASES;
+   public static final String[] BRANCH_ID_ALIASES;
+   static {
+      Set<String> artIdAliases = new HashSet<String>();
+      artIdAliases.add(ARTIFACT_ID);
+      artIdAliases.addAll(Arrays.asList(ARTIFACT_ID_REG_ALIASES));
+      artIdAliases.addAll(Arrays.asList(ARTIFACT_ID_NEG_ONE_ALIASES));
+      ARTIFACT_ID_ALIASES = artIdAliases.toArray(new String[artIdAliases.size()]);
+
+      Set<String> branchIdAliases = new HashSet<String>();
+      branchIdAliases.add(BRANCH_ID);
+      branchIdAliases.addAll(Arrays.asList(BRANCH_ID_REG_ALIASES));
+      branchIdAliases.addAll(Arrays.asList(BRANCH_ID_NEG_ONE_ALIASES));
+      BRANCH_ID_ALIASES = branchIdAliases.toArray(new String[branchIdAliases.size()]);
+   }
 
    public static final String GET_MAX_TX =
          "SELECT last_sequence FROM osee_sequence WHERE sequence_name = '" + SequenceManager.TRANSACTION_ID_SEQ + "'";
@@ -94,6 +128,16 @@ public class BranchExportTaskConfig {
       return items;
    }
 
+   protected static List<IndexCollector> getCheckList() {
+      List<IndexCollector> items = new ArrayList<IndexCollector>();
+      items.add(new IndexCollector("osee.txs.data", GAMMA_ID));
+      items.add(new IndexCollector("osee.tx.details.data", TRANSACTION_ID));
+      items.add(new IndexCollector("osee.artifact.data", ARTIFACT_ID, ARTIFACT_ID_REG_ALIASES,
+            ARTIFACT_ID_NEG_ONE_ALIASES));
+      items.add(new IndexCollector("osee.branch.data", BRANCH_ID, BRANCH_ID_REG_ALIASES, BRANCH_ID_NEG_ONE_ALIASES));
+      return items;
+   }
+
    public static ObjectPair<String, Object[]> getQueryWithOptions(String originalQuery, int queryId, Options options) throws Exception {
       if (originalQuery.contains("%s") && originalQuery.contains("txd1")) {
          List<Object> dataArray = new ArrayList<Object>();
@@ -126,11 +170,11 @@ public class BranchExportTaskConfig {
       return new ObjectPair<String, Object[]>(originalQuery, new Object[] {queryId});
    }
 
-   public static Long getMaxTransaction(Options options) {
+   protected static Long getMaxTransaction(Options options) {
       return getTransactionNumber(options, ExportOptions.MAX_TXS.name());
    }
 
-   public static Long getMinTransaction(Options options) {
+   protected static Long getMinTransaction(Options options) {
       return getTransactionNumber(options, ExportOptions.MIN_TXS.name());
    }
 
@@ -143,7 +187,7 @@ public class BranchExportTaskConfig {
       return toReturn;
    }
 
-   private BranchExportTaskConfig() {
+   private ExchangeDb() {
    }
 
 }
