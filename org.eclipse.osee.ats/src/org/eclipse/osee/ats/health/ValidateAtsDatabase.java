@@ -251,7 +251,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                   }
                } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
                   // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
-                  if (!smaMgr.getStateMgr().getAssignees().contains(SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+                  if (!(smaMgr.getStateMgr().getAssignees().contains(SkynetAuthentication.getUser(UserEnum.UnAssigned)) && relationAssigned.size() == 0)) {
                      xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " attribute assignees doesn't match related assignees");
                      if (fixAssignees) {
                         try {
