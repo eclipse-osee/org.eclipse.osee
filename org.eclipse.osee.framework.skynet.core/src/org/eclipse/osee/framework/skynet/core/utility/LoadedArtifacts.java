@@ -11,9 +11,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
@@ -69,6 +71,13 @@ public class LoadedArtifacts {
 
    public static LoadedArtifacts EmptyLoadedArtifacts() {
       return new LoadedArtifacts((Artifact) null);
+   }
+
+   public Branch getLoadedArtifactsBranch() throws OseeCoreException {
+      if (getLoadedArtifacts().size() > 0) {
+         return getLoadedArtifacts().iterator().next().getBranch();
+      }
+      return null;
    }
 
    @Override
