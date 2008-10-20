@@ -12,12 +12,13 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesProvider;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Robert A. Fisher
@@ -41,7 +42,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
          return branches;
       } catch (Exception ex) {
-         OSEELog.logWarning(TeamBasedDefaultBranchProvider.class, ex, false);
+         OseeLog.log(TeamBasedDefaultBranchProvider.class, Level.WARNING,  ex);
       }
 
       return null;

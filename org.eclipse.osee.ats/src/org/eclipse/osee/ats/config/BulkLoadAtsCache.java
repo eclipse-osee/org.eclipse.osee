@@ -6,16 +6,17 @@
 package org.eclipse.osee.ats.config;
 
 import java.util.Arrays;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
 /**
@@ -39,7 +40,7 @@ public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
       try {
          if (forcePend) job.join();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -48,7 +49,7 @@ public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
     */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
-      OSEELog.logInfo(AtsPlugin.class, getName(), false);
+      OseeLog.log(AtsPlugin.class, Level.INFO,  getName());
       try {
          for (Artifact artifact : RelationManager.getRelatedArtifacts(
                Arrays.asList(AtsConfig.getInstance().getOrCreateAtsHeadingArtifact()), 8,

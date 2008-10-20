@@ -12,14 +12,15 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
@@ -66,7 +67,7 @@ public class SMAMetrics {
                "%", percentComplete, hrsRemain, hrsSpent, (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ",
                      manDaysNeeded) : ""));
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "Exception occurred - see log";
       }
    }
@@ -112,7 +113,7 @@ public class SMAMetrics {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "Exception occurred - see log";
       }
       return "";

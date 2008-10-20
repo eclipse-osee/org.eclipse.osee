@@ -13,12 +13,14 @@ package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -55,7 +57,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
             name += (verArt != null ? " - " + verArt.getDescriptiveName() : "");
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "Exception Occurred - See Log - " + ex.getLocalizedMessage();
       }
       return name;

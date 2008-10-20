@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -50,8 +51,8 @@ public class AnnotationComposite extends Composite {
          for (ArtifactAnnotation notify : artifact.getAnnotations()) {
             if (notify.getType() != type) continue;
             if (notify.getType() == ArtifactAnnotation.Type.None) {
-               OSEELog.logException(SkynetGuiPlugin.class, new IllegalStateException(
-                     "None is an invalid annotation type - " + artifact.getHumanReadableId()), false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  new IllegalStateException(
+                     "None is an invalid annotation type - " + artifact.getHumanReadableId()));
                continue;
             }
             Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);

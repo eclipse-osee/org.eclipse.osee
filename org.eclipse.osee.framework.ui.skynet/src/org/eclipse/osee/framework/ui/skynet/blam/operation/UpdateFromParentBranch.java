@@ -13,10 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -24,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Ryan D. Brooks
@@ -67,22 +68,22 @@ public class UpdateFromParentBranch extends AbstractBlam {
                ConnectionHandler.runPreparedUpdate(DELETE_GAMMAS_FOR_UPDATES, childBranch.getBranchId(),
                      parentBranch.getBranchId(), queryId, childBranch.getBranchId(), parentBranch.getBranchId(),
                      queryId, childBranch.getBranchId(), parentBranch.getBranchId(), queryId);
-         OSEELog.logInfo(SkynetGuiPlugin.class, "deleted " + count + " gammas", false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "deleted " + count + " gammas");
 
          count =
                ConnectionHandler.runPreparedUpdate(INSERT_UPDATED_ARTIFACTS, baselineTransactionNumber,
                      parentBranch.getBranchId(), queryId);
-         OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " artifacts", false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "inserted " + count + " artifacts");
 
          count =
                ConnectionHandler.runPreparedUpdate(INSERT_UPDATED_ATTRIBUTES_GAMMAS, baselineTransactionNumber,
                      parentBranch.getBranchId(), queryId);
-         OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " attributes", false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "inserted " + count + " attributes");
 
          count =
                ConnectionHandler.runPreparedUpdate(INSERT_UPDATED_LINKS_GAMMAS, baselineTransactionNumber,
                      parentBranch.getBranchId(), queryId);
-         OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " relations", false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "inserted " + count + " relations");
 
          monitor.done();
       } finally {

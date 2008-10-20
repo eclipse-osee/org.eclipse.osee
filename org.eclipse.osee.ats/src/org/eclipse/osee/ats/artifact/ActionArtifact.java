@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.swt.graphics.Image;
@@ -744,7 +743,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          try {
             isResponsible = teamExtension.isResponsibleForTeamWorkflowCreation(teamDef, actionableItems);
          } catch (Exception ex) {
-            OSEELog.logWarning(AtsPlugin.class, ex, false);
+            OseeLog.log(AtsPlugin.class, Level.WARNING,  ex);
          }
          if (isResponsible) {
             teamWorkflowArtifactName = teamExtension.getTeamWorkflowArtifactName(teamDef, actionableItems);

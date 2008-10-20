@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.dialog;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.swt.graphics.Image;
 
@@ -35,7 +36,7 @@ public class VersionArtifactLabelProvider extends LabelProvider {
                str += " - Estimated Release: " + XDate.getDateStr(verArt.getEstimatedReleaseDate(), XDate.MMDDYY);
             }
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
          return str;
       }

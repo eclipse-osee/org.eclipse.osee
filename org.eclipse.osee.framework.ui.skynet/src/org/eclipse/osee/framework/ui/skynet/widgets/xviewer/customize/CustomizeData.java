@@ -12,14 +12,15 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -105,7 +106,7 @@ public class CustomizeData {
          guid = m.group(3);
       } else {
          name = "Invalid customize format for " + xml.substring(0, 50);
-         OSEELog.logException(SkynetGuiPlugin.class, new IllegalStateException(name), false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  new IllegalStateException(name));
          return;
       }
       sortingData.setFromXml(xml);

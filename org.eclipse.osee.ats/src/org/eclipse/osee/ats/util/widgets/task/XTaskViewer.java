@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util.widgets.task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -32,6 +33,7 @@ import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -540,7 +542,7 @@ public class XTaskViewer extends XWidget implements IActionable {
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "Task Exception - " + ex.getLocalizedMessage();
       }
       return html.toString();

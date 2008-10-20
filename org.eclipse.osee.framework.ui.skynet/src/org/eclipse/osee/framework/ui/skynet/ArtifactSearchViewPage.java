@@ -726,7 +726,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                try {
                   partitionsTx.execute();
                } catch (Exception ex) {
-                  OSEELog.logException(getClass(), ex, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
             return null;

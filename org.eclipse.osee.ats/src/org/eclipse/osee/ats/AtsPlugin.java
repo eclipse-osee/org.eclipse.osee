@@ -11,17 +11,18 @@
 
 package org.eclipse.osee.ats;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.ats.util.AtsAdmin;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.database.DatabaseActivator;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
@@ -116,7 +117,7 @@ public class AtsPlugin extends OseeUiActivator {
       try {
          return BranchPersistenceManager.getAtsBranch();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }

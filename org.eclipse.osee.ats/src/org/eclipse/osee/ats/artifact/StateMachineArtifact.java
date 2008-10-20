@@ -86,7 +86,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       try {
          setSoleAttributeValue(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -119,7 +119,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
          else
             preSaveOriginator = smaMgr.getOriginator();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -216,7 +216,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       try {
          updateAssigneeRelations();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -326,7 +326,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
                smaMgr.getWorkPageDefinition()))
             if (toWorkPageDefinition.getPageName().equals(item.getState())) return true;
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return false;
    }
@@ -385,7 +385,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
          try {
             workFlowDefinition = WorkFlowDefinitionFactory.getWorkFlowDefinition(this);
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       return workFlowDefinition;
@@ -500,8 +500,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public String getWorldViewCancelledDateStr() throws OseeCoreException {
       if (smaMgr.isCancelled()) {
          if (getWorldViewCancelledDate() == null) {
-            OSEELog.logSevere(AtsPlugin.class, "Cancelled with no date => " + smaMgr.getSma().getHumanReadableId(),
-                  false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                  "Cancelled with no date => " + smaMgr.getSma().getHumanReadableId());
             return XViewerCells.getCellExceptionString("Cancelled with no date.");
          }
          return new XDate(getWorldViewCancelledDate()).getMMDDYYHHMM();

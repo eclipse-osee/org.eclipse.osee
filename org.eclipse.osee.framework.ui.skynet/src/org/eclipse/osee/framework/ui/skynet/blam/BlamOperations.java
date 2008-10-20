@@ -17,12 +17,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.osgi.framework.Bundle;
 
 /**
@@ -66,7 +67,7 @@ public class BlamOperations {
                BlamOperation task = (BlamOperation) obj;
                blamOperations.add(task);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, "Error loading BlamOperation extension", ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  "Error loading BlamOperation extension", ex);
             }
          }
       }

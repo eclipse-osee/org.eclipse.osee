@@ -11,11 +11,12 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Date;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -56,7 +57,7 @@ public class DeadlineManager {
          if (releaseDate == null) return Result.FalseResult;
          if (releaseDate.after(deadDate)) return new Result(true, "Deadline Date is past current Release Date.");
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return Result.FalseResult;
    }

@@ -215,7 +215,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
             Branch branch = BranchPersistenceManager.getBranch(branchName);
             defaultBranch = branch.getBranchId();
          } catch (Exception ex) {
-            //OSEELog.logException(SkynetGuiPlugin.class, "Unable to set default branch.", ex, false);
+            //OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  "Unable to set default branch.", ex);
          }
       }
    }

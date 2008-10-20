@@ -15,14 +15,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * This provider gets all of its templates from the common branch based on a name created from concatenating the
@@ -54,11 +56,12 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
                   if (value < 0) {
                      templateMap.put(matchCriteria, art);
                   }
-                  OSEELog.logSevere(
-                        ArtifactTemplateProvider.class,
+                  OseeLog.log(
+                        SkynetGuiPlugin.class,
+                        Level.SEVERE,
                         String.format(
                               "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
-                              matchCriteria, templateMap.get(matchCriteria).getDescriptiveName()), false);
+                              matchCriteria, templateMap.get(matchCriteria).getDescriptiveName()));
 
                }
             }

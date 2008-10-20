@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -50,7 +49,7 @@ public class OpenParent extends WorkPageService {
       try {
          return smaMgr.getSma().getParentSMA() != null;
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return false;
    }

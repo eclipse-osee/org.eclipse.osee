@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -21,11 +22,11 @@ import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -95,8 +96,8 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          }
 
          if (guida == null || guidb == null) {
-            OSEELog.logWarning(SkynetActivator.class,
-                  "we failed to add a relation because at least on of the guids is null", false);
+            OseeLog.log(SkynetActivator.class, Level.WARNING, 
+                  "we failed to add a relation because at least on of the guids is null");
          }
          addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5], Integer.parseInt(row[3]),
                Integer.parseInt(row[4])));

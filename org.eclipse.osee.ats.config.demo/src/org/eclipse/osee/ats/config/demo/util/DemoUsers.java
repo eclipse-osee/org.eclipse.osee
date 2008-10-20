@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.config.demo.util;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;

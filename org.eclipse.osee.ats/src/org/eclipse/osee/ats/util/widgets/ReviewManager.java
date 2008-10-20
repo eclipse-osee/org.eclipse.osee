@@ -169,7 +169,7 @@ public class ReviewManager {
       try {
          return UsersByIds.getStorageString(getValidateReviewFollowupUsers());
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
    }

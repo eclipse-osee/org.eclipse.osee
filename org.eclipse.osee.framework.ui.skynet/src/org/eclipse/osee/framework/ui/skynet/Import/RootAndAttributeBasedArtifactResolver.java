@@ -15,12 +15,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact.NameAndVal;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Robert A. Fisher
@@ -109,9 +111,8 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
                realArtifact = candidates.iterator().next();
                roughArtifact.updateValues(realArtifact);
             } else {
-               OSEELog.logInfo(getClass(),
-                     "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName(),
-                     false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+                     "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName());
                if (createNewIfNotExist) {
                   realArtifact = super.resolve(roughArtifact);
                }

@@ -171,12 +171,12 @@ public class AtsBranchManager {
          if (tranSet.size() == 0) {
             return null;
          } else if (tranSet.size() > 1) {
-            OSEELog.logWarning(AtsPlugin.class,
-                  "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId(), false);
+            OseeLog.log(AtsPlugin.class, Level.WARNING, 
+                  "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId());
          }
          return TransactionIdManager.getTransactionId(tranSet.iterator().next());
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          // there may be times where the transaction id cache is not up-to-date yet; don't throw error
       }
       return null;
@@ -286,7 +286,7 @@ public class AtsBranchManager {
                "Create a working branch from parent branch\n\n\"" + parentBranch.getBranchName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) return Result.FalseResult;
          createWorkingBranch(pageId, parentBranch);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return new Result("Exception occurred: " + ex.getLocalizedMessage());
       }
       return Result.TrueResult;

@@ -204,7 +204,7 @@ public class AdminView extends ViewPart implements IActionable {
       try {
          new OseeClientsTab(tabFolder);
       } catch (Exception ex) {
-         OSEELog.logException(AdminPlugin.class, ex, false);
+         OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
       }
       new DbTableTab(tabFolder);
 

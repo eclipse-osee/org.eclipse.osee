@@ -10,11 +10,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 
 /**
@@ -50,9 +51,9 @@ public class NavigateTestUtil {
       String expectedStr =
             "\"" + name + "\"   Expected: " + expectedNumOfType + "   Found: " + actualNumOfType + "   Of Type: " + clazz;
       if (expectedNumOfType != actualNumOfType)
-         OSEELog.logException(AtsPlugin.class, expectedStr, null, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,  expectedStr, null);
       else
-         OSEELog.logInfo(AtsPlugin.class, expectedStr, false);
+         OseeLog.log(AtsPlugin.class, Level.INFO, expectedStr);
       TestCase.assertTrue(expectedStr, actualNumOfType == expectedNumOfType);
    }
 

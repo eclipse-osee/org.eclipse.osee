@@ -7,6 +7,7 @@ package org.eclipse.osee.ats.workflow.item;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
@@ -15,10 +16,10 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
 /**
@@ -46,7 +47,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
          setDecisionParameterValue(this, DecisionParameter.assignees, "<99999997>");
          setDecisionParameterValue(this, DecisionParameter.options, "Completed;Completed;");
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 

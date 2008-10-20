@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.health;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -26,6 +27,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -91,7 +92,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
             runIt(monitor, rd);
             rd.report(getName());
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
@@ -243,7 +244,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                         ((StateMachineArtifact) art).updateAssigneeRelations();
                         art.persistAttributesAndRelations();
                      } catch (OseeCoreException ex) {
-                        OSEELog.logException(AtsPlugin.class, ex, false);
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                      }
                      xResultData.log("Fixed");
                   }
@@ -254,7 +255,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                         ((StateMachineArtifact) art).updateAssigneeRelations();
                         art.persistAttributesAndRelations();
                      } catch (OseeCoreException ex) {
-                        OSEELog.logException(AtsPlugin.class, ex, false);
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                      }
                      xResultData.log("Fixed");
                   }

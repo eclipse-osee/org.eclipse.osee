@@ -14,12 +14,13 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -161,8 +162,8 @@ public class XWidgetParser {
             else if (value.equalsIgnoreCase("Vertically"))
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             else
-               OSEELog.logWarning(SkynetGuiPlugin.class, new IllegalArgumentException(
-                     "Unknown Fill Value \"" + value + "\""), false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,  new IllegalArgumentException(
+                     "Unknown Fill Value \"" + value + "\""));
          } else if (nodeName.equals("height"))
             dynamicXWidgetLayoutData.setHeight(Integer.parseInt(node.getNodeValue()));
          else if (nodeName.equals("align")) {
@@ -174,15 +175,15 @@ public class XWidgetParser {
             else if (value.equalsIgnoreCase("Center"))
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_CENTER);
             else
-               OSEELog.logWarning(SkynetGuiPlugin.class, new IllegalArgumentException(
-                     "Unknown Align Value \"" + value + "\""), false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,  new IllegalArgumentException(
+                     "Unknown Align Value \"" + value + "\""));
          } else if (nodeName.equals("defaultValue"))
             dynamicXWidgetLayoutData.setDefaultValue(node.getNodeValue());
          else if (nodeName.equals("keyedBranch"))
             dynamicXWidgetLayoutData.setKeyedBranchName(node.getNodeValue());
          else {
-            OSEELog.logException(SkynetGuiPlugin.class, new IllegalArgumentException(
-                  "Unsupported XWidget attribute \"" + nodeName + "\""), false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  new IllegalArgumentException(
+                  "Unsupported XWidget attribute \"" + nodeName + "\""));
          }
       }
 

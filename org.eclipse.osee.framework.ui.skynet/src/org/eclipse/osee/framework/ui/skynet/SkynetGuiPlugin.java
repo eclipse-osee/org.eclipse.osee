@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -156,7 +157,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
          // Got pong from another client; If message == this client's sessionId, then it's 
          // the response from this client's ping
          if (message != null && message.equals(ApplicationServer.getOseeSession().getId())) {
-            OSEELog.logInfo(SkynetGuiPlugin.class, "Pong: " + sender.toString(), false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "Pong: " + sender.toString());
          }
       }
    }

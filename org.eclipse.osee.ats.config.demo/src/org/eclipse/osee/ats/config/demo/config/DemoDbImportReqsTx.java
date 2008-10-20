@@ -6,11 +6,12 @@
 package org.eclipse.osee.ats.config.demo.config;
 
 import java.io.File;
-import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig.SawBuilds;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver;
 import org.eclipse.osee.framework.ui.skynet.Import.NewArtifactImportResolver;
 import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineExtractor;
 import org.eclipse.osee.framework.ui.skynet.handler.GeneralWordOutlineHandler;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -46,14 +46,14 @@ public class DemoDbImportReqsTx extends AbstractSkynetTxTemplate {
          importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SUBSYSTEM_REQUIREMENT + "s",
                Requirements.SUBSYSTEM_REQUIREMENT, "support/SAW-SubsystemRequirements.xml");
       } catch (Exception ex) {
-         OSEELog.logException(OseeAtsConfigDemoPlugin.class, ex, false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
       }
    }
 
    private void importRequirements(String buildName, String rootArtifactName, String requirementArtifactName, String filename) throws Exception {
 
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class,
-            "Importing \"" + rootArtifactName + "\" requirements on branch \"" + buildName + "\"", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, 
+            "Importing \"" + rootArtifactName + "\" requirements on branch \"" + buildName + "\"");
       Branch branch = BranchPersistenceManager.getKeyedBranch(buildName);
       Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName("Folder", rootArtifactName, branch);
 

@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -33,6 +34,7 @@ import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -407,12 +409,12 @@ public class TaskXViewer extends WorldXViewer {
                try {
                   ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
                } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, false);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
             }
          });
       } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -423,7 +425,7 @@ public class TaskXViewer extends WorldXViewer {
          // ContentProvider ensures in display thread
          ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
       } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -474,7 +476,7 @@ public class TaskXViewer extends WorldXViewer {
                   }
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, false);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       });

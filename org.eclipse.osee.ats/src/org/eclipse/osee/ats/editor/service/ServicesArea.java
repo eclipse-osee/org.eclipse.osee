@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.editor.service.branch.ShowMergeManagerService;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -152,7 +154,7 @@ public class ServicesArea {
                Action action = service.createToolbarService();
                if (action != null) toolbarManager.add(action);
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, false);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       } catch (Exception ex) {

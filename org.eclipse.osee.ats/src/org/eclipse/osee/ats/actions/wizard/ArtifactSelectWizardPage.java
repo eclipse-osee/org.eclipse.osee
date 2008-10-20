@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions.wizard;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -21,12 +22,12 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -83,7 +84,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
                try {
                   artList.setInput(ArtifactQuery.getArtifactsFromType(desc, BranchPersistenceManager.getAtsBranch()));
                } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, false);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
             }
          });
@@ -134,7 +135,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
             }
          });
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
       setControl(composite);

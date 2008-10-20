@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.hyper;
 
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
@@ -33,7 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Composite;
@@ -187,7 +188,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
             artifact = ((ReviewSMArtifact) artifact).getParentActionArtifact();
          }
       }
-      if (artifact == null) OSEELog.logSevere(AtsPlugin.class, "Unknown parent " + art.getHumanReadableId(), false);
+      if (artifact == null) OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Unknown parent " + art.getHumanReadableId());
       return artifact;
    }
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -20,6 +21,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
@@ -96,7 +98,7 @@ public class EmailWizardPage extends WizardPage {
          names.remove(SkynetAuthentication.getUser(UserEnum.UnAssigned));
          names.remove(SkynetAuthentication.getUser(UserEnum.NoOne));
       } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          names.add(ex.getLocalizedMessage());
       }
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -20,10 +21,10 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -51,7 +52,7 @@ private Button okButton;
       try {
          setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(active));
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
    }
@@ -74,7 +75,7 @@ private Button okButton;
                }
                versionList.setInput(objs);
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, false);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       });

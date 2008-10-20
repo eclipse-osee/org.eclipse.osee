@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.util;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * Convenience method for demo plugin to retrieve configured teams for use mostly in DemoNavigateViewItem.
@@ -46,7 +47,7 @@ public class DemoTeams {
          return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
                team.name().replaceAll("_", " "), AtsPlugin.getAtsBranch());
       } catch (Exception ex) {
-         OSEELog.logException(OseeAtsConfigDemoPlugin.class, ex, false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }

@@ -12,12 +12,14 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.styledText.IDictionary;
 import org.osgi.framework.Bundle;
@@ -88,8 +90,8 @@ public class OseeDictionary implements IDictionary {
          point =
                Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.OseeDictionary");
       } catch (NullPointerException ex) {
-         OSEELog.logSevere(SkynetGuiPlugin.class,
-               "Can't access OseeDictionary extension point" + ex.getLocalizedMessage(), false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, 
+               "Can't access OseeDictionary extension point" + ex.getLocalizedMessage());
          return;
       }
       if (point == null) {

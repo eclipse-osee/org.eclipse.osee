@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.navigate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
@@ -196,8 +198,8 @@ public class NavigateView extends ViewPart implements IActionable {
     * @param item
     */
    public void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
-      OSEELog.logInfo(AtsPlugin.class, "===> Simulating NavigateView Double-Click for \"" + item.getName() + "\"...",
-            false);
+      OseeLog.log(AtsPlugin.class, Level.INFO,
+            "===> Simulating NavigateView Double-Click for \"" + item.getName() + "\"...");
       xNavComp.handleDoubleClick(item, tableLoadOptions);
    }
 
@@ -250,7 +252,7 @@ public class NavigateView extends ViewPart implements IActionable {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logWarning(SkynetGuiPlugin.class, "NavigateView error on init", ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "NavigateView error on init", ex);
       }
    }
 }

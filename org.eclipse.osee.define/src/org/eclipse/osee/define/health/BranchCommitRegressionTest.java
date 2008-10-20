@@ -11,14 +11,15 @@
 
 package org.eclipse.osee.define.health;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -66,7 +67,7 @@ public class BranchCommitRegressionTest extends XNavigateItemAction {
             monitor.done();
             return Status.OK_STATUS;
          } catch (Exception ex) {
-            OSEELog.logException(DefinePlugin.class, ex, false);
+            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
             return new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
       }

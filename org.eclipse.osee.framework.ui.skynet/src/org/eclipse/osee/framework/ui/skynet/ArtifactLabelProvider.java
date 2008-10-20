@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.Image;
 
@@ -68,7 +69,7 @@ public class ArtifactLabelProvider extends LabelProvider {
 
                name += artifactExplorer.getSelectedAttributeData(artifact);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                name += ex.getLocalizedMessage();
             }
          }

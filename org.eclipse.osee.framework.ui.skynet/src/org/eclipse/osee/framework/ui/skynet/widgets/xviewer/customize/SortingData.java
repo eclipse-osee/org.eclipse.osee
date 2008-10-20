@@ -13,11 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 
 /**
@@ -69,10 +70,10 @@ public class SortingData {
          } else {
             // Ignore known removed columns
             if (!CustomizeManager.REMOVED_COLUMNS_TO_IGNORE.contains(id)) {
-               OSEELog.logWarning(
+               OseeLog.log(
                      SkynetGuiPlugin.class,
-                     "XViewer Conversion for saved Customization \"" + custData.getName() + "\" dropped unresolved SORTING column Name/Id: \"" + id + "\".  Delete customization and re-save to resolve.",
-                     false);
+                     Level.WARNING,
+                     "XViewer Conversion for saved Customization \"" + custData.getName() + "\" dropped unresolved SORTING column Name/Id: \"" + id + "\".  Delete customization and re-save to resolve.");
             }
          }
       }

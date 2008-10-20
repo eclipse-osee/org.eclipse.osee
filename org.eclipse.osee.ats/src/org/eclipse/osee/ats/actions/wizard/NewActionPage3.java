@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.actions.wizard;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -135,7 +137,7 @@ public class NewActionPage3 extends WizardPage {
                }
             }
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       setErrorMessage(null);

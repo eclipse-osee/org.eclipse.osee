@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -102,7 +104,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
             break;
          }
       if (!fullRow) {
-         OSEELog.logSevere(AtsPlugin.class, "Empty Row Found => " + rowNum + " skipping...", false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Empty Row Found => " + rowNum + " skipping...");
          return;
       }
 
@@ -110,7 +112,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       ActionData aData = new ActionData();
       for (int i = 0; i < cols.length; i++) {
          if (headerRow[i] == null) {
-            OSEELog.logSevere(AtsPlugin.class, "Null header column => " + i, false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Null header column => " + i);
          } else if (headerRow[i].equalsIgnoreCase(Columns.Title.name())) {
             if (cols[i].equals("")) return;
             aData.title = cols[i];
@@ -158,7 +160,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                   }
                } catch (Exception ex) {
                   rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
-                  OSEELog.logException(AtsPlugin.class, ex, false);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
             }
          }
@@ -169,7 +171,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                }
             } catch (Exception ex) {
                rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
-               OSEELog.logException(AtsPlugin.class, ex, false);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
          // If no assignees, ATS will auto-assign to correct person
@@ -225,7 +227,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       } finally {
          AtsPlugin.setEmailEnabled(true);
       }

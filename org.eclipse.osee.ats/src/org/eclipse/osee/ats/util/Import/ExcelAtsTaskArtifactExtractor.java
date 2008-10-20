@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -28,10 +29,10 @@ import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -95,14 +96,14 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                break;
             }
          if (!fullRow) {
-            OSEELog.logSevere(AtsPlugin.class, "Empty Row Found => " + rowNum + " skipping...", false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Empty Row Found => " + rowNum + " skipping...");
             return;
          }
 
          AtsPlugin.setEmailEnabled(false);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) {
-               OSEELog.logSevere(AtsPlugin.class, "Null header column => " + i, false);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Null header column => " + i);
             } else if (headerRow[i].equalsIgnoreCase("Originator")) {
                String userName = row[i];
                User u = null;
@@ -110,8 +111,8 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   u = SkynetAuthentication.getUser();
                else
                   u = SkynetAuthentication.getUserByName(userName, false);
-               if (u == null) OSEELog.logSevere(AtsPlugin.class, String.format(
-                     "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum), false);
+               if (u == null) OseeLog.log(AtsPlugin.class, Level.SEVERE,  String.format(
+                     "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
                taskArt.getSmaMgr().getLog().setOriginator(u);
             } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
                Set<User> assignees = new HashSet<User>();
@@ -190,7 +191,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   taskArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hours);
                }
             } else {
-               OSEELog.logSevere(AtsPlugin.class, "Unhandled column => " + headerRow[i], false);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Unhandled column => " + headerRow[i]);
             }
          }
          AtsPlugin.setEmailEnabled(true);
@@ -201,7 +202,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
             AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Assigned);
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 

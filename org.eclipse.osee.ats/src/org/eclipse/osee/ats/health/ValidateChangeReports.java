@@ -109,7 +109,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
             runIt(monitor, rd);
             rd.report(getName());
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
@@ -134,7 +134,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                try {
                   String str = String.format("Processing %s/%s  - %s", x++, artifacts.size(), artifact);
-                  OSEELog.logInfo(AtsPlugin.class, str, false);
+                  OseeLog.log(AtsPlugin.class, Level.INFO, str);
                   if (monitor != null) {
                      monitor.subTask(str);
                   }

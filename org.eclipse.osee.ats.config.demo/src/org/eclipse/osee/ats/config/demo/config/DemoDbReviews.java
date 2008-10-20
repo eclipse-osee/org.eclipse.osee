@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.config.demo.config;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewWorkflowManager;
@@ -23,11 +24,11 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -51,7 +52,7 @@ public class DemoDbReviews {
     */
    public static void createDecisionReviews() throws Exception {
 
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Create Decision reviews", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Create Decision reviews");
       TeamWorkFlowArtifact firstTestArt = getSampleReviewTestWorkflows().get(0);
       TeamWorkFlowArtifact secondTestArt = getSampleReviewTestWorkflows().get(1);
 
@@ -106,7 +107,7 @@ public class DemoDbReviews {
     */
    public static void createPeerToPeerReviews() throws Exception {
 
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Create Peer To Peer reviews", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Create Peer To Peer reviews");
       TeamWorkFlowArtifact firstCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(0);
       TeamWorkFlowArtifact secondCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(1);
 

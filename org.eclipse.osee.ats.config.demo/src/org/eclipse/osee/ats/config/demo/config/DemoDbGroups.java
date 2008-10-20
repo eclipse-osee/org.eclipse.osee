@@ -7,16 +7,17 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +29,7 @@ public class DemoDbGroups {
 
       // Create group of all resulting objects
       List<TeamWorkFlowArtifact> codeWorkflows = new ArrayList<TeamWorkFlowArtifact>();
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Create Groups and add objects", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Create Groups and add objects");
       Artifact groupArt = UniversalGroup.addGroup(TEST_GROUP_NAME, AtsPlugin.getAtsBranch());
       for (DemoCodeTeamWorkflowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
 

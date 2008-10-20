@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.config.demo.navigate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
@@ -34,11 +35,11 @@ import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UnReleasedTeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateUrlItem;
 
@@ -62,14 +63,14 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       try {
          if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) return items;
       } catch (Exception ex) {
-         OSEELog.logWarning(OseeAtsConfigDemoPlugin.class, "Demo Teams Not Cofigured", ex, false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.WARNING,  "Demo Teams Not Cofigured", ex);
          return items;
       }
       // If Demo Teams not configured, ignore these navigate items
       try {
          if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) return items;
       } catch (Exception ex) {
-         OSEELog.logWarning(OseeAtsConfigDemoPlugin.class, "Demo Teams Not Cofigured", ex, false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.WARNING,  "Demo Teams Not Cofigured", ex);
          return items;
       }
       XNavigateItem jhuItem = new XNavigateItem(null, "John Hopkins Univ (JHU)");
@@ -106,7 +107,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                new CreateNewVersionItem(teamItems, teamDef);
             }
          } catch (Exception ex) {
-            OSEELog.logException(OseeAtsConfigDemoPlugin.class, ex, false);
+            OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
          }
       }
 

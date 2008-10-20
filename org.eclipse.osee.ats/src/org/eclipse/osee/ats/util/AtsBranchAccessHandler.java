@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * This class handles new branches and setting access control based on ATS workflows and their assignees
@@ -38,7 +37,7 @@ public class AtsBranchAccessHandler implements IBranchEventListener {
    }
 
    private AtsBranchAccessHandler() {
-      OSEELog.logInfo(AtsPlugin.class, "Starting ATS Branch Access Handler", false);
+      OseeLog.log(AtsPlugin.class, Level.INFO,  "Starting ATS Branch Access Handler");
       OseeEventManager.addListener(this);
    }
 

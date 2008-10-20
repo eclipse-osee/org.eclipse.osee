@@ -7,10 +7,11 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.util.DemoUsers;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -18,7 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 public class DemoDbTasks {
 
    public static void createTasks() throws Exception {
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Create tasks off code workflows", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Create tasks off code workflows");
       boolean firstTaskWorkflow = true;
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
          for (String title : getTaskTitles(firstTaskWorkflow)) {

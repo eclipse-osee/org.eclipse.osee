@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCache;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -228,7 +230,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       try {
          return getTeamDefinition().getDescriptiveName();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "Exception: " + ex.getLocalizedMessage() + ". See log for details.";
       }
    }
@@ -289,7 +291,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       if (verArts.size() > 1) {
          String errStr =
                "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
-         OSEELog.logException(AtsPlugin.class, errStr, null, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,  errStr, null);
          return XViewerCells.getCellExceptionString(errStr);
       }
       VersionArtifact verArt = verArts.iterator().next();
@@ -297,7 +299,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false)) {
          String errStr =
                "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
-         OSEELog.logException(AtsPlugin.class, errStr, null, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,  errStr, null);
          return XViewerCells.getCellExceptionString(errStr);
       }
       return verArt.getDescriptiveName();
@@ -322,7 +324,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       try {
          return getTeamDefinition().getManDayHrsFromItemAndChildren();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return StateMachineArtifact.MAN_DAY_HOURS;
    }

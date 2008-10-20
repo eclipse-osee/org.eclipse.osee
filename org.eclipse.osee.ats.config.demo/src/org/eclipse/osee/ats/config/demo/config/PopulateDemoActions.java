@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -52,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -135,14 +135,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
          createNonReqChangeDemoActions();
 
          // Mark all CIS Code "Team Workflows" as Favorites for "Joe Smith"
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Add Favorites", false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Add Favorites");
          for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
                "%Diagram View%", AtsPlugin.getAtsBranch())) {
             new Favorites((StateMachineArtifact) art).toggleFavorite(false);
          }
 
          // Mark all Tools Team "Team Workflows" as Subscribed for "Joe Smith"
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Add Subscribed", false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Add Subscribed");
          for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
                "%Even%", AtsPlugin.getAtsBranch())) {
             new Subscribe((StateMachineArtifact) art).toggleSubscribe(false);
@@ -157,7 +157,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create and transition reviews off sample workflows
          DemoDbReviews.createReviews();
 
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Populate Complete", false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Populate Complete");
 
       }
    }
@@ -170,7 +170,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       @Override
       protected void handleTxWork() throws OseeCoreException {
          try {
-            OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Creating SAW_Bld_2 branch off SAW_Bld_1", false);
+            OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Creating SAW_Bld_2 branch off SAW_Bld_1");
             // Create SAW_Bld_2 branch off SAW_Bld_1
             createChildMainWorkingBranch(SawBuilds.SAW_Bld_1.name(), SawBuilds.SAW_Bld_2.name());
             DemoDbUtil.sleep(5000);
@@ -178,7 +178,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
                   SawBuilds.SAW_Bld_2.name(), SawBuilds.SAW_Bld_2.name());
          } catch (Exception ex) {
-            OSEELog.logException(OseeAtsConfigDemoPlugin.class, ex, false);
+            OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
          }
       }
    }
@@ -193,14 +193,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private void makeAction1ReqChanges(ActionArtifact actionArt) throws Exception {
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Making Action 1 Requirement Changes", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Making Action 1 Requirement Changes");
       TeamWorkFlowArtifact reqTeam = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
          if (team.getTeamDefinition().getDescriptiveName().contains("Req")) reqTeam = team;
       }
 
       if (reqTeam == null) throw new IllegalArgumentException("Can't locate Req team.");
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Creating working branch", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Creating working branch");
       Result result = reqTeam.getSmaMgr().getBranchMgr().createWorkingBranch(null, false);
       if (result.isFalse()) throw new IllegalArgumentException(
             (new StringBuilder("Error creating working branch: ")).append(result.getText()).toString());
@@ -210,8 +210,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.setDefaultBranch(reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot)) {
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class,
-               (new StringBuilder("Modifying artifact => ")).append(art).toString(), false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, 
+               (new StringBuilder("Modifying artifact => ")).append(art).toString());
          art.setSoleAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Navigation.name());
          art.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "A");
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Navigation.name());
@@ -223,8 +223,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Event)) {
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class,
-               (new StringBuilder("Modifying artifact => ")).append(art).toString(), false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, 
+               (new StringBuilder("Modifying artifact => ")).append(art).toString());
          art.setSoleAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Interface.name());
          art.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
@@ -237,8 +237,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       // Delete two artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.daVinci)) {
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class,
-               (new StringBuilder("Deleting artifact => ")).append(art).toString(), false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, 
+               (new StringBuilder("Deleting artifact => ")).append(art).toString());
          art.delete();
       }
 
@@ -246,7 +246,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Artifact parentArt = DemoDbUtil.getInterfaceInitializationSoftwareRequirement();
       for (int x = 1; x < 4; x++) {
          String name = "Robot Interface Init " + x;
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Adding artifact => " + name, false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Adding artifact => " + name);
          Artifact newArt =
                ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
@@ -257,14 +257,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       DemoDbUtil.sleep(2000L);
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Committing branch", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Committing branch");
       result = reqTeam.getSmaMgr().getBranchMgr().commitWorkingBranch(false, true);
       if (result.isFalse()) throw new IllegalArgumentException(
             (new StringBuilder("Error committing working branch: ")).append(result.getText()).toString());
 
       DemoDbUtil.sleep(5000);
 
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Completing Action", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Completing Action");
    }
 
    private void makeAction3ReqChanges(ActionArtifact actionArt) throws Exception {
@@ -274,7 +274,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       if (reqTeam == null) throw new IllegalArgumentException("Can't locate Req team.");
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Creating working branch", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Creating working branch");
       Result result = reqTeam.getSmaMgr().getBranchMgr().createWorkingBranch(null, false);
       if (result.isFalse()) throw new IllegalArgumentException(
             (new StringBuilder("Error creating working branch: ")).append(result.getText()).toString());
@@ -285,8 +285,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       Artifact branchArtifact =
             DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ).iterator().next();
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, (new StringBuilder("Modifying branch artifact => ")).append(
-            branchArtifact).toString(), false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  (new StringBuilder("Modifying branch artifact => ")).append(
+            branchArtifact).toString());
       branchArtifact.setSoleAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Interface.name());
       branchArtifact.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
       branchArtifact.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
@@ -301,8 +301,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       Artifact parentArtifact =
             DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ).iterator().next();
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, (new StringBuilder("Modifying parent artifact => ")).append(
-            parentArtifact).toString(), false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  (new StringBuilder("Modifying parent artifact => ")).append(
+            parentArtifact).toString());
       parentArtifact.setSoleAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Navigation.name());
       parentArtifact.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "E");
       parentArtifact.setSoleAttributeValue(ProgramAttributes.Subsystem.name(),
@@ -318,7 +318,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       if (reqTeam == null) throw new IllegalArgumentException("Can't locate Req team.");
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Creating working branch", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Creating working branch");
       Result result = reqTeam.getSmaMgr().getBranchMgr().createWorkingBranch(null, false);
       if (result.isFalse()) throw new IllegalArgumentException(
             (new StringBuilder("Error creating working branch: ")).append(result.getText()).toString());
@@ -328,8 +328,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.setDefaultBranch(reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Functional)) {
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class,
-               (new StringBuilder("Modifying artifact => ")).append(art).toString(), false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, 
+               (new StringBuilder("Modifying artifact => ")).append(art).toString());
          art.setSoleAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Interface.name());
          art.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
@@ -343,8 +343,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       // Delete one artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.CISST)) {
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class,
-               (new StringBuilder("Deleting artifact => ")).append(art).toString(), false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, 
+               (new StringBuilder("Deleting artifact => ")).append(art).toString());
          art.delete();
       }
 
@@ -352,7 +352,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Artifact parentArt = DemoDbUtil.getInterfaceInitializationSoftwareRequirement();
       for (int x = 15; x < 17; x++) {
          String name = "Claw Interface Init " + x;
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Adding artifact => " + name, false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Adding artifact => " + name);
          Artifact newArt =
                ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
@@ -365,14 +365,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private void createNonReqChangeDemoActions() throws Exception {
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "createNonReqChangeDemoActions - SAW_Bld_3", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "createNonReqChangeDemoActions - SAW_Bld_3");
       createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_3.toString(), null);
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "createNonReqChangeDemoActions - SAW_Bld_2", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "createNonReqChangeDemoActions - SAW_Bld_2");
       createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null);
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "createNonReqChangeDemoActions - SAW_Bld_1", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "createNonReqChangeDemoActions - SAW_Bld_1");
       createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_1.toString(),
             DefaultTeamState.Completed);
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "createNonReqChangeDemoActions - getGenericActionData", false);
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "createNonReqChangeDemoActions - getGenericActionData");
       createActions(DemoDbActionData.getGenericActionData(), null, null);
    }
 
@@ -380,7 +380,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {
-         OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Creating " + currNum++ + "/" + actionDatas.size(), false);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Creating " + currNum++ + "/" + actionDatas.size());
          int x = 0;
          for (String prefixTitle : aData.prefixTitles) {
             ActionArtifact actionArt =

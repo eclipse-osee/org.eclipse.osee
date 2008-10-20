@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
@@ -22,12 +23,12 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
@@ -46,8 +47,8 @@ public class AtsNotifyUsers {
 
    public static void notify(StateMachineArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
       if (testing) {
-         OSEELog.logSevere(SkynetGuiPlugin.class, "AtsNotifyUsers: testing is enabled....turn off for production.",
-               false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+               "AtsNotifyUsers: testing is enabled....turn off for production.");
       }
       if (!testing && (!AtsPlugin.isEmailEnabled() || !AtsPlugin.isProductionDb() || sma.getDescriptiveName().startsWith(
             "tt "))) {
@@ -118,7 +119,7 @@ public class AtsNotifyUsers {
             return "HRID: " + sma.getHumanReadableId() + " / LegacyId: " + legacyPcrId;
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return "HRID: " + sma.getHumanReadableId();
    }

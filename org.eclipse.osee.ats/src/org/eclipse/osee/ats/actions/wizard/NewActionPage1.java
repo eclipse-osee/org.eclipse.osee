@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.actions.wizard;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
@@ -93,7 +95,7 @@ public class NewActionPage1 extends WizardPage {
          try {
             treeViewer.getViewer().setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Active));
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
          treeViewer.getViewer().setSorter(new ArtifactNameSorter());
          treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {

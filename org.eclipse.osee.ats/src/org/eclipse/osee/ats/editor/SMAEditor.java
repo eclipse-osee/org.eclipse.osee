@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -144,7 +146,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       try {
          OseeNotificationManager.sendNotifications();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -646,13 +648,13 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                      refreshPages();
                      onDirtied();
                   } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, false);
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                   }
                }
             });
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -729,7 +731,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             });
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -743,7 +745,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             onDirtied();
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

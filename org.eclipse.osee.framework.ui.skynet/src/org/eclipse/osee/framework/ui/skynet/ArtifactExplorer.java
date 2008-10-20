@@ -1205,7 +1205,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
           * below get the default hierarchy root artifact
           */
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
       try {
@@ -1470,7 +1470,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                treeViewer.update(transData.getArtifactsInRelations(ChangeType.Changed,
                      CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType()), null);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
             try {
                Set<Artifact> parents = new HashSet<Artifact>();
@@ -1482,7 +1482,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                }
                treeViewer.refresh(parents);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -1519,7 +1519,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             });
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -1589,7 +1589,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                   explore(candidateRoot);
                   updateEnablementsEtAl();
                } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          });
@@ -1613,7 +1613,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                      }
                   }
                } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          });
@@ -1648,7 +1648,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             });
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

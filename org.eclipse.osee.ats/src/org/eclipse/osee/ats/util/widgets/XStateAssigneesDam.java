@@ -14,13 +14,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 
 /**
@@ -48,7 +49,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
          }
          if (create) return new SMAState(stateName);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Error parsing state data for " + sma.getHumanReadableId(), ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Error parsing state data for " + sma.getHumanReadableId(), ex);
       }
       return null;
    }
@@ -86,7 +87,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
             states.add(state);
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Error parsing state data for " + sma.getHumanReadableId(), ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Error parsing state data for " + sma.getHumanReadableId(), ex);
       }
       return states;
    }
@@ -106,7 +107,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
          // Else, doesn't exist yet, create
          sma.addAttribute(attributeTypeName, state.toXml());
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Error setting state data for " + sma.getHumanReadableId(), ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Error setting state data for " + sma.getHumanReadableId(), ex);
       }
    }
 }

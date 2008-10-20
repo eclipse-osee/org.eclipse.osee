@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
@@ -26,13 +27,13 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.text.FindResults;
 import org.eclipse.osee.framework.jdk.core.text.tool.Find;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class ExtractTestRelations {
    private String scriptsDir;
@@ -122,7 +123,7 @@ public class ExtractTestRelations {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName(Requirements.TEST_SCRIPT, testArtifactFile.getName(), branch);
       } catch (MultipleArtifactsExist ex) {
-         OSEELog.logException(DefinePlugin.class, ex, false);
+         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
          return null;
       } catch (ArtifactDoesNotExist ex) {
          Artifact testArtifact =

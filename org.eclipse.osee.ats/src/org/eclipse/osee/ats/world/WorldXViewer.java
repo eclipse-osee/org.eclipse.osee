@@ -122,7 +122,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          // ContentProvider ensures in display thread
          ((WorldContentProvider) getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
       } catch (OseeCoreException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -133,7 +133,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          // ContentProvider ensures in display thread
          ((WorldContentProvider) getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
       } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -630,7 +630,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             else if (obj instanceof ActionArtifact) smaArts.addAll(((ActionArtifact) obj).getTeamWorkFlowArtifacts());
          }
       } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return smaArts;
    }

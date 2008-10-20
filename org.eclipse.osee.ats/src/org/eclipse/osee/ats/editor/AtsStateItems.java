@@ -12,12 +12,14 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.osgi.framework.Bundle;
 
@@ -63,8 +65,8 @@ public class AtsStateItems {
                      Class taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
                      if (obj == null) {
-                        OSEELog.logException(AtsPlugin.class,
-                              "Error Instantiating AtsStateItem extension \"" + classname + "\"", null, false);
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE, 
+                              "Error Instantiating AtsStateItem extension \"" + classname + "\"", null);
                      } else {
                         stateItems.add((IAtsStateItem) obj);
                      }

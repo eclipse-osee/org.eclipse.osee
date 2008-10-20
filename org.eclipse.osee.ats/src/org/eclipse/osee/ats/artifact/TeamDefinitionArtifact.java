@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCache;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -39,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
@@ -247,10 +248,10 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       for (Artifact artifact : teamDef.getRelatedArtifacts(AtsRelation.WorkItem__Child, Artifact.class)) {
          if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
             if (workFlowArt != null) {
-               OSEELog.logException(
+               OseeLog.log(
                      AtsPlugin.class,
-                     "Multiple workflows found where only one expected for Team Definition " + getHumanReadableId() + " - " + getDescriptiveName(),
-                     null, false);
+                     Level.SEVERE,
+                     "Multiple workflows found where only one expected for Team Definition " + getHumanReadableId() + " - " + getDescriptiveName());
             }
             workFlowArt = artifact;
          }
@@ -311,7 +312,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          if (teamDef.getParent() != null && (teamDef.getParent() instanceof TeamDefinitionArtifact)) return teamDef.getManDayHrsFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
          return StateMachineArtifact.MAN_DAY_HOURS;
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return 0.0;
    }

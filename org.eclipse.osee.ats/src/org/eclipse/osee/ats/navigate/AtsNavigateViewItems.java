@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -63,6 +64,7 @@ import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
@@ -308,7 +310,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
                   nameToNavItem.put(navItem.getName(), navItem);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, "Error loading AtsNavigateItem extension", ex, false);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Error loading AtsNavigateItem extension", ex);
             }
          }
       }

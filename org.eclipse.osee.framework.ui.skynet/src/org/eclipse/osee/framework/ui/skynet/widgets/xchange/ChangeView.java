@@ -12,6 +12,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,6 +21,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -204,7 +206,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
             }
          }
       } catch (Exception ex) {
-         OSEELog.logWarning(SkynetGuiPlugin.class, "Change report error on init", ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,  "Change report error on init", ex);
       }
    }
 

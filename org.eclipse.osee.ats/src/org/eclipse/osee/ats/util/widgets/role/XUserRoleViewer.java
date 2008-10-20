@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util.widgets.role;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -319,7 +321,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
          extraInfoLabel.setText("");
          return Result.TrueResult;
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return new Result("Exception validating roles. See log for details. " + ex.getLocalizedMessage());
       }
    }
@@ -350,7 +352,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return "User Role Item Exception - " + ex.getLocalizedMessage();
       }
       return html.toString();

@@ -286,14 +286,14 @@ public class SMAWorkFlowSection extends SectionPart {
                try {
                   item.widgetModified(fSection, xWidget);
                } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, false);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
             }
             updateTransitionToState();
             updateTransitionToAssignees();
             smaMgr.getEditor().onDirtied();
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
    };
@@ -447,7 +447,7 @@ public class SMAWorkFlowSection extends SectionPart {
             try {
                updateTransitionToAssignees();
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, false);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -622,7 +622,7 @@ public class SMAWorkFlowSection extends SectionPart {
                      return;
                   }
                } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, false);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
             }
 
