@@ -71,6 +71,7 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.Cha
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -1001,6 +1002,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    }
 
    public void explore(Artifact artifact) throws CoreException, IllegalArgumentException {
+      Object objects[] = treeViewer.getExpandedElements();
       if (artifact == null) {
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }
@@ -1011,7 +1013,8 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          treeViewer.setInput(exploreRoot);
          setupPopupMenu();
          updateEnablementsEtAl();
-
+         // Attempt to re-expand what was expanded
+         treeViewer.setExpandedElements(objects);
       }
    }
 
@@ -1400,6 +1403,13 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
+      try {
+         if (!loadedArtifacts.getLoadedArtifactsBranch().equals(BranchPersistenceManager.getDefaultBranch())) {
+            return;
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -1413,6 +1423,13 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
    @Override
    public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
+      try {
+         if (!loadedArtifacts.getLoadedArtifactsBranch().equals(BranchPersistenceManager.getDefaultBranch())) {
+            return;
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -1439,6 +1456,9 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
+      if (transData.branchId != BranchPersistenceManager.getDefaultBranch().getBranchId()) {
+         return;
+      }
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -1484,7 +1504,14 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                public void run() {
                   try {
                      // Since this is always a local event, artifact will always be in cache
-                     treeViewer.refresh(link.getArtifactA());
+                     Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
+                     if (aArtifact != null) {
+                        treeViewer.refresh(aArtifact);
+                     }
+                     Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
+                     if (bArtifact != null) {
+                        treeViewer.refresh(bArtifact);
+                     }
                   } catch (Exception ex) {
                      // do nothing
                   }
@@ -1501,6 +1528,13 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
     */
    @Override
    public void handleArtifactModifiedEvent(Sender sender, final ArtifactModType artifactModType, final Artifact artifact) {
+      try {
+         if (!artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch())) {
+            return;
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -1508,14 +1542,18 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          @Override
          public void run() {
             try {
-               if (artifactModType == ArtifactModType.Deleted)
+               if (artifactModType == ArtifactModType.Deleted) {
                   treeViewer.remove(artifact);
-               else if (artifactModType == ArtifactModType.Added) {
-                  if (artifact.getParent() != null) treeViewer.refresh(artifact.getParent());
+               } else if (artifactModType == ArtifactModType.Added) {
+                  if (artifact.getParent() != null) {
+                     treeViewer.refresh(artifact.getParent());
+                  }
                } else if (artifactModType == ArtifactModType.Changed) {
                   treeViewer.update(artifact, null);
                } else if (artifactModType == ArtifactModType.Reverted) {
-                  if (artifact.getParent() != null) treeViewer.refresh(artifact.getParent());
+                  if (artifact.getParent() != null) {
+                     treeViewer.refresh(artifact.getParent());
+                  }
                }
             } catch (Exception ex) {
                // do nothing
@@ -1595,6 +1633,9 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    @Override
    public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
       try {
+         if (!loadedArtifacts.getLoadedArtifactsBranch().equals(BranchPersistenceManager.getDefaultBranch())) {
+            return;
+         }
          if (accessControlEventType == AccessControlEventType.UserAuthenticated || accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)
