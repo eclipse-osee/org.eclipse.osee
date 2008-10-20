@@ -6,13 +6,14 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.xml.sax.SAXException;
 
 /**
@@ -66,7 +67,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
       try {
          return (DynamicXWidgetLayoutData) widgetLayoutData.clone();
       } catch (CloneNotSupportedException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }

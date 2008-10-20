@@ -11,8 +11,9 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -24,7 +25,7 @@ public class XViewerCells {
    }
 
    public static String getCellExceptionString(Exception ex) {
-      OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       return CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
    }
 

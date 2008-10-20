@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
-import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

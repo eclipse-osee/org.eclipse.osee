@@ -12,11 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -74,7 +76,7 @@ public class ParentBranchAction extends Action {
       try {
          if (PlatformUI.isWorkbenchRunning() && BranchView.getBranchView() != null) BranchView.getBranchView().forcePopulateView();
       } catch (OseeDataStoreException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return branch;
    }

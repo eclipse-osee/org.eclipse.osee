@@ -195,4 +195,16 @@ public abstract class Renderer implements IRenderer {
    public String getOption(String key) {
       return options.get(key);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getBooleanOption(java.lang.String)
+    */
+   @Override
+   public boolean getBooleanOption(String key) {
+      String value = getOption(key);
+      if (value == null) {
+         return false;
+      }
+      return Boolean.parseBoolean(value);
+   }
 }

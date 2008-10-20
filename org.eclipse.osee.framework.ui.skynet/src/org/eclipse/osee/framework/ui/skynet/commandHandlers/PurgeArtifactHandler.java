@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -86,7 +86,7 @@ public class PurgeArtifactHandler extends AbstractHandler {
                   purgeTx.execute();
                   toReturn = Status.OK_STATUS;
                } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
                } finally {
                   monitor.done();

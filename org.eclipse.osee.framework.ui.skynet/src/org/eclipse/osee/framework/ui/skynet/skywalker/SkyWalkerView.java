@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -22,6 +23,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -31,7 +33,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ImageCapture;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
@@ -142,12 +143,12 @@ public class SkyWalkerView extends ViewPart {
       try {
          if (storedGuid != null) {
             Artifact art =
-                  ArtifactQuery.getArtifactFromId(storedGuid, BranchPersistenceManager.getBranch(
-                        Integer.parseInt(storedBrandId)));
+                  ArtifactQuery.getArtifactFromId(storedGuid,
+                        BranchPersistenceManager.getBranch(Integer.parseInt(storedBrandId)));
             if (art != null) explore(art);
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -353,7 +354,7 @@ public class SkyWalkerView extends ViewPart {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logWarning(getClass(), "Sky Walker error on init: " + ex.getLocalizedMessage(), false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Sky Walker error on init: " + ex.getLocalizedMessage());
       }
    }
 

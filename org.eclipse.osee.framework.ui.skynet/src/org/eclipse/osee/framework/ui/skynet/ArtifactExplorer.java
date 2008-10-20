@@ -1404,11 +1404,11 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
       try {
-         if (!loadedArtifacts.getLoadedArtifactsBranch().equals(BranchPersistenceManager.getDefaultBranch())) {
+         if (loadedArtifacts.isNotForDefaultBranch()) {
             return;
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
@@ -1424,11 +1424,11 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    @Override
    public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
       try {
-         if (!loadedArtifacts.getLoadedArtifactsBranch().equals(BranchPersistenceManager.getDefaultBranch())) {
+         if (loadedArtifacts.isNotForDefaultBranch()) {
             return;
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
@@ -1633,7 +1633,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    @Override
    public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
       try {
-         if (!loadedArtifacts.getLoadedArtifactsBranch().equals(BranchPersistenceManager.getDefaultBranch())) {
+         if (loadedArtifacts.isNotForDefaultBranch()) {
             return;
          }
          if (accessControlEventType == AccessControlEventType.UserAuthenticated || accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {

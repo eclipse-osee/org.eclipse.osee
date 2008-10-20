@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
@@ -73,11 +72,12 @@ public class LoadedArtifacts {
       return new LoadedArtifacts((Artifact) null);
    }
 
-   public Branch getLoadedArtifactsBranch() throws OseeCoreException {
-      if (getLoadedArtifacts().size() > 0) {
-         return getLoadedArtifacts().iterator().next().getBranch();
+   public boolean isNotForDefaultBranch() throws OseeCoreException {
+      Collection<Artifact> loadedArtifacts = getLoadedArtifacts();
+      if (loadedArtifacts.size() > 0) {
+         return !getLoadedArtifacts().iterator().next().getBranch().equals(BranchPersistenceManager.getDefaultBranch());
       }
-      return null;
+      return false;
    }
 
    @Override

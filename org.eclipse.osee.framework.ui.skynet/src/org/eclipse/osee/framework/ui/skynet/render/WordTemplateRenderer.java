@@ -385,19 +385,12 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
 
       template = WordUtil.removeGUIDFromTemplate(template);
-      setsetSaveParagraphNumOnArtifact();
+      templateProcessor.setSaveParagraphNumOnArtifact(getBooleanOption(UPDATE_PARAGRAPH_NUMBER_OPTION));
       return templateProcessor.applyTemplate(artifacts, template, null, presentationType);
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       return TemplateManager.getTemplate(this, artifact, presentationType.name(), getOption(TEMPLATE_OPTION)).getSoleAttributeValue(
             WordAttribute.WHOLE_WORD_CONTENT);
-   }
-
-   private void setsetSaveParagraphNumOnArtifact() {
-      String updateNums = getOption(UPDATE_PARAGRAPH_NUMBER_OPTION);
-      if (updateNums != null) {
-         templateProcessor.setSaveParagraphNumOnArtifact(Boolean.parseBoolean(updateNums));
-      }
    }
 }

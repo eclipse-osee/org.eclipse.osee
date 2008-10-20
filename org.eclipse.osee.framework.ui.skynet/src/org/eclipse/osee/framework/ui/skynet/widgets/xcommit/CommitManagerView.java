@@ -11,10 +11,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xcommit;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -160,7 +162,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
             }
          }
       } catch (Exception ex) {
-         OSEELog.logWarning(SkynetActivator.class, "Commit Manager error on init: " + ex.getLocalizedMessage(), false);
+         OseeLog.log(SkynetActivator.class, Level.WARNING,  "Commit Manager error on init: " + ex.getLocalizedMessage());
       }
    }
 
@@ -177,7 +179,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
          memento.putInteger("artId", branchArtifact.getArtifact().getArtId());
          memento.putInteger("branchId", branchArtifact.getArtifact().getBranch().getBranchId());
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

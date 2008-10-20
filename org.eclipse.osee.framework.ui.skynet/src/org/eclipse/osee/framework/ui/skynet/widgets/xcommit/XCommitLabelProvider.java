@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xcommit;
 
-import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
@@ -45,7 +45,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          try {
             return getCommitStatusImage(branch);
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       return null;

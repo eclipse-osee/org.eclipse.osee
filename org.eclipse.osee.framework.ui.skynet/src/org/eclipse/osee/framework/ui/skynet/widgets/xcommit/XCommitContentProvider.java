@@ -11,11 +11,12 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xcommit;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class XCommitContentProvider implements ITreeContentProvider {
 
@@ -39,7 +40,7 @@ public class XCommitContentProvider implements ITreeContentProvider {
          try {
             return ((Branch) parentElement).getChildBranches().toArray();
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       return EMPTY_ARRAY;

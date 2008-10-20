@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;

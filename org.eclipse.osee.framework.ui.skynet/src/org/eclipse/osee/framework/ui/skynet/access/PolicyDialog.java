@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.access;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -80,7 +80,7 @@ public class PolicyDialog extends Dialog {
       try {
          setInputs();
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       addListeners();
       checkEnabled();

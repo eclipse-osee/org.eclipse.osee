@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,6 +22,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -146,7 +148,7 @@ public class XMergeViewer extends XWidget implements IActionable {
             openAssociatedArtifactItem.setImage(branchAssociatedArtifact.getImage());
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

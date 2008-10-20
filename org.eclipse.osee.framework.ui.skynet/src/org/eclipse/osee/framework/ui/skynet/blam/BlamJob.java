@@ -10,21 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Ryan D. Brooks
@@ -71,7 +71,7 @@ public class BlamJob extends Job {
 
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       } finally {
          monitor.done();

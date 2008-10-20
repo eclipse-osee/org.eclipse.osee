@@ -11,16 +11,17 @@
 package org.eclipse.osee.framework.ui.skynet.history;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
@@ -46,7 +47,7 @@ public class RevisionHistoryContentProvider implements ITreeContentProvider, Art
                return transactions.toArray();
             }
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       } else if (parentElement instanceof TransactionData) {
          TransactionData parentItem = (TransactionData) parentElement;
@@ -55,7 +56,7 @@ public class RevisionHistoryContentProvider implements ITreeContentProvider, Art
          try {
             changes = RevisionManager.getInstance().getTransactionChanges(parentItem);
          } catch (OseeCoreException ex) {
-            OSEELog.logException(getClass(), ex, false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          if (changes != null) {
             return changes.toArray();

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;

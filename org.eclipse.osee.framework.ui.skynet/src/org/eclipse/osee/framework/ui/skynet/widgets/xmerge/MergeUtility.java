@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,6 +24,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -147,7 +149,7 @@ public class MergeUtility {
          return ArtifactPersistenceManager.getInstance().getArtifact(conflict.getArtifact().getGuid(), id);
 
       } catch (Exception ex) {
-         OSEELog.logException(MergeUtility.class, ex, false);
+         OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -177,7 +179,7 @@ public class MergeUtility {
                ((ArtifactConflict) conflict).revertSourceArtifact();
                return true;
             } catch (Exception ex) {
-               OSEELog.logException(MergeUtility.class, ex, false);
+               OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
             }
          }
       }
@@ -197,7 +199,7 @@ public class MergeUtility {
                ((AttributeConflict) conflict).revertSourceAttribute();
                return true;
             } catch (Exception ex) {
-               OSEELog.logException(MergeUtility.class, ex, false);
+               OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
             }
          }
       }

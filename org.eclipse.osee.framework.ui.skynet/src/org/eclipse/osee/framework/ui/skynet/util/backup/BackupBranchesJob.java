@@ -12,15 +12,16 @@ package org.eclipse.osee.framework.ui.skynet.util.backup;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.io.Zip;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.EmailableJob;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
@@ -65,7 +66,7 @@ public class BackupBranchesJob extends EmailableJob {
          monitor.done();
          return Status.OK_STATUS;
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, "Failed", ex);
       }
    }
@@ -92,7 +93,7 @@ public class BackupBranchesJob extends EmailableJob {
                //               try {
                //                  job.join();
                //               } catch (InterruptedException ex) {
-               //                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               //                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                //                  rd.logError(ex.getLocalizedMessage());
                //               }
             }
@@ -106,7 +107,7 @@ public class BackupBranchesJob extends EmailableJob {
          rd.report(getName());
 
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          rd.logError(ex.getLocalizedMessage());
       }
 

@@ -15,7 +15,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -94,9 +96,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                for (Artifact artifact : artifacts) {
                   if (!AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact,
                         PermissionEnum.READ)) {
-                     OSEELog.logInfo(SkynetGuiPlugin.class,
-                           "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact,
-                           false);
+                     OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+                           "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact);
                      accessControlFilteredResults = true;
                   } else
                      accessibleArts.add(artifact);
@@ -200,7 +201,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
          try {
             if (taskArt != null && !taskArt.isDeleted() && taskArt.isDirty()) taskArt.reloadAttributesAndRelations();
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
    }
 
@@ -354,7 +355,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                      return;
                   }
                } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          });

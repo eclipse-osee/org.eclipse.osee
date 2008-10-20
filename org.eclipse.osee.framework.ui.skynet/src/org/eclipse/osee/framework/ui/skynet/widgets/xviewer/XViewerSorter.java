@@ -15,10 +15,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 
 /**
@@ -67,7 +68,7 @@ public class XViewerSorter extends ViewerSorter {
 
          return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return 0;
    }
@@ -157,7 +158,7 @@ public class XViewerSorter extends ViewerSorter {
          try {
             date1Date = SimpleDateFormat.getInstance().parse(date1);
          } catch (ParseException ex2) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex2, false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  ex2);
             return 0;
          }
       }
@@ -168,7 +169,7 @@ public class XViewerSorter extends ViewerSorter {
          try {
             date2Date = SimpleDateFormat.getInstance().parse(date2);
          } catch (ParseException ex2) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex2, false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  ex2);
             return 0;
          }
       }

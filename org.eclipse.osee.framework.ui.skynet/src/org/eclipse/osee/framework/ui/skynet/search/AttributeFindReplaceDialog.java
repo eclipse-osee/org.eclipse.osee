@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;

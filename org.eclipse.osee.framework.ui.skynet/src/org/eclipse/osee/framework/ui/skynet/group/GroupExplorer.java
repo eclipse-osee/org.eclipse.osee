@@ -354,7 +354,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
       try {
          topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       if (topArt == null) {
          rootArt = null;

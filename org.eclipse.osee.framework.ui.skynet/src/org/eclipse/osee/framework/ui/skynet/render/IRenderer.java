@@ -69,5 +69,7 @@ public interface IRenderer {
 
    public abstract String getOption(String key);
 
+   public abstract boolean getBooleanOption(String key);
+
    public abstract IRenderer newInstance() throws OseeCoreException;
 }

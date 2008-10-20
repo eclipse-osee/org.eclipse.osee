@@ -13,10 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -99,7 +101,7 @@ public class XWidgetFactory {
          try {
             xWidget = new XMembersList(name);
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       } else if (xWidgetName.equals("XMembersCombo"))
          xWidget = new XMembersCombo(name);

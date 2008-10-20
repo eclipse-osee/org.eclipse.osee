@@ -13,8 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -371,7 +373,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       try {
          return id + " - " + name + (parentId != null ? " - Parent: " + parentId : "") + getPageNames().toString();
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return id + " - " + name;
       }
    }

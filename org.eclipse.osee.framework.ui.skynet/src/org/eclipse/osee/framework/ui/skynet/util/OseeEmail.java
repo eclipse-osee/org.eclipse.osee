@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.logging.Level;
 import javax.activation.CommandMap;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -35,6 +36,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.StringDataSource;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -90,7 +92,7 @@ public class OseeEmail extends MimeMessage {
             throw new IllegalArgumentException("Unhandled body type " + bodyType);
 
       } catch (MessagingException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -314,7 +316,7 @@ public class OseeEmail extends MimeMessage {
          setContent(mainMessage);
          Transport.send(this);
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       } finally {
          Thread.currentThread().setContextClassLoader(original);
       }

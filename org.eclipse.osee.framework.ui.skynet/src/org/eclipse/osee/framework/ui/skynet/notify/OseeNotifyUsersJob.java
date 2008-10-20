@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.notify;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import javax.mail.MessagingException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
@@ -45,8 +46,8 @@ public class OseeNotifyUsersJob extends Job {
       super("Notifying Users");
       this.notificationEvents = notificationEvents;
       if (testing) {
-         OSEELog.logSevere(SkynetGuiPlugin.class, "OseeNotifyUsersJob: testing is enabled....turn off for production.",
-               false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+               "OseeNotifyUsersJob: testing is enabled....turn off for production.");
       }
    }
 

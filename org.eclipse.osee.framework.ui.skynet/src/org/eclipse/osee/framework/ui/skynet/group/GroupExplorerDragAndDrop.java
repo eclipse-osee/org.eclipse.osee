@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.group;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;

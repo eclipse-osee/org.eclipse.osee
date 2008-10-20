@@ -470,7 +470,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                }
                return false;
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
             return false;
          }
@@ -1665,7 +1665,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                try {
                   forcePopulateView();
                } catch (OseeDataStoreException ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          });

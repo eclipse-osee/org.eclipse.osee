@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -83,7 +85,7 @@ public class XMultiXWidget extends XWidget {
       try {
          image = SkynetGuiPlugin.getInstance() != null ? SkynetGuiPlugin.getInstance().getImage("undo.gif") : null;
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       if (image != null)
          undoLabel.setImage(image);

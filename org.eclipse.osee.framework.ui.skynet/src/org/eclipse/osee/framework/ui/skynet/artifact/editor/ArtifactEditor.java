@@ -777,7 +777,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             onDirtied();
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

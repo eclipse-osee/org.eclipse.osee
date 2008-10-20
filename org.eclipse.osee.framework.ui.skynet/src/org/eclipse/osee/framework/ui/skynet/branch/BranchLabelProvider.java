@@ -16,13 +16,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
 import org.eclipse.swt.graphics.Color;
@@ -104,7 +103,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
 
-      }else if (element instanceof TransactionData && columnIndex == 0) {
+      } else if (element instanceof TransactionData && columnIndex == 0) {
          return SkynetGuiPlugin.getInstance().getImage("transaction.gif");
 
       } else if (element instanceof RelationLinkChange && columnIndex == 2) {
@@ -228,14 +227,14 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
                            return txt + attributeText;
                         }
                      } catch (Exception ex) {
-                        OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                         return txt + ex.getLocalizedMessage();
                      }
                   }
                }
                return txt;
             } catch (Exception ex) {
-               OSEELog.logException(getClass(), ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                return ex.getLocalizedMessage();
             }
          }

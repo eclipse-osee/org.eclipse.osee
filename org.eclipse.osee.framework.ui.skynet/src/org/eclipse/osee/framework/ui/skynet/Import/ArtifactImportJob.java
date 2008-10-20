@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;

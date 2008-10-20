@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton.ButtonType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -40,7 +41,7 @@ public class XRadioButtonTest extends Composite {
                System.out.println("isSelected *" + rb.isSelected() + "*");
                System.out.println("toXml *" + rb.toXml() + "*");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          };
       });
@@ -61,7 +62,7 @@ public class XRadioButtonTest extends Composite {
                System.out.println("isSelected *" + rb2.isSelected() + "*");
                System.out.println("toXml *" + rb2.toXml() + "*");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          };
       });
@@ -84,7 +85,7 @@ public class XRadioButtonTest extends Composite {
                System.out.println("isSelected *" + rb3.isSelected() + "*");
                System.out.println("toXml *" + rb3.toXml() + "*");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          };
       });
@@ -107,7 +108,7 @@ public class XRadioButtonTest extends Composite {
                System.out.println("isSelected *" + rb4.getXmlData() + "*");
                System.out.println("toXml *" + rb4.toXml() + "*");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          };
       });
@@ -127,7 +128,7 @@ public class XRadioButtonTest extends Composite {
                System.out.println("isSelected *" + rb4.getXmlData() + "*");
                System.out.println("toXml *" + rb4.toXml() + "*");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          };
       });
@@ -151,7 +152,7 @@ public class XRadioButtonTest extends Composite {
                System.out.println("isSelected *" + rb5.getXmlData() + "*");
                System.out.println("toXml *" + rb5.toXml() + "*");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          };
       });
@@ -171,7 +172,7 @@ public class XRadioButtonTest extends Composite {
                System.out.println("isSelected *" + rb5.getXmlData() + "*");
                System.out.println("toXml *" + rb5.toXml() + "*");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          };
       });
@@ -193,7 +194,7 @@ public class XRadioButtonTest extends Composite {
                System.out.println("selected *" + rb6.getXmlData() + "*");
                System.out.println("toXml *" + rb6.toXml() + "*");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          };
       });

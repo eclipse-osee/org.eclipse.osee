@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.menu;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +25,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -137,7 +137,7 @@ public class GlobalMenu {
                      }
                   }
                } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
                ArtifactPersistenceManager.deleteArtifact(artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]));
                try {
@@ -145,7 +145,7 @@ public class GlobalMenu {
                      listener.actioned(GlobalMenuItem.DeleteArtifacts, artifactsToBeDeleted);
                   }
                } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          } catch (Exception ex) {
@@ -178,7 +178,7 @@ public class GlobalMenu {
                         }
                      }
                   } catch (Exception ex) {
-                     OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
                   monitor.beginTask("Purge artifact", artifactsToBePurged.size());
                   final IProgressMonitor fMonitor = monitor;
@@ -215,7 +215,7 @@ public class GlobalMenu {
                         listener.actioned(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
                      }
                   } catch (Exception ex) {
-                     OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
 
                   return toReturn;

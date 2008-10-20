@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

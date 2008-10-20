@@ -15,8 +15,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -59,8 +61,8 @@ public class SkynetXViewerFactory extends XViewerFactory {
             return xViewerCustomizations;
          }
       } catch (IllegalStateException ex) {
-         OSEELog.logException(SkynetXViewerFactory.class,
-               "Failed to retrieve XViewer customizations from the persistence layer.", ex, false);
+         OseeLog.log(SkynetXViewerFactory.class, Level.SEVERE, 
+               "Failed to retrieve XViewer customizations from the persistence layer.", ex);
       }
       return new XViewerCustomizations();
    }
@@ -69,7 +71,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       try {
          registerColumn(getAllAttributeColumns().toArray(new XViewerColumn[AttributeTypeManager.getTypes().size()]));
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -80,7 +82,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
             registerColumn(xCol);
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

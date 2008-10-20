@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.menu;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;

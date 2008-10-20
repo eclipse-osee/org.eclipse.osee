@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

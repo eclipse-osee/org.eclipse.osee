@@ -13,11 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -71,14 +73,13 @@ public class SkynetUserArtifactCustomizeDefaults {
          try {
             xml = user.getSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE);
             if (xml == null) {
-               OSEELog.logException(SkynetGuiPlugin.class, "Invalid null for XViewerDefaults for user " + user, null,
-                     false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Invalid null for XViewerDefaults for user " + user);
                xml = "";
             }
          } catch (AttributeDoesNotExist ex) {
             xml = "";
          } catch (OseeCoreException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             xml = "";
          }
       }
