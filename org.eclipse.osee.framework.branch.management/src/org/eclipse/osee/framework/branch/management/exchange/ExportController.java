@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
@@ -101,6 +102,13 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          joinQuery.add(branchId, -1);
       }
       joinQuery.store(connection);
+
+      long maxTx = ConnectionHandler.runPreparedQueryFetchLong(connection, -1, BranchExportTaskConfig.GET_MAX_TX);
+      long userMaxTx = BranchExportTaskConfig.getMaxTransaction(options);
+      if (userMaxTx == Long.MIN_VALUE || userMaxTx > maxTx) {
+         options.put(ExportOptions.MAX_TXS.name(), Long.toString(maxTx));
+      }
+
       for (AbstractExportItem exportItem : taskList) {
          exportItem.setOptions(options);
          exportItem.setWriteLocation(tempFolder);
