@@ -79,7 +79,7 @@ public class OracleSqlManager extends SqlManager {
    public void dropTable(Connection connection, TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
-            "\\."));
+            "\\.") + " cascade constraints purge");
       OseeLog.log(DatabaseActivator.class, Level.INFO,
             "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(connection, toExecute.toString());
