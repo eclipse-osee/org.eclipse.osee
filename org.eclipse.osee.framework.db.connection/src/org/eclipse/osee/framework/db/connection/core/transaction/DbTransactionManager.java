@@ -49,18 +49,7 @@ public final class DbTransactionManager extends KeyedLevelManager {
          priorCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
          transactionNeedsRollback = false;
-         String dbName = connection.getMetaData().getDatabaseProductName();
-         dbName = dbName.toLowerCase();
-         if (dbName.contains("mysql") || dbName.contains("derby")) {
-            OseeLog.log(
-                  Activator.class,
-                  Level.WARNING,
-                  String.format(
-                        "We are doing a naughty thing in DbTransactionManager line:66.  We skip defering constraint checking because we're using %s, " + "and we're checking the metaData to see if we are using %s.",
-                        dbName, dbName));
-         } else {
-            DbTransaction.deferConstraintChecking(connection);
-         }
+         DbTransaction.deferConstraintChecking(connection);
       } catch (SQLException ex) {
          requestRollback();
          throw new OseeDataStoreException(ex);
