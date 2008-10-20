@@ -124,4 +124,23 @@ public class GroupExplorerItem {
       return parentItem;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof GroupExplorerItem) {
+         return artifact.getGuid().equals(((GroupExplorerItem) obj).getArtifact().getGuid()) && (getParentItem() != null ? getParentItem().equals(
+               ((GroupExplorerItem) obj).getParentItem()) : true);
+      }
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      return artifact.getGuid().hashCode() + (getParentItem() != null ? getParentItem().getArtifact().getGuid().hashCode() : 0);
+   }
 }

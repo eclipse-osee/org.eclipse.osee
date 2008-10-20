@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.group;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -64,7 +65,8 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    private TreeViewer treeViewer;
    private Artifact rootArt;
    private GroupExplorerItem rootItem;
-   private static GroupExplorerItem selected;
+   private Collection<GroupExplorerItem> selected;
+   private Object[] expanded = new Object[] {};
 
    public GroupExplorer() {
    }
@@ -156,7 +158,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
 
       MenuItem item = new MenuItem(previewMenu, SWT.PUSH);
       item.setText("&Remove from Group");
-      item.setEnabled(isOnlyArtifactsSelected());
+      item.setEnabled(isOnlyGroupItemsSelected());
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -220,16 +222,13 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    }
 
    private void handleRemoveFromGroup() {
-      final List<GroupExplorerItem> items = getSelectedUniversalGroupItems();
+      final List<GroupExplorerItem> items = getSelectedItems();
       if (items.size() == 0) {
          AWorkbench.popup("ERROR", "No Items Selected");
          return;
       }
-      String names = "";
-      for (GroupExplorerItem item : items)
-         if (item.isUniversalGroup()) names += String.format("%s\n", item.getArtifact().getDescriptiveName());
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove From Group",
-            "Remove From Group - (Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
+            "Remove From Group - (Artifacts will not be deleted)\n\nAre you sure?")) {
          AbstractSkynetTxTemplate unrelateTx =
                new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
                   @Override
@@ -280,16 +279,19 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
       }
    }
 
-   public void storeSelection() {
+   public void storeExpandedAndSelection() {
       // Store selected so can re-select after event re-draw
-      selected = getSelectedItem();
+      selected = getSelectedItems();
+      if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
+         expanded = treeViewer.getExpandedElements();
+      }
    }
 
-   public void restoreSelection() {
-      if (selected != null && rootItem != null) {
-         GroupExplorerItem selItem = rootItem.getItem(selected.getArtifact());
-         ArrayList<GroupExplorerItem> selected = new ArrayList<GroupExplorerItem>();
-         selected.add(selItem);
+   public void restoreExpandedAndSelection() {
+      if (expanded != null && expanded.length > 0 && rootArt != null) {
+         treeViewer.setExpandedElements(expanded);
+      }
+      if (selected != null && selected.size() > 0 && rootArt != null) {
          treeViewer.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
       }
    }
@@ -301,7 +303,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
       return null;
    }
 
-   private ArrayList<GroupExplorerItem> getSelectedUniversalGroupItems() {
+   private ArrayList<GroupExplorerItem> getSelectedItems() {
       ArrayList<GroupExplorerItem> arts = new ArrayList<GroupExplorerItem>();
       Iterator<?> i = ((IStructuredSelection) treeViewer.getSelection()).iterator();
       while (i.hasNext()) {
@@ -313,17 +315,29 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
       return arts;
    }
 
+   private ArrayList<GroupExplorerItem> getSelectedUniversalGroupItems() {
+      ArrayList<GroupExplorerItem> arts = new ArrayList<GroupExplorerItem>();
+      Iterator<?> i = ((IStructuredSelection) treeViewer.getSelection()).iterator();
+      while (i.hasNext()) {
+         Object obj = i.next();
+         if (obj instanceof GroupExplorerItem && ((GroupExplorerItem) obj).isUniversalGroup()) {
+            arts.add((GroupExplorerItem) obj);
+         }
+      }
+      return arts;
+   }
+
    private boolean isOnlyGroupsSelected() {
-      if (getSelectedUniversalGroupItems().size() == 0) return false;
-      for (GroupExplorerItem item : getSelectedUniversalGroupItems()) {
+      if (getSelectedItems().size() == 0) return false;
+      for (GroupExplorerItem item : getSelectedItems()) {
          if (!item.isUniversalGroup()) return false;
       }
       return true;
    }
 
-   private boolean isOnlyArtifactsSelected() {
-      if (getSelectedUniversalGroupItems().size() == 0) return false;
-      for (GroupExplorerItem item : getSelectedUniversalGroupItems()) {
+   private boolean isOnlyGroupItemsSelected() {
+      if (getSelectedItems().size() == 0) return false;
+      for (GroupExplorerItem item : getSelectedItems()) {
          if (item.isUniversalGroup()) return false;
       }
       return true;
@@ -367,7 +381,6 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
 
       if (treeViewer != null) treeViewer.setInput(rootItem);
 
-      restoreSelection();
    }
 
    /*
@@ -395,6 +408,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
             @Override
             public void run() {
                refresh();
+               restoreExpandedAndSelection();
             }
          });
       }
@@ -420,8 +434,9 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {
-                  storeSelection();
+                  storeExpandedAndSelection();
                   refresh();
+                  restoreExpandedAndSelection();
                }
             });
             return;

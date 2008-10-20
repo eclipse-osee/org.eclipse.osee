@@ -58,7 +58,8 @@ public class UniversalGroup {
             throw new IllegalStateException("Could not create top universal group artifact.");
          }
       }
-      groupRoot.relate(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, groupArt, true);
+      groupRoot.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, groupArt);
+      groupRoot.persistAttributesAndRelations();
       return groupArt;
    }
 
