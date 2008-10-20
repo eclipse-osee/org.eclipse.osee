@@ -1009,11 +1009,12 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       exploreRoot = artifact;
 
       if (treeViewer != null) {
+         Object objects[] = treeViewer.getExpandedElements();
          treeViewer.setInput(exploreRoot);
          setupPopupMenu();
          updateEnablementsEtAl();
          // Attempt to re-expand what was expanded
-         treeViewer.setExpandedElements(treeViewer.getExpandedElements());
+         treeViewer.setExpandedElements(objects);
       }
    }
 
