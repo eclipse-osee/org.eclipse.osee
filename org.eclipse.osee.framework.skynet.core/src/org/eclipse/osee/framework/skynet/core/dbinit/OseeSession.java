@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 public class OseeSession implements Serializable {
 
    private static final long serialVersionUID = 1L;
-   private String id = GUID.generateGuidStr() + "=" + OseeCodeVersion.getInstance().get();
+   private String id = GUID.generateGuidStr() + " Version: " + OseeCodeVersion.getInstance().get();
    private String machineName;
    private String userId;
    private String machineIp;

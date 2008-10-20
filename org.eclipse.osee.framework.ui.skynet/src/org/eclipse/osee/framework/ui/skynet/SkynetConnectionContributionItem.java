@@ -10,13 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.IDbConnectionListener;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData;
+import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
@@ -44,6 +47,17 @@ public class SkynetConnectionContributionItem extends SkynetContributionItem imp
    private void init() {
       updateStatus(ConnectionHandler.isOpen());
       ConnectionHandler.addListener(this);
+      setActionHandler(new Action() {
+         /*
+          * (non-Javadoc)
+          * 
+          * @see org.eclipse.jface.action.Action#run()
+          */
+         @Override
+         public void run() {
+            (new HtmlDialog("OSEE Session", "", ApplicationServer.getOseeSession().toString())).open();
+         }
+      });
    }
 
    public static void addTo(IStatusLineManager manager) {
