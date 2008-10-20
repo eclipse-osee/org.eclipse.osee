@@ -1002,7 +1002,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    }
 
    public void explore(Artifact artifact) throws CoreException, IllegalArgumentException {
-      Object objects[] = treeViewer.getExpandedElements();
       if (artifact == null) {
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }
@@ -1014,7 +1013,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          setupPopupMenu();
          updateEnablementsEtAl();
          // Attempt to re-expand what was expanded
-         treeViewer.setExpandedElements(objects);
+         treeViewer.setExpandedElements(treeViewer.getExpandedElements());
       }
    }
 
