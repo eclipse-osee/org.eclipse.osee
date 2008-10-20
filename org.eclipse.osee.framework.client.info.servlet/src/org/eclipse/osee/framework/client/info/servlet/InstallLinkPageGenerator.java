@@ -80,13 +80,17 @@ public class InstallLinkPageGenerator {
          }
          builder.append("var v = new ActiveXObject(\"Shell.Application\");\n");
          builder.append(String.format("v.ShellExecute(\"%s\",\"\",\"%s\", \"open\", 10);\n", execName, execPath));
+         builder.append("window.opener=\"self\";\n");
+         builder.append("window.close();\n");
+         builder.append("}\n");
       } else {
          // INVALID LINK PAGE
          builder.append(String.format(
                "var ex=\"No valid link found. Contact your OSEE administrator. Key was: [%s]\";", info.getName()));
          builder.append("document.getElementById('xmsg').innerHTML=ex;");
+         builder.append("}\n");
       }
-      builder.append("}\n</script>\n");
+      builder.append("</script>\n");
       return builder.toString();
    }
 
