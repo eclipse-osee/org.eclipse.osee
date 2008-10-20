@@ -236,8 +236,9 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " In Work without assignees");
             }
             if (art instanceof StateMachineArtifact) {
-               List<Artifact> assigned = art.getRelatedArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
-               if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && assigned.size() > 0) {
+               List<Artifact> relationAssigned =
+                     art.getRelatedArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
+               if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && relationAssigned.size() > 0) {
                   xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with related assignees");
                   if (fixAssignees) {
                      try {
@@ -248,16 +249,19 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                      }
                      xResultData.log("Fixed");
                   }
-               } else if (smaMgr.getStateMgr().getAssignees().size() != assigned.size()) {
-                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " attribute assignees doesn't match related assignees");
-                  if (fixAssignees) {
-                     try {
-                        ((StateMachineArtifact) art).updateAssigneeRelations();
-                        art.persistAttributesAndRelations();
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
+                  // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
+                  if (!smaMgr.getStateMgr().getAssignees().contains(SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " attribute assignees doesn't match related assignees");
+                     if (fixAssignees) {
+                        try {
+                           ((StateMachineArtifact) art).updateAssigneeRelations();
+                           art.persistAttributesAndRelations();
+                        } catch (OseeCoreException ex) {
+                           OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                        }
+                        xResultData.log("Fixed");
                      }
-                     xResultData.log("Fixed");
                   }
                }
             }
