@@ -197,7 +197,7 @@ final class ImportController {
 
          currentSavePoint = "stop";
          addSavePoint(currentSavePoint);
-      } catch (Exception ex) {
+      } catch (Throwable ex) {
          reportError(currentSavePoint, ex);
          OseeLog.log(this.getClass(), Level.SEVERE, ex);
       } finally {
