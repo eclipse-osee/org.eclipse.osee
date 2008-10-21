@@ -141,7 +141,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
          @Override
          public void run() {
-            MultipleHridSearchItem srch = new MultipleHridSearchItem();
+            MultipleHridSearchItem srch = new MultipleHridSearchItem("Open Change Report by Id");
             try {
                Collection<Artifact> artifacts = srch.performSearchGetResults(true);
                final Set<Artifact> addedArts = new HashSet<Artifact>();

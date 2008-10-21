@@ -40,8 +40,12 @@ public class MultipleHridSearchItem extends WorldSearchItem {
    private String enteredIds = "";
    Pattern numberPattern = Pattern.compile("^[0-9]+$");
 
+   public MultipleHridSearchItem(String name) {
+      super(name);
+   }
+
    public MultipleHridSearchItem() {
-      super("Search by ID(s)");
+      this("Search by ID(s)");
    }
 
    @Override
