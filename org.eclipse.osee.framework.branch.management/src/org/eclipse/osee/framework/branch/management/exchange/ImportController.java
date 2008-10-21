@@ -92,7 +92,7 @@ final class ImportController {
       try {
          connection = OseeDbConnection.getConnection();
          if (SupportedDatabase.getDatabaseType(connection).equals(SupportedDatabase.oracle)) {
-            throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
+              throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
          }
       } finally {
          if (connection != null) {
@@ -130,13 +130,22 @@ final class ImportController {
    }
 
    private void cleanup() throws Exception {
-      ExchangeUtil.cleanUpTempExchangeFile(importSource, wasZipExtractionRequired);
-      translator = null;
-      manifestHandler = null;
-      metadataHandler = null;
-      wasZipExtractionRequired = false;
-      importSource = null;
-      savePoints.clear();
+      try {
+         CommitImportSavePointsTx saveImportState = new CommitImportSavePointsTx();
+         saveImportState.execute();
+      } catch (Exception ex) {
+         OseeLog.log(this.getClass(), Level.WARNING,
+               "Error during save point save - you will not be able to reimport from last source again.");
+         throw ex;
+      } finally {
+         ExchangeUtil.cleanUpTempExchangeFile(importSource, wasZipExtractionRequired);
+         translator = null;
+         manifestHandler = null;
+         metadataHandler = null;
+         wasZipExtractionRequired = false;
+         importSource = null;
+         savePoints.clear();
+      }
    }
 
    public void execute() throws Exception {
@@ -164,12 +173,7 @@ final class ImportController {
          reportError(currentSavePoint, ex);
          OseeLog.log(this.getClass(), Level.SEVERE, ex);
       } finally {
-         try {
-            CommitImportSavePointsTx saveImportState = new CommitImportSavePointsTx();
-            saveImportState.execute();
-         } finally {
-            cleanup();
-         }
+         cleanup();
       }
    }
 
@@ -329,6 +333,7 @@ final class ImportController {
             ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_SOURCES, importIdIndex,
                   sourceDatabaseId, exportDate, importDate);
 
+            DbTransaction.deferConstraintChecking(connection);
             translator.store(connection, importIdIndex);
 
             List<Object[]> data = new ArrayList<Object[]>();
