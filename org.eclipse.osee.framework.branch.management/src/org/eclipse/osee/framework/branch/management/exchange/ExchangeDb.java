@@ -47,7 +47,7 @@ public class ExchangeDb {
    private static final String[] BRANCH_ID_REG_ALIASES = new String[] {"mapped_branch_id"};
 
    private static final String[] ARTIFACT_ID_NEG_ONE_ALIASES =
-         new String[] {"associated_art_id", "a_order", "b_order", "author"};
+         new String[] {"commit_art_id", "associated_art_id", "a_order", "b_order", "author"};
 
    private static final String[] ARTIFACT_ID_REG_ALIASES = new String[] {"a_art_id", "b_art_id"};
 
