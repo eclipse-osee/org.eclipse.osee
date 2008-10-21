@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.SWT;
@@ -158,21 +157,13 @@ public class NavigateView extends ViewPart implements IActionable {
                   AWorkbench.popup("ERROR", "No committed or working branches for entered id.");
                   return;
                }
-               Artifact selectedArt = null;
-               if (addedArts.size() == 1) {
-                  selectedArt = addedArts.iterator().next();
-               } else {
-                  ArtifactListDialog artifactListDialog =
-                        new ArtifactListDialog(Display.getCurrent().getActiveShell(), addedArts);
-                  artifactListDialog.setTitle("Open Change Report");
-                  artifactListDialog.setMessage("Select workflow to open change report.");
-                  if (artifactListDialog.open() == 0) {
-                     selectedArt = artifactListDialog.getSelection();
-                  } else {
-                     return;
+               if (addedArts.size() < 3 || MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+                     "Open Change Reports",
+                     "Opening " + addedArts.size() + " Change Reports?\n\n(may want to run this off-hours)")) {
+                  for (Artifact art : addedArts) {
+                     ((StateMachineArtifact) art).getSmaMgr().getBranchMgr().showChangeReport();
                   }
                }
-               ((StateMachineArtifact) selectedArt).getSmaMgr().getBranchMgr().showChangeReport();
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
