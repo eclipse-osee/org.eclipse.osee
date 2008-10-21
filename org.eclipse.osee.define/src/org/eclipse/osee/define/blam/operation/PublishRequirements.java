@@ -12,9 +12,13 @@ package org.eclipse.osee.define.blam.operation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -35,7 +39,11 @@ public class PublishRequirements extends AbstractBlam {
       String updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers").toString();
 
       for (Artifact artifact : variableMap.getArtifacts("artifacts")) {
-         publish(monitor, artifact, updateParagraphNumber);
+         try {
+            publish(monitor, artifact, updateParagraphNumber);
+         } catch (OseeStateException ex) {
+            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+         }
       }
    }
 

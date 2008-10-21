@@ -5,6 +5,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.InputStream;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.swt.program.Program;
@@ -36,6 +37,9 @@ public abstract class WordRenderer extends FileRenderer {
     */
    @Override
    public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
+      if (wordApp == null) {
+         throw new OseeStateException("No program associated with the extension .doc");
+      }
       return wordApp;
    }
 
