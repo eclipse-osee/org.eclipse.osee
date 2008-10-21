@@ -720,22 +720,16 @@ public class RelationManager {
     * @param b
     * @throws ArtifactDoesNotExist
     */
-   static void setOrderValuesBasedOnCurrentMemoryOrder(RelationLink relationLink, boolean markAsNotDirty) throws ArtifactDoesNotExist {
-      Artifact aArt =
-            ArtifactCache.getActive(relationLink.getArtifactId(RelationSide.SIDE_A),
-                  relationLink.getBranch(RelationSide.SIDE_A));
+   static void setOrderValuesBasedOnCurrentMemoryOrder(RelationLink relationLink, Artifact aArt, Artifact bArt, boolean markAsNotDirty) throws ArtifactDoesNotExist {
       if (aArt != null) {
          setOrderValues(aArt, relationLink.getRelationType(), RelationSide.SIDE_B, markAsNotDirty);
       }
-      Artifact bArt =
-            ArtifactCache.getActive(relationLink.getArtifactId(RelationSide.SIDE_B),
-                  relationLink.getBranch(RelationSide.SIDE_B));
       if (bArt != null) {
          setOrderValues(bArt, relationLink.getRelationType(), RelationSide.SIDE_A, markAsNotDirty);
       }
    }
 
-   private static void setOrderValues(Artifact sourceArtifact, RelationType relationType, RelationSide side, boolean markAsNotDirty) {
+   static void setOrderValues(Artifact sourceArtifact, RelationType relationType, RelationSide side, boolean markAsNotDirty) {
       if (relationType.isOrdered()) {
          List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, relationType);
          if (selectedRelations == null) {

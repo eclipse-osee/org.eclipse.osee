@@ -469,7 +469,8 @@ public class BranchCreator {
             branchWithTransactionNumber =
                   createMergeBranchWithBaselineTransactionNumber(connection, SkynetAuthentication.getUser(),
                         TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
-                        "Merge " + sourceBranch.getDisplayName(), "Merge " + sourceBranch.getDisplayName(),
+                        "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortestName(),
+                        "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortestName(),
                         BranchType.MERGE, destBranch);
          } else {
             TransactionId startTransactionId = TransactionIdManager.getStartEndPoint(mergeBranch).getKey();

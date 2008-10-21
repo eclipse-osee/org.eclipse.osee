@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
@@ -720,13 +721,13 @@ public class AccessControlManager {
    /**
     * Removes all locks from a branch
     */
-   public void removeAllPermissionsFromBranch(final Branch branch) throws OseeCoreException {
+   public void removeAllPermissionsFromBranch(final OseeConnection connection, final Branch branch) throws OseeCoreException {
       try {
          AbstractDbTxTemplate dbTxWrapper = new AbstractDbTxTemplate() {
             @Override
             protected void handleTxWork() throws OseeCoreException {
-               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getBranchId());
-               ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branch.getBranchId());
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getBranchId());
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_BRANCH_ACL_FROM_BRANCH, branch.getBranchId());
             }
 
          };

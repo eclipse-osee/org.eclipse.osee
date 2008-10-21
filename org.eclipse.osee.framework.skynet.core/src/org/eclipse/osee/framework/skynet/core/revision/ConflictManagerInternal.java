@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.revision;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -39,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * @author Theron Virgin
@@ -55,7 +58,19 @@ public class ConflictManagerInternal {
          "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type, atr3.gamma_id AS begin_gamma FROM osee_txs txs1, osee_txs txs2, osee_txs txs3, osee_tx_details txd1, osee_tx_details txd2, osee_attribute atr1, osee_attribute atr2, osee_attribute atr3 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ? AND txs3.transaction_id = ?  AND txs3.gamma_id = atr3.gamma_id and atr3.attr_id = atr1.attr_id";
 
    private static final String HISTORICAL_ATTRIBUTE_CONFLICTS =
-         "SELECT atr.attr_id, atr.art_id, source_gamma_id, dest_gamma_id, attr_type_id, mer.merge_branch_id, mer.dest_branch_id, value as source_value FROM osee_conflict con, osee_merge mer, osee_attribute atr Where mer.transaction_id = ? AND mer.merge_branch_id = con.branch_id And con.source_gamma_id = atr.gamma_id AND con.status = " + Conflict.Status.COMMITTED.getValue() + " order by attr_id";
+         "SELECT atr.attr_id, atr.art_id, source_gamma_id, dest_gamma_id, attr_type_id, mer.merge_branch_id, mer.dest_branch_id, value as source_value, status FROM osee_conflict con, osee_merge mer, osee_attribute atr Where mer.transaction_id = ? AND mer.merge_branch_id = con.branch_id And con.source_gamma_id = atr.gamma_id AND con.status in (" + Conflict.Status.COMMITTED.getValue() + ", " + Conflict.Status.INFORMATIONAL.getValue() + " ) order by attr_id";
+
+   private static final String CONFLICT_CLEANUP =
+         "DELETE FROM osee_conflict WHERE branch_id = ? AND conflict_id NOT IN ";
+
+   private static final String GET_DESTINATION_BRANCHES =
+         "SELECT dest_branch_id FROM osee_merge WHERE source_branch_id = ?";
+
+   private static final String GET_MERGE_DATA =
+         "SELECT transaction_id, merge_branch_id FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ?";
+
+   private static final String GET_COMMIT_TRANSACTION_COMMENT =
+         "SELECT transaction_id FROM osee_tx_details WHERE osee_comment = ? AND branch_id = ?";
 
    private static ConflictManagerInternal instance = new ConflictManagerInternal();
 
@@ -74,7 +89,8 @@ public class ConflictManagerInternal {
       long time = System.currentTimeMillis();
       long totalTime = time;
       if (DEBUG) {
-         System.out.println(String.format("\nDiscovering Conflicts based on Transaction ID: %d", commitTransaction));
+         System.out.println(String.format("\nDiscovering Conflicts based on Transaction ID: %d",
+               commitTransaction.getTransactionNumber()));
          totalTime = System.currentTimeMillis();
       }
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
@@ -83,6 +99,7 @@ public class ConflictManagerInternal {
          System.out.println("Running Query to find conflicts stored in the DataBase");
          time = System.currentTimeMillis();
       }
+      int mergeBranchId = 0;
       try {
          chStmt =
                ConnectionHandler.runPreparedQuery(HISTORICAL_ATTRIBUTE_CONFLICTS,
@@ -99,7 +116,8 @@ public class ConflictManagerInternal {
                         BranchPersistenceManager.getBranch(chStmt.getInt("dest_branch_id")));
             conflicts.add(attributeConflict);
 
-            attributeConflict.computeStatus();
+            attributeConflict.setStatus(Conflict.Status.getStatus(chStmt.getInt("status")));
+            mergeBranchId = chStmt.getInt("merge_branch_id");
 
          }
       } finally {
@@ -112,6 +130,15 @@ public class ConflictManagerInternal {
    }
 
    public List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction) throws OseeCoreException {
+      //Check to see if the branch has already been committed than use the transaction version
+      int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
+      if (commitTransactionId != 0) {
+         try {
+            return getConflictsPerBranch(TransactionIdManager.getTransactionId(commitTransactionId));
+         } catch (TransactionDoesNotExist ex) {
+         }
+      }
+
       long totalTime = 0;
       if (DEBUG) {
          System.out.println(String.format("\nDiscovering Conflicts based on Source Branch: %d Destination Branch: %d",
@@ -160,6 +187,7 @@ public class ConflictManagerInternal {
       if (DEBUG) {
          debugDump(conflicts, totalTime);
       }
+      cleanUpConflictDB(conflicts, mergeBranch.getBranchId());
       return conflicts;
    }
 
@@ -359,6 +387,94 @@ public class ConflictManagerInternal {
                conflict.getArtId(), conflict.getChangeItem(), conflict.getSourceGamma(), conflict.getDestGamma(),
                conflict.getStatus()));
       }
+   }
+
+   private void cleanUpConflictDB(Collection<Conflict> conflicts, int branchId) throws OseeCoreException {
+      int count = 0;
+      long time = System.currentTimeMillis();
+      if (conflicts != null && conflicts.size() != 0 && branchId != 0) {
+         count = ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP + createData(conflicts), branchId);
+      }
+      if (DEBUG) {
+         System.out.println(String.format("       Cleaned up %d conflicts that are no longer conflicting in %s ",
+               count, Lib.getElapseString(time)));
+      }
+   }
+
+   private String createData(Collection<Conflict> conflicts) throws OseeCoreException {
+      StringBuilder builder = new StringBuilder();
+      builder.append("(");
+      boolean first = true;
+      for (Conflict conflict : conflicts) {
+         if (!first) {
+            builder.append(" , ");
+         } else {
+            first = false;
+         }
+         builder.append(conflict.getObjectId());
+      }
+      builder.append(")");
+      return builder.toString();
+   }
+
+   public Collection<Integer> getDestinationBranchesMerged(int sourceBranchId) throws OseeCoreException {
+      List<Integer> destinationBranches = new LinkedList<Integer>();
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranchId);
+         while (chStmt.next()) {
+            destinationBranches.add(chStmt.getInt("dest_branch_id"));
+         }
+      } finally {
+         ConnectionHandler.close(chStmt);
+      }
+      Collections.sort(destinationBranches);
+      return destinationBranches;
+   }
+
+   public int getCommitTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+      int transactionId = 0;
+      ConnectionHandlerStatement chStmt = null;
+      if (sourceBranch != null && destBranch != null) {
+         try {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getBranchId(),
+                        destBranch.getBranchId());
+            if (chStmt.next()) {
+               transactionId = chStmt.getInt("transaction_id");
+            }
+         } finally {
+            ConnectionHandler.close(chStmt);
+         }
+         if (transactionId == 0) {
+            try {
+               chStmt =
+                     ConnectionHandler.runPreparedQuery(GET_COMMIT_TRANSACTION_COMMENT,
+                           BranchPersistenceManager.COMMIT_COMMENT + sourceBranch.getBranchName(),
+                           destBranch.getBranchId());
+               if (chStmt.next()) {
+                  transactionId = chStmt.getInt("transaction_id");
+               }
+            } finally {
+               ConnectionHandler.close(chStmt);
+            }
+         }
+      }
+      return transactionId;
+   }
+
+   public int getMergeBranchId(int sourceBranchId, int destBranchId) throws OseeCoreException {
+      int mergeBranchId = 0;
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(GET_MERGE_DATA, sourceBranchId, destBranchId);
+         if (chStmt.next()) {
+            mergeBranchId = chStmt.getInt("merge_branch_id");
+         }
+      } finally {
+         ConnectionHandler.close(chStmt);
+      }
+      return mergeBranchId;
    }
 
 }

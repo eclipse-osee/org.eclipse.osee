@@ -16,6 +16,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -54,7 +56,7 @@ public class AttributeConflict extends Conflict {
    private Attribute<?> sourceAttribute = null;
    private Attribute<?> destAttribute = null;
    private AttributeType dynamicAttributeDescriptor;
-   private final boolean isWordAttribute;
+   private boolean isWordAttribute;
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
@@ -73,21 +75,22 @@ public class AttributeConflict extends Conflict {
     * @param image
     * @param attrId
     * @param attrTypeId
+    * @throws OseeCoreException
     */
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = Status.EDITED;
-      isWordAttribute = sourceValue == null;
+      this.isWordAttribute = getAttribute() instanceof WordAttribute;
    }
 
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId commitTransaction, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch destBranch) {
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId commitTransaction, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, commitTransaction, mergeBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = Status.EDITED;
-      isWordAttribute = sourceValue == null;
+      this.isWordAttribute = getAttribute() instanceof WordAttribute;
    }
 
    public Attribute<?> getAttribute() throws OseeCoreException {
@@ -136,6 +139,21 @@ public class AttributeConflict extends Conflict {
                "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + destBranch.getBranchId());
       }
       return destAttribute;
+   }
+
+   private Attribute<?> getAttribute(Artifact artifact) throws OseeCoreException {
+      Attribute<?> attribute = null;
+      Collection<Attribute<Object>> localAttributes = artifact.getAttributes(getDynamicAttributeDescriptor().getName());
+      for (Attribute<Object> localAttribute : localAttributes) {
+         if (localAttribute.getAttrId() == attrId) {
+            attribute = localAttribute;
+         }
+      }
+      if (attribute == null) {
+         throw new AttributeDoesNotExist(
+               "Attribute " + attrId + " could not be found on Artifact " + artifact.getArtId() + " on Branch " + artifact.getBranch().getBranchId());
+      }
+      return attribute;
    }
 
    /**
@@ -377,6 +395,10 @@ public class AttributeConflict extends Conflict {
       return super.computeStatus(attrId, passedStatus);
    }
 
+   public int getObjectId() throws OseeCoreException {
+      return attrId;
+   }
+
    @Override
    public String getMergeDisplayData() throws OseeCoreException {
       if ((statusUntouched() && !(sourceEqualsDestination() && mergeEqualsSource())) || statusNotResolvable() || statusInformational()) {
@@ -414,7 +436,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public boolean wordMarkupPresent() throws OseeCoreException {
-      if (isWordAttribute() && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
+      if (isWordAttribute && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
          return true;
       }
       return false;
@@ -427,4 +449,24 @@ public class AttributeConflict extends Conflict {
       ArtifactPersistenceManager.getInstance().revertAttribute(getSourceAttribute());
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#applyPreviousMerge(int)
+    */
+   @Override
+   public boolean applyPreviousMerge(int mergeBranchId) throws OseeCoreException {
+      if (DEBUG) {
+         System.out.println("Apply the merge using the merge branch value " + mergeBranchId);
+      }
+      Artifact artifact;
+      try {
+         artifact =
+               ArtifactQuery.getArtifactFromId(getArtifact().getArtId(),
+                     BranchPersistenceManager.getBranch(mergeBranchId));
+      } catch (ArtifactDoesNotExist ex) {
+         return false;
+      }
+      setAttributeValue(getAttribute(artifact).getValue());
+      setStatus(Status.OUT_OF_DATE);
+      return true;
+   }
 }

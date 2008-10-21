@@ -106,10 +106,14 @@ public class ArtifactConflict extends Conflict {
     */
    public Status computeStatus() throws OseeCoreException {
       if (!sourceDeleted)
-         return super.computeStatus(getArtifact().getArtId(), Status.NOT_RESOLVABLE);
+         return super.computeStatus(getObjectId(), Status.NOT_RESOLVABLE);
       else
-         return super.computeStatus(getArtifact().getArtId(), Status.INFORMATIONAL);
+         return super.computeStatus(getObjectId(), Status.INFORMATIONAL);
 
+   }
+
+   public int getObjectId() throws OseeCoreException {
+      return getArtifact().getArtId();
    }
 
    /* (non-Javadoc)
@@ -221,6 +225,14 @@ public class ArtifactConflict extends Conflict {
 
    public int getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException("Artifact Conflicts can not be handled they must be reverted on the Source Branch");
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#applyPreviousMerge(int)
+    */
+   @Override
+   public boolean applyPreviousMerge(int mergeBranchId) throws OseeCoreException {
+      return false;
    }
 
 }

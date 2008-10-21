@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
@@ -79,6 +80,8 @@ public class BranchPersistenceManager {
    //This hash is keyed in the source branch id and destination branch id
    private final DoubleKeyHashMap<Integer, Integer, Branch> mergeBranchCache =
          new DoubleKeyHashMap<Integer, Integer, Branch>();
+
+   public static final String COMMIT_COMMENT = "Commit Branch ";
 
    private static final boolean MERGE_DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
@@ -154,14 +157,6 @@ public class BranchPersistenceManager {
                boolean isArchived = chStmt.getInt("archived") == 1;
 
                Branch branch = branchCache.get(branchId);
-               if (PERSISTENCE_DEBUG) {
-                  if (branch != null && branch.getBranchId() == 381) {
-                     System.out.println(String.format("Found a root branch Branch ID = %d", branch.getBranchId()));
-                  }
-                  if (branch != null && branch.isRootBranch()) {
-                     System.out.println(String.format("Found a root branch Branch ID = %d", branch.getBranchId()));
-                  }
-               }
 
                if (isArchived) {
                   if (branch != null) {
@@ -438,13 +433,13 @@ public class BranchPersistenceManager {
    /**
     * @throws OseeDataStoreException
     */
-   static int addCommitTransactionToDatabase(Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
+   static int addCommitTransactionToDatabase(OseeConnection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
       int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-      String comment = "Commit Branch " + childBranch.getBranchName();
+      String comment = COMMIT_COMMENT + childBranch.getBranchName();
       int authorId = (userToBlame == null) ? -1 : userToBlame.getArtId();
-      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
+      ConnectionHandler.runPreparedUpdate(connection, COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
             parentBranch.getBranchId(), newTransactionNumber, comment, timestamp, authorId,
             childBranch.getAssociatedArtifactId());
       // Update commit artifact cache with new information

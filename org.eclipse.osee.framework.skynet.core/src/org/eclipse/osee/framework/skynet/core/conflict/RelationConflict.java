@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
@@ -50,6 +51,10 @@ public class RelationConflict extends Conflict {
     */
    public Status computeStatus() {
       return null;
+   }
+
+   public int getObjectId() throws OseeCoreException {
+      return 0;
    }
 
    /* (non-Javadoc)
@@ -157,5 +162,13 @@ public class RelationConflict extends Conflict {
 
    public int getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException("Relation Conflicts are not implemented yet");
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#applyPreviousMerge(int)
+    */
+   @Override
+   public boolean applyPreviousMerge(int mergeBranchId) throws OseeCoreException {
+      return false;
    }
 }

@@ -358,4 +358,8 @@ public abstract class Conflict implements IAdaptable {
    public abstract ConflictType getConflictType();
 
    public abstract int getMergeGammaId() throws OseeCoreException;
+
+   public abstract int getObjectId() throws OseeCoreException;
+
+   public abstract boolean applyPreviousMerge(int mergeBranchId) throws OseeCoreException;
 }
