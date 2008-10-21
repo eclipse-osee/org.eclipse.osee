@@ -447,7 +447,7 @@ public class TaskXViewer extends WorldXViewer {
           */
          @Override
          public void run() {
-
+            if (xTaskViewer.getXViewer().getContentProvider() == null) return;
             ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
             xTaskViewer.getXViewer().update(transData.cacheChangedArtifacts, null);
 
