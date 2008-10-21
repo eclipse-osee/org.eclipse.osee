@@ -210,6 +210,199 @@ public class RevertTest extends TestCase {
       }
 
    }
+   private static final String GET_BASELINE_RELATION_LINKS =
+         "Select txs.transaction_id, txs.gamma_id FROM osee_relation_link rel, osee_txs txs, osee_tx_details det WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_id = ? AND det.tx_type = 1";
+   private static final String GET_CHANGES_RELATION_LINKS =
+         "Select txs.transaction_id, txs.gamma_id FROM osee_relation_link rel, osee_txs txs, osee_tx_details det WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND atr.rel_link_id = ? AND det.tx_type = 0";
+
+   //Revert relations needs to handle fixing the 
+   public void testRevertRelationLinks() throws OseeCoreException {
+      /*
+            Set<Pair<Integer, Integer>> baselines = new HashSet<Pair<Integer, Integer>>();
+            Set<Pair<Integer, Integer>> nonBaselines = new HashSet<Pair<Integer, Integer>>();
+            Set<Integer> uniqueGammas = new HashSet<Integer>();
+            Set<Integer> keepGammas = new HashSet<Integer>();
+            Set<Pair<Integer, Integer>> artifactBaselines = new HashSet<Pair<Integer, Integer>>();
+            Set<Pair<Integer, Integer>> artifactNonBaselines = new HashSet<Pair<Integer, Integer>>();
+            Set<Integer> artifactUniqueGammas = new HashSet<Integer>();
+            Set<Integer> artifactKeepGammas = new HashSet<Integer>();
+            Set<RelationLink> relations = new HashSet<RelationLink>();
+            SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+            OseeLog.registerLoggerListener(monitorLog);
+            Collection<Artifact> artifacts =
+                  ConflictTestManager.getArtifacts(true, ConflictTestManager.REVERT_REL_LINK_QUERY);
+            ConnectionHandlerStatement chStmt = null;
+
+            for (Artifact artifact : artifacts) {
+               for (RelationLink link : artifact.getRelationsAll(true)) {
+                  relations.add(link);
+                  link.delete(true);
+                  }
+               }
+
+               attribute.delete();
+               artifact.persistAttributes();
+
+               assertTrue(String.format("Attribute Should be deleted but isn't Attribute Id = %d Art Id = %d",
+                     attribute.getAttrId(), attribute.getArtifact().getArtId()), attribute.isDeleted());
+
+               if (DEBUG) {
+                  System.out.println("   Attribute");
+                  System.out.println("     Baselined Transactions");
+               }
+               try {
+                  chStmt =
+                        ConnectionHandler.runPreparedQuery(GET_BASELINE_ATTRIBUTE, artifact.getBranch().getBranchId(),
+                              attribute.getAttrId());
+                  while (chStmt.next()) {
+                     baselines.add(new Pair<Integer, Integer>(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+                     if (DEBUG) {
+                        System.out.println(String.format("          Gamma ID = %d Transaction Id = %d",
+                              chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+                     }
+                  }
+               } finally {
+                  ConnectionHandler.close(chStmt);
+               }
+
+               if (DEBUG) {
+                  System.out.println("     Nonbaselined Transactions");
+               }
+               try {
+                  chStmt =
+                        ConnectionHandler.runPreparedQuery(GET_CHANGES_ATTRIBUTE, artifact.getBranch().getBranchId(),
+                              attribute.getAttrId());
+                  while (chStmt.next()) {
+                     nonBaselines.add(new Pair<Integer, Integer>(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+                     if (DEBUG) {
+                        System.out.println(String.format("          Gamma ID = %d Transaction Id = %d",
+                              chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+                     }
+                  }
+               } finally {
+                  ConnectionHandler.close(chStmt);
+               }
+               for (Pair<Integer, Integer> pairs : baselines) {
+                  keepGammas.add(pairs.getKey());
+               }
+               for (Pair<Integer, Integer> pairs : nonBaselines) {
+                  try {
+                     chStmt =
+                           ConnectionHandler.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
+                                 artifact.getBranch().getBranchId());
+                     if (chStmt.next()) {
+                        uniqueGammas.add(chStmt.getInt("gamma_id"));
+                     } else {
+                        keepGammas.add(pairs.getKey());
+                     }
+                  } finally {
+                     ConnectionHandler.close(chStmt);
+                  }
+               }
+               if (DEBUG) {
+                  System.out.println("     Gammas to Remove");
+                  for (Integer integer : uniqueGammas) {
+                     System.out.println(String.format("          Gamma ID = %d ", integer.intValue()));
+                  }
+                  System.out.println("     Gammas to Keep");
+                  for (Integer integer : keepGammas) {
+                     System.out.println(String.format("          Gamma ID = %d ", integer.intValue()));
+                  }
+               }
+
+               if (DEBUG) {
+                  System.out.println("   Artifact Version");
+                  System.out.println("     Neccessary Transactions");
+               }
+               try {
+                  chStmt =
+                        ConnectionHandler.runPreparedQuery(GET_BASELINE_ARTIFACT_VERSION + getGammaString(keepGammas,
+                              uniqueGammas) + ")", artifact.getBranch().getBranchId(), artifact.getArtId());
+                  while (chStmt.next()) {
+                     artifactBaselines.add(new Pair<Integer, Integer>(chStmt.getInt("gamma_id"),
+                           chStmt.getInt("transaction_id")));
+                     if (DEBUG) {
+                        System.out.println(String.format("          Gamma ID = %d Transaction Id = %d",
+                              chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+                     }
+                  }
+               } finally {
+                  ConnectionHandler.close(chStmt);
+               }
+               if (DEBUG) {
+                  System.out.println("     Removable Transactions");
+               }
+               try {
+                  chStmt =
+                        ConnectionHandler.runPreparedQuery(GET_CHANGES_ARTIFACT_VERSION + getGammaString(keepGammas,
+                              uniqueGammas) + ")", artifact.getBranch().getBranchId(), artifact.getArtId());
+                  while (chStmt.next()) {
+                     artifactNonBaselines.add(new Pair<Integer, Integer>(chStmt.getInt("gamma_id"),
+                           chStmt.getInt("transaction_id")));
+                     if (DEBUG) {
+                        System.out.println(String.format("          Gamma ID = %d Transaction Id = %d",
+                              chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+                     }
+                  }
+               } finally {
+                  ConnectionHandler.close(chStmt);
+               }
+
+               for (Pair<Integer, Integer> pairs : artifactBaselines) {
+                  artifactKeepGammas.add(pairs.getKey());
+               }
+               for (Pair<Integer, Integer> pairs : artifactNonBaselines) {
+                  try {
+                     chStmt =
+                           ConnectionHandler.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
+                                 artifact.getBranch().getBranchId());
+                     if (chStmt.next()) {
+                        artifactUniqueGammas.add(chStmt.getInt("gamma_id"));
+                     } else {
+                        artifactKeepGammas.add(pairs.getKey());
+                     }
+                  } finally {
+                     ConnectionHandler.close(chStmt);
+                  }
+               }
+               if (DEBUG) {
+                  System.out.println("     Gammas to Remove");
+                  for (Integer integer : artifactUniqueGammas) {
+                     System.out.println(String.format("          Gamma ID = %d ", integer.intValue()));
+                  }
+                  System.out.println("     Gammas to Keep");
+                  for (Integer integer : artifactKeepGammas) {
+                     System.out.println(String.format("          Gamma ID = %d ", integer.intValue()));
+                  }
+               }
+            }
+
+            //Now lets check that everything is as should be
+            for (Attribute<?> attribute : relations) {
+               if (DEBUG) {
+                  System.out.println("Before Revert");
+                  DeletionTest.dumpArtifact(attribute.getArtifact());
+                  DeletionTest.dumpAttribute(attribute);
+               }
+               ArtifactPersistenceManager.getInstance().revertAttribute(attribute);
+               if (DEBUG) {
+                  System.out.println("After Revert");
+                  DeletionTest.dumpArtifact(attribute.getArtifact());
+                  DeletionTest.dumpAttribute(attribute);
+               }
+            }
+
+            checkBaselines(baselines);
+            checkNonBaselines(nonBaselines);
+            checkUniqueGammas(uniqueGammas);
+            checkKeepGammas(keepGammas);
+            checkBaselines(artifactBaselines);
+            checkNonBaselines(artifactNonBaselines);
+            checkUniqueGammas(artifactUniqueGammas);
+            checkKeepGammas(artifactKeepGammas);*/
+
+   }
+
    private static final String GET_BASELINE_ATTRIBUTE =
          "Select txs.transaction_id, txs.gamma_id FROM osee_attribute atr, osee_txs txs, osee_tx_details det WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = atr.gamma_id AND atr.attr_id = ? AND det.tx_type = 1";
    private static final String GET_CHANGES_ATTRIBUTE =

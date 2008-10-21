@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.test.nonproduction;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.CommitTest;
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictDetectionTest;
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictResolutionTest;
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictTestManager;
@@ -29,7 +30,7 @@ public class ConflictTestSuite {
    }
 
    public static void oneTimeTearDown() throws Exception {
-      ConflictTestManager.cleanUpConflictTest();
+      //ConflictTestManager.cleanUpConflictTest();
    }
 
    public static Test suite() {
@@ -42,6 +43,7 @@ public class ConflictTestSuite {
       //Test conflict resolution
       suite.addTest(new ConflictResolutionTest("testResolveConflicts"));
       suite.addTest(new ConflictedBranchCommitingTest("CheckCommitWithoutResolutionErrors"));
+      suite.addTest(new CommitTest("testCommitFiltering"));
 
       TestSetup wrapper = new TestSetup(suite) {
          protected void setUp() throws Exception {
