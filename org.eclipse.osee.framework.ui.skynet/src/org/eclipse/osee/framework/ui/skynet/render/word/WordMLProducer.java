@@ -218,10 +218,10 @@ public class WordMLProducer {
    private CharSequence getOutlineNumber() throws OseeWrappedException {
       StringBuilder strB = new StringBuilder();
       for (int i = 1; i < outlineLevel; i++) {
-         append(String.valueOf(outlineNumber[i]));
-         append(".");
+         strB.append(String.valueOf(outlineNumber[i]));
+         strB.append(".");
       }
-      append(String.valueOf(outlineNumber[outlineLevel]));
+      strB.append(String.valueOf(outlineNumber[outlineLevel]));
       return strB;
    }
 

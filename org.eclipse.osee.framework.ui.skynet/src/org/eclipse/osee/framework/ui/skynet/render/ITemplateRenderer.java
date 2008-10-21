@@ -15,5 +15,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
  */
 public interface ITemplateRenderer extends IRenderer {
    public static final String TEMPLATE_OPTION = "template";
-   public static final String[] PREVIEW_WITH_RECURSE = new String[] {TEMPLATE_OPTION, "PREVIEW_WITH_RECURSE"};
+   public static final String PREVIEW_WITH_RECURSE_VALUE = "PREVIEW_WITH_RECURSE";
+   public static final String[] PREVIEW_WITH_RECURSE = new String[] {TEMPLATE_OPTION, PREVIEW_WITH_RECURSE_VALUE};
 }

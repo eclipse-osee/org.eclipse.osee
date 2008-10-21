@@ -10,13 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
@@ -32,19 +35,28 @@ public class PublishRequirements extends AbstractBlam {
       String updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers").toString();
 
       for (Artifact artifact : variableMap.getArtifacts("artifacts")) {
-         if (monitor.isCanceled()) {
-            return;
-         }
-         if (artifact.isOfType("Folder")) {
-            List<Artifact> artifacts = artifact.getChildren();
-            if (artifacts.size() > 0) {
-               RendererManager.previewInJob(artifacts, WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-                     updateParagraphNumber);
+         publish(monitor, artifact, updateParagraphNumber);
+      }
+   }
+
+   private void publish(IProgressMonitor monitor, Artifact artifact, String updateParagraphNumber) throws OseeCoreException {
+      if (monitor.isCanceled()) {
+         return;
+      }
+      if (artifact.isOfType("Folder")) {
+         List<Artifact> nonFolderChildren = new ArrayList<Artifact>();
+         for (Artifact child : artifact.getChildren()) {
+            if (child.isOfType("Folder")) {
+               publish(monitor, child, updateParagraphNumber);
+            } else {
+               nonFolderChildren.add(child);
             }
-         } else {
-            RendererManager.preview(artifact, monitor, WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-                  updateParagraphNumber);
          }
+         RendererManager.preview(nonFolderChildren, monitor, WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
+               updateParagraphNumber, ITemplateRenderer.TEMPLATE_OPTION, ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE);
+      } else {
+         RendererManager.preview(artifact, monitor, WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
+               updateParagraphNumber, ITemplateRenderer.TEMPLATE_OPTION, ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE);
       }
    }
 

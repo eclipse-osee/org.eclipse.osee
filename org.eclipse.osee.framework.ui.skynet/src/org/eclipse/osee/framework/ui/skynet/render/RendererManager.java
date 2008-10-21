@@ -82,6 +82,12 @@ public class RendererManager {
    }
 
    private static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, String... options) throws OseeCoreException {
+      IRenderer bestRenderer = getBestRendererPrototype(presentationType, artifact).newInstance();
+      bestRenderer.setOptions(options);
+      return bestRenderer;
+   }
+
+   private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       IRenderer bestRendererPrototype = null;
       int bestRating = IRenderer.NO_MATCH;
       for (IRenderer renderer : instance.renderers.values()) {
@@ -94,16 +100,23 @@ public class RendererManager {
       if (bestRendererPrototype == null) {
          throw new OseeStateException("At least the DefaultArtifactRenderer should have been found.");
       }
-      IRenderer bestRenderer = bestRendererPrototype.newInstance();
-      bestRenderer.setOptions(options);
-      return bestRenderer;
+      return bestRendererPrototype;
    }
 
    private static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, List<Artifact> artifacts, String... options) throws OseeCoreException {
-      HashCollection<IRenderer, Artifact> rendererArtifactMap =
+      HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap =
             new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
       for (Artifact artifact : artifacts) {
-         rendererArtifactMap.put(getBestRenderer(presentationType, artifact, options), artifact);
+         prototypeRendererArtifactMap.put(getBestRendererPrototype(presentationType, artifact), artifact);
+      }
+
+      // now that the artifacts are grouped based on best renderer type, create instances of those renderer with the supplied options
+      HashCollection<IRenderer, Artifact> rendererArtifactMap =
+            new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
+      for (IRenderer prototypeRenderer : prototypeRendererArtifactMap.keySet()) {
+         IRenderer renderer = prototypeRenderer.newInstance();
+         renderer.setOptions(options);
+         rendererArtifactMap.put(renderer, prototypeRendererArtifactMap.getValues(prototypeRenderer));
       }
       return rendererArtifactMap;
    }
@@ -133,7 +146,7 @@ public class RendererManager {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
             public void run(IProgressMonitor monitor) throws Exception {
                HashCollection<IRenderer, Artifact> rendererArtifactMap =
-                     createRenderMap(PresentationType.PREVIEW, artifacts, options);
+                     createRenderMap(PresentationType.PREVIEW, artifacts);
 
                for (IRenderer renderer : rendererArtifactMap.keySet()) {
                   renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), monitor);
@@ -145,9 +158,21 @@ public class RendererManager {
       }
    }
 
+   public static void preview(final List<Artifact> artifacts, IProgressMonitor monitor, final String... options) throws OseeCoreException {
+      if (artifacts.size() == 1) {
+         preview(artifacts.get(0), monitor, options);
+      } else {
+         HashCollection<IRenderer, Artifact> rendererArtifactMap =
+               createRenderMap(PresentationType.PREVIEW, artifacts, options);
+
+         for (IRenderer renderer : rendererArtifactMap.keySet()) {
+            renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), monitor);
+         }
+      }
+   }
+
    public static void edit(final List<Artifact> artifacts, IProgressMonitor monitor, final String... options) throws OseeCoreException {
-      HashCollection<IRenderer, Artifact> rendererArtifactMap =
-            createRenderMap(PresentationType.EDIT, artifacts, options);
+      HashCollection<IRenderer, Artifact> rendererArtifactMap = createRenderMap(PresentationType.EDIT, artifacts);
 
       for (IRenderer renderer : rendererArtifactMap.keySet()) {
          renderer.edit((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), monitor);
