@@ -319,6 +319,7 @@ public class XTaskViewer extends XWidget implements IActionable {
 
    public void createTaskActionBarPulldown(final ToolBar toolBar, Composite composite) {
       final ToolItem dropDown = new ToolItem(toolBar, SWT.DROP_DOWN);
+      dropDown.setImage(SkynetGuiPlugin.getInstance().getImage("gear.gif"));
       final Menu menu = new Menu(composite);
 
       dropDown.addListener(SWT.Selection, new Listener() {
@@ -332,6 +333,17 @@ public class XTaskViewer extends XWidget implements IActionable {
             }
          }
       });
+
+      selectionMetricsMenuItem = new MenuItem(menu, SWT.CHECK);
+      selectionMetricsMenuItem.setText("Show Release Metrics by Selection - Ctrl-X");
+      selectionMetricsMenuItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            updateExtraInfoLine();
+         }
+      });
+
+      new MenuItem(menu, SWT.SEPARATOR);
 
       currentStateFilterMenuItem = new MenuItem(menu, SWT.CHECK);
       currentStateFilterMenuItem.setText("Filter by Current State");
@@ -347,15 +359,6 @@ public class XTaskViewer extends XWidget implements IActionable {
          }
       });
 
-      selectionMetricsMenuItem = new MenuItem(menu, SWT.CHECK);
-      selectionMetricsMenuItem.setText("Show Release Metrics by Selection - Ctrl-X");
-      selectionMetricsMenuItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            updateExtraInfoLine();
-         }
-      });
-
       filterCompletedMenuItem = new MenuItem(menu, SWT.CHECK);
       filterCompletedMenuItem.setText("Filter Out Completed/Cancelled - Ctrl-F");
       filterCompletedMenuItem.addSelectionListener(new SelectionAdapter() {
@@ -367,6 +370,7 @@ public class XTaskViewer extends XWidget implements IActionable {
 
       try {
          if (iXTaskViewer.isTaskable()) {
+            new MenuItem(menu, SWT.SEPARATOR);
 
             MenuItem item = new MenuItem(menu, SWT.PUSH);
             item.setText("Import Tasks via spreadsheet");
