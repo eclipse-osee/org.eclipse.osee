@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.branch;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -53,6 +54,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -73,6 +75,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -427,55 +430,108 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    }
 
-   private String addMergeViewCommand(MenuManager menuManager) {
-      CommandContributionItem mergeViewCommand =
-            Commands.getLocalCommandContribution(getSite(), "mergeViewCommand", "Merge Manager", null, null, null, "M",
-                  null, null);
-      menuManager.add(mergeViewCommand);
-      return mergeViewCommand.getId();
+   private void addMergeViewCommand(MenuManager menuManager) {
+      MenuManager subMenuManager = new MenuManager("Merge Manager", "mergeViewCommand");
+      menuManager.add(subMenuManager);
+      addMergeSelectionMenu(subMenuManager);
    }
 
    private void createMergeViewCommand(MenuManager menuManager) {
+      MenuManager subMenuManager = new MenuManager("Merge Manager", "mergeViewCommand");
+      menuManager.add(subMenuManager);
+      createMergeSelectionMenu(subMenuManager, new MergeSelectionHandler(menuManager));
+   }
 
-      handlerService.activateHandler(addMergeViewCommand(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+   private void addMergeSelectionMenu(MenuManager menuManager) {
+      if (branchTable != null) {
+         IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+         if (selection != null && selection.getFirstElement() != null) {
             Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-            try {
-               if (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch()) {
-                  MergeView.openView(selectedBranch, selectedBranch.getParentBranch(),
-                        TransactionIdManager.getStartEndPoint(selectedBranch).getKey());
-               }
-            } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            }
+            if (selectedBranch != null) {
+               try {
+                  Collection<Integer> destBranches =
+                        ConflictManagerInternal.getInstance().getDestinationBranchesMerged(selectedBranch.getBranchId());
+                  try {
+                     if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getBranchId())) {
+                        destBranches.add(selectedBranch.getParentBranch().getBranchId());
+                     }
+                  } catch (BranchDoesNotExist ex) {
+                     destBranches.add(0);
+                  }
+                  for (Integer branch : destBranches) {
 
-            return null;
+                     Map<String, String> parameters = new HashMap<String, String>();
+                     parameters.put(BRANCH_ID, Integer.toString(branch));
+
+                     CommandContributionItem mergeCommand =
+                           Commands.getLocalCommandContribution(
+                                 getSite(),
+                                 menuManager.getId(),
+                                 branch == 0 ? "Can't Merge a Root Branch" : BranchPersistenceManager.getBranch(branch).getBranchName(),
+                                 BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
+                     menuManager.add(mergeCommand);
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         }
+      }
+   }
+
+   private void createMergeSelectionMenu(MenuManager menuManager, IHandler selectionHandler) {
+      addMergeSelectionMenu(menuManager);
+      handlerService.activateHandler(getSite().getId() + "." + menuManager.getId(), selectionHandler);
+   }
+
+   private class MergeSelectionHandler extends AbstractSelectionEnabledHandler {
+
+      public MergeSelectionHandler(MenuManager menuManager) {
+         super(menuManager);
+      }
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public Object execute(ExecutionEvent event) throws ExecutionException {
+         IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+         Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+         try {
+            Branch toBranch = BranchPersistenceManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
+            if (selectedBranch != null && toBranch != null) {
+               MergeView.openView(selectedBranch, toBranch,
+                     TransactionIdManager.getStartEndPoint(selectedBranch).getKey());
+            }
+         } catch (Exception ex) {
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
 
-         @Override
-         public boolean isEnabled() {
-            try {
-               IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-               if (!selection.isEmpty()) {
-                  Object obj = ((JobbedNode) selection.getFirstElement()).getBackingData();
-                  if (obj instanceof Branch) {
-                     Branch selectedBranch = (Branch) obj;
-                     return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch());
+         return null;
+      }
+
+      @Override
+      public boolean isEnabled() {
+         try {
+            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+            if (!selection.isEmpty()) {
+               Object obj = ((JobbedNode) selection.getFirstElement()).getBackingData();
+               if (obj instanceof Branch) {
+                  Branch selectedBranch = (Branch) obj;
+                  if (selectedBranch != null && !ConflictManagerInternal.getInstance().getDestinationBranchesMerged(
+                        selectedBranch.getBranchId()).isEmpty()) {
+                     return true;
                   }
-                  return false;
+                  return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch());
                }
                return false;
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
             return false;
+         } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-      });
-   }
+         return false;
+      }
+
+   };
 
    private String addChangeViewCommand(MenuManager menuManager) {
       CommandContributionItem changeViewCommand =

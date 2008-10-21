@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,11 +22,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
@@ -34,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -51,6 +55,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -225,7 +230,6 @@ public class XMergeViewer extends XWidget implements IActionable {
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change_dest.gif"));
-      item.setToolTipText("Show Source Branch Change Report");
       item.setToolTipText("Show Destination Branch Change Report");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -257,6 +261,52 @@ public class XMergeViewer extends XWidget implements IActionable {
          @Override
          public void widgetSelected(SelectionEvent e) {
             mergeXViewer.getCustomizeMgr().handleTableCustomization();
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_merge.gif"));
+      item.setToolTipText("Apply Merge Results From Prior Merge");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (conflicts.length != 0) {
+               if (conflicts[0].getSourceBranch() != null) {
+                  //(Object[] choose, Shell parentShell, String dialogTitle, Image dialogTitleImage, 
+                  //String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) 
+                  ArrayList<String> selections = new ArrayList<String>();
+                  ArrayList<Integer> branchIds = new ArrayList<Integer>();
+                  try {
+                     Collection<Integer> destBranches =
+                           ConflictManagerInternal.getInstance().getDestinationBranchesMerged(
+                                 sourceBranch.getBranchId());
+                     for (Integer integer : destBranches) {
+                        if (integer.intValue() != destBranch.getBranchId()) {
+                           selections.add(BranchPersistenceManager.getBranch(integer).getBranchName());
+                           branchIds.add(integer);
+                        }
+                     }
+                     if (selections.size() >= 0) {
+                        ListSelectionDialog dialog =
+                              new ListSelectionDialog(selections.toArray(),
+                                    Display.getCurrent().getActiveShell().getShell(), "Apply Prior Merge Resolution",
+                                    null, "Select the destination branch that the previous commit was appplied to", 2,
+                                    new String[] {"Apply", "Cancel"}, 1);
+                        if (dialog.open() == 0) {
+                           System.out.print("Applying the merge found for Branch " + branchIds.toArray()[dialog.getSelection()]);
+                           for (Conflict conflict : conflicts) {
+                              conflict.applyPreviousMerge(ConflictManagerInternal.getInstance().getMergeBranchId(
+                                    conflicts[0].getSourceBranch().getBranchId(), branchIds.get(dialog.getSelection())));
+                           }
+                        }
+                     }
+                  } catch (OseeCoreException ex) {
+                     OSEELog.logException(XMergeViewer.class, ex, false);
+                  }
+               }
+
+            }
+            System.err.println("Can not apply a previous Merge");
          }
       });
 
@@ -478,7 +528,6 @@ public class XMergeViewer extends XWidget implements IActionable {
          } else {
             extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resovled : " + resolved + (informational == 0 ? " " : ("\nInformational Conflicts : " + informational)));
          }
-
       }
 
    }

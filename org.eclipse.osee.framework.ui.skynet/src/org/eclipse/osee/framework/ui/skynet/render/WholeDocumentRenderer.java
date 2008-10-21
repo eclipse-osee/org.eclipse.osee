@@ -27,6 +27,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
+/**
+ * 
+ * @author Jeff C. Phillips
+ *
+ */
 public class WholeDocumentRenderer extends WordRenderer {
 
    /**
@@ -144,7 +149,8 @@ public class WholeDocumentRenderer extends WordRenderer {
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
-      diffGenerator.initialize(presentationType != PresentationType.MERGE, true);
+      diffGenerator.initialize(presentationType != PresentationType.MERGE,
+            presentationType == PresentationType.MERGE_EDIT);
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
          addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));

@@ -240,7 +240,7 @@ public class MergeUtility {
                   protected IStatus run(final IProgressMonitor monitor) {
                      try {
                         VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
-                        generator.initialize(false, true);
+                        generator.initialize(false, false);
                         String sourceChangeFile =
                               MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
                                     attributeConflict.getSourceArtifact(), null);

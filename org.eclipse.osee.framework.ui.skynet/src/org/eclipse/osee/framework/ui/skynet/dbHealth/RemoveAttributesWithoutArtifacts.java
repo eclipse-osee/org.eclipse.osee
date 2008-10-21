@@ -113,7 +113,7 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
       }
       builder.append(verify ? "Found " : "Fixed ");
       builder.append(datas.size());
-      builder.append("\n");
+      builder.append(" Attributes that have no Artifacts\n");
    }
 
    private void fixAttributes() throws OseeDataStoreException {

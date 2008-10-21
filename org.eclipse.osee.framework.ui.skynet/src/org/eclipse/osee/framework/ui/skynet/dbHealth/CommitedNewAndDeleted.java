@@ -104,7 +104,9 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
          for (LocalValues value : addressing) {
             insertParameters.add(new Object[] {String.valueOf(value.gammaId), String.valueOf(value.transactionId)});
          }
-         ConnectionHandler.runPreparedUpdateBatch(REMOVE_NOT_ADDRESSED_GAMMAS, insertParameters);
+         if (insertParameters.size() > 0) {
+            ConnectionHandler.runPreparedUpdateBatch(REMOVE_NOT_ADDRESSED_GAMMAS, insertParameters);
+         }
          monitor.worked(5);
          addressing = null;
       }

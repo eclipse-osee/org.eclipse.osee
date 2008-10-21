@@ -117,7 +117,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                String fileName = null;
 
                VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
-               generator.initialize(false, true);
+               generator.initialize(false, false);
                for (int i = 0; i < newerArtifact.size(); i++) {
                   IFile baseFile =
                         renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
@@ -252,7 +252,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
-      diffGenerator.initialize(presentationType != PresentationType.MERGE, true);
+      diffGenerator.initialize(presentationType != PresentationType.MERGE,
+            presentationType == PresentationType.MERGE_EDIT);
 
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
          addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),

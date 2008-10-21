@@ -125,7 +125,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      MergeView mergeView =
                            (MergeView) page.showView(
                                  MergeView.VIEW_ID,
-                                 String.valueOf(sourceBranch != null ? sourceBranch.getBranchId() : commitTrans.getTransactionNumber()),
+                                 String.valueOf(sourceBranch != null ? sourceBranch.getBranchId() * 100000 + destBranch.getBranchId() : commitTrans.getTransactionNumber()),
                                  IWorkbenchPage.VIEW_VISIBLE);
                      mergeView.explore(sourceBranch, destBranch, tranId, commitTrans);
                   } catch (Exception ex) {
@@ -501,7 +501,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       try {
          xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans);
          if (sourceBranch != null) {
-            setPartName("Merge Manager: " + sourceBranch.getBranchShortName());
+            setPartName("Merge Manager: " + sourceBranch.getBranchShortName() + " <=> " + destBranch.getBranchShortName());
          } else if (commitTrans != null) {
             setPartName("Merge Manager: " + commitTrans.getTransactionNumber());
          } else {

@@ -215,8 +215,8 @@ public class RendererManager {
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, boolean show) throws OseeCoreException {
-      return getBestRenderer(PresentationType.MERGE, baseVersion).compare(baseVersion, newerVersion, baseFile,
-            newerFile, fileName, PresentationType.MERGE, show);
+      return getBestRenderer(PresentationType.MERGE_EDIT, baseVersion).compare(baseVersion, newerVersion, baseFile,
+            newerFile, fileName, PresentationType.MERGE_EDIT, show);
    }
 
    public static void diffInJob(final Artifact baseVersion, final Artifact newerVersion, final String fileName, final String... options) {

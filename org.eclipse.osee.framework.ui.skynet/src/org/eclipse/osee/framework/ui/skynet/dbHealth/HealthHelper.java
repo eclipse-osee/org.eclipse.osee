@@ -102,7 +102,7 @@ public class HealthHelper {
 
    public static HashSet<Pair<Integer, Integer>> getNoTxCurrentSet(String dataId, String dataTable, StringBuilder builder, String data) throws OseeCoreException {
       String sql =
-            HealthHelper.NO_TX_CURRENT_SET[0] + dataId + HealthHelper.NO_TX_CURRENT_SET[1] + dataTable + HealthHelper.NO_TX_CURRENT_SET[2] + dataId + HealthHelper.NO_TX_CURRENT_SET[3] + dataTable + HealthHelper.NO_TX_CURRENT_SET[4];
+            NO_TX_CURRENT_SET[0] + dataId + NO_TX_CURRENT_SET[1] + dataTable + NO_TX_CURRENT_SET[2] + dataId + NO_TX_CURRENT_SET[3] + dataTable + NO_TX_CURRENT_SET[4];
       ConnectionHandlerStatement chStmt = null;
       HashSet<Pair<Integer, Integer>> noneSet = new HashSet<Pair<Integer, Integer>>();
 
@@ -115,7 +115,6 @@ public class HealthHelper {
       } finally {
          ConnectionHandler.close(chStmt);
       }
-      builder.append(noneSet.size() > 0 ? "Failed: " : "Passed: ");
       builder.append("Found ");
       builder.append(noneSet.size());
       builder.append(data);
@@ -129,7 +128,7 @@ public class HealthHelper {
 
    public static HashSet<LocalTxData> getMultipleTxCurrentSet(String dataId, String dataTable, StringBuilder builder, String data) throws OseeCoreException {
       String sql =
-            HealthHelper.MULTIPLE_TX_CURRENT_SET[0] + dataId + HealthHelper.MULTIPLE_TX_CURRENT_SET[1] + dataId + HealthHelper.MULTIPLE_TX_CURRENT_SET[2] + dataTable + HealthHelper.MULTIPLE_TX_CURRENT_SET[3] + dataId + HealthHelper.MULTIPLE_TX_CURRENT_SET[4];
+            MULTIPLE_TX_CURRENT_SET[0] + dataId + MULTIPLE_TX_CURRENT_SET[1] + dataId + MULTIPLE_TX_CURRENT_SET[2] + dataTable + MULTIPLE_TX_CURRENT_SET[3] + dataId + MULTIPLE_TX_CURRENT_SET[4];
       ConnectionHandlerStatement chStmt = null;
       HashSet<LocalTxData> multipleSet = new HashSet<LocalTxData>();
 
@@ -140,7 +139,6 @@ public class HealthHelper {
             multipleSet.add(new LocalTxData(chStmt.getInt(dataId), chStmt.getInt("branch_id"),
                   chStmt.getInt("numoccurrences")));
          }
-         builder.append(multipleSet.size() > 0 ? "Failed: " : "Passed: ");
          builder.append("Found ");
          builder.append(multipleSet.size());
          builder.append(data);
@@ -157,7 +155,7 @@ public class HealthHelper {
 
    public static void cleanMultipleTxCurrent(String dataId, String dataTable, StringBuilder builder, HashSet<LocalTxData> multipleSet) throws OseeCoreException {
       String sql =
-            HealthHelper.DUPLICATE_TX_CURRENT_CLEANUP[0] + dataTable + HealthHelper.DUPLICATE_TX_CURRENT_CLEANUP[1] + dataId + HealthHelper.DUPLICATE_TX_CURRENT_CLEANUP[2] + dataTable + HealthHelper.DUPLICATE_TX_CURRENT_CLEANUP[3] + dataId + HealthHelper.DUPLICATE_TX_CURRENT_CLEANUP[4];
+            DUPLICATE_TX_CURRENT_CLEANUP[0] + dataTable + DUPLICATE_TX_CURRENT_CLEANUP[1] + dataId + DUPLICATE_TX_CURRENT_CLEANUP[2] + dataTable + DUPLICATE_TX_CURRENT_CLEANUP[3] + dataId + DUPLICATE_TX_CURRENT_CLEANUP[4];
 
       Set<Object[]> insertParameters = new HashSet<Object[]>();
 
@@ -168,12 +166,12 @@ public class HealthHelper {
       if (insertParameters.size() > 0) {
          total = ConnectionHandler.runPreparedUpdateBatch(sql, insertParameters);
       }
-      builder.append("Cleaned up " + total + " Tx_Current duplication errors\n");
+      builder.append("Fixed " + total + " Tx_Current duplication errors\n");
    }
 
    public static void cleanNoTxCurrent(String dataId, String dataTable, StringBuilder builder, HashSet<Pair<Integer, Integer>> noneSet) throws OseeCoreException {
       String sql =
-            HealthHelper.NO_TX_CURRENT_CLEANUP[0] + dataTable + HealthHelper.NO_TX_CURRENT_CLEANUP[1] + dataId + HealthHelper.NO_TX_CURRENT_CLEANUP[2] + dataTable + HealthHelper.NO_TX_CURRENT_CLEANUP[3] + dataId + HealthHelper.NO_TX_CURRENT_CLEANUP[4];
+            NO_TX_CURRENT_CLEANUP[0] + dataTable + NO_TX_CURRENT_CLEANUP[1] + dataId + NO_TX_CURRENT_CLEANUP[2] + dataTable + NO_TX_CURRENT_CLEANUP[3] + dataId + NO_TX_CURRENT_CLEANUP[4];
 
       Set<Object[]> insertParameters = new HashSet<Object[]>();
 
@@ -184,7 +182,7 @@ public class HealthHelper {
       if (insertParameters.size() > 0) {
          total = ConnectionHandler.runPreparedUpdateBatch(sql, insertParameters);
       }
-      builder.append("Cleaned up " + total + " Tx_Current not set errors\n");
+      builder.append("Fixed " + total + " Tx_Current not set errors\n");
    }
 
    public static void dumpDataNone(StringBuffer sbFull, HashSet<Pair<Integer, Integer>> noneSet) {
