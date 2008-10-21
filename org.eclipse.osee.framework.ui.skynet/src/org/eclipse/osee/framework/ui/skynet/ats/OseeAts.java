@@ -54,7 +54,7 @@ public class OseeAts {
 
    public static boolean isAtsAdmin() {
       try {
-         if (getAtsLib() == null) return true;
+         if (getAtsLib() == null) return false;
          return getAtsLib().isAtsAdmin();
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -65,6 +65,7 @@ public class OseeAts {
    public static void addButtonToEditorToolBar(final MultiPageEditorPart editorPart, IActionable actionableObject, final OseeUiActivator oseePlugin, IToolBarManager toolBar, final String editorId, final String actionableItem) {
 
       Action bugAction = new Action(BUG_TITLE, Action.AS_PUSH_BUTTON) {
+         @Override
          public void run() {
             String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
             String desc = String.format("Found in \"%s\" version %s.", editorId, version);
@@ -100,6 +101,7 @@ public class OseeAts {
          item.setImage(SkynetGuiPlugin.getInstance().getImage("bug.gif"));
          item.setToolTipText(BUG_TITLE);
          item.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
@@ -160,6 +162,7 @@ public class OseeAts {
             String.format("viewId can not be null or empty"));
       if (actionableItem == null) throw new IllegalArgumentException("Aspect can not be null.");
       Action bugAction = new Action("Generate Action Against This View") {
+         @Override
          public void run() {
             String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
             String desc = String.format("\n\nItem: %s\nVersion: %s", viewId, version);
