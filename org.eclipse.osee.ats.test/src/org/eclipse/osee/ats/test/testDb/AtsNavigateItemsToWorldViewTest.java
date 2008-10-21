@@ -93,12 +93,12 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    public void testMyOriginator() throws Exception {
       runGeneralLoadingTest("My Originator - InWork", TaskArtifact.class, DemoDbTasks.getNumTasks(), null);
       runGeneralLoadingTest("My Originator - InWork", TeamWorkFlowArtifact.class, 18, null);
-      runGeneralLoadingTest("My Originator - InWork", PeerToPeerReviewArtifact.class, 2, null);
-      runGeneralLoadingTest("My Originator - InWork", DecisionReviewArtifact.class, 2, null);
+      runGeneralLoadingTest("My Originator - InWork", PeerToPeerReviewArtifact.class, 7, null);
+      runGeneralLoadingTest("My Originator - InWork", DecisionReviewArtifact.class, 7, null);
       runGeneralLoadingTest("My Originator - All", TaskArtifact.class, DemoDbTasks.getNumTasks(), null);
       runGeneralLoadingTest("My Originator - All", TeamWorkFlowArtifact.class, 25, null);
-      runGeneralLoadingTest("My Originator - All", PeerToPeerReviewArtifact.class, 2, null);
-      runGeneralLoadingTest("My Originator - All", DecisionReviewArtifact.class, 3, null);
+      runGeneralLoadingTest("My Originator - All", PeerToPeerReviewArtifact.class, 7, null);
+      runGeneralLoadingTest("My Originator - All", DecisionReviewArtifact.class, 8, null);
    }
 
    public void testMyCompleted() throws Exception {
@@ -113,7 +113,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    }
 
    public void testOtherUsersWorld() throws Exception {
-      OseeLog.log(AtsPlugin.class, Level.INFO, 
+      OseeLog.log(AtsPlugin.class, Level.INFO,
             "Testing User's items relating to " + DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
       runGeneralLoadingTest(item, ActionArtifact.class, 4, DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
@@ -234,25 +234,25 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    public void testShowOpenDecisionReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open Decision Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, DecisionReviewArtifact.class, 2);
+      runGeneralLoadingTest(item, DecisionReviewArtifact.class, 7);
    }
 
    public void testShowWorkflowsWaitingForDecisionReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting Decision Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 2);
+      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 7);
    }
 
    public void testShowOpenPeerToPeerReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open PeerToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, PeerToPeerReviewArtifact.class, 2);
+      runGeneralLoadingTest(item, PeerToPeerReviewArtifact.class, 7);
    }
 
    public void testShowWorkflowsWaitingForPeerToPeerReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting PeerToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 1);
+      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 6);
    }
 
    public void testSearchByCurrentState() throws Exception {
