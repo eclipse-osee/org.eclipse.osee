@@ -221,14 +221,18 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
       warningLabel = new Label(headerComp, SWT.NONE);
       searchNameLabel = new Label(headerComp, SWT.NONE);
 
-      String adminStr = "";
-      if (AtsPlugin.isAtsAdmin()) adminStr = "Admin - " + getWhoAmI();
-      if (AtsPlugin.isAtsDisableEmail()) adminStr += " - Email Disabled";
-      if (AtsPlugin.isAtsAlwaysEmailMe()) adminStr += " - AtsAlwaysEmailMe";
-      if (!adminStr.equals("")) {
+      String nameStr = getWhoAmI();
+      if (AtsPlugin.isAtsAdmin()) nameStr += " - Admin";
+      if (AtsPlugin.isAtsDisableEmail()) nameStr += " - Email Disabled";
+      if (AtsPlugin.isAtsAlwaysEmailMe()) nameStr += " - AtsAlwaysEmailMe";
+      if (!nameStr.equals("")) {
          Label label = new Label(headerComp, SWT.NONE);
-         label.setText(adminStr);
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         label.setText(nameStr);
+         if (AtsPlugin.isAtsAdmin()) {
+            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         } else {
+            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+         }
          gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
          label.setLayoutData(gd);
       }
@@ -289,8 +293,9 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
    }
 
    private String getWhoAmI() {
-      return OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(ConfigField.DatabaseName) + ", " + OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
-            ConfigField.UserName) + " - " + SkynetAuthentication.getUser().getName();
+      return SkynetAuthentication.getUser().getName() + " - " + OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
+            ConfigField.DatabaseName) + " - " + OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
+            ConfigField.UserName);
    }
 
    public class FilterLabelProvider implements ILabelProvider {
