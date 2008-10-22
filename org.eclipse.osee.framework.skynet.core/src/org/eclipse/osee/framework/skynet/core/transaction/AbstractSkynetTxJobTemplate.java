@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -80,7 +81,7 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
          SkynetTx createTasksTx = new SkynetTx(branch);
          createTasksTx.execute();
       } catch (Exception ex) {
-         ConfigUtil.getConfigFactory().getLogger(SkynetActivator.class).log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
       }
       return Status.OK_STATUS;
@@ -128,6 +129,7 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
    /**
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
     * the end of the transaction, regardless of exceptions. <br/><b>Override to add additional code to finally block</b>
+    * 
     * @throws Exception
     */
    protected void handleTxFinally() throws OseeCoreException {

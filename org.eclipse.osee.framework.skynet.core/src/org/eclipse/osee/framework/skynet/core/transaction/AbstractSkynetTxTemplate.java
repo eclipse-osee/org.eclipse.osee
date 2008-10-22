@@ -90,12 +90,12 @@ public abstract class AbstractSkynetTxTemplate {
    public void execute() throws OseeCoreException {
       try {
          transactionManager.startBatchLevel(this, branch);
-         //         SkynetActivator.getLogger().log(Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         //         OseeLog.log(SkynetActivator.class,Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
 
          handleTxWork();
 
          transactionManager.setBatchLevelAsSuccessful(this, branch);
-         //         SkynetActivator.getLogger().log(Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
+         //         OseeLog.log(SkynetActivator.class,Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } finally {
          transactionManager.endBatchLevel(this, branch);
          handleTxFinally();

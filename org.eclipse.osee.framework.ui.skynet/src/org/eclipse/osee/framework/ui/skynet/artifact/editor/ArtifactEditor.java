@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import java.util.Collection;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -90,7 +88,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  */
 public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEditor, IArtifactsPurgedEventListener, IBranchEventListener, IAccessControlEventListener, IArtifactModifiedEventListener, IArtifactsChangeTypeEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactEditor.class);
    private int previewPageIndex;
    private int attributesPageIndex;
    private int newAttributesPageIndex;
@@ -175,7 +172,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
       return false;
@@ -682,7 +679,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
                   BranchPersistenceManager.getDefaultBranch()));
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             closeEditor();
          }
       }
@@ -699,7 +696,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
             checkEnabledTooltems();
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }

@@ -40,7 +40,7 @@ public final class XmlOutputTransform {
       try {
          transformer.transform(new StreamSource(inputXML), result);
       } catch (Exception ex) {
-         throw new Exception("Error during Transform. " + ex.getLocalizedMessage(), ex);
+         throw new Exception("Error during Transform. ", ex);
       }
    }
 

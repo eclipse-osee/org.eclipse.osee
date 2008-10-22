@@ -18,7 +18,7 @@ import java.security.ProtectionDomain;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
 /**
  * @author Donald G. Dunne
@@ -128,7 +128,9 @@ public class WordCompareTest {
 
          Process proc = Runtime.getRuntime().exec(cmd);
 
-         StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR", SkynetGuiPlugin.getLogger());
+         StreamCatcher errorCatcher =
+               new StreamCatcher(proc.getErrorStream(), "ERROR", ConfigUtil.getConfigFactory().getLogger(
+                     WordCompareTest.class));
          StreamCatcher outputCatcher = new StreamCatcher(proc.getInputStream(), "OUTPUT");
 
          errorCatcher.start();

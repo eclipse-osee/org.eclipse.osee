@@ -12,13 +12,11 @@
 package org.eclipse.osee.ats;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.ats.util.AtsAdmin;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -38,8 +36,6 @@ public class AtsPlugin extends OseeUiActivator {
    private static Cursor waitCursor;
    public static ActionDebug debug = new ActionDebug(false, "AtsPlugin");
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
-   private static Logger logger =
-         ConfigUtil.getConfigFactory().getLogger(AtsPlugin.class);
    private static boolean emailEnabled = true;
    public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
 
@@ -107,10 +103,6 @@ public class AtsPlugin extends OseeUiActivator {
 
    public static boolean isAtsAlwaysEmailMe() {
       return System.getProperty("AtsAlwaysEmailMe") != null;
-   }
-
-   public static Logger getLogger() {
-      return logger;
    }
 
    public static Branch getAtsBranch() {

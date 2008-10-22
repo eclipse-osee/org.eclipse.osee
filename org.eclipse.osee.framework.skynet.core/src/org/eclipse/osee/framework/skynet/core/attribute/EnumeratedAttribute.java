@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.w3c.dom.Document;
@@ -46,7 +47,7 @@ public class EnumeratedAttribute extends StringAttribute {
             choices.add(enumerations.item(i).getTextContent());
          }
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return choices;
    }

@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
@@ -194,11 +195,11 @@ public class HttpResponse {
       String reasonStr = (reason != null ? "Reason: " + reason : "");
       String html =
             AHTML.simplePage("<h1>Error " + errorStr + "</h1><h2>OSEE was unable to handle the request.</h2>" + reasonStr + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
-      SkynetActivator.getLogger().log(Level.SEVERE, "HttpServer Request failed. " + reasonStr);
+      OseeLog.log(SkynetActivator.class, Level.SEVERE, "HttpServer Request failed. " + reasonStr);
       try {
          printStream.println(html);
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, "Error sending error string", ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, "Error sending error string", ex);
       }
    }
 

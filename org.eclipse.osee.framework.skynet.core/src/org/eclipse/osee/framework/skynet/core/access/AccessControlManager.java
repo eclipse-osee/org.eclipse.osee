@@ -693,7 +693,7 @@ public class AccessControlManager {
             OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.ArtifactsLocked,
                   new LoadedArtifacts(object));
          } catch (Exception ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
       }
    }

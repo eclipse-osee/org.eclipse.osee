@@ -60,7 +60,7 @@ alter session set create_stored_outlines = true;
 -- create the outline
 declare 
 begin
-dbms_outln.create_outline(3878593713, 16);
+dbms_outln.create_outline(3640141670, 1);
 end;
 /
 

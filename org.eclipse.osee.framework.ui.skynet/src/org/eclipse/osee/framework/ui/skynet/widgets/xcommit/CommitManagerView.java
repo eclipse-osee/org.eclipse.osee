@@ -162,7 +162,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.WARNING,  "Commit Manager error on init: " + ex.getLocalizedMessage());
+         OseeLog.log(SkynetActivator.class, Level.WARNING, "Commit Manager error on init: ", ex);
       }
    }
 

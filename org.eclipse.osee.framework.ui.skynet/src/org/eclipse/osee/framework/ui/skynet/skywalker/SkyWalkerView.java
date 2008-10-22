@@ -354,7 +354,7 @@ public class SkyWalkerView extends ViewPart {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Sky Walker error on init: " + ex.getLocalizedMessage());
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Sky Walker error on init: ", ex);
       }
    }
 

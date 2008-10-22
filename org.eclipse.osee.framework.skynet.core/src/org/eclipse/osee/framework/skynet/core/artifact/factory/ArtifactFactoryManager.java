@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -88,7 +89,7 @@ public class ArtifactFactoryManager {
       try {
          String bundleSymbolicName = factoryBundleMap.get(factoryClassName);
          if (bundleSymbolicName == null) {
-            SkynetActivator.getLogger().log(Level.WARNING,
+            OseeLog.log(SkynetActivator.class, Level.WARNING,
                   "No bundle associated with the factory class: " + factoryClassName);
             return;
          }
@@ -100,7 +101,7 @@ public class ArtifactFactoryManager {
          factoryNameMap.put(factoryClassName, factory);
          factoryIdMap.put(factoryId, factory);
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, "Unable to create factory: " + factoryClassName, ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, "Unable to create factory: " + factoryClassName, ex);
       }
    }
 

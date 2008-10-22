@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -96,7 +97,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          }
 
          if (guida == null || guidb == null) {
-            OseeLog.log(SkynetActivator.class, Level.WARNING, 
+            OseeLog.log(SkynetActivator.class, Level.WARNING,
                   "we failed to add a relation because at least on of the guids is null");
          }
          addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5], Integer.parseInt(row[3]),
@@ -211,11 +212,10 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          }
          primaryDescriptor = ArtifactTypeManager.getType(sheetName);
          if (primaryDescriptor == null) {
-            throw new IllegalArgumentException("The sheet name: " + sheetName + " is not a valid artifact type name.");
+            throw new OseeArgumentException("The sheet name: " + sheetName + " is not a valid artifact type name.");
          }
       } catch (OseeCoreException ex) {
-         throw new IllegalArgumentException(
-               "The sheet name: " + sheetName + " is not a valid artifact type name: " + ex.getLocalizedMessage());
+         throw new IllegalArgumentException("The sheet name: " + sheetName + " is not a valid artifact type name: ", ex);
       }
    }
 

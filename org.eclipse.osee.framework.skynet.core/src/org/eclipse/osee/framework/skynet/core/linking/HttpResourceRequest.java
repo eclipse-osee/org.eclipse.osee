@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.osgi.framework.Bundle;
@@ -62,12 +63,12 @@ public class HttpResourceRequest implements IHttpMethod {
             ps.write(buffer, 0, count);
          }
       } catch (IOException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, "Error sending requested resource", ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, "Error sending requested resource", ex);
       } finally {
          try {
             bis.close();
          } catch (IOException ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, "Error closing stream", ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, "Error closing stream", ex);
          }
       }
    }

@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -171,7 +172,7 @@ public class AtsBranchManager {
          if (tranSet.size() == 0) {
             return null;
          } else if (tranSet.size() > 1) {
-            OseeLog.log(AtsPlugin.class, Level.WARNING, 
+            OseeLog.log(AtsPlugin.class, Level.WARNING,
                   "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId());
          }
          return TransactionIdManager.getTransactionId(tranSet.iterator().next());
@@ -390,7 +391,7 @@ public class AtsBranchManager {
          }
       };
 
-      Jobs.run("Create Branch", runnable, AtsPlugin.getLogger(), AtsPlugin.PLUGIN_ID);
+      Jobs.run("Create Branch", runnable, ConfigUtil.getConfigFactory().getLogger(AtsPlugin.class), AtsPlugin.PLUGIN_ID);
    }
 
    public void updateBranchAccessControl() throws OseeCoreException {

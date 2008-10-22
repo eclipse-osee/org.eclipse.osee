@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.plugin.core.config;
 
 import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_CONFIG_FILE;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -30,6 +28,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,15 +50,13 @@ public class OSEEConfig {
    private String authenticationProvider;
    private String remoteHttpServer;
 
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OSEEConfig.class);
-
    private static OSEEConfig signleton = null;
 
    private OSEEConfig() {
       super();
       try {
          File file = getConfigFile();
-         logger.log(Level.INFO, "Using config file: " + file.getAbsolutePath());
+         OseeLog.log(PluginCoreActivator.class, Level.INFO, "Using config file: " + file.getAbsolutePath());
          Document document = null;
 
          document = Jaxp.readXmlDocument(file);
@@ -72,12 +70,11 @@ public class OSEEConfig {
          parseAuthenticationScheme(rootElement);
          parseHttpServer(rootElement);
 
-         
          serviceGroups = JiniLookupGroupConfig.getOseeJiniServiceGroups();
-         
+
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage());
-         throw new IllegalStateException(ex.getLocalizedMessage());
+         OseeLog.log(PluginCoreActivator.class, Level.SEVERE, ex);
+         throw new IllegalStateException(ex);
       }
    }
 
@@ -153,7 +150,7 @@ public class OSEEConfig {
       Element disableRemoteEventsElement = Jaxp.getChild(rootElement, "DisableRemoteEvents");
       if (disableRemoteEventsElement != null) {
          disableRemoteEvents = true;
-         logger.log(Level.SEVERE, "Remote Events Disabled");
+         OseeLog.log(PluginCoreActivator.class, Level.SEVERE, "Remote Events Disabled");
       }
    }
 
@@ -166,7 +163,7 @@ public class OSEEConfig {
             runMode = OseeRunMode.getEnum(mode);
          } catch (Exception ex) {
             runMode = OseeRunMode.Production;
-            logger.log(Level.SEVERE, "Run mode defaulted to production", ex);
+            OseeLog.log(PluginCoreActivator.class, Level.SEVERE, "Run mode defaulted to production", ex);
          }
       }
    }

@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -40,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -149,7 +147,6 @@ import org.eclipse.ui.part.ViewPart;
  * @author Ryan D. Brooks
  */
 public class ArtifactExplorer extends ViewPart implements IAccessControlEventListener, IRelationModifiedEventListener, IArtifactModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IActionable, ISelectionProvider {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactExplorer.class);
    private static final Image ACCESS_DENIED_IMAGE = SkynetGuiPlugin.getInstance().getImage("lockkey.gif");
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
@@ -605,7 +602,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             }
             treeViewer.refresh();
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          treeViewer.refresh(false);
       }
@@ -630,8 +627,8 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                   Object[] expanded = treeViewer.getExpandedElements();
                   explore((Artifact) itemsIter.next());
                   treeViewer.setExpandedElements(expanded);
-               } catch (Exception e) {
-                  logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          }
@@ -808,7 +805,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                            IWorkbenchPage.VIEW_ACTIVATE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -836,7 +833,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                   checkBranchReadable();
                }
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -1119,7 +1116,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          try {
             treeViewer.setInput(exploreRoot);
          } catch (IllegalArgumentException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }
@@ -1533,7 +1530,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             return;
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
@@ -1609,7 +1606,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                         explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
                               BranchPersistenceManager.getDefaultBranch()));
                      } catch (CoreException ex) {
-                        logger.log(Level.SEVERE, ex.toString(), ex);
+                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                      }
                   }
                } catch (Exception ex) {

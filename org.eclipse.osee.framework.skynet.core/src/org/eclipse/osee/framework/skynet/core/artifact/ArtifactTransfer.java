@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
@@ -159,7 +160,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
             source += in.readChar();
          return new ArtifactData(artifacts, url, source);
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return null;
       }
    }

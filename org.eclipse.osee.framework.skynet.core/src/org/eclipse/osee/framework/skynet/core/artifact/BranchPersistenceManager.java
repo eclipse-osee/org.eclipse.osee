@@ -631,7 +631,7 @@ public class BranchPersistenceManager {
          try {
             OseeEventManager.kickBranchEvent(instance, BranchEventType.DefaultBranchChanged, branch.getBranchId());
          } catch (Exception ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
       }
    }

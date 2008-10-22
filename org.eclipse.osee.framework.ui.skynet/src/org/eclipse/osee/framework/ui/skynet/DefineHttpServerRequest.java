@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -85,7 +86,7 @@ public class DefineHttpServerRequest implements IHttpServerRequest {
                         "org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor");
                   page.getViewReferences();
                } catch (PartInitException ex) {
-                  SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          });

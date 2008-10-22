@@ -11,20 +11,18 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.osgi.framework.Bundle;
 
 /**
  * @author Ryan D. Brooks
  */
 public class OperationsPage {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(OperationsPage.class);
-
    public void findAllOperations() {
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.BlamOperation");
@@ -46,9 +44,9 @@ public class OperationsPage {
                Class<?> renderClass = bundle.loadClass(classname);
                renderClass.newInstance();
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             } catch (NoClassDefFoundError er) {
-               logger.log(Level.WARNING,
+               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
                      "Failed to find a class definition for " + classname + ", registered from bundle " + bundleName,
                      er);
             }

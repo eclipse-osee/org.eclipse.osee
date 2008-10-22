@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
@@ -23,7 +22,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -46,7 +44,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class BranchLabelProvider implements ITableLabelProvider, ITableColorProvider, ILabelProvider {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchLabelProvider.class);
    private static Image branchImage = SkynetGuiPlugin.getInstance().getImage("branch.gif");
    private static Image changeManagedBranchImage = SkynetGuiPlugin.getInstance().getImage("change_managed_branch.gif");
 
@@ -100,7 +97,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
                return isDefault ? defaultBranchImage : branchImage;
             }
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
 
       } else if (element instanceof TransactionData && columnIndex == 0) {

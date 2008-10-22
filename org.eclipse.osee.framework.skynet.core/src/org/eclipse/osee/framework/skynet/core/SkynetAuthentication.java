@@ -17,14 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.OseeUser;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -48,7 +46,6 @@ import org.eclipse.swt.widgets.Display;
  * @author Roberto E. Escobar
  */
 public class SkynetAuthentication {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetAuthentication.class);
    private int noOneArtifactId;
    private final boolean createUserWhenNotInDatabase = true;
 
@@ -151,7 +148,7 @@ public class SkynetAuthentication {
                OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.UserAuthenticated,
                      LoadedArtifacts.EmptyLoadedArtifacts());
             } catch (Exception ex) {
-               SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -198,7 +195,7 @@ public class SkynetAuthentication {
             firstTimeThrough = false; // firstTimeThrough must be set false after last use of its value
          }
       } catch (OseeCoreException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
 
       return currentUser;
@@ -259,8 +256,10 @@ public class SkynetAuthentication {
          user.setUserID(userID);
          user.setEmail(email);
          // this is here in case a user is created at an unexpected time
-         if (!SkynetDbInit.isDbInit()) logger.log(Level.INFO, "Created user " + user, new Exception(
-               "just wanted the stack trace"));
+         if (!SkynetDbInit.isDbInit()) {
+            OseeLog.log(SkynetActivator.class, Level.INFO, "Created user " + user, new Exception(
+                  "just wanted the stack trace"));
+         }
       } finally {
          duringUserCreation = false;
       }
@@ -365,7 +364,7 @@ public class SkynetAuthentication {
          try {
             instance.noOneArtifactId = getUser(UserEnum.NoOne).getArtId();
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             instance.noOneArtifactId = -1;
          }
       }

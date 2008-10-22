@@ -42,7 +42,7 @@ public class HttpProcessor {
             toReturn = uri;
          }
       } catch (Exception ex) {
-         throw new Exception(String.format("Error saving resource [%s]", ex.getLocalizedMessage()), ex);
+         throw new Exception("Error saving resource", ex);
       }
       return toReturn;
    }

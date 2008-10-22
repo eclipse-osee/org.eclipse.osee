@@ -83,7 +83,7 @@ public class SetRequirementCategory extends AbstractBlam {
             }
          }
       } catch (ArtifactDoesNotExist ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex.getLocalizedMessage());
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex);
       }
    }
 

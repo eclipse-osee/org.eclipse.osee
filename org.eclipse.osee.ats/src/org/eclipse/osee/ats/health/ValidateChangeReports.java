@@ -147,7 +147,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   }
                } catch (Exception ex) {
                   resultStr = "Error: Exception Validating: " + ex.getLocalizedMessage();
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
                }
                sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(), teamArt.getSoleAttributeValue(
                      ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), ""), resultStr));
@@ -244,7 +244,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
             art.getDescriptiveName();
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return new Result("Exception accessing name of change report artifacts: " + ex.getLocalizedMessage());
       }
       return new Result(true, "PASS");

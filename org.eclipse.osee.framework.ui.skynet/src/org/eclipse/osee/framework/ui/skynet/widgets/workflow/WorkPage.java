@@ -53,7 +53,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       try {
          if (xWidgetsXml != null) processXmlLayoutDatas(xWidgetsXml);
       } catch (Exception ex) {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, "Error processing attributes", ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error processing attributes", ex);
       }
    }
 

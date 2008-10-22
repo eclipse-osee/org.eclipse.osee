@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -26,7 +25,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -58,7 +56,6 @@ public class GlobalMenu {
    private MenuItem deleteMenuItem;
    private MenuItem purgeMenuItem;
    private MenuItem tagMenuItem;
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(GlobalMenu.class);
    public static enum GlobalMenuItem {
       DeleteArtifacts, PurgeArtifacts;
 
@@ -203,7 +200,7 @@ public class GlobalMenu {
                      purgeTx.execute();
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {
-                     logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                      toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
                   } finally {
                      monitor.done();

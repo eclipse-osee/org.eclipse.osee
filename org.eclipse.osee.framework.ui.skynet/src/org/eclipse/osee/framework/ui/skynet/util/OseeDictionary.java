@@ -90,8 +90,7 @@ public class OseeDictionary implements IDictionary {
          point =
                Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.OseeDictionary");
       } catch (NullPointerException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, 
-               "Can't access OseeDictionary extension point" + ex.getLocalizedMessage());
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Can't access OseeDictionary extension point", ex);
          return;
       }
       if (point == null) {

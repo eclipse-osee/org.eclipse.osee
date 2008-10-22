@@ -15,10 +15,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.ImageLoader;
  * @author Robert A. Fisher
  */
 public class InputStreamImageDescriptor extends ImageDescriptor implements Serializable {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(InputStreamImageDescriptor.class);
    private static final long serialVersionUID = -1671707512486351173L;
    private final byte[] data;
    private ImageData imageData;
@@ -65,7 +64,7 @@ public class InputStreamImageDescriptor extends ImageDescriptor implements Seria
             imageData = new ImageData(new ByteArrayInputStream(data));
          }
       } catch (SWTException ex) {
-         logger.log(Level.WARNING, ex.getLocalizedMessage(), ex);
+         OseeLog.log(OseePluginUiActivator.class, Level.WARNING, ex);
       }
       return imageData;
    }

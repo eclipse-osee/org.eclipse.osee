@@ -16,6 +16,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest.HttpMethod;
 
@@ -39,8 +40,8 @@ public class HttpRequestHandler implements Runnable {
    public void run() {
       try {
          processRequest();
-      } catch (Exception e) {
-         SkynetActivator.getLogger().log(Level.SEVERE, "Error Processing Request: ", e);
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, "Error Processing Request: ", ex);
       }
    }
 

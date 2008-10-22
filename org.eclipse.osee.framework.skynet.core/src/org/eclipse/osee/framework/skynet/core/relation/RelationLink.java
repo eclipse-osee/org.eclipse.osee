@@ -255,7 +255,7 @@ public class RelationLink {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.RationaleMod, this,
                   getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
       }
    }

@@ -993,7 +993,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                relations.add(relation);
             }
          } catch (ArtifactDoesNotExist ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
       }
       return relations;

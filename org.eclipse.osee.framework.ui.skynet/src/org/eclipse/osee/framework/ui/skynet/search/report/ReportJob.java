@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.search.ui.text.Match;
@@ -52,7 +53,7 @@ public abstract class ReportJob extends Job {
          }
          generateReport(artifacts, monitor);
       } catch (Exception ex) {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.toString(), ex);
       }
       return Status.OK_STATUS;

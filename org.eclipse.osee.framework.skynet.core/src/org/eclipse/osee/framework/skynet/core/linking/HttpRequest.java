@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
@@ -151,7 +152,7 @@ public class HttpRequest {
 
    private void parseRequest(String entry) throws Exception {
       this.rawRequest = entry;
-      SkynetActivator.getLogger().log(Level.INFO, "HttpRequest *" + rawRequest + "*");
+      OseeLog.log(SkynetActivator.class, Level.INFO, "HttpRequest *" + rawRequest + "*");
       String[] entries = rawRequest.split("\\s");
       if (entries.length > 0 && entries.length < 4) {
          httpMethod = HttpMethod.valueOf(entries[0].trim());
@@ -166,7 +167,8 @@ public class HttpRequest {
    }
 
    /**
-    * Process new style requests are of the following format: http://127.0.0.1:<port>/<ProcessType>?key1=value1&key2=value2...&key3=value3
+    * Process new style requests are of the following format:
+    * http://127.0.0.1:<port>/<ProcessType>?key1=value1&key2=value2...&key3=value3
     * 
     * @param entry
     * @throws Exception

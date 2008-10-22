@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -89,7 +90,7 @@ public class WorkflowDataPage extends FormPage {
 
                workflow.saveLayoutData(widgetXml);
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                MessageDialog.openError(form.getShell(), "Error", ex.getLocalizedMessage());
             }
          }

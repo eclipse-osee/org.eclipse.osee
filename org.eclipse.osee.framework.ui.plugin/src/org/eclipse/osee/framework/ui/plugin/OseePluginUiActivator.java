@@ -12,26 +12,21 @@ package org.eclipse.osee.framework.ui.plugin;
 
 import java.io.File;
 import java.net.URL;
-import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 
-/**a
- * The activator class controls the plug-in life cycle
+/**
+ * a The activator class controls the plug-in life cycle
  */
 public class OseePluginUiActivator extends OseeUiActivator {
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OseePluginUiActivator.class);
-
    // The plug-in ID
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.plugin";
 
@@ -77,7 +72,7 @@ public class OseePluginUiActivator extends OseeUiActivator {
                         for (File toDelete : files) {
                            toDelete.delete();
                         }
-                        
+
                         Lib.deleteContents(new File(new File(file, "configuration"), "org.eclipse.osgi"));
                      }
                   }
@@ -107,12 +102,5 @@ public class OseePluginUiActivator extends OseeUiActivator {
     */
    public static OseePluginUiActivator getInstance() {
       return plugin;
-   }
-
-   /**
-    * @return the logger
-    */
-   public static Logger getLogger() {
-      return logger;
    }
 }

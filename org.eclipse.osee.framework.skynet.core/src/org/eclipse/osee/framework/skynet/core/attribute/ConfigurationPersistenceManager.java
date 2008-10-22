@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -84,7 +85,7 @@ public class ConfigurationPersistenceManager {
          while (m.find())
             names.add(m.group(1));
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, "Error getting valid enumeration values", ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, "Error getting valid enumeration values", ex);
       }
       return names;
    }

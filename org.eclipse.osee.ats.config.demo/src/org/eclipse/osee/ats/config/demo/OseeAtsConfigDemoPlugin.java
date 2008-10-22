@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo;
 
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -21,7 +19,6 @@ import org.osgi.framework.BundleContext;
 public class OseeAtsConfigDemoPlugin extends OseeActivator {
    // The shared instance.
    private static OseeAtsConfigDemoPlugin plugin;
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OseeAtsConfigDemoPlugin.class);
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.config.demo";
 
    /**
@@ -34,10 +31,6 @@ public class OseeAtsConfigDemoPlugin extends OseeActivator {
 
    public static OseeAtsConfigDemoPlugin getInstance() {
       return plugin;
-   }
-
-   public static Logger getLogger() {
-      return logger;
    }
 
    /* (non-Javadoc)

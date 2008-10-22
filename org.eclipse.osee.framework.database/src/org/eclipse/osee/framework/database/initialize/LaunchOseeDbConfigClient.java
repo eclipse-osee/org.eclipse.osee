@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.osgi.framework.Bundle;
 
@@ -51,13 +52,12 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
 
    @Override
    public void processTask() throws InvalidRegistryObjectException {
-      logger.log(Level.INFO, "Begin Database Initialization...");
+      OseeLog.log(DatabaseActivator.class, Level.INFO, "Begin Database Initialization...");
       run(connection, GroupSelection.getInstance().getDbInitTasks());
-      logger.log(Level.INFO, "Database Initialization Complete.");
+      OseeLog.log(DatabaseActivator.class, Level.INFO, "Database Initialization Complete.");
    }
 
    private static final String dbInitExtensionPointId = "org.eclipse.osee.framework.database.IDbInitializationTask";
-   private Logger logger = ConfigUtil.getConfigFactory().getLogger(LaunchOseeDbConfigClient.class);
 
    /*
     * (non-Javadoc)
@@ -68,17 +68,17 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       for (String pointId : extensionIds) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(pointId);
          if (extension == null) {
-            logger.log(Level.SEVERE, "Unable to locate extension [" + pointId + "]");
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, "Unable to locate extension [" + pointId + "]");
          } else {
             String extsionPointId = extension.getExtensionPointUniqueIdentifier();
             if (dbInitExtensionPointId.equals(extsionPointId)) {
                boolean success = runDbInitTasks(extension, connection);
                if (!success) {
-                  logger.log(Level.SEVERE, "Aborting due to errors.");
+                  OseeLog.log(DatabaseActivator.class, Level.SEVERE, "Aborting due to errors.");
                   break;
                }
             } else {
-               logger.log(Level.SEVERE,
+               OseeLog.log(DatabaseActivator.class, Level.SEVERE,
                      "Unknown extension id [" + extsionPointId + "] from extension [" + pointId + "]");
             }
          }
@@ -102,17 +102,16 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       if (classname != null && bundleName != null) {
          Bundle bundle = Platform.getBundle(bundleName);
          try {
-            logger.log(Level.INFO, "Starting [" + extension.getUniqueIdentifier() + "]");
+            OseeLog.log(DatabaseActivator.class, Level.INFO, "Starting [" + extension.getUniqueIdentifier() + "]");
             Class<?> taskClass = bundle.loadClass(classname);
             Object obj = taskClass.newInstance();
             IDbInitializationTask task = (IDbInitializationTask) obj;
             task.run(connection);
-            // logger.log(Level.INFO, "Completed [" + extension.getUniqueIdentifier() + "]");
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
             return false;
          } catch (NoClassDefFoundError er) {
-            logger.log(Level.SEVERE, er.getLocalizedMessage(), er);
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, er);
             return false;
          }
       }
@@ -129,7 +128,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
          try {
             line = stdin.readLine();
          } catch (IOException ex) {
-            ex.printStackTrace();
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
          }
       }
       return line;

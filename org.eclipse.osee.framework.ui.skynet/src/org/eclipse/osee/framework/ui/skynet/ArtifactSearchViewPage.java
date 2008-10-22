@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -40,7 +39,6 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -87,7 +85,6 @@ import org.eclipse.ui.menus.CommandContributionItem;
 import org.osgi.framework.Bundle;
 
 public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage implements IFrameworkTransactionEventListener, IArtifactsPurgedEventListener {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSearchViewPage.class);
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynetd.ArtifactSearchView";
    private IHandlerService handlerService;
@@ -441,9 +438,10 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                      ReportJob reportJob = (ReportJob) obj;
                      addReportJobCommand(parentMenuManager, childMenuManager, reportJob);
                   } catch (Exception ex) {
-                     logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   } catch (NoClassDefFoundError er) {
-                     logger.log(
+                     OseeLog.log(
+                           SkynetGuiPlugin.class,
                            Level.WARNING,
                            "Failed to find a class definition for " + classname + ", registered from bundle " + bundleName,
                            er);
@@ -474,9 +472,10 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                      ReportJob reportJob = (ReportJob) obj;
                      createReportJobCommand(parentMenuManager, childMenuManager, reportJob);
                   } catch (Exception ex) {
-                     logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   } catch (NoClassDefFoundError er) {
-                     logger.log(
+                     OseeLog.log(
+                           SkynetGuiPlugin.class,
                            Level.WARNING,
                            "Failed to find a class definition for " + classname + ", registered from bundle " + bundleName,
                            er);
@@ -574,7 +573,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                            IWorkbenchPage.VIEW_VISIBLE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
             return null;
          }

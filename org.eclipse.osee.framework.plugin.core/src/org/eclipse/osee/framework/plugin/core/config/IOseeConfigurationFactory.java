@@ -18,5 +18,7 @@ public interface IOseeConfigurationFactory {
 
    DbErrorCodeLevel getDbErrorCodeLevel(SQLException ex);
 
+   @Deprecated
+   // use OseeLog.log() instead
    Logger getLogger(Class<?> classname);
 }

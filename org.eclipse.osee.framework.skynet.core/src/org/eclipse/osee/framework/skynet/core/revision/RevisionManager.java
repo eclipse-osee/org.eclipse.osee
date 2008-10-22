@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -184,7 +185,7 @@ public class RevisionManager {
                   try {
                      OseeEventManager.kickLocalBranchToArtifactCacheUpdateEvent(this);
                   } catch (Exception ex) {
-                     SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                     OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
                   }
                }
             }

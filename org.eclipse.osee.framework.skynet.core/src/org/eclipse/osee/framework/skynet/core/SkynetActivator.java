@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
 
@@ -26,7 +24,6 @@ public class SkynetActivator extends OseeUiActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.skynet.core";
    public static final String AUTO_TAG_KEY = "osee.auto.tag";
    private Job job;
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetActivator.class);
 
    public SkynetActivator() {
       super();
@@ -44,11 +41,5 @@ public class SkynetActivator extends OseeUiActivator {
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
       if (job != null && job.getThread().isAlive()) job.getThread().interrupt();
-   }
-
-   @Deprecated
-   // usee OseeLog instead
-   public static Logger getLogger() {
-      return logger;
    }
 }
