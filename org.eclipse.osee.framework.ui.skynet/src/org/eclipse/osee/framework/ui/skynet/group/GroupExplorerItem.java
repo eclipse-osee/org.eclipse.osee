@@ -38,6 +38,11 @@ public class GroupExplorerItem {
       this.groupExplorer = groupExplorer;
    }
 
+   @Override
+   public String toString() {
+      return "\"" + artifact.getDescriptiveName() + "\" - " + groupItems.size();
+   }
+
    public boolean contains(Artifact artifact) {
       for (GroupExplorerItem item : getGroupItems()) {
          if (item.getArtifact() != null && item.getArtifact().equals(artifact)) return true;
@@ -112,7 +117,9 @@ public class GroupExplorerItem {
    }
 
    public void addGroupItem(GroupExplorerItem item) {
-      groupItems.add(item);
+      if (!groupItems.contains(item)) {
+         groupItems.add(item);
+      }
    }
 
    public void removeGroupItem(GroupExplorerItem item) {
@@ -130,9 +137,10 @@ public class GroupExplorerItem {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof GroupExplorerItem) {
-         return artifact.getGuid().equals(((GroupExplorerItem) obj).getArtifact().getGuid()) && (getParentItem() != null ? getParentItem().equals(
-               ((GroupExplorerItem) obj).getParentItem()) : true);
+         boolean equals = artifact.getGuid().equals(((GroupExplorerItem) obj).getArtifact().getGuid());
+         if (!equals) return false;
       }
+      if (((GroupExplorerItem) obj).getParentItem() == null && getParentItem() == null) return true;
       return false;
    }
 
