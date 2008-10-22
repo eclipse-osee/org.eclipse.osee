@@ -178,11 +178,26 @@ public class SkynetAuthentication {
                if (currentUser == null) {
                   try {
                      currentUser = getUserByUserId(userId);
+                     // Validate/Update user credentials
+                     String credentialEmail =
+                           OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Email);
+                     String name = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Name);
+                     if (!name.equals(userId) && !currentUser.getName().equals(name)) {
+                        currentUser.setDescriptiveName(name);
+                     }
+                     if (credentialEmail != null && credentialEmail.contains("@") && !credentialEmail.equals(currentUser.getSoleAttributeValue(
+                           "Email", ""))) {
+                        currentUser.setSoleAttributeFromString("Email", credentialEmail);
+                     }
+                     currentUser.persistAttributes();
+
                   } catch (UserNotInDatabase ex) {
                      if (createUserWhenNotInDatabase) {
+                        String email =
+                              OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Email);
                         currentUser =
                               createUser(OseeAuthentication.getInstance().getCredentials().getField(
-                                    UserCredentialEnum.Name), "spawnedBySkynet", userId, true);
+                                    UserCredentialEnum.Name), email == null ? "spawnedBySkynet" : email, userId, true);
                         persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
                      } else {
                         AWorkbench.popup("Logged in as Guest",
