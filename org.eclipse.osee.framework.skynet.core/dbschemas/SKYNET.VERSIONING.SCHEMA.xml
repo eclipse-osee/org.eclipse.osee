@@ -440,6 +440,9 @@
 		<Index id="OSEE_SEARCH_TAGS_C_IDX" tablespace="osee_index">
 			<AppliesTo id="CODED_TAG_ID"/>
 		</Index>
+		<Index id="OSEE_SEARCH_TAGS_G_IDX" tablespace="osee_index">
+			<AppliesTo id="GAMMA_ID"/>
+		</Index>
 	</Table>
 	
 	<Table name="OSEE_JOIN_SEARCH_TAGS" schema="OSEE" tablespace="osee_data">
