@@ -29,9 +29,9 @@ public class VariantData implements IVariantData {
    private final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
    private final String CONVERSION_EXCEPTION_MESSAGE = "Unable to convert [%s] from [%s] to [%s]";
 
-   private Properties storageData;
-   private Properties storageArrays;
-   private Map<String, byte[]> byteArrayData;
+   private final Properties storageData;
+   private final Properties storageArrays;
+   private final Map<String, byte[]> byteArrayData;
 
    public VariantData() {
       this.byteArrayData = new HashMap<String, byte[]>();
@@ -44,6 +44,7 @@ public class VariantData implements IVariantData {
    }
 
    public boolean isEmpty(String key) {
+      if (get(key) == null) return true;
       return get(key).equals("");
    }
 
@@ -164,6 +165,7 @@ public class VariantData implements IVariantData {
       byteArrayData.put(key, bytes);
    }
 
+   @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
       builder.append(storageData.toString().replaceAll(",", ",\n"));

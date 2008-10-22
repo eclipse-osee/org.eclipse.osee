@@ -759,11 +759,40 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       }
    }
 
-   public abstract Date getWorldViewEstimatedReleaseDate() throws OseeCoreException;
+   @Override
+   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
+      Date date = getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
+      Date parentDate = null;
+      if (getParentSMA() != null) {
+         parentDate = getParentSMA().getWorldViewEstimatedReleaseDate();
+      }
+      if (date == null && parentDate != null) {
+         return parentDate;
+      }
+      return date;
+   }
+
+   @Override
+   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
+      Date date = getSoleAttributeValue(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getStoreName(), null);
+      Date parentDate = null;
+      if (getParentSMA() != null) {
+         parentDate = getParentSMA().getWorldViewEstimatedReleaseDate();
+      }
+      if (date == null && parentDate != null) {
+         return parentDate;
+      }
+      return date;
+   }
 
    public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException {
       if (getWorldViewEstimatedReleaseDate() == null) return "";
       return new XDate(getWorldViewEstimatedReleaseDate()).getMMDDYYHHMM();
+   }
+
+   public String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException {
+      if (getWorldViewEstimatedCompletionDate() == null) return "";
+      return new XDate(getWorldViewEstimatedCompletionDate()).getMMDDYYHHMM();
    }
 
    public abstract Date getWorldViewReleaseDate() throws OseeCoreException;

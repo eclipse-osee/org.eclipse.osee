@@ -117,6 +117,8 @@ public class ATSAttributes {
    public static final ATSAttributes REVIEW_BLOCKS_ATTRIBUTE =
          new ATSAttributes("Review Blocks", "Review Completion will block it's parent workflow in this manner.");
    public static final ATSAttributes ESTIMATED_RELEASE_DATE_ATTRIBUTE = new ATSAttributes("Estimated Release Date");
+   public static final ATSAttributes ESTIMATED_COMPLETION_DATE_ATTRIBUTE =
+         new ATSAttributes("Estimated Completion Date");
    public static final ATSAttributes RELEASE_DATE_ATTRIBUTE = new ATSAttributes("Release Date");
    public static final ATSAttributes MAN_DAYS_NEEDED_ATTRIBUTE = new ATSAttributes("Man Days Needed");
 

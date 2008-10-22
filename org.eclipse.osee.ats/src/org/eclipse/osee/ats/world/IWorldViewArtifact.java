@@ -64,6 +64,10 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException;
 
+   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException;
+
+   public String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException;
+
    public double getWorldViewHoursSpentState() throws OseeCoreException;
 
    public double getWorldViewHoursSpentStateReview() throws OseeCoreException;

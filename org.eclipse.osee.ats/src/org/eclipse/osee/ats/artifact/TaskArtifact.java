@@ -231,15 +231,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return "";
    }
 
-   /**
-    * @return parent SMA's date if it has one. else return task's date if it has one
-    */
-   @Override
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewEstimatedReleaseDate();
-      return getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
-   }
-
    @Override
    public Date getWorldViewReleaseDate() throws OseeCoreException {
       if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();

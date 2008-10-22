@@ -57,11 +57,6 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    }
 
    @Override
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      return null;
-   }
-
-   @Override
    public Date getWorldViewReleaseDate() throws OseeCoreException {
       return null;
    }

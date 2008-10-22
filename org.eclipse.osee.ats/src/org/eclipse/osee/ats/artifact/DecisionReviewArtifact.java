@@ -145,11 +145,6 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    }
 
    @Override
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      return null;
-   }
-
-   @Override
    public Date getWorldViewReleaseDate() throws OseeCoreException {
       return null;
    }
