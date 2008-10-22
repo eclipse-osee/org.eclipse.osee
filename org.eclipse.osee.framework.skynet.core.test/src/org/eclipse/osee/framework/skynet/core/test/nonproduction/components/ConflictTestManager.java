@@ -530,6 +530,7 @@ public class ConflictTestManager {
    }
 
    public static void createModifications() throws OseeCoreException {
+      modifications.clear();
       modifications.add(new ArtifactModification(Type.ARTIFACT, Modification.CREATE_AND_DELETE, 0,
             sourceArtifacts[0].getBranch(), "Software Requirement", "Test create an Delete"));
       modifications.add(new ArtifactModification(Type.ATTRIBUTE, Modification.CREATE_AND_DELETE, sourceArtifacts[2],

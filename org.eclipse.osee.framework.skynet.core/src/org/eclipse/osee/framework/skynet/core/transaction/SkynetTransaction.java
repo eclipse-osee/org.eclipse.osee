@@ -54,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
  */
 public class SkynetTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
-         "UPDATE osee_txs txs1 SET tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = (SELECT jt1.transaction_id, jt1.gamma_id FROM osee_join_transaction jt1 WHERE jt1.query_id = ?)";
+         "UPDATE osee_txs txs1 SET tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) in (SELECT jt1.transaction_id, jt1.gamma_id FROM osee_join_transaction jt1 WHERE jt1.query_id = ?)";
    // SLOW on Postgresql -- "UPDATE osee_txs txs1 SET tx_current = 0 WHERE EXISTS (SELECT 1 FROM osee_join_transaction jt1 WHERE jt1.query_id = ? AND txs1.transaction_id = jt1.transaction_id AND txs1.gamma_id = jt1.gamma_id)";
 
    private static final String DELETE_TRANSACTION_DETAIL = "DELETE FROM osee_tx_details WHERE transaction_id =?";
