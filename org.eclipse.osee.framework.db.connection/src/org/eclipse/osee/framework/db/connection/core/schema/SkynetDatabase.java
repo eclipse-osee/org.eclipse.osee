@@ -45,6 +45,9 @@ public class SkynetDatabase {
    public static final Table SEQUENCE_TABLE = new Table("OSEE_SEQUENCE");
    public static final Table OSEE_INFO_TABLE = new Table("OSEE_INFO");
 
+   public static final Table OSEE_MERGE_TABLE = new Table("OSEE_MERGE");
+   public static final Table OSEE_CONFLICT_TABLE = new Table("OSEE_CONFLICT");
+
    public static final String TXD_COMMENT = "OSEE_COMMENT";
 
    private static final View[] skynetViews = new View[] {};
