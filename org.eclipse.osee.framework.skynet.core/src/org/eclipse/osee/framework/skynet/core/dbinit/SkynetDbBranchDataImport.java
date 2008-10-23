@@ -25,16 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
+import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -45,8 +44,7 @@ import org.osgi.framework.Bundle;
 /**
  * @author Roberto E. Escobar
  */
-public class SkynetDbBranchDataImport extends DbInitializationTask {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetDbBranchDataImport.class);
+public class SkynetDbBranchDataImport implements IDbInitializationTask {
    private static final String ELEMENT_NAME = "OseeDbImportData";
    private static final String EXTENSION_POINT = SkynetActivator.PLUGIN_ID + "." + ELEMENT_NAME;
    private static final String BRANCH_NAME = "branchName";
@@ -68,13 +66,14 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
 
          Collection<ImportData> importDatas = loadDataFromExtensions();
          for (ImportData importData : importDatas) {
-            logger.log(Level.INFO, String.format("Import Branch Data: [%s]", importData));
+            OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Import Branch Data: [%s]", importData));
             try {
                File importFile = importData.getExchangeFile();
                //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (OseeDataStoreException ex) {
-               logger.log(Level.SEVERE, String.format("Exception while importing branch: [%s]", importData), ex);
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, String.format("Exception while importing branch: [%s]",
+                     importData), ex);
                throw ex;
             }
          }

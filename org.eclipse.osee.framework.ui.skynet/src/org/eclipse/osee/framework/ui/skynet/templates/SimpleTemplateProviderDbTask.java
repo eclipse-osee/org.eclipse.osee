@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
+import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,13 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#canRun()
-    */
-   public boolean canRun() {
-      return true;
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
@@ -75,8 +68,8 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
                templateArtifact.persistAttributes();
                templateFolder.addChild(templateArtifact);
             } else {
-               OseeLog.log(SimpleTemplateProviderDbTask.class, Level.SEVERE, 
-                     String.format("Problem loading file %s", filePath));
+               OseeLog.log(SimpleTemplateProviderDbTask.class, Level.SEVERE, String.format("Problem loading file %s",
+                     filePath));
             }
          }
       }

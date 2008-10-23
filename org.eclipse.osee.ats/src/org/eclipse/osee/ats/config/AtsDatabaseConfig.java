@@ -17,12 +17,12 @@ import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
+import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
-public class AtsDatabaseConfig extends DbInitializationTask {
+public class AtsDatabaseConfig implements IDbInitializationTask {
 
    public void run(Connection connection) throws OseeCoreException {
       createAtsTopLevelConfigObjects();

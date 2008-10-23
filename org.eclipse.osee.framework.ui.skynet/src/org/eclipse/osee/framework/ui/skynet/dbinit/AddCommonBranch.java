@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.dbinit;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
+import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;

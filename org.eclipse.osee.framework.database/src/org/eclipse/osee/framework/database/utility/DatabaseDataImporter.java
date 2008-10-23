@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.data.ColumnDbData;
 import org.eclipse.osee.framework.database.data.ColumnMetadata;
 import org.eclipse.osee.framework.database.data.TableElement;
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.database.data.TableElement.TableTags;
 import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -45,7 +45,6 @@ import org.w3c.dom.NodeList;
 public class DatabaseDataImporter {
    private Connection connection;
    private File directory;
-   private Logger logger;
    private SqlManager sqlManager;
    private List<String> tableOrder;
    private String schemaToImportTo;
@@ -70,7 +69,6 @@ public class DatabaseDataImporter {
    public DatabaseDataImporter(Connection connection, File directory, SqlManager sqlManager) {
       this.connection = connection;
       this.directory = directory;
-      this.logger = ConfigUtil.getConfigFactory().getLogger(DatabaseDataImporter.class);
       this.sqlManager = sqlManager;
       this.tableFilter = new TreeSet<String>();
    }
@@ -137,9 +135,9 @@ public class DatabaseDataImporter {
                document = builder.parse(file);
                processData(parseXMLDbDataFile(document));
             } catch (ParserConfigurationException ex) {
-               logger.log(Level.SEVERE, "Unable to Parse File. ", ex);
+               OseeLog.log(DatabaseActivator.class, Level.SEVERE, "Unable to Parse File. ", ex);
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, "Exception: \n", ex);
+               OseeLog.log(DatabaseActivator.class, Level.SEVERE, "Exception: \n", ex);
             }
          }
       }
@@ -157,7 +155,8 @@ public class DatabaseDataImporter {
    private void processData(List<TableData> tables) throws OseeDataStoreException {
       if (tables.size() != 0) {
          for (TableData tableData : tables) {
-            logger.log(Level.INFO, "Populating: [ " + tableData.getFullyQualifiedTableName() + "]\n");
+            OseeLog.log(DatabaseActivator.class, Level.INFO,
+                  "Populating: [ " + tableData.getFullyQualifiedTableName() + "]\n");
             List<List<ColumnDbData>> rows = tableData.getRows();
             if (!rows.isEmpty()) {
                for (List<ColumnDbData> rowData : rows) {

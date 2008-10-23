@@ -29,9 +29,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
@@ -60,7 +60,6 @@ public class DatabaseDataExtractor {
    private DatabaseSchemaExtractor databaseInfo;
    private Set<String> schemas;
    private File directory;
-   private Logger logger;
    private List<Thread> workerThreads;
    private Set<String> extractTables;
    private SupportedDatabase dbType;
@@ -74,7 +73,6 @@ public class DatabaseDataExtractor {
       this.connection = connection;
       this.schemas = schemas;
       this.directory = directory;
-      this.logger = ConfigUtil.getConfigFactory().getLogger(DatabaseDataExtractor.class);
       this.workerThreads = new ArrayList<Thread>();
       this.extractTables = new TreeSet<String>();
       this.dbType = SupportedDatabase.getDatabaseType(connection);
@@ -116,7 +114,7 @@ public class DatabaseDataExtractor {
                writeDocumentToFile(document, table.getFullyQualifiedTableName());
             }
          } catch (Exception ex) {
-            logger.log(Level.SEVERE,
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE,
                   "Error Processing Table [ " + table.getSchema() + "." + table.getName() + " ] Data ", ex);
          } finally {
             ConnectionHandler.close(chStmt);
@@ -129,7 +127,8 @@ public class DatabaseDataExtractor {
          try {
             worker.join();
          } catch (InterruptedException ex) {
-            logger.log(Level.SEVERE, "Thread [" + worker.getName() + "] was Interrupted. ", ex);
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, "Thread [" + worker.getName() + "] was Interrupted. ",
+                  ex);
          }
       }
    }
@@ -262,9 +261,9 @@ public class DatabaseDataExtractor {
          XMLSerializer xmlSerializer = new XMLSerializer(out, outputFormat);
          xmlSerializer.serialize(doc.getDocumentElement());
       } catch (FileNotFoundException ex) {
-         logger.log(Level.SEVERE, "File error [" + fileString + "] ", ex);
+         OseeLog.log(DatabaseActivator.class, Level.SEVERE, "File error [" + fileString + "] ", ex);
       } catch (IOException ex) {
-         logger.log(Level.SEVERE, "Error writing to File [" + fileString + "] ", ex);
+         OseeLog.log(DatabaseActivator.class, Level.SEVERE, "Error writing to File [" + fileString + "] ", ex);
       } finally {
          out.flush();
          out.close();

@@ -19,19 +19,16 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 public class SkynetTypesEnumGenerator implements RowProcessor {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTypesEnumGenerator.class);
-
    private static final Pattern nonJavaCharP = Pattern.compile("[^a-zA-Z_0-9]");
 
    private static final String relationImports =
@@ -188,7 +185,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
                break;
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex.toString(), ex);
       }
    }
 

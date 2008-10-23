@@ -65,7 +65,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.skynet.core.dbinit.IDbInitRule"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.database.IDbInitRule"/>
                </appinfo>
             </annotation>
          </attribute>

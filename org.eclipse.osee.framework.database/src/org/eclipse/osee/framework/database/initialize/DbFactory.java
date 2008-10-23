@@ -12,14 +12,12 @@ package org.eclipse.osee.framework.database.initialize;
 
 import java.sql.Connection;
 import java.util.List;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -29,13 +27,11 @@ public class DbFactory {
    private SchemaData schemaData;
    protected SqlManager sqlManager;
    protected Connection connection;
-   protected Logger logger;
 
    public DbFactory(Connection connection, SupportedDatabase databaseType, SchemaData schemaData) {
       this.schemaData = schemaData;
       this.connection = connection;
       this.sqlManager = SqlFactory.getSqlManager(databaseType);
-      this.logger = ConfigUtil.getConfigFactory().getLogger(DbFactory.class);
    }
 
    public void createTables() throws OseeDataStoreException {

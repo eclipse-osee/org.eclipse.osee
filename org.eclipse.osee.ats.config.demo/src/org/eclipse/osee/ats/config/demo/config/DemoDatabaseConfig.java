@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.vue.LoadAIsAndTeamsAction;
-import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
+import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * 
  * @author Donald G. Dunne
  */
-public class DemoDatabaseConfig extends DbInitializationTask {
+public class DemoDatabaseConfig implements IDbInitializationTask {
    public void run(Connection connection) throws OseeCoreException {
 
       new DemoCodeWorkFlowDefinition().config(WriteType.New, null);

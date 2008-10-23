@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
+import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.data.AppliesToClause;
 import org.eclipse.osee.framework.database.data.ColumnMetadata;
 import org.eclipse.osee.framework.database.data.ConstraintElement;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFie
 import org.eclipse.osee.framework.database.data.TableElement.TableSections;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,7 +50,6 @@ import org.xml.sax.SAXException;
  */
 public class TableConfigUtility {
 
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(TableConfigUtility.class);
    private static TableConfigUtility instance = null;
 
    private SchemaData parsedData;
@@ -75,11 +74,11 @@ public class TableConfigUtility {
       try {
          document = Jaxp.readXmlDocument(configFile);
       } catch (ParserConfigurationException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex.toString(), ex);
       } catch (SAXException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex.toString(), ex);
       } catch (IOException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex.toString(), ex);
       }
       return document;
    }

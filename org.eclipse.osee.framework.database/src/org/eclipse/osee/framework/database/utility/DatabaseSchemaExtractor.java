@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.data.AppliesToClause;
 import org.eclipse.osee.framework.database.data.ColumnMetadata;
 import org.eclipse.osee.framework.database.data.ConstraintElement;
@@ -49,14 +49,12 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DatabaseSchemaExtractor {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(DatabaseSchemaExtractor.class);
 
    private DatabaseMetaData dbData;
    private String dbName;
@@ -139,9 +137,9 @@ public class DatabaseSchemaExtractor {
          try {
             Jaxp.writeXmlDocument(tableData.getXmlDocument(), xmlFile);
          } catch (TransformerException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex.toString(), ex);
          } catch (ParserConfigurationException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex.toString(), ex);
          }
       }
    }

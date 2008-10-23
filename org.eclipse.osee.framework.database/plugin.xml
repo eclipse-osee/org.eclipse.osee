@@ -21,12 +21,14 @@
 <extension
       id="RestoreTableData"
       point="org.eclipse.osee.framework.database.IDbInitializationTask">
-   <DatabaseTask classname="org.eclipse.osee.framework.database.initialize.tasks.relational.RestoreTableData"/>
+   <DatabaseTask
+         classname="org.eclipse.osee.framework.database.initialize.tasks.relational.RestoreTableData"/>
 </extension>
 <extension
       id="ImportDataFromDbService"
       point="org.eclipse.osee.framework.database.IDbInitializationTask">
-   <DatabaseTask classname="org.eclipse.osee.framework.database.initialize.tasks.ImportDataFromDbService"/>
+   <DatabaseTask
+         classname="org.eclipse.osee.framework.database.initialize.tasks.ImportDataFromDbService"/>
 </extension>
 <extension
       id="availableDbTasks"

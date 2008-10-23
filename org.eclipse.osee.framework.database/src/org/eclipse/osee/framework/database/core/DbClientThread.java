@@ -13,9 +13,10 @@ package org.eclipse.osee.framework.database.core;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -23,32 +24,30 @@ import org.eclipse.osee.framework.db.connection.info.DbInformation;
 public abstract class DbClientThread extends Thread {
    protected Connection connection;
    protected DbInformation databaseService;
-   protected Logger logger;
 
-   public DbClientThread(Logger logger, String threadName, DbInformation databaseService) {
+   public DbClientThread(String threadName, DbInformation databaseService) {
       this.setName(threadName);
       this.connection = null;
       this.databaseService = databaseService;
-      this.logger = logger;
    }
 
    @Override
    public void run() {
-      logger.log(Level.INFO, "Starting " + getName() + "...");
+      OseeLog.log(DatabaseActivator.class, Level.INFO, "Starting " + getName() + "...");
       try {
          connection = OseeDbConnection.getConnection(databaseService);
          processTask();
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex.getMessage(), ex);
       } catch (ExceptionInInitializerError ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex.getMessage(), ex);
       } finally {
          if (connection != null) {
             try {
-               logger.log(Level.INFO, "Closing " + getName() + " Connection...");
+               OseeLog.log(DatabaseActivator.class, Level.INFO, "Closing " + getName() + " Connection...");
                connection.close();
             } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.getMessage(), ex);
+               OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex.getMessage(), ex);
             }
          }
       }

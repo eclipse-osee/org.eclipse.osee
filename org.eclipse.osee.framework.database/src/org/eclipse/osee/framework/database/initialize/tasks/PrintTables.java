@@ -17,10 +17,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
-public class PrintTables extends DbInitializationTask {
+public class PrintTables implements IDbInitializationTask {
 
    private Map<String, SchemaData> userConfig;
 

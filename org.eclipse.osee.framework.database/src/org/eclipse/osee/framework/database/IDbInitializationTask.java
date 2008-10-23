@@ -8,13 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.initialize.tasks;
+package org.eclipse.osee.framework.database;
 
-/**
- * @author Donald G. Dunne
- */
-public abstract class DbInitializationTask implements IDbInitializationTask {
-   public boolean canRun() {
-      return true;
-   }
+import java.sql.Connection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+
+public interface IDbInitializationTask {
+   public abstract void run(Connection connection) throws OseeCoreException;
 }

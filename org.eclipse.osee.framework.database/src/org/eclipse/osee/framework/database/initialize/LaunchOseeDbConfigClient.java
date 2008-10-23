@@ -26,28 +26,28 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
+import org.eclipse.osee.framework.database.IDbInitializationRule;
+import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.core.DbClientThread;
-import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.osgi.framework.Bundle;
 
 /**
  * @author Roberto E. Escobar
  */
 public class LaunchOseeDbConfigClient extends DbClientThread {
-
+   private static final String dbInitExtensionPointId = "org.eclipse.osee.framework.database.IDbInitializationTask";
    private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
    private LaunchOseeDbConfigClient(DbInformation databaseService) {
-      super(ConfigUtil.getConfigFactory().getLogger(LaunchOseeDbConfigClient.class), "Config Client Thread",
-            databaseService);
+      super("Config Client Thread", databaseService);
    }
 
    @Override
@@ -56,8 +56,6 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       run(connection, GroupSelection.getInstance().getDbInitTasks());
       OseeLog.log(DatabaseActivator.class, Level.INFO, "Database Initialization Complete.");
    }
-
-   private static final String dbInitExtensionPointId = "org.eclipse.osee.framework.database.IDbInitializationTask";
 
    /*
     * (non-Javadoc)
@@ -93,20 +91,36 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       IConfigurationElement[] elements = extension.getConfigurationElements();
       String classname = null;
       String bundleName = null;
+      String initRuleClassName = null;
       for (IConfigurationElement el : elements) {
          if (el.getName().equals("DatabaseTask")) {
             classname = el.getAttribute("classname");
             bundleName = el.getContributor().getName();
+            initRuleClassName = el.getAttribute("DbInitRule");
          }
       }
       if (classname != null && bundleName != null) {
          Bundle bundle = Platform.getBundle(bundleName);
          try {
-            OseeLog.log(DatabaseActivator.class, Level.INFO, "Starting [" + extension.getUniqueIdentifier() + "]");
-            Class<?> taskClass = bundle.loadClass(classname);
-            Object obj = taskClass.newInstance();
-            IDbInitializationTask task = (IDbInitializationTask) obj;
-            task.run(connection);
+            boolean isExecutionAllowed = true;
+            if (Strings.isValid(initRuleClassName)) {
+               isExecutionAllowed = false;
+               try {
+                  Class<?> taskClass = bundle.loadClass(initRuleClassName);
+                  IDbInitializationRule rule = (IDbInitializationRule) taskClass.newInstance();
+                  isExecutionAllowed = rule.isAllowed();
+               } catch (Exception ex) {
+                  OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
+               }
+            }
+
+            OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("%s [%s] execution rule [%s]",
+                  isExecutionAllowed ? "Starting" : "Skipping", extension.getUniqueIdentifier(),
+                  Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
+            if (isExecutionAllowed) {
+               IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
+               task.run(connection);
+            }
          } catch (Exception ex) {
             OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
             return false;
@@ -115,6 +129,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
             return false;
          }
       }
+
       return true;
    }
 
@@ -154,7 +169,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
          System.err.println(String.format(
                "You are not allowed to run config client against production servers. %s\nExiting.",
                DatabaseActivator.getInstance().getProductionDbs()));
-         return false;
+         return true;
       }
       String serverUrl = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
       boolean serverOk = isApplicationServerAlive(serverUrl);

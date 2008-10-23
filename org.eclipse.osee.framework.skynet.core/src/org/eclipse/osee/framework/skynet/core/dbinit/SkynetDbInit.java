@@ -21,8 +21,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.database.IDbInitializationRule;
+import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.data.SchemaData;
-import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
 import org.eclipse.osee.framework.database.utility.DatabaseConfigurationData;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
@@ -46,7 +47,7 @@ import org.osgi.framework.Bundle;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class SkynetDbInit extends DbInitializationTask {
+public class SkynetDbInit implements IDbInitializationTask {
    private static final String ADD_PERMISSION =
          "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID", "PERMISSION_NAME");
    private static boolean isInDbInit;
@@ -103,7 +104,7 @@ public class SkynetDbInit extends DbInitializationTask {
                   isAllowed = false;
                   try {
                      Class<?> taskClass = bundle.loadClass(initRuleClassName);
-                     IDbInitRule rule = (IDbInitRule) taskClass.newInstance();
+                     IDbInitializationRule rule = (IDbInitializationRule) taskClass.newInstance();
                      isAllowed = rule.isAllowed();
                   } catch (Exception ex) {
                      OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
