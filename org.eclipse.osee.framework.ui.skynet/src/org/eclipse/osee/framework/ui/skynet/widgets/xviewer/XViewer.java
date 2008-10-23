@@ -364,7 +364,10 @@ public class XViewer extends TreeViewer {
       if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) {
          loadedNum = ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
       }
-      sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
+      IStructuredSelection sel = ((IStructuredSelection) getSelection());
+      int selected = sel.size();
+      //      System.out.println("selected: " + selected);
+      sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + selected + " Selected - ");
       customizeMgr.getStatusLabelAddition(sb);
       filterDataUI.getStatusLabelAddition(sb);
       columnFilterDataUI.getStatusLabelAddition(sb);

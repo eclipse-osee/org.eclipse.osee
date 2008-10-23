@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
+import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -23,10 +24,10 @@ public class XChangeContentProvider implements ITreeContentProvider {
       this.changeXViewer = commitXViewer;
    }
 
-   public Object[] getChildren(Object parentElement) {      
-	   if (parentElement instanceof Object[]) {
-       return (Object[]) parentElement;
-   }
+   public Object[] getChildren(Object parentElement) {
+      if (parentElement instanceof Collection) {
+         return ((Collection<?>) parentElement).toArray();
+      }
       return EMPTY_ARRAY;
    }
 
@@ -35,26 +36,25 @@ public class XChangeContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
-      return getChildren(element).length > 0;
+      if (element instanceof Collection) return true;
+      return false;
    }
 
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof String) return new Object[] {inputElement};
       return getChildren(inputElement);
    }
 
    public void dispose() {
    }
 
-   @SuppressWarnings("unchecked")
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 
-	/**
-	 * @return the changeXViewer
-	 */
-	public ChangeXViewer getChangeXViewer() {
-		return changeXViewer;
-	}
+   /**
+    * @return the changeXViewer
+    */
+   public ChangeXViewer getChangeXViewer() {
+      return changeXViewer;
+   }
 
 }

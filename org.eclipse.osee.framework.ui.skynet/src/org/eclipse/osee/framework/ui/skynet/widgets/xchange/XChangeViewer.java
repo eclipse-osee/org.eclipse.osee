@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -236,22 +237,21 @@ public class XChangeViewer extends XWidget implements IActionable {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            final Change[] changes;
+            final Collection<Change> changes;
             final boolean hasBranch = branch != null;
 
             try {
                if (hasBranch) {
-                  changes = ChangeManager.getChangesPerBranch(branch).toArray(new Change[0]);
+                  changes = ChangeManager.getChangesPerBranch(branch);
                } else {
-                  changes = ChangeManager.getChangesPerTransaction(transactionId).toArray(new Change[0]);
+                  changes = ChangeManager.getChangesPerTransaction(transactionId);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
-                     if (changes.length == 0) {
+                     if (changes.size() == 0) {
                         extraInfoLabel.setText(NOT_CHANGES);
-                        xChangeViewer.setChanges(changes);
-                        xChangeViewer.refresh();
+                        xChangeViewer.setInput(changes);
                      } else {
                         String infoLabel =
                               String.format(
@@ -260,8 +260,7 @@ public class XChangeViewer extends XWidget implements IActionable {
                                     hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
                                     hasBranch ? "" : "Comment: " + transactionId.getComment());
                         extraInfoLabel.setText(infoLabel);
-                        xChangeViewer.setChanges(changes);
-                        loadTable();
+                        xChangeViewer.setInput(changes);
                      }
                   }
                });

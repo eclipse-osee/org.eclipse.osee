@@ -12,12 +12,12 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -31,14 +31,13 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class AttributeChanged extends Change {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AttributeChanged.class);
-   private String isValue;
+   private final String isValue;
    private String wasValue;
-   private int attrId;
-   private int attrTypeId;
+   private final int attrId;
+   private final int attrTypeId;
    private AttributeType dynamicAttributeDescriptor;
    private ArtifactChange artifactChange;
-   private ModificationType artModType;
+   private final ModificationType artModType;
 
    /**
     * @param sourceGamma
@@ -60,6 +59,26 @@ public class AttributeChanged extends Change {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.artModType = artModType;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof AttributeChanged) {
+         AttributeChanged change = (AttributeChanged) obj;
+         return super.equals(obj) &&
+         //
+         change.getArtId() == attrTypeId &&
+         //
+         change.getArtModType() == artModType &&
+         //
+         change.getAttrId() == attrId;
+      }
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      return super.hashCode() + attrTypeId + artModType.hashCode() + attrId;
    }
 
    /**
@@ -86,6 +105,7 @@ public class AttributeChanged extends Change {
       return dynamicAttributeDescriptor;
    }
 
+   @Override
    public Image getItemTypeImage() {
       return AttributeChangeIcons.getImage(getChangeType(), getModificationType());
    }
@@ -125,6 +145,7 @@ public class AttributeChanged extends Change {
    /**
     * @return the wasValue
     */
+   @Override
    public String getWasValue() {
       return wasValue;
    }
@@ -173,7 +194,7 @@ public class AttributeChanged extends Change {
             return getAttribute();
          }
       } catch (OseeCoreException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return null;
    }

@@ -118,11 +118,6 @@ public class ChangeXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setChanges(Change[] changes) {
-      setInput(changes);
-      expandAll();
-   }
-
    /**
     * Release resources
     */

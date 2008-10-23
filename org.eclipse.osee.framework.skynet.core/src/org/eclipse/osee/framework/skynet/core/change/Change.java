@@ -82,7 +82,7 @@ public abstract class Change implements IAdaptable {
 
    @Override
    public int hashCode() {
-      return artId + branch.hashCode() + toTransactionId.hashCode() + fromTransactionId.hashCode() + modType.hashCode() + changeType.hashCode();
+      return artId + sourceGamma + branch.hashCode() + toTransactionId.hashCode() + fromTransactionId.hashCode() + modType.hashCode() + changeType.hashCode();
    }
 
    public boolean isHistorical() {

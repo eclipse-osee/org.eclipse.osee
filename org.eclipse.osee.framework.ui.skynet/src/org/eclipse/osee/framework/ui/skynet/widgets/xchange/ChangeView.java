@@ -149,12 +149,12 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       if (xChangeViewer != null) {
          this.branch = branch;
          this.transactionId = transactionId;
-         xChangeViewer.setInputData(branch, transactionId);
          if (branch == null) {
             setPartName("Change Report: " + transactionId.getBranch().getBranchShortestName() + " - " + transactionId.getComment());
          } else {
             setPartName("Change Report: " + branch.getBranchShortName());
          }
+         xChangeViewer.setInputData(branch, transactionId);
       }
    }
 
@@ -206,7 +206,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,  "Change report error on init", ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Change report error on init", ex);
       }
    }
 
