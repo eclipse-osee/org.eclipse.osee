@@ -227,7 +227,7 @@ public abstract class Conflict implements IAdaptable {
       }
       status =
             ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
-                  getConflictType().Value(), passedStatus,
+                  getConflictType().getValue(), passedStatus,
                   TransactionIdManager.getStartEndPoint(mergeBranch).getKey().getTransactionNumber(),
                   this instanceof AttributeConflict ? ((AttributeConflict) this).getAttrId() : 0);
       return status;

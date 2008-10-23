@@ -22,7 +22,7 @@ public enum ConflictType {
       this.value = value;
    }
 
-   public final int Value() {
+   public final int getValue() {
       return value;
    }
 }

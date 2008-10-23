@@ -20,8 +20,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
+import org.eclipse.osee.framework.db.connection.core.ConflictType;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -100,6 +102,7 @@ public class ExchangeIntegrity {
          }
       }
    }
+
    private final class CheckSaxHandler extends RelationalSaxHandler {
       private final List<IndexCollector> checkList;
       private final String fileBeingProcessed;
@@ -116,6 +119,31 @@ public class ExchangeIntegrity {
        */
       @Override
       protected void processData(Map<String, String> fieldMap) throws Exception {
+         String conflictId = fieldMap.get(ExchangeDb.CONFLICT_ID);
+         String conflictType = fieldMap.get(ExchangeDb.CONFLICT_TYPE);
+         if (Strings.isValid(conflictId) && Strings.isValid(conflictType)) {
+            int conflictOrdinal = Integer.valueOf(conflictType);
+            for (ConflictType type : ConflictType.values()) {
+               if (type.getValue() == conflictOrdinal) {
+                  String keyName = ExchangeDb.CONFLICT_ID;
+                  switch (type) {
+                     case ARTIFACT:
+                        keyName = ExchangeDb.ARTIFACT_ID;
+                        break;
+                     case ATTRIBUTE:
+                        keyName = ExchangeDb.ATTRIBUTE_ID;
+                        break;
+                     case RELATION:
+                        keyName = ExchangeDb.RELATION_ID;
+                        break;
+                     default:
+                        break;
+                  }
+                  fieldMap.put(keyName, conflictId);
+                  break;
+               }
+            }
+         }
          for (IndexCollector integrityCheck : checkList) {
             integrityCheck.processData(fileBeingProcessed, fieldMap);
          }

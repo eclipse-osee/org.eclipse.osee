@@ -130,7 +130,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
             if (Strings.isValid(conflictId) && Strings.isValid(conflictType)) {
                int conflictOrdinal = Integer.valueOf(conflictType);
                for (ConflictType type : ConflictType.values()) {
-                  if (type.ordinal() == conflictOrdinal) {
+                  if (type.getValue() == conflictOrdinal) {
                      Object value = Integer.valueOf(conflictId);
                      switch (type) {
                         case ARTIFACT:
@@ -146,6 +146,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
                            break;
                      }
                      fieldMap.put(ExchangeDb.CONFLICT_ID, value.toString());
+                     break;
                   }
                }
             }
