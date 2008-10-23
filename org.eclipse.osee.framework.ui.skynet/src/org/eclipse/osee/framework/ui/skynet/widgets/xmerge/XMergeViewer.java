@@ -386,7 +386,7 @@ public class XMergeViewer extends XWidget implements IActionable {
          if (resolved == conflicts.length) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resovled : " + resolved + (informational == 0 ? " " : ("\nInformational Conflicts : " + informational)));
+            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : ("\nInformational Conflicts : " + informational)));
 
          }
       }
@@ -526,7 +526,7 @@ public class XMergeViewer extends XWidget implements IActionable {
          if (resolved == (conflicts.length - informational)) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resovled : " + resolved + (informational == 0 ? " " : ("\nInformational Conflicts : " + informational)));
+            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : ("\nInformational Conflicts : " + informational)));
          }
       }
 

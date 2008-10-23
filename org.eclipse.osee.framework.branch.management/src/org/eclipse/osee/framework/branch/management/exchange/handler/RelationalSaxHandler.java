@@ -18,8 +18,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.Activator;
+import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
+import org.eclipse.osee.framework.db.connection.core.ConflictType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -113,14 +115,39 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
          if (process) {
             String uriValue = fieldMap.get(BINARY_CONTENT_LOCATION);
             if (Strings.isValid(uriValue)) {
-               String gammaId = fieldMap.get("gamma_id");
-               Object translated = getTranslator().translate("gamma_id", Long.valueOf(gammaId));
+               String gammaId = fieldMap.get(ExchangeDb.GAMMA_ID);
+               Object translated = getTranslator().translate(ExchangeDb.GAMMA_ID, Long.valueOf(gammaId));
                uriValue = importBinaryContent(uriValue, translated.toString());
                fieldMap.put("uri", uriValue);
             }
             String stringValue = fieldMap.get(STRING_CONTENT);
             if (Strings.isValid(stringValue)) {
                fieldMap.put("value", stringValue);
+            }
+
+            String conflictId = fieldMap.get(ExchangeDb.CONFLICT_ID);
+            String conflictType = fieldMap.get(ExchangeDb.CONFLICT_TYPE);
+            if (Strings.isValid(conflictId) && Strings.isValid(conflictType)) {
+               int conflictOrdinal = Integer.valueOf(conflictType);
+               for (ConflictType type : ConflictType.values()) {
+                  if (type.ordinal() == conflictOrdinal) {
+                     Object value = Integer.valueOf(conflictId);
+                     switch (type) {
+                        case ARTIFACT:
+                           value = getTranslator().translate(ExchangeDb.ARTIFACT_ID, value);
+                           break;
+                        case ATTRIBUTE:
+                           value = getTranslator().translate(ExchangeDb.ATTRIBUTE_ID, value);
+                           break;
+                        case RELATION:
+                           value = getTranslator().translate(ExchangeDb.RELATION_ID, value);
+                           break;
+                        default:
+                           break;
+                     }
+                     fieldMap.put(ExchangeDb.CONFLICT_ID, value.toString());
+                  }
+               }
             }
             Object[] objectData = DataToSql.toDataArray(getConnection(), getMetaData(), getTranslator(), fieldMap);
             if (objectData != null) {

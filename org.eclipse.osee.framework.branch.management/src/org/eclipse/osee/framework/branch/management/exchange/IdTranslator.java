@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.branch.management.exchange;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -23,7 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 /**
  * @author Roberto E. Escobar
  */
-public class IdTranslator extends BaseTranslator {
+public class IdTranslator {
    private static final String INSERT_INTO_IMPORT_INDEX_MAP =
          "INSERT INTO osee_import_index_map (sequence_id, original_id, mapped_id) VALUES (?, ?, ?)";
 
@@ -33,12 +35,26 @@ public class IdTranslator extends BaseTranslator {
    private final String sequenceName;
    private final Map<Long, Long> originalToMapped;
    private final List<Long> newIds;
+   private final Set<String> aliases;
 
    IdTranslator(String sequenceName, String... aliases) {
-      super(aliases);
       this.sequenceName = sequenceName;
       this.originalToMapped = new HashMap<Long, Long>();
       this.newIds = new ArrayList<Long>();
+      this.aliases = new HashSet<String>();
+      if (aliases != null && aliases.length > 0) {
+         for (String alias : aliases) {
+            this.aliases.add(alias.toLowerCase());
+         }
+      }
+   }
+
+   public boolean hasAliases() {
+      return this.aliases.size() > 0;
+   }
+
+   public Set<String> getAliases() {
+      return this.aliases;
    }
 
    public Object getId(Object original) throws Exception {

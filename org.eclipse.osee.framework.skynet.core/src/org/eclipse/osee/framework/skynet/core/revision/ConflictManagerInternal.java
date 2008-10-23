@@ -67,7 +67,7 @@ public class ConflictManagerInternal {
          "SELECT dest_branch_id FROM osee_merge WHERE source_branch_id = ?";
 
    private static final String GET_MERGE_DATA =
-         "SELECT transaction_id, merge_branch_id FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ?";
+         "SELECT commit_transaction_id, merge_branch_id FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ?";
 
    private static final String GET_COMMIT_TRANSACTION_COMMENT =
          "SELECT transaction_id FROM osee_tx_details WHERE osee_comment = ? AND branch_id = ?";
@@ -441,7 +441,7 @@ public class ConflictManagerInternal {
                   ConnectionHandler.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getBranchId(),
                         destBranch.getBranchId());
             if (chStmt.next()) {
-               transactionId = chStmt.getInt("transaction_id");
+               transactionId = chStmt.getInt("commit_transaction_id");
             }
          } finally {
             ConnectionHandler.close(chStmt);

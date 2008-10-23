@@ -110,7 +110,7 @@ public class BranchCreator {
          "INSERT INTO " + TRANSACTIONS_TABLE.columnsForInsert("transaction_id", "gamma_id", "mod_type", "tx_current");
 
    private static final String MERGE_BRANCH_INSERT =
-         "INSERT INTO osee_merge " + "(source_branch_id, dest_branch_id, merge_branch_id)  VALUES( ? , ? , ?)";
+         "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES(?,?,?,?)";
 
    private static final BranchCreator instance = new BranchCreator();
 
@@ -505,7 +505,7 @@ public class BranchCreator {
          if (createBranch) {
             try {
                ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
-                     destBranch.getBranchId(), mergeBranch.getBranchId());
+                     destBranch.getBranchId(), mergeBranch.getBranchId(), -1);
             } finally {
                ConnectionHandler.close(chStmt);
             }
