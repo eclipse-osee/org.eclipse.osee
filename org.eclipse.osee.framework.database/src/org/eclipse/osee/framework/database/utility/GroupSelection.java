@@ -14,7 +14,8 @@ package org.eclipse.osee.framework.database.utility;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -31,7 +32,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
  */
 public class GroupSelection {
    private static final GroupSelection instance = new GroupSelection();
-   private final Map<String, List<String>> initGroups = new LinkedHashMap<String, List<String>>();
+   private final Map<String, List<String>> initGroups = new HashMap<String, List<String>>();
 
    /**
     * @param initGroups
@@ -89,7 +90,9 @@ public class GroupSelection {
          String[] keys = initGroups.keySet().toArray(new String[1]);
          choice = keys[0];
       } else {
-         choice = chooser("Select Init Group To Run.", new ArrayList<String>(initGroups.keySet()));
+         List<String> choices = new ArrayList<String>(initGroups.keySet());
+         Collections.sort(choices);
+         choice = chooser("Select Init Group To Run.", choices);
       }
       return initGroups.get(choice);
    }
