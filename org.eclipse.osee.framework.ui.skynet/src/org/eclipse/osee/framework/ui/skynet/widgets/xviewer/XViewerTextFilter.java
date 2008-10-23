@@ -43,13 +43,35 @@ public class XViewerTextFilter extends ViewerFilter {
       // Update column filter patterns
       colIdToPattern.clear();
       for (String colId : xViewer.getCustomizeMgr().getColumnFilterData().getColIds()) {
-         if (xViewer.getCustomizeMgr().getColumnFilterText(colId) != null && !xViewer.getCustomizeMgr().getColumnFilterText(
-               colId).equals("")) {
-            colIdToPattern.put(colId, Pattern.compile(xViewer.getCustomizeMgr().getColumnFilterData().getFilterText(
-                  colId), Pattern.CASE_INSENSITIVE));
+         String colFilterText = xViewer.getCustomizeMgr().getColumnFilterText(colId);
+         if (colFilterText != null) {
+            boolean isNot = colFilterText.startsWith("!");
+            if (isNot) {
+               colFilterText = colFilterText.replaceFirst("^!", "");
+            }
+            // Handle != case  ^(.(?<!big))*$
+            if (isNot) {
+               if (colFilterText.equals("")) {
+                  colIdToPattern.put(colId, NOT_EMPTY_STR_PATTERN);
+               } else {
+                  colIdToPattern.put(colId, Pattern.compile("^(.(?<!" + colFilterText + "))*$",
+                        Pattern.CASE_INSENSITIVE));
+               }
+            }
+            // Handle normal case
+            else {
+               if (colFilterText.equals("")) {
+                  colIdToPattern.put(colId, EMPTY_STR_PATTERN);
+               } else {
+                  colIdToPattern.put(colId, Pattern.compile(
+                        xViewer.getCustomizeMgr().getColumnFilterData().getFilterText(colId), Pattern.CASE_INSENSITIVE));
+               }
+            }
          }
       }
    }
+   private static final Pattern EMPTY_STR_PATTERN = Pattern.compile("");
+   private static final Pattern NOT_EMPTY_STR_PATTERN = Pattern.compile("^.+$");
 
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {

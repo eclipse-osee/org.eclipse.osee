@@ -49,11 +49,12 @@ public class XViewer extends TreeViewer {
    public static final String MENU_GROUP_POST = "XVIEWER MENU GROUP POST";
    private Label statusLabel;
    private final MenuManager menuManager;
-   private static Boolean ctrlKeyDown = null;
-   private static Boolean altKeyDown = null;
+   private static boolean ctrlKeyDown = false;
+   private static boolean altKeyDown = false;
    protected final IXViewerFactory xViewerFactory;
    private final FilterDataUI filterDataUI;
    private final ColumnFilterDataUI columnFilterDataUI;
+   private static boolean ctrlKeyListenersSet = false;
 
    /**
     * @return the columnFilterDataUI
@@ -241,9 +242,8 @@ public class XViewer extends TreeViewer {
 
    // Only create one listener for all XViewers
    private void setupCtrlKeyListener() {
-      if (ctrlKeyDown == null) {
-         ctrlKeyDown = false;
-         altKeyDown = false;
+      if (ctrlKeyListenersSet == false) {
+         ctrlKeyListenersSet = true;
          Display.getCurrent().addFilter(SWT.KeyDown, displayKeysListener);
          Display.getCurrent().addFilter(SWT.KeyUp, displayKeysListener);
       }
@@ -439,11 +439,11 @@ public class XViewer extends TreeViewer {
    }
 
    public boolean isCtrlKeyDown() {
-      return ctrlKeyDown != null && ctrlKeyDown;
+      return ctrlKeyDown;
    }
 
    public boolean isAltKeyDown() {
-      return altKeyDown != null && altKeyDown;
+      return altKeyDown;
    }
 
 }

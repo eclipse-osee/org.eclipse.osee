@@ -36,8 +36,9 @@ public class ColumnFilterDataUI {
 
    public void promptSetFilter(String colId) {
       EntryDialog ed =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Filter Column", null, "Enter filter for " + colId,
-                  MessageDialog.QUESTION, new String[] {"OK", "Clear", "Clear All", "Cancel"}, 0);
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Filter Column", null,
+                  "Enter filter string for " + colId + ":\n\nNote: !string negates the match", MessageDialog.QUESTION,
+                  new String[] {"OK", "Clear", "Clear All", "Cancel"}, 0);
       String str = xViewer.getCustomizeMgr().getColumnFilterData().getFilterText(colId);
       if (str != null && !str.equals("")) {
          ed.setEntry(str);
