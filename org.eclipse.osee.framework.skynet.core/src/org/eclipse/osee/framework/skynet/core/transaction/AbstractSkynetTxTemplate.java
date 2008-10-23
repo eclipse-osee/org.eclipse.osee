@@ -41,7 +41,7 @@ public abstract class AbstractSkynetTxTemplate {
     */
    protected void checkForNull(Object object) {
       if (object == null) {
-         throw new IllegalArgumentException(String.format("Error argument was null: [%s]", object.getClass().getName()));
+         throw new IllegalArgumentException("Error argument was null.");
       }
    }
 
