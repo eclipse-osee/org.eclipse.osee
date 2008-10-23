@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHA
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,13 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -38,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
@@ -54,8 +50,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
  */
 public class SkynetTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
-         "UPDATE osee_txs txs1 SET tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) in (SELECT jt1.transaction_id, jt1.gamma_id FROM osee_join_transaction jt1 WHERE jt1.query_id = ?)";
-   // SLOW on Postgresql -- "UPDATE osee_txs txs1 SET tx_current = 0 WHERE EXISTS (SELECT 1 FROM osee_join_transaction jt1 WHERE jt1.query_id = ? AND txs1.transaction_id = jt1.transaction_id AND txs1.gamma_id = jt1.gamma_id)";
+         "UPDATE osee_txs txs1 SET tx_current = 0 WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
 
    private static final String DELETE_TRANSACTION_DETAIL = "DELETE FROM osee_tx_details WHERE transaction_id =?";
    private static final String INSERT_INTO_TRANSACTION_TABLE =
@@ -67,8 +62,8 @@ public class SkynetTransaction {
    private final Branch branch;
    private final List<ArtifactTransactionModifiedEvent> xModifiedEvents =
          new ArrayList<ArtifactTransactionModifiedEvent>();
-   private final Map<ITransactionData, ITransactionData> transactionItems =
-         new HashMap<ITransactionData, ITransactionData>();
+   private final Map<BaseTransactionData, BaseTransactionData> transactionItems =
+         new HashMap<BaseTransactionData, BaseTransactionData>();
 
    public SkynetTransaction(Branch branch) throws OseeDataStoreException {
       this(branch, SkynetAuthentication.getUser());
@@ -103,10 +98,6 @@ public class SkynetTransaction {
       statementData.add(data);
    }
 
-   public void execute() throws OseeDataStoreException {
-      execute(new NullProgressMonitor());
-   }
-
    public synchronized void execute(IProgressMonitor monitor) throws OseeDataStoreException {
       boolean deleteTransactionDetail = false;
 
@@ -115,14 +106,20 @@ public class SkynetTransaction {
          boolean insertBatchToTransactions = executeBatchToTransactions(monitor);
          boolean insertTransactionDataItems = executeTransactionDataItems(connection);
 
-         if (!insertBatchToTransactions && !insertTransactionDataItems) {
-            deleteTransactionDetail = true;
-         }
+         deleteTransactionDetail = !insertBatchToTransactions && !insertTransactionDataItems;
 
-         setArtifactsNotDirty();
+         for (BaseTransactionData transactionData : transactionItems.keySet()) {
+            transactionData.internalClearDirtyState();
+         }
       } catch (OseeDataStoreException ex) {
          deleteTransactionDetail = true;
-         transactionCleanUp();
+         for (BaseTransactionData transactionData : transactionItems.keySet()) {
+            try {
+               transactionData.internalOnRollBack();
+            } catch (OseeCoreException ex1) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
+            }
+         }
          ConnectionHandler.requestRollback();
          OseeLog.log(SkynetActivator.class, Level.SEVERE,
                "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
@@ -132,70 +129,61 @@ public class SkynetTransaction {
             xModifiedEvents.clear();
             ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_DETAIL, transactionId.getTransactionNumber());
          } else {
-            for (ITransactionData transactionData : transactionItems.keySet()) {
-               if (transactionData instanceof ArtifactTransactionData) {
-                  ((ArtifactTransactionData) transactionData).updateArtifact();
-               }
+            for (BaseTransactionData transactionData : transactionItems.keySet()) {
+               transactionData.internalUpdate();
             }
          }
       }
    }
 
-   private void transactionCleanUp() {
-      for (ITransactionData transactionData : transactionItems.keySet()) {
-         if (transactionData instanceof AttributeTransactionData) {
-            String uri = ((AttributeTransactionData) transactionData).getUri();
-            if (Strings.isValid(uri)) {
-               try {
-                  HttpProcessor.delete(AttributeURL.getDeleteURL(uri));
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-               }
-            }
+   private void fetchTxNotCurrent(Connection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt =
+               ConnectionHandler.runPreparedQuery(connection, transactionData.getSelectTxNotCurrentSql(),
+                     transactionData.getSelectData());
+         while (chStmt.next()) {
+            results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }
+      } finally {
+         ConnectionHandler.close(chStmt);
       }
-
    }
 
    public boolean executeTransactionDataItems(Connection connection) throws OseeDataStoreException {
-      boolean insertTransactionDataItems = transactionItems.size() > 0;
-      TransactionJoinQuery transactionJoin = JoinUtility.createTransactionJoinQuery();
-      Timestamp insertTime = transactionJoin.getInsertTime();
-      int queryId = transactionJoin.getQueryId();
-
-      try {
-         for (ITransactionData transactionData : transactionItems.keySet()) {
-            //This must be called before adding the new transaction information, because it
-            //will update the current transaction to 0.
-            transactionData.setPreviousTxNotCurrent(connection, insertTime, queryId);
-            //Add current transaction information
-            ModificationType modType = transactionData.getModificationType();
-
-            //Adds addressing data for changes into the txs table
-            ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_TABLE,
-                  transactionData.getTransactionId().getTransactionNumber(), transactionData.getGammaId(),
-                  modType.getValue(), TxChange.getCurrent(modType).getValue());
-
-            //Add specific object values to the their tables i.e. attribute, relation and artifact version tables
-            if (transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED) {
-               transactionData.insertTransactionChange(connection);
-            }
-         }
-
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_NOT_CURRENT, queryId);
-      } finally {
-         transactionJoin.delete(connection);
+      if (transactionItems.isEmpty()) {
+         return false;
       }
-      return insertTransactionDataItems;
-   }
 
-   private void setArtifactsNotDirty() {
-      for (ITransactionData transactionData : transactionItems.keySet()) {
-         if (transactionData instanceof ArtifactTransactionData) {
-            Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
-            artifact.setNotDirty();
+      List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
+      List<Object[]> addressingInsertData = new ArrayList<Object[]>();
+      HashCollection<String, Object[]> dataItemInserts = new HashCollection<String, Object[]>();
+      for (BaseTransactionData transactionData : transactionItems.keySet()) {
+         // Collect stale tx currents for batch update
+         fetchTxNotCurrent(connection, transactionData, txNotCurrentData);
+
+         // Collect addressing data for batch update into the txs table
+         ModificationType modType = transactionData.getModificationType();
+         addressingInsertData.add(new Object[] {transactionData.getTransactionId().getTransactionNumber(),
+               transactionData.getGammaId(), modType.getValue(), TxChange.getCurrent(modType).getValue()});
+
+         // Collect specific object values for their tables i.e. attribute, relation and artifact version tables
+         if (transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED) {
+            dataItemInserts.put(transactionData.getInsertSql(), transactionData.getInsertData());
          }
       }
+
+      // Insert into data tables - i.e. attribute, relation and artifact version tables
+      for (String itemInsertSql : dataItemInserts.keySet()) {
+         ConnectionHandler.runPreparedUpdate(connection, itemInsertSql,
+               (List<Object[]>) dataItemInserts.getValues(itemInsertSql));
+      }
+      // Insert addressing data for changes into the txs table
+      ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_TABLE, addressingInsertData);
+
+      // Set stale tx currents in txs table
+      ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
+      return true;
    }
 
    // Supports adding new artifacts to the artifact table and
@@ -291,8 +279,8 @@ public class SkynetTransaction {
       return transactionId;
    }
 
-   public void addTransactionDataItem(ITransactionData dataItem) {
-      ITransactionData oldDataItem = transactionItems.remove(dataItem);
+   public void addTransactionDataItem(BaseTransactionData dataItem) {
+      BaseTransactionData oldDataItem = transactionItems.remove(dataItem);
 
       if (oldDataItem != null) {
          if (oldDataItem.getModificationType() == NEW && dataItem.getModificationType() == CHANGE) {

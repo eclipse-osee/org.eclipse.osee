@@ -11,10 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import java.sql.Connection;
-import java.sql.Timestamp;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -23,105 +19,57 @@ import org.eclipse.osee.framework.skynet.core.change.TxChange;
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactTransactionData implements ITransactionData {
-   private static final String INSERT_INTO_ARTIFACT_VERSION_TABLE =
+public class ArtifactTransactionData extends BaseTransactionData {
+   private static final String INSERT_SQL =
          "INSERT INTO " + ARTIFACT_VERSION_TABLE + "(art_id, gamma_id, modification_id) VALUES (?,?,?)";
 
-   private static final String SET_PREVIOUS_TX_NOT_CURRENT =
-         "INSERT INTO osee_join_transaction(query_id, transaction_id, gamma_id, insert_time) SELECT ?, txs1.transaction_id, txs1.gamma_id, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE arv1.art_id = ? AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs1.tx_current = " + TxChange.CURRENT.getValue();
-   private static final int PRIME_NUMBER = 3;
+   private static final String SELECT_PREVIOUS_TX_NOT_CURRENT =
+         "SELECT txs1.transaction_id, txs1.gamma_id FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE arv1.art_id = ? AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs1.tx_current = " + TxChange.CURRENT.getValue();
 
-   private int gammaId;
-   private TransactionId transactionId;
-   private ModificationType modificationType;
-   private Artifact artifact;
-   private Branch branch;
+   private final Artifact artifact;
 
    public ArtifactTransactionData(Artifact artifact, int gammaId, TransactionId transactionId, ModificationType modificationType, Branch branch) {
-      super();
-      this.gammaId = gammaId;
-      this.transactionId = transactionId;
-      this.modificationType = modificationType;
+      super(artifact.getArtId(), gammaId, transactionId, modificationType);
       this.artifact = artifact;
-      this.branch = branch;
    }
 
    /**
     * should not be called by applications. Should be called exactly once - when the transaction has been committed
     */
-   void updateArtifact() {
-      artifact.internalSetPersistenceData(gammaId, transactionId, modificationType, false);
+   void internalUpdate() {
+      artifact.internalSetPersistenceData(getGammaId(), getTransactionId(), getModificationType(), false);
    }
 
    /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalClearDirtyState()
     */
    @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof ArtifactTransactionData) {
-         return ((ArtifactTransactionData) obj).artifact.getArtId() == artifact.getArtId();
-      }
-      return false;
+   void internalClearDirtyState() {
+      super.internalClearDirtyState();
+      artifact.setNotDirty();
    }
 
    /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
+    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#getInsertSql()
     */
    @Override
-   public int hashCode() {
-      return artifact.getArtId() * PRIME_NUMBER;
+   public String getInsertSql() {
+      return INSERT_SQL;
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getGammaId()
-    */
-   public int getGammaId() {
-      return gammaId;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getTransactionId()
-    */
-   public TransactionId getTransactionId() {
-      return transactionId;
-   }
-
-   /**
-    * @return Returns the modificationType.
-    */
-   public ModificationType getModificationType() {
-      return modificationType;
-   }
-
-   /**
-    * @param modificationType The modificationType to set.
-    */
-   public void setModificationType(ModificationType modificationType) {
-      this.modificationType = modificationType;
-   }
-
-   /**
-    * @return the artifact
-    */
-   public Artifact getArtifact() {
-      return artifact;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#setPreviousTxNotCurrent()
+    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#getSelectTxNotCurrentSql()
     */
    @Override
-   public void setPreviousTxNotCurrent(Connection connection, Timestamp insertTime, int queryId) throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(connection, SET_PREVIOUS_TX_NOT_CURRENT, queryId, insertTime,
-            artifact.getArtId(), branch.getBranchId());
+   public String getSelectTxNotCurrentSql() {
+      return SELECT_PREVIOUS_TX_NOT_CURRENT;
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#insertTransactionChange()
+    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#getInsertData()
     */
    @Override
-   public void insertTransactionChange(Connection connection) throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_ARTIFACT_VERSION_TABLE, artifact.getArtId(), gammaId,
-            modificationType.getValue());
+   public Object[] getInsertData() {
+      return new Object[] {getItemId(), getGammaId(), getModificationType().getValue()};
    }
 }

@@ -121,7 +121,7 @@ public class AttributeToTransactionOperation {
    private AttributeTransactionData createAttributeTxData(Artifact artifact, Attribute<?> attribute, DAOToSQL dao, SkynetTransaction transaction, ModificationType attrModType) throws OseeCoreException {
       return new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
             attribute.getAttributeType().getAttrTypeId(), dao.getValue(), attribute.getGammaId(),
-            transaction.getTransactionId(), dao.getUri(), attrModType, transaction.getBranch());
+            transaction.getTransactionId(), dao.getUri(), attrModType);
    }
 
    private void createNewAttributeMemo(Attribute<?> attribute) throws OseeDataStoreException {
@@ -174,7 +174,7 @@ public class AttributeToTransactionOperation {
 
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
             attribute.getAttributeType().getAttrTypeId(), null, attrGammaId, transaction.getTransactionId(), null,
-            modificationType, transaction.getBranch()));
+            modificationType));
 
       // Kick Local Event
       try {

@@ -127,7 +127,7 @@ public class RelationPersistenceManager {
       }
 
       transaction.addTransactionDataItem(new RelationTransactionData(link, link.getGammaId(),
-            transaction.getTransactionId(), modId, transaction.getBranch()));
+            transaction.getTransactionId(), modId));
    }
 
    /**
