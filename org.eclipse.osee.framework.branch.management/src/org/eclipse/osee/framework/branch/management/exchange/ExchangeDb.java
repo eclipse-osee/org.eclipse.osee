@@ -123,10 +123,10 @@ public class ExchangeDb {
          "SELECT type1.type_name, type1.rel_link_type_id FROM osee_relation_link_type type1, osee_join_export_import jex1 WHERE type1.rel_link_type_id = jex1.id1 AND jex1.query_id = ?";
 
    private static final String MERGE_TABLE_QUERY =
-         "SELECT om1.* FROM osee_merge om1, osee_join_export_import jex1, osee_join_export_import jex2 WHERE om1.dest_branch_id = jex1.id1 AND om1.merge_branch_id = jex2.id1 AND jex1.query_id = jex2.query_id AND jex1.query_id=? %s";
+         "SELECT om1.* FROM osee_merge om1, osee_join_export_import jex1 WHERE om1.merge_branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String CONFLICT_TABLE_QUERY =
-         "SELECT oc1.* FROM osee_conflict oc1, osee_merge om1, osee_join_export_import jex1, osee_join_export_import jex2 WHERE oc1.merge_branch_id = om1.merge_branch_id AND om1.dest_branch_id = jex1.id1 AND om1.merge_branch_id = jex2.id1 AND jex1.query_id = jex2.query_id AND jex1.query_id=? %s";
+         "SELECT oc1.* FROM osee_conflict oc1, osee_merge om1, osee_join_export_import jex1 WHERE oc1.merge_branch_id = om1.merge_branch_id AND om1.merge_branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    static List<AbstractExportItem> createTaskList() {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
