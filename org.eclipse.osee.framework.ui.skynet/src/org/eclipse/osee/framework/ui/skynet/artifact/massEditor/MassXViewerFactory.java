@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 
@@ -32,6 +33,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
       registerAllAttributeColumnsForArtifacts(artifacts, true);
       registerColumn(new XViewerHridColumn("ID"));
       registerColumn(new XViewerGuidColumn("GUID"));
+      registerColumn(new XViewerArtifactTypeColumn("Artifact Type"));
    }
 
    /* (non-Javadoc)
