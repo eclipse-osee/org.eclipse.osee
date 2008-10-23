@@ -14,7 +14,6 @@ import java.io.File;
 import java.net.Socket;
 import java.net.URL;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -23,13 +22,13 @@ import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoField
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ApplicationServer {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ApplicationServer.class);
 
    private static OseeSession oseeSession;
 
@@ -61,7 +60,7 @@ public class ApplicationServer {
             URL url = new URL(server);
             Socket socket = new Socket(url.getHost(), url.getPort());
             if (socket.getInetAddress().isLoopbackAddress()) {
-               logger.log(Level.INFO, "Deleting binary data from application server...");
+               OseeLog.log(SkynetActivator.class, Level.INFO, "Deleting binary data from application server...");
                String binaryDataPath = OseeProperties.getInstance().getOseeApplicationServerData();
                Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
                Lib.deleteDir(new File(binaryDataPath + File.separator + "snapshot"));
@@ -72,7 +71,7 @@ public class ApplicationServer {
             displayWarning = true;
          }
          if (displayWarning) {
-            logger.log(Level.WARNING, "Unable to delete binary data from application server");
+            OseeLog.log(SkynetActivator.class, Level.WARNING, "Unable to delete binary data from application server");
          }
       }
    }
