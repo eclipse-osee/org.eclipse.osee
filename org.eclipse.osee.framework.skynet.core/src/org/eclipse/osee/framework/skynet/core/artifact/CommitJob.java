@@ -73,7 +73,7 @@ class CommitJob extends Job {
          "UPDATE osee_txs set gamma_id = ?, mod_type = " + ModificationType.MERGED.getValue() + " Where transaction_id = ? and gamma_id = ?";
 
    private static final String UPDATE_MERGE_TRANSACTION_ID =
-         "UPDATE osee_merge set transaction_id = ? Where source_branch_id = ? and dest_branch_id = ?";
+         "UPDATE osee_merge set commit_transaction_id = ? Where source_branch_id = ? and dest_branch_id = ?";
 
    private static final String ARTIFACT_CHANGES =
          "SELECT av1.art_id, ? as branch_id FROM osee_txs tx1, osee_artifact_version av1 WHERE tx1.transaction_id = ? AND tx1.gamma_id = av1.gamma_id UNION ALL SELECT ar1.art_id, ? as branch_id FROM osee_txs tx1, osee_relation_link rl1, osee_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND tx1.transaction_id = ? AND tx1.gamma_id = rl1.gamma_id";

@@ -24,13 +24,13 @@ public class ConflictStatusManager {
    private static final String MERGE_UPDATE_STATUS =
          "UPDATE osee_conflict SET status = ? WHERE source_gamma_id = ? AND dest_gamma_id = ?";
    private static final String MERGE_ATTRIBUTE_STATUS =
-         "SELECT source_gamma_id, dest_gamma_id, status  From osee_conflict WHERE branch_id = ? AND conflict_id = ? AND conflict_type = ?";
+         "SELECT source_gamma_id, dest_gamma_id, status  From osee_conflict WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String MERGE_UPDATE_GAMMAS =
-         "UPDATE osee_conflict SET source_gamma_id = ?, dest_gamma_id = ?, status = ? WHERE branch_id = ? AND conflict_id = ? AND conflict_type = ?";
+         "UPDATE osee_conflict SET source_gamma_id = ?, dest_gamma_id = ?, status = ? WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String MERGE_BRANCH_GAMMAS =
          "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
    private static final String MERGE_INSERT_STATUS =
-         "INSERT INTO osee_conflict ( conflict_id, branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
+         "INSERT INTO osee_conflict ( conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
 
    public static void setStatus(Status status, int sourceGamma, int destGamma) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;

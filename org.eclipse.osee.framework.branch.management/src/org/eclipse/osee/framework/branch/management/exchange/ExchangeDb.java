@@ -12,10 +12,8 @@ package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
@@ -23,7 +21,6 @@ import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItemWithType;
-import org.eclipse.osee.framework.db.connection.core.ConflictType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
@@ -172,22 +169,17 @@ public class ExchangeDb {
       return items;
    }
 
-   static List<BaseTranslator> createTranslators() {
-      List<BaseTranslator> translators = new ArrayList<BaseTranslator>();
+   static List<IdTranslator> createTranslators() {
+      List<IdTranslator> translators = new ArrayList<IdTranslator>();
       translators.add(new IdTranslator(SequenceManager.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
       translators.add(new IdTranslator(SequenceManager.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
       translators.add(new IdTranslator(SequenceManager.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
       translators.add(new IdTranslator(SequenceManager.ART_TYPE_ID_SEQ, ARTIFACT_TYPE_ID));
       translators.add(new IdTranslator(SequenceManager.ATTR_TYPE_ID_SEQ, ATTRIBUTE_TYPE_ID));
       translators.add(new IdTranslator(SequenceManager.REL_LINK_TYPE_ID_SEQ, RELATION_TYPE_ID));
-
-      Map<ConflictType, IdTranslator> translatorMap = new HashMap<ConflictType, IdTranslator>();
-      translatorMap.put(ConflictType.ARTIFACT, new IdTranslator(SequenceManager.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
-      translatorMap.put(ConflictType.ATTRIBUTE, new IdTranslator(SequenceManager.ATTR_ID_SEQ, ATTRIBUTE_ID));
-      translatorMap.put(ConflictType.RELATION, new IdTranslator(SequenceManager.REL_LINK_ID_SEQ, RELATION_ID));
-
-      translators.addAll(translatorMap.values());
-      translators.add(new EnumBaseTranslator<ConflictType>(CONFLICT_TYPE, translatorMap, CONFLICT_ID));
+      translators.add(new IdTranslator(SequenceManager.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
+      translators.add(new IdTranslator(SequenceManager.ATTR_ID_SEQ, ATTRIBUTE_ID));
+      translators.add(new IdTranslator(SequenceManager.REL_LINK_ID_SEQ, RELATION_ID));
       return translators;
    }
 
