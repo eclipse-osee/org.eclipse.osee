@@ -519,9 +519,9 @@ public class ArtifactPersistenceManager {
       }
       ArtifactQuery.getArtifactsFromIds(artIds, artifacts[0].getBranch(), true);
       final Branch branch = artifacts[0].getBranch();
-      if (SkynetTransactionManager.getInstance().isInBatch(branch)) {
+      if (SkynetTransactionManager.isInBatch(branch)) {
          for (Artifact artifact : artifacts) {
-            deleteTrace(artifact, SkynetTransactionManager.getInstance().getTransactionBuilder(branch), true);
+            deleteTrace(artifact, SkynetTransactionManager.getTransactionBuilder(branch), true);
          }
       } else {
          AbstractSkynetTxTemplate deleteTx = new AbstractSkynetTxTemplate(branch) {

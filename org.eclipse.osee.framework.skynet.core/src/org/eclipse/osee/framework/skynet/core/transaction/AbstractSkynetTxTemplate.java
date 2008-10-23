@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractSkynetTxTemplate {
-   private static final SkynetTransactionManager transactionManager = SkynetTransactionManager.getInstance();
    private final Branch branch;
 
    /**
@@ -55,21 +54,12 @@ public abstract class AbstractSkynetTxTemplate {
    }
 
    /**
-    * Gets the transaction manager
-    * 
-    * @return transactionManager The Transaction Manager
-    */
-   protected SkynetTransactionManager getTxManager() {
-      return transactionManager;
-   }
-
-   /**
     * Gets the transaction builder managing this transaction
     * 
     * @return transactionBuilder This transaction's builder
     */
    protected SkynetTransactionBuilder getTxBuilder() {
-      return transactionManager.getTransactionBuilder(branch);
+      return SkynetTransactionManager.getTransactionBuilder(branch);
    }
 
    /**
@@ -89,15 +79,15 @@ public abstract class AbstractSkynetTxTemplate {
     */
    public void execute() throws OseeCoreException {
       try {
-         transactionManager.startBatchLevel(this, branch);
+         SkynetTransactionManager.startBatchLevel(this, branch);
          //         OseeLog.log(SkynetActivator.class,Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
 
          handleTxWork();
 
-         transactionManager.setBatchLevelAsSuccessful(this, branch);
+         SkynetTransactionManager.setBatchLevelAsSuccessful(this, branch);
          //         OseeLog.log(SkynetActivator.class,Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } finally {
-         transactionManager.endBatchLevel(this, branch);
+         SkynetTransactionManager.endBatchLevel(this, branch);
          handleTxFinally();
       }
    }

@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -25,7 +24,6 @@ import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionL
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.ThreadKeyLocal;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
@@ -33,14 +31,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  * @author Robert A. Fisher
  */
 public class SkynetTransactionManager {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTransactionManager.class);
-   private static final SkynetTransactionManager transactionManager = new SkynetTransactionManager();
+   private static final SkynetTransactionManager instance = new SkynetTransactionManager();
    private ThreadKeyLocal<Branch, SkynetTransactionBuilder> transactionBuilder;
    private ThreadKeyLocal<Branch, LevelManager> levelManager;
-
-   public static SkynetTransactionManager getInstance() {
-      return transactionManager;
-   }
 
    private SkynetTransactionManager() {
       this.transactionBuilder = new ThreadKeyLocal<Branch, SkynetTransactionBuilder>();
@@ -69,16 +62,16 @@ public class SkynetTransactionManager {
       };
    }
 
-   protected void startBatchLevel(Object key, Branch branch) throws OseeDataStoreException {
-      levelManager.get(branch).startTransactionLevel(branch, key);
+   protected static void startBatchLevel(Object key, Branch branch) throws OseeDataStoreException {
+      instance.levelManager.get(branch).startTransactionLevel(branch, key);
    }
 
-   protected void setBatchLevelAsSuccessful(Object key, Branch branch) {
-      levelManager.get(branch).setTransactionLevelSuccess(key);
+   protected static void setBatchLevelAsSuccessful(Object key, Branch branch) {
+      instance.levelManager.get(branch).setTransactionLevelSuccess(key);
    }
 
-   protected void endBatchLevel(Object key, Branch branch) {
-      LevelManager manager = levelManager.get(branch);
+   protected static void endBatchLevel(Object key, Branch branch) {
+      LevelManager manager = instance.levelManager.get(branch);
       if (true != manager.isTransactionLevelSuccess(key)) {
          manager.requestRollback();
       }
@@ -114,16 +107,16 @@ public class SkynetTransactionManager {
    /**
     * Check if the current thread has a batch in progress.
     */
-   public boolean isInBatch(Branch branch) {
-      return transactionBuilder.get(branch) != null || levelManager.get(branch).inLevel();
+   public static boolean isInBatch(Branch branch) {
+      return instance.transactionBuilder.get(branch) != null || instance.levelManager.get(branch).inLevel();
    }
 
    /**
     * Retrieves the <code>TransactionBuilder</code> for the current thread. The returned value may be null.<br/><br/>
     * <b>This method is only made available for the internal Skynet system</b>.
     */
-   public SkynetTransactionBuilder getTransactionBuilder(Branch branch) {
-      return transactionBuilder.get(branch);
+   public static SkynetTransactionBuilder getTransactionBuilder(Branch branch) {
+      return instance.transactionBuilder.get(branch);
    }
 
    private final class LevelManager extends KeyedLevelManager implements IDbTransactionListener {
