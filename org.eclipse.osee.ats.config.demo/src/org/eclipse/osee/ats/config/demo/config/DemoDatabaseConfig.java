@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.workflow.vue.LoadAIsAndTeamsAction;
+import org.eclipse.osee.ats.workflow.vue.AtsDbConfig;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * 
  * @author Donald G. Dunne
  */
-public class DemoDatabaseConfig implements IDbInitializationTask {
+public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitializationTask {
    public void run(Connection connection) throws OseeCoreException {
 
       new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
@@ -50,7 +50,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
       // Creates Actionable Items and Teams
       // Teams are related to workflow by id specified in team object in VUE diagram
-      (new LoadAIsAndTeamsAction(false, OseeAtsConfigDemoPlugin.PLUGIN_ID)).run();
+      executeLoadAIsAndTeamsAction(OseeAtsConfigDemoPlugin.PLUGIN_ID);
 
       // Create initial version artifacts for Widget teams
       createVersionArtifacts();

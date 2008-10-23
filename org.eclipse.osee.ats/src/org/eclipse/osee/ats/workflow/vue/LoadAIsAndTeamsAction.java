@@ -24,10 +24,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -51,40 +48,49 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.osgi.framework.Bundle;
 
 /**
  * Retrieve "AIs and Teams.vue" extension points and configure ATS for Actionable Items and Teams from within.
  */
-public class LoadAIsAndTeamsAction extends Action {
-   private Map<String, ActionableItemArtifact> idToActionItem = new HashMap<String, ActionableItemArtifact>();
-   private final boolean prompt;
-   private static String FULL_NAME = "Full Name:";
-   private static String DESCRIPTION = "Description:";
-   private static String WORKFLOW_ID = "WorkflowId:";
-   private static String STATIC_ID = "StaticId:";
-   private static String GET_OR_CREATE = "GetOrCreate";
-   private static String NOT_ACTIONABLE = "NotActionable";
-   private static String LEAD = "Lead:";
-   private static String MEMBER = "Member:";
-   private final String bundleId;
+public class LoadAIsAndTeamsAction {
 
-   /**
-    * The constructor.
-    */
-   public LoadAIsAndTeamsAction(boolean prompt, String bundleId) {
-      super("Load ATS Config");
+   private static final String FULL_NAME = "Full Name:";
+   private static final String DESCRIPTION = "Description:";
+   private static final String WORKFLOW_ID = "WorkflowId:";
+   private static final String STATIC_ID = "StaticId:";
+   private static final String GET_OR_CREATE = "GetOrCreate";
+   private static final String NOT_ACTIONABLE = "NotActionable";
+   private static final String LEAD = "Lead:";
+   private static final String MEMBER = "Member:";
+
+   private final Map<String, ActionableItemArtifact> idToActionItem;
+   private final String bundleId;
+   private final boolean prompt;
+   private final boolean allowUserCreation;
+
+   private LoadAIsAndTeamsAction(boolean prompt, String bundleId, boolean allowUserCreation) {
+      //      super("Load ATS Config");
+      this.idToActionItem = new HashMap<String, ActionableItemArtifact>();
       this.prompt = prompt;
       this.bundleId = bundleId;
+      this.allowUserCreation = allowUserCreation;
    }
 
    /**
-    * The action has been activated. The argument of the method represents the 'real' action sitting in the workbench
-    * UI.
+    * This method is package private to prevent others from using it - only AtsDbConfig children are allowed access;
+    * 
+    * @param bundleId
     */
-   public void run() {
+   static void executeForDbConfig(String bundleId) {
+      new LoadAIsAndTeamsAction(false, bundleId, true).run();
+   }
+
+   public static void executeForAtsRuntimeConfig(boolean prompt, String bundleId) {
+      new LoadAIsAndTeamsAction(false, bundleId, !AtsPlugin.isProductionDb()).run();
+   }
+
+   private void run() {
       if (prompt && !MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Import ATS Config?",
             "Importing ATS Config from ActionableItems.vue.\n\nAre you sure?")) return;
 
@@ -94,7 +100,6 @@ public class LoadAIsAndTeamsAction extends Action {
       }
    }
 
-   @SuppressWarnings("deprecation")
    private Map<String, String> loadResources() {
       Map<String, String> resources = new HashMap<String, String>();
       IExtensionPoint point =
@@ -136,7 +141,7 @@ public class LoadAIsAndTeamsAction extends Action {
          AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork()throws OseeCoreException{
+            protected void handleTxWork() throws OseeCoreException {
                // Get or create ATS root artifact
                Artifact atsHeading = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
 
@@ -158,7 +163,7 @@ public class LoadAIsAndTeamsAction extends Action {
       }
    }
 
-   public TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page)throws OseeCoreException{
+   private TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page) throws OseeCoreException {
       // System.out.println("Adding Team " + page.getName());
       TeamDefinitionArtifact teamDefArt = null;
       if (page.getName().equals(AtsConfig.TEAMS_HEADING)) {
@@ -194,13 +199,11 @@ public class LoadAIsAndTeamsAction extends Action {
                   teamDefinitionOptions.add(TeamDefinitionOptions.RequireTargetedVersion);
                else if (line.startsWith(LEAD)) {
                   String name = line.replaceFirst(LEAD, "");
-                  // Get user or create temp user if not on production DB
-                  User u = SkynetAuthentication.getUserByName(name, !AtsPlugin.isProductionDb());
+                  User u = SkynetAuthentication.getUserByName(name, allowUserCreation);
                   leads.add(u);
                } else if (line.startsWith(MEMBER)) {
                   String name = line.replaceFirst(MEMBER, "");
-                  // Get user or create temp user if not on production DB
-                  User u = SkynetAuthentication.getUserByName(name, !AtsPlugin.isProductionDb());
+                  User u = SkynetAuthentication.getUserByName(name, allowUserCreation);
                   members.add(u);
                } else
                   throw new IllegalArgumentException(
@@ -271,7 +274,7 @@ public class LoadAIsAndTeamsAction extends Action {
       return teamDefArt;
    }
 
-   public ActionableItemArtifact addActionableItem(Artifact parent, DiagramNode page)throws OseeCoreException{
+   private ActionableItemArtifact addActionableItem(Artifact parent, DiagramNode page) throws OseeCoreException {
       // System.out.println("Processing page " + page.getName());
       ActionableItemArtifact aia = null;
       boolean getOrCreate = false;
@@ -286,8 +289,7 @@ public class LoadAIsAndTeamsAction extends Action {
                actionable = false;
             else if (line.startsWith(LEAD)) {
                String name = line.replaceFirst(LEAD, "");
-               // Get user or create temp user if not on production DB
-               User u = SkynetAuthentication.getUserByName(name, !AtsPlugin.isProductionDb());
+               User u = SkynetAuthentication.getUserByName(name, allowUserCreation);
                leads.add(u);
             } else if (line.startsWith(STATIC_ID)) staticIds.add(line.replaceFirst(STATIC_ID, ""));
          }
@@ -331,26 +333,26 @@ public class LoadAIsAndTeamsAction extends Action {
       return aia;
    }
 
-   /**
-    * Selection in the workbench has been changed. We can change the state of the 'real' action here if we want, but
-    * this can only happen after the delegate has been created.
-    */
-   public void selectionChanged(IAction action, ISelection selection) {
-   }
-
-   /**
-    * We can use this method to dispose of any system resources we previously allocated.
-    * 
-    * @see IWorkbenchWindowActionDelegate#dispose
-    */
-   public void dispose() {
-   }
-
-   /**
-    * We will cache window object in order to be able to provide parent shell for the message dialog.
-    * 
-    * @see IWorkbenchWindowActionDelegate#init
-    */
-   public void init(IWorkbenchWindow window) {
-   }
+   //   /**
+   //    * Selection in the workbench has been changed. We can change the state of the 'real' action here if we want, but
+   //    * this can only happen after the delegate has been created.
+   //    */
+   //   public void selectionChanged(IAction action, ISelection selection) {
+   //   }
+   //
+   //   /**
+   //    * We can use this method to dispose of any system resources we previously allocated.
+   //    * 
+   //    * @see IWorkbenchWindowActionDelegate#dispose
+   //    */
+   //   public void dispose() {
+   //   }
+   //
+   //   /**
+   //    * We will cache window object in order to be able to provide parent shell for the message dialog.
+   //    * 
+   //    * @see IWorkbenchWindowActionDelegate#init
+   //    */
+   //   public void init(IWorkbenchWindow window) {
+   //   }
 }
