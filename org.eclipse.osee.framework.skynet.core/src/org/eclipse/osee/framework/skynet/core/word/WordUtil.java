@@ -81,7 +81,7 @@ public class WordUtil {
             guidMap.put(oldName, guid);
          }
 
-         changeSet.replace(binIdMatcher.start(1), binIdMatcher.start(1), guid);
+         changeSet.replace(binIdMatcher.start(1), binIdMatcher.end(1), guid);
       }
       if (atLeastOneMatch) {
          return changeSet.toString();
