@@ -523,7 +523,7 @@ public class InternalEventManager {
          public void run() {
             // Kick LOCAL
             for (IEventListner listener : listeners) {
-               if (listener instanceof IArtifactsChangeTypeEventListener) {
+               if (listener instanceof ITransactionsDeletedEventListener) {
                   // Don't fail on any one listener's exception
                   try {
                      ((ITransactionsDeletedEventListener) listener).handleTransactionsDeletedEvent(sender,
