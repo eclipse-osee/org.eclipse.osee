@@ -111,12 +111,13 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
                   isExecutionAllowed = rule.isAllowed();
                } catch (Exception ex) {
                   OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
+                  return false;
                }
             }
 
-            OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("%s [%s] execution rule [%s]",
-                  isExecutionAllowed ? "Starting" : "Skipping", extension.getUniqueIdentifier(),
-                  Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
+            OseeLog.log(DatabaseActivator.class, isExecutionAllowed ? Level.INFO : Level.WARNING, String.format(
+                  "%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
+                  extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
             if (isExecutionAllowed) {
                IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
                task.run(connection);
