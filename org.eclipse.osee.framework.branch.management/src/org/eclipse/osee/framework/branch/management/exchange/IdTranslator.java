@@ -8,15 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management.exchange.handler;
+package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -25,7 +23,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 /**
  * @author Roberto E. Escobar
  */
-public class TranslatedIdMap {
+public class IdTranslator extends BaseTranslator {
    private static final String INSERT_INTO_IMPORT_INDEX_MAP =
          "INSERT INTO osee_import_index_map (sequence_id, original_id, mapped_id) VALUES (?, ?, ?)";
 
@@ -33,20 +31,14 @@ public class TranslatedIdMap {
          "SELECT original_id, mapped_id FROM osee_import_source ois, osee_import_map oim, osee_import_index_map oiim WHERE ois.import_id = oim.import_id AND oim.sequence_id = oiim.sequence_id AND oiim.sequence_id = oiim.sequence_id AND ois.db_source_guid = ?  AND oim.sequence_name = ?";
 
    private final String sequenceName;
-   private final Set<String> aliases;
    private final Map<Long, Long> originalToMapped;
    private final List<Long> newIds;
 
-   TranslatedIdMap(String sequenceName, String... aliases) {
+   IdTranslator(String sequenceName, String... aliases) {
+      super(aliases);
       this.sequenceName = sequenceName;
-      this.aliases = new HashSet<String>();
       this.originalToMapped = new HashMap<Long, Long>();
       this.newIds = new ArrayList<Long>();
-      if (aliases != null && aliases.length > 0) {
-         for (String alias : aliases) {
-            this.aliases.add(alias.toLowerCase());
-         }
-      }
    }
 
    public Object getId(Object original) throws Exception {
@@ -90,14 +82,6 @@ public class TranslatedIdMap {
 
    public String getSequence() {
       return this.sequenceName;
-   }
-
-   public boolean hasAliases() {
-      return this.aliases.size() > 0;
-   }
-
-   public Set<String> getAliases() {
-      return this.aliases;
    }
 
    public void addToCache(Long original, Long newValue) {

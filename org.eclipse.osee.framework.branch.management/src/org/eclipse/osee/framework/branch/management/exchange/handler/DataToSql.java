@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.Map;
+import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -40,7 +41,7 @@ public class DataToSql {
       return notNullCount > 0 ? data : null;
    }
 
-   public static Object[] toDataArray(Connection connection, MetaData metadata, Translator translator, Map<String, String> fieldMap) throws Exception {
+   public static Object[] toDataArray(Connection connection, MetaData metadata, TranslationManager translator, Map<String, String> fieldMap) throws Exception {
       int notNullCount = 0;
       Object[] data = new Object[metadata.getColumnSize()];
       int index = 0;

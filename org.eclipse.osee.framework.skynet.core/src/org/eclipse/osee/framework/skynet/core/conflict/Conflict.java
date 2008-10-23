@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.db.connection.core.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,19 +47,6 @@ public abstract class Conflict implements IAdaptable {
             if (status.value == value) return status;
          }
          return null;
-      }
-   };
-
-   public static enum ConflictType {
-      ATTRIBUTE(1), RELATION(2), ARTIFACT(3);
-      private final int value;
-
-      ConflictType(int value) {
-         this.value = value;
-      }
-
-      public final int Value() {
-         return value;
       }
    };
 

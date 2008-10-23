@@ -526,10 +526,11 @@
 		<Column id="DEST_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="MERGE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="COMMIT_TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__MBI_FK" type="FOREIGN KEY" appliesTo="MERGE_BRANCH_ID">
+		<Constraint schema="OSEE" id="OSEE_MERGE__PK" type="PRIMARY KEY" appliesTo="MERGE_BRANCH_ID" />
+		<Constraint schema="OSEE" id="OSEE_MERGE__MBI_FK" type="FOREIGN KEY" appliesTo="MERGE_BRANCH_ID">
 			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__DBI_FK" type="FOREIGN KEY" appliesTo="DEST_BRANCH_ID">
+		<Constraint schema="OSEE" id="OSEE_MERGE__DBI_FK" type="FOREIGN KEY" appliesTo="DEST_BRANCH_ID">
 			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
 		</Constraint>
    </Table>
@@ -541,6 +542,7 @@
 		<Column id="SOURCE_GAMMA_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="DEST_GAMMA_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="STATUS" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_CONFLICT__PK" type="PRIMARY KEY" appliesTo="MERGE_BRANCH_ID, SOURCE_GAMMA_ID" />
 		<Constraint schema="OSEE" id="OSEE_CONFLICT__MBI_FK" type="FOREIGN KEY" appliesTo="MERGE_BRANCH_ID">
 			<References schema="OSEE" table="OSEE_MERGE" column="MERGE_BRANCH_ID" onDelete="CASCADE" />
 		</Constraint>

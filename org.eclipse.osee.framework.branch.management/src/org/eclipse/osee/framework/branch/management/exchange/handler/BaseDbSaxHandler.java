@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -27,7 +28,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
 
    private Connection connection;
    private MetaData metadata;
-   private Translator translator;
+   private TranslationManager translator;
    private Options options;
 
    protected BaseDbSaxHandler(boolean isCacheAll, int cacheLimit) {
@@ -63,7 +64,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.connection = connection;
    }
 
-   public void setTranslator(Translator translator) {
+   public void setTranslator(TranslationManager translator) {
       this.translator = translator;
    }
 
@@ -75,7 +76,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       return this.metadata;
    }
 
-   protected Translator getTranslator() {
+   protected TranslationManager getTranslator() {
       return this.translator;
    }
 

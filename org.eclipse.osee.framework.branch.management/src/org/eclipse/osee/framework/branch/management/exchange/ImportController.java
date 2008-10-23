@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalTypeCheckSaxHandler;
-import org.eclipse.osee.framework.branch.management.exchange.handler.Translator;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -70,7 +69,7 @@ final class ImportController {
    private final Map<String, SavePoint> savePoints;
 
    private File importSource;
-   private Translator translator;
+   private TranslationManager translator;
    private ManifestSaxHandler manifestHandler;
    private MetaDataSaxHandler metadataHandler;
    private boolean wasZipExtractionRequired;
@@ -108,7 +107,7 @@ final class ImportController {
       importSource = result.object2;
 
       currentSavePoint = "setup";
-      translator = new Translator();
+      translator = new TranslationManager();
       translator.configure(options);
 
       // Process manifest

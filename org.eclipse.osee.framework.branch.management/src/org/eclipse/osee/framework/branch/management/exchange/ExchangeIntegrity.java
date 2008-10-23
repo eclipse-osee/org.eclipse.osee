@@ -48,7 +48,7 @@ public class ExchangeIntegrity {
          filesToCheck.add(manifestSaxHandler.getBranchFile());
          filesToCheck.add(manifestSaxHandler.getBranchDefinitionsFile());
 
-         final List<IndexCollector> checkList = ExchangeDb.getCheckList();
+         final List<IndexCollector> checkList = ExchangeDb.createCheckList();
          for (final ImportFile importFile : filesToCheck) {
             ExchangeUtil.readExchange(exchange, importFile.getFileName(), new CheckSaxHandler(checkList,
                   importFile.getFileName()));

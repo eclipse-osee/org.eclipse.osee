@@ -124,7 +124,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    @Override
    protected void handleTxWork(Connection connection) throws Exception {
       long startTime = System.currentTimeMillis();
-      List<AbstractExportItem> taskList = ExchangeDb.getTaskList();
+      List<AbstractExportItem> taskList = ExchangeDb.createTaskList();
       try {
          File tempFolder = createTempFolder();
          setUp(connection, taskList, tempFolder);
