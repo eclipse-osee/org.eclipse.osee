@@ -69,8 +69,8 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
       try {
          String cmd = request.getParameter("cmd");
          String key = request.getParameter("key");
-         boolean isCloseAllowed = Boolean.getBoolean(request.getParameter("close"));
-         boolean isPromptAllowed = Boolean.getBoolean(request.getParameter("prompt"));
+         boolean isCloseAllowed = Boolean.valueOf(request.getParameter("close"));
+         boolean isPromptAllowed = Boolean.valueOf(request.getParameter("prompt"));
          if (Strings.isValid(cmd)) {
             CommandType cmdType = CommandType.valueOf(cmd);
             switch (cmdType) {
