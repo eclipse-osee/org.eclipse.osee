@@ -31,7 +31,7 @@ import org.eclipse.swt.graphics.Image;
 public abstract class Conflict implements IAdaptable {
    public static enum Status {
 
-      UNTOUCHED(1), EDITED(2), RESOLVED(3), OUT_OF_DATE(4), NOT_RESOLVABLE(5), COMMITTED(6), INFORMATIONAL(7);
+      UNTOUCHED(1), EDITED(2), RESOLVED(3), OUT_OF_DATE_COMMITTED(4), NOT_RESOLVABLE(5), COMMITTED(6), INFORMATIONAL(7), OUT_OF_DATE(8);
       private final int value;
 
       Status(int value) {
@@ -113,9 +113,7 @@ public abstract class Conflict implements IAdaptable {
                sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
             }
          } else {
-            sourceArtifact =
-                  ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
-                        TransactionIdManager.getStartEndPoint(mergeBranch).getKey());
+            sourceArtifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, TransactionIdManager.getStartEndPoint(mergeBranch).getKey());
          }
       }
       return sourceArtifact;
@@ -129,9 +127,7 @@ public abstract class Conflict implements IAdaptable {
                destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
             }
          } else {
-            destArtifact =
-                  ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
-                        TransactionIdManager.getPriorTransaction(commitTransactionId));
+            destArtifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, TransactionIdManager.getPriorTransaction(commitTransactionId));
 
          }
       }
@@ -225,11 +221,7 @@ public abstract class Conflict implements IAdaptable {
          if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
       } catch (AttributeDoesNotExist ex) {
       }
-      status =
-            ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
-                  getConflictType().getValue(), passedStatus,
-                  TransactionIdManager.getStartEndPoint(mergeBranch).getKey().getTransactionNumber(),
-                  this instanceof AttributeConflict ? ((AttributeConflict) this).getAttrId() : 0);
+      status = ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID, getConflictType().getValue(), passedStatus, TransactionIdManager.getStartEndPoint(mergeBranch).getKey().getTransactionNumber());
       return status;
    }
 
@@ -253,6 +245,10 @@ public abstract class Conflict implements IAdaptable {
 
    public boolean statusEdited() {
       return status.equals(Status.EDITED);
+   }
+
+   public boolean statusOutOfDateCommitted() {
+      return status.equals(Status.OUT_OF_DATE_COMMITTED);
    }
 
    public boolean statusOutOfDate() {
@@ -284,8 +280,10 @@ public abstract class Conflict implements IAdaptable {
          setStatus(Conflict.Status.RESOLVED);
       } else if (status.equals(Conflict.Status.RESOLVED)) {
          setStatus(Conflict.Status.EDITED);
-      } else if (status.equals(Conflict.Status.OUT_OF_DATE)) {
+      } else if (status.equals(Conflict.Status.OUT_OF_DATE_COMMITTED)) {
          setStatus(Conflict.Status.RESOLVED);
+      } else if (status.equals(Conflict.Status.OUT_OF_DATE)) {
+         setStatus(Conflict.Status.EDITED);
       }
    }
 

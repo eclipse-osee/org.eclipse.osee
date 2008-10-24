@@ -45,10 +45,8 @@ public class AttributeConflict extends Conflict {
    public static final String EMPTY_XML = "<w:p><w:r><w:t></w:t></w:r></w:p>";
    public final static String NO_VALUE = "";
    public final static String STREAM_DATA = "Stream data";
-   public final static String RESOLVE_MERGE_MARKUP =
-         "Can not mark as resolved an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
-   public final static String DIFF_MERGE_MARKUP =
-         "Can not run a diff against an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
+   public final static String RESOLVE_MERGE_MARKUP = "Can not mark as resolved an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
+   public final static String DIFF_MERGE_MARKUP = "Can not run a diff against an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
    private final int attrId;
    private final int attrTypeId;
    private Object sourceObject;
@@ -58,8 +56,7 @@ public class AttributeConflict extends Conflict {
    private Attribute<?> destAttribute = null;
    private AttributeType dynamicAttributeDescriptor;
    private boolean isWordAttribute;
-   private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
+   private static final boolean DEBUG = "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
    /**
     * @param sourceGamma
@@ -96,48 +93,42 @@ public class AttributeConflict extends Conflict {
 
    public Attribute<?> getAttribute() throws OseeCoreException {
       if (attribute != null) return attribute;
-      Collection<Attribute<Object>> localAttributes =
-            getArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
+      Collection<Attribute<Object>> localAttributes = getArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getAttrId() == attrId) {
             attribute = localAttribute;
          }
       }
       if (attribute == null) {
-         throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + mergeBranch.getBranchId());
+         throw new AttributeDoesNotExist("Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + mergeBranch.getBranchId());
       }
       return attribute;
    }
 
    public Attribute<?> getSourceAttribute() throws OseeCoreException {
       if (sourceAttribute != null) return sourceAttribute;
-      Collection<Attribute<Object>> localAttributes =
-            getSourceArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
+      Collection<Attribute<Object>> localAttributes = getSourceArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getAttrId() == attrId) {
             sourceAttribute = localAttribute;
          }
       }
       if (sourceAttribute == null) {
-         throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + sourceBranch.getBranchId());
+         throw new AttributeDoesNotExist("Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + sourceBranch.getBranchId());
       }
       return sourceAttribute;
    }
 
    public Attribute<?> getDestAttribute() throws OseeCoreException {
       if (destAttribute != null) return destAttribute;
-      Collection<Attribute<Object>> localAttributes =
-            getDestArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
+      Collection<Attribute<Object>> localAttributes = getDestArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getAttrId() == attrId) {
             destAttribute = localAttribute;
          }
       }
       if (destAttribute == null) {
-         throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + destBranch.getBranchId());
+         throw new AttributeDoesNotExist("Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + destBranch.getBranchId());
       }
       return destAttribute;
    }
@@ -151,8 +142,7 @@ public class AttributeConflict extends Conflict {
          }
       }
       if (attribute == null) {
-         throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + artifact.getArtId() + " on Branch " + artifact.getBranch().getBranchId());
+         throw new AttributeDoesNotExist("Attribute " + attrId + " could not be found on Artifact " + artifact.getArtId() + " on Branch " + artifact.getBranch().getBranchId());
       }
       return attribute;
    }
@@ -273,8 +263,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException {
-      return new TreeSet<String>(ConfigurationPersistenceManager.getValidEnumerationAttributeValues(
-            getDynamicAttributeDescriptor().getName(), getArtifact().getBranch()));
+      return new TreeSet<String>(ConfigurationPersistenceManager.getValidEnumerationAttributeValues(getDynamicAttributeDescriptor().getName(), getArtifact().getBranch()));
    }
 
    @SuppressWarnings("unchecked")
@@ -285,8 +274,7 @@ public class AttributeConflict extends Conflict {
    public boolean setStringAttributeValue(String value) throws OseeCoreException {
       if (!okToOverwriteMerge()) {
          if (DEBUG) {
-            System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
-                  getAttrId()));
+            System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d", getAttrId()));
          }
          return false;
       }
@@ -302,8 +290,7 @@ public class AttributeConflict extends Conflict {
    public boolean setAttributeValue(Object value) throws OseeCoreException {
       if (!okToOverwriteMerge()) {
          if (DEBUG) {
-            System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
-                  getAttrId()));
+            System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d", getAttrId()));
          }
          return false;
       }
@@ -320,14 +307,12 @@ public class AttributeConflict extends Conflict {
    public boolean setToSource() throws OseeCoreException {
       if (!okToOverwriteMerge() || getSourceObject() == null) {
          if (DEBUG) {
-            System.out.println(String.format(
-                  "AttributeConflict: Failed setting the Merge Value to the Source Value for attr_id %d", getAttrId()));
+            System.out.println(String.format("AttributeConflict: Failed setting the Merge Value to the Source Value for attr_id %d", getAttrId()));
          }
          return false;
       }
       if (DEBUG) {
-         System.out.println(String.format("AttributeConflict: Set the Merge Value to the Source Value for attr_id %d",
-               getAttrId()));
+         System.out.println(String.format("AttributeConflict: Set the Merge Value to the Source Value for attr_id %d", getAttrId()));
       }
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getSourceObject());
@@ -339,14 +324,12 @@ public class AttributeConflict extends Conflict {
    public boolean setToDest() throws OseeCoreException {
       if (!okToOverwriteMerge() || getDestObject() == null) {
          if (DEBUG) {
-            System.out.println(String.format(
-                  "AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %d", getAttrId()));
+            System.out.println(String.format("AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %d", getAttrId()));
          }
          return false;
       }
       if (DEBUG) {
-         System.out.println(String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %d",
-               getAttrId()));
+         System.out.println(String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %d", getAttrId()));
       }
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getDestObject());
@@ -358,8 +341,7 @@ public class AttributeConflict extends Conflict {
    public boolean clearValue() throws OseeCoreException {
       if (!okToOverwriteMerge()) {
          if (DEBUG) {
-            System.out.println(String.format("AttributeConflict: Failed to clear the Merge Value for attr_id %d",
-                  getAttrId()));
+            System.out.println(String.format("AttributeConflict: Failed to clear the Merge Value for attr_id %d", getAttrId()));
          }
          return false;
       }
@@ -378,7 +360,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public void markStatusToReflectEdit() throws OseeCoreException {
-      if ((status.equals(Status.UNTOUCHED)) || (status.equals(Status.OUT_OF_DATE))) setStatus(Status.EDITED);
+      if ((status.equals(Status.UNTOUCHED)) || (status.equals(Status.OUT_OF_DATE_COMMITTED) || (status.equals(Status.OUT_OF_DATE)))) setStatus(Status.EDITED);
    }
 
    public Status computeStatus() throws OseeCoreException {
@@ -460,9 +442,7 @@ public class AttributeConflict extends Conflict {
       }
       Artifact artifact;
       try {
-         artifact =
-               ArtifactQuery.getArtifactFromId(getArtifact().getArtId(),
-                     BranchPersistenceManager.getBranch(mergeBranchId));
+         artifact = ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), BranchPersistenceManager.getBranch(mergeBranchId));
       } catch (ArtifactDoesNotExist ex) {
          return false;
       }
