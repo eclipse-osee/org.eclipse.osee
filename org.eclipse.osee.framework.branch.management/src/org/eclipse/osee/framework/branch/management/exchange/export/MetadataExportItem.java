@@ -15,6 +15,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -41,12 +42,13 @@ public class MetadataExportItem extends AbstractDbExportItem {
       ExportImportXml.openXmlNode(appendable, ExportImportXml.METADATA);
       try {
          DatabaseMetaData metaData = getConnection().getMetaData();
+         String[] tableTypes = getTypes(metaData);
          for (AbstractExportItem item : exportItems) {
             if (!item.equals(this) && Strings.isValid(item.getSource())) {
-               processMetaData(appendable, metaData, item.getSource());
+               processMetaData(appendable, metaData, tableTypes, item.getSource());
                if (item instanceof RelationalExportItemWithType) {
                   AbstractExportItem typeItem = ((RelationalExportItemWithType) item).getTypeItem();
-                  processMetaData(appendable, metaData, typeItem.getSource());
+                  processMetaData(appendable, metaData, tableTypes, typeItem.getSource());
                }
             }
          }
@@ -55,10 +57,28 @@ public class MetadataExportItem extends AbstractDbExportItem {
       }
    }
 
-   private void processMetaData(Appendable appendable, DatabaseMetaData metaData, String targetTable) throws Exception {
+   private String[] getTypes(DatabaseMetaData metaData) throws SQLException {
+      List<String> toReturn = new ArrayList<String>();
       ResultSet resultSet = null;
       try {
-         resultSet = metaData.getTables(null, null, null, new String[] {"TABLE"});
+         resultSet = metaData.getTableTypes();
+         if (resultSet != null) {
+            while (resultSet.next()) {
+               toReturn.add(resultSet.getString("TABLE_TYPE"));
+            }
+         }
+      } finally {
+         if (resultSet != null) {
+            resultSet.close();
+         }
+      }
+      return toReturn.toArray(new String[toReturn.size()]);
+   }
+
+   private void processMetaData(Appendable appendable, DatabaseMetaData metaData, String[] tableTypes, String targetTable) throws Exception {
+      ResultSet resultSet = null;
+      try {
+         resultSet = metaData.getTables(null, null, "OSEE%", tableTypes);
          if (resultSet != null) {
             while (resultSet.next()) {
                String tableName = resultSet.getString("TABLE_NAME");
@@ -71,6 +91,7 @@ public class MetadataExportItem extends AbstractDbExportItem {
                   processColumnMetaData(appendable, metaData, schemaName, tableName);
 
                   ExportImportXml.closeXmlNode(appendable, ExportImportXml.TABLE);
+                  break;
                }
             }
          }
