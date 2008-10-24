@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -277,36 +278,31 @@ public class XMergeViewer extends XWidget implements IActionable {
                   ArrayList<String> selections = new ArrayList<String>();
                   ArrayList<Integer> branchIds = new ArrayList<Integer>();
                   try {
-                     Collection<Integer> destBranches =
-                           ConflictManagerInternal.getInstance().getDestinationBranchesMerged(
-                                 sourceBranch.getBranchId());
+                     Collection<Integer> destBranches = ConflictManagerInternal.getInstance().getDestinationBranchesMerged(sourceBranch.getBranchId());
                      for (Integer integer : destBranches) {
                         if (integer.intValue() != destBranch.getBranchId()) {
                            selections.add(BranchPersistenceManager.getBranch(integer).getBranchName());
                            branchIds.add(integer);
                         }
                      }
-                     if (selections.size() >= 0) {
-                        ListSelectionDialog dialog =
-                              new ListSelectionDialog(selections.toArray(),
-                                    Display.getCurrent().getActiveShell().getShell(), "Apply Prior Merge Resolution",
-                                    null, "Select the destination branch that the previous commit was appplied to", 2,
-                                    new String[] {"Apply", "Cancel"}, 1);
+                     if (selections.size() > 0) {
+                        ListSelectionDialog dialog = new ListSelectionDialog(selections.toArray(), Display.getCurrent().getActiveShell().getShell(), "Apply Prior Merge Resolution", null, "Select the destination branch that the previous commit was appplied to", 2, new String[] {"Apply", "Cancel"}, 1);
                         if (dialog.open() == 0) {
                            System.out.print("Applying the merge found for Branch " + branchIds.toArray()[dialog.getSelection()]);
                            for (Conflict conflict : conflicts) {
-                              conflict.applyPreviousMerge(ConflictManagerInternal.getInstance().getMergeBranchId(
-                                    conflicts[0].getSourceBranch().getBranchId(), branchIds.get(dialog.getSelection())));
+                              conflict.applyPreviousMerge(ConflictManagerInternal.getInstance().getMergeBranchId(conflicts[0].getSourceBranch().getBranchId(), branchIds.get(dialog.getSelection())));
                            }
+                           setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, " Aplying Previous Merge");
                         }
+                     }
+                     if (selections.size() == 0) {
+                        new MessageDialog(Display.getCurrent().getActiveShell().getShell(), "Apply Prior Merge Resolution", null, "This Source Branch has had No Prior Merges", 2, new String[] {"OK"}, 1).open();
                      }
                   } catch (OseeCoreException ex) {
                      OSEELog.logException(XMergeViewer.class, ex, false);
                   }
                }
-
             }
-            System.err.println("Can not apply a previous Merge");
          }
       });
 
@@ -318,11 +314,9 @@ public class XMergeViewer extends XWidget implements IActionable {
          if (!(conflicts.length == 0)) {
             Conflict[] artifactChanges = new Conflict[0];
             if (conflicts[0].getToTransactionId() != null) {
-               setConflicts(ConflictManagerInternal.getInstance().getConflictsPerBranch(conflicts[0].getSourceBranch(),
-                     conflicts[0].getDestBranch(), conflicts[0].getToTransactionId()).toArray(artifactChanges));
+               setConflicts(ConflictManagerInternal.getInstance().getConflictsPerBranch(conflicts[0].getSourceBranch(), conflicts[0].getDestBranch(), conflicts[0].getToTransactionId()).toArray(artifactChanges));
             } else {
-               setConflicts(org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal.getInstance().getConflictsPerBranch(
-                     conflicts[0].getCommitTransactionId()).toArray(artifactChanges));
+               setConflicts(org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal.getInstance().getConflictsPerBranch(conflicts[0].getCommitTransactionId()).toArray(artifactChanges));
             }
          }
       } catch (Exception ex) {
@@ -470,13 +464,9 @@ public class XMergeViewer extends XWidget implements IActionable {
          protected IStatus run(IProgressMonitor monitor) {
             try {
                if (commitTrans == null) {
-                  conflicts =
-                        ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
-                              new Conflict[0]);
+                  conflicts = ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(new Conflict[0]);
                } else {
-                  conflicts =
-                        ConflictManagerInternal.getInstance().getConflictsPerBranch(commitTrans).toArray(
-                              new Conflict[0]);
+                  conflicts = ConflictManagerInternal.getInstance().getConflictsPerBranch(commitTrans).toArray(new Conflict[0]);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
@@ -518,8 +508,7 @@ public class XMergeViewer extends XWidget implements IActionable {
       mergeXViewer.setConflicts(conflicts);
       if (conflicts != null && conflicts.length != 0) {
          if (sourceBranch != null) {
-            displayLabelText =
-                  "Source Branch :  " + sourceBranch.getBranchName() + "\nDestination Branch :  " + destBranch.getBranchName();
+            displayLabelText = "Source Branch :  " + sourceBranch.getBranchName() + "\nDestination Branch :  " + destBranch.getBranchName();
          } else {
             displayLabelText = "Commit Transaction ID :  " + commitTrans + " " + commitTrans.getComment();
          }
