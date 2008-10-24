@@ -15,7 +15,7 @@ SQL Ids:
 
 telnet sun802.msc.az.boeing.com
 cd /las_ora_apps/sqlt/sqlt/run
-sqlplus osee/osee@lba7
+sqlplus user/password@service
 start sqltxtract.sql 6gdcn1fq2sxtq
 
 select * from v$sql, v$sql_shared_cursor where v$sql.sql_id = '67mynxt63pr82' and v$sql.sql_id =v$sql_shared_cursor.sql_id;
@@ -52,23 +52,23 @@ alter session set create_stored_outlines = true;
 -- now execute exact sql (copy from enterprise manager) and the outline will automatically be created
 alter session set create_stored_outlines = false;
 
--- the following is supposed to work but didn't seem to:
-login as osee_admin
-select hash_value, child_number from v$sql where sql_id = 'g0mn93rmkx95j';
-alter session set create_stored_outlines = true;
+-- on Oracle 11g:
+ 	-- must be done each time the db instance or rite database startup trigger
+	alter system set use_stored_outlines=true;
+	alter system set QUERY_REWRITE_ENABLED=true;
+	alter system set STAR_TRANSFORMATION_ENABLED=true;
+	
+	login as admin
+	select hash_value, child_number, plan_hash_value from v$sql where sql_id = '254fj1vwk9x18';
+	alter session set create_stored_outlines = true;
+	
+	-- create the outline
+declare begin dbms_outln.create_outline(4179948584, 0); end;
 
--- create the outline
-declare 
-begin
-dbms_outln.create_outline(3640141670, 1);
-end;
-/
+	-- now test for success
+	select * from dba_outlines;
+	select * from user_outlines;
 
--- now test for success
-select * from dba_outlines;
-select * from user_outlines;
-alter system set use_stored_outlines=true;
-write database startup trigger
 
 =======  table information  =======
 select * from dba_tables where owner='OSEE' and table_name='OSEE_DEFINE_TXS';
@@ -86,3 +86,9 @@ sqlplus osee_admin/osee_admin@lba7
 cudx4784s2fx1 490550842 45.86 CPU + Wait for CPU 44.29 SELECT rel_link_id, a_art_id,... 
       latch: cache buffers chains 1.52  
 3902zvx99s9rm 3655678348 38.68 CPU + Wait for CPU 37.22 SELECT art1.art_id, txd1.bran... 
+
+_____________________
+How to Transfer Stored Outlines from One Database to Another (9i and above)
+  	Doc ID: 	NOTE:728647.1
+______________________________
+select t.* from v$sql s, table(dbms_xplan.display_cursor(s.sql_id, s.child_number, 'TYPICAL ALLSTATS LAST')) t  where s.sql_id = '254fj1vwk9x18' ; 
