@@ -61,7 +61,7 @@ public class InstallLinkPageGenerator {
       return pathBuilder.toString();
    }
 
-   private static String getOpenScript(ClientInstallInfo info) {
+   private static String getOpenScript(ClientInstallInfo info, boolean isCloseAllowed, boolean isPromptAllowed) {
       StringBuilder builder = new StringBuilder();
       builder.append("<script type=\"text/javascript\">\n");
       builder.append("function initialize()\n{\n");
@@ -80,8 +80,12 @@ public class InstallLinkPageGenerator {
          }
          builder.append("var v = new ActiveXObject(\"Shell.Application\");\n");
          builder.append(String.format("v.ShellExecute(\"%s\",\"\",\"%s\", \"open\", 10);\n", execName, execPath));
-         builder.append("window.opener=\"self\";\n");
-         builder.append("window.close();\n");
+         if (!isPromptAllowed) {
+            builder.append("window.opener=\"self\";\n");
+         }
+         if (isCloseAllowed) {
+            builder.append("window.close();\n");
+         }
          builder.append("}\n");
       } else {
          // INVALID LINK PAGE
@@ -132,10 +136,10 @@ public class InstallLinkPageGenerator {
       return builder.toString();
    }
 
-   public static String generate(List<ClientInstallInfo> infos) {
+   public static String generate(List<ClientInstallInfo> infos, boolean isCloseAllowed, boolean isPromptAllowed) {
       String toReturn = null;
       if (infos.size() == 1) {
-         toReturn = String.format(LAUNCH_PAGE_TEMPLATE, getOpenScript(infos.get(0)));
+         toReturn = String.format(LAUNCH_PAGE_TEMPLATE, getOpenScript(infos.get(0), isCloseAllowed, isPromptAllowed));
       } else {
          toReturn = String.format(MULTI_LINK_TEMPLATE, getCheckScript(), getLinkTable(infos));
       }

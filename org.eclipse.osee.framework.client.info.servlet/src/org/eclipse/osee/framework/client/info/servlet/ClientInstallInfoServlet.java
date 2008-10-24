@@ -69,6 +69,8 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
       try {
          String cmd = request.getParameter("cmd");
          String key = request.getParameter("key");
+         boolean isCloseAllowed = Boolean.getBoolean(request.getParameter("close"));
+         boolean isPromptAllowed = Boolean.getBoolean(request.getParameter("prompt"));
          if (Strings.isValid(cmd)) {
             CommandType cmdType = CommandType.valueOf(cmd);
             switch (cmdType) {
@@ -80,9 +82,9 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
                      List<ClientInstallInfo> infos = getInfoEntry(key);
                      response.setStatus(HttpServletResponse.SC_OK);
                      if (infos.size() == 0) {
-                        response.getWriter().write("<html><body>no installations found</body></html>");
+                        response.getWriter().write("<html><body>No installations found</body></html>");
                      } else {
-                        String html = InstallLinkPageGenerator.generate(infos);
+                        String html = InstallLinkPageGenerator.generate(infos, isCloseAllowed, isPromptAllowed);
                         response.getWriter().print(html);
                      }
                   } else {
