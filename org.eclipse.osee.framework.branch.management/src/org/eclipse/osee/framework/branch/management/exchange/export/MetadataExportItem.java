@@ -43,18 +43,29 @@ public class MetadataExportItem extends AbstractDbExportItem {
       try {
          DatabaseMetaData metaData = getConnection().getMetaData();
          String[] tableTypes = getTypes(metaData);
+         String schema = getSchema(metaData);
          for (AbstractExportItem item : exportItems) {
             if (!item.equals(this) && Strings.isValid(item.getSource())) {
-               processMetaData(appendable, metaData, tableTypes, item.getSource());
+               processMetaData(appendable, metaData, schema, tableTypes, item.getSource());
                if (item instanceof RelationalExportItemWithType) {
                   AbstractExportItem typeItem = ((RelationalExportItemWithType) item).getTypeItem();
-                  processMetaData(appendable, metaData, tableTypes, typeItem.getSource());
+                  processMetaData(appendable, metaData, schema, tableTypes, typeItem.getSource());
                }
             }
          }
       } finally {
          ExportImportXml.closeXmlNode(appendable, ExportImportXml.METADATA);
       }
+   }
+
+   private boolean isTypeAllowed(String type) {
+      boolean toReturn = false;
+      if (!type.contains("system")) {
+         if (type.contains("table") || type.contains("synonym") || type.contains("view")) {
+            toReturn = true;
+         }
+      }
+      return toReturn;
    }
 
    private String[] getTypes(DatabaseMetaData metaData) throws SQLException {
@@ -64,7 +75,10 @@ public class MetadataExportItem extends AbstractDbExportItem {
          resultSet = metaData.getTableTypes();
          if (resultSet != null) {
             while (resultSet.next()) {
-               toReturn.add(resultSet.getString("TABLE_TYPE"));
+               String type = resultSet.getString("TABLE_TYPE");
+               if (isTypeAllowed(type.toLowerCase())) {
+                  toReturn.add(type);
+               }
             }
          }
       } finally {
@@ -75,10 +89,33 @@ public class MetadataExportItem extends AbstractDbExportItem {
       return toReturn.toArray(new String[toReturn.size()]);
    }
 
-   private void processMetaData(Appendable appendable, DatabaseMetaData metaData, String[] tableTypes, String targetTable) throws Exception {
+   private String getSchema(DatabaseMetaData metaData) throws SQLException {
+      String toReturn = "%";
       ResultSet resultSet = null;
       try {
-         resultSet = metaData.getTables(null, null, "OSEE%", tableTypes);
+         resultSet = metaData.getSchemas();
+         if (resultSet != null) {
+            while (resultSet.next()) {
+               String rawSchema = resultSet.getString("TABLE_SCHEM");
+               if (rawSchema.equalsIgnoreCase("osee")) {
+                  toReturn = rawSchema + toReturn;
+                  break;
+               }
+            }
+         }
+      } finally {
+         if (resultSet != null) {
+            resultSet.close();
+         }
+      }
+      return toReturn;
+   }
+
+   private void processMetaData(Appendable appendable, DatabaseMetaData metaData, String schema, String[] tableTypes, String targetTable) throws Exception {
+      ResultSet resultSet = null;
+      try {
+
+         resultSet = metaData.getTables(null, null, schema, tableTypes);
          if (resultSet != null) {
             while (resultSet.next()) {
                String tableName = resultSet.getString("TABLE_NAME");
