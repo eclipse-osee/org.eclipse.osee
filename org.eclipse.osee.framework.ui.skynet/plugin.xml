@@ -148,12 +148,6 @@
            <with
                  variable="activePartId">
               <equals
-                    value="org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
                     value="org.eclipse.osee.framework.ui.skynet.branch.BranchView">
               </equals>
            </with>
@@ -327,12 +321,6 @@
         commandId="org.eclipse.ui.edit.delete">
      <activeWhen>
         <or>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView">
-              </equals>
-           </with>
            <with
                  variable="activePartId">
               <equals
@@ -530,7 +518,6 @@
 		<category id="osee.jdk.core.category" name="OSEE"/>
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView" icon="images/edit.gif" id="org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView" name="Resource History"/>
 		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.branch.BranchView" icon="images/branch.gif" id="org.eclipse.osee.framework.ui.skynet.branch.BranchView" name="Branch Manager"/>
-		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView" icon="images/branch_change.gif" id="org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView" name="Change Report"/>
 		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.queryLog.QueryLogView" icon="images/query_log.gif" id="org.eclipse.osee.framework.ui.skynet.QueryLogView" name="Query Log"/>
 		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.search.QuickSearchView" icon="images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.QuickSearchView" name="Quick Search"/>
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" icon="images/skywalker.gif" id="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" name="Sky Walker"/>
