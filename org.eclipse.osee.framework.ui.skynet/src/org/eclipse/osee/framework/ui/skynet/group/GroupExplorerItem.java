@@ -137,10 +137,16 @@ public class GroupExplorerItem {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof GroupExplorerItem) {
-         boolean equals = artifact.getGuid().equals(((GroupExplorerItem) obj).getArtifact().getGuid());
-         if (!equals) return false;
+         if (!artifact.getGuid().equals(((GroupExplorerItem) obj).getArtifact().getGuid())) {
+            return false;
+         }
+         if (((GroupExplorerItem) obj).getParentItem() == null && getParentItem() == null) {
+            return true;
+         }
+         if (((GroupExplorerItem) obj).getParentItem() != null && getParentItem() != null) {
+            return ((GroupExplorerItem) obj).getParentItem().equals(getParentItem());
+         }
       }
-      if (((GroupExplorerItem) obj).getParentItem() == null && getParentItem() == null) return true;
       return false;
    }
 

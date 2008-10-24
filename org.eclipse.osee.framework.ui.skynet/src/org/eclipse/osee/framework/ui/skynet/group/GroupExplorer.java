@@ -62,7 +62,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class GroupExplorer extends ViewPart implements IBranchEventListener, IFrameworkTransactionEventListener, IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
-   private TreeViewer treeViewer;
+   private GroupTreeViewer treeViewer;
    private Artifact rootArt;
    private GroupExplorerItem rootItem;
    private Collection<GroupExplorerItem> selected;
@@ -94,7 +94,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
       parent.setLayout(gridLayout);
       parent.setLayoutData(gridData);
 
-      treeViewer = new TreeViewer(parent);
+      treeViewer = new GroupTreeViewer(this, parent);
       treeViewer.setContentProvider(new GroupContentProvider(this));
       treeViewer.setLabelProvider(new GroupLabelProvider());
       treeViewer.setUseHashlookup(true);
@@ -280,6 +280,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    }
 
    public void storeExpandedAndSelection() {
+      //      System.out.println("GE: storeExpandedAndSelection");
       // Store selected so can re-select after event re-draw
       selected = getSelectedItems();
       if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
@@ -288,6 +289,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    }
 
    public void restoreExpandedAndSelection() {
+      //      System.out.println("GE: restoreExpandedAndSelection");
       if (expanded != null && expanded.length > 0 && rootArt != null) {
          treeViewer.setExpandedElements(expanded);
       }
@@ -360,6 +362,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    }
 
    public void refresh() {
+      //      System.out.println("GE: refresh");
       if (rootItem != null) {
          rootItem.dispose();
       }
