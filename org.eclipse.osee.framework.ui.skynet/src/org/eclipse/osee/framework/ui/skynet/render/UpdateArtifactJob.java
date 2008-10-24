@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -56,6 +58,8 @@ public class UpdateArtifactJob extends UpdateJob {
    private static final Pattern multiPattern = Pattern.compile(".*[^()]*");
    private Element oleDataElement;
    private String singleGuid = null;
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Renderer"));
 
    public UpdateArtifactJob() {
       super("Update Artifact");
@@ -223,6 +227,29 @@ public class UpdateArtifactJob extends UpdateJob {
                   if (singleArtifact || !WordUtil.textOnly(
                         artifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
                         WordUtil.textOnly(content))) {
+                     //TODO            	  
+                     if (DEBUG) {
+                        System.err.println("BEFORE: " + content);
+                     }
+                     //This code pulls out all of the stuff after the inserted listnum reordering stuff.  This needs to be
+                     //here so that we remove unwanted template information from single editing
+                     if (content.contains(WordMLProducer.LISTNUM_FIELD)) {
+                        content = content.substring(0, content.indexOf(WordMLProducer.LISTNUM_FIELD)) + "</wx:sect>";
+                     } else {
+                        int index = content.indexOf(WordMLProducer.LISTNUM_FIELD_TAIL);
+                        if (index >= 0) {
+                           content =
+                                 content.substring(0, content.indexOf(WordMLProducer.LISTNUM_FIELD_TAIL)) + "</w:p></wx:sect>";
+                           content = content.replace(WordMLProducer.LISTNUM_FIELD_HEAD, "");
+                        } else {
+                           throw new OseeCoreException(
+                                 "There were errors removing template information from the Word content prior to saving");
+                        }
+                     }
+
+                     if (DEBUG) {
+                        System.err.println("AFTER:  " + content);
+                     }
                      artifact.setSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, content);
                   }
                   if (artifact.isDirty()) {

@@ -185,6 +185,7 @@ public class WordTemplateProcessor {
       }
       // Write out the last of the template
       wordMl.addWordMl(template.substring(lastEndIndex));
+
       displayNonTemplateArtifacts(nonTemplateArtifacts);
       return charBak;
    }
@@ -285,8 +286,8 @@ public class WordTemplateProcessor {
    }
 
    private void processArtifactSet(final String artifactElement, final List<Artifact> artifacts, final WordMLProducer wordMl, final String outlineType, PresentationType presentationType) throws OseeCoreException {
-	  nonTemplateArtifacts.clear();
-	   if (outlineNumber != null) {
+      nonTemplateArtifacts.clear();
+      if (outlineNumber != null) {
          wordMl.setNextParagraphNumberTo(outlineNumber);
       }
 
@@ -508,6 +509,20 @@ public class WordTemplateProcessor {
                //Change the BinData Id so images do not get overridden by the other images
                wordContent = WordUtil.reassignBinDataID(wordContent);
 
+               //               Need for the cleanup of the stuff that shouldn't be there
+               //               Matcher pageMatcher = Pattern.compile("<w:pgMar(.*?)>").matcher(wordContent);
+               //               if (pageMatcher.find()) {
+               //                  System.err.println(wordContent.substring(pageMatcher.start(), pageMatcher.end()));
+               //                  wordContent = wordContent.replace(wordContent.substring(pageMatcher.start(), pageMatcher.end()), "");
+               //               }
+               //               System.err.println(wordContent);
+               //               if (wordContent.contains("<w:pgMar")) {
+               //                  System.err.println("w:pgMar");
+               //               }
+               //               if (wordContent.contains("hdr")) {
+               //                  System.err.println("hdr");
+               //               }
+
                if (presentationType == PresentationType.EDIT && multipleArtifacts) {
                   writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",
@@ -708,8 +723,8 @@ public class WordTemplateProcessor {
          Displays.ensureInDisplayThread(new Runnable() {
 
             public void run() {
-            	ArrayList<Artifact> nonTempArtifacts = new ArrayList<Artifact>(artifacts.size());
-            	nonTempArtifacts.addAll(artifacts);
+               ArrayList<Artifact> nonTempArtifacts = new ArrayList<Artifact>(artifacts.size());
+               nonTempArtifacts.addAll(artifacts);
                ArtifactExplorer.explore(nonTempArtifacts);
             }
          });
