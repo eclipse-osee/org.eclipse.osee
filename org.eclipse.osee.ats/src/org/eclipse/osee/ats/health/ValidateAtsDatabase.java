@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.health;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,15 +20,21 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSLog;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -104,6 +111,8 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    private XResultData xResultData;
 
    private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
       loadAtsBranchArtifacts();
       testAtsBranchAttributeValues();
@@ -113,6 +122,10 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       testTasksHaveParentWorkflow();
       testReviewsHaveParentWorkflowOrActionableItems();
       testStateMachineAssignees();
+      testAtsLogs();
+      for (IHealthStatus stat : monitorLog.getSevereLogs()) {
+         xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
+      }
       xResultData.log("Completed processing " + artifacts.size() + " artifacts.");
    }
 
@@ -199,6 +212,34 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
             if (reviewArtifact.getRelatedArtifacts(AtsRelation.TeamWorkflowToReview_Team).size() == 0 && reviewArtifact.getActionableItemsDam().getActionableItemGuids().size() == 0) {
                xResultData.logError("Review " + reviewArtifact.getHumanReadableId() + " has 0 related parents and 0 actionable items.");
+            }
+         }
+      }
+   }
+
+   public void testAtsLogs() throws OseeCoreException {
+      xResultData.log("testAtsLogs");
+      for (Artifact art : artifacts) {
+         if (art instanceof StateMachineArtifact) {
+            StateMachineArtifact sma = (StateMachineArtifact) art;
+            try {
+               ATSLog log = sma.getSmaMgr().getLog();
+               if (log.getOriginator() == null) {
+                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " originator == null");
+               }
+               for (String stateName : Arrays.asList("Completed", "Cancelled")) {
+                  if (sma.getSmaMgr().getStateMgr().getCurrentStateName().equals(stateName)) {
+                     LogItem logItem = log.getStateEvent(LogType.StateEntered, stateName);
+                     if (logItem == null) {
+                        xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " state \"" + stateName + "\" logItem == null");
+                     }
+                     if (logItem.getDate() == null) {
+                        xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " state \"" + stateName + "\" logItem.date == null");
+                     }
+                  }
+               }
+            } catch (Exception ex) {
+               xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " exception accessing AtsLog: " + ex.getLocalizedMessage());
             }
          }
       }
