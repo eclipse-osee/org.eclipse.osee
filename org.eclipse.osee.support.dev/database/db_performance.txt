@@ -6,7 +6,8 @@ Oracle document ids:
 	Note:215187.1
 	Note:445126.1	How to manually store an outline using V$SQL and DBMS_OUTLN.CREATE_OUTLINE
 	Note:555579.1	10.2.0.4 Patch Set - Availability and Known Issues
-	
+	NOTE:601739.1  11.1.0.7 Patch Set - List of Bug Fixes by Problem Type
+  	Doc ID: 	
 	
 SQL Ids:
 	67mynxt63pr82:  this is the SQL ID for the show all trax related actions
@@ -47,20 +48,18 @@ $ORACLE_HOME/admin/lba7/udump
 Doc ID: 	Note:6336044.8 which is preventing creating a stored outline
 
 -- do this:
+select * from v$parameter where name like '%cursor%';
 alter system set use_stored_outlines=true;
 alter session set create_stored_outlines = true;
 -- now execute exact sql (copy from enterprise manager) and the outline will automatically be created
 alter session set create_stored_outlines = false;
 
 -- on Oracle 11g:
- 	-- must be done each time the db instance or rite database startup trigger
+ 	-- must be done each time the database instance is restarted or write database startup trigger
 	alter system set use_stored_outlines=true;
-	alter system set QUERY_REWRITE_ENABLED=true;
-	alter system set STAR_TRANSFORMATION_ENABLED=true;
-	
 	login as admin
-	select hash_value, child_number, plan_hash_value from v$sql where sql_id = '254fj1vwk9x18';
-	alter session set create_stored_outlines = true;
+	select hash_value, child_number, plan_hash_value from v$sql where sql_id = 'ggbncw5fg04sn';
+
 	
 	-- create the outline
 declare begin dbms_outln.create_outline(4179948584, 0); end;
@@ -74,6 +73,11 @@ declare begin dbms_outln.create_outline(4179948584, 0); end;
 select * from dba_tables where owner='OSEE' and table_name='OSEE_DEFINE_TXS';
 select * from dba_objects where owner='OSEE' and object_name='OSEE_DEFINE_TXS';
 select * from dba_tablespaces where tablespace_name ='OSEE_DATA';
+
+=======  sql plus  =======
+!stty erase ^H
+set pagesize 300
+set linesize 120
  
 =======  ashrpt  =======
 cd $ORACLE_HOME/rdbms/admin
@@ -92,3 +96,17 @@ How to Transfer Stored Outlines from One Database to Another (9i and above)
   	Doc ID: 	NOTE:728647.1
 ______________________________
 select t.* from v$sql s, table(dbms_xplan.display_cursor(s.sql_id, s.child_number, 'TYPICAL ALLSTATS LAST')) t  where s.sql_id = '254fj1vwk9x18' ; 
+____________________________
+
+
+create or replace trigger enables_outlines_trigger
+after startup on database
+begin
+execute immediate('alter system set use_stored_outlines=true');
+end;
+/
+
+
+ /*+ ordered */
+http://www.dba-oracle.com/oracle11g/oracle_11g_extended_optimizer_statistics.htm
+http://www.dba-oracle.com/art_otn_cbo_p7.htm
