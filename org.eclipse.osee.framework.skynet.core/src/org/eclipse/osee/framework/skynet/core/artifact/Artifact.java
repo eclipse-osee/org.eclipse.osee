@@ -929,16 +929,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                "The artifact " + getGuid() + " must be at the head of the branch to be edited.");
       }
 
-      AbstractSkynetTxTemplate artifactPersistTx = new AbstractSkynetTxTemplate(getBranch()) {
-         @Override
-         protected void handleTxWork() throws OseeCoreException {
-            if (isDirty()) {
+      if (isDirty()) {
+         AbstractSkynetTxTemplate artifactPersistTx = new AbstractSkynetTxTemplate(getBranch()) {
+            @Override
+            protected void handleTxWork() throws OseeCoreException {
+
                getTxBuilder().addArtifactToPersist(Artifact.this);
                onAttributePersist();
             }
-         }
-      };
-      artifactPersistTx.execute();
+         };
+         artifactPersistTx.execute();
+      }
    }
 
    public final void persistRelations() throws OseeCoreException {
