@@ -103,7 +103,93 @@ public class XViewerCustomizeDialog extends MessageDialog {
       this.title = title;
    }
 
-   DragSourceAdapter dragListener = new DragSourceAdapter() {
+   DragSourceAdapter hiddenTableDragListener = new DragSourceAdapter() {
+      /*
+       * (non-Javadoc)
+       * 
+       * @see org.eclipse.swt.dnd.DragSourceAdapter#dragStart(org.eclipse.swt.dnd.DragSourceEvent)
+       */
+      @Override
+      public void dragStart(DragSourceEvent event) {
+         if (hiddenColTable.getViewer().getSelection().isEmpty()) {
+            event.doit = false;
+         }
+      }
+
+      /*
+       * @see org.eclipse.swt.dnd.DragSourceAdapter#dragSetData(org.eclipse.swt.dnd.DragSourceEvent)
+       */
+      @Override
+      public void dragSetData(DragSourceEvent event) {
+         if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+            List<XViewerColumn> selCols = getHiddenTableSelection();
+            Collection<String> ids = new ArrayList<String>(selCols.size());
+
+            for (XViewerColumn xCol : selCols)
+               ids.add(xCol.getId());
+
+            event.data = Collections.toString(ids, null, ", ", null);
+         }
+      }
+   };
+   DropTargetAdapter hiddenTableDropListener = new DropTargetAdapter() {
+
+      @Override
+      public void dragOperationChanged(DropTargetEvent event) {
+      }
+
+      @Override
+      public void drop(DropTargetEvent event) {
+         if (event.data instanceof String) {
+            performHiddenTableTextDrop(event);
+         }
+      }
+
+      @Override
+      public void dragOver(DropTargetEvent event) {
+         performHiddenTableDragOver(event);
+      }
+
+      @Override
+      public void dropAccept(DropTargetEvent event) {
+      }
+   };
+
+   /**
+    * Drag should only be from visible table
+    * 
+    * @param event
+    */
+   public void performHiddenTableDragOver(DropTargetEvent event) {
+      if (!TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
+         event.detail = DND.DROP_NONE;
+         return;
+      }
+      // Only allow drag from visibleColTable
+      if (event.widget != visibleColTable) {
+         return;
+      }
+
+      event.detail = DND.DROP_MOVE;
+   }
+
+   @SuppressWarnings("unchecked")
+   public void performHiddenTableTextDrop(DropTargetEvent event) {
+
+      String droppedIds = (String) event.data;
+
+      List<XViewerColumn> droppedVisibleTableXCols = new ArrayList<XViewerColumn>();
+      List<XViewerColumn> orderCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
+      for (XViewerColumn xCol : orderCols) {
+         if (droppedIds.contains(xCol.getId())) {
+            droppedVisibleTableXCols.add(xCol);
+         }
+      }
+
+      moveFromVisibleToHidden(droppedVisibleTableXCols);
+   }
+
+   DragSourceAdapter visibleTableDragListener = new DragSourceAdapter() {
       /*
        * (non-Javadoc)
        * 
@@ -132,7 +218,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
          }
       }
    };
-   DropTargetAdapter dropListener = new DropTargetAdapter() {
+   DropTargetAdapter visibleTableDropListener = new DropTargetAdapter() {
 
       @Override
       public void dragOperationChanged(DropTargetEvent event) {
@@ -141,13 +227,13 @@ public class XViewerCustomizeDialog extends MessageDialog {
       @Override
       public void drop(DropTargetEvent event) {
          if (event.data instanceof String) {
-            performTextDrop(event);
+            performVisibleTableTextDrop(event);
          }
       }
 
       @Override
       public void dragOver(DropTargetEvent event) {
-         performDragOver(event);
+         performVisibleTableDragOver(event);
       }
 
       @Override
@@ -156,12 +242,17 @@ public class XViewerCustomizeDialog extends MessageDialog {
    };
 
    @SuppressWarnings("unchecked")
-   public void performTextDrop(DropTargetEvent event) {
+   public void performVisibleTableTextDrop(DropTargetEvent event) {
       Tree tree = visibleColTable.getViewer().getTree();
       TreeItem dragOverTreeItem = tree.getItem(visibleColTable.getViewer().getTree().toControl(event.x, event.y));
       XViewerColumn dragOverXCol = (XViewerColumn) dragOverTreeItem.getData();
 
       String droppedIds = (String) event.data;
+
+      // Don't allow dropping on same item as dragging
+      if (droppedIds.contains(dragOverXCol.getId())) {
+         return;
+      }
 
       List<XViewerColumn> droppedXCols = new ArrayList<XViewerColumn>();
       List<XViewerColumn> orderCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
@@ -170,9 +261,15 @@ public class XViewerCustomizeDialog extends MessageDialog {
             droppedXCols.add(xCol);
          }
       }
+      for (XViewerColumn xCol : (List<XViewerColumn>) hiddenColTable.getViewer().getInput()) {
+         if (droppedIds.contains(xCol.getId())) {
+            droppedXCols.add(xCol);
+         }
+      }
       orderCols.removeAll(droppedXCols);
+
       int dropXColOrderColsIndex = 0;
-      for (XViewerColumn xCol : orderCols) {
+      for (XViewerColumn xCol : (List<XViewerColumn>) visibleColTable.getViewer().getInput()) {
          if (xCol.getId().equals(dragOverXCol.getId())) {
             break;
          }
@@ -185,9 +282,13 @@ public class XViewerCustomizeDialog extends MessageDialog {
          orderCols.addAll(dropXColOrderColsIndex, droppedXCols);
       }
       visibleColTable.getViewer().setInput(orderCols);
+
+      List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getViewer().getInput();
+      hiddenCols.removeAll(droppedXCols);
+      hiddenColTable.getViewer().setInput(hiddenCols);
    }
 
-   public void performDragOver(DropTargetEvent event) {
+   public void performVisibleTableDragOver(DropTargetEvent event) {
       if (!TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
          event.detail = DND.DROP_NONE;
          return;
@@ -195,12 +296,21 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
       Tree tree = visibleColTable.getViewer().getTree();
       TreeItem dragOverTreeItem = tree.getItem(visibleColTable.getViewer().getTree().toControl(event.x, event.y));
+      if (dragOverTreeItem == null) {
+         return;
+      }
 
       event.feedback = DND.FEEDBACK_EXPAND;
       event.detail = DND.DROP_NONE;
 
       if (dragOverTreeItem != null) {
          IStructuredSelection selectedItem = (IStructuredSelection) visibleColTable.getViewer().getSelection();
+         if (selectedItem == null || selectedItem.isEmpty()) {
+            selectedItem = (IStructuredSelection) hiddenColTable.getViewer().getSelection();
+         }
+         if (selectedItem == null) {
+            return;
+         }
          Object obj = selectedItem.getFirstElement();
          if (obj instanceof XViewerColumn) {
             if (isFeedbackAfter) {
@@ -393,9 +503,13 @@ public class XViewerCustomizeDialog extends MessageDialog {
          }
       });
       visibleColTable.getViewer().addDragSupport(DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()},
-            dragListener);
+            visibleTableDragListener);
       visibleColTable.getViewer().addDropSupport(DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()},
-            dropListener);
+            visibleTableDropListener);
+      hiddenColTable.getViewer().addDragSupport(DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()},
+            hiddenTableDragListener);
+      hiddenColTable.getViewer().addDropSupport(DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()},
+            hiddenTableDropListener);
 
       gridLayout.numColumns = 3;
       gridLayout.numColumns = 3;
@@ -615,11 +729,17 @@ public class XViewerCustomizeDialog extends MessageDialog {
       visibleColTable.getViewer().setInput(visibleCols);
    }
 
-   @SuppressWarnings("unchecked")
    private void handleRemoveItemButton() {
-      // Remove from visible
       List<XViewerColumn> visibleSelCols = getVisibleTableSelection();
-      if (visibleSelCols == null) return;
+      if (visibleSelCols != null && visibleSelCols.size() != 0) {
+         moveFromVisibleToHidden(visibleSelCols);
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   private void moveFromVisibleToHidden(List<XViewerColumn> visibleSelCols) {
+      // Remove from visible
+      if (visibleSelCols == null || visibleSelCols.size() == 0) return;
       List<XViewerColumn> visibleCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
       visibleCols.removeAll(visibleSelCols);
       visibleColTable.getViewer().setInput(visibleCols);
