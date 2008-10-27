@@ -115,18 +115,38 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
       loadAtsBranchArtifacts();
-      testAtsBranchAttributeValues();
-      testAtsActionsHaveTeamWorkflow();
-      testAtsWorkflowsHaveAction();
-      testAtsWorkflowsHaveZeroOrOneVersion();
-      testTasksHaveParentWorkflow();
-      testReviewsHaveParentWorkflowOrActionableItems();
-      testStateMachineAssignees();
+      //      testAtsBranchAttributeValues();
+      //      testAtsActionsHaveTeamWorkflow();
+      //      testAtsWorkflowsHaveAction();
+      //      testAtsWorkflowsHaveZeroOrOneVersion();
+      //      testTasksHaveParentWorkflow();
+      //      testReviewsHaveParentWorkflowOrActionableItems();
+      testTeamWorkflows();
+      //      testStateMachineAssignees();
       testAtsLogs();
       for (IHealthStatus stat : monitorLog.getSevereLogs()) {
          xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
       }
       xResultData.log("Completed processing " + artifacts.size() + " artifacts.");
+   }
+
+   public void testTeamWorkflows() throws OseeCoreException {
+      xResultData.log("testTeamWorkflows");
+      for (Artifact art : artifacts) {
+         if (art instanceof TeamWorkFlowArtifact) {
+            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
+            try {
+               if (teamArt.getActionableItemsDam().getActionableItems().size() == 0) {
+                  xResultData.logError("TeamWorkflow " + teamArt.getHumanReadableId() + " has 0 ActionableItems");
+               }
+               if (teamArt.getTeamDefinition() == null) {
+                  xResultData.logError("TeamWorkflow " + teamArt.getHumanReadableId() + " has no TeamDefinition");
+               }
+            } catch (Exception ex) {
+               xResultData.logError(teamArt.getArtifactTypeName() + " " + teamArt.getHumanReadableId() + " exception testing testTeamWorkflows: " + ex.getLocalizedMessage());
+            }
+         }
+      }
    }
 
    public void loadAtsBranchArtifacts() throws OseeCoreException {
@@ -225,16 +245,30 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
             try {
                ATSLog log = sma.getSmaMgr().getLog();
                if (log.getOriginator() == null) {
-                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " originator == null");
+                  try {
+                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " originator == null");
+                  } catch (Exception ex) {
+                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " exception accessing originator: " + ex.getLocalizedMessage());
+                  }
                }
                for (String stateName : Arrays.asList("Completed", "Cancelled")) {
                   if (sma.getSmaMgr().getStateMgr().getCurrentStateName().equals(stateName)) {
                      LogItem logItem = log.getStateEvent(LogType.StateEntered, stateName);
                      if (logItem == null) {
-                        xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " state \"" + stateName + "\" logItem == null");
+                        try {
+                           xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " state \"" + stateName + "\" logItem == null");
+                        } catch (Exception ex) {
+                           xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " exception accessing logItem: " + ex.getLocalizedMessage());
+
+                        }
                      }
                      if (logItem.getDate() == null) {
-                        xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " state \"" + stateName + "\" logItem.date == null");
+                        try {
+                           xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " state \"" + stateName + "\" logItem.date == null");
+                        } catch (Exception ex) {
+                           xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " exception accessing logItem.date: " + ex.getLocalizedMessage());
+
+                        }
                      }
                   }
                }
