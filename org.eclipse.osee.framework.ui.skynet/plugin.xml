@@ -178,7 +178,7 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactWithRecurseCommand" commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactWithRecurseHandler" commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
      <enabledWhen>
         <with
               variable="selection">
