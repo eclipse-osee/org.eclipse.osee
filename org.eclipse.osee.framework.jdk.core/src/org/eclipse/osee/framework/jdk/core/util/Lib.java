@@ -106,6 +106,10 @@ public final class Lib {
    }
 
    private static void exceptionToString(Throwable ex, StringBuilder sb) {
+      if (ex == null) {
+         sb.append("Exception == null; can't display stack");
+         return;
+      }
       sb.append(ex.getMessage() + "\n");
       StackTraceElement st[] = ex.getStackTrace();
       for (int i = 0; i < st.length; i++) {
@@ -353,6 +357,7 @@ public final class Lib {
 
    public static InputStream byteBufferToInputStream(final ByteBuffer byteBuffer) {
       return new InputStream() {
+         @Override
          public synchronized int read() throws IOException {
             if (!byteBuffer.hasRemaining()) {
                return -1;
@@ -360,6 +365,7 @@ public final class Lib {
             return byteBuffer.get();
          }
 
+         @Override
          public synchronized int read(byte[] bytes, int off, int len) throws IOException {
             len = Math.min(len, byteBuffer.remaining());
             if (off != len) {
@@ -383,10 +389,12 @@ public final class Lib {
 
    public static OutputStream byteBufferToOutputStream(final ByteBuffer byteBuffer) {
       return new OutputStream() {
+         @Override
          public synchronized void write(int b) throws IOException {
             byteBuffer.put((byte) b);
          }
 
+         @Override
          public synchronized void write(byte[] bytes, int off, int len) throws IOException {
             byteBuffer.put(bytes, off, len);
          }
@@ -1416,11 +1424,11 @@ public final class Lib {
          ZipEntry entry = null;
          while ((entry = zipInputStream.getNextEntry()) != null) {
             String zipEntryName = entry.getName();
-            
+
             OutputStream outputStream = null;
             try {
                File target = new File(targetDirectory, zipEntryName);
-               if(target != null && !entry.isDirectory()) {
+               if (target != null && !entry.isDirectory()) {
                   File parent = target.getParentFile();
                   if (parent != null && !parent.exists()) {
                      parent.mkdirs();
