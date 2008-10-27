@@ -21,6 +21,7 @@ public class PreviewArtifactWithRecurseHandler extends PreviewArtifactHandler {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactHandler#getPreviewType()
     */
+	
    @Override
    protected String[] getPreviewOptions() {
       return ITemplateRenderer.PREVIEW_WITH_RECURSE;
