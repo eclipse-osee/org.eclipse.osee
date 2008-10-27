@@ -57,6 +57,8 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
     */
    @Override
    public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
-      return artifact.isAttributeTypeValid(WordAttribute.WORD_TEMPLATE_CONTENT);
+      boolean goodAttributeType = attribute.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT);
+      boolean goodArtifact = artifact.isAttributeTypeValid(WordAttribute.WORD_TEMPLATE_CONTENT);
+      return goodAttributeType && goodArtifact;
    }
 }
