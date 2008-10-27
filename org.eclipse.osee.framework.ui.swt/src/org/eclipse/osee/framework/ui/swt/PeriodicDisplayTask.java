@@ -78,10 +78,7 @@ public abstract class PeriodicDisplayTask {
     * stopped then calling this method has no effect
     */
    final protected void schedule() {
-	   if (task == null) {
-		   throw new IllegalStateException("This task has not been started yet");
-	   }
-      if (!display.isDisposed()) {
+      if (task != null && !display.isDisposed()) {
          display.timerExec(period, task);
       }
    }
