@@ -25,7 +25,7 @@ public class OseeCodeVersion {
 
    // Until release, version returned from getOseeVersion will be DEFAULT_DEVELOPMENT_VERSION
    public static String DEFAULT_DEVELOPMENT_VERSION = "Development";
-   private String oseeVersion = DEFAULT_DEVELOPMENT_VERSION;
+   private String oseeVersion = null;
    private static OseeCodeVersion instance = new OseeCodeVersion();
 
    private OseeCodeVersion() {
@@ -43,11 +43,14 @@ public class OseeCodeVersion {
                      PluginCoreActivator.getInstance().getBundle().getEntry("support/OseeCodeVersion.txt").openStream();
                if (is != null) {
                   oseeVersion = Lib.inputStreamToString(is);
-                  oseeVersion = oseeVersion.replace("0=", "");
+                  oseeVersion = oseeVersion.replace("^0=", "");
                }
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "Can't access OseeVersion.txt\n" + Lib.exceptionToString(ex));
+         }
+         if (oseeVersion == null) {
+            oseeVersion = DEFAULT_DEVELOPMENT_VERSION;
          }
       }
       return oseeVersion;
