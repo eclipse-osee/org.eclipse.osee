@@ -371,63 +371,6 @@
      </command>
   </menuContribution>
 	</extension>
-	<extension name="The menus for the ChangeReportView." point="org.eclipse.ui.menus">
-		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView?after=Top">
-			<command commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command">
-         </command>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesBetweenCurrentAndParent.command">
-         </command>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesToParent.command">
-         </command>
-			<separator name="org.eclipse.osee.framework.ui.skynet.ChangeReportView.wordChangesToParent.separator" visible="true">
-         </separator>
-			<command
-         commandId="org.eclipse.osee.framework.ui.skynet.openInEdit.command"
-         label="Open Final Version">
-         </command>
-			<menu label="Preview">
-				<command commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
-               </command>
-				<command commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
-               </command>
-			</menu>
-			<separator name="org.eclipse.osee.framework.ui.skynet.changeReportView.previewArtifactRecurse.separator" visible="true">
-         </separator>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
-         </command>
-   <command
-         commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
-   </command>
-			<separator name="org.eclipse.osee.framework.ui.skynet.changeReportView.revealArtifactInExplorer.separator" visible="true">
-         </separator>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
-         </command>
-			<separator name="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.separator" visible="true">
-         </separator>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
-         </command>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.viewerReport">
-         </command>
-			<separator name="org.eclipse.osee.framework.ui.skynet.viewerReport.separator" visible="true">
-         </separator>
-			<command commandId="org.eclipse.ui.edit.copy">
-         </command>
-			<separator name="org.eclipse.ui.edit.copy.seperator" visible="true">
-         </separator>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command">
-         </command>
-   <separator
-         name="org.eclipse.ui.edit.delete.seperator"
-         visible="true">
-   </separator>
-   <command
-         commandId="org.eclipse.ui.edit.delete">
-   </command>
-   <command
-         commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
-   </command>
-		</menuContribution>
-	</extension>
 	<extension point="org.eclipse.ui.commandImages">
 		<image commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command" icon="images/preview_artifact.gif">
          </image>
