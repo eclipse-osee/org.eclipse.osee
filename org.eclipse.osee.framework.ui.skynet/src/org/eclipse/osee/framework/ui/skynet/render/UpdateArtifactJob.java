@@ -129,7 +129,7 @@ public class UpdateArtifactJob extends UpdateJob {
       artifact.persistAttributes();
    }
 
-   private Collection<Element> getArtifacts(File wordFile, boolean single) throws ParserConfigurationException, SAXException, IOException {
+   private Collection<Element> getArtifacts(File wordFile, boolean single) throws ParserConfigurationException, SAXException, IOException, OseeCoreException {
       final Collection<Element> artifacts = new LinkedList<Element>();
       final String elementNameForWordAttribute =
             WordTemplateProcessor.elementNameFor(WordAttribute.WORD_TEMPLATE_CONTENT);
@@ -158,6 +158,10 @@ public class UpdateArtifactJob extends UpdateJob {
             oleDataElement = element;
          }
       }
+      //When creating a three way merge the tags are not added as they create conflicts.  Therefore
+      //we remove template information using the listnum fldChar tag.  The following code checks for the 
+      //attribute tags and if they are not there removes all the paragraphs following the one that contains the 
+      //fldChar
       if (containsTag) {
          artifacts.remove(body);
       } else if (paragraphRoot != null) {
@@ -176,6 +180,9 @@ public class UpdateArtifactJob extends UpdateJob {
                paragraphRoot.removeChild(node);
             }
             node = nextNode;
+         }
+         if (!delete) {
+            throw new OseeCoreException("Merge document can't be saved because fldChar tags could not be found");
          }
       }
 
