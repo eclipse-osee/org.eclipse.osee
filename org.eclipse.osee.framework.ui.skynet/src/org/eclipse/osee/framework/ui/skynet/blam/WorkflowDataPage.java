@@ -13,11 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -41,7 +39,6 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Ryan D. Brooks
  */
 public class WorkflowDataPage extends FormPage {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WorkflowDataPage.class);
    private BlamWorkflow workflow;
    private static final SkynetGuiPlugin plugin = SkynetGuiPlugin.getInstance();
    private final XFormToolkit toolkit;
@@ -84,7 +81,7 @@ public class WorkflowDataPage extends FormPage {
             String widgetXml = strB.toString();
 
             try {
-               dynamicXWidgetLayout.addWorkLayoutDatas(widgetParser.extractWorkAttributes(dynamicXWidgetLayout,
+               dynamicXWidgetLayout.addWorkLayoutDatas(XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout,
                      widgetXml));
                overviewPage.update(dynamicXWidgetLayout);
 

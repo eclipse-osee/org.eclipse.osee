@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.branch.management.servlet;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 
 /**
@@ -33,6 +32,7 @@ class HttpBranchCreationInfo {
    private String staticBranchName;
    private String[] compressArtTypeIds;
    private String[] preserveArtTypeIds;
+   private boolean systemRootBranch;
 
    public HttpBranchCreationInfo(HttpServletRequest req) throws Exception {
       isFunctionValid(req.getParameter("function"));
@@ -41,7 +41,7 @@ class HttpBranchCreationInfo {
       if (parentBranchIdStr != null) {
          parentBranchId = Integer.parseInt(parentBranchIdStr);
       } else {
-         parentBranchId = -1;
+         throw new IllegalArgumentException("A 'parentBranchId' parameter must be specified");
       }
       branchName = req.getParameter("branchName");//required
       if (branchName == null || branchName.length() == 0) {
@@ -67,15 +67,17 @@ class HttpBranchCreationInfo {
       }
       authorId = Integer.parseInt(authorIdStr);
       staticBranchName = req.getParameter("staticBranchName");
-      
+
       String compressArtTypeIdsString = req.getParameter("compressArtTypes");
-	  if (compressArtTypeIdsString != null) {
-		  compressArtTypeIds = compressArtTypeIdsString.split(",");
-	  }
-      String preserveArtTypeIdsString = req.getParameter("preserveArtTypes");
-      if(preserveArtTypeIdsString != null){
-    	  preserveArtTypeIds = preserveArtTypeIdsString.split(",");
+      if (compressArtTypeIdsString != null) {
+         compressArtTypeIds = compressArtTypeIdsString.split(",");
       }
+      String preserveArtTypeIdsString = req.getParameter("preserveArtTypes");
+      if (preserveArtTypeIdsString != null) {
+         preserveArtTypeIds = preserveArtTypeIdsString.split(",");
+      }
+
+      systemRootBranch = Boolean.parseBoolean(req.getParameter("systemRootBranch"));
    }
 
    private void isFunctionValid(String function) throws Exception {
@@ -145,22 +147,28 @@ class HttpBranchCreationInfo {
       return function;
    }
 
-	/**
-	 * @return the preserveArtTypes
-	 */
-	public String[] getPreserveArtTypeIds() {
-		return preserveArtTypeIds;
-	}
-	
-	/**
-	 * @return the compressArtTypes
-	 */
-	public String[] getCompressArtTypeIds() {
-		return compressArtTypeIds;
-	}
-	
-	public boolean branchWithFiltering(){
-		return (getCompressArtTypeIds() != null && getCompressArtTypeIds().length > 0) || (getPreserveArtTypeIds() != null && getPreserveArtTypeIds().length > 0);
-	}
+   /**
+    * @return the preserveArtTypes
+    */
+   public String[] getPreserveArtTypeIds() {
+      return preserveArtTypeIds;
+   }
 
+   /**
+    * @return the compressArtTypes
+    */
+   public String[] getCompressArtTypeIds() {
+      return compressArtTypeIds;
+   }
+
+   public boolean branchWithFiltering() {
+      return (getCompressArtTypeIds() != null && getCompressArtTypeIds().length > 0) || (getPreserveArtTypeIds() != null && getPreserveArtTypeIds().length > 0);
+   }
+
+   /**
+    * @return the systemRootBranch
+    */
+   public boolean isSystemRootBranch() {
+      return systemRootBranch;
+   }
 }

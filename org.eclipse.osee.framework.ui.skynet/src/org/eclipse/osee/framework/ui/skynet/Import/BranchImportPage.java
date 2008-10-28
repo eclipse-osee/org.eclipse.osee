@@ -12,13 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.FileSelector;
@@ -43,7 +41,6 @@ public class BranchImportPage extends WizardDataTransferPage {
    };
 
    public static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchImportPage.class);
 
    private Button chkIncludeMainLevelBranch;
    private Button chkIncludeDescendantBranches;
@@ -216,7 +213,7 @@ public class BranchImportPage extends WizardDataTransferPage {
                defaultBranchIndex++;
             }
          }
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }

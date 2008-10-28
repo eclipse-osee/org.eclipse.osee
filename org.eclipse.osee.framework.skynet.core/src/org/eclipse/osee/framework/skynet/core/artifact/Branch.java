@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
@@ -21,11 +20,10 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -38,10 +36,8 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
  * @author Robert A. Fisher
  */
 public class Branch implements Comparable<Branch>, IAdaptable {
-   private static final String UPDATE_BRANCH_SHORT_NAME =
-         "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";
+   private static final String UPDATE_BRANCH_SHORT_NAME = "UPDATE osee_branch SET short_name = ? WHERE branch_id = ?";
    private final int branchId;
-   private Branch parentBranch;
    private final int parentBranchId;
    private String branchName;
    private String branchShortName;
@@ -54,14 +50,11 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private final BranchType branchType;
    public static final int NULL_PARENT_BRANCH_ID = -1;
    public static final String COMMON_BRANCH_CONFIG_ID = "Common";
-   private final Exception birthPlace = new Exception();
 
    public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
-
       this.branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
       this.branchId = branchId;
       this.branchName = branchName;
-      this.parentBranch = null;
       this.parentBranchId = parentBranchId;
       this.archived = archived;
       this.authorId = authorId;
@@ -70,15 +63,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       this.associatedArtifactId = associatedArtifactId;
       this.associatedArtifact = null;
       this.branchType = branchType;
-
-      this.birthPlace.getStackTrace();
-      BranchPersistenceManager.cache(this);
-   }
-
-   public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) {
-      this(branchShortName, branchName, branchId, parentBranchId, archived, authorId, creationDate, creationComment,
-            associatedArtifact.getArtId(), branchType);
-      this.associatedArtifact = associatedArtifact;
    }
 
    /**
@@ -114,13 +98,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return branchShortName;
    }
 
-   public String getBranchShortestName() {
-      if (branchShortName != null)
-         return branchShortName;
-      else
-         return branchName;
-   }
-
    /**
     * Sets the branch short name to the given value
     * 
@@ -146,17 +123,17 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    public void rename(String branchName) throws OseeCoreException {
       setBranchName(branchName);
-      ConnectionHandler.runPreparedUpdate("UPDATE " + BRANCH_TABLE + " SET branch_name = ? WHERE branch_id = ?",
-            branchName, branchId);
+      ConnectionHandler.runPreparedUpdate("UPDATE osee_branch SET branch_name = ? WHERE branch_id = ?", branchName,
+            branchId);
       kickRenameEvents();
    }
 
-   public void setAssociatedArtifact(Artifact artifact) throws Exception {
+   public void setAssociatedArtifact(Artifact artifact) throws OseeCoreException {
       // TODO: this method should allow the artifact to be on any branch, not just common
-      if (artifact.getBranch() != BranchPersistenceManager.getCommonBranch()) throw new IllegalArgumentException(
+      if (artifact.getBranch() != BranchPersistenceManager.getCommonBranch()) throw new OseeArgumentException(
             "Setting associated artifact for branch only valid for common branch artifact.");
 
-      ConnectionHandler.runPreparedUpdate("UPDATE " + BRANCH_TABLE + " SET associated_art_id = ? WHERE branch_id = ?",
+      ConnectionHandler.runPreparedUpdate("UPDATE osee_branch SET associated_art_id = ? WHERE branch_id = ?",
             artifact.getArtId(), branchId);
 
       associatedArtifact = artifact;
@@ -173,53 +150,36 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return branchName;
    }
 
-   public Branch getParentBranchOrAlternative(Branch alternativeBranch) throws OseeDataStoreException {
-      try {
-         return getParentBranch();
-      } catch (BranchDoesNotExist ex) {
-         return alternativeBranch;
-      }
-   }
-
-   public Branch getParentBranch() throws BranchDoesNotExist, OseeDataStoreException {
-      if (hasParentBranch()) {
-         if (parentBranch == null) {
-            parentBranch = BranchPersistenceManager.getBranch(parentBranchId);
-         }
-         return parentBranch;
-      }
-      throw new BranchDoesNotExist(branchName + " does not have a parent.");
+   public Branch getParentBranch() throws OseeCoreException {
+      return BranchPersistenceManager.getBranch(parentBranchId);
    }
 
    public boolean hasParentBranch() {
-      return parentBranchId != NULL_PARENT_BRANCH_ID;
+      return !isTopLevelBranch();
    }
 
    /**
-    * @return the branch that is this oldest ancestor for this branch (which could be itself)
+    * @return the top level branch that is an ancestor of this branch (which could be itself)
     */
-   public Branch getRootBranch() throws OseeDataStoreException {
-      Branch branchCursor = null;
-      try {
-         for (branchCursor = this;; branchCursor = branchCursor.getParentBranch())
-            ;
-      } catch (BranchDoesNotExist ex) {
-         // this will always happen but only once branchCursor is equal to the correct value
+   public Branch getTopLevelBranch() throws OseeCoreException {
+      Branch branchCursor = this;
+      while (branchCursor.hasParentBranch()) {
+         branchCursor = branchCursor.getParentBranch();
       }
       return branchCursor;
    }
 
-   public Collection<Branch> getChildBranches() throws OseeDataStoreException {
+   public Collection<Branch> getChildBranches() throws OseeCoreException {
       return getChildBranches(false);
    }
 
-   public Collection<Branch> getChildBranches(boolean recurse) throws OseeDataStoreException {
+   public Collection<Branch> getChildBranches(boolean recurse) throws OseeCoreException {
       Set<Branch> children = new HashSet<Branch>();
       getChildBranches(this, children, recurse);
       return children;
    }
 
-   private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeDataStoreException {
+   private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
       for (Branch branch : BranchPersistenceManager.getBranches()) {
          if (branch.getParentBranchId() == parentBranch.getBranchId()) {
             children.add(branch);
@@ -237,7 +197,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return parentBranchId;
    }
 
-   public void archive() throws OseeDataStoreException {
+   public void archive() throws OseeCoreException {
       BranchPersistenceManager.archive(this);
    }
 
@@ -266,7 +226,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       archived = true;
    }
 
-   public boolean hasChanges() throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   public boolean hasChanges() throws OseeCoreException {
       return RevisionManager.getInstance().branchHasChanges(this);
    }
 
@@ -322,8 +282,12 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return branchType.equals(BranchType.BASELINE);
    }
 
-   public boolean isRootBranch() {
-      return branchType.equals(BranchType.ROOT);
+   public boolean isSystemRootBranch() {
+      return branchType.equals(BranchType.SYSTEM_ROOT);
+   }
+
+   public boolean isTopLevelBranch() {
+      return branchType.equals(BranchType.TOP_LEVEL);
    }
 
    public BranchType getBranchType() {
@@ -350,7 +314,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public String asFolderName() {
-      String branchName = this.getBranchShortestName();
+      String branchName = this.getBranchShortName();
 
       // Remove illegal filename characters
       // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive spaces are in the name

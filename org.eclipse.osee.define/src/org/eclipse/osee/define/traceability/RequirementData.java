@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
@@ -32,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
  * @author Roberto E. Escobar
  */
 public class RequirementData {
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
 
    private Branch requirementsBranch;
@@ -65,7 +63,7 @@ public class RequirementData {
       IStatus toReturn = Status.CANCEL_STATUS;
       try {
          reset();
-         monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchShortestName()));
+         monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchShortName()));
 
          directSwRequirements.addAll(ArtifactQuery.getArtifactsFromType(Requirements.SOFTWARE_REQUIREMENT, getBranch()));
          populateTraceMap(monitor, directSwRequirements, directMap);
@@ -73,7 +71,7 @@ public class RequirementData {
 
          if (monitor.isCanceled() != true) {
             monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
-                  getBranch().getBranchShortestName()));
+                  getBranch().getBranchShortName()));
             inDirectSwRequirements.addAll(ArtifactQuery.getArtifactsFromType(
                   Requirements.INDIRECT_SOFTWARE_REQUIREMENT, getBranch()));
             populateTraceMap(monitor, inDirectSwRequirements, indirectMap);

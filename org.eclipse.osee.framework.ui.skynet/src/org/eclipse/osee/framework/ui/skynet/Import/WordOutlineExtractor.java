@@ -96,7 +96,6 @@ public class WordOutlineExtractor extends WordExtractor {
       return description;
    }
 
-   @SuppressWarnings("unchecked")
    public void discoverArtifactAndRelationData(File importFile) throws Exception {
 
       Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(importFile), "UTF-8"));

@@ -95,7 +95,7 @@ public class ArtifactTypeManager {
     * @return Returns all of the descriptors.
     * @throws OseeCoreException
     */
-   static Collection<ArtifactType> getAllTypes() throws OseeDataStoreException {
+   public static Collection<ArtifactType> getAllTypes() throws OseeDataStoreException {
       ensurePopulated();
       return instance.idToTypeMap.values();
    }
@@ -189,8 +189,7 @@ public class ArtifactTypeManager {
     * @param name
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String name) throws OseeCoreException {
-      Artifact artifact;
-      artifact = addArtifact(artifactTypeName, branch);
+      Artifact artifact = addArtifact(artifactTypeName, branch);
       artifact.setDescriptiveName(name);
       return artifact;
    }

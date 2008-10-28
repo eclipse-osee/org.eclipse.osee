@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -271,7 +270,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
          forcePopulateView();
          OseeEventManager.addListener(this);
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
@@ -284,7 +283,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          public void run() {
             try {
                forcePopulateView();
-            } catch (OseeDataStoreException ex) {
+            } catch (OseeCoreException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }
@@ -490,7 +489,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          super(menuManager);
       }
 
-      @SuppressWarnings("unchecked")
       @Override
       public Object execute(ExecutionEvent event) throws ExecutionException {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
@@ -526,7 +524,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             }
             return false;
          } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return false;
       }
@@ -731,7 +729,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                            public void run() {
                               try {
                                  forcePopulateView();
-                              } catch (OseeDataStoreException ex) {
+                              } catch (OseeCoreException ex) {
                                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                               }
                            }
@@ -783,7 +781,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                         BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
             menuManager.add(branchCommand);
          }
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
@@ -1057,7 +1055,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                      selectedBranch.setAssociatedArtifact(associatedArtifact);
                   }
                }
-            } catch (Exception ex) {
+            } catch (OseeCoreException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
             return null;
@@ -1479,7 +1477,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       }
    }
 
-   public void forcePopulateView() throws OseeDataStoreException {
+   public void forcePopulateView() throws OseeCoreException {
       if (branchTable != null && !branchTable.getTree().isDisposed()) {
          BranchPersistenceManager.refreshBranches();
          branchTable.setInput(BranchPersistenceManager.getInstance());
@@ -1523,7 +1521,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                      return true;
                   }
                }
-            } catch (OseeDataStoreException ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                return true;
             }
@@ -1720,7 +1718,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             public void run() {
                try {
                   forcePopulateView();
-               } catch (OseeDataStoreException ex) {
+               } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }

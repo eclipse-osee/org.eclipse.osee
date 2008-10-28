@@ -57,7 +57,7 @@ public interface IRenderer {
 
    public boolean supportsCompare();
 
-   public abstract int getApplicabilityRating(PresentationType presentationType, Artifact artifact);
+   public abstract int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException;
 
    public abstract String getName();
 

@@ -28,10 +28,8 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -370,7 +368,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadRelationData(int queryId, Collection<Artifact> artifacts, boolean historical) throws BranchDoesNotExist, OseeDataStoreException, OseeTypeDoesNotExist {
+   private static void loadRelationData(int queryId, Collection<Artifact> artifacts, boolean historical) throws OseeCoreException {
       if (historical) {
          return; // TODO: someday we might have a use for historical relations, but not now
       }

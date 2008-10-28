@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.Collection;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -20,7 +19,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -36,7 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Ryan D. Brooks
  */
 public class ArtifactContentProvider implements ITreeContentProvider, ArtifactChangeListener {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactContentProvider.class);
    private static Object[] EMPTY_ARRAY = new Object[0];
    protected TreeViewer viewer;
    private final ArtifactExplorer artifactExplorer;
@@ -132,7 +129,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
             try {
                return artifact.getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD) > 0;
             } catch (OseeCoreException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                // Assume it has children if an error happens
                return true;
             }

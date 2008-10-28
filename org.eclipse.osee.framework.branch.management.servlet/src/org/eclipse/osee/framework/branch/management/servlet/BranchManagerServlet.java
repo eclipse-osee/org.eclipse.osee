@@ -46,9 +46,10 @@ public class BranchManagerServlet extends OseeHttpServlet {
                break;
             case createRootBranch:
                branchId =
-                     Activator.getInstance().getBranchCreation().createRootBranch(info.getParentBranchId(),
+                     Activator.getInstance().getBranchCreation().createTopLevelBranch(info.getParentBranchId(),
                            info.getBranchShortName(), info.getBranchName(), info.getCreationComment(),
-                           info.getAssociatedArtifactId(), info.getAuthorId(), info.getStaticBranchName());
+                           info.getAssociatedArtifactId(), info.getAuthorId(), info.getStaticBranchName(),
+                           info.isSystemRootBranch());
                break;
          }
          if (branchId != -1) {

@@ -191,7 +191,6 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
     * <code>createMessageArea</code> and <code>createCustomArea</code> to populate it. Subclasses should override
     * <code>createCustomArea</code> to add contents below the message.
     */
-   @SuppressWarnings("unchecked")
    protected Control createDialogArea(Composite parent) {
 
       // create message area
@@ -210,8 +209,7 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
       errorLabel.setText("");
 
       new Label(composite, SWT.NULL).setText("Select artifact descriptor:");
-      descriptorsList =
-            new ObjectList<ArtifactType>(composite, SWT.BORDER | SWT.READ_ONLY | SWT.SCROLL_PAGE);
+      descriptorsList = new ObjectList<ArtifactType>(composite, SWT.BORDER | SWT.READ_ONLY | SWT.SCROLL_PAGE);
       descriptorsList.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, true));
 
       if (descriptors != null) {
@@ -245,7 +243,6 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
       return composite;
    }
 
-   @SuppressWarnings("unchecked")
    private void updateButtons() {
       if (descriptorsList != null) {
          entry = descriptorsList.getSelectedItem();

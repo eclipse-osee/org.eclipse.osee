@@ -128,8 +128,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          int modCount = 0;
          long gammaId = 0;
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(this.checkGammaCase, info.art_b, info.art_a, info.rel_link_type);
+            chStmt = ConnectionHandler.runPreparedQuery(checkGammaCase, info.art_b, info.art_a, info.rel_link_type);
             while (chStmt.next()) {
                if (chStmt.getInt("mod_type") == 2) {
                   modCount++;

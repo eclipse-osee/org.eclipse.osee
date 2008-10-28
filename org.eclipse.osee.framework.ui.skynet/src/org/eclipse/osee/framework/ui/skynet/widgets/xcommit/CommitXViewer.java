@@ -18,8 +18,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
@@ -81,7 +80,7 @@ public class CommitXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setWorkingBranch(Branch workingBranch) throws BranchDoesNotExist, OseeDataStoreException {
+   public void setWorkingBranch(Branch workingBranch) throws OseeCoreException {
       this.workingBranch = workingBranch;
       Set<Branch> branches = new HashSet<Branch>();
       branches.add(workingBranch.getParentBranch());

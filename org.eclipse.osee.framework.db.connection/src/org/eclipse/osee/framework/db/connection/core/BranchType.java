@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.db.connection.core;
  * @author Ryan D. Brooks
  */
 public enum BranchType {
-   STANDARD(0), ROOT(1), BASELINE(2), MERGE(3);
+   STANDARD(0), TOP_LEVEL(1), BASELINE(2), MERGE(3), SYSTEM_ROOT(4);
    private final int value;
 
    BranchType(int value) {

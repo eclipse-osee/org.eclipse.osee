@@ -105,6 +105,8 @@ public class AtsPlugin extends OseeUiActivator {
       return System.getProperty("AtsAlwaysEmailMe") != null;
    }
 
+   @Deprecated
+   // use BranchPersistenceManager.getAtsBranch() instead
    public static Branch getAtsBranch() {
       try {
          return BranchPersistenceManager.getAtsBranch();

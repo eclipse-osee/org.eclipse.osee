@@ -29,14 +29,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -97,10 +96,10 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void setInputs() {
       try {
-         cmbAttributeDescriptors.setInput(AttributeTypeManager.getTypes(BranchPersistenceManager.getDefaultBranch()).toArray(
-               AttributeType.EMPTY_ARRAY));
+         cmbAttributeDescriptors.setInput(TypeValidityManager.getValidAttributeTypes(
+               BranchPersistenceManager.getDefaultBranch()).toArray(AttributeType.EMPTY_ARRAY));
          cmbAttributeDescriptors.getCombo().select(0);
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

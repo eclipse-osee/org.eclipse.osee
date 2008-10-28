@@ -42,6 +42,7 @@ public class AddCommonBranch implements IDbInitializationTask {
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
    public void run(Connection connection) throws OseeCoreException {
+      BranchPersistenceManager.createSystemRootBranch();
 
       // Create branch, import skynet types and initialize
       BranchPersistenceManager.createRootBranch(null, Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID,

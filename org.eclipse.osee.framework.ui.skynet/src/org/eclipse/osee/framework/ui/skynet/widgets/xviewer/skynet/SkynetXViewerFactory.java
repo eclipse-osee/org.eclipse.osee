@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -61,7 +61,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
             return xViewerCustomizations;
          }
       } catch (IllegalStateException ex) {
-         OseeLog.log(SkynetXViewerFactory.class, Level.SEVERE, 
+         OseeLog.log(SkynetXViewerFactory.class, Level.SEVERE,
                "Failed to retrieve XViewer customizations from the persistence layer.", ex);
       }
       return new XViewerCustomizations();
@@ -69,7 +69,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    public void registerAllAttributeColumns() {
       try {
-         registerColumn(getAllAttributeColumns().toArray(new XViewerColumn[AttributeTypeManager.getTypes().size()]));
+         registerColumn(getAllAttributeColumns().toArray(new XViewerColumn[AttributeTypeManager.getAllTypes().size()]));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -88,7 +88,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    public static List<XViewerColumn> getAllAttributeColumns() throws OseeDataStoreException {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
-      for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
+      for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
          columns.add(getAttributeColumn(attributeType));
       }
       return columns;
@@ -100,10 +100,8 @@ public class SkynetXViewerFactory extends XViewerFactory {
    }
 
    /**
-    * Return columns for attributes valid for at least on of the given artifacts
-    * 
     * @param artifacts
-    * @return
+    * @return columns for attributes valid for at least on of the given artifacts
     */
    public static List<XViewerColumn> getAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
@@ -112,9 +110,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
          for (Artifact art : artifacts) {
             attributeTypes.addAll(art.getAttributeTypes());
          }
-      } catch (OseeDataStoreException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      } catch (OseeTypeDoesNotExist ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       Set<String> attrNames = new HashSet<String>();

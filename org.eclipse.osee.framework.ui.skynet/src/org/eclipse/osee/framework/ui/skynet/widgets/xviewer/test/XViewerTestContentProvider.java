@@ -51,7 +51,6 @@ public class XViewerTestContentProvider implements ITreeContentProvider {
    public void dispose() {
    }
 
-   @SuppressWarnings("unchecked")
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

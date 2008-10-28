@@ -14,10 +14,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -29,9 +30,9 @@ public class SkynetViews {
     * @return Returns a collection of <code>DynamicAttributeDescriptor</code> stored in a memento.
     * @throws OseeDataStoreException
     */
-   public static List<AttributeType> loadAttrTypesFromPreferenceStore(String preferenceKey, Branch branch) throws OseeDataStoreException {
+   public static List<AttributeType> loadAttrTypesFromPreferenceStore(String preferenceKey, Branch branch) throws OseeCoreException {
       List<AttributeType> attributeDescriptors = new LinkedList<AttributeType>();
-      Collection<AttributeType> descriptors = AttributeTypeManager.getTypes(branch);
+      Collection<AttributeType> descriptors = TypeValidityManager.getValidAttributeTypes(branch);
 
       IPreferenceStore preferenceStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
       for (String attributeType : preferenceStore.getString(preferenceKey).split("\\|")) {

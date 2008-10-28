@@ -21,8 +21,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -243,9 +241,7 @@ public class AttributesComposite extends Composite {
             item.setData(attributeType);
             item.addSelectionListener(listener);
          }
-      } catch (OseeDataStoreException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      } catch (OseeTypeDoesNotExist ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       addItem.setMenu(attributesMenu);

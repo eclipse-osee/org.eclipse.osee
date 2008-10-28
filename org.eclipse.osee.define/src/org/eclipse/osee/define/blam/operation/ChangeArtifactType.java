@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -80,7 +80,7 @@ public class ChangeArtifactType extends AbstractBlam {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
       Collection<AttributeType> attributeTypes =
-            ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
+            TypeValidityManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
 
       for (AttributeType attributeType : artifact.getAttributeTypes()) {
          if (!attributeTypes.contains(attributeType)) {

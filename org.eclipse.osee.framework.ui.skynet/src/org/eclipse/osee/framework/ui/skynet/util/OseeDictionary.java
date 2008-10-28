@@ -81,7 +81,6 @@ public class OseeDictionary implements IDictionary {
       return w.toLowerCase();
    }
 
-   @SuppressWarnings("deprecation")
    private static void getIDictionaries() {
       dictionaries = new HashSet<IOseeDictionary>();
       if (!Platform.isRunning()) return;

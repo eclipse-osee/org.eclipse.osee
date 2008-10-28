@@ -176,7 +176,6 @@ public class XCombo extends XWidget {
       this.dataStringToXmlString = dataStringToXmlString;
    }
 
-   @SuppressWarnings( {"unchecked", "unchecked"})
    @Override
    public void setFromXml(String xml) throws IllegalStateException {
       Matcher m;

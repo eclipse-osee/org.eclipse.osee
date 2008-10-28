@@ -33,7 +33,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -52,7 +51,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -525,7 +524,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          attributesAction.addToView(this);
          attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(
                SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF, BranchPersistenceManager.getDefaultBranch()));
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
@@ -565,7 +564,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
       try {
          Collection<ArtifactType> descriptors =
-               ConfigurationPersistenceManager.getValidArtifactTypes(BranchPersistenceManager.getDefaultBranch());
+               TypeValidityManager.getValidArtifactTypes(BranchPersistenceManager.getDefaultBranch());
          for (ArtifactType descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {
                MenuItem item = new MenuItem(subMenu, SWT.PUSH);

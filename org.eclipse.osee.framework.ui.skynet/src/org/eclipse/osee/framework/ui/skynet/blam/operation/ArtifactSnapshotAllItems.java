@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
@@ -30,7 +30,7 @@ public class ArtifactSnapshotAllItems extends AbstractBlam {
          Branch branch = variableMap.getBranch("Branch");
 
          monitor.setTaskName("Loading Artifact Type Descriptors");
-         Collection<ArtifactType> descriptors = ConfigurationPersistenceManager.getValidArtifactTypes(branch);
+         Collection<ArtifactType> descriptors = TypeValidityManager.getValidArtifactTypes(branch);
 
          monitor.beginTask("Regenerating Artifact Preview Snapshots", descriptors.size());
 

@@ -23,14 +23,13 @@ public class XMergeContentProvider implements ITreeContentProvider {
       this.mergeXViewer = commitXViewer;
    }
 
-   @SuppressWarnings("unchecked")
-   public Object[] getChildren(Object parentElement) {      
-	   if (parentElement instanceof Object[]) {
-       return (Object[]) parentElement;
-   }
-//      if(parentElement instanceof TransactionArtifactChange){
-//    	  return ((TransactionArtifactChange)parentElement).getAttributeChanges().toArray();
-//      }
+   public Object[] getChildren(Object parentElement) {
+      if (parentElement instanceof Object[]) {
+         return (Object[]) parentElement;
+      }
+      //      if(parentElement instanceof TransactionArtifactChange){
+      //    	  return ((TransactionArtifactChange)parentElement).getAttributeChanges().toArray();
+      //      }
       return EMPTY_ARRAY;
    }
 
@@ -50,7 +49,6 @@ public class XMergeContentProvider implements ITreeContentProvider {
    public void dispose() {
    }
 
-   @SuppressWarnings("unchecked")
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

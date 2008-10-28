@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringViewerSorter;
@@ -53,7 +53,7 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
       Set<String> options;
       try {
          options =
-               ConfigurationPersistenceManager.getValidEnumerationAttributeValues(attributeName,
+               AttributeTypeManager.getValidEnumerationAttributeValues(attributeName,
                      artifacts.iterator().next().getBranch());
       } catch (Exception ex) {
          options = new HashSet<String>();

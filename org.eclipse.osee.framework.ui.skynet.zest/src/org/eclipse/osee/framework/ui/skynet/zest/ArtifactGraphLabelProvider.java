@@ -13,13 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.zest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -30,7 +28,6 @@ import org.eclipse.zest.core.viewers.EntityConnectionData;
  * @author Robert A. Fisher
  */
 public class ArtifactGraphLabelProvider implements ILabelProvider {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactGraphLabelProvider.class);
 
    /* (non-Javadoc)
     * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)

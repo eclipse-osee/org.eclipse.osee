@@ -62,7 +62,6 @@ public class XCommitContentProvider implements ITreeContentProvider {
    public void dispose() {
    }
 
-   @SuppressWarnings("unchecked")
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

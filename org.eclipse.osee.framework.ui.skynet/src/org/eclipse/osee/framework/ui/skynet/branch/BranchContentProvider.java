@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -47,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeSummary;
-import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeSummary;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkSummary;
@@ -119,7 +117,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             while (iter.hasNext()) {
                Branch branch = iter.next();
 
-               if ((!showChildBranchesAtMainLevel && branch.hasParentBranch()) || ((!OseeProperties.isDeveloper() || !showMergeBranches) && branch.isMergeBranch())) {
+               if (branch.isSystemRootBranch() || (!showChildBranchesAtMainLevel && branch.hasParentBranch()) || ((!OseeProperties.isDeveloper() || !showMergeBranches) && branch.isMergeBranch())) {
                   iter.remove();
                }
             }
@@ -173,11 +171,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             return Collections.emptyList();
          }
       }
-   }
-
-   public static Object[] getArtifactChanges(ChangeReportInput input) throws OseeCoreException {
-      return getArtifactChanges(input.getBaseParentTransactionId(), input.getBaseTransaction(),
-            input.getToTransaction());
    }
 
    private static Object[] getArtifactChanges(TransactionId toTransaction) throws OseeCoreException {
@@ -270,7 +263,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          boolean readable = AccessControlManager.checkObjectPermission(branch, PermissionEnum.READ);
          try {
             return readable && (showTransactions || (!branch.getChildBranches().isEmpty() && showChildBranchesUnderParents));
-         } catch (OseeDataStoreException ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             return false;
          }

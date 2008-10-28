@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import org.eclipse.osee.framework.branch.management.impl.BranchCreation.CreateBranchTx;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -69,7 +70,8 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
    private Map<Integer, Integer> gammasToCurrent = new HashMap<Integer, Integer>();
 
    public CreateBranchWithFiltering(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String[] compressArtTypeIds, String[] preserveArtTypeIds) {
-      super(parentBranchId, childBranchShortName, childBranchName, creationComment, associatedArtifactId, authorId);
+      super(parentBranchId, childBranchShortName, childBranchName, creationComment, associatedArtifactId, authorId,
+            BranchType.STANDARD);
       this.compressArtTypeIds = compressArtTypeIds;
       this.preserveArtTypeIds = preserveArtTypeIds;
    }

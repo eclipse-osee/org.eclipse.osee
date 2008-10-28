@@ -119,7 +119,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          toReturn[index] = branchData.getBranchId();
          if (getOptions().getBoolean(ImportOptions.ALL_AS_ROOT_BRANCHES.name())) {
             branchData.setParentBranchId(-1);
-            branchData.setBranchType(BranchType.ROOT);
+            branchData.setBranchType(BranchType.TOP_LEVEL);
          }
          Long original = new Long(branchData.getBranchId());
          Long newValue = (Long) getTranslator().translate(BranchData.BRANCH_ID, original);

@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -53,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -436,12 +437,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return true if attributeName is valid for the artifact type of this artifact
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeCoreException
+    * @throws BranchDoesNotExist
     */
-   public boolean isAttributeTypeValid(String attributeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public boolean isAttributeTypeValid(String attributeName) throws OseeCoreException {
       Collection<AttributeType> attributeTypes =
-            ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
+            TypeValidityManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
       for (AttributeType attributeType : attributeTypes) {
          if (attributeType.getName().equals(attributeName)) {
             return true;
@@ -515,8 +515,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return !attributes.isEmpty();
    }
 
-   public Collection<AttributeType> getAttributeTypes() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      return ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
+   public Collection<AttributeType> getAttributeTypes() throws OseeCoreException {
+      return TypeValidityManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
    }
 
    public <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws OseeCoreException {

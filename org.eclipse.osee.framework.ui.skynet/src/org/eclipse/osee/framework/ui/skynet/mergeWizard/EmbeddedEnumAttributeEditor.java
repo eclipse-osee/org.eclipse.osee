@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 import java.util.Collection;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -73,7 +73,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       try {
          if (obj instanceof Artifact) {
             options =
-                  new TreeSet<String>(ConfigurationPersistenceManager.getValidEnumerationAttributeValues(attributeName,
+                  new TreeSet<String>(AttributeTypeManager.getValidEnumerationAttributeValues(attributeName,
                         ((Artifact) obj).getBranch()));
          }
          if (obj instanceof AttributeConflict) {

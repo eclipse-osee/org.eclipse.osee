@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -95,7 +95,7 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
             public void run(IProgressMonitor monitor) throws Exception {
                if (selective) {
                   Set<String> allArtifactTypes = new HashSet<String>();
-                  for (ArtifactType artifactType : ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch())) {
+                  for (ArtifactType artifactType : TypeValidityManager.getValidArtifactTypes(parentTransactionId.getBranch())) {
                      allArtifactTypes.add(artifactType.getName());
                   }
 

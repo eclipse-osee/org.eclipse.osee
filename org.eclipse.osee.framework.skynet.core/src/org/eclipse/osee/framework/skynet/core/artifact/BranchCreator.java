@@ -36,10 +36,9 @@ import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -333,34 +332,35 @@ public class BranchCreator {
     * @param shortBranchName
     * @param branchName
     * @param staticBranchName null if no static key is desired
+    * @param parentBranchId TODO
     * @return branch object
     * @throws OseeCoreException
     * @see BranchPersistenceManager#createRootBranch(String, String, int)
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws OseeCoreException {
-      return HttpBranchCreation.createRootBranch(shortBranchName, branchName, staticBranchName);
+   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, int parentBranchId, boolean systemRootBranch) throws OseeCoreException {
+      return HttpBranchCreation.createRootBranch(shortBranchName, branchName, staticBranchName, parentBranchId,
+            systemRootBranch);
    }
 
    /**
     * adds a new branch to the database
     * 
     * @param branchName caller is responsible for ensuring no branch has already been given this name
-    * @param parentBranchId the id of the parent branch or NULL_PARENT_BRANCH_ID if this branch has no parent
+    * @param parentTransactionId the id of the parent branch or NULL_PARENT_BRANCH_ID if this branch has no parent
     * @return branch object that represents the newly created branch
-    * @throws UserNotInDatabase
-    * @throws MultipleArtifactsExist
+    * @throws OseeCoreException
     */
-   private Branch initializeBranch(Connection connection, String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
+   private Branch initializeBranch(Connection connection, String branchShortName, String branchName, TransactionId parentTransactionId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
       if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, SELECT_BRANCH_BY_NAME, branchName) > 0) {
-         throw new OseeCoreException("A branch with the name " + branchName + " already exists");
+         throw new OseeArgumentException("A branch with the name " + branchName + " already exists");
       }
 
       int branchId = SequenceManager.getNextBranchId();
       int parentBranchNumber =
-            parentBranchId == null ? Branch.NULL_PARENT_BRANCH_ID : parentBranchId.getBranch().getBranchId();
+            parentTransactionId == null ? Branch.NULL_PARENT_BRANCH_ID : parentTransactionId.getBranch().getBranchId();
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
@@ -375,15 +375,11 @@ public class BranchCreator {
             parentBranchNumber, 0, associatedArtifactId, branchType.getValue());
 
       // this needs to be after the insert in case there is an exception on insert
-      Branch branch;
-      if (associatedArtifact == null) {
-         branch =
-               new Branch(branchShortName, branchName, branchId, parentBranchNumber, false, authorId, creationDate,
-                     creationComment, associatedArtifactId, branchType);
-      } else {
-         branch =
-               new Branch(branchShortName, branchName, branchId, parentBranchNumber, false, authorId, creationDate,
-                     creationComment, associatedArtifact, branchType);
+      Branch branch =
+            BranchPersistenceManager.createBranchObject(branchShortName, branchName, branchId, parentBranchNumber,
+                  false, authorId, creationDate, creationComment, associatedArtifactId, branchType);
+      if (associatedArtifact != null) {
+         branch.setAssociatedArtifact(associatedArtifact);
       }
 
       return branch;
@@ -469,8 +465,8 @@ public class BranchCreator {
             branchWithTransactionNumber =
                   createMergeBranchWithBaselineTransactionNumber(connection, SkynetAuthentication.getUser(),
                         TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
-                        "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortestName(),
-                        "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortestName(),
+                        "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
+                        "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
                         BranchType.MERGE, destBranch);
          } else {
             TransactionId startTransactionId = TransactionIdManager.getStartEndPoint(mergeBranch).getKey();

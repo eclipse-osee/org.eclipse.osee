@@ -12,9 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xcommit;
 
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -101,7 +99,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return !branch.getBranchName().equals("ftb2");
    }
 
-   private Image getCommitStatusImage(Branch branch) throws BranchDoesNotExist, OseeDataStoreException {
+   private Image getCommitStatusImage(Branch branch) throws OseeCoreException {
       if (branch.equals(commitXViewer.getWorkingBranch()))
          return null;
       else if (branch.equals(commitXViewer.getWorkingBranch().getParentBranch()) || branch.isBaselineBranch()) return isCommittedInto(branch) ? SkynetGuiPlugin.getInstance().getImage(

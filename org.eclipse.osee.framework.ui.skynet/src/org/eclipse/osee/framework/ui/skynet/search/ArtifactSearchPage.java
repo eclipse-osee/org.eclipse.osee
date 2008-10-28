@@ -33,8 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage;
@@ -167,7 +166,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       artifactTypeList.setSorter(new SearchSorter());
 
       try {
-         for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes(getSelectedBranch())) {
+         for (ArtifactType descriptor : TypeValidityManager.getValidArtifactTypes(getSelectedBranch())) {
             artifactTypeList.add(descriptor.getName());
             artifactTypeList.setData(descriptor.getName(), descriptor);
          }
@@ -279,7 +278,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       attributeValue.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       try {
-         for (AttributeType type : AttributeTypeManager.getTypes(getSelectedBranch())) {
+         for (AttributeType type : TypeValidityManager.getValidAttributeTypes(getSelectedBranch())) {
             attributeTypeList.add(type.getName());
             attributeTypeList.setData(type.getName(), type);
          }

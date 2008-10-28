@@ -121,7 +121,6 @@ public class EmailWizardPage extends WizardPage {
          }
       });
       namesList.getViewer().setSorter(new ViewerSorter() {
-         @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
             if (e1 instanceof EmailGroup && !(e2 instanceof EmailGroup)) {

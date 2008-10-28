@@ -17,14 +17,13 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -276,7 +275,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                defaultBranchIndex++;
             }
          }
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
@@ -296,7 +295,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       try {
          String[] selection = typeList.getSelection();
          typeList.removeAll();
-         for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes(branch)) {
+         for (ArtifactType descriptor : TypeValidityManager.getValidArtifactTypes(branch)) {
             typeList.add(descriptor.getName());
             typeList.setData(descriptor.getName(), descriptor);
          }

@@ -22,14 +22,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
@@ -150,25 +148,23 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
             ArtifactType importDescriptor = mainPage.getSelectedType();
 
             HashSet<AttributeType> rootAttributes =
-                  new HashSet<AttributeType>(ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(
-                        rootDescriptor, mainPage.getSelectedBranch()));
+                  new HashSet<AttributeType>(TypeValidityManager.getAttributeTypesFromArtifactType(rootDescriptor,
+                        mainPage.getSelectedBranch()));
 
             if (rootDescriptor == importDescriptor) {
                attributeTypePage.setDescription("Identifying attributes for " + rootDescriptor.getName() + " artifacts");
                attributeTypePage.setDescriptors(rootAttributes);
             } else {
                HashSet<AttributeType> importAttributes =
-                     new HashSet<AttributeType>(ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(
-                           importDescriptor, mainPage.getSelectedBranch()));
+                     new HashSet<AttributeType>(TypeValidityManager.getAttributeTypesFromArtifactType(importDescriptor,
+                           mainPage.getSelectedBranch()));
 
                attributeTypePage.setDescription("Identifying attributes common to " + rootDescriptor.getName() + " and " + importDescriptor.getName() + " artifacts");
 
                importAttributes.addAll(rootAttributes);
                attributeTypePage.setDescriptors(importAttributes);
             }
-         } catch (OseeDataStoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         } catch (OseeTypeDoesNotExist ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return attributeTypePage;

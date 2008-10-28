@@ -12,13 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -64,7 +62,7 @@ public class ParentBranchAction extends Action {
       }
    }
 
-   public static Branch createNewParentBranch(String branchShortName, String branchName) throws Exception {
+   public static Branch createNewParentBranch(String branchShortName, String branchName) throws OseeCoreException {
 
       List<String> skynetTypeImport = new ArrayList<String>();
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramAndCommon");
@@ -73,12 +71,9 @@ public class ParentBranchAction extends Action {
       Branch branch =
             BranchPersistenceManager.createRootBranch(branchShortName, branchName, null, skynetTypeImport, true);
 
-      try {
-         if (PlatformUI.isWorkbenchRunning() && BranchView.getBranchView() != null) BranchView.getBranchView().forcePopulateView();
-      } catch (OseeDataStoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      if (PlatformUI.isWorkbenchRunning() && BranchView.getBranchView() != null) {
+         BranchView.getBranchView().forcePopulateView();
       }
       return branch;
    }
-
 }

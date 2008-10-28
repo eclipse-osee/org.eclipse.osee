@@ -46,8 +46,6 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -370,10 +368,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             } else {
                rData.logError(attrName + " not valid for artifact " + art.getHumanReadableId() + " - " + art.getDescriptiveName());
             }
-         } catch (OseeDataStoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            rData.logError(ex.getLocalizedMessage());
-         } catch (OseeTypeDoesNotExist ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             rData.logError(ex.getLocalizedMessage());
          }
@@ -424,10 +419,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             if (!((Artifact) item.getData()).isAttributeTypeValid(attrName)) {
                return false;
             }
-         } catch (OseeDataStoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return false;
-         } catch (OseeTypeDoesNotExist ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return false;
          }

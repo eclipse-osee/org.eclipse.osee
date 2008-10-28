@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 
 /**
  * @author Jeff C. Phillips
@@ -35,7 +35,7 @@ public class AttributeContentProvider implements ITreeContentProvider {
          ArrayList<Object> descriptors = new ArrayList<Object>();
 
          try {
-            for (AttributeType descriptor : AttributeTypeManager.getTypes((Branch) parentElement)) {
+            for (AttributeType descriptor : TypeValidityManager.getValidAttributeTypes((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
          } catch (Exception ex) {

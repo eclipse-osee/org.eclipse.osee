@@ -89,7 +89,7 @@ public class BlamWorkflow extends Artifact {
          loadFromXml();
       } else {
          operations.add(soleOperation);
-         layoutDatas = xWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, soleOperation.getXWidgetsXml());
+         layoutDatas = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, soleOperation.getXWidgetsXml());
       }
 
       return operations;
@@ -112,7 +112,7 @@ public class BlamWorkflow extends Artifact {
    }
 
    private void setLayoutData(Element element) throws ParserConfigurationException, SAXException, IOException {
-      layoutDatas = xWidgetParser.extractlayoutDatas(dynamicXWidgetLayout, element);
+      layoutDatas = XWidgetParser.extractlayoutDatas(dynamicXWidgetLayout, element);
    }
 
    private void loadBlamOperationFromXml(Element operation) throws CoreException, IllegalArgumentException {

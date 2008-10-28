@@ -11,22 +11,20 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 
 /**
  * @author Ryan D. Brooks
  */
 public class UrlRenderer extends Renderer {
-   private Collection<ArtifactType> descriptors;
+   private final AttributeType contentUrlType;
 
    /**
     * @param applicableArtifactTypes
@@ -35,8 +33,7 @@ public class UrlRenderer extends Renderer {
     */
    public UrlRenderer(String rendererId) throws OseeDataStoreException, OseeTypeDoesNotExist {
       super(rendererId);
-      descriptors =
-            ConfigurationPersistenceManager.getArtifactTypesFromAttributeType(AttributeTypeManager.getType("Content URL"));
+      contentUrlType = AttributeTypeManager.getType("Content URL");
    }
 
    /* (non-Javadoc)
@@ -57,9 +54,9 @@ public class UrlRenderer extends Renderer {
       return url;
    }
 
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      for (ArtifactType descriptor : descriptors) {
-         if (descriptor.canProduceArtifact(artifact)) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         if (attributeType.equals(contentUrlType)) {
             return SUBTYPE_TYPE_MATCH;
          }
       }

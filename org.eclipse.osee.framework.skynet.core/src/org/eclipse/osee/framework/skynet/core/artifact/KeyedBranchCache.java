@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
@@ -32,12 +32,12 @@ public class KeyedBranchCache {
    private KeyedBranchCache() {
    }
 
-   public static void createKeyedBranch(String keyname, Branch branch) throws OseeDataStoreException {
+   public static void createKeyedBranch(String keyname, Branch branch) throws OseeCoreException {
       instance.ensurePopulated();
       instance.keynameBranchMap.put(keyname.toLowerCase(), branch);
    }
 
-   public static Branch getKeyedBranch(String keyname) throws OseeDataStoreException, BranchDoesNotExist {
+   public static Branch getKeyedBranch(String keyname) throws OseeCoreException {
       if (keyname == null) throw new IllegalArgumentException("keyname can not be null");
 
       instance.ensurePopulated();
@@ -49,13 +49,13 @@ public class KeyedBranchCache {
       }
    }
 
-   private synchronized void ensurePopulated() throws OseeDataStoreException {
+   private synchronized void ensurePopulated() throws OseeCoreException {
       if (keynameBranchMap == null) {
          populateCache();
       }
    }
 
-   private void populateCache() throws OseeDataStoreException {
+   private void populateCache() throws OseeCoreException {
       keynameBranchMap = new HashMap<String, Branch>();
 
       ConnectionHandlerStatement chStmt = null;

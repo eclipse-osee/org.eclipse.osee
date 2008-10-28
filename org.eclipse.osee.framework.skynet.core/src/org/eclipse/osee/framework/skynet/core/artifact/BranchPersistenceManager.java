@@ -90,14 +90,18 @@ public class BranchPersistenceManager {
 
    private static final BranchPersistenceManager instance = new BranchPersistenceManager();
 
+   private Branch systemRoot;
+
    private BranchPersistenceManager() {
    }
 
+   @Deprecated
+   // use static methods instead
    public static BranchPersistenceManager getInstance() {
       return instance;
    }
 
-   public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact) throws OseeDataStoreException {
+   public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       Set<Branch> branches = new HashSet<Branch>();
       for (Branch branch : getBranches())
@@ -107,35 +111,31 @@ public class BranchPersistenceManager {
       return branches;
    }
 
-   public static Branch getCommonBranch() throws OseeDataStoreException {
-      try {
-         return getKeyedBranch(Branch.COMMON_BRANCH_CONFIG_ID);
-      } catch (BranchDoesNotExist ex) {
-         throw new OseeDataStoreException("The common branch is required to exist but: " + ex);
-      }
+   public static Branch getCommonBranch() throws OseeCoreException {
+      return getKeyedBranch(Branch.COMMON_BRANCH_CONFIG_ID);
    }
 
-   public static Branch getKeyedBranch(String keyname) throws OseeDataStoreException, BranchDoesNotExist {
+   public static Branch getKeyedBranch(String keyname) throws OseeCoreException {
       return KeyedBranchCache.getKeyedBranch(keyname);
    }
 
-   public static Branch getAtsBranch() throws OseeDataStoreException {
+   public static Branch getAtsBranch() throws OseeCoreException {
       return getCommonBranch();
    }
 
-   public static List<Branch> getBranches() throws OseeDataStoreException {
+   public static List<Branch> getBranches() throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       List<Branch> branches = new ArrayList<Branch>(instance.branchCache.values());
       Collections.sort(branches);
       return branches;
    }
 
-   public static Collection<Branch> refreshBranches() throws OseeDataStoreException {
+   public static Collection<Branch> refreshBranches() throws OseeCoreException {
       instance.ensurePopulatedCache(true);
       return getBranches();
    }
 
-   public static Branch getBranch(String branchName) throws OseeDataStoreException, BranchDoesNotExist {
+   public static Branch getBranch(String branchName) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       for (Branch branch : instance.branchCache.values()) {
          if (branch.getBranchName().equals(branchName)) {
@@ -145,26 +145,26 @@ public class BranchPersistenceManager {
       throw new BranchDoesNotExist("No branch exists with the name: " + branchName);
    }
 
-   private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeDataStoreException {
+   private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeCoreException {
       if (forceRead || branchCache.size() == 0) {
          // The branch cache can not be cleared here because applications may contain branch references.
 
          ConnectionHandlerStatement chStmt = null;
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(500, READ_BRANCH_TABLE);
+            chStmt = ConnectionHandler.runPreparedQuery(2000, READ_BRANCH_TABLE);
             while (chStmt.next()) {
                int branchId = chStmt.getInt("branch_id");
                boolean isArchived = chStmt.getInt("archived") == 1;
-
                Branch branch = branchCache.get(branchId);
 
-               if (isArchived) {
-                  if (branch != null) {
-                     branchCache.remove(branch.getBranchId());
+               if (branch == null) {
+                  branch = initializeBranchObject(chStmt);
+                  if (branch.isSystemRootBranch()) {
+                     systemRoot = branch;
                   }
                } else {
-                  if (branch == null) {
-                     branch = initializeBranchObject(chStmt);
+                  if (isArchived) {
+                     branchCache.remove(branchId);
                   } else {
                      branch.setBranchName(chStmt.getString("branch_name"));
                   }
@@ -172,6 +172,13 @@ public class BranchPersistenceManager {
             }
          } finally {
             ConnectionHandler.close(chStmt);
+         }
+
+         // TODO: remove this compatibility code after the 0.5.0 release
+         if (systemRoot == null) {
+            systemRoot =
+                  createBranchObject(null, "System Root Branch", getCommonBranch().getParentBranchId(), -1, false, -1,
+                        null, "System branch that is untimately the parent of all branches", -1, BranchType.SYSTEM_ROOT);
          }
       }
    }
@@ -205,6 +212,14 @@ public class BranchPersistenceManager {
       }
    }
 
+   public static Branch createBranchObject(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
+      Branch branch =
+            new Branch(branchShortName, branchName, branchId, parentBranchId, archived, authorId, creationDate,
+                  creationComment, associatedArtifactId, branchType);
+      instance.branchCache.put(branchId, branch);
+      return branch;
+   }
+
    /**
     * Create a Branch object based on the result set from the READ_BRANCH_TABLE query
     * 
@@ -213,13 +228,10 @@ public class BranchPersistenceManager {
     * @throws OseeDataStoreException
     */
    private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
-      int branchId = chStmt.getInt("branch_id");
-      int associatedArtifactId = chStmt.getInt("associated_art_id");
-
-      return new Branch(chStmt.getString("short_name"), chStmt.getString("branch_name"), branchId,
-            chStmt.getInt("parent_branch_id"), false, chStmt.getInt("author"), chStmt.getTimestamp("time"),
-            chStmt.getString(TXD_COMMENT), associatedArtifactId, BranchType.getBranchType(new Integer(
-                  chStmt.getInt("branch_type"))));
+      return createBranchObject(chStmt.getString("short_name"), chStmt.getString("branch_name"),
+            chStmt.getInt("branch_id"), chStmt.getInt("parent_branch_id"), false, chStmt.getInt("author"),
+            chStmt.getTimestamp("time"), chStmt.getString(TXD_COMMENT), chStmt.getInt("associated_art_id"),
+            BranchType.getBranchType(chStmt.getInt("branch_type")));
    }
 
    /**
@@ -299,11 +311,10 @@ public class BranchPersistenceManager {
       }
    }
 
-   public static Branch getBranch(Integer branchId) throws BranchDoesNotExist, OseeDataStoreException {
+   public static Branch getBranch(Integer branchId) throws OseeCoreException {
       // Always exception for invalid id's, they won't ever be found in the
       // database or cache.
       if (branchId == null) throw new BranchDoesNotExist("Branch Id is null");
-      if (branchId < 1) throw new BranchDoesNotExist("Branch Id " + branchId + " is invalid");
 
       // If someone else made a branch on another machine, we may not know about it
       // so refresh the cache.
@@ -467,13 +478,13 @@ public class BranchPersistenceManager {
    /**
     * Archives a branch in the database by changing its archived value from 0 to 1.
     */
-   public static void archive(Branch branch) throws OseeDataStoreException {
+   public static void archive(Branch branch) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
 
       branch.setArchived();
-      instance.branchCache.remove(branch.getBranchId());
+      removeBranchFromCache(branch.getBranchId());
 
-      setDefaultBranch(branch.getParentBranchOrAlternative(getCommonBranch()));
+      setDefaultBranch(branch.hasParentBranch() ? branch.getParentBranch() : getCommonBranch());
    }
 
    /**
@@ -576,7 +587,9 @@ public class BranchPersistenceManager {
     */
    public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws OseeCoreException {
       // Create branch with name and static name; short name will be computed from full name
-      Branch branch = BranchCreator.getInstance().createRootBranch(null, branchName, staticBranchName);
+      Branch branch =
+            BranchCreator.getInstance().createRootBranch(null, branchName, staticBranchName,
+                  BranchPersistenceManager.getSystemRootBranch().getBranchId(), false);
       // Add name to cached keyname if static branch name is desired
       if (staticBranchName != null) {
          KeyedBranchCache.createKeyedBranch(staticBranchName, branch);
@@ -595,17 +608,21 @@ public class BranchPersistenceManager {
       return branch;
    }
 
-   public static List<Branch> getRootBranches() throws OseeDataStoreException {
+   public static Branch createSystemRootBranch() throws OseeCoreException {
+      return BranchCreator.getInstance().createRootBranch(null, "System Root Branch", null, 1, true);
+   }
+
+   public static List<Branch> getRootBranches() throws OseeCoreException {
       List<Branch> branches = new ArrayList<Branch>();
       for (Branch branch : getBranches()) {
-         if (!branch.hasParentBranch()) {
+         if (branch.isTopLevelBranch()) {
             branches.add(branch);
          }
       }
       return branches;
    }
 
-   public static List<Branch> getChangeManagedBranches() throws OseeDataStoreException {
+   public static List<Branch> getChangeManagedBranches() throws OseeCoreException {
       List<Branch> branches = new ArrayList<Branch>();
       for (Branch branch : getBranches()) {
          if (branch.isChangeManaged()) {
@@ -613,13 +630,6 @@ public class BranchPersistenceManager {
          }
       }
       return branches;
-   }
-
-   /**
-    * @param branch
-    */
-   protected static void cache(Branch branch) {
-      instance.branchCache.put(branch.getBranchId(), branch);
    }
 
    public static void setDefaultBranch(Branch branch) {
@@ -654,10 +664,10 @@ public class BranchPersistenceManager {
                         "Could not use default branch id from the preference store: " + ex);
                   initialBranch = getCommonBranch();
                   preferenceStore.setValue(LAST_DEFAULT_BRANCH, initialBranch.getBranchId());
-               } catch (OseeDataStoreException ex1) {
+               } catch (OseeCoreException ex1) {
                   OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
                }
-            } catch (OseeDataStoreException ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
@@ -665,7 +675,7 @@ public class BranchPersistenceManager {
          if (initialBranch == null) {
             try {
                initialBranch = getDefaultInitialBranch();
-            } catch (OseeDataStoreException ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
@@ -674,7 +684,7 @@ public class BranchPersistenceManager {
       }
    };
 
-   private Branch getDefaultInitialBranch() throws OseeDataStoreException {
+   private Branch getDefaultInitialBranch() throws OseeCoreException {
       List<IDefaultInitialBranchesProvider> defaultBranchProviders = new LinkedList<IDefaultInitialBranchesProvider>();
 
       IExtensionPoint point =
@@ -718,5 +728,14 @@ public class BranchPersistenceManager {
 
    public static Branch getDefaultBranch() {
       return instance.defaultBranch.get();
+   }
+
+   /**
+    * @return the rootBranch
+    * @throws OseeCoreException
+    */
+   public static Branch getSystemRootBranch() throws OseeCoreException {
+      instance.ensurePopulatedCache(false);
+      return instance.systemRoot;
    }
 }

@@ -15,11 +15,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -49,8 +47,6 @@ import org.eclipse.swt.widgets.Table;
  * @author Jeff C. Phillips
  */
 public class PolicyDialog extends Dialog {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(PolicyDialog.class);
    private PolicyTableViewer policyTableViewer;
    private Button radEnabled;
    private Button radDisabled;

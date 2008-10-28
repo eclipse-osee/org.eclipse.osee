@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
  */
 public class ValidateArtifactsToDelete extends AbstractBlam {
 
-   @SuppressWarnings("unchecked")
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       processChange(variableMap.getArtifacts("artifact"));
    }

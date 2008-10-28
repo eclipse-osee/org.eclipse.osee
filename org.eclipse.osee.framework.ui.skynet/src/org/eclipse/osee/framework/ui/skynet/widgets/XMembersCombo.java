@@ -49,12 +49,10 @@ public class XMembersCombo extends XWidget {
       this(displayLabel, "", "");
    }
 
-   @SuppressWarnings("unchecked")
    public XMembersCombo(String displayLabel, String xmlRoot, String xmlSubRoot) {
       super(displayLabel, xmlRoot, xmlSubRoot);
    }
 
-   @SuppressWarnings("unchecked")
    public XMembersCombo(String displayLabel, Collection<User> members) {
       super(displayLabel, displayLabel, "user");
    }

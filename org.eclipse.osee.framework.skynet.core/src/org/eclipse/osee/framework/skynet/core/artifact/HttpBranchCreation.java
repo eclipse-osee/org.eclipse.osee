@@ -38,9 +38,9 @@ public class HttpBranchCreation {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("branchName", childBranchName);
       parameters.put("function", "createChildBranch");
-      parameters.put("authorId", Integer.toString(getAuthorId()));
+      parameters.put("authorId", getAuthorId());
       parameters.put("parentBranchId", Integer.toString(parentTransactionId.getBranch().getBranchId()));
-      parameters.put("associatedArtifactId", Integer.toString(getAssociatedArtifactId(associatedArtifact)));
+      parameters.put("associatedArtifactId", getAssociatedArtifactId(associatedArtifact));
 
       if (compressArtTypeIds != null && !compressArtTypeIds.isEmpty()) {
          parameters.put("compressArtTypes", Collections.toString(",", compressArtTypeIds));
@@ -72,18 +72,23 @@ public class HttpBranchCreation {
     * @see BranchPersistenceManager#createRootBranch(String, String, int)
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws OseeCoreException {
+   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, int parentBranchId, boolean systemRootBranch) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("branchName", branchName);
       parameters.put("function", "createRootBranch");
-      parameters.put("authorId", Integer.toString(SkynetAuthentication.getUser().getArtId()));
-      parameters.put("associatedArtifactId", Integer.toString(getAssociatedArtifactId(null)));
+      parameters.put("authorId", getAuthorId());
+      parameters.put("parentBranchId", Integer.toString(parentBranchId));
+      parameters.put("associatedArtifactId", getAssociatedArtifactId(null));
       parameters.put("creationComment", String.format("Root Branch [%s] Creation", branchName));
       if (shortBranchName != null && shortBranchName.length() > 0) {
          parameters.put("shortBranchName", shortBranchName);
       }
       if (staticBranchName != null && staticBranchName.length() > 0) {
          parameters.put("staticBranchName", staticBranchName);
+      }
+
+      if (systemRootBranch) {
+         parameters.put("systemRootBranch", "true");
       }
       return commonServletBranchingCode(parameters);
    }
@@ -109,7 +114,7 @@ public class HttpBranchCreation {
       return branch;
    }
 
-   private static int getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException {
+   private static String getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException {
       int associatedArtifactId = -1;
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
          associatedArtifact = SkynetAuthentication.getUser(UserEnum.NoOne);
@@ -117,14 +122,14 @@ public class HttpBranchCreation {
       if (associatedArtifact != null) {
          associatedArtifactId = associatedArtifact.getArtId();
       }
-      return associatedArtifactId;
+      return Integer.toString(associatedArtifactId);
    }
 
-   private static int getAuthorId() throws OseeCoreException {
+   private static String getAuthorId() throws OseeCoreException {
       if (SkynetDbInit.isDbInit()) {
-         return -1;
+         return "-1";
       }
       User userToBlame = SkynetAuthentication.getUser();
-      return (userToBlame == null) ? SkynetAuthentication.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
+      return Integer.toString((userToBlame == null) ? SkynetAuthentication.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId());
    }
 }

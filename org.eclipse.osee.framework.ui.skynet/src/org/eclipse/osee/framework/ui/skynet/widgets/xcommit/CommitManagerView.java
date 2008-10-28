@@ -132,7 +132,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
       try {
          if (xCommitViewer != null && branchArtifact != null) xCommitViewer.setArtifact(branchArtifact.getArtifact(),
                "");
-         setPartName("Commit Manager: " + branchArtifact.getWorkingBranch().getBranchShortestName());
+         setPartName("Commit Manager: " + branchArtifact.getWorkingBranch().getBranchShortName());
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

@@ -12,6 +12,7 @@
          name="AtsConfigDemoDatabaseConfig"
          point="org.eclipse.osee.framework.database.IDbInitializationTask">
       <DatabaseTask
+            DbInitRule="org.eclipse.osee.framework.database.NotOnProductionDbInitializationRule"
             classname="org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig">
       </DatabaseTask>
    </extension>

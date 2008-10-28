@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -34,7 +34,7 @@ public class ArtifactTypeContentProvider implements ITreeContentProvider {
          ArrayList<Object> descriptors = new ArrayList<Object>();
 
          try {
-            for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes((Branch) parentElement)) {
+            for (ArtifactType descriptor : TypeValidityManager.getValidArtifactTypes((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
          } catch (OseeCoreException ex) {
