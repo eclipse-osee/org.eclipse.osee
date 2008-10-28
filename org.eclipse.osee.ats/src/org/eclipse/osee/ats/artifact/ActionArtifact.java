@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -509,6 +510,20 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          else if (!str.equals(team.getWorldViewNotes())) return "";
       }
       return str;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewGroups()
+    */
+   @Override
+   public String getWorldViewGroups() throws OseeCoreException {
+      Set<Artifact> groups = new HashSet<Artifact>();
+      groups.addAll(getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP));
+      // Roll up if same for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         groups.addAll(team.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP));
+      }
+      return Artifacts.toString("; ", groups);
    }
 
    /*

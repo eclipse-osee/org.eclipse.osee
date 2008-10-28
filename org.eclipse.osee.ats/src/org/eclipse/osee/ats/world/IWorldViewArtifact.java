@@ -122,6 +122,8 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewResolution() throws OseeCoreException;
 
+   public String getWorldViewGroups() throws OseeCoreException;
+
    public String getWorldViewReviewAuthor() throws OseeCoreException;
 
    public String getWorldViewReviewDecider() throws OseeCoreException;

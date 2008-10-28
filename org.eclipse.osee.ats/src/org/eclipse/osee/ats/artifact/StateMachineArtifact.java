@@ -195,6 +195,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewGroups()
+    */
+   @Override
+   public String getWorldViewGroups() throws OseeCoreException {
+      return Artifacts.toString("; ", getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP));
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
     */
    @Override
