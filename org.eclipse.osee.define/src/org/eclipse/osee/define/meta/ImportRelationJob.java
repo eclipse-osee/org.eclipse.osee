@@ -13,7 +13,6 @@ package org.eclipse.osee.define.meta;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -21,14 +20,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.relation.Import.RelationImporter;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ImportRelationJob extends Job {
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(ImportRelationJob.class);
    private final File file;
    private final Branch branch;
 
@@ -48,7 +46,7 @@ public class ImportRelationJob extends Job {
 
          if (message == null) message = "";
 
-         logger.log(Level.SEVERE, message, ex);
+         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
          return new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.toString(), ex);
       }
    }
