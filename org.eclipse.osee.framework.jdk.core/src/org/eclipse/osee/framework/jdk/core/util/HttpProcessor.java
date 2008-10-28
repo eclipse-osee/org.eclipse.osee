@@ -70,8 +70,9 @@ public class HttpProcessor {
       String response = null;
       int code = -1;
       InputStream inputStream = null;
+      HttpURLConnection connection = null;
       try {
-         HttpURLConnection connection = setupConnection(url);
+         connection = setupConnection(url);
          connection.setRequestMethod("POST");
          connection.connect();
          // Wait for response
@@ -88,6 +89,9 @@ public class HttpProcessor {
          if (inputStream != null) {
             inputStream.close();
          }
+         if (connection != null) {
+            connection.disconnect();
+         }
       }
       return response;
    }
@@ -96,8 +100,9 @@ public class HttpProcessor {
       AcquireResult result = new AcquireResult();
       int code = -1;
       InputStream inputStream = null;
+      HttpURLConnection connection = null;
       try {
-         HttpURLConnection connection = setupConnection(url);
+         connection = setupConnection(url);
          connection.connect();
          // Wait for response
          code = connection.getResponseCode();
@@ -107,12 +112,16 @@ public class HttpProcessor {
             result.setEncoding(connection.getContentEncoding());
             Lib.inputStreamToOutputStream(inputStream, outputStream);
          }
+
       } catch (Exception ex) {
          throw new Exception(String.format("Error acquiring resource: [%s] - status code: [%s]", url, code), ex);
       } finally {
          result.setCode(code);
          if (inputStream != null) {
             inputStream.close();
+         }
+         if (connection != null) {
+            connection.disconnect();
          }
       }
       return result;
@@ -122,8 +131,9 @@ public class HttpProcessor {
       String response = null;
       int code = -1;
       InputStream inputStream = null;
+      HttpURLConnection connection = null;
       try {
-         HttpURLConnection connection = setupConnection(url);
+         connection = setupConnection(url);
          connection.setRequestMethod("DELETE");
          connection.connect();
          // Wait for response
@@ -137,6 +147,9 @@ public class HttpProcessor {
       } finally {
          if (inputStream != null) {
             inputStream.close();
+         }
+         if (connection != null) {
+            connection.disconnect();
          }
       }
       return response;
