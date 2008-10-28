@@ -233,18 +233,14 @@ public class UpdateArtifactJob extends UpdateJob {
                      }
                      //This code pulls out all of the stuff after the inserted listnum reordering stuff.  This needs to be
                      //here so that we remove unwanted template information from single editing
-                     if (content.contains(WordMLProducer.LISTNUM_FIELD)) {
-                        content = content.substring(0, content.indexOf(WordMLProducer.LISTNUM_FIELD)) + "</wx:sect>";
+
+                     String[] splitString = content.split(WordMLProducer.LISTNUM_FIELD_TAIL_REG_EXP);
+                     if (splitString.length == 2) {
+                        content = splitString[0] + "</w:p></wx:sect>";
+                        content = content.replace(WordMLProducer.LISTNUM_FIELD_HEAD, "");
                      } else {
-                        int index = content.indexOf(WordMLProducer.LISTNUM_FIELD_TAIL);
-                        if (index >= 0) {
-                           content =
-                                 content.substring(0, content.indexOf(WordMLProducer.LISTNUM_FIELD_TAIL)) + "</w:p></wx:sect>";
-                           content = content.replace(WordMLProducer.LISTNUM_FIELD_HEAD, "");
-                        } else {
-                           throw new OseeCoreException(
-                                 "There were errors removing template information from the Word content prior to saving");
-                        }
+                        throw new OseeCoreException(
+                              "There were errors removing template information from the Word content prior to saving. Content was not saved.");
                      }
 
                      if (DEBUG) {

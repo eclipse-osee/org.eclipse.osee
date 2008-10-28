@@ -28,9 +28,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribu
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
- * 
  * @author Jeff C. Phillips
- *
  */
 public class WholeDocumentRenderer extends WordRenderer {
 
@@ -98,7 +96,7 @@ public class WholeDocumentRenderer extends WordRenderer {
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException {
       if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -126,13 +124,13 @@ public class WholeDocumentRenderer extends WordRenderer {
          newerFile = renderForDiff(monitor, branch);
       }
 
-      return compare(baseVersion, newerVersion, baseFile, newerFile, fileName, presentationType, show);
+      return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
       String diffPath;
-
+      String fileName = getOption("filename");
       if (fileName == null || fileName.equals("")) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();

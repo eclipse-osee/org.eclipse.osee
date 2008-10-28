@@ -120,7 +120,7 @@ public class MergeUtility {
     */
    public static String showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
       if (art1 == null || art2 == null) return " ";
-      return RendererManager.diff(art1, art2, fileName, true);
+      return RendererManager.diff(art1, art2, true, "fileName", fileName);
    }
 
    /*

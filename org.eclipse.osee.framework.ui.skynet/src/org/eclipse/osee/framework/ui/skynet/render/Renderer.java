@@ -132,11 +132,13 @@ public abstract class Renderer implements IRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#compare(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
+   @Override
+   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException {
       throw new UnsupportedOperationException();
    }
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
+   @Override
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
       throw new UnsupportedOperationException();
    }
 
@@ -146,7 +148,7 @@ public abstract class Renderer implements IRenderer {
    @Override
    public void compareArtifacts(List<Artifact> baseArtifacts, List<Artifact> newerArtifacts, IProgressMonitor monitor, Branch branch, PresentationType presentationType) throws OseeCoreException {
       for (int i = 0; i < baseArtifacts.size(); i++) {
-         compare(baseArtifacts.get(i), newerArtifacts.get(i), monitor, null, presentationType, true);
+         compare(baseArtifacts.get(i), newerArtifacts.get(i), monitor, presentationType, true);
       }
    }
 

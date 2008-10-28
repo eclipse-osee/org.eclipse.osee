@@ -66,7 +66,7 @@ public class WordChangesMadeToHandler extends AbstractHandler {
             artifactChange.getModType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId());
 
-      RendererManager.diffInJob(firstArtifact, secondArtifact, null);
+      RendererManager.diffInJob(firstArtifact, secondArtifact);
    }
 
    @Override

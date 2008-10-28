@@ -63,7 +63,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
                   selectedArtifactChange.getModType() == DELETED ? null : ArtifactQuery.getArtifactFromId(
                         selectedArtifactChange.getArtifact().getArtId(), parentBranch);
 
-            RendererManager.diffInJob(firstArtifact, secondArtifact, null);
+            RendererManager.diffInJob(firstArtifact, secondArtifact);
 
          } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, true);

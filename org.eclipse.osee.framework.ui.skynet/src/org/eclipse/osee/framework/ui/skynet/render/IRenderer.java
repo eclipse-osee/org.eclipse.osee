@@ -49,9 +49,9 @@ public interface IRenderer {
 
    public boolean supportsPrint();
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException;
+   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException;
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException;
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException;
 
    public void compareArtifacts(List<Artifact> baseArtifacts, List<Artifact> newerArtifact, IProgressMonitor monitor, Branch branch, PresentationType presentationType) throws OseeCoreException;
 

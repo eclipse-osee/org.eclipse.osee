@@ -51,7 +51,7 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
          Artifact secondArtifact =
                ArtifactPersistenceManager.getInstance().getArtifactFromId(artifactChange.getArtifact().getArtId(),
                      artifactChange.getToTransactionId());
-         RendererManager.diffInJob(artifactChange.getConflictingModArtifact(), secondArtifact, null);
+         RendererManager.diffInJob(artifactChange.getConflictingModArtifact(), secondArtifact);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

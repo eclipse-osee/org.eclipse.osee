@@ -210,20 +210,20 @@ public class RendererManager {
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, boolean show) throws OseeStateException, OseeCoreException {
-      return getBestRenderer(PresentationType.MERGE, baseVersion).compare(baseVersion, newerVersion, monitor, fileName,
-            PresentationType.MERGE, show);
+      return getBestRenderer(PresentationType.MERGE, baseVersion, "fileName", fileName).compare(baseVersion,
+            newerVersion, monitor, PresentationType.MERGE, show);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, boolean show) throws OseeCoreException {
-      return getBestRenderer(PresentationType.MERGE_EDIT, baseVersion).compare(baseVersion, newerVersion, baseFile,
-            newerFile, fileName, PresentationType.MERGE_EDIT, show);
+      return getBestRenderer(PresentationType.MERGE_EDIT, baseVersion, "fileName", fileName).compare(baseVersion,
+            newerVersion, baseFile, newerFile, PresentationType.MERGE_EDIT, show);
    }
 
-   public static void diffInJob(final Artifact baseVersion, final Artifact newerVersion, final String fileName, final String... options) {
+   public static void diffInJob(final Artifact baseVersion, final Artifact newerVersion, final String... options) {
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws OseeCoreException {
-            diff(baseVersion, newerVersion, fileName, true, options);
+            diff(baseVersion, newerVersion, true, options);
          }
       };
 
@@ -233,21 +233,15 @@ public class RendererManager {
 
    }
 
-   public static String diff(final Artifact baseVersion, final Artifact newerVersion, final String fileName, IProgressMonitor monitor, boolean show, final String... options) throws OseeCoreException {
+   public static String diff(final Artifact baseVersion, final Artifact newerVersion, IProgressMonitor monitor, boolean show, final String... options) throws OseeCoreException {
       // To handle comparisons with new or deleted artifacts
       Artifact artifactToSelectRender = baseVersion == null ? newerVersion : baseVersion;
-
       IRenderer renderer = getBestRenderer(PresentationType.DIFF, artifactToSelectRender, options);
-      return renderer.compare(baseVersion, newerVersion, new NullProgressMonitor(), fileName, PresentationType.DIFF,
-            show);
+      return renderer.compare(baseVersion, newerVersion, new NullProgressMonitor(), PresentationType.DIFF, show);
    }
 
-   public static String diff(final Artifact baseVersion, final Artifact newerVersion, final String fileName, boolean show, final String... options) throws OseeCoreException {
-      return diff(baseVersion, newerVersion, fileName, new NullProgressMonitor(), show, options);
-   }
-
-   public static String diff(final Artifact baseVersion, final Artifact newerVersion, IProgressMonitor monitor, boolean show, final String... options) throws OseeCoreException {
-      return diff(baseVersion, newerVersion, null, monitor, show, options);
+   public static String diff(final Artifact baseVersion, final Artifact newerVersion, boolean show, final String... options) throws OseeCoreException {
+      return diff(baseVersion, newerVersion, new NullProgressMonitor(), show, options);
    }
 
    public static void diffInJob(final List<Artifact> baseArtifacts, final List<Artifact> newerArtifacts, final String... options) {

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -109,12 +110,24 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
+               String file = getOption("fileName");
+               if (file == null) {
+                  if (baseArtifacts.size() == 1) {
+                     file =
+                           (newerArtifact.get(0) != null ? newerArtifact.get(0).getSafeName() : baseArtifacts.get(0).getSafeName()) + (new Date()).toString().replaceAll(
+                                 ":", ";") + ".xml";
+                  } else {
+                     file =
+                           "Word_Change_Report_" + baseArtifacts.size() + "_Items_" + (new Date()).toString().replaceAll(
+                                 ":", ";") + ".xml";
+                  }
+               }
                monitor.beginTask("Word Change Report ", newerArtifact.size() * 2);
                ArrayList<String> fileNames = new ArrayList<String>(newerArtifact.size());
                IFolder baseFolder = getRenderFolder(branch, PresentationType.DIFF);
                IFolder changeReportFolder = OseeData.getFolder(".diff/" + GUID.generateGuidStr());
                String baseFileStr = "c:/UserData";
-               String fileName = null;
+               String localFileName = null;
 
                VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
                generator.initialize(false, false);
@@ -127,8 +140,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                               getRenderInputStream(newerArtifact.get(i), PresentationType.DIFF), PresentationType.DIFF);
 
                   baseFileStr = changeReportFolder.getLocation().toOSString();
-                  fileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
-                  fileNames.add(fileName);
+                  localFileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
+                  fileNames.add(localFileName);
 
                   monitor.setTaskName("Adding to Diff Script: " + (newerArtifact.get(i) == null ? baseArtifacts.get(i).getDescriptiveName() : newerArtifact.get(
                         i).getDescriptiveName()));
@@ -139,17 +152,17 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                      monitor.done();
                      return Status.CANCEL_STATUS;
                   }
-                  generator.addComparison(baseFile, newerFile, fileName, false);
+                  generator.addComparison(baseFile, newerFile, localFileName, false);
                   //compare(baseFile, newerFile, fileName, false, plugin.getPluginStoreFile("support/compareDocs3.vbs"));
 
                }
                monitor.setTaskName("Running Diff Script");
                generator.finish(baseFileStr + "/compareDocs.vbs");
-               if (fileNames.size() == 1) {
-                  getAssociatedProgram(null).execute(fileNames.get(0));
-               } else {
-                  createAggregateArtifactDiffReport(fileNames, baseFileStr, null, monitor);
-               }
+               //if (fileNames.size() == 1) {
+               //   getAssociatedProgram(null).execute(baseFileStr + fileName);
+               // } else {
+               createAggregateArtifactDiffReport(fileNames, baseFileStr, null, baseFileStr + "/" + file, monitor);
+               // }
             } catch (OseeCoreException ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
             }
@@ -158,7 +171,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       });
    }
 
-   private void createAggregateArtifactDiffReport(ArrayList<String> fileNames, String baseFileStr, Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+   private void createAggregateArtifactDiffReport(ArrayList<String> fileNames, String baseFileStr, Artifact artifact, String fileName, IProgressMonitor monitor) throws OseeCoreException {
       monitor.setTaskName("Writing final document");
       ArrayList<String> datas = new ArrayList<String>(fileNames.size());
       int startIndex;
@@ -192,16 +205,17 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       if (!file.contains("xmlns:ns1=\"http")) {
          file = file.replaceAll("ns1", "ns0");
       }
-
-      String diffFile = baseFileStr + "/" + GUID.generateGuidStr() + "_diff.xml";
-      AFile.writeFile(diffFile, file);
+      if (fileName == null) {
+         fileName = baseFileStr + "/" + GUID.generateGuidStr() + "_diff.xml";
+      }
+      AFile.writeFile(fileName, file);
 
       monitor.done();
-      getAssociatedProgram(artifact).execute(diffFile);
+      getAssociatedProgram(artifact).execute(fileName);
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException {
       if (baseVersion == null && newerVersion == null) throw new OseeArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -229,13 +243,14 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          newerFile = renderForDiff(monitor, branch);
       }
 
-      return compare(baseVersion, newerVersion, baseFile, newerFile, fileName, presentationType, show);
+      return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType, boolean show) throws OseeCoreException {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
       String diffPath;
 
+      String fileName = getOption("fileName");
       if (fileName == null || fileName.equals("")) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();

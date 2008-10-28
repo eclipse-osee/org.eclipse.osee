@@ -125,6 +125,6 @@ public class ArtifactDiffMenu {
                         secondTransactionData.getAssociatedArtId(), secondTransactionData.getTransactionId());
          }
       }
-      RendererManager.diffInJob(secondArtifact, firstArtifact, null);
+      RendererManager.diffInJob(secondArtifact, firstArtifact);
    }
 }
