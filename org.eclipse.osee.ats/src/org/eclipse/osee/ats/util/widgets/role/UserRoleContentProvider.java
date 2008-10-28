@@ -116,7 +116,6 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    public void dispose() {
    }
 
-   @SuppressWarnings("unchecked")
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

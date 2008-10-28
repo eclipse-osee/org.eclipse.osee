@@ -26,7 +26,6 @@ public class StaticIdQuery {
 
    public static String STATIC_ID_ATTRIBUTE = "Static Id";
 
-   @SuppressWarnings("unchecked")
    public static Set<Artifact> getArtifacts(String artifactTypeName, String staticId, Branch branch) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       // Retrieve cached artifacts first

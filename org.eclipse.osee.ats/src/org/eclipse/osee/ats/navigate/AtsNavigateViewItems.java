@@ -285,7 +285,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       return items;
    }
 
-   @SuppressWarnings("deprecation")
    public void addExtensionPointItems(List<XNavigateItem> items) {
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsNavigateItem");
       if (point == null) OSEELog.logSevere(AtsPlugin.class, "Can't access AtsNavigateItem extension point", true);
@@ -310,7 +309,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
                   nameToNavItem.put(navItem.getName(), navItem);
                }
             } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Error loading AtsNavigateItem extension", ex);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error loading AtsNavigateItem extension", ex);
             }
          }
       }
