@@ -4,11 +4,11 @@ import java.rmi.Remote;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
-import net.jini.core.entry.Entry;
-import net.jini.lookup.entry.ServiceInfo;
+
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IConnectorListener;
 import org.eclipse.osee.connection.service.IServiceConnector;
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.ote.connection.jini.JiniServiceSideConnector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -28,8 +28,10 @@ public class Activator implements BundleActivator {
       connectionServiceTracker = new ServiceTracker(context, IConnectionService.class.getName(), null);
       connectionServiceTracker.open();
       final IConnectionService service = getConnectionService();
-      Entry[] entries = new Entry[] {new ServiceInfo("Dummy Test Service", "boeing", "ken", "1.0.0", "test model", "")};
-      testConnector = new JiniServiceSideConnector(new TestJiniService(), entries);
+//      Entry[] entries = new Entry[] {new ServiceInfo("Dummy Test Service", "boeing", "ken", "1.0.0", "test model", "")};
+      EnhancedProperties properties = new EnhancedProperties();
+      properties.setProperty("name", "Dummy Test Service");
+      testConnector = new JiniServiceSideConnector(new TestJiniService(), properties);
       service.addConnector(testConnector);
 
       service.addListener(new IConnectorListener() {
