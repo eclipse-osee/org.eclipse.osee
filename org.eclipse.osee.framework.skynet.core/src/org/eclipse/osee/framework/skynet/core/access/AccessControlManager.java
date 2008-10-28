@@ -17,20 +17,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
  */
 
 public class AccessControlManager {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AccessControlManager.class);
    private static final String INSERT_INTO_ARTIFACT_ACL =
          "INSERT INTO " + SkynetDatabase.ARTIFACT_TABLE_ACL + " (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
    private static final String INSERT_INTO_BRANCH_ACL =
@@ -506,7 +502,7 @@ public class AccessControlManager {
             }
             cacheAccessControlData(data);
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -562,12 +558,12 @@ public class AccessControlManager {
             datas.add(accessControlData);
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return datas;
    }
 
-   private PermissionEnum getBranchPermission(Artifact subject, Object object) throws OseeDataStoreException, BranchDoesNotExist {
+   private PermissionEnum getBranchPermission(Artifact subject, Object object) throws OseeCoreException {
       Branch branch = null;
       if (object instanceof BranchAccessObject) {
          branch = BranchPersistenceManager.getBranch(((BranchAccessObject) object).getBranchId());

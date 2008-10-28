@@ -23,19 +23,11 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerTransaction(TransactionId transactionId) throws OseeCoreException {
-      try {
-         return InternalChangeManager.getInstance().getChanges(null, transactionId);
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      return InternalChangeManager.getInstance().getChanges(null, transactionId);
    }
 
    public static ChangeData getChangeDataPerTransaction(TransactionId transactionId) throws OseeCoreException {
-      try {
-         return new ChangeData(InternalChangeManager.getInstance().getChanges(null, transactionId));
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      return new ChangeData(InternalChangeManager.getInstance().getChanges(null, transactionId));
    }
 
    /**
@@ -47,19 +39,11 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerBranch(Branch sourceBranch) throws OseeCoreException {
-      try {
-         return InternalChangeManager.getInstance().getChanges(sourceBranch, null);
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      return InternalChangeManager.getInstance().getChanges(sourceBranch, null);
    }
 
    public static ChangeData getChangeDataPerBranch(Branch sourceBranch) throws OseeCoreException {
-      try {
-         return new ChangeData(InternalChangeManager.getInstance().getChanges(sourceBranch, null));
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      return new ChangeData(InternalChangeManager.getInstance().getChanges(sourceBranch, null));
    }
 
    /**
@@ -71,19 +55,11 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId) throws OseeCoreException {
-      try {
-         return InternalChangeManager.getInstance().getChanges(sourceBranch, transactionId);
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      return InternalChangeManager.getInstance().getChanges(sourceBranch, transactionId);
    }
 
    public static ChangeData getChangeData(Branch sourceBranch, TransactionId transactionId) throws OseeCoreException {
-      try {
-         return new ChangeData(getChanges(sourceBranch, transactionId));
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      return new ChangeData(getChanges(sourceBranch, transactionId));
    }
 
    /**

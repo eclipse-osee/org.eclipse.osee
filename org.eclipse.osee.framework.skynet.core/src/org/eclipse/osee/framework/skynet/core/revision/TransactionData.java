@@ -12,10 +12,7 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.sql.Timestamp;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -84,7 +81,7 @@ public class TransactionData {
       return branch;
    }
 
-   public TransactionId getTransactionId() throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   public TransactionId getTransactionId() throws OseeCoreException {
       return TransactionIdManager.getTransactionId(transactionNumber);
    }
 

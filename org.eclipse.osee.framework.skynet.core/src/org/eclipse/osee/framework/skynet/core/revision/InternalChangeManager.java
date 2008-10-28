@@ -137,7 +137,7 @@ public class InternalChangeManager {
     * @throws BranchDoesNotExist
     * @throws OseeDataStoreException
     */
-   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws OseeCoreException {
 
       Map<Integer, ArtifactChanged> artifactChanges = new HashMap<Integer, ArtifactChanged>();
       boolean hasBranch = sourceBranch != null;
@@ -266,7 +266,7 @@ public class InternalChangeManager {
     * @throws BranchDoesNotExist
     * @throws OseeDataStoreException
     */
-   private void loadAttributeChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   private void loadAttributeChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws OseeCoreException {
       Map<Integer, Change> attributesWasValueCache = new HashMap<Integer, Change>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();

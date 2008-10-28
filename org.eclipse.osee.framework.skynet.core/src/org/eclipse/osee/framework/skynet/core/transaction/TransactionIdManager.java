@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -72,7 +73,7 @@ public class TransactionIdManager {
     * @throws TransactionDoesNotExist
     * @throws OseeDataStoreException
     */
-   public TransactionId getEditableTransactionId(Branch branch) throws TransactionDoesNotExist, BranchDoesNotExist, OseeDataStoreException {
+   public TransactionId getEditableTransactionId(Branch branch) throws OseeCoreException {
       return getTransactionId(getlatestTransactionForBranch(branch));
    }
 
@@ -110,7 +111,7 @@ public class TransactionIdManager {
       return transactionId;
    }
 
-   public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_MAX_MIN_TX, branch.getBranchId());
@@ -139,7 +140,7 @@ public class TransactionIdManager {
     * @throws TransactionDoesNotExist
     * @throws OseeDataStoreException
     */
-   public TransactionId getPriorTransaction(Timestamp time, Branch branch) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   public TransactionId getPriorTransaction(Timestamp time, Branch branch) throws OseeCoreException {
       TransactionId priorTransactionId = null;
       ConnectionHandlerStatement chStmt = null;
 
@@ -168,7 +169,7 @@ public class TransactionIdManager {
     * @throws TransactionDoesNotExist
     * @throws OseeDataStoreException
     */
-   public static TransactionId getPriorTransaction(TransactionId transactionId) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   public static TransactionId getPriorTransaction(TransactionId transactionId) throws OseeCoreException {
       TransactionId priorTransactionId = null;
       ConnectionHandlerStatement chStmt = null;
 
@@ -189,22 +190,6 @@ public class TransactionIdManager {
          ConnectionHandler.close(chStmt);
       }
       return priorTransactionId;
-   }
-
-   public static TransactionId getParentBaseTransaction(Branch branch) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
-      if (branch == null) throw new IllegalArgumentException("branch can not be null.");
-      if (branch.hasParentBranch()) throw new IllegalArgumentException("branch must have a parent branch.");
-
-      TransactionId baseParentTransactionId = null;
-      TransactionId baseTransaction = getStartEndPoint(branch).getKey();
-
-      String baseComment = baseTransaction.getComment();
-      int baseParentTransactionNumber = getParentBaseTransactionNumber(baseComment);
-      if (baseParentTransactionNumber != -1) {
-         baseParentTransactionId = getTransactionId(baseParentTransactionNumber);
-      }
-
-      return baseParentTransactionId;
    }
 
    public static int getParentBaseTransactionNumber(String comment) {
@@ -278,15 +263,15 @@ public class TransactionIdManager {
       return bytes;
    }
 
-   public static TransactionId getTransactionId(int transactionNumber) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
+   public static TransactionId getTransactionId(int transactionNumber) throws OseeCoreException {
       return getTransactionId(transactionNumber, null);
    }
 
-   public static TransactionId getTransactionId(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
+   public static TransactionId getTransactionId(ConnectionHandlerStatement chStmt) throws OseeCoreException {
       return getTransactionId(chStmt.getInt("transaction_id"), chStmt);
    }
 
-   private static TransactionId getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
+   private static TransactionId getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeCoreException {
       TransactionId transactionId = instance.nonEditableTransactionIdCache.get(transactionNumber);
       boolean useLocalConnection = chStmt == null;
       if (transactionId == null) {

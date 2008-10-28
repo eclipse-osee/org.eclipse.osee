@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -114,7 +115,7 @@ public class TransactionId implements Serializable {
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
-   private Object readResolve() throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
+   private Object readResolve() throws OseeCoreException {
       return TransactionIdManager.getTransactionId(transactionNumber);
    }
 

@@ -14,7 +14,11 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_PROVIDER_TYPE_TABLE;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -89,18 +93,7 @@ public class AttributeTypeManager {
       }
    }
 
-   /**
-    * use attribute validity to get attributes by branch instead
-    * 
-    * @return Returns all of the descriptors.
-    * @throws Exception
-    */
-   @Deprecated
-   public static Collection<AttributeType> getTypes(Branch branch) throws OseeDataStoreException {
-      return getTypes();
-   }
-
-   public static Collection<AttributeType> getTypes() throws OseeDataStoreException {
+   public static Collection<AttributeType> getAllTypes() throws OseeDataStoreException {
       ensurePopulated();
       return instance.idToTypeMap.values();
    }
@@ -225,5 +218,19 @@ public class AttributeTypeManager {
       }
 
       return attrBaseTypeId;
+   }
+
+   public static Set<String> getValidEnumerationAttributeValues(String attributeName, Branch branch) {
+      Set<String> names = new HashSet<String>();
+      try {
+         AttributeType dad = getType(attributeName);
+         String str = dad.getValidityXml();
+         Matcher m = Pattern.compile("<Enum>(.*?)</Enum>").matcher(str);
+         while (m.find())
+            names.add(m.group(1));
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, "Error getting valid enumeration values", ex);
+      }
+      return names;
    }
 }

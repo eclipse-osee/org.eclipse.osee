@@ -10,9 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -121,7 +119,7 @@ public class LoadedArtifacts {
       return allUnloadedArtifactIds;
    }
 
-   public synchronized Collection<Artifact> getLoadedArtifacts() throws BranchDoesNotExist, OseeDataStoreException {
+   public synchronized Collection<Artifact> getLoadedArtifacts() throws OseeCoreException {
       // If artifacts have not been set, resolve any unloaded artifactIds that exist in current cache
       if (artifacts == null) {
          artifacts = new HashSet<Artifact>();

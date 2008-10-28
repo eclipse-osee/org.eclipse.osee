@@ -234,25 +234,25 @@ public class RevisionManager {
 
       while (cursor != null) {
          try {
+            int branchId = cursor.getBranchId();
             chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, artId, cursor.getBranchId(),
-                        artId, cursor.getBranchId(), artId, cursor.getBranchId(), limit);
+                  ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, artId, branchId, artId,
+                        branchId, artId, branchId, limit);
 
             while (chStmt.next()) {
                transactionDetails.add(new TransactionData(chStmt.getString(TXD_COMMENT), chStmt.getTimestamp("time"),
                      chStmt.getInt("author"), chStmt.getInt("transaction_id"), artId, cursor,
                      chStmt.getInt("commit_art_id")));
             }
-
-            if (includeAncestry) {
-               cursor = cursor.getParentBranchOrAlternative(null);
-               limit = transactionDetails.get(transactionDetails.size() - 1).getTransactionNumber();
-            } else {
-               cursor = null;
-            }
          } finally {
-
             ConnectionHandler.close(chStmt);
+         }
+
+         if (includeAncestry && cursor.hasParentBranch()) {
+            cursor = cursor.getParentBranch();
+            limit = transactionDetails.get(transactionDetails.size() - 1).getTransactionNumber();
+         } else {
+            cursor = null;
          }
       }
       return transactionDetails;
@@ -434,7 +434,7 @@ public class RevisionManager {
       return changes;
    }
 
-   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId transactionId) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId transactionId) throws OseeCoreException {
       return getDeletedArtifactChanges(null, null, TransactionIdManager.getPriorTransaction(transactionId),
             transactionId, null);
    }
@@ -728,7 +728,7 @@ public class RevisionManager {
       }
    }
 
-   public boolean branchHasChanges(Branch branch) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
+   public boolean branchHasChanges(Branch branch) throws OseeCoreException {
       Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(branch);
       return transactions.getKey() != transactions.getValue();
    }

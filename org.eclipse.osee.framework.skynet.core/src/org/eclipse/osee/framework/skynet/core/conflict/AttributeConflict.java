@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
@@ -263,7 +262,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException {
-      return new TreeSet<String>(ConfigurationPersistenceManager.getValidEnumerationAttributeValues(getDynamicAttributeDescriptor().getName(), getArtifact().getBranch()));
+      return new TreeSet<String>(AttributeTypeManager.getValidEnumerationAttributeValues(getDynamicAttributeDescriptor().getName(), getArtifact().getBranch()));
    }
 
    @SuppressWarnings("unchecked")
