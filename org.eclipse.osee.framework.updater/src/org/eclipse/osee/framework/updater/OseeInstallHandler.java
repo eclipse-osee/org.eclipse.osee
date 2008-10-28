@@ -16,7 +16,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -25,7 +24,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.update.core.BaseInstallHandler;
 import org.eclipse.update.core.ContentReference;
 import org.eclipse.update.core.IFeatureContentConsumer;
@@ -41,8 +40,6 @@ import org.xml.sax.SAXException;
  * @author Andrew M. Finkbeiner
  */
 public class OseeInstallHandler extends BaseInstallHandler {
-
-   private Logger logger = ConfigUtil.getConfigFactory().getLogger(OseeInstallHandler.class);
    private File pluginFile = null;
 
    /**
@@ -131,12 +128,12 @@ public class OseeInstallHandler extends BaseInstallHandler {
                   }
 
                } catch (IOException ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }
       } catch (IOException ex1) {
-         logger.log(Level.SEVERE, ex1.toString(), ex1);
+         OseeLog.log(Activator.class, Level.SEVERE, ex1);
       } catch (CoreException ex) {
          ex.printStackTrace();
       }
@@ -151,7 +148,7 @@ public class OseeInstallHandler extends BaseInstallHandler {
       try {
          processInstallTaskExtensionPoints();
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          consumer.abort();
       }
    }

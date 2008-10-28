@@ -11,9 +11,8 @@
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
@@ -29,9 +28,7 @@ import org.eclipse.swt.widgets.TableItem;
  */
 
 public class DbCellModifier implements ICellModifier {
-   private final Logger logger = ConfigUtil.getConfigFactory().getLogger(DbCellModifier.class);
    private DbTableViewer dbTableViewer;
-   // private DateValue dateValue;
    private EnumeratedValue enumeratedValue;
    private StringValue stringValue;
    private final DbItem dbItem;
@@ -76,7 +73,7 @@ public class DbCellModifier implements ICellModifier {
             u = SkynetAuthentication.getUserByUserId((String) obj);
             if (u != null) enumeratedValue.setValue(u.getName());
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
          }
          return enumeratedValue;
       } else if (obj instanceof String) {

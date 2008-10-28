@@ -12,22 +12,19 @@ package org.eclipse.osee.framework.messaging.event.skynet.service;
 
 import java.rmi.RemoteException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.skynet.SkynetEventPlugin;
 import org.eclipse.osee.framework.plugin.core.config.HeadlessEclipseConfigurationFactory;
 
 /**
  * @author Robert A. Fisher
  */
 public class SkynetEventServicePlatformRunnable implements IApplication {
-
-   private static final Logger logger =
-         ConfigUtil.getConfigFactory().getLogger(SkynetEventServicePlatformRunnable.class);
    private SkynetEventService skynetEventService;
 
    public SkynetEventServicePlatformRunnable() {
@@ -59,7 +56,7 @@ public class SkynetEventServicePlatformRunnable implements IApplication {
       try {
          skynetEventService.kill();
       } catch (RemoteException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetEventPlugin.class, Level.SEVERE, ex);
       }
    }
 }

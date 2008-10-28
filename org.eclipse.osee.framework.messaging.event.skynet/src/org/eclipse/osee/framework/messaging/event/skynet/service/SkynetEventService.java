@@ -18,24 +18,21 @@ import java.util.LinkedList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.Name;
 import net.jini.lookup.entry.ServiceInfo;
-
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jini.JiniClassServer;
 import org.eclipse.osee.framework.jini.service.core.JiniService;
 import org.eclipse.osee.framework.jini.service.core.SimpleFormattedEntry;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEventListener;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEventService;
 import org.eclipse.osee.framework.messaging.event.skynet.SkynetEventPlugin;
 import org.eclipse.osee.framework.messaging.event.skynet.filter.IEventFilter;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.server.BundleResourceFinder;
 
 /**
@@ -44,7 +41,6 @@ import org.eclipse.osee.framework.plugin.core.server.BundleResourceFinder;
  * @author Robert A. Fisher
  */
 public class SkynetEventService extends JiniService implements ISkynetEventService {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetEventService.class);
 
    private final HashCollection<IEventFilter, ISkynetEventListener> filteredListeners;
    private final ReadWriteLock filteredListenersLock;
@@ -60,7 +56,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
       try {
          registerWithJini(dbConfig);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetEventPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -188,7 +184,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
                   // TODO Remove from filteredListeners
 
                   nonfilteredListeners.remove(listener);
-                  logger.log(Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(SkynetEventPlugin.class, Level.SEVERE, ex);
                }
          }
 

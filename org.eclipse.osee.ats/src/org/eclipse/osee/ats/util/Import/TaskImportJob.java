@@ -13,15 +13,15 @@ package org.eclipse.osee.ats.util.Import;
 
 import java.io.File;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 
@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
  * @author Donald G. Dunne
  */
 public class TaskImportJob extends Job {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(TaskImportJob.class);
    private final File file;
    private ExcelAtsTaskArtifactExtractor atsTaskExtractor;
    private final boolean persist;
@@ -58,7 +57,7 @@ public class TaskImportJob extends Job {
          }
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          toReturn = new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {
          monitor.done();
@@ -82,11 +81,11 @@ public class TaskImportJob extends Job {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork()throws OseeCoreException{
+      protected void handleTxWork() throws OseeCoreException {
          if (file != null && file.isFile()) {
             atsTaskExtractor.discoverArtifactAndRelationData(file);
          } else {
-            throw new IllegalStateException("All files passed must be a file");
+            throw new OseeArgumentException("All files passed must be a file");
          }
          System.out.println("Committing Transaction");
          monitor.setTaskName("Committing Transaction");

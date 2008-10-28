@@ -21,3 +21,4 @@ Export-Package: org.eclipse.osee.framework.svn,
  org.eclipse.osee.framework.svn.enums
 Bundle-ClassPath: library.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.logging

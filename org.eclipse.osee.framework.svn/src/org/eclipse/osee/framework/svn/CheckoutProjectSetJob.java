@@ -17,7 +17,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -26,7 +25,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.TeamException;
@@ -41,7 +40,6 @@ import org.xml.sax.SAXException;
  */
 @SuppressWarnings("restriction")
 public class CheckoutProjectSetJob extends Job {
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(CheckoutProjectSetJob.class);
    private URL projectSetFile;
    private String workingSetName;
 
@@ -60,7 +58,7 @@ public class CheckoutProjectSetJob extends Job {
             toReturn = Status.CANCEL_STATUS;
          }
       } catch (Throwable ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SvnActivator.class, Level.SEVERE, ex);
       }
       return toReturn;
    }
@@ -74,7 +72,9 @@ public class CheckoutProjectSetJob extends Job {
    private boolean performImportProjectSet(IProgressMonitor monitor, String fileName, String workingSet) {
       boolean result = false;
       try {
-         Class<?> clazz = Platform.getBundle("org.eclipse.team.ui").loadClass("org.eclipse.team.internal.ui.wizards.ImportProjectSetOperation");
+         Class<?> clazz =
+               Platform.getBundle("org.eclipse.team.ui").loadClass(
+                     "org.eclipse.team.internal.ui.wizards.ImportProjectSetOperation");
          Object object = null;
          if (EclipseVersion.isVersion("3.3")) {
             Constructor<?> constructor = clazz.getConstructor(IRunnableContext.class, String.class, String.class);

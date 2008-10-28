@@ -19,3 +19,4 @@ Bundle-Description: Skynet Event Service - Skynet Cache Network Manager
 Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: skynetEvent.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.logging

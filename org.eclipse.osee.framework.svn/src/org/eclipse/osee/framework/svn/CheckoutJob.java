@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.svn;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -20,13 +19,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CheckoutJob extends Job {
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(CheckoutJob.class);
    private String[] fileToCheckout;
 
    public CheckoutJob(String jobName, String[] fileToCheckout) {
@@ -44,7 +42,7 @@ public class CheckoutJob extends Job {
             }
          }, this.getRule(), IWorkspace.AVOID_UPDATE, monitor);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SvnActivator.class, Level.SEVERE, ex);
          toReturn = new Status(Status.ERROR, SvnActivator.PLUGIN_ID, "Unable to Checkout Files", ex);
       }
       return toReturn;

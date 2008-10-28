@@ -154,7 +154,7 @@ public class RelationLink {
       try {
          artifact = ArtifactQuery.getArtifactFromId(getArtifactId(side), getBranch(side), false);
       } catch (OseeCoreException ex) {
-         OseeLog.log(RelationManager.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(RelationManager.class, Level.SEVERE, ex);
       }
       return artifact;
    }

@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -48,7 +47,7 @@ import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -101,7 +100,6 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
    private Label warningLabel, searchNameLabel, extraInfoLabel;
    private WorldSearchItem lastSearchItem;
    private WorldXViewer xViewer;
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(WorldView.class);
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
@@ -415,7 +413,7 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
                   " => " + ex.getLocalizedMessage();
             setTableTitle("Searching Error - " + searchItem.getSelectedName(searchType), false);
-            logger.log(Level.SEVERE, "Searching Error - " + ex.getLocalizedMessage(), ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             monitor.done();
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
          }
