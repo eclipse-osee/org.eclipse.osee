@@ -104,11 +104,7 @@ public class SetAsDefaultBranchService extends WorkPageService implements IBranc
    private boolean isEnabled() {
       boolean enabled = false;
       try {
-         if (smaMgr.getBranchMgr().isWorkingBranch()) {
-            enabled = true;
-         } else {
-            enabled = smaMgr.getBranchMgr().getTransactionId() != null;
-         }
+         return smaMgr.getBranchMgr().isWorkingBranch();
       } catch (Exception ex) {
          // do nothing
       }
