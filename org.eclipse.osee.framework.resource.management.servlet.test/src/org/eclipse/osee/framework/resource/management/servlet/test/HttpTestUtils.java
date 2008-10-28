@@ -79,9 +79,10 @@ public class HttpTestUtils {
       ByteArrayOutputStream output = new ByteArrayOutputStream();
       OutputStream outputStream = null;
       InputStream inputStream = null;
+      HttpURLConnection connection = null;
       try {
          URL url = new URL(request);
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+         connection = (HttpURLConnection) url.openConnection();
 
          TestCase.assertNotNull(connection);
 
@@ -114,6 +115,9 @@ public class HttpTestUtils {
          if (inputStream != null) {
             inputStream.close();
          }
+         if (connection != null) {
+            connection.disconnect();
+         }
       }
       return output.toString();
    }
@@ -121,9 +125,10 @@ public class HttpTestUtils {
    public static byte[] acquireData(String request, String contentType) throws Exception {
       ByteArrayOutputStream output = new ByteArrayOutputStream();
       InputStream inputStream = null;
+      HttpURLConnection connection = null;
       try {
          URL url = new URL(request);
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+         connection = (HttpURLConnection) url.openConnection();
          TestCase.assertNotNull(connection);
          connection.connect();
 
@@ -138,6 +143,9 @@ public class HttpTestUtils {
          if (inputStream != null) {
             inputStream.close();
          }
+         if (connection != null) {
+            connection.disconnect();
+         }
       }
       return output.toByteArray();
    }
@@ -145,9 +153,10 @@ public class HttpTestUtils {
    public static int deleteData(String request) throws Exception {
       int response = -1;
       InputStream inputStream = null;
+      HttpURLConnection connection = null;
       try {
          URL url = new URL(request);
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+         connection = (HttpURLConnection) url.openConnection();
          TestCase.assertNotNull(connection);
 
          connection.setRequestMethod("DELETE");
@@ -166,6 +175,9 @@ public class HttpTestUtils {
       } finally {
          if (inputStream != null) {
             inputStream.close();
+         }
+         if (connection != null) {
+            connection.disconnect();
          }
       }
       return response;

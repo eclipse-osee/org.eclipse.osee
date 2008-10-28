@@ -78,9 +78,10 @@ public class TestResourceManagerServlet extends TestCase {
    }
 
    public void testAcquireFileNotFoundError() {
+      HttpURLConnection connection = null;
       try {
          URL url = new URL(getRequest("uri=attr://1/4/somefile.txt.zip"));
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+         connection = (HttpURLConnection) url.openConnection();
          TestCase.assertNotNull(connection);
          connection.connect();
 
@@ -89,6 +90,10 @@ public class TestResourceManagerServlet extends TestCase {
          assertEquals(HttpURLConnection.HTTP_NOT_FOUND, code);
       } catch (Exception ex) {
          ex.printStackTrace();
+      } finally {
+         if (connection != null) {
+            connection.disconnect();
+         }
       }
    }
 
