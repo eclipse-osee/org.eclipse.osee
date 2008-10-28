@@ -254,8 +254,9 @@ public class MergeUtility {
                               sourceChangeFile,
                               destChangeFile,
                               "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + (new Date()).toString().replaceAll(
-                                    ":", ";") + ".xml", true, true);
+                                    ":", ";") + ".xml", false, true);
                         attributeConflict.markStatusToReflectEdit();
+                        RendererManager.editInJob(attributeConflict.getArtifact());
 
                      } catch (Exception ex) {
                         OSEELog.logException(MergeView.class, ex, true);

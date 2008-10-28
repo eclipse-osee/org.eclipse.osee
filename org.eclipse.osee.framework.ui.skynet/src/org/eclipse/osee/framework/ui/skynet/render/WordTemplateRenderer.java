@@ -267,7 +267,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
-      diffGenerator.initialize(presentationType != PresentationType.MERGE,
+      diffGenerator.initialize(presentationType == PresentationType.DIFF,
             presentationType == PresentationType.MERGE_EDIT);
 
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {

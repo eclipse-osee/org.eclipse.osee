@@ -147,7 +147,7 @@ public class WholeDocumentRenderer extends WordRenderer {
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
-      diffGenerator.initialize(presentationType != PresentationType.MERGE,
+      diffGenerator.initialize(presentationType == PresentationType.DIFF,
             presentationType == PresentationType.MERGE_EDIT);
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
          addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),

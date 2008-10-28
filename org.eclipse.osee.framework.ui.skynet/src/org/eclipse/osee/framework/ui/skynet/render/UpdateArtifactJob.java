@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -134,22 +135,79 @@ public class UpdateArtifactJob extends UpdateJob {
             WordTemplateProcessor.elementNameFor(WordAttribute.WORD_TEMPLATE_CONTENT);
 
       Document doc = Jaxp.readXmlDocument(wordFile);
+      Element paragraphRoot = null;
       Element rootElement = doc.getDocumentElement();
-
+      Element body = null;
+      boolean containsTag = false;
       oleDataElement = null;
 
       NodeList nodeList = rootElement.getElementsByTagName("*");
       for (int i = 0; i < nodeList.getLength(); i++) {
          Element element = (Element) nodeList.item(i);
-         if ((element.getNodeName().endsWith(elementNameForWordAttribute) && !single) || (element.getNodeName().endsWith(
-               "body") && single)) {
+         if (element.getNodeName().endsWith(elementNameForWordAttribute)) {
             artifacts.add(element);
+            containsTag = true;
+         }
+         if (element.getNodeName().endsWith("wx:sect")) {
+            paragraphRoot = element;
+         }
+         if (element.getNodeName().endsWith("body") && single) {
+            artifacts.add(element);
+            body = element;
          } else if (oleDataElement == null && element.getNodeName().endsWith("docOleData")) {
             oleDataElement = element;
          }
       }
+      if (containsTag) {
+         artifacts.remove(body);
+      } else if (paragraphRoot != null) {
+         //Lets try and remove everything after the listnum tag
+         boolean delete = false;
+         Node node = paragraphRoot.getFirstChild();
+         while (node != null) {
+            if (DEBUG) {
+               System.out.println(" " + node.getNodeName());
+            }
+            Node nextNode = node.getNextSibling();
+            if (containsListNum(node)) {
+               delete = true;
+            }
+            if (delete) {
+               paragraphRoot.removeChild(node);
+            }
+            node = nextNode;
+         }
+      }
 
       return artifacts;
+   }
+
+   private boolean containsListNum(Node node) {
+      NodeList nodeList = node.getChildNodes();
+      for (int i = 0; i < nodeList.getLength(); i++) {
+         if (nodeList.item(i).getNodeName().endsWith("w:r")) {
+            if (DEBUG) {
+               System.out.println("    " + nodeList.item(i).getNodeName());
+            }
+            NodeList nodeList1 = nodeList.item(i).getChildNodes();
+            for (int r = 0; r < nodeList1.getLength(); r++) {
+               if (DEBUG) {
+                  System.out.println("        " + nodeList1.item(r).getNodeName());
+               }
+               if (nodeList1.item(r).getNodeName().endsWith("w:instrText")) {
+                  if (DEBUG) {
+                     System.out.println("            " + nodeList1.item(r).getTextContent());
+                  }
+                  if (nodeList1.item(r).getTextContent().contains("LISTNUM \"listreset\"")) {
+                     return true;
+                  }
+               }
+            }
+         } else if (DEBUG) {
+            System.out.println("    " + nodeList.item(i).getNodeName());
+         }
+      }
+      return false;
    }
 
    private final class WordArtifactUpdateTx extends AbstractSkynetTxTemplate {
@@ -227,24 +285,17 @@ public class UpdateArtifactJob extends UpdateJob {
                   if (singleArtifact || !WordUtil.textOnly(
                         artifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
                         WordUtil.textOnly(content))) {
-                     //TODO            	  
+                     //TODO    
                      if (DEBUG) {
-                        System.err.println("BEFORE: " + content);
+                        System.err.println("Initial: " + content);
                      }
-                     //This code pulls out all of the stuff after the inserted listnum reordering stuff.  This needs to be
-                     //here so that we remove unwanted template information from single editing
-
-                     String[] splitString = content.split(WordMLProducer.LISTNUM_FIELD_TAIL_REG_EXP);
-                     if (splitString.length == 2) {
-                        content = splitString[0] + "</w:p></wx:sect>";
+                     if (artElement.getNodeName().endsWith("body")) {
+                        //This code pulls out all of the stuff after the inserted listnum reordering stuff.  This needs to be
+                        //here so that we remove unwanted template information from single editing
                         content = content.replace(WordMLProducer.LISTNUM_FIELD_HEAD, "");
-                     } else {
-                        throw new OseeCoreException(
-                              "There were errors removing template information from the Word content prior to saving. Content was not saved.");
-                     }
-
-                     if (DEBUG) {
-                        System.err.println("AFTER:  " + content);
+                        if (DEBUG) {
+                           System.err.println("AFTER:  " + content);
+                        }
                      }
                      artifact.setSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, content);
                   }

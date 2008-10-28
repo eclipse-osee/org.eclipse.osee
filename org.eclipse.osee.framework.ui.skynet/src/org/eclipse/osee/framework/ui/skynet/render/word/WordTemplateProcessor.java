@@ -509,21 +509,7 @@ public class WordTemplateProcessor {
                //Change the BinData Id so images do not get overridden by the other images
                wordContent = WordUtil.reassignBinDataID(wordContent);
 
-               //               Need for the cleanup of the stuff that shouldn't be there
-               //               Matcher pageMatcher = Pattern.compile("<w:pgMar(.*?)>").matcher(wordContent);
-               //               if (pageMatcher.find()) {
-               //                  System.err.println(wordContent.substring(pageMatcher.start(), pageMatcher.end()));
-               //                  wordContent = wordContent.replace(wordContent.substring(pageMatcher.start(), pageMatcher.end()), "");
-               //               }
-               //               System.err.println(wordContent);
-               //               if (wordContent.contains("<w:pgMar")) {
-               //                  System.err.println("w:pgMar");
-               //               }
-               //               if (wordContent.contains("hdr")) {
-               //                  System.err.println("hdr");
-               //               }
-
-               if (presentationType == PresentationType.EDIT && multipleArtifacts) {
+               if (presentationType == PresentationType.EDIT) {
                   writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",
                         "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"", wordContent);
@@ -577,7 +563,7 @@ public class WordTemplateProcessor {
    public static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) throws OseeWrappedException {
       wordMl.addWordMl("<ns0:" + name + " xmlns:ns0=\"" + WordTemplateRenderer.ARTIFACT_SCHEMA + "\" " + guid + " " + attributeId + ">");
       wordMl.addWordMl(contentString);
-      wordMl.addWordMl("</ns0:" + name + ">");
+      wordMl.addWordMl("</ns0:" + name + "><w:p/>");
    }
 
    /**
