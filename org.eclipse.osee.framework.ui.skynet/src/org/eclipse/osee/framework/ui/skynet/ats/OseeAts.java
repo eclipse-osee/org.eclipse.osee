@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.ats;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -20,7 +19,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
@@ -41,7 +39,6 @@ import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 
 public class OseeAts {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(OseeAts.class);
    public static enum OpenView {
       ActionEditor, ArtifactEditor, ArtifactHyperViewer
    };
@@ -147,7 +144,7 @@ public class OseeAts {
       try {
          getAtsLib().createATSAction(desc, actionableItem);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -188,7 +185,7 @@ public class OseeAts {
             AWorkbench.popup("ERROR", "Trying to open " + art.getArtifactTypeName() + " with SMAEditor");
       } catch (Exception ex) {
          AWorkbench.popup("ERROR", ex.getLocalizedMessage());
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -197,7 +194,7 @@ public class OseeAts {
          try {
             getAtsLib().openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             AWorkbench.popup("ERROR", ex.getLocalizedMessage());
          }
       } else {

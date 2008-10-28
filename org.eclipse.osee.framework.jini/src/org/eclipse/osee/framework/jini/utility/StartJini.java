@@ -28,11 +28,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.ServiceInfo;
-
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;

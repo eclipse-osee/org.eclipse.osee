@@ -14,12 +14,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -34,7 +34,6 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
  * @author Robert A. Fisher
  */
 public class OutlineContentHandlerPage extends WizardDataTransferPage implements Listener {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(OutlineContentHandlerPage.class);
    public static final String PAGE_NAME = "osee.define.wizardPage.outlineContentHandlerPage";
    private List handlerList;
    private boolean hasHandlers;
@@ -66,8 +65,8 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
    }
 
    /**
-    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all
-    * events and enablements for controls on this page. Subclasses may extend.
+    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
+    * and enablements for controls on this page. Subclasses may extend.
     * 
     * @param event Event
     */
@@ -117,7 +116,7 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
                try {
                   extensionPointHandlers.add((IWordOutlineContentHandler) element.createExecutableExtension("class"));
                } catch (Exception ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          }

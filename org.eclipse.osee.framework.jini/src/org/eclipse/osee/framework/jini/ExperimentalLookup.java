@@ -37,6 +37,7 @@ import net.jini.lookup.entry.ServiceInfo;
 import org.eclipse.osee.framework.jini.discovery.OseeJiniConfiguration;
 import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
 import org.eclipse.osee.framework.jini.service.core.VersionEntry;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryListener {
 
@@ -72,7 +73,7 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
          anIOE.printStackTrace(System.err);
          System.exit(-1);
       } catch (ConfigurationException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, ex);
       } catch (Throwable t) {
          logger.log(Level.SEVERE, "failed to setup managers", t);
       }

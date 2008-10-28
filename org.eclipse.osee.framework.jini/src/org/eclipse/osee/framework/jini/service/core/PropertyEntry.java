@@ -3,9 +3,7 @@ package org.eclipse.osee.framework.jini.service.core;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import net.jini.entry.AbstractEntry;
-
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /*

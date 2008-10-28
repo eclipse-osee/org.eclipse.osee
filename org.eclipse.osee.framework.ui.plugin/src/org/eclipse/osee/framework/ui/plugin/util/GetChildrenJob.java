@@ -11,21 +11,19 @@
 package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
 import org.eclipse.osee.framework.ui.swt.IContentProviderRunnable;
 
 /**
  * @author Robert A. Fisher
  */
 public class GetChildrenJob extends Job {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(GetChildrenJob.class);
-
    private final Viewer viewer;
    private final JobbedNode parent;
    private final IContentProviderRunnable runnable;
@@ -66,7 +64,7 @@ public class GetChildrenJob extends Job {
             parent.cancelled();
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
          parent.cancelled(ex);
       } finally {
          watcher.done();

@@ -27,8 +27,10 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 
 public class HttpServer implements Runnable {
@@ -71,7 +73,7 @@ public class HttpServer implements Runnable {
             try {
                serverAddress = PreferenceConstants.getDefaultInetAddress().getHostAddress();
             } catch (UnknownHostException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
       }

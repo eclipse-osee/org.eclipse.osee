@@ -21,10 +21,10 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.jini.util.OseeJini;
 import net.jini.core.lease.Lease;
 import net.jini.core.lease.LeaseDeniedException;
 import net.jini.core.lease.UnknownLeaseException;
+import org.eclipse.osee.framework.jini.util.OseeJini;
 
 /**
  * This class manages tasks associated with being a lease grantor. It generates leases, handles renewal & cancelation of

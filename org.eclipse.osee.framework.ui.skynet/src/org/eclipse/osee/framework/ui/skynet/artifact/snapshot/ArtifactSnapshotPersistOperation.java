@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -33,7 +35,7 @@ class ArtifactSnapshotPersistOperation implements Runnable {
       try {
          manager.save(snapshot);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       logger.log(Level.INFO, String.format("Artifact Snapshot Commit to DB Time: [%s] ms.",
             System.currentTimeMillis() - start));

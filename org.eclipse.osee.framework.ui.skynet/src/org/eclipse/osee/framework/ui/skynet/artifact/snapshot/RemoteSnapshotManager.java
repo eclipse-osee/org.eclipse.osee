@@ -28,8 +28,10 @@ import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -53,13 +55,13 @@ class RemoteSnapshotManager {
             toReturn = (ArtifactSnapshot) object;
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       } finally {
          if (objectInputStream != null) {
             try {
                objectInputStream.close();
             } catch (IOException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       }
@@ -74,7 +76,7 @@ class RemoteSnapshotManager {
             logger.log(Level.INFO, String.format("[%s]", response));
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

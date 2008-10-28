@@ -415,7 +415,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          try {
             return branch.getAssociatedArtifact();
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return null;
       }
@@ -500,7 +500,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                      TransactionIdManager.getStartEndPoint(selectedBranch).getKey());
             }
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
 
          return null;
@@ -678,7 +678,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                   pd.open();
                }
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
 
             return null;
@@ -1004,7 +1004,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                } catch (Exception ex) {
                   MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error Renaming Branch short name",
                         ex.getMessage());
-                  logger.log(Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
                refresh();
             }

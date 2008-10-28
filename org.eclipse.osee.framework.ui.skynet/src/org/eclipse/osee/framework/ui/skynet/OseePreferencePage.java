@@ -14,11 +14,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.jdk.core.util.Network;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
@@ -42,7 +41,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 
 public class OseePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OseePreferencePage.class);
    private HashMap<InetAddress, Button> networkButtons;
    private Button wordWrapChkBox;
    private OseeUiActivator plugin = SkynetActivator.getInstance();
@@ -84,7 +82,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       try {
          addrs = Network.getLocalNetworkAdapters();
       } catch (UnknownHostException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
       networkButtons = new HashMap<InetAddress, Button>();

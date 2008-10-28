@@ -15,10 +15,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Jeff C. Phillips
@@ -39,7 +41,7 @@ public class AttributeContentProvider implements ITreeContentProvider {
                descriptors.add((Object) descriptor);
             }
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return descriptors.toArray();
 

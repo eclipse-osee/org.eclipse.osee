@@ -153,7 +153,7 @@ public class AccessControlManager {
    // }
    // }
    // catch (SQLException ex) {
-   // logger.log(Level.SEVERE, ex.toString(), ex);
+   // OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
    // }
    // finally {
    // ConnectionHandler.close(chStmt);

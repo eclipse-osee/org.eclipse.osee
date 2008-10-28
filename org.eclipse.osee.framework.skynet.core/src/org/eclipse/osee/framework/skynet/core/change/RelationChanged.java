@@ -12,11 +12,11 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -37,7 +37,6 @@ public class RelationChanged extends Change {
    private int aLinkOrder;
    private int bLinkOrder;
    private RelationType relationType;
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationChanged.class);
 
    /**
     * @param aArtTypeId
@@ -87,9 +86,9 @@ public class RelationChanged extends Change {
             return getArtifact();
          }
       } catch (IllegalArgumentException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       } catch (ArtifactDoesNotExist ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return null;
    }

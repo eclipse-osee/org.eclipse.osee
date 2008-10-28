@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.eclipse.core.resources.IFile;
@@ -26,7 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -41,7 +40,6 @@ import org.eclipse.swt.widgets.Display;
  * @author Donald G. Dunne
  */
 public class HtmlReportJob extends Job {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HtmlReportJob.class);
    private final CoreRelationEnumeration side;
    private boolean recurseChildren;
    private final String title;
@@ -85,7 +83,7 @@ public class HtmlReportJob extends Job {
                      AIFile.writeToFile(workingFile, html);
                      Program.launch(workingFile.getLocation().toString());
                   } catch (Exception ex) {
-                     logger.log(Level.SEVERE, ex.toString(), ex);
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
                }
             });

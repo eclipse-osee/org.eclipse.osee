@@ -17,13 +17,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -31,7 +31,6 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  * @author Donald G. Dunne
  */
 public class ArtifactGraphContentProvider implements IGraphEntityContentProvider {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactGraphContentProvider.class);
    // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<Artifact>(0);
    private SkyWalkerOptions options;
 
@@ -66,7 +65,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
             }
          }
       } catch (OseeCoreException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return otherItems.toArray();
    }
@@ -107,7 +106,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                }
             }
          } catch (OseeCoreException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }

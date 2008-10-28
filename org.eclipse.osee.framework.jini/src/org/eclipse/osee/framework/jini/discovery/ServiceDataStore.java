@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.jini.config.ConfigurationException;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
@@ -40,8 +39,9 @@ import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
-
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jini.JiniPlugin;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 
@@ -60,7 +60,6 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    private Map<ServiceID, ServiceRegistrar> serviceRegistrars;
    private LookupDiscoveryManager lookupDiscoveryManager;
    private ServiceDiscoveryManager serviceDiscoveryManager;
-   private ClassLoader loader;
 
    // private LookupCache lookupCache;
    // private LookupCache lookupCache;
@@ -73,7 +72,6 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    // *************************************************************************
 
    private ServiceDataStore(ClassLoader loader) {
-      this.loader = loader;
       lookupCaches = Collections.synchronizedMap(new HashMap<Class<?>, LookupCache>());
       serviceItemList = Collections.synchronizedList(new ArrayList<ServiceItem>());
       classListeners = new ArrayList<ClassListener>();
@@ -114,7 +112,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
          anIOE.printStackTrace(System.err);
          System.exit(-1);
       } catch (ConfigurationException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, ex);
       } catch (Throwable t) {
          logger.log(Level.SEVERE, "failed to setup managers", t);
       }
@@ -209,7 +207,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
             }
          }
       } catch (RemoteException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, ex);
       }
       return false;
    }
@@ -219,9 +217,9 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    // *************************************************************************
 
    /**
-    * Returns a list of currently available services that match the class types provided. <br />
-    * Note: If this is called immediatly after the first call to getInstance(), the Jini lookup will not have had time
-    * to complete, and no services will yet be available.
+    * Returns a list of currently available services that match the class types provided. <br /> Note: If this is called
+    * immediatly after the first call to getInstance(), the Jini lookup will not have had time to complete, and no
+    * services will yet be available.
     */
    public List<ServiceItem> getAvailableServices(Class<?>[] classTypes) {
       List<ServiceItem> serviceList = new ArrayList<ServiceItem>();

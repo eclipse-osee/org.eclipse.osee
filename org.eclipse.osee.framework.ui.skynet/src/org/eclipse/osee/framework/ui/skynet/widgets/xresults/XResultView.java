@@ -18,14 +18,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -54,7 +53,6 @@ public class XResultView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView";
    private static String HELP_CONTEXT_ID = "xResultView";
    private static File errorImageFile = null;
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(XResultView.class);
    private XResultPage currentPage;
    private final List<XResultPage> pages = new ArrayList<XResultPage>();
    private Label errorLabel;
@@ -68,7 +66,7 @@ public class XResultView extends ViewPart implements IActionable {
          try {
             errorImageFile = SkynetGuiPlugin.getInstance().getPluginFile("images/bug.gif");
          } catch (IOException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }

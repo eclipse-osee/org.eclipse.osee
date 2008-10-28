@@ -80,8 +80,8 @@ public final class Jobs {
          try {
             runnable.run(monitor);
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             String message = ex.getLocalizedMessage() == null ? ex.toString() : ex.getLocalizedMessage();
+            logger.log(Level.SEVERE, message, ex);
             return new Status(Status.ERROR, pluginId, Status.OK, message, ex);
          }
 

@@ -15,16 +15,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class HttpUrlBuilder {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HttpUrlBuilder.class);
    private static final String urlPrefixFormat = "http://%s:%s/";
    private static HttpUrlBuilder instance = null;
 
@@ -80,7 +79,7 @@ public class HttpUrlBuilder {
       try {
          return buildUrl(getSkynetHttpLocalServerPrefix(), context, getParametersAsEncodedUrl(parameters));
       } catch (UnsupportedEncodingException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return null;
    }

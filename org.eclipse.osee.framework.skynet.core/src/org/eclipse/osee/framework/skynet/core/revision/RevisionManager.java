@@ -459,7 +459,7 @@ public class RevisionManager {
                fromTransactionId.getBranch().getBranchId(), fromTransactionId.getTransactionNumber(),
                toTransactionId.getTransactionNumber(), DELETED.getValue());
       } catch (OseeDataStoreException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
 
       return deletedArtifacts;
@@ -563,7 +563,7 @@ public class RevisionManager {
             }
          }
       } catch (OseeCoreException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
 
       TransactionId baselineTransaction;
