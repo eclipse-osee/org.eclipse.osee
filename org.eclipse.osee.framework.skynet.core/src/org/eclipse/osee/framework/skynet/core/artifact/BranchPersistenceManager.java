@@ -177,8 +177,8 @@ public class BranchPersistenceManager {
          // TODO: remove this compatibility code after the 0.5.0 release
          if (systemRoot == null) {
             systemRoot =
-                  createBranchObject(null, "System Root Branch", getCommonBranch().getParentBranchId(), -1, false, -1,
-                        null, "System branch that is untimately the parent of all branches", -1, BranchType.SYSTEM_ROOT);
+                  createBranchObject(null, "System Root Branch", -1, -1, false, -1, null,
+                        "System branch that is untimately the parent of all branches", -1, BranchType.SYSTEM_ROOT);
          }
       }
    }
