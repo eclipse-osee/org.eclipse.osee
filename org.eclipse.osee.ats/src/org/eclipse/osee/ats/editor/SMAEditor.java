@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.DetailsBrowserComposite;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
@@ -91,12 +92,14 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private SMAManager smaMgr;
-   private int workFlowPageIndex, taskPageIndex, historyPageIndex, relationPageIndex, attributesPageIndex;
+   private int workFlowPageIndex, taskPageIndex, historyPageIndex, relationPageIndex, attributesPageIndex,
+         detailsPageIndex;
    private SMAWorkFlowTab workFlowTab;
    private SMATaskComposite taskComposite;
    private SMAHistoryComposite historyComposite;
    private RelationsComposite relationsComposite;
    private AttributesComposite attributesComposite;
+   private DetailsBrowserComposite detailsComposite;
    private final MultiPageEditorPart editor;
    public static enum PriviledgedEditMode {
       Off, CurrentState, Global
@@ -168,7 +171,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
       workFlowTab.dispose();
       if (taskComposite != null) {
-         taskComposite.dispose();
+         taskComposite.disposeTaskComposite();
       }
       if (relationsComposite != null) {
          relationsComposite.disposeRelationsComposite();
@@ -275,12 +278,22 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
          createAttributesTab();
 
+         createDetailsTab();
+
          setActivePage(workFlowPageIndex);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
 
       enableGlobalPrint();
+   }
+
+   private void createDetailsTab() {
+      Composite composite = createCommonPageComposite();
+      createCommonToolBar(composite);
+      new DetailsBrowserComposite(smaMgr.getSma(), composite, SWT.NONE, null);
+      detailsPageIndex = addPage(composite);
+      setPageText(detailsPageIndex, "Details");
    }
 
    private void createAttributesTab() {

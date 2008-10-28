@@ -54,13 +54,8 @@ public class SMATaskComposite extends Composite {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Widget#dispose()
-    */
-   @Override
-   public void dispose() {
+   public void disposeTaskComposite() {
       xTaskViewer.dispose();
-      super.dispose();
    }
 
    public String getHtml() {
