@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.session.management;
 
+import org.eclipse.osee.framework.core.data.OseeSession;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface ISessionManager {
 
-   public ISession authenticate(ICredential credential) throws AuthenticationException;
+   public OseeSession authenticate(ICredential credential) throws AuthenticationException;
 }

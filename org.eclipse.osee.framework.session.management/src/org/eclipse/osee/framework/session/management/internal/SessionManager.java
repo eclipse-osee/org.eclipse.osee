@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.session.management.internal;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.session.management.AuthenticationException;
 import org.eclipse.osee.framework.session.management.IAuthenticationManager;
 import org.eclipse.osee.framework.session.management.ICredential;
-import org.eclipse.osee.framework.session.management.ISession;
 import org.eclipse.osee.framework.session.management.ISessionManager;
 import org.eclipse.osee.framework.session.management.SessionManagementActivator;
 
@@ -24,24 +24,24 @@ import org.eclipse.osee.framework.session.management.SessionManagementActivator;
  */
 public class SessionManager implements ISessionManager {
 
-   private final Map<String, ISession> sessions;
+   private final Map<String, OseeSession> sessions;
 
    public SessionManager() {
-      this.sessions = new HashMap<String, ISession>();
+      this.sessions = new HashMap<String, OseeSession>();
    }
 
-   public ISession getSessionById(String sessionId) {
+   public OseeSession getSessionById(String sessionId) {
       return sessions.get(sessionId);
    }
 
-   public ISession authenticate(ICredential credential) throws AuthenticationException {
+   public OseeSession authenticate(ICredential credential) throws AuthenticationException {
       IAuthenticationManager authenticationManager = SessionManagementActivator.getAuthenticationManager();
       boolean isAuthenticated = authenticationManager.authenticate(credential);
       return isAuthenticated ? createSession(credential) : null;
    }
 
-   private ISession createSession(ICredential credential) {
-      ISession toReturn = null;
+   private OseeSession createSession(ICredential credential) {
+      OseeSession toReturn = null;
       // TODO Populate Session Here;
 
       sessions.put(toReturn.getSessionId(), toReturn);

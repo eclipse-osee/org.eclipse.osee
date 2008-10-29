@@ -14,7 +14,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServlet;
+import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.session.management.ISessionManager;
 
 /**
