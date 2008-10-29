@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
-import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.skynet.dbinit.AddCommonBranch;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustomizationArtifact;
 
