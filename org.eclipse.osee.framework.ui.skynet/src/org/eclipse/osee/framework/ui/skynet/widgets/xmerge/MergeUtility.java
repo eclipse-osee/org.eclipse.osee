@@ -234,28 +234,38 @@ public class MergeUtility {
             int response = dialog.open();
             if (response == 1) {
 
-               Job job = new Job("Show Merge Tool") {
+               Job job = new Job("Generate 3 Way Merge") {
 
                   @Override
                   protected IStatus run(final IProgressMonitor monitor) {
                      try {
+                        monitor.beginTask("Generate 3 Way Merge", 100);
                         VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
                         generator.initialize(false, false);
+                        monitor.worked(5);
                         String sourceChangeFile =
                               MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
                                     attributeConflict.getSourceArtifact(), null);
+                        monitor.worked(15);
                         String destChangeFile =
                               MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
                                     attributeConflict.getDestArtifact(), null);
+                        monitor.worked(15);
                         changeAuthorinWord("Source", sourceChangeFile, 2, 12345678, 55555555);
                         changeAuthorinWord("Destination", destChangeFile, 2, 56781234, 55555555);
+                        monitor.worked(15);
                         MergeUtility.mergeEditableDiffFiles(
                               attributeConflict.getArtifact(),
                               sourceChangeFile,
                               destChangeFile,
                               "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + (new Date()).toString().replaceAll(
                                     ":", ";") + ".xml", false, true);
+
+                        monitor.worked(40);
                         attributeConflict.markStatusToReflectEdit();
+                        //need to wait for the artifact to update. Need to find a better way to know when the update has happened.
+                        Thread.sleep(5000);
+                        monitor.done();
                         RendererManager.editInJob(attributeConflict.getArtifact());
 
                      } catch (Exception ex) {

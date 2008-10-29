@@ -166,22 +166,7 @@ public class UpdateArtifactJob extends UpdateJob {
          artifacts.remove(body);
       } else if (paragraphRoot != null) {
          //Lets try and remove everything after the listnum tag
-         boolean delete = false;
-         Node node = paragraphRoot.getFirstChild();
-         while (node != null) {
-            if (DEBUG) {
-               System.out.println(" " + node.getNodeName());
-            }
-            Node nextNode = node.getNextSibling();
-            if (containsListNum(node)) {
-               delete = true;
-            }
-            if (delete) {
-               paragraphRoot.removeChild(node);
-            }
-            node = nextNode;
-         }
-         if (!delete) {
+         if (!cleanUpParagraph(paragraphRoot)) {
             throw new OseeCoreException("Merge document can't be saved because fldChar tags could not be found");
          }
       }
@@ -189,32 +174,31 @@ public class UpdateArtifactJob extends UpdateJob {
       return artifacts;
    }
 
-   private boolean containsListNum(Node node) {
-      NodeList nodeList = node.getChildNodes();
-      for (int i = 0; i < nodeList.getLength(); i++) {
-         if (nodeList.item(i).getNodeName().endsWith("w:r")) {
+   //To handle the case of sub-sections
+   private boolean cleanUpParagraph(Node rootNode) throws OseeCoreException {
+      boolean worked = false;
+      boolean delete = false;
+      Node node = rootNode.getFirstChild();
+      while (node != null) {
+         if (node.getNodeName().endsWith("sub-section")) {
+            worked = cleanUpParagraph(node);
+         } else {
+            String content = node.getTextContent();
             if (DEBUG) {
-               System.out.println("    " + nodeList.item(i).getNodeName());
+               System.out.println(" " + node.getNodeName());
+               System.out.println("    " + content);
             }
-            NodeList nodeList1 = nodeList.item(i).getChildNodes();
-            for (int r = 0; r < nodeList1.getLength(); r++) {
-               if (DEBUG) {
-                  System.out.println("        " + nodeList1.item(r).getNodeName());
-               }
-               if (nodeList1.item(r).getNodeName().endsWith("w:instrText")) {
-                  if (DEBUG) {
-                     System.out.println("            " + nodeList1.item(r).getTextContent());
-                  }
-                  if (nodeList1.item(r).getTextContent().contains("LISTNUM \"listreset\"")) {
-                     return true;
-                  }
-               }
+            Node nextNode = node.getNextSibling();
+            if (content != null && content.contains("LISTNUM \"listreset\"")) {
+               delete = true;
             }
-         } else if (DEBUG) {
-            System.out.println("    " + nodeList.item(i).getNodeName());
+            if (delete) {
+               rootNode.removeChild(node);
+            }
+            node = nextNode;
          }
       }
-      return false;
+      return worked || delete;
    }
 
    private final class WordArtifactUpdateTx extends AbstractSkynetTxTemplate {
