@@ -639,6 +639,9 @@
 	<Table name="OSEE_SESSION" schema="OSEE" tablespace="osee_data">
 		<Column id="SESSION_ID" defaultValue="not null" type="VARCHAR" limits="28" />
 		<Column id="ACTIVE" defaultValue="not null" type="INTEGER" />
+		<Column id="SERVER_ADDRESS" defaultValue="not null" type="VARCHAR" limits="100"/>
+		<Column id="PORT" defaultValue="not null" type="INTEGER" />
+		<Column id="USER_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_SESSION_PK" type="PRIMARY KEY" appliesTo="SESSION_ID" />
 	</Table>
 </TableConfig>
