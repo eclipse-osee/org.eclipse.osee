@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.management;
 
-import org.eclipse.osee.framework.resource.common.IApplicationServerManager;
+import org.eclipse.osee.framework.core.server.CoreServerActivator;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
 
 /**
@@ -23,8 +24,7 @@ class ServerShutdownWorker extends BaseCmdWorker {
     */
    @Override
    protected void doWork(long startTime) throws Exception {
-      IApplicationServerManager manager =
-            org.eclipse.osee.framework.resource.common.Activator.getInstance().getApplicationServerManager();
+      IApplicationServerManager manager = CoreServerActivator.getApplicationServerManager();
       manager.shutdown();
 
       // TODO - more here!

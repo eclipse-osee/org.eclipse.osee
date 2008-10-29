@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.management;
 
-import org.eclipse.osee.framework.resource.common.Activator;
+import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
 
 /**
@@ -24,6 +24,6 @@ public class ServerRequestsWorker extends BaseCmdWorker {
    @Override
    protected void doWork(long startTime) throws Exception {
       String value = getCommandInterpreter().nextArgument();
-      Activator.getInstance().getApplicationServerManager().setServletRequestsAllowed(new Boolean(value));
+      CoreServerActivator.getApplicationServerManager().setServletRequestsAllowed(new Boolean(value));
    }
 }

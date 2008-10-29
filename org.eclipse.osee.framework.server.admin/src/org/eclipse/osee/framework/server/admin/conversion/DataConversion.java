@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -107,7 +108,7 @@ public class DataConversion {
          Connection connection = null;
          ResultSet rs = null;
          try {
-            connection = ConnectionHandler.getConnection();
+            connection = OseeDbConnection.getConnection();
             Map<Long, String> nativeExtension = Util.getArtIdMap(connection, "Extension");
             Map<Long, String> nameMap = Util.getArtIdMap(connection, "Name");
 

@@ -20,9 +20,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.resource.common.io.Streams;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.resource.provider.common.resources.CompressedResourceBridge;
+import org.eclipse.osee.framework.resource.provider.common.resources.Streams;
 import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
@@ -97,7 +98,7 @@ public class CompressedContentFix {
          long time = System.currentTimeMillis();
          Connection connection = null;
          try {
-            connection = ConnectionHandler.getConnection();
+            connection = OseeDbConnection.getConnection();
             initializeData(connection);
             doWork(connection, time);
          } catch (OseeDataStoreException ex) {
@@ -150,8 +151,7 @@ public class CompressedContentFix {
             String extension = nativeExtension.get(artId);
             String newEntryName = generateFileName(nameMap.get(artId), hrid, extension);
 
-            byte[] compressed =
-                  Streams.compressStream(new ByteArrayInputStream(outputStream.toByteArray()), newEntryName);
+            byte[] compressed = Lib.compressStream(new ByteArrayInputStream(outputStream.toByteArray()), newEntryName);
             IResource modifiedResource = new CompressedResourceBridge(compressed, locator.getLocation(), true);
             options.put(StandardOptions.Overwrite.name(), true);
             resourceManager.save(locator, modifiedResource, options);
