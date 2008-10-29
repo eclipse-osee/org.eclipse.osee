@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.servlet;
 
-import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
-import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServiceTracker;
+import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.osgi.framework.BundleActivator;
