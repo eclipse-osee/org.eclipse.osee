@@ -59,7 +59,7 @@ public class OseeProperties {
       }
       return instance;
    }
-   
+
    public void setDeveloper(boolean developer) {
       System.setProperty(OSEE_DEVELOPER, Boolean.toString(developer));
    }
@@ -168,6 +168,10 @@ public class OseeProperties {
     */
    public String getOseeApplicationServerOverride() {
       return System.getProperty(OSEE_APPLICATION_SERVER_OVERRIDE, "");
+   }
+
+   public String getDefaultArbitrationServer() {
+      return "";
    }
 
 }

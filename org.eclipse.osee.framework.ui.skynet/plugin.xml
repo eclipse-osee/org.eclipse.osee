@@ -166,8 +166,6 @@
         </or>
      </activeWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewerReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.viewerReport.command">
-      </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactNoRecurseHandler" commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
      <enabledWhen>
         <with
@@ -430,6 +428,15 @@
           class="org.eclipse.osee.framework.ui.skynet.preferences.ConfigurationDetails"
           id="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
           name="Configuration Details">
+    </page>
+ </extension>
+ <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
+          class="org.eclipse.osee.framework.ui.skynet.preferences.ArbitrationServerPage"
+          id="org.eclipse.osee.framework.ui.skynet.preferences.ArbitrationServerPreferences"
+          name="Arbitration Server">
     </page>
  </extension>
 	<extension point="org.eclipse.ui.startup">

@@ -28,8 +28,8 @@ public class PreferenceConstants {
    }
    public static final String INETADDRESS_KEY = "org.eclipse.osee.framework.skynet.core.preferences.InetAddressDefault";
    public static final String WORDWRAP_KEY = "org.eclipse.osee.framework.skynet.core.preferences.WordWrap";
-   public static final String SESSION_SERVER = "org.eclipse.osee.framework.skynet.core.preferences.SessionServer";
-   public static final String OSEE_REMOTE_HTTP_SERVER = "osee.remote.http.server";
+   public static final String ARBITRATION_SERVER =
+         "org.eclipse.osee.framework.skynet.core.preferences.ArbitrationServer";
 
    public static InetAddress getDefaultInetAddress() throws UnknownHostException {
       IPreferenceStore prefStore = SkynetActivator.getInstance().getPreferenceStore();
