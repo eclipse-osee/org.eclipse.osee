@@ -4,7 +4,10 @@ Bundle-Name: Branch Management Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.branch.management
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.branch.management.Activator
-Import-Package: org.eclipse.osee.framework.db.connection,
+Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,
  org.eclipse.osee.framework.db.connection.core.query,
  org.eclipse.osee.framework.db.connection.core.schema,
@@ -17,8 +20,6 @@ Import-Package: org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.framework.logging,
- org.eclipse.osee.framework.resource.common,
- org.eclipse.osee.framework.resource.common.io,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
  org.eclipse.osee.framework.resource.provider.common,

@@ -4,13 +4,13 @@ Bundle-Name: Common Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.common
 Bundle-Version: 0.4.0.qualifier
 Bundle-Vendor: Boeing
-Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.osee.framework.resource.common,
- org.eclipse.osee.framework.resource.common.io,
- org.eclipse.osee.framework.resource.common.osgi
-Bundle-Activator: org.eclipse.osee.framework.resource.common.Activator
+OseeEarlyStart: true
 Import-Package: javax.servlet;version="2.4.0",
  javax.servlet.http;version="2.4.0",
+ org.eclipse.osee.framework.db.connection,
+ org.eclipse.osee.framework.db.connection.exception,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.logging,
  org.osgi.framework;version="1.4.0",
  org.osgi.service.http;version="1.2.0",

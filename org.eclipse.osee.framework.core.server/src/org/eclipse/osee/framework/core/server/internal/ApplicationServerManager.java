@@ -43,12 +43,16 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.isRegistered = false;
    }
 
-   private void checkDbRegistration() {
+   private synchronized void checkDbRegistration() {
       if (!this.isRegistered) {
          try {
             ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
-            ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
-            this.isRegistered = true;
+            boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
+            this.isRegistered = status;
+            if (status) {
+               ((InternalOseeServerInfo) getApplicationServerInfo()).setAcceptingRequests(true);
+            }
+            updateServletRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
          } catch (Exception ex) {
             OseeLog.log(CoreServerActivator.class, Level.SEVERE, ex);
          }
@@ -98,16 +102,20 @@ public class ApplicationServerManager implements IApplicationServerManager {
       return result;
    }
 
+   private void updateServletRequestsAllowed(final boolean value) {
+      for (String contexts : oseeHttpServlets.keySet()) {
+         InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
+         servlets.setRequestsAllowed(value);
+      }
+   }
+
    public synchronized void setServletRequestsAllowed(final boolean value) throws OseeDataStoreException {
       checkDbRegistration();
       if (getApplicationServerInfo().isAcceptingRequests() != value) {
          boolean wasSuccessful = ApplicationServerDataStore.updateServerState(getApplicationServerInfo(), value);
          if (wasSuccessful) {
             ((InternalOseeServerInfo) getApplicationServerInfo()).setAcceptingRequests(value);
-            for (String contexts : oseeHttpServlets.keySet()) {
-               InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
-               servlets.setRequestsAllowed(value);
-            }
+            updateServletRequestsAllowed(value);
          }
       }
    }

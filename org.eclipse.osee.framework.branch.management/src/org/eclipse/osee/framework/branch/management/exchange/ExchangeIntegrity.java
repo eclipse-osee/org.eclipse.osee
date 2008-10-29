@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
-import org.eclipse.osee.framework.db.connection.core.ConflictType;
+import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

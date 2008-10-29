@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.client.info.servlet;
 
-import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServiceTracker;
+import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

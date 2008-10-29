@@ -75,6 +75,10 @@ public class CoreServerActivator implements BundleActivator {
       instance = null;
    }
 
+   private static CoreServerActivator getInstance() {
+      return instance;
+   }
+
    public static ThreadFactory createNewThreadFactory(String name) {
       return getApplicationServerManager().createNewThreadFactory(name, Thread.NORM_PRIORITY);
    }
@@ -84,10 +88,10 @@ public class CoreServerActivator implements BundleActivator {
    }
 
    public static IApplicationServerManager getApplicationServerManager() {
-      return (IApplicationServerManager) instance.applicationManagerTracker.getService();
+      return (IApplicationServerManager) getInstance().applicationManagerTracker.getService();
    }
 
    public static IApplicationServerLookup getApplicationServerLookup() {
-      return (IApplicationServerLookup) instance.applicationLookupTracker.getService();
+      return (IApplicationServerLookup) getInstance().applicationLookupTracker.getService();
    }
 }

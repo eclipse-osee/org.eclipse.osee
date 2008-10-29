@@ -23,15 +23,15 @@ import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
+import org.eclipse.osee.framework.core.data.JoinUtility;
+import org.eclipse.osee.framework.core.data.JoinUtility.ExportImportJoinQuery;
+import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.resource.common.Activator;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
@@ -115,7 +115,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          exportItem.addExportListener(this);
       }
       executorService =
-            Executors.newFixedThreadPool(2, Activator.getInstance().createNewThreadFactory("branch.export.worker"));
+            Executors.newFixedThreadPool(2, CoreServerActivator.createNewThreadFactory("branch.export.worker"));
    }
 
    /* (non-Javadoc)

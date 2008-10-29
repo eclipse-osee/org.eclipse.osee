@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
-import org.eclipse.osee.framework.db.connection.core.ConflictType;
+import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;

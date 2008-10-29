@@ -75,7 +75,8 @@ public class InternalOseeHttpServlet extends HttpServlet {
             this.request = request;
             super.service(request, response);
          } else {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write("All requests are currently blocked.");
          }
       } finally {
          if (areLogsAllowed()) {

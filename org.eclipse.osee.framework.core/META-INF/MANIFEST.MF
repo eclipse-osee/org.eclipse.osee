@@ -17,3 +17,4 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.connection,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums
+Bundle-ActivationPolicy: lazy

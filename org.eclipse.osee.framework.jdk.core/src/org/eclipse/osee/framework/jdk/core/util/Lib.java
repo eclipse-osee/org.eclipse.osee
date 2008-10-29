@@ -295,8 +295,52 @@ public final class Lib {
       }
    }
 
+   /**
+    * Delete the current file and all empty parents. The method will stop deleting empty parents once it reaches the
+    * stopAt parent.
+    * 
+    * @param stopAt path of the parent file to stop deleting at
+    * @param file to delete
+    * @return status <b>true</b> if successful
+    */
+   public static boolean deleteFileAndEmptyParents(String stopAt, File file) {
+      boolean result = true;
+      if (file != null) {
+         if (file.isDirectory() != false) {
+            if (file.list().length == 0) {
+               result &= file.delete();
+            }
+         } else {
+            result &= file.delete();
+         }
+      }
+      File parent = file.getParentFile();
+      if (parent != null && parent.getAbsolutePath().equals(stopAt) != true) {
+         result &= deleteFileAndEmptyParents(stopAt, parent);
+      }
+      return result;
+   }
+
+   /**
+    * Deletes all files from directory
+    * 
+    * @param directory
+    */
+   public static void emptyDirectory(File directory) {
+      File[] children = directory.listFiles();
+      if (children != null) {
+         for (File child : children) {
+            if (child.isDirectory()) {
+               emptyDirectory(child);
+            } else { // else is a file
+               child.delete();
+            }
+         }
+      }
+   }
+
    public static void inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
-      byte[] buf = new byte[2024];
+      byte[] buf = new byte[10000];
       int count = -1;
       while ((count = inputStream.read(buf)) != -1) {
          outputStream.write(buf, 0, count);
@@ -475,6 +519,12 @@ public final class Lib {
       return new String(chars);
    }
 
+   /**
+    * Get file extension from the file path
+    * 
+    * @param filepath
+    * @return file extension
+    */
    public static String getExtension(String filepath) {
       filepath = filepath.trim();
       String separatorRegEx = File.separator;
@@ -845,12 +895,33 @@ public final class Lib {
       }
    }
 
+   /**
+    * Remove the file extension from the file path
+    * 
+    * @param filepath
+    * @return modified file path
+    */
    public static String removeExtension(String filepath) {
       String ext = getExtension(filepath);
       if (ext != null && ext.length() > 0) {
          filepath = filepath.substring(0, filepath.length() - (ext.length() + 1));
       }
       return filepath;
+   }
+
+   /**
+    * Determine if file is a compressed file
+    * 
+    * @param file to check
+    * @return <b>true</b> if the files is a compressed file
+    */
+   public static boolean isCompressed(File file) {
+      boolean toReturn = false;
+      String ext = getExtension(file.getAbsolutePath());
+      if (ext.equals("zip")) {
+         toReturn = true;
+      }
+      return toReturn;
    }
 
    // replaces the first capturing group of the match in fileToModify with
@@ -1290,6 +1361,11 @@ public final class Lib {
       return String.valueOf((System.currentTimeMillis() - startTime) / 1000.0) + " secs";
    }
 
+   /**
+    * Determine is OS is windows
+    * 
+    * @return <b>true</b> if OS is windows
+    */
    public static boolean isWindows() {
       return System.getProperty("os.name").indexOf("indows") != -1;
    }
@@ -1331,27 +1407,24 @@ public final class Lib {
       }
    }
 
-   public static byte[] compressFile(InputStream in, String name) throws IOException {
-      // Create a buffer for reading the files
-      byte[] buf = new byte[1024];
+   public static byte[] compressStream(InputStream in, String name) throws IOException {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      ZipOutputStream out = new ZipOutputStream(bos);
-
-      // Add ZIP entry to output stream.
-      out.putNextEntry(new ZipEntry(name));
-
-      // Transfer bytes from the file to the ZIP file
-      int len;
-      while ((len = in.read(buf)) > 0) {
-         out.write(buf, 0, len);
+      ZipOutputStream out = null;
+      try {
+         out = new ZipOutputStream(bos);
+         // Add ZIP entry to output stream.
+         out.putNextEntry(new ZipEntry(name));
+         byte[] buf = new byte[1024];
+         int count = -1;
+         while ((count = in.read(buf)) > 0) {
+            out.write(buf, 0, count);
+         }
+      } finally {
+         if (out != null) {
+            out.closeEntry();
+            out.close();
+         }
       }
-
-      out.closeEntry();
-      in.close();
-
-      // Complete the ZIP file
-      out.close();
-
       return bos.toByteArray();
    }
 

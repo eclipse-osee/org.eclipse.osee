@@ -18,7 +18,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.resource.common.io.Files;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -76,7 +75,7 @@ public class ExchangeProvider implements IResourceProvider {
       if (file == null || file.exists() != true) {
          toReturn = IResourceManager.RESOURCE_NOT_FOUND;
       } else if (file.exists() == true && file.canWrite() == true) {
-         boolean result = Files.deleteFileAndEmptyParents(BASE_PATH, file);
+         boolean result = Lib.deleteFileAndEmptyParents(BASE_PATH, file);
          if (result) {
             toReturn = IResourceManager.OK;
          }
@@ -116,7 +115,7 @@ public class ExchangeProvider implements IResourceProvider {
          // Remove all other files from this folder
          File parent = storageFile.getParentFile();
          if (parent != null) {
-            Files.emptyDirectory(parent);
+            Lib.emptyDirectory(parent);
          }
          IResource resourceToStore = optionsProcessor.getResourceToStore();
 

@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.File;
+import org.eclipse.osee.framework.core.data.JoinUtility;
+import org.eclipse.osee.framework.core.data.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
 

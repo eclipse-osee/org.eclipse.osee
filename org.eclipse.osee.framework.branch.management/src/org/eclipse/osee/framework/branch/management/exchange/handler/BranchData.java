@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.db.connection.core.BranchType;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**

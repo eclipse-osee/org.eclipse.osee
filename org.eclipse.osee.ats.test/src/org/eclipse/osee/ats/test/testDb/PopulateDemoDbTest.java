@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.test.testDb;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
-import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
+import org.eclipse.osee.framework.core.connection.OseeApplicationServer;
 
 /**
  * @author Donald G. Dunne
