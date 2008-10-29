@@ -17,7 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import junit.framework.TestCase;
-import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
 
 /**
  * @author Roberto E. Escobar

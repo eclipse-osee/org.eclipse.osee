@@ -22,7 +22,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import junit.framework.TestCase;
-import org.eclipse.osee.framework.resource.common.io.Streams;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Roberto E. Escobar
@@ -98,7 +98,7 @@ public class HttpTestUtils {
          outputStream = connection.getOutputStream();
          TestCase.assertNotNull(outputStream);
 
-         Streams.inputStreamToOutputStream(payload, outputStream);
+         Lib.inputStreamToOutputStream(payload, outputStream);
 
          // Wait for response
          int code = connection.getResponseCode();
@@ -106,7 +106,7 @@ public class HttpTestUtils {
          TestCase.assertTrue(connection.getContentType().contains("text/plain"));
 
          inputStream = (InputStream) connection.getContent();
-         Streams.inputStreamToOutputStream(inputStream, output);
+         Lib.inputStreamToOutputStream(inputStream, output);
          TestCase.assertTrue("Got Data", output.size() > 0);
       } finally {
          if (outputStream != null) {
@@ -137,7 +137,7 @@ public class HttpTestUtils {
          TestCase.assertEquals(HttpURLConnection.HTTP_OK, code);
          TestCase.assertTrue(connection.getContentType().contains(contentType));
          inputStream = (InputStream) connection.getContent();
-         Streams.inputStreamToOutputStream(inputStream, output);
+         Lib.inputStreamToOutputStream(inputStream, output);
          TestCase.assertTrue("Got Data", output.size() > 0);
       } finally {
          if (inputStream != null) {
