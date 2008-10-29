@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
@@ -295,7 +297,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       try {
          String[] selection = typeList.getSelection();
          typeList.removeAll();
-         for (ArtifactType descriptor : TypeValidityManager.getValidArtifactTypes(branch)) {
+         ArrayList<ArtifactType> validArtifactTypes =
+               new ArrayList<ArtifactType>(TypeValidityManager.getValidArtifactTypes(branch));
+         Collections.sort(validArtifactTypes);
+         for (ArtifactType descriptor : validArtifactTypes) {
             typeList.add(descriptor.getName());
             typeList.setData(descriptor.getName(), descriptor);
          }
