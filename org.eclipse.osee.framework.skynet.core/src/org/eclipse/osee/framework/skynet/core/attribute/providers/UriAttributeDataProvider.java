@@ -66,7 +66,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
             if (data != null) {
                byte[] compressed;
                try {
-                  compressed = Lib.compressFile(Lib.byteBufferToInputStream(data), getInternalFileName());
+                  compressed = Lib.compressStream(Lib.byteBufferToInputStream(data), getInternalFileName());
                   dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
                   response = true;
                } catch (Exception ex) {

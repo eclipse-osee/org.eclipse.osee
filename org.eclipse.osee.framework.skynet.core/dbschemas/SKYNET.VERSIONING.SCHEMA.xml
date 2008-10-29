@@ -620,4 +620,25 @@
 			<AppliesTo id="MAPPED_ID"/>
 		</Index>
 	</Table>
+	
+	<!-- __________________________________________________________ -->
+	<!--                                                            -->
+	<!--              Application Server     						       -->
+	<!--                                                            -->
+	<!-- __________________________________________________________ -->
+	
+	<Table name="OSEE_SERVER_LOOKUP" schema="OSEE" tablespace="osee_data">
+		<Column id="VERSION_ID" defaultValue="not null" type="VARCHAR" limits="100" />
+		<Column id="SERVER_ADDRESS" defaultValue="not null" type="VARCHAR" limits="100"/>
+		<Column id="PORT" defaultValue="not null" type="INTEGER" />
+		<Column id="ACCEPTS_REQUESTS" defaultValue="not null" type="INTEGER" />
+		<Column id="START_TIME" defaultValue="not null" type="TIMESTAMP" />
+		<Constraint schema="OSEE" id="OSEE_SERVER_LOOKUP_PK" type="PRIMARY KEY" appliesTo="SERVER_ADDRESS, PORT" />
+	</Table>
+	
+	<Table name="OSEE_SESSION" schema="OSEE" tablespace="osee_data">
+		<Column id="SESSION_ID" defaultValue="not null" type="VARCHAR" limits="28" />
+		<Column id="ACTIVE" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_SESSION_PK" type="PRIMARY KEY" appliesTo="SESSION_ID" />
+	</Table>
 </TableConfig>

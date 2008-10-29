@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.db.connection.core.ConflictType;
+import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

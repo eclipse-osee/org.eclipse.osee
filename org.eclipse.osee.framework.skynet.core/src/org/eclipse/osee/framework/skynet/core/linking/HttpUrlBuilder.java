@@ -15,7 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
+import org.eclipse.osee.framework.core.connection.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;

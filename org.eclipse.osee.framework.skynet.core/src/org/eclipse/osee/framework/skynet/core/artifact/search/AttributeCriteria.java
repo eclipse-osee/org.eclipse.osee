@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.AttributeJoinQuery;
+import org.eclipse.osee.framework.core.data.JoinUtility;
+import org.eclipse.osee.framework.core.data.JoinUtility.AttributeJoinQuery;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
