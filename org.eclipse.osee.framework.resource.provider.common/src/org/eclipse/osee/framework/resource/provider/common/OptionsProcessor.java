@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.eclipse.osee.framework.resource.common.io.Files;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -73,7 +73,7 @@ public class OptionsProcessor {
    }
 
    /**
-    * @return
+    * @return storage file
     * @throws IOException
     */
    public File getStorageFile() throws IOException {
@@ -91,7 +91,7 @@ public class OptionsProcessor {
    }
 
    /**
-    * @return
+    * @return resource to store
     * @throws Exception
     */
    public IResource getResourceToStore() throws Exception {
@@ -110,7 +110,7 @@ public class OptionsProcessor {
       IResource toReturn = null;
       File testFile = new File(this.fileuri);
       if (testFile != null && testFile.exists() != false) {
-         boolean isCompressed = Files.isCompressed(testFile);
+         boolean isCompressed = Lib.isCompressed(testFile);
          toReturn = new Resource(this.fileuri, isCompressed);
 
          if (compressOnAcquire && !isCompressed) {
@@ -123,7 +123,7 @@ public class OptionsProcessor {
    }
 
    /**
-    * @return
+    * @return actual resorce locator
     */
    public IResourceLocator getActualResouceLocator() {
       return new ResourceLocator(this.locatoruri);

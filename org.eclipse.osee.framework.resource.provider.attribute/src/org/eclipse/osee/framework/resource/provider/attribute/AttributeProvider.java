@@ -16,9 +16,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.resource.common.io.Files;
-import org.eclipse.osee.framework.resource.common.io.Streams;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -53,7 +52,7 @@ public class AttributeProvider implements IResourceProvider {
       if (file == null || file.exists() != true) {
          toReturn = IResourceManager.RESOURCE_NOT_FOUND;
       } else if (file.exists() == true && file.canWrite() == true) {
-         boolean result = Files.deleteFileAndEmptyParents(BASE_PATH, file);
+         boolean result = Lib.deleteFileAndEmptyParents(BASE_PATH, file);
          if (result) {
             toReturn = IResourceManager.OK;
          }
@@ -93,7 +92,7 @@ public class AttributeProvider implements IResourceProvider {
 
          outputStream = new FileOutputStream(storageFile);
          inputStream = resourceToStore.getContent();
-         Streams.inputStreamToOutputStream(inputStream, outputStream);
+         Lib.inputStreamToOutputStream(inputStream, outputStream);
          toReturn = optionsProcessor.getActualResouceLocator();
       } finally {
          if (outputStream != null) {

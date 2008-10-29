@@ -14,8 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
-import org.eclipse.osee.framework.resource.common.io.Files;
-import org.eclipse.osee.framework.resource.common.io.Streams;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
@@ -36,7 +35,7 @@ public class Resources {
       byte[] buffer = new byte[0];
       try {
          inputStream = resource.getContent();
-         buffer = Streams.compressStream(inputStream, resource.getName());
+         buffer = Lib.compressStream(inputStream, resource.getName());
       } finally {
          if (inputStream != null) {
             inputStream.close();
@@ -58,7 +57,7 @@ public class Resources {
       if (fileName != null && fileName.length() > 0) {
          path = removeName(path) + fileName;
       } else {
-         path = Files.removeExtension(path);
+         path = Lib.removeExtension(path);
       }
       return new CompressedResourceBridge(outputStream.toByteArray(), new URI(path), false);
    }
