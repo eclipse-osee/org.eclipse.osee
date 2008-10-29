@@ -6,7 +6,9 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.search.engine.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.db.connection,
+Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,
  org.eclipse.osee.framework.db.connection.core.query,
  org.eclipse.osee.framework.db.connection.core.schema,
@@ -19,7 +21,6 @@ Import-Package: org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.framework.logging,
- org.eclipse.osee.framework.resource.common,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
  org.eclipse.osgi.framework.util,

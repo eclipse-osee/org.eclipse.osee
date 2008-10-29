@@ -15,8 +15,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 

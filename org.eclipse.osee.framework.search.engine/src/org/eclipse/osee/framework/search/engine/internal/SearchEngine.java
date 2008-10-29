@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.search.engine.internal;
 
 import java.sql.Connection;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.JoinUtility;
+import org.eclipse.osee.framework.core.data.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
