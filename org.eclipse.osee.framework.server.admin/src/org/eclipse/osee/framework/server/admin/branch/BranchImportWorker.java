@@ -15,7 +15,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
-import org.eclipse.osee.framework.resource.common.io.Files;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.ResourceLocator;
 import org.eclipse.osee.framework.server.admin.Activator;
@@ -78,7 +78,7 @@ public class BranchImportWorker extends BaseCmdWorker {
       for (File file : importFiles) {
          if (file == null || !file.exists() || !file.canRead()) {
             throw new IllegalArgumentException(String.format("File was not accessible: [%s]", file));
-         } else if (file.isFile() && !Files.getExtension(file.getAbsolutePath()).equals("zip")) {
+         } else if (file.isFile() && !Lib.isCompressed(file)) {
             throw new IllegalArgumentException(String.format("Invalid File: [%s]", file));
          }
       }
