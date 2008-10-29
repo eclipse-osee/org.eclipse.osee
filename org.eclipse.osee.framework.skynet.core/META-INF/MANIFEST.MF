@@ -44,7 +44,10 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.word
 Bundle-Vendor: Eclipse.org
 DynamicImport-Package: *
-Import-Package: org.eclipse.osee.framework.db.connection,
+Import-Package: org.eclipse.osee.framework.core.connection,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,
  org.eclipse.osee.framework.db.connection.core.query,
  org.eclipse.osee.framework.db.connection.core.schema,
