@@ -35,7 +35,7 @@ public class ArtifactQueryTest extends TestCase {
    }
 
    public void testQuickSearch() throws Exception {
-      Branch branch = BranchPersistenceManager.getBranch("MYII V13");
+      Branch branch = BranchPersistenceManager.getBranch("MYII V13 - FTB1");
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromAttributeWithKeywords("[.PRE_RETRIES]", false, false, branch);
       Collections.sort(artifacts);

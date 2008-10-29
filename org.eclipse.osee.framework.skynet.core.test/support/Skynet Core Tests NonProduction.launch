@@ -28,12 +28,11 @@
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.osee.framework.skynet.core.test"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.compatibility.bootdelegation=true -Dequinox.ds.debug=true -Dorg.osgi.service.http.port=8089 -Dosee.local.application.server=true -Dosee.db.connection.id=postgresqlLocalhost  -XX:MaxPermSize=256m -Xmx1024M"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.compatibility.bootdelegation=true -Dorg.osgi.service.http.port=8089 -Dosee.local.application.server=true -Dosee.db.connection.id=postgresqlLocalhost  -XX:MaxPermSize=256m -Xmx1024M"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
-<stringAttribute key="selectedPlugin" value="org.eclipse.osee.framework.skynet.core.test"/>
 <booleanAttribute key="show_selected_only" value="false"/>
-<booleanAttribute key="tracing" value="true"/>
+<booleanAttribute key="tracing" value="false"/>
 <mapAttribute key="tracingOptions">
 <mapEntry key="org.eclipse.core.runtime/debug/context" value="false"/>
 <mapEntry key="org.eclipse.core.jobs/jobs/beginend" value="false"/>
