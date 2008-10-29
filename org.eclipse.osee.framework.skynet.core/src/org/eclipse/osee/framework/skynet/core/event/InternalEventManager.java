@@ -185,12 +185,7 @@ public class InternalEventManager {
       }
       Runnable runnable = new Runnable() {
          public void run() {
-            Branch branch = null;
-            try {
-               branch = BranchPersistenceManager.getBranch(branchId);
-            } catch (Exception ex) {
-               // do nothing
-            }
+
             // Log if this is a loopback and what is happening
             if (enableRemoteEventLoopback) {
                OseeLog.log(
@@ -224,8 +219,14 @@ public class InternalEventManager {
                   } else if (branchEventType == BranchEventType.Committed) {
                      RemoteEventManager.kick(new NetworkCommitBranchEvent(branchId, sender.getNetworkSender()));
                   } else if (branchEventType == BranchEventType.Renamed) {
-                     RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
-                           branch.getBranchName(), branch.getBranchShortName()));
+                     Branch branch = null;
+                     try {
+                        branch = BranchPersistenceManager.getBranch(branchId);
+                        RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
+                              branch.getBranchName(), branch.getBranchShortName()));
+                     } catch (Exception ex) {
+                        // do nothing
+                     }
                   }
                }
             } catch (Exception ex) {

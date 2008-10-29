@@ -154,19 +154,19 @@ public class BranchPersistenceManager {
             chStmt = ConnectionHandler.runPreparedQuery(2000, READ_BRANCH_TABLE);
             while (chStmt.next()) {
                int branchId = chStmt.getInt("branch_id");
-               boolean isArchived = chStmt.getInt("archived") == 1;
-               Branch branch = branchCache.get(branchId);
-
-               if (branch == null) {
-                  branch = initializeBranchObject(chStmt);
-                  if (branch.isSystemRootBranch()) {
-                     systemRoot = branch;
-                  }
+               Branch loadedBranch = initializeBranchObject(chStmt);
+               // De-Cache branch if currently archived
+               if (loadedBranch.isArchived()) {
+                  branchCache.remove(loadedBranch.getBranchId());
                } else {
-                  if (isArchived) {
-                     branchCache.remove(branchId);
-                  } else {
-                     branch.setBranchName(chStmt.getString("branch_name"));
+                  // Cache branch if not already done
+                  if (!branchCache.containsKey(loadedBranch.getBranchId())) {
+                     branchCache.put(loadedBranch.getBranchId(), loadedBranch);
+                  }
+                  Branch cachedBranch = branchCache.get(branchId);
+                  cachedBranch.setBranchName(chStmt.getString("branch_name"));
+                  if (systemRoot == null && cachedBranch.isSystemRootBranch()) {
+                     systemRoot = cachedBranch;
                   }
                }
             }
@@ -189,8 +189,9 @@ public class BranchPersistenceManager {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(500, READ_BRANCH_TABLE);
          while (chStmt.next()) {
-            if (chStmt.getInt("archived") == 1) {
-               archivedBranches.add(initializeBranchObject(chStmt));
+            Branch branch = initializeBranchObject(chStmt);
+            if (branch.isArchived()) {
+               archivedBranches.add(branch);
             }
          }
       } finally {
@@ -216,7 +217,9 @@ public class BranchPersistenceManager {
       Branch branch =
             new Branch(branchShortName, branchName, branchId, parentBranchId, archived, authorId, creationDate,
                   creationComment, associatedArtifactId, branchType);
-      instance.branchCache.put(branchId, branch);
+      if (!archived) {
+         instance.branchCache.put(branchId, branch);
+      }
       return branch;
    }
 
@@ -229,9 +232,9 @@ public class BranchPersistenceManager {
     */
    private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
       return createBranchObject(chStmt.getString("short_name"), chStmt.getString("branch_name"),
-            chStmt.getInt("branch_id"), chStmt.getInt("parent_branch_id"), false, chStmt.getInt("author"),
-            chStmt.getTimestamp("time"), chStmt.getString(TXD_COMMENT), chStmt.getInt("associated_art_id"),
-            BranchType.getBranchType(chStmt.getInt("branch_type")));
+            chStmt.getInt("branch_id"), chStmt.getInt("parent_branch_id"), chStmt.getInt("archived") == 1,
+            chStmt.getInt("author"), chStmt.getTimestamp("time"), chStmt.getString(TXD_COMMENT),
+            chStmt.getInt("associated_art_id"), BranchType.getBranchType(chStmt.getInt("branch_type")));
    }
 
    /**
@@ -290,19 +293,11 @@ public class BranchPersistenceManager {
             while (chStmt.next()) {
                int sourceBranchId = chStmt.getInt("source_branch_id");
                int destBranchId = chStmt.getInt("dest_branch_id");
-               boolean isArchived = chStmt.getInt("archived") == 1;
-
-               Branch branch = mergeBranchCache.get(sourceBranchId, destBranchId);
-
-               if (isArchived) {
-                  if (branch != null) {
-                     mergeBranchCache.remove(sourceBranchId, destBranchId);
-                  }
+               Branch loadedBranch = initializeBranchObject(chStmt);
+               if (loadedBranch.isArchived()) {
+                  mergeBranchCache.remove(sourceBranchId, destBranchId);
                } else {
-                  if (branch == null) {
-                     branch = initializeBranchObject(chStmt);
-                     mergeBranchCache.put(sourceBranchId, destBranchId, branch);
-                  }
+                  mergeBranchCache.put(sourceBranchId, destBranchId, loadedBranch);
                }
             }
          } finally {
