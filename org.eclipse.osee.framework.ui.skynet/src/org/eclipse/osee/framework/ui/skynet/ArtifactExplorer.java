@@ -1451,7 +1451,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.branchId != BranchPersistenceManager.getDefaultBranch().getBranchId()) {
          return;
       }

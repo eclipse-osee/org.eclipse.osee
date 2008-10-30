@@ -327,7 +327,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (sender.isRemote()) return;
       if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       if (currentArtifact == null) return;

@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.framework.skynet.core.event;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+
 /**
  * Event that represents a collection of ArtifactModifiedEvent and RelationModifiedEvent events that are collected and
  * persisted within a single SkynetTransaction.
@@ -18,7 +20,8 @@ public interface IFrameworkTransactionEventListener extends IEventListner {
     * 
     * @param source
     * @param transData collection of all changes within transaction
+    * @throws OseeCoreException TODO
     */
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData);
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException;
 
 }

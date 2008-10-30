@@ -675,7 +675,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.TransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (smaMgr.isInTransition()) return;
       if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       if (transData.isDeleted(smaMgr.getSma())) {

@@ -443,7 +443,7 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)

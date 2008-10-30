@@ -11,12 +11,11 @@
 
 package org.eclipse.osee.ats;
 
-import java.util.logging.Level;
 import org.eclipse.osee.ats.util.AtsAdmin;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.database.DatabaseActivator;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -105,14 +104,7 @@ public class AtsPlugin extends OseeUiActivator {
       return System.getProperty("AtsAlwaysEmailMe") != null;
    }
 
-   @Deprecated
-   // use BranchPersistenceManager.getAtsBranch() instead
-   public static Branch getAtsBranch() {
-      try {
-         return BranchPersistenceManager.getAtsBranch();
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      return null;
+   public static Branch getAtsBranch() throws OseeCoreException {
+      return BranchPersistenceManager.getAtsBranch();
    }
 }

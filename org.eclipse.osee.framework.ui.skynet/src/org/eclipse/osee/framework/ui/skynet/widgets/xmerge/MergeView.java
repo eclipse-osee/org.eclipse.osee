@@ -844,7 +844,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       try {
          if (ConflictManagerInternal.getInstance().getMergeBranchId(sourceBranch.getBranchId(),
                destBranch.getBranchId()) != transData.getBranchId() && sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId()) {

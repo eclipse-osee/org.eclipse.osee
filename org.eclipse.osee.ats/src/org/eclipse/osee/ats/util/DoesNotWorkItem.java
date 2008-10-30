@@ -19,11 +19,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -41,7 +42,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
     * @param parent
     */
    public DoesNotWorkItem(XNavigateItem parent) {
-      super(parent, "Does Not Work - importTaskEstimatedHours");
+      super(parent, "Does Not Work - check ats.Branch Id");
    }
 
    /*
@@ -53,13 +54,28 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
-      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-         @Override
-         protected void handleTxWork() throws OseeCoreException {
-            //            importTaskEstimatedHours();
+      for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType("ats.Branch Id", AtsPlugin.getAtsBranch())) {
+         int branchId = art.getSoleAttributeValue("ats.Branch Id");
+         Branch branch = null;
+         try {
+            branch = BranchPersistenceManager.getBranch(branchId);
+         } catch (BranchDoesNotExist ex) {
+            System.out.println("Branch does not exist for art " + art.getHumanReadableId() + " - " + art);
+         } catch (Exception ex) {
+            System.err.println("Exception getting branch for art " + art.getHumanReadableId() + " - " + art);
          }
-      };
-      newActionTx.execute();
+         if (branch != null) {
+            System.err.println("Branch DOES exist for art " + art.getHumanReadableId() + " - " + art);
+         }
+      }
+
+      //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+      //         @Override
+      //         protected void handleTxWork() throws OseeCoreException {
+      //            //            importTaskEstimatedHours();
+      //         }
+      //      };
+      //      newActionTx.execute();
 
       //      deleteUnAssignedUserRelations();
       //      relateDonDunne();
