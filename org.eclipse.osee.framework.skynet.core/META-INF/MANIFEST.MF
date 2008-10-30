@@ -13,8 +13,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jini,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.plugin,
- org.junit
+ org.eclipse.osee.framework.ui.plugin;bundle-version="0.4.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.access,
