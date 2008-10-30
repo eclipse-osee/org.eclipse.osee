@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.health;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -124,7 +125,8 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       testTeamWorkflows();
       //      testStateMachineAssignees();
       testAtsLogs();
-      for (IHealthStatus stat : monitorLog.getSevereLogs()) {
+      List<IHealthStatus> stats = monitorLog.getSevereLogs();
+      for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
          xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
       }
       xResultData.log("Completed processing " + artifacts.size() + " artifacts.");
