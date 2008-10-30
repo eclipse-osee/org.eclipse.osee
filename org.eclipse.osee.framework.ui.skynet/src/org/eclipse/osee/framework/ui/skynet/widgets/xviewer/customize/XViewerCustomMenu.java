@@ -186,8 +186,11 @@ public class XViewerCustomMenu {
          public void run() {
             Set<TreeColumn> editableColumns = new HashSet<TreeColumn>();
             Collection<TreeItem> selectedTreeItems = Arrays.asList(xViewer.getTree().getSelection());
-            for (TreeColumn treeCol : xViewer.getTree().getColumns())
-               if (xViewer.isColumnMultiEditable(treeCol, selectedTreeItems)) editableColumns.add(treeCol);
+            for (TreeColumn treeCol : xViewer.getTree().getColumns()) {
+               if (xViewer.isColumnMultiEditable(treeCol, selectedTreeItems)) {
+                  editableColumns.add(treeCol);
+               }
+            }
             if (editableColumns.size() == 0) {
                AWorkbench.popup("ERROR", "No Columns Are Multi-Editable");
                return;

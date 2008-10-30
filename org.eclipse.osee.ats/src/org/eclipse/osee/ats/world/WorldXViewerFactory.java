@@ -87,16 +87,16 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(COLUMN_NAMESPACE + ".decision", "Decision", 150, SWT.LEFT, false, SortDataType.String,
                false, null);
    public static final XViewerColumn Resolution_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".resolution", "Resolution", 150, SWT.LEFT, false, SortDataType.String,
-               false, null);
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".resolution", ATSAttributes.RESOLUTION_ATTRIBUTE, 150,
+               SWT.LEFT, false, SortDataType.String, true, null);
    public static XViewerColumn Estimated_Release_Date_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".estimatedReleaseDate",
-               ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getDisplayName(), 80, SWT.LEFT, false, SortDataType.Date,
-               false, "Date the changes will be made available to the users.");
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".estimatedReleaseDate",
+               ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE, 80, SWT.LEFT, false, SortDataType.Date, true,
+               "Date the changes will be made available to the users.");
    public static XViewerColumn Estimated_Completion_Date_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".estimatedCompletionDate",
-               ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getDisplayName(), 80, SWT.LEFT, false,
-               SortDataType.Date, true, "Date the changes will be completed.");
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".estimatedCompletionDate",
+               ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, 80, SWT.LEFT, false, SortDataType.Date, true,
+               "Date the changes will be completed.");
    public static final XViewerColumn Release_Date_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".releaseDate", ATSAttributes.RELEASE_DATE_ATTRIBUTE.getDisplayName(),
                80, SWT.LEFT, false, SortDataType.Date, false, "Date the changes were made available to the users.");
