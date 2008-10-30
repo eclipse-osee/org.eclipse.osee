@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -467,7 +467,7 @@ public class AccessControlManager {
                if (recurse) {
                   Artifact artifact =
                         ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                              BranchPersistenceManager.getBranch(artifactAccessObject.getBranchId()));
+                              BranchManager.getBranch(artifactAccessObject.getBranchId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -545,7 +545,7 @@ public class AccessControlManager {
          }
 
          for (int subjectId : subjects) {
-            Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, BranchPersistenceManager.getCommonBranch());
+            Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, BranchManager.getCommonBranch());
             PermissionEnum permissionEnum = accessControlListCache.get(subjectId, accessObject);
             AccessControlData accessControlData =
                   new AccessControlData(subject, accessObject, permissionEnum, false, false);
@@ -566,9 +566,9 @@ public class AccessControlManager {
    private PermissionEnum getBranchPermission(Artifact subject, Object object) throws OseeCoreException {
       Branch branch = null;
       if (object instanceof BranchAccessObject) {
-         branch = BranchPersistenceManager.getBranch(((BranchAccessObject) object).getBranchId());
+         branch = BranchManager.getBranch(((BranchAccessObject) object).getBranchId());
       } else if (object instanceof ArtifactAccessObject) {
-         branch = BranchPersistenceManager.getBranch(((ArtifactAccessObject) object).getBranchId());
+         branch = BranchManager.getBranch(((ArtifactAccessObject) object).getBranchId());
       }
       return AccessControlManager.getInstance().getBranchPermission(subject, branch, PermissionEnum.FULLACCESS);
    }

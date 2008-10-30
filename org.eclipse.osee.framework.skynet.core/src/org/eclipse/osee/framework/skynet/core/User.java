@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 
 /**
@@ -130,7 +130,7 @@ public class User extends Artifact implements Serializable {
    public void toggleFavoriteBranch(Branch favoriteBranch) {
 
       try {
-         Collection<Branch> branches = BranchPersistenceManager.getNormalBranches();
+         Collection<Branch> branches = BranchManager.getNormalBranches();
          HashSet<Integer> branchIds = new HashSet<Integer>();
          for (Branch branch : branches)
             branchIds.add(branch.getBranchId());

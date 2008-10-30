@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Theron Virgin
@@ -47,7 +47,7 @@ public class ConflictedBranchCommitingTest extends TestCase {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
-         BranchPersistenceManager.commitBranch(ConflictTestManager.getSourceBranch(),
+         BranchManager.commitBranch(ConflictTestManager.getSourceBranch(),
                ConflictTestManager.getDestBranch(), false, false).join();
       } catch (ConflictDetectionException ex) {
          return;
@@ -62,7 +62,7 @@ public class ConflictedBranchCommitingTest extends TestCase {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
-         BranchPersistenceManager.commitBranch(ConflictTestManager.getSourceBranch(),
+         BranchManager.commitBranch(ConflictTestManager.getSourceBranch(),
                ConflictTestManager.getDestBranch(), false, false).join();
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
       } catch (Exception ex) {

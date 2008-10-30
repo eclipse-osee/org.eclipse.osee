@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
@@ -52,7 +52,7 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
       for (IExtension extension : ep.getExtensions()) {
          for (IConfigurationElement el : extension.getConfigurationElements()) {
             Artifact templateArtifact =
-                  ArtifactTypeManager.addArtifact("Renderer Template", BranchPersistenceManager.getCommonBranch());
+                  ArtifactTypeManager.addArtifact("Renderer Template", BranchManager.getCommonBranch());
             String filePath = el.getAttribute("File");
             String name = filePath.substring(filePath.lastIndexOf('/') + 1);
             name = name.substring(0, name.lastIndexOf('.'));
@@ -79,13 +79,13 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
    private Artifact getTemplateFolder() throws OseeCoreException {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName("Folder", "Document Templates",
-               BranchPersistenceManager.getCommonBranch());
+               BranchManager.getCommonBranch());
       } catch (ArtifactDoesNotExist ex) {
          Artifact rootArt =
-               ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getCommonBranch());
+               ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
 
          Artifact templateFolder =
-               ArtifactTypeManager.addArtifact("Folder", BranchPersistenceManager.getCommonBranch(),
+               ArtifactTypeManager.addArtifact("Folder", BranchManager.getCommonBranch(),
                      "Document Templates");
          rootArt.addChild(templateFolder);
          templateFolder.persistAttributesAndRelations();

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Donald G. Dunne
@@ -79,7 +79,7 @@ public class GlobalMenuPermissions {
                      PermissionEnum.FULLACCESS);
          isLocked |= AccessControlManager.hasLock(objectArtifact);
          defaultBranchReadable =
-               AccessControlManager.checkObjectPermission(BranchPersistenceManager.getDefaultBranch(),
+               AccessControlManager.checkObjectPermission(BranchManager.getDefaultBranch(),
                      PermissionEnum.READ);
          accessToRemoveLock &= AccessControlManager.canUnlockObject(objectArtifact, SkynetAuthentication.getUser());
 

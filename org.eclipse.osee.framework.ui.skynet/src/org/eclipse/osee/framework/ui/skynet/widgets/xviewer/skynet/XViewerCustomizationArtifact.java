@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -54,13 +54,13 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
          try {
             Collection<Artifact> arts =
                   ArtifactQuery.getArtifactsFromTypeAndName(ARTIFACT_TYPE_NAME, ARTIFACT_TYPE_NAME,
-                        BranchPersistenceManager.getCommonBranch());
+                        BranchManager.getCommonBranch());
             if (arts.size() == 1) {
                xViewerCustomizationArtifact = (XViewerCustomizationArtifact) arts.iterator().next();
             } else if (arts.size() == 0 && create) {
                xViewerCustomizationArtifact =
                      (XViewerCustomizationArtifact) ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME,
-                           BranchPersistenceManager.getCommonBranch(), ARTIFACT_TYPE_NAME);
+                           BranchManager.getCommonBranch(), ARTIFACT_TYPE_NAME);
                xViewerCustomizationArtifact.persistAttributes();
             } else if (arts.size() != 1) throw new IllegalArgumentException(
                   "Should only be one " + ARTIFACT_TYPE_NAME + ".  Found " + arts.size() + ".  ATS not configured in OSEE?.");

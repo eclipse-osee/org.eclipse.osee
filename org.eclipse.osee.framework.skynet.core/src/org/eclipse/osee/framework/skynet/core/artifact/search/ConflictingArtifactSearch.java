@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Robert A. Fisher
@@ -108,8 +108,8 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
       String childBranch;
 
       try {
-         parentBranch = BranchPersistenceManager.getBranch(parentBranchId).getBranchName();
-         childBranch = BranchPersistenceManager.getBranch(childBranchId).getBranchName();
+         parentBranch = BranchManager.getBranch(parentBranchId).getBranchName();
+         childBranch = BranchManager.getBranch(childBranchId).getBranchName();
       } catch (Exception ex) {
          parentBranch = Integer.toString(parentBranchId);
          childBranch = Integer.toString(childBranchId);

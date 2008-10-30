@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
@@ -144,7 +144,7 @@ public class SkyWalkerView extends ViewPart {
          if (storedGuid != null) {
             Artifact art =
                   ArtifactQuery.getArtifactFromId(storedGuid,
-                        BranchPersistenceManager.getBranch(Integer.parseInt(storedBrandId)));
+                        BranchManager.getBranch(Integer.parseInt(storedBrandId)));
             if (art != null) explore(art);
          }
       } catch (Exception ex) {

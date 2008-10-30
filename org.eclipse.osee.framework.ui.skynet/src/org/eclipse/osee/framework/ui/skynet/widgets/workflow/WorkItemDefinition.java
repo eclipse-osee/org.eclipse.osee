@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -172,14 +172,14 @@ public abstract class WorkItemDefinition {
       if (writeType == WriteType.New) {
          // Double-check that doesn't already exist in db.  If so, exception cause duplicates
          if (ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId(),
-               BranchPersistenceManager.getCommonBranch()).size() > 0) {
+               BranchManager.getCommonBranch()).size() > 0) {
             throw new IllegalStateException(
                   "WorkItemDefinition artifact creation failed.  \"" + getId() + "\" already exists.");
          }
       }
       if (artifact == null) {
          // Create new
-         artifact = ArtifactTypeManager.addArtifact(getArtifactTypeName(), BranchPersistenceManager.getCommonBranch());
+         artifact = ArtifactTypeManager.addArtifact(getArtifactTypeName(), BranchManager.getCommonBranch());
       }
       artifact.setDescriptiveName(getName());
       if (getParentId() != null) artifact.setSoleAttributeValue(

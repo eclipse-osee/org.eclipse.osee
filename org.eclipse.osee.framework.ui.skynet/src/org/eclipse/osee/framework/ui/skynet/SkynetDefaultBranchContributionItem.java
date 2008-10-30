@@ -14,7 +14,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -50,7 +50,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
             BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch");
             int result = branchSelection.open();
             if (result == Window.OK) {
-               BranchPersistenceManager.setDefaultBranch(branchSelection.getSelection());
+               BranchManager.setDefaultBranch(branchSelection.getSelection());
             }
          }
       });
@@ -63,9 +63,9 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
    }
 
    private void updateInfo() {
-      setText(BranchPersistenceManager.getDefaultBranch().getDisplayName());
+      setText(BranchManager.getDefaultBranch().getDisplayName());
       setToolTipText(ENABLED_TOOLTIP + "\nDouble-click to change.");
-      setImage(BranchLabelProvider.getBranchImage(BranchPersistenceManager.getDefaultBranch()));
+      setImage(BranchLabelProvider.getBranchImage(BranchManager.getDefaultBranch()));
    }
 
    public static void addTo(IStatusLineManager manager) {

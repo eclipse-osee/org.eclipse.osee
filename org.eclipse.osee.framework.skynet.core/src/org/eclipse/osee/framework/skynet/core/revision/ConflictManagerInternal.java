@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflictBuilder;
@@ -112,8 +112,8 @@ public class ConflictManagerInternal {
                   new AttributeConflict(chStmt.getInt("source_gamma_id"), chStmt.getInt("dest_gamma_id"),
                         chStmt.getInt("art_id"), commitTransaction, chStmt.getString("source_value"),
                         chStmt.getInt("attr_id"), chStmt.getInt("attr_type_id"),
-                        BranchPersistenceManager.getBranch(chStmt.getInt("merge_branch_id")),
-                        BranchPersistenceManager.getBranch(chStmt.getInt("dest_branch_id")));
+                        BranchManager.getBranch(chStmt.getInt("merge_branch_id")),
+                        BranchManager.getBranch(chStmt.getInt("dest_branch_id")));
             conflicts.add(attributeConflict);
 
             attributeConflict.setStatus(Conflict.Status.getStatus(chStmt.getInt("status")));
@@ -167,7 +167,7 @@ public class ConflictManagerInternal {
       if (artIdSet.isEmpty()) return conflicts;
 
       Branch mergeBranch =
-            BranchPersistenceManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<Integer>(
+            BranchManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<Integer>(
                   artIdSet));
 
       if (mergeBranch == null) {
@@ -450,7 +450,7 @@ public class ConflictManagerInternal {
             try {
                chStmt =
                      ConnectionHandler.runPreparedQuery(GET_COMMIT_TRANSACTION_COMMENT,
-                           BranchPersistenceManager.COMMIT_COMMENT + sourceBranch.getBranchName(),
+                           BranchManager.COMMIT_COMMENT + sourceBranch.getBranchName(),
                            destBranch.getBranchId());
                if (chStmt.next()) {
                   transactionId = chStmt.getInt("transaction_id");

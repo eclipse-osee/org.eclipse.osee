@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -445,7 +445,7 @@ public class XTaskViewer extends XWidget implements IActionable {
                   builder.toString());
       if (delete) {
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
                @Override
                protected void handleTxWork() throws OseeCoreException {
                   // Done for concurrent modification purposes
@@ -619,7 +619,7 @@ public class XTaskViewer extends XWidget implements IActionable {
          try {
             if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
                @Override
                protected void handleTxWork() throws OseeCoreException {
                   for (Artifact art : artsToRelate) {

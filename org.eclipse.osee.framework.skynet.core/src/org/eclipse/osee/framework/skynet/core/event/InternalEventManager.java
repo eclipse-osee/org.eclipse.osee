@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
@@ -221,7 +221,7 @@ public class InternalEventManager {
                   } else if (branchEventType == BranchEventType.Renamed) {
                      Branch branch = null;
                      try {
-                        branch = BranchPersistenceManager.getBranch(branchId);
+                        branch = BranchManager.getBranch(branchId);
                         RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
                               branch.getBranchName(), branch.getBranchShortName()));
                      } catch (Exception ex) {

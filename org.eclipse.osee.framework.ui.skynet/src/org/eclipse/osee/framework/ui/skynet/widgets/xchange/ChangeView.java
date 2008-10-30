@@ -23,7 +23,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -196,7 +196,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
             if (memento != null) {
                branchId = memento.getInteger(BRANCH_ID);
                if (branchId != null) {
-                  openViewUpon(BranchPersistenceManager.getBranch(branchId), null);
+                  openViewUpon(BranchManager.getBranch(branchId), null);
                } else {
                   Integer transactionNumber = memento.getInteger(TRANSACTION_NUMBER);
                   if (transactionNumber != null && transactionNumber > -1) {

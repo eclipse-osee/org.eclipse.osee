@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
@@ -149,7 +149,7 @@ public class FrameworkTransactionData {
          }
          if (artifactIds.size() > 0) {
             artifacts.addAll(ArtifactQuery.getArtifactsFromIds(artifactIds,
-                  BranchPersistenceManager.getBranch(branchId), false));
+                  BranchManager.getBranch(branchId), false));
          }
       } catch (Exception ex) {
          throw new OseeCoreException(ex);

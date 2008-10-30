@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -429,7 +429,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       });
-      item.setEnabled(artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()));
+      item.setEnabled(artifact.getBranch().equals(BranchManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -446,7 +446,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       });
-      item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()));
+      item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(skynetGuiPlugin.getImage("preview_artifact.gif"));
@@ -472,7 +472,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             deleteAction.run();
          }
       });
-      item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()));
+      item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -536,7 +536,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    private void checkEnabledTooltems() {
       if (!attributeComposite.isDisposed()) {
-         boolean areBranchesEqual = artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch());
+         boolean areBranchesEqual = artifact.getBranch().equals(BranchManager.getDefaultBranch());
          boolean isEditAllowed = artifact.isReadOnly() != true;
 
          previewComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
@@ -657,7 +657,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       if (branchModType == BranchEventType.Committed) {
          try {
             changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
-                  BranchPersistenceManager.getDefaultBranch()));
+                  BranchManager.getDefaultBranch()));
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             closeEditor();
@@ -665,10 +665,10 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       }
       if (branchModType == BranchEventType.DefaultBranchChanged) {
          try {
-            if (artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
+            if (artifact.getBranch().equals(BranchManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
                try {
                   changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
-                        BranchPersistenceManager.getDefaultBranch()));
+                        BranchManager.getDefaultBranch()));
                } catch (ArtifactDoesNotExist ex) {
                   System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
                   closeEditor();

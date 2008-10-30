@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.UserCommunityListDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
@@ -84,7 +84,7 @@ public class UserCommunitySearchItem extends WorldSearchItem {
       actionCriteria.add(new InRelationSearch(criteriaSearch, AtsRelation.ActionToWorkflow_Action));
 
       Collection<Artifact> arts =
-            ArtifactPersistenceManager.getArtifacts(actionCriteria, true, BranchPersistenceManager.getAtsBranch());
+            ArtifactPersistenceManager.getArtifacts(actionCriteria, true, BranchManager.getAtsBranch());
 
       if (isCancelled()) return EMPTY_SET;
       return arts;

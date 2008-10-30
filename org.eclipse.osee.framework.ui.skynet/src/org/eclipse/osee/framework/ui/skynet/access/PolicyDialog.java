@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -89,7 +89,7 @@ public class PolicyDialog extends Dialog {
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
       subjectList.addAll(SkynetAuthentication.getUsers());
-      subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getCommonBranch()));
+      subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchManager.getCommonBranch()));
 
       Collections.sort(subjectList);
 

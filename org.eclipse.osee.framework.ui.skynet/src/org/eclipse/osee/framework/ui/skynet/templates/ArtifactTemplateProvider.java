@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -43,7 +43,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();
          Collection<Artifact> artifacts =
-               ArtifactQuery.getArtifactsFromType("Renderer Template", BranchPersistenceManager.getCommonBranch());
+               ArtifactQuery.getArtifactsFromType("Renderer Template", BranchManager.getCommonBranch());
          for (Artifact art : artifacts) {
             Collection<Attribute<String>> attrs = art.getAttributes("Template Match Criteria");
             for (Attribute<String> attr : attrs) {

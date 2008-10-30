@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -77,7 +77,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
 
       if (hridGuids.size() > 0) {
          Collection<Artifact> arts =
-               ArtifactQuery.getArtifactsFromIds(hridGuids, BranchPersistenceManager.getAtsBranch());
+               ArtifactQuery.getArtifactsFromIds(hridGuids, BranchManager.getAtsBranch());
          if (isCancelled()) return EMPTY_SET;
          if (arts != null) resultArts.addAll(arts);
       }

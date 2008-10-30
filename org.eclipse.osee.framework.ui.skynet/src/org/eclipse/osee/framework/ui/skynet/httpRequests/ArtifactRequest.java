@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
@@ -189,9 +189,9 @@ public class ArtifactRequest implements IHttpServerRequest {
    private Artifact getLatestArtifactForBranch(String guid, String branchId, String branchName) throws OseeCoreException {
       final Branch branch;
       if (Strings.isValid(branchId)) {
-         branch = BranchPersistenceManager.getBranch(Integer.parseInt(branchId));
+         branch = BranchManager.getBranch(Integer.parseInt(branchId));
       } else {
-         branch = BranchPersistenceManager.getBranch(branchName);
+         branch = BranchManager.getBranch(branchName);
       }
       return ArtifactQuery.getArtifactFromId(guid, branch, true);
    }

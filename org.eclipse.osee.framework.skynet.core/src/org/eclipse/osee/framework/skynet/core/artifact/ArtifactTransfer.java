@@ -179,7 +179,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
    private Artifact readArtifact(DataInputStream dataIn) throws OseeCoreException, IOException {
       int artID = dataIn.readInt();
       int branchId = dataIn.readInt();
-      return ArtifactQuery.getArtifactFromId(artID, BranchPersistenceManager.getBranch(branchId));
+      return ArtifactQuery.getArtifactFromId(artID, BranchManager.getBranch(branchId));
    }
 
    /**

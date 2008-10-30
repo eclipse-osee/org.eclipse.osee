@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -235,7 +235,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
          if (memento != null) {
             String guid = memento.getString(ARTIFACT_GUID);
             if (guid != null) {
-               artifact = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getDefaultBranch());
+               artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getDefaultBranch());
             }
          }
       } catch (ArtifactDoesNotExist ex) {

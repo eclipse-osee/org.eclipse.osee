@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -232,7 +232,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
          try {
             if (persist) {
                AbstractSkynetTxTemplate transactionWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
 
                         @Override
                         protected void handleTxWork() throws OseeCoreException {

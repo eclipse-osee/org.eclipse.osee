@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -89,25 +89,25 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (SkynetDbInit.isDbInit() || (!SkynetDbInit.isDbInit() && (!prompt || (prompt && MessageDialog.openConfirm(
             Display.getCurrent().getActiveShell(), getName(), getName()))))) {
 
-         DemoDbUtil.setDefaultBranch(BranchPersistenceManager.getKeyedBranch(SawBuilds.SAW_Bld_1.name()));
+         DemoDbUtil.setDefaultBranch(BranchManager.getKeyedBranch(SawBuilds.SAW_Bld_1.name()));
 
          // Import all requirements on SAW_Bld_1 Branch
          DemoDbImportReqsTx importTx =
-               new DemoDbImportReqsTx(BranchPersistenceManager.getAtsBranch(), !SkynetDbInit.isDbInit());
+               new DemoDbImportReqsTx(BranchManager.getAtsBranch(), !SkynetDbInit.isDbInit());
          importTx.execute();
 
          DemoDbUtil.sleep(5000);
 
          // Create traceability between System, Subsystem and Software requirements
          DemoDbTraceabilityTx traceTx =
-               new DemoDbTraceabilityTx(BranchPersistenceManager.getAtsBranch(), !SkynetDbInit.isDbInit());
+               new DemoDbTraceabilityTx(BranchManager.getAtsBranch(), !SkynetDbInit.isDbInit());
          traceTx.execute();
 
          DemoDbUtil.sleep(5000);
 
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
          CreateMainWorkingBranchTx saw2BranchTx =
-               new CreateMainWorkingBranchTx(BranchPersistenceManager.getAtsBranch(), !SkynetDbInit.isDbInit());
+               new CreateMainWorkingBranchTx(BranchManager.getAtsBranch(), !SkynetDbInit.isDbInit());
          saw2BranchTx.execute();
 
          // Create SAW_Bld_2 Actions 
@@ -184,10 +184,10 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private Branch createChildMainWorkingBranch(String parentBrachName, String childBranchName) throws Exception {
-      Branch parentBranch = BranchPersistenceManager.getKeyedBranch(parentBrachName);
+      Branch parentBranch = BranchManager.getKeyedBranch(parentBrachName);
 
       Branch childBranch =
-            BranchPersistenceManager.createWorkingBranch(TransactionIdManager.getInstance().getEditableTransactionId(
+            BranchManager.createWorkingBranch(TransactionIdManager.getInstance().getEditableTransactionId(
                   parentBranch), childBranchName, childBranchName, SkynetAuthentication.getUser(UserEnum.NoOne));
       return childBranch;
    }
@@ -217,7 +217,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Navigation.name());
          Artifact navArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Navigation",
-                     BranchPersistenceManager.getDefaultBranch());
+                     BranchManager.getDefaultBranch());
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, navArt);
          art.persistAttributesAndRelations();
       }
@@ -230,7 +230,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
          Artifact robotArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                     BranchPersistenceManager.getDefaultBranch());
+                     BranchManager.getDefaultBranch());
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, robotArt);
          art.persistAttributesAndRelations();
       }
@@ -292,7 +292,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       branchArtifact.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
       Artifact comArt =
             ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                  BranchPersistenceManager.getDefaultBranch());
+                  BranchManager.getDefaultBranch());
       branchArtifact.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
       branchArtifact.persistAttributesAndRelations();
 
@@ -335,7 +335,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
          Artifact comArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                     BranchPersistenceManager.getDefaultBranch());
+                     BranchManager.getDefaultBranch());
 
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
          art.persistAttributesAndRelations();

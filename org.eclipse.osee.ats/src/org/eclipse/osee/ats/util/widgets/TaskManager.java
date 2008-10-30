@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -80,7 +80,7 @@ public class TaskManager {
       TaskArtifact taskArt = null;
       taskArt =
             (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME,
-                  BranchPersistenceManager.getAtsBranch(), title);
+                  BranchManager.getAtsBranch(), title);
       taskArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
 
       // Initialize state machine

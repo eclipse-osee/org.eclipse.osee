@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.util.Import.ExcelAtsTaskArtifactExtractor;
 import org.eclipse.osee.ats.util.Import.TaskImportJob;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -82,7 +82,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                File file = new File(filename);
                try {
                   Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
-                        (TeamWorkFlowArtifact) artifact, emailPocs, persist), BranchPersistenceManager.getAtsBranch(),
+                        (TeamWorkFlowArtifact) artifact, emailPocs, persist), BranchManager.getAtsBranch(),
                         false));
                } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);

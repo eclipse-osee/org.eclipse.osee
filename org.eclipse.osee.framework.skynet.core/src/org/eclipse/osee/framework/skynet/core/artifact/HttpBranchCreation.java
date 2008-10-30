@@ -52,7 +52,7 @@ public class HttpBranchCreation {
 
       parameters.put(
             "creationComment",
-            BranchPersistenceManager.NEW_BRANCH_COMMENT + parentTransactionId.getBranch().getBranchName() + "(" + parentTransactionId.getTransactionNumber() + ")");
+            BranchManager.NEW_BRANCH_COMMENT + parentTransactionId.getBranch().getBranchName() + "(" + parentTransactionId.getTransactionNumber() + ")");
       if (childBranchShortName != null && childBranchShortName.length() > 0) {
          parameters.put("shortBranchName", childBranchShortName);
       }
@@ -60,7 +60,7 @@ public class HttpBranchCreation {
    }
 
    /**
-    * Creates a new root branch. Should NOT be used outside BranchPersistenceManager. If programatic access is
+    * Creates a new root branch. Should NOT be used outside BranchManager. If programatic access is
     * necessary, setting the staticBranchName will add a key for this branch and allow access to the branch through
     * getKeyedBranch(staticBranchName).
     * 
@@ -69,8 +69,8 @@ public class HttpBranchCreation {
     * @param staticBranchName null if no static key is desired
     * @return branch object
     * @throws OseeCoreException
-    * @see BranchPersistenceManager#createRootBranch(String, String, int)
-    * @see BranchPersistenceManager#getKeyedBranch(String)
+    * @see BranchManager#createRootBranch(String, String, int)
+    * @see BranchManager#getKeyedBranch(String)
     */
    public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, int parentBranchId, boolean systemRootBranch) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
@@ -101,7 +101,7 @@ public class HttpBranchCreation {
                HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
                      OseeApplicationServerContext.BRANCH_CREATION_CONTEXT, parameters)));
          int branchId = Integer.parseInt(response);
-         branch = BranchPersistenceManager.getBranch(branchId);
+         branch = BranchManager.getBranch(branchId);
       } catch (NumberFormatException ex) {
          throw new OseeCoreException(response);
       } catch (Exception ex) {

@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.swt.SWT;
@@ -105,6 +105,6 @@ public class AtsPlugin extends OseeUiActivator {
    }
 
    public static Branch getAtsBranch() throws OseeCoreException {
-      return BranchPersistenceManager.getAtsBranch();
+      return BranchManager.getAtsBranch();
    }
 }

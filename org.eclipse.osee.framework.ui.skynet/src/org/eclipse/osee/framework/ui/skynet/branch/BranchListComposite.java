@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -221,8 +221,8 @@ public class BranchListComposite implements IBranchEventListener {
 
    public void forcePopulateView() throws OseeCoreException {
       if (branchTable != null && !branchTable.getTree().isDisposed()) {
-         BranchPersistenceManager.refreshBranches();
-         branchTable.setInput(BranchPersistenceManager.getInstance());
+         BranchManager.refreshBranches();
+         branchTable.setInput(BranchManager.getInstance());
       }
    }
 
@@ -400,8 +400,8 @@ public class BranchListComposite implements IBranchEventListener {
    }
 
    public void setDefaultBranch(Branch newDefaultBranch) {
-      Branch oldDefaultBranch = BranchPersistenceManager.getDefaultBranch();
-      BranchPersistenceManager.setDefaultBranch(newDefaultBranch);
+      Branch oldDefaultBranch = BranchManager.getDefaultBranch();
+      BranchManager.setDefaultBranch(newDefaultBranch);
       branchTable.update(new Object[] {oldDefaultBranch, newDefaultBranch}, null);
    }
 

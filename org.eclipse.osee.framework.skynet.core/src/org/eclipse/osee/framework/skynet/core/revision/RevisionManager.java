@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -755,7 +755,7 @@ public class RevisionManager {
                         artifact.getBranch().getBranchId(), artifact.getBranch().getParentBranchId());
 
             while (chStmt.next()) {
-               otherBranches.add(BranchPersistenceManager.getBranch(chStmt.getInt("branch_id")));
+               otherBranches.add(BranchManager.getBranch(chStmt.getInt("branch_id")));
             }
          } catch (Exception e) {
             logger.log(Level.SEVERE, e.toString(), e);

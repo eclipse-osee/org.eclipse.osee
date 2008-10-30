@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -86,7 +86,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
 
                // Make the changes and persist
                AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
                         @Override
                         protected void handleTxWork() throws OseeCoreException {
                            for (Artifact artifact : artsToReAssign) {

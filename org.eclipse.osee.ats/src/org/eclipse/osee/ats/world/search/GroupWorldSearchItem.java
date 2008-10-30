@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
@@ -54,7 +54,7 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    public void getProduct() {
       if (groupName == null) return;
       if (group == null) group =
-            UniversalGroup.getGroups(groupName, BranchPersistenceManager.getDefaultBranch()).iterator().next();
+            UniversalGroup.getGroups(groupName, BranchManager.getDefaultBranch()).iterator().next();
       if (group == null) throw new IllegalArgumentException("Can't Find Universal Group for " + getName());
    }
 

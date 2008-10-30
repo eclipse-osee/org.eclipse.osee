@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -132,7 +132,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    private Branch getSelectedBranch() {
-      return BranchPersistenceManager.getDefaultBranch();
+      return BranchManager.getDefaultBranch();
    }
 
    /**

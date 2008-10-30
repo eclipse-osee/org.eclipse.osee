@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -518,7 +518,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
 
       try {
-         for (RelationType descriptor : RelationTypeManager.getValidTypes(BranchPersistenceManager.getDefaultBranch())) {
+         for (RelationType descriptor : RelationTypeManager.getValidTypes(BranchManager.getDefaultBranch())) {
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             addReportJobCommand(menuManager, matrixManager, reportJob);
          }
@@ -531,7 +531,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    private void createRelationMatrixReportMenuItem(MenuManager menuManager, MenuManager reportManager) {
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
       try {
-         for (RelationType descriptor : RelationTypeManager.getValidTypes(BranchPersistenceManager.getDefaultBranch())) {
+         for (RelationType descriptor : RelationTypeManager.getValidTypes(BranchManager.getDefaultBranch())) {
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             createReportJobCommand(menuManager, matrixManager, reportJob);
          }
@@ -697,7 +697,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                   "Set All Partitions on Artifacts\n\n" + sb.toString())) {
 
                AbstractSkynetTxTemplate partitionsTx =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
+                     new AbstractSkynetTxTemplate(BranchManager.getDefaultBranch()) {
 
                         @Override
                         protected void handleTxWork() throws OseeCoreException {

@@ -295,7 +295,7 @@ public final class ArtifactLoader {
 
    private static Artifact retrieveShallowArtifact(ConnectionHandlerStatement chStmt, boolean reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
-      Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
+      Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
       TransactionId transactionId = TransactionIdManager.getTransactionId(chStmt);
       Artifact artifact;
 
@@ -380,7 +380,7 @@ public final class ArtifactLoader {
             int relationId = chStmt.getInt("rel_link_id");
             int aArtifactId = chStmt.getInt("a_art_id");
             int bArtifactId = chStmt.getInt("b_art_id");
-            Branch aBranch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
+            Branch aBranch = BranchManager.getBranch(chStmt.getInt("branch_id"));
             Branch bBranch = aBranch; // TODO these branch ids need to come from the relation link table
             RelationType relationType = RelationTypeManager.getType(chStmt.getInt("rel_link_type_id"));
 

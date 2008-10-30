@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
@@ -68,7 +68,7 @@ public class DefineHttpServerRequest implements IHttpServerRequest {
     * @see org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest#processRequest(org.eclipse.osee.framework.skynet.core.linking.HttpRequest, org.eclipse.osee.framework.skynet.core.linking.HttpResponse)
     */
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
-      final Branch branch = BranchPersistenceManager.getDefaultBranch();
+      final Branch branch = BranchManager.getDefaultBranch();
       String guid = httpRequest.getParameter("guid");
       try {
          final Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch);

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.dialogs.BranchSelectionDialog;
 import org.eclipse.swt.SWT;
@@ -59,7 +59,7 @@ public class BranchSelectComposite extends Composite implements Listener {
       this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
       this.entryChanged = false;
       this.listeners = Collections.synchronizedSet(new HashSet<Listener>());
-      this.currentBranch = BranchPersistenceManager.getDefaultBranch();
+      this.currentBranch = BranchManager.getDefaultBranch();
       createControl(this);
    }
 
@@ -118,7 +118,7 @@ public class BranchSelectComposite extends Composite implements Listener {
             toReturn = (Branch) branchSelectCombo.getData(branchName);
             if (toReturn == null) {
                try {
-                  toReturn = BranchPersistenceManager.getBranch(branchName);
+                  toReturn = BranchManager.getBranch(branchName);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
@@ -189,7 +189,7 @@ public class BranchSelectComposite extends Composite implements Listener {
          String toStore = values[i];
          if (Strings.isValid(toStore)) {
             try {
-               Branch branch = BranchPersistenceManager.getBranch(Integer.parseInt(toStore));
+               Branch branch = BranchManager.getBranch(Integer.parseInt(toStore));
 
                if (isBranchAllowed(branch) != false) {
                   String branchName = branch.getBranchName();

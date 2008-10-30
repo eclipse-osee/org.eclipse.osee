@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
 
-public class BranchPersistenceManager {
+public class BranchManager {
    private static final String READ_BRANCH_TABLE =
          "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
    private static final String READ_MERGE_BRANCHES =
@@ -83,16 +83,16 @@ public class BranchPersistenceManager {
    private static final boolean MERGE_DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
 
-   private static final BranchPersistenceManager instance = new BranchPersistenceManager();
+   private static final BranchManager instance = new BranchManager();
 
    private Branch systemRoot;
 
-   private BranchPersistenceManager() {
+   private BranchManager() {
    }
 
    @Deprecated
    // use static methods instead
-   public static BranchPersistenceManager getInstance() {
+   public static BranchManager getInstance() {
       return instance;
    }
 
@@ -526,15 +526,15 @@ public class BranchPersistenceManager {
     * @param skynetTypesImportExtensionsIds skynetDbTypes extensionIds to import onto new branch
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     * @throws Exception
-    * @see BranchPersistenceManager#intializeBranch
+    * @see BranchManager#intializeBranch
     * @see MasterSkynetTypesImport#importSkynetDbTypes
-    * @see BranchPersistenceManager#getKeyedBranch(String)
+    * @see BranchManager#getKeyedBranch(String)
     */
    public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws OseeCoreException {
       // Create branch with name and static name; short name will be computed from full name
       Branch branch =
             BranchCreator.getInstance().createRootBranch(null, branchName, staticBranchName,
-                  BranchPersistenceManager.getSystemRootBranch().getBranchId(), false);
+                  BranchManager.getSystemRootBranch().getBranchId(), false);
       // Add name to cached keyname if static branch name is desired
       if (staticBranchName != null) {
          KeyedBranchCache.createKeyedBranch(staticBranchName, branch);

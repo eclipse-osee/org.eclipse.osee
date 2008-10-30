@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -209,7 +209,7 @@ public class AttributeConflict extends Conflict {
          if (adapter.isInstance(attribute)) {
             return attribute;
          }
-         Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
+         Branch defaultBranch = BranchManager.getDefaultBranch();
          if (defaultBranch.equals(sourceBranch)) {
             artifact = getSourceArtifact();
             if (adapter.isInstance(artifact)) {
@@ -459,7 +459,7 @@ public class AttributeConflict extends Conflict {
       try {
          artifact =
                ArtifactQuery.getArtifactFromId(getArtifact().getArtId(),
-                     BranchPersistenceManager.getBranch(mergeBranchId));
+                     BranchManager.getBranch(mergeBranchId));
       } catch (ArtifactDoesNotExist ex) {
          return false;
       }

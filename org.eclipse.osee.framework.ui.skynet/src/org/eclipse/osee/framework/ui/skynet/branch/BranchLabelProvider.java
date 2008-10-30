@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
@@ -83,7 +83,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             Branch branch = (Branch) element;
             boolean favorite = SkynetAuthentication.getUser().isFavoriteBranch(branch);
             boolean action = branch.isChangeManaged();
-            boolean isDefault = element.equals(BranchPersistenceManager.getDefaultBranch());
+            boolean isDefault = element.equals(BranchManager.getDefaultBranch());
 
             if (favorite && action) {
                return isDefault ? favoriteDefaultChangedManagedBranchImage : favoriteChangeManagedBranchImage;

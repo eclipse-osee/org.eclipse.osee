@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.swt.SWT;
@@ -76,13 +76,13 @@ public class ArtifactSelectWizardPage extends WizardPage {
          gd.heightHint = 300;
          gd.widthHint = 200;
          artTypeList.getControl().setLayoutData(gd);
-         artTypeList.setInput(TypeValidityManager.getValidArtifactTypes(BranchPersistenceManager.getAtsBranch()));
+         artTypeList.setInput(TypeValidityManager.getValidArtifactTypes(BranchManager.getAtsBranch()));
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                ArtifactType desc = (ArtifactType) selection.getFirstElement();
                try {
-                  artList.setInput(ArtifactQuery.getArtifactsFromType(desc, BranchPersistenceManager.getAtsBranch()));
+                  artList.setInput(ArtifactQuery.getArtifactsFromType(desc, BranchManager.getAtsBranch()));
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }

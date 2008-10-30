@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
@@ -66,7 +66,7 @@ public class BranchRequest implements IHttpServerRequest {
     */
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
       try {
-         List<Branch> branches = BranchPersistenceManager.getNormalBranches();
+         List<Branch> branches = BranchManager.getNormalBranches();
 
          Document doc = Jaxp.newDocument();
          Element root = Jaxp.createElement(doc, "skynet.branches", "");

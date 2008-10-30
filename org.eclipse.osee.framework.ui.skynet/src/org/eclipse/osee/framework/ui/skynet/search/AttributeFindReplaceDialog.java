@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -97,7 +97,7 @@ public class AttributeFindReplaceDialog extends Dialog {
    private void setInputs() {
       try {
          cmbAttributeDescriptors.setInput(TypeValidityManager.getValidAttributeTypes(
-               BranchPersistenceManager.getDefaultBranch()).toArray(AttributeType.EMPTY_ARRAY));
+               BranchManager.getDefaultBranch()).toArray(AttributeType.EMPTY_ARRAY));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (OseeCoreException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});

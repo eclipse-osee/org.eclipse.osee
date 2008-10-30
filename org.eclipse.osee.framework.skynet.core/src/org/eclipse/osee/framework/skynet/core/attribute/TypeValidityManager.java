@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * Caches the mapping of valid attribute types to artifact types for which they are valid
@@ -61,7 +61,7 @@ public class TypeValidityManager {
    }
 
    private void populateCache() throws OseeCoreException {
-      branchToartifactTypeMap.put(BranchPersistenceManager.getSystemRootBranch(), ArtifactTypeManager.getAllTypes());
+      branchToartifactTypeMap.put(BranchManager.getSystemRootBranch(), ArtifactTypeManager.getAllTypes());
 
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -70,7 +70,7 @@ public class TypeValidityManager {
             try {
                ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
                AttributeType attributeType = AttributeTypeManager.getType(chStmt.getInt("attr_type_id"));
-               Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
+               Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
 
                cacheAttributeValidity(artifactType, attributeType, branch);
             } catch (OseeCoreException ex) {

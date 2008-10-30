@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -39,7 +39,7 @@ public class AttributeMapRow {
       for (String artifactTypeName : importer.determineConcreteTypes(artifactSuperTypeName)) {
          ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
          TypeValidityManager.persistAttributeValidity(artifactType, attributeType,
-               BranchPersistenceManager.getSystemRootBranch());
+               BranchManager.getSystemRootBranch());
       }
    }
 }

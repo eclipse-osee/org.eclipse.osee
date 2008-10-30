@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -705,7 +705,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       final StringBuffer sb = new StringBuffer();
 
-      AbstractSkynetTxTemplate transaction = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+      AbstractSkynetTxTemplate transaction = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
 
          @Override
          protected void handleTxWork() throws OseeCoreException {
@@ -791,11 +791,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       if (guid == null)
          teamArt =
                (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName,
-                     BranchPersistenceManager.getAtsBranch());
+                     BranchManager.getAtsBranch());
       else
          teamArt =
                (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName,
-                     BranchPersistenceManager.getAtsBranch(), guid, hrid);
+                     BranchManager.getAtsBranch(), guid, hrid);
       setArtifactIdentifyData(this, teamArt);
 
       teamArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");

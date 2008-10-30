@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -138,7 +138,7 @@ public class LoadAIsAndTeamsAction {
       if (workFlow == null) throw new IllegalArgumentException("ATS config items can't be loaded.");
 
       try {
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
 
             @Override
             protected void handleTxWork() throws OseeCoreException {
@@ -309,7 +309,7 @@ public class LoadAIsAndTeamsAction {
          if (aia == null) {
             aia =
                   (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
-                        BranchPersistenceManager.getAtsBranch());
+                        BranchManager.getAtsBranch());
             aia.setDescriptiveName(page.getName());
             for (String staticId : staticIds) {
                aia.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, staticId);

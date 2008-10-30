@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -33,14 +33,14 @@ public abstract class XTypeListViewer extends XListViewer {
       Branch branch = null;
       try {
          if (keyedBranchName != null) {
-            branch = BranchPersistenceManager.getKeyedBranch(keyedBranchName);
+            branch = BranchManager.getKeyedBranch(keyedBranchName);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
       if (branch == null) {
-         branch = BranchPersistenceManager.getDefaultBranch();
+         branch = BranchManager.getDefaultBranch();
       }
       return branch;
    }

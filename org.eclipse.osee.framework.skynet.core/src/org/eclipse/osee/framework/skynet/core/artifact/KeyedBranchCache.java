@@ -66,7 +66,7 @@ public class KeyedBranchCache {
          while (chStmt.next()) {
             try {
                keynameBranchMap.put(chStmt.getString("static_branch_name").toLowerCase(),
-                     BranchPersistenceManager.getBranch(chStmt.getInt("mapped_branch_id")));
+                     BranchManager.getBranch(chStmt.getInt("mapped_branch_id")));
             } catch (BranchDoesNotExist ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }

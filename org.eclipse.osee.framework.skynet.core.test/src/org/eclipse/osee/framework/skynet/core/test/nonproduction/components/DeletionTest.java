@@ -98,7 +98,7 @@ public class DeletionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(Branch, Branch)}
+    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)}
     * .
     */
    public void deleteAndCheckTXCurrents() throws OseeCoreException, InterruptedException {

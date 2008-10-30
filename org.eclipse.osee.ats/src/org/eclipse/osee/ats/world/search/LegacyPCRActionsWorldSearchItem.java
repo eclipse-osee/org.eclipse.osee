@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
@@ -65,6 +65,6 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
          criteria.add(new RelationCriteria(AtsRelation.ActionToWorkflow_Action));
       }
 
-      return ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), 200, criteria);
+      return ArtifactQuery.getArtifactsFromCriteria(BranchManager.getAtsBranch(), 200, criteria);
    }
 }

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -350,7 +350,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                if (artifacts.size() == 0) return;
                Artifact artifact = artifacts.iterator().next();
                try {
-                  if (artifact.getBranch() != BranchPersistenceManager.getAtsBranch() && artifact.getBranch() != BranchPersistenceManager.getDefaultBranch()) {
+                  if (artifact.getBranch() != BranchManager.getAtsBranch() && artifact.getBranch() != BranchManager.getDefaultBranch()) {
                      AWorkbench.getActivePage().closeEditor(editor, false);
                      return;
                   }

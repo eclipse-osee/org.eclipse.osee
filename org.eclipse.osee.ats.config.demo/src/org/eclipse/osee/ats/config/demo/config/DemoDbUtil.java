@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig.SawBuilds;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -54,9 +54,9 @@ public class DemoDbUtil {
 
    public static void setDefaultBranch(Branch branch) throws Exception {
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Setting default branch to \"" + branch + "\".");
-      BranchPersistenceManager.setDefaultBranch(branch);
+      BranchManager.setDefaultBranch(branch);
       sleep(2000L);
-      Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
+      Branch defaultBranch = BranchManager.getDefaultBranch();
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Current Default == \"" + defaultBranch + "\".");
       if (!branch.equals(defaultBranch)) {
          throw new IllegalStateException("Default Branch did not change on setDefaultBranch.");
@@ -64,7 +64,7 @@ public class DemoDbUtil {
    }
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
-      setDefaultBranch(BranchPersistenceManager.getKeyedBranch(SawBuilds.SAW_Bld_1.name()));
+      setDefaultBranch(BranchManager.getKeyedBranch(SawBuilds.SAW_Bld_1.name()));
 
       if (DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot).size() != 6) return new Result(
             "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
@@ -79,10 +79,10 @@ public class DemoDbUtil {
       OseeLog.log(
             OseeAtsConfigDemoPlugin.class,
             Level.INFO,
-            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + BranchPersistenceManager.getDefaultBranch().getBranchName());
+            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + BranchManager.getDefaultBranch().getBranchName());
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactsFromTypeAndName(artifactType, "%" + artifactNameStr + "%",
-                  BranchPersistenceManager.getDefaultBranch());
+                  BranchManager.getDefaultBranch());
 
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Found " + arts.size() + " Artifacts");
       return arts;
@@ -96,7 +96,7 @@ public class DemoDbUtil {
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,
             "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       return ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
-            BranchPersistenceManager.getDefaultBranch());
+            BranchManager.getDefaultBranch());
    }
 
 }

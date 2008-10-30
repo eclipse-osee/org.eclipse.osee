@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
@@ -79,7 +79,7 @@ public class BranchSelectionDialog extends ElementTreeSelectionDialog {
 
    private void initialize() {
       try {
-         List<Branch> branchList = BranchPersistenceManager.getTopLevelBranches();
+         List<Branch> branchList = BranchManager.getTopLevelBranches();
          setInput(branchList);
       } catch (Exception ex) {
          logger.log(Level.SEVERE, "Unable to get root branches.", ex);

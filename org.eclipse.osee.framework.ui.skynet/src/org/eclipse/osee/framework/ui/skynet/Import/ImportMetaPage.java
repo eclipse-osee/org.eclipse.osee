@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -112,10 +112,10 @@ public class ImportMetaPage extends WizardDataTransferPage {
       branchList.setLayoutData(gridData);
 
       try {
-         Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
+         Branch defaultBranch = BranchManager.getDefaultBranch();
 
          int defaultBranchIndex = 0;
-         for (Branch branch : BranchPersistenceManager.getNormalBranches()) {
+         for (Branch branch : BranchManager.getNormalBranches()) {
             branchList.add(branch.getBranchName());
             branchList.setData(branch.getBranchName(), branch);
             if (branch.equals(defaultBranch)) {

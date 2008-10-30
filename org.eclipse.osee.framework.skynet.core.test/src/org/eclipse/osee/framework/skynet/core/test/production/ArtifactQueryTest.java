@@ -8,7 +8,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -17,14 +17,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class ArtifactQueryTest extends TestCase {
 
    public void testGetArtifactFromId() throws OseeCoreException {
-      Branch common = BranchPersistenceManager.getCommonBranch();
+      Branch common = BranchManager.getCommonBranch();
       Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(common);
       Artifact artifact = ArtifactQuery.getArtifactFromId(root.getHumanReadableId(), common);
       assertEquals(root.getHumanReadableId(), artifact.getHumanReadableId());
    }
 
    public void testGetArtifactsFromBranch() throws OseeCoreException {
-      Branch common = BranchPersistenceManager.getCommonBranch();
+      Branch common = BranchManager.getCommonBranch();
       List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(common, true);
 
       assertTrue(artifacts.size() > 0);
@@ -35,7 +35,7 @@ public class ArtifactQueryTest extends TestCase {
    }
 
    public void testQuickSearch() throws Exception {
-      Branch branch = BranchPersistenceManager.getBranch("MYII V13 - FTB1");
+      Branch branch = BranchManager.getBranch("MYII V13 - FTB1");
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromAttributeWithKeywords("[.PRE_RETRIES]", false, false, branch);
       Collections.sort(artifacts);

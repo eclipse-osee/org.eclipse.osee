@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -198,7 +198,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      final Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                      AbstractSkynetTxTemplate relateArtifactTx =
-                           new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
+                           new AbstractSkynetTxTemplate(BranchManager.getDefaultBranch()) {
 
                               @Override
                               protected void handleTxWork() throws OseeCoreException {
@@ -295,7 +295,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
          return;
       }
       AbstractSkynetTxTemplate relateArtifactTx =
-            new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
+            new AbstractSkynetTxTemplate(BranchManager.getDefaultBranch()) {
 
                @Override
                protected void handleTxWork() throws OseeCoreException {

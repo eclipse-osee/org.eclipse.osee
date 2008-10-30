@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
@@ -74,7 +74,7 @@ public class ArtifactConflict extends Conflict {
 
       try {
          Artifact artifact;
-         Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
+         Branch defaultBranch = BranchManager.getDefaultBranch();
          if (defaultBranch.equals(sourceBranch)) {
             artifact = getSourceArtifact();
             if (adapter.isInstance(artifact)) {

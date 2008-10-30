@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -106,10 +106,10 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
 
                   // Preserve software reqts
                   String[] preserveTypes = new String[] {Requirements.SOFTWARE_REQUIREMENT};
-                  BranchPersistenceManager.createBranchWithFiltering(parentTransactionId, null, dialog.getEntry(),
+                  BranchManager.createBranchWithFiltering(parentTransactionId, null, dialog.getEntry(),
                         null, compressTypes.toArray(new String[compressTypes.size()]), preserveTypes);
                } else {
-                  BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
+                  BranchManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
                }
             }
          };

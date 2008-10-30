@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
@@ -381,7 +381,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          if (useArts.size() > 0) {
             if (persist) {
                AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
 
                         @Override
                         protected void handleTxWork() throws OseeCoreException {
@@ -743,7 +743,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             dialog.open();
             if (dialog.getReturnCode() == 0) {
                AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
 
                         @Override
                         protected void handleTxWork() throws OseeCoreException {

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
@@ -63,7 +63,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       EntryDialog ed =
             new EntryDialog(
                   getName(),
-                  "Searching on current default branch \"" + BranchPersistenceManager.getDefaultBranch().getBranchName() + "\"\n\nEnter Artifact Name (or string) to search (no wildcards)");
+                  "Searching on current default branch \"" + BranchManager.getDefaultBranch().getBranchName() + "\"\n\nEnter Artifact Name (or string) to search (no wildcards)");
       if (ed.open() == 0) {
          ActionToArtifactImpactJob job = new ActionToArtifactImpactJob(ed.getEntry());
          job.setUser(true);
@@ -96,7 +96,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
       private void getMatrixItems() throws OseeCoreException {
          final Collection<Artifact> srchArts =
-               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%", BranchPersistenceManager.getDefaultBranch());
+               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%", BranchManager.getDefaultBranch());
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.size() == 0) return;
          if (srchArts.size() > 1) {
@@ -119,7 +119,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             processArts.addAll(srchArts);
          }
          int x = 1;
-         rd.log("Artifact Impact to Action for artifact(s) on default branch \"" + BranchPersistenceManager.getDefaultBranch().getBranchName() + "\"");
+         rd.log("Artifact Impact to Action for artifact(s) on default branch \"" + BranchManager.getDefaultBranch().getBranchName() + "\"");
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getDescriptiveName());
             System.out.println(str);
@@ -155,7 +155,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                if (transData.getCommitArtId() > 0) {
                   Artifact assocArt =
                         ArtifactQuery.getArtifactFromId(transData.getCommitArtId(),
-                              BranchPersistenceManager.getAtsBranch());
+                              BranchManager.getAtsBranch());
                   if (assocArt instanceof TeamWorkFlowArtifact) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Committed",
                            assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));

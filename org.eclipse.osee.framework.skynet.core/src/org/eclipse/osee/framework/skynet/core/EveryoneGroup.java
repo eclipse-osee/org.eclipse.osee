@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -35,13 +35,13 @@ public class EveryoneGroup {
       try {
          List<Artifact> artifacts =
                ArtifactQuery.getArtifactsFromTypeAndName("User Group", GROUP_NAME,
-                     BranchPersistenceManager.getCommonBranch());
+                     BranchManager.getCommonBranch());
 
          if (!artifacts.isEmpty()) {
             everyoneGroup = artifacts.get(0);
          } else {
             everyoneGroup =
-                  ArtifactTypeManager.addArtifact("User Group", BranchPersistenceManager.getCommonBranch(), GROUP_NAME);
+                  ArtifactTypeManager.addArtifact("User Group", BranchManager.getCommonBranch(), GROUP_NAME);
 
             boolean wasNotInDbInit = !SkynetDbInit.isDbInit();
             if (wasNotInDbInit) { // EveryoneGroup needs to be created under the special condition of the init

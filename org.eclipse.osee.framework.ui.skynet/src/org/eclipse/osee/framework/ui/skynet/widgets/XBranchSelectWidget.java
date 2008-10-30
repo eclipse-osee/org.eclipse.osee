@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectComposite;
@@ -216,7 +216,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
    public void setDefaultBranch(String branchName) {
       if (Strings.isValid(branchName) != false) {
          try {
-            Branch branch = BranchPersistenceManager.getBranch(branchName);
+            Branch branch = BranchManager.getBranch(branchName);
             defaultBranch = branch.getBranchId();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Unable to set default branch.", ex);

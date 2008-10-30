@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
@@ -67,7 +67,7 @@ public class ArtifactTreeRequest implements IHttpServerRequest {
       String levelKey = httpRequest.getParameter(LEVELS_KEY);
 
       try {
-         Branch branch = BranchPersistenceManager.getBranch(Integer.parseInt(branchKey));
+         Branch branch = BranchManager.getBranch(Integer.parseInt(branchKey));
 
          Artifact artifact = null;
          if (Strings.isValid(guidLevel)) {

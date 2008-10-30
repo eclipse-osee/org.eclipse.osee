@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BlobWordAttribute;
@@ -204,12 +204,12 @@ public class ConflictTestManager {
       TransactionId parentTransactionId;
       Branch branch;
       try {
-         branch = BranchPersistenceManager.getBranch("Block III Main");
+         branch = BranchManager.getBranch("Block III Main");
       } catch (Exception ex) {
-         branch = BranchPersistenceManager.getBranch("SAW_Bld_1");
+         branch = BranchManager.getBranch("SAW_Bld_1");
       }
       parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
-      destBranch = BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, DEST_BRANCH, null);
+      destBranch = BranchManager.createWorkingBranch(parentTransactionId, null, DEST_BRANCH, null);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);
 
@@ -231,7 +231,7 @@ public class ConflictTestManager {
       // Create the source branch
 
       parentTransactionId = transactionIdManager.getEditableTransactionId(destBranch);
-      sourceBranch = BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, SOURCE_BRANCH, null);
+      sourceBranch = BranchManager.createWorkingBranch(parentTransactionId, null, SOURCE_BRANCH, null);
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          sourceArtifacts[i] = ArtifactQuery.getArtifactFromId(destArtifacts[i].getArtId(), sourceBranch);
@@ -370,11 +370,11 @@ public class ConflictTestManager {
       Branch dBranch = null;
       Branch mBranch = null;
       try {
-         sBranch = BranchPersistenceManager.getBranch(SOURCE_BRANCH);
+         sBranch = BranchManager.getBranch(SOURCE_BRANCH);
       } catch (Exception ex) {
       }
       if (sBranch == null) {
-         for (Branch branch : BranchPersistenceManager.getArchivedBranches()) {
+         for (Branch branch : BranchManager.getArchivedBranches()) {
             if (branch.getBranchName().equals(SOURCE_BRANCH)) {
                sBranch = branch;
                break;
@@ -382,11 +382,11 @@ public class ConflictTestManager {
          }
       }
       try {
-         dBranch = BranchPersistenceManager.getBranch(DEST_BRANCH);
+         dBranch = BranchManager.getBranch(DEST_BRANCH);
       } catch (Exception ex) {
       }
       if (dBranch == null) {
-         for (Branch branch : BranchPersistenceManager.getArchivedBranches()) {
+         for (Branch branch : BranchManager.getArchivedBranches()) {
             if (branch.getBranchName().equals(DEST_BRANCH)) {
                dBranch = branch;
                break;
@@ -394,18 +394,18 @@ public class ConflictTestManager {
          }
       }
       try {
-         mBranch = BranchPersistenceManager.getMergeBranch(sBranch, dBranch);
+         mBranch = BranchManager.getMergeBranch(sBranch, dBranch);
       } catch (Exception ex) {
       }
 
       if (mBranch != null) {
-         BranchPersistenceManager.deleteBranch(mBranch).join();
+         BranchManager.deleteBranch(mBranch).join();
       }
       if (sBranch != null) {
-         BranchPersistenceManager.deleteBranch(sBranch).join();
+         BranchManager.deleteBranch(sBranch).join();
       }
       if (dBranch != null) {
-         BranchPersistenceManager.deleteBranch(dBranch).join();
+         BranchManager.deleteBranch(dBranch).join();
       }
    }
 

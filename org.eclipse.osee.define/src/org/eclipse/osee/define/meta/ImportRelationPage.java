@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -150,7 +150,7 @@ public class ImportRelationPage extends WizardDataTransferPage {
 
          File file = new File(txtSingleFile.getText());
          // TODO this branch needs to be selected from the wizard not hard coded
-         Job job = new ImportRelationJob(file, BranchPersistenceManager.getDefaultBranch());
+         Job job = new ImportRelationJob(file, BranchManager.getDefaultBranch());
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();

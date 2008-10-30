@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.swt.widgets.Composite;
@@ -66,7 +66,7 @@ public class SkyWalkerView extends ViewPart implements IActionable {
 
       });
       try {
-         viewer.setInput(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getDefaultBranch()));
+         viewer.setInput(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getDefaultBranch()));
       } catch (Exception ex) {
          ex.printStackTrace();
       }

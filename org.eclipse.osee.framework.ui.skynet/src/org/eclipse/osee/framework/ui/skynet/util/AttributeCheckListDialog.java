@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -107,7 +107,7 @@ public class AttributeCheckListDialog extends SelectionDialog {
          }
       });
       try {
-         treeViewer.setInput(TypeValidityManager.getValidAttributeTypes(BranchPersistenceManager.getDefaultBranch()));
+         treeViewer.setInput(TypeValidityManager.getValidAttributeTypes(BranchManager.getDefaultBranch()));
          treeViewer.setCheckedElements(objs.toArray(new Object[objs.size()]));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

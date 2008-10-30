@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
@@ -60,7 +60,7 @@ public class AtsHttpServerRequest implements IHttpServerRequest {
       String guid = httpRequest.getParameter("guid");
       try {
          final Artifact artifact =
-               ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch());
+               ArtifactQuery.getArtifactFromId(guid, BranchManager.getAtsBranch());
 
          if (artifact instanceof IATSArtifact) {
             Display.getDefault().asyncExec(new Runnable() {

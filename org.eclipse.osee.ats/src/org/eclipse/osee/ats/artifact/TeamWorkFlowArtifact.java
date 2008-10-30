@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -352,7 +352,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             }
 
             ActionableItemsTx txWrapper =
-                  new ActionableItemsTx(BranchPersistenceManager.getAtsBranch(), selectedAlias, null);
+                  new ActionableItemsTx(BranchManager.getAtsBranch(), selectedAlias, null);
             txWrapper.execute();
             toReturn = txWrapper.getResult();
          }
@@ -417,7 +417,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
                Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
                toProcess.add(selectedAia);
                ActionableItemsTx txWrapper =
-                     new ActionableItemsTx(BranchPersistenceManager.getAtsBranch(), toProcess, newTeamDef);
+                     new ActionableItemsTx(BranchManager.getAtsBranch(), toProcess, newTeamDef);
                txWrapper.execute();
                toReturn = txWrapper.getResult();
             }

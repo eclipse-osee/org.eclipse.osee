@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -58,7 +58,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
          int branchId = art.getSoleAttributeValue("ats.Branch Id");
          Branch branch = null;
          try {
-            branch = BranchPersistenceManager.getBranch(branchId);
+            branch = BranchManager.getBranch(branchId);
          } catch (BranchDoesNotExist ex) {
             System.out.println("Branch does not exist for art " + art.getHumanReadableId() + " - " + art);
          } catch (Exception ex) {
@@ -69,7 +69,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
          }
       }
 
-      //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+      //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
       //         @Override
       //         protected void handleTxWork() throws OseeCoreException {
       //            //            importTaskEstimatedHours();
@@ -248,7 +248,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    }
 
    //   private void deleteUnAssignedUserRelations() throws OseeCoreException {
-   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
    //
    //         @Override
    //         protected void handleTxWork() throws OseeCoreException {
@@ -329,13 +329,13 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    //      }
    //   }
    //   private void relateDonDunne()throws OseeCoreException{
-   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
    //
    //         @Override
    //         protected void handleTxWork()throws OseeCoreException{
    //            for (Artifact art : ArtifactQuery.getArtifactsFromAttribute(
    //                  ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-   //                  "%<" + SkynetAuthentication.getUser().getUserId() + ">%", BranchPersistenceManager.getAtsBranch())) {
+   //                  "%<" + SkynetAuthentication.getUser().getUserId() + ">%", BranchManager.getAtsBranch())) {
    //               if ((art instanceof StateMachineArtifact) && ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getAssignees().contains(
    //                     SkynetAuthentication.getUser())) {
    //                  art.addRelation(CoreRelationEnumeration.Users_User, SkynetAuthentication.getUser());
@@ -362,7 +362,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
 
    //   private void deleteNullAttributes() throws OseeCoreException {
    //
-   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
    //
    //         @Override
    //         protected void handleTxWork() throws OseeCoreException {
@@ -394,7 +394,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    //
    //   private void deleteNullUserAttributes() throws OseeCoreException {
    //
-   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
    //
    //         @Override
    //         protected void handleTxWork() throws OseeCoreException {

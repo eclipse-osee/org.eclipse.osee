@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -140,7 +140,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       }
 
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), 1000, criteria);
+            ArtifactQuery.getArtifactsFromCriteria(BranchManager.getAtsBranch(), 1000, criteria);
 
       List<Artifact> unReleasedArtifacts = new ArrayList<Artifact>();
       for (Artifact artifact : artifacts) {

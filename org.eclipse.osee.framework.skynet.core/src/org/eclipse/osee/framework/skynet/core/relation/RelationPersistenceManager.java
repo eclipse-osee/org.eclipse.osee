@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * reason, successive calls to the database for the same relation will return a reference to the same exact object.
  * 
  * @see org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager
- * @see org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager
+ * @see org.eclipse.osee.framework.skynet.core.artifact.BranchManager
  * @author Robert A. Fisher
  */
 public class RelationPersistenceManager {

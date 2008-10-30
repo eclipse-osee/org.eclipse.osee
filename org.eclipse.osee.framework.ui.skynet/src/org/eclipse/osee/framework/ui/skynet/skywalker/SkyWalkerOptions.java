@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -154,7 +154,7 @@ public class SkyWalkerOptions {
          String guid = AXml.getTagData(xml, "guid");
          if (guid != null && !guid.equals("")) {
             String branchId = AXml.getTagData(xml, "branchId");
-            Branch branch = BranchPersistenceManager.getBranch(Integer.parseInt(branchId));
+            Branch branch = BranchManager.getBranch(Integer.parseInt(branchId));
             Artifact art = ArtifactQuery.getArtifactFromId(guid, branch);
             if (art != null) {
                setArtifact(art);

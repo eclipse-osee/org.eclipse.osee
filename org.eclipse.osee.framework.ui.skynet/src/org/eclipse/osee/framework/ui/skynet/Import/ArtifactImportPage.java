@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -261,14 +261,14 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       Branch defaultBranch;
       if (destinationArtifact == null) {
-         defaultBranch = BranchPersistenceManager.getDefaultBranch();
+         defaultBranch = BranchManager.getDefaultBranch();
       } else {
          defaultBranch = destinationArtifact.getBranch();
       }
 
       try {
          int defaultBranchIndex = 0;
-         for (Branch branch : BranchPersistenceManager.getNormalBranches()) {
+         for (Branch branch : BranchManager.getNormalBranches()) {
             branchList.add(branch.getBranchName());
             branchList.setData(branch.getBranchName(), branch);
             if (branch.equals(defaultBranch)) {

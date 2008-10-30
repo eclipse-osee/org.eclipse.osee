@@ -60,7 +60,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
@@ -452,7 +452,7 @@ public class BranchView extends ViewPart implements IActionable {
 
    private void addBranchSelectionMenu(MenuManager menuManager) {
       try {
-         for (Branch branch : BranchPersistenceManager.getNormalBranches()) {
+         for (Branch branch : BranchManager.getNormalBranches()) {
 
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put(BRANCH_ID, Integer.toString(branch.getBranchId()));
@@ -504,7 +504,7 @@ public class BranchView extends ViewPart implements IActionable {
                            Commands.getLocalCommandContribution(
                                  getSite(),
                                  menuManager.getId(),
-                                 branch == 0 ? "Can't Merge a Root Branch" : BranchPersistenceManager.getBranch(branch).getBranchName(),
+                                 branch == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branch).getBranchName(),
                                  BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
                      menuManager.add(mergeCommand);
                   }
@@ -532,7 +532,7 @@ public class BranchView extends ViewPart implements IActionable {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
          Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
          try {
-            Branch toBranch = BranchPersistenceManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
+            Branch toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
             if (selectedBranch != null && toBranch != null) {
                MergeView.openView(selectedBranch, toBranch,
                      TransactionIdManager.getStartEndPoint(selectedBranch).getKey());
@@ -733,7 +733,7 @@ public class BranchView extends ViewPart implements IActionable {
 
             if (MessageDialog.openConfirm(HandlerUtil.getActiveShell(event), "Delete Transaction",
                   "Are you sure you want to delete the transaction: " + selectedTransaction.getTransactionNumber())) {
-               BranchPersistenceManager.deleteTransactions(new JobChangeAdapter() {
+               BranchManager.deleteTransactions(new JobChangeAdapter() {
 
                   /* (non-Javadoc)
                    * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
@@ -802,7 +802,7 @@ public class BranchView extends ViewPart implements IActionable {
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getDefaultBranch();
+            return SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchManager.getDefaultBranch();
          }
       });
 
@@ -900,9 +900,9 @@ public class BranchView extends ViewPart implements IActionable {
             if (useParentBranch) {
                toBranch = fromBranch.getParentBranch();
             } else {
-               toBranch = BranchPersistenceManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
+               toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
             }
-            BranchPersistenceManager.commitBranch(fromBranch, toBranch, archiveSourceBranch, false);
+            BranchManager.commitBranch(fromBranch, toBranch, archiveSourceBranch, false);
          } catch (ConflictDetectionException ex) {
             MessageDialog dialog;
             if (OseeProperties.isDeveloper()) {
@@ -929,7 +929,7 @@ public class BranchView extends ViewPart implements IActionable {
                if (result == 1) {
                   MergeView.openView(fromBranch, toBranch, TransactionIdManager.getStartEndPoint(fromBranch).getKey());
                } else if (result == 2) {
-                  BranchPersistenceManager.commitBranch(fromBranch, toBranch, true, true);
+                  BranchManager.commitBranch(fromBranch, toBranch, true, true);
                }
             } catch (Exception exc) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Commit Branch Failed", exc);
@@ -1088,14 +1088,14 @@ public class BranchView extends ViewPart implements IActionable {
       public Object execute(ExecutionEvent event) throws ExecutionException {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
          try {
-            Branch toBranch = BranchPersistenceManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
+            Branch toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
 
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Move Transactions",
                   "All selected transactions will be moved to branch " + toBranch.getBranchName())) {
                Iterator<JobbedNode> iter = selection.iterator();
                while (iter.hasNext()) {
                   TransactionData transactionData = (TransactionData) iter.next().getBackingData();
-                  BranchPersistenceManager.moveTransaction(transactionData.getTransactionId(), toBranch);
+                  BranchManager.moveTransaction(transactionData.getTransactionId(), toBranch);
                }
             }
          } catch (Exception ex) {
@@ -1160,7 +1160,7 @@ public class BranchView extends ViewPart implements IActionable {
                         MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
             if (dialog.open() == 0) {
-               BranchPersistenceManager.deleteBranch(selectedBranch);
+               BranchManager.deleteBranch(selectedBranch);
             }
 
             return null;
@@ -1169,7 +1169,7 @@ public class BranchView extends ViewPart implements IActionable {
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getDefaultBranch();
+            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchManager.getDefaultBranch();
          }
       });
    }
@@ -1242,7 +1242,7 @@ public class BranchView extends ViewPart implements IActionable {
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getDefaultBranch();
+            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchManager.getDefaultBranch();
          }
       });
    }
@@ -1333,7 +1333,7 @@ public class BranchView extends ViewPart implements IActionable {
                   String artId = ed.getEntry();
                   Artifact associatedArtifact =
                         ArtifactQuery.getArtifactFromId(Integer.parseInt(artId),
-                              BranchPersistenceManager.getAtsBranch());
+                              BranchManager.getAtsBranch());
                   if (MessageDialog.openConfirm(
                         Display.getCurrent().getActiveShell(),
                         "Set Associated Artifact",

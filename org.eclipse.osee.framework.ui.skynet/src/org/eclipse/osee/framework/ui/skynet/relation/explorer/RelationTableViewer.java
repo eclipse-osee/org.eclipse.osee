@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -68,7 +68,7 @@ public class RelationTableViewer {
       try {
          fullDescriptorList =
                new ArrayList<ArtifactType>(
-                     TypeValidityManager.getValidArtifactTypes(BranchPersistenceManager.getDefaultBranch()));
+                     TypeValidityManager.getValidArtifactTypes(BranchManager.getDefaultBranch()));
          defaultArtifactType = ArtifactTypeManager.getType(Requirements.TEST_SCRIPT);
       } catch (OseeCoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

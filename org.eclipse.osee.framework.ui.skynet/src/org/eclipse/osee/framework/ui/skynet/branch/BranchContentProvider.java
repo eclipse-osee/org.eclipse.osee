@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -112,7 +112,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
 
       @SuppressWarnings("unchecked")
       public Object[] run(Object parentElement) throws Exception {
-         if (parentElement instanceof BranchPersistenceManager) {
+         if (parentElement instanceof BranchManager) {
             List<BranchType> branchTypes = new ArrayList<BranchType>(4);
             branchTypes.add(BranchType.TOP_LEVEL);
             if (OseeProperties.isDeveloper() && showMergeBranches) {
@@ -125,7 +125,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             }
 
             List<Branch> branches =
-                  BranchPersistenceManager.getBranches(BranchState.ACTIVE, BranchControlled.ALL,
+                  BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.ALL,
                         branchTypes.toArray(new BranchType[branchTypes.size()]));
             return branches.toArray();
          } else if (parentElement instanceof Branch) {
@@ -262,7 +262,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       if (element instanceof TransactionData) {
          TransactionData data = (TransactionData) element;
 
-         if (data.getComment() != null && data.getComment().contains(BranchPersistenceManager.NEW_BRANCH_COMMENT)) return false;
+         if (data.getComment() != null && data.getComment().contains(BranchManager.NEW_BRANCH_COMMENT)) return false;
       }
       if (element instanceof Branch) {
          Branch branch = (Branch) element;

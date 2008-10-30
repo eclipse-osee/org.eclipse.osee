@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -213,7 +213,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
                   MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            UniversalGroup.addGroup(ed.getEntry(), BranchPersistenceManager.getDefaultBranch());
+            UniversalGroup.addGroup(ed.getEntry(), BranchManager.getDefaultBranch());
             treeViewer.refresh();
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -230,7 +230,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove From Group",
             "Remove From Group - (Artifacts will not be deleted)\n\nAre you sure?")) {
          AbstractSkynetTxTemplate unrelateTx =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
+               new AbstractSkynetTxTemplate(BranchManager.getDefaultBranch()) {
                   @Override
                   protected void handleTxWork() throws OseeCoreException {
                      for (GroupExplorerItem item : items) {
@@ -262,7 +262,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
             "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
 
          AbstractSkynetTxTemplate deleteUniversalGroupTx =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
+               new AbstractSkynetTxTemplate(BranchManager.getDefaultBranch()) {
                   @Override
                   protected void handleTxWork() throws OseeCoreException {
                      for (GroupExplorerItem item : items) {
@@ -369,7 +369,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
 
       Artifact topArt = null;
       try {
-         topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
+         topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchManager.getDefaultBranch());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -432,7 +432,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (rootArt != null && transData.branchId != rootArt.getBranch().getBranchId()) return;
       try {
-         Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
+         Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchManager.getDefaultBranch());
          if (topArt != null) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override

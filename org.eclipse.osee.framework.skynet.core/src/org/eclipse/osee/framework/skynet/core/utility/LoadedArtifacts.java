@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
 /**
@@ -73,7 +73,7 @@ public class LoadedArtifacts {
    public boolean isNotForDefaultBranch() throws OseeCoreException {
       Collection<Artifact> loadedArtifacts = getLoadedArtifacts();
       if (loadedArtifacts.size() > 0) {
-         return !getLoadedArtifacts().iterator().next().getBranch().equals(BranchPersistenceManager.getDefaultBranch());
+         return !getLoadedArtifacts().iterator().next().getBranch().equals(BranchManager.getDefaultBranch());
       }
       return false;
    }
@@ -127,7 +127,7 @@ public class LoadedArtifacts {
             for (UnloadedArtifact unloadedArtifact : new CopyOnWriteArrayList<UnloadedArtifact>(unloadedArtifacts)) {
                Artifact art =
                      ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
-                           BranchPersistenceManager.getBranch(unloadedArtifact.getBranchId()));
+                           BranchManager.getBranch(unloadedArtifact.getBranchId()));
                if (art != null) {
                   unloadedArtifacts.remove(unloadedArtifact);
                   artifacts.add(art);

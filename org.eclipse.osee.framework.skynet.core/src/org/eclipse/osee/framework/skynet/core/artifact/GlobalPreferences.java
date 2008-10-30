@@ -35,7 +35,7 @@ public class GlobalPreferences extends Artifact {
       if (instance == null) {
          instance =
                (GlobalPreferences) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, ARTIFACT_NAME,
-                     BranchPersistenceManager.getCommonBranch());
+                     BranchManager.getCommonBranch());
       }
       return instance;
    }
@@ -43,7 +43,7 @@ public class GlobalPreferences extends Artifact {
    public static void createGlobalPreferencesArtifact() throws OseeCoreException {
       Artifact art =
             ArtifactTypeManager.addArtifact(GlobalPreferences.ARTIFACT_NAME,
-                  BranchPersistenceManager.getCommonBranch(), GlobalPreferences.ARTIFACT_NAME);
+                  BranchManager.getCommonBranch(), GlobalPreferences.ARTIFACT_NAME);
       art.persistAttributes();
    }
 }

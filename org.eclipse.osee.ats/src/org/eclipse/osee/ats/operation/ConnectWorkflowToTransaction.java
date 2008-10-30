@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -49,7 +49,7 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    }
 
    private void updateWorkflow(String commitComment, int transactionId) throws OseeCoreException {
-      Branch atsBranch = BranchPersistenceManager.getCommonBranch();
+      Branch atsBranch = BranchManager.getCommonBranch();
       Matcher hridMatcher = hridPattern.matcher(commitComment);
 
       if (hridMatcher.find()) {

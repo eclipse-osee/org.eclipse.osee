@@ -132,7 +132,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public void setAssociatedArtifact(Artifact artifact) throws OseeCoreException {
       // TODO: this method should allow the artifact to be on any branch, not just common
-      if (artifact.getBranch() != BranchPersistenceManager.getCommonBranch()) throw new OseeArgumentException(
+      if (artifact.getBranch() != BranchManager.getCommonBranch()) throw new OseeArgumentException(
             "Setting associated artifact for branch only valid for common branch artifact.");
 
       ConnectionHandler.runPreparedUpdate("UPDATE osee_branch SET associated_art_id = ? WHERE branch_id = ?",
@@ -153,7 +153,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public Branch getParentBranch() throws OseeCoreException {
-      return BranchPersistenceManager.getBranch(parentBranchId);
+      return BranchManager.getBranch(parentBranchId);
    }
 
    public boolean hasParentBranch() {
@@ -182,7 +182,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
-      for (Branch branch : BranchPersistenceManager.getNormalBranches()) {
+      for (Branch branch : BranchManager.getNormalBranches()) {
          if (branch.getParentBranchId() == parentBranch.getBranchId()) {
             children.add(branch);
             if (recurse) {
@@ -200,7 +200,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public void archive() throws OseeCoreException {
-      BranchPersistenceManager.archive(this);
+      BranchManager.archive(this);
    }
 
    @Override
@@ -262,7 +262,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    public Artifact getAssociatedArtifact() throws OseeCoreException {
       if (associatedArtifact == null && associatedArtifactId > 0) {
          associatedArtifact =
-               ArtifactQuery.getArtifactFromId(associatedArtifactId, BranchPersistenceManager.getCommonBranch());
+               ArtifactQuery.getArtifactFromId(associatedArtifactId, BranchManager.getCommonBranch());
       }
       return associatedArtifact;
    }

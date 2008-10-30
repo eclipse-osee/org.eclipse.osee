@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
@@ -89,7 +89,7 @@ public class AtsBranchManager {
             AWorkbench.popup("ERROR", "No Current Working Branch");
             return;
          }
-         BranchPersistenceManager.setDefaultBranch(getWorkingBranch());
+         BranchManager.setDefaultBranch(getWorkingBranch());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -152,7 +152,7 @@ public class AtsBranchManager {
          } else if (!MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Delete Branch", "Are you sure you want to delete the branch: " + branch)) {
          }
-         Job job = BranchPersistenceManager.deleteBranch(branch);
+         Job job = BranchManager.deleteBranch(branch);
          job.join();
 
          AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
@@ -223,7 +223,7 @@ public class AtsBranchManager {
     * @return Branch
     */
    public Branch getWorkingBranch() throws OseeCoreException {
-      Set<Branch> branches = BranchPersistenceManager.getAssociatedArtifactBranches(smaMgr.getSma());
+      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma());
       if (branches.size() == 0) {
          return null;
       } else if (branches.size() > 1) {
@@ -329,7 +329,7 @@ public class AtsBranchManager {
                Integer branchId =
                      verArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), 0);
                if (branchId != null && branchId > 0) {
-                  parentBranch = BranchPersistenceManager.getBranch(branchId);
+                  parentBranch = BranchManager.getBranch(branchId);
                }
             } catch (BranchDoesNotExist ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -344,7 +344,7 @@ public class AtsBranchManager {
                   ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleAttributeValue(
                         ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
             if (branchId != null && branchId > 0) {
-               parentBranch = BranchPersistenceManager.getBranch(branchId);
+               parentBranch = BranchManager.getBranch(branchId);
             }
          } catch (OseeCoreException ex) {
             // do nothing
@@ -384,7 +384,7 @@ public class AtsBranchManager {
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws OseeCoreException {
-            BranchPersistenceManager.createWorkingBranch(parentTransactionId, finalBranchShortName, branchName,
+            BranchManager.createWorkingBranch(parentTransactionId, finalBranchShortName, branchName,
                   stateMachineArtifact);
             // Create reviews as necessary
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr);
@@ -491,7 +491,7 @@ public class AtsBranchManager {
       }
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(branch.getParentBranch(), branch);
       if (!commitPopup) {
-         BranchPersistenceManager.commitBranch(branch, true, true);
+         BranchManager.commitBranch(branch, true, true);
       } else if (conflictManager.getRemainingConflicts().size() > 0) {
 
          MessageDialog dialog;
@@ -518,7 +518,7 @@ public class AtsBranchManager {
          if (commitPopup && result == 1) {
             MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getStartEndPoint(branch).getKey());
          } else if (result == 2) {
-            BranchPersistenceManager.commitBranch(branch, true, true);
+            BranchManager.commitBranch(branch, true, true);
          }
       } else {
          StringBuffer sb =
@@ -535,7 +535,7 @@ public class AtsBranchManager {
                      MessageDialog.QUESTION, new String[] {"Ok", "Launch Merge Manager", "Cancel"}, 0);
          int result = dialog.open();
          if (result == 0) {
-            BranchPersistenceManager.commitBranch(branch, true, true);
+            BranchManager.commitBranch(branch, true, true);
             // Create reviews as necessary
             createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr);
          } else if (result == 1) {

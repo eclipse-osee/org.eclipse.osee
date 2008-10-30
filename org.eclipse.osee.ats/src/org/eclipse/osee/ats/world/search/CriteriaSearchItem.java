@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 
 /**
@@ -36,7 +36,7 @@ public class CriteriaSearchItem extends WorldSearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (criteria == null) throw new IllegalArgumentException("Inavlid search \"" + getName() + "\"");
       Collection<Artifact> artifacts =
-            ArtifactPersistenceManager.getArtifacts(criteria, all, BranchPersistenceManager.getAtsBranch());
+            ArtifactPersistenceManager.getArtifacts(criteria, all, BranchManager.getAtsBranch());
       if (cancelled) return EMPTY_SET;
       return artifacts;
    }

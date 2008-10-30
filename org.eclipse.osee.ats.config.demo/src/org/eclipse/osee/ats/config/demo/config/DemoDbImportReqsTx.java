@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
@@ -54,7 +54,7 @@ public class DemoDbImportReqsTx extends AbstractSkynetTxTemplate {
 
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, 
             "Importing \"" + rootArtifactName + "\" requirements on branch \"" + buildName + "\"");
-      Branch branch = BranchPersistenceManager.getKeyedBranch(buildName);
+      Branch branch = BranchManager.getKeyedBranch(buildName);
       Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName("Folder", rootArtifactName, branch);
 
       File file = OseeAtsConfigDemoPlugin.getInstance().getPluginFile(filename);

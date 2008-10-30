@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
@@ -50,9 +50,9 @@ public class CommitHandler extends AbstractSelectionEnabledHandler {
          if (useParentBranch) {
             toBranch = fromBranch.getParentBranch();
          } else {
-            toBranch = BranchPersistenceManager.getBranch(Integer.parseInt(event.getParameter(BranchView.BRANCH_ID)));
+            toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchView.BRANCH_ID)));
          }
-         BranchPersistenceManager.commitBranch(fromBranch, toBranch, archiveSourceBranch, false);
+         BranchManager.commitBranch(fromBranch, toBranch, archiveSourceBranch, false);
       } catch (ConflictDetectionException ex) {
          try {
             handleConflicts(fromBranch, toBranch);
@@ -91,7 +91,7 @@ public class CommitHandler extends AbstractSelectionEnabledHandler {
       if (result == 1) {
          MergeView.openView(fromBranch, toBranch, TransactionIdManager.getStartEndPoint(fromBranch).getKey());
       } else if (result == 2) {
-         BranchPersistenceManager.commitBranch(fromBranch, toBranch, true, true);
+         BranchManager.commitBranch(fromBranch, toBranch, true, true);
       }
    }
 

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -57,14 +57,14 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
       List<GroupType> groupTypes = Arrays.asList(groupType);
       Set<Artifact> groupOptions = new HashSet<Artifact>();
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.Groups)) {
-         for (Artifact art : UniversalGroup.getGroups(BranchPersistenceManager.getAtsBranch())) {
+         for (Artifact art : UniversalGroup.getGroups(BranchManager.getAtsBranch())) {
             // Only add group if have read permissions
             if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.checkObjectPermission(art,
                   PermissionEnum.READ)) groupOptions.add(art);
          }
       }
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
-         for (Artifact art : ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getAtsBranch())) {
+         for (Artifact art : ArtifactQuery.getArtifactsFromType("User Group", BranchManager.getAtsBranch())) {
             // Only add group if have read permissions
             if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.checkObjectPermission(art,
                   PermissionEnum.READ)) groupOptions.add(art);

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -70,7 +70,7 @@ public class ActionableItemArtifact extends Artifact {
 
    public static ActionableItemArtifact getTopActionableItem() throws OseeCoreException {
       return (ActionableItemArtifact) StaticIdQuery.getSingletonArtifactOrException(
-            ActionableItemArtifact.ARTIFACT_NAME, TOP_AI_STATIC_ID, BranchPersistenceManager.getAtsBranch());
+            ActionableItemArtifact.ARTIFACT_NAME, TOP_AI_STATIC_ID, BranchManager.getAtsBranch());
    }
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {

@@ -325,7 +325,7 @@ public class BranchCreator {
    }
 
    /**
-    * Creates a new root branch. Should NOT be used outside BranchPersistenceManager. If programatic access is
+    * Creates a new root branch. Should NOT be used outside BranchManager. If programatic access is
     * necessary, setting the staticBranchName will add a key for this branch and allow access to the branch through
     * getKeyedBranch(staticBranchName).
     * 
@@ -335,8 +335,8 @@ public class BranchCreator {
     * @param parentBranchId TODO
     * @return branch object
     * @throws OseeCoreException
-    * @see BranchPersistenceManager#createRootBranch(String, String, int)
-    * @see BranchPersistenceManager#getKeyedBranch(String)
+    * @see BranchManager#createRootBranch(String, String, int)
+    * @see BranchManager#getKeyedBranch(String)
     */
    public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, int parentBranchId, boolean systemRootBranch) throws OseeCoreException {
       return HttpBranchCreation.createRootBranch(shortBranchName, branchName, staticBranchName, parentBranchId,
@@ -359,7 +359,7 @@ public class BranchCreator {
       }
 
       int branchId = SequenceManager.getNextBranchId();
-      int parentBranchNumber = BranchPersistenceManager.getSystemRootBranch().getBranchId();
+      int parentBranchNumber = BranchManager.getSystemRootBranch().getBranchId();
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
@@ -375,7 +375,7 @@ public class BranchCreator {
 
       // this needs to be after the insert in case there is an exception on insert
       Branch branch =
-            BranchPersistenceManager.createBranchObject(branchShortName, branchName, branchId, parentBranchNumber,
+            BranchManager.createBranchObject(branchShortName, branchName, branchId, parentBranchNumber,
                   false, authorId, creationDate, creationComment, associatedArtifactId, branchType);
       if (associatedArtifact != null) {
          branch.setAssociatedArtifact(associatedArtifact);

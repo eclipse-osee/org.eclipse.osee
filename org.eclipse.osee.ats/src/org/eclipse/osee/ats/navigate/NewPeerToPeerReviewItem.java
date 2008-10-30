@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemListDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -56,7 +56,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
          if (ed.open() == 0) {
             try {
                AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
                         @Override
                         protected void handleTxWork() throws OseeCoreException {
                            PeerToPeerReviewArtifact peerArt =

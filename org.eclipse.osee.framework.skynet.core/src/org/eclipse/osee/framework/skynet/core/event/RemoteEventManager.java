@@ -64,7 +64,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -291,7 +291,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   } else if (event instanceof NetworkRenameBranchEvent) {
                      int branchId = ((NetworkRenameBranchEvent) event).getBranchId();
                      try {
-                        Branch branch = BranchPersistenceManager.getBranch(branchId);
+                        Branch branch = BranchManager.getBranch(branchId);
                         branch.setBranchName(((NetworkRenameBranchEvent) event).getBranchName());
                         branch.setBranchShortName(((NetworkRenameBranchEvent) event).getShortName(), false);
                         try {
@@ -311,7 +311,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      }
                   } else if (event instanceof NetworkDeletedBranchEvent) {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
-                     BranchPersistenceManager.handleBranchDeletion(branchId);
+                     BranchManager.handleBranchDeletion(branchId);
                      try {
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
                      } catch (Exception ex) {
@@ -489,7 +489,7 @@ public class RemoteEventManager implements IServiceLookupListener {
 
       try {
          RelationType relationType = RelationTypeManager.getType(event.getRelTypeId());
-         Branch branch = BranchPersistenceManager.getBranch(event.getBranchId());
+         Branch branch = BranchManager.getBranch(event.getBranchId());
          Artifact aArtifact = ArtifactCache.getActive(event.getArtAId(), branch.getBranchId());
          Artifact bArtifact = ArtifactCache.getActive(event.getArtBId(), branch.getBranchId());
          boolean aArtifactLoaded = aArtifact != null;

@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
@@ -441,7 +441,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch");
             int result = branchSelection.open();
             if (result == Window.OK) {
-               BranchPersistenceManager.setDefaultBranch(branchSelection.getSelection());
+               BranchManager.setDefaultBranch(branchSelection.getSelection());
             }
          }
       };
@@ -479,7 +479,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                artifactExplorer =
                      (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
                            IWorkbenchPage.VIEW_ACTIVATE);
-               artifactExplorer.explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getDefaultBranch()));
+               artifactExplorer.explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getDefaultBranch()));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
                throw new RuntimeException(ex);
@@ -523,7 +523,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          attributesAction = new ShowAttributeAction(treeViewer, SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
          attributesAction.addToView(this);
          attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(
-               SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF, BranchPersistenceManager.getDefaultBranch()));
+               SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF, BranchManager.getDefaultBranch()));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -564,7 +564,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
       try {
          Collection<ArtifactType> descriptors =
-               TypeValidityManager.getValidArtifactTypes(BranchPersistenceManager.getDefaultBranch());
+               TypeValidityManager.getValidArtifactTypes(BranchManager.getDefaultBranch());
          for (ArtifactType descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {
                MenuItem item = new MenuItem(subMenu, SWT.PUSH);
@@ -1189,8 +1189,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       try {
          if (memento != null && memento.getString(ROOT_GUID) != null) {
             Artifact previousArtifact =
-                  ArtifactQuery.getArtifactFromId(memento.getString(ROOT_GUID),
-                        BranchPersistenceManager.getDefaultBranch());
+                  ArtifactQuery.getArtifactFromId(memento.getString(ROOT_GUID), BranchManager.getDefaultBranch());
             explore(previousArtifact);
             return;
          }
@@ -1205,7 +1204,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       }
 
       try {
-         explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getDefaultBranch()));
+         explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getDefaultBranch()));
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
@@ -1452,7 +1451,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != BranchPersistenceManager.getDefaultBranch().getBranchId()) {
+      if (transData.branchId != BranchManager.getDefaultBranch().getBranchId()) {
          return;
       }
       Displays.ensureInDisplayThread(new Runnable() {
@@ -1490,7 +1489,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, final RelationLink link, Branch branch, String relationType) {
       try {
-         if (!BranchPersistenceManager.getDefaultBranch().equals(branch)) return;
+         if (!BranchManager.getDefaultBranch().equals(branch)) return;
          if (link.getRelationType().equals(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)
@@ -1525,7 +1524,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    @Override
    public void handleArtifactModifiedEvent(Sender sender, final ArtifactModType artifactModType, final Artifact artifact) {
       try {
-         if (!artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch())) {
+         if (!artifact.getBranch().equals(BranchManager.getDefaultBranch())) {
             return;
          }
       } catch (Exception ex) {
@@ -1571,7 +1570,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             @Override
             public void run() {
                try {
-                  Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
+                  Branch defaultBranch = BranchManager.getDefaultBranch();
                   Artifact candidateRoot = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(defaultBranch);
 
                   if (exploreRoot != null) {
@@ -1602,8 +1601,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                   if (object instanceof Artifact) {
                      Artifact artifact = (Artifact) object;
                      try {
-                        explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
-                              BranchPersistenceManager.getDefaultBranch()));
+                        explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getDefaultBranch()));
                      } catch (CoreException ex) {
                         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                      }

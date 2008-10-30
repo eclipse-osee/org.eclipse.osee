@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
@@ -283,7 +283,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                                  sourceBranch.getBranchId());
                      for (Integer integer : destBranches) {
                         if (integer.intValue() != destBranch.getBranchId()) {
-                           selections.add(BranchPersistenceManager.getBranch(integer).getBranchName());
+                           selections.add(BranchManager.getBranch(integer).getBranchName());
                            branchIds.add(integer);
                         }
                      }

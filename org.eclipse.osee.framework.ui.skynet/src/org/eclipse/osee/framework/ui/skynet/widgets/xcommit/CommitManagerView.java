@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -155,7 +155,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
                if (artId > 0) {
                   int branchId = memento.getInteger("branchId");
                   if (branchId > 0) {
-                     Branch branch = BranchPersistenceManager.getBranch(branchId);
+                     Branch branch = BranchManager.getBranch(branchId);
                      Artifact artifact = ArtifactQuery.getArtifactFromId(artId, branch);
                      explore((IBranchArtifact) artifact);
                   }

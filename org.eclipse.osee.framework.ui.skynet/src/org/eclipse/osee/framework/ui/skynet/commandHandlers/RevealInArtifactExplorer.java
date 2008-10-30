@@ -18,7 +18,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.ui.PlatformUI;
@@ -63,7 +63,7 @@ public class RevealInArtifactExplorer extends AbstractHandler {
          }
 
          artifact = artifacts.iterator().next();
-         isEnabled = artifact.getBranch() == BranchPersistenceManager.getDefaultBranch();
+         isEnabled = artifact.getBranch() == BranchManager.getDefaultBranch();
       }
       return isEnabled;
    }

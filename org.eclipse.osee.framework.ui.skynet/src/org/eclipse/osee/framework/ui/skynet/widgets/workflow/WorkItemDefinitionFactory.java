@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -49,7 +49,7 @@ public class WorkItemDefinitionFactory {
 
          // This load is faster than loading each by artifact type
          for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType(
-               WorkItemAttributes.WORK_ID.getAttributeTypeName(), BranchPersistenceManager.getCommonBranch())) {
+               WorkItemAttributes.WORK_ID.getAttributeTypeName(), BranchManager.getCommonBranch())) {
             if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
             } else if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
@@ -77,14 +77,14 @@ public class WorkItemDefinitionFactory {
    public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException {
       List<Artifact> parentArts =
             ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-                  parentWorkflowId, BranchPersistenceManager.getCommonBranch());
+                  parentWorkflowId, BranchManager.getCommonBranch());
       if (parentArts == null || parentArts.size() == 0) {
          throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
       }
       Artifact parentArt = parentArts.iterator().next();
       List<Artifact> childArts =
             ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), childWorkflowId,
-                  BranchPersistenceManager.getCommonBranch());
+                  BranchManager.getCommonBranch());
       if (childArts == null || childArts.size() == 0) {
          throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
       }
@@ -135,7 +135,7 @@ public class WorkItemDefinitionFactory {
       if (wid == null) {
          // Attempt to get from DB
          loadDefinitions(ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
-               BranchPersistenceManager.getAtsBranch()));
+               BranchManager.getAtsBranch()));
       }
       return itemIdToDefinition.get(id);
    }
@@ -147,7 +147,7 @@ public class WorkItemDefinitionFactory {
       if (art == null) {
          // Attempt to get from DB
          loadDefinitions(ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
-               BranchPersistenceManager.getAtsBranch()));
+               BranchManager.getAtsBranch()));
       }
       return itemIdToWidArtifact.get(id);
    }

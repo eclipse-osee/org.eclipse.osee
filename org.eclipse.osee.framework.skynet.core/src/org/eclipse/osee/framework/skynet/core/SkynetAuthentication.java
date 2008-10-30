@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
@@ -81,7 +81,7 @@ public class SkynetAuthentication {
             activeUserCache = new ArrayList<User>(700);
             Collection<Artifact> dbUsers =
                   ArtifactQuery.getArtifactsFromAttributeType(User.userIdAttributeName,
-                        BranchPersistenceManager.getCommonBranch());
+                        BranchManager.getCommonBranch());
             for (Artifact a : dbUsers) {
                User user = (User) a;
                cacheUser(user, null);
@@ -278,7 +278,7 @@ public class SkynetAuthentication {
       User user = null;
       try {
          user =
-               (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch(),
+               (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getCommonBranch(),
                      name);
          user.setActive(active);
          user.setUserID(userID);
@@ -328,7 +328,7 @@ public class SkynetAuthentication {
          try {
             user =
                   (User) ArtifactQuery.getArtifactFromAttribute("User Id", userId,
-                        BranchPersistenceManager.getCommonBranch());
+                        BranchManager.getCommonBranch());
          } catch (ArtifactDoesNotExist ex) {
             throw new UserNotInDatabase("the user with id " + userId + " was not found.");
          }
@@ -375,7 +375,7 @@ public class SkynetAuthentication {
 
    public static User getUserByArtId(int userArtifactId) throws OseeCoreException {
       instance.loadUsersCache();
-      User user = (User) ArtifactCache.getActive(userArtifactId, BranchPersistenceManager.getCommonBranch());
+      User user = (User) ArtifactCache.getActive(userArtifactId, BranchManager.getCommonBranch());
       if (user == null) throw new UserNotInDatabase("User requested by artId \"" + userArtifactId + "\" was not found.");
       return user;
    }

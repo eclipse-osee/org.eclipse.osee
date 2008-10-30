@@ -43,11 +43,11 @@ public class WorkspaceFileArtifact extends Artifact {
       try {
          artifact =
                ArtifactQuery.getArtifactFromAttribute("Content URL", location,
-                     BranchPersistenceManager.getDefaultBranch());
+                     BranchManager.getDefaultBranch());
       } catch (ArtifactDoesNotExist ex) {
          Collection<ArtifactType> descriptors =
                TypeValidityManager.getArtifactTypesFromAttributeType("Content URL",
-                     BranchPersistenceManager.getDefaultBranch());
+                     BranchManager.getDefaultBranch());
          dialog =
                new ArtifactDescriptorDialog(
                      shell,
@@ -58,7 +58,7 @@ public class WorkspaceFileArtifact extends Artifact {
          descriptorSelected = dialog.open();
          if (descriptorSelected == 0) {
             descriptor = dialog.getEntry();
-            artifact = descriptor.makeNewArtifact(BranchPersistenceManager.getDefaultBranch());
+            artifact = descriptor.makeNewArtifact(BranchManager.getDefaultBranch());
             artifact.setSoleAttributeValue("Content URL", location);
             artifact.setSoleAttributeValue("Name", new File(location).getName());
             artifact.persistAttributes();

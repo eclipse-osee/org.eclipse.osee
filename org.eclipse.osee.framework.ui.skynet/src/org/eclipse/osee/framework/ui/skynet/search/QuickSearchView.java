@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -223,7 +223,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
    private void updateWidgetEnablements() {
       if (branchLabel != null && branchLabel.isDisposed() != true) {
-         branchLabel.setText("Searching on current default branch \"" + BranchPersistenceManager.getDefaultBranch() + "\"");
+         branchLabel.setText("Searching on current default branch \"" + BranchManager.getDefaultBranch() + "\"");
       }
    }
 
@@ -234,11 +234,11 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
             NewSearchUI.activateSearchResultView();
             if (searchComposite.isOptionSelected(SearchOption.By_Id.asLabel())) {
                NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(),
-                     BranchPersistenceManager.getDefaultBranch(),
+                     BranchManager.getDefaultBranch(),
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel())));
             } else {
                NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
-                     BranchPersistenceManager.getDefaultBranch(),
+                     BranchManager.getDefaultBranch(),
                      searchComposite.isOptionSelected(SearchOption.Name_Only.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel())));
             }

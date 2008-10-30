@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xresults;
 
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
@@ -71,7 +71,7 @@ public class ResultBrowserListener implements LocationListener {
          } else if (resultBrowserHyperCmd == ResultBrowserHyperCmd.openBranch) {
             event.doit = false;
             int branchId = new Integer(value);
-            Branch branch = BranchPersistenceManager.getBranch(branchId);
+            Branch branch = BranchManager.getBranch(branchId);
             BranchView.revealBranch(branch);
          }
       } catch (Exception ex) {

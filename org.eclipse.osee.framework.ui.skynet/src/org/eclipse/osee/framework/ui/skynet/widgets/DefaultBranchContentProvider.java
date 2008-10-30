@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -58,7 +58,7 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
    }
 
    public Object[] getElements(Object inputElement) {
-      return provider.getElements(BranchPersistenceManager.getDefaultBranch());
+      return provider.getElements(BranchManager.getDefaultBranch());
    }
 
    /* (non-Javadoc)

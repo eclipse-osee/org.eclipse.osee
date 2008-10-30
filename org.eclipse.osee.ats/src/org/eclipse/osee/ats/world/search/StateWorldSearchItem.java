@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
@@ -61,7 +61,7 @@ public class StateWorldSearchItem extends WorldSearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-                  getSearchStateClass() + ";%", BranchPersistenceManager.getAtsBranch());
+                  getSearchStateClass() + ";%", BranchManager.getAtsBranch());
       if (isCancelled()) return EMPTY_SET;
       return arts;
 

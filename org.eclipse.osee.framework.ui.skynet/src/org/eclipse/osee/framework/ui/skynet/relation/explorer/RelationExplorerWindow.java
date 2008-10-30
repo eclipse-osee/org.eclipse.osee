@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -298,7 +298,7 @@ public class RelationExplorerWindow {
             if (artifact == null) {
                if (descriptor != null) {
                   try {
-                     artifact = descriptor.makeNewArtifact(BranchPersistenceManager.getDefaultBranch());
+                     artifact = descriptor.makeNewArtifact(BranchManager.getDefaultBranch());
                      artifact.setSoleAttributeValue("Name", model.getName());
                      artifact.setSoleAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
                      artifact.persistAttributes();

@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -358,7 +358,7 @@ public class SMAManager {
          return false;
       }
       if (persist) {
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
             @Override
             protected void handleTxWork() throws OseeCoreException {
                promptChangeVersionHelper(smas, vld, persist);
@@ -402,7 +402,7 @@ public class SMAManager {
             dialog.setSelected(teams.iterator().next().getChangeType());
          }
          if (dialog.open() == 0) {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
                @Override
                protected void handleTxWork() throws OseeCoreException {
 
@@ -444,7 +444,7 @@ public class SMAManager {
             ald.setSelected(teams.iterator().next().getPriority());
          }
          if (ald.open() == 0) {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
                @Override
                protected void handleTxWork() throws OseeCoreException {
                   for (TeamWorkFlowArtifact team : teams) {
@@ -834,7 +834,7 @@ public class SMAManager {
          }
 
          if (persist) {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
 
                @Override
                protected void handleTxWork() throws OseeCoreException {

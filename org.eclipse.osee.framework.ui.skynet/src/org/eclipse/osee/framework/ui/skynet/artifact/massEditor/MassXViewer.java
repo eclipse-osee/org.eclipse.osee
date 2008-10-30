@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
@@ -150,7 +150,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
             Collection<Artifact> arts = getSelectedArtifacts();
             if (arts.size() > 0) {
                Artifact artifact = arts.iterator().next();
-               if (artifact.getBranch() == BranchPersistenceManager.getDefaultBranch()) event.data =
+               if (artifact.getBranch() == BranchManager.getDefaultBranch()) event.data =
                      new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", MassArtifactEditor.EDITOR_ID);
             }
          }
@@ -160,7 +160,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
             Collection<Artifact> arts = getSelectedArtifacts();
             if (arts.size() > 0) {
                Artifact artifact = arts.iterator().next();
-               if (artifact.getBranch() == BranchPersistenceManager.getDefaultBranch()) event.doit = true;
+               if (artifact.getBranch() == BranchManager.getDefaultBranch()) event.doit = true;
             }
          }
       });

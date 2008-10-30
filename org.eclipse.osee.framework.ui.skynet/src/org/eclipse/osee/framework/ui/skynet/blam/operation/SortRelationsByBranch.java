@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -46,7 +46,7 @@ public class SortRelationsByBranch extends AbstractBlam {
          int totalWork = 0;
          monitor.beginTask(getName(), totalWork);
 
-         List<Branch> branchesToSort = BranchPersistenceManager.getTopLevelBranches();
+         List<Branch> branchesToSort = BranchManager.getTopLevelBranches();
 
          for (Branch branch : branchesToSort) {
             IOperation op = new UpdateRelationsSortOrder(branch);

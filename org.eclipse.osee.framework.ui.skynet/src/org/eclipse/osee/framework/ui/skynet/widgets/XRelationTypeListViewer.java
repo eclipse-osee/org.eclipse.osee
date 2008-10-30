@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Jeff C. Phillips
@@ -28,7 +28,7 @@ public class XRelationTypeListViewer extends XTypeListViewer {
 
       setContentProvider(new DefaultBranchContentProvider(new RelationTypeContentProvider()));
       ArrayList<Object> input = new ArrayList<Object>(1);
-      input.add(BranchPersistenceManager.getDefaultBranch());
+      input.add(BranchManager.getDefaultBranch());
 
       setInput(input);
    }

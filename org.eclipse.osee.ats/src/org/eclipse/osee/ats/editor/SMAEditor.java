@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
@@ -128,7 +128,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
       } else {
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
                @Override
                protected void handleTxWork() throws OseeCoreException {
                   if (getActivePage() == attributesPageIndex) {
@@ -311,7 +311,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          public void widgetSelected(SelectionEvent e) {
             try {
                AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
                         @Override
                         protected void handleTxWork() throws OseeCoreException {
                            smaMgr.getSma().persistAttributes();

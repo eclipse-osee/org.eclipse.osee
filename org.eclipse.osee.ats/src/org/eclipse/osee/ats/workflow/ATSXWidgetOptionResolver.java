@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.workflow;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -47,7 +47,7 @@ public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
          try {
             options =
                   AttributeTypeManager.getValidEnumerationAttributeValues(xWidgetData.getStorageName(),
-                        BranchPersistenceManager.getAtsBranch());
+                        BranchManager.getAtsBranch());
          } catch (Exception ex) {
             options = new HashSet<String>();
             options.add(ex.getLocalizedMessage());

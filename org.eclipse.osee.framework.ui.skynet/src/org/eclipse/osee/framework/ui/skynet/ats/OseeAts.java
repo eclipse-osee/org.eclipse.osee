@@ -20,7 +20,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
@@ -178,7 +178,7 @@ public class OseeAts {
 
    public static void openATSArtifact(String guid) {
       try {
-         Artifact art = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getCommonBranch());
+         Artifact art = ArtifactQuery.getArtifactFromId(guid, BranchManager.getCommonBranch());
          if (art.getArtifactTypeName().equals("Action"))
             atsLib.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
          else

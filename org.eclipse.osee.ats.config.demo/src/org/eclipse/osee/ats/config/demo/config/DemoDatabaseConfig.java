@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
@@ -71,7 +71,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    }
 
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName) throws OseeCoreException {
-      Branch branch = BranchPersistenceManager.getBranch(branchName);
+      Branch branch = BranchManager.getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
       verArt.setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), branch.getBranchId());
       verArt.persistAttributes();
@@ -91,7 +91,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
                   "Tool Tracking", "Telesurgery", "Volume", "Hardware", "Imaging", "Electrical", "Sensors",
                   "Hydraulics", "Navigation", "Backup", "Accuracy", "Propulsion", "Unknown"};
 
-      Branch programBranch = BranchPersistenceManager.getKeyedBranch(branchName);
+      Branch programBranch = BranchManager.getKeyedBranch(branchName);
       Artifact sawProduct =
             ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, "SAW Product Decomposition");
 
@@ -120,7 +120,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.Demo_Program_Skynet_Types");
 
-      BranchPersistenceManager.createRootBranch(null, branchName, branchName, skynetTypeImport, true);
+      BranchManager.createRootBranch(null, branchName, branchName, skynetTypeImport, true);
    }
 
    private void createVersionArtifacts() throws OseeCoreException {
@@ -130,7 +130,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             SawBuilds.SAW_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                     BranchPersistenceManager.getAtsBranch(), verName);
+                     BranchManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
@@ -142,7 +142,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             CISBuilds.CIS_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                     BranchPersistenceManager.getAtsBranch(), verName);
+                     BranchManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);

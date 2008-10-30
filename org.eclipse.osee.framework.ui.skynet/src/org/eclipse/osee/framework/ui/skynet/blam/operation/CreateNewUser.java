@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -46,7 +46,7 @@ public class CreateNewUser extends AbstractBlam {
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Create New User", IProgressMonitor.UNKNOWN);
 
-      User user = (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchPersistenceManager.getAtsBranch());
+      User user = (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getAtsBranch());
 
       String name = variableMap.getString("Name (Last, First)");
       if (name.equals("")) {

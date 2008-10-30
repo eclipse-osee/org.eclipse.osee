@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
@@ -312,7 +312,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
     */
    private String addDestBranchDefaultMenuItem(MenuManager menuManager) {
       CommandContributionItem setDestBranchDefaultCommand;
-      if (conflicts != null && conflicts.length != 0 && conflicts[0].getDestBranch() == BranchPersistenceManager.getDefaultBranch()) {
+      if (conflicts != null && conflicts.length != 0 && conflicts[0].getDestBranch() == BranchManager.getDefaultBranch()) {
          setDestBranchDefaultCommand =
                Commands.getLocalCommandContribution(getSite(), "setDestBranchDefaultCommand",
                      "Set Destination as Default Branch", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
@@ -342,7 +342,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (branchView != null) {
                branchView.setDefaultBranch(conflicts[0].getDestBranch());
             } else {
-               BranchPersistenceManager.setDefaultBranch(conflicts[0].getDestBranch());
+               BranchManager.setDefaultBranch(conflicts[0].getDestBranch());
             }
             return null;
          }
@@ -350,7 +350,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          @Override
          public boolean isEnabled() {
             if (conflicts == null || conflicts.length == 0) return false;
-            return conflicts[0].getDestBranch() != BranchPersistenceManager.getDefaultBranch();
+            return conflicts[0].getDestBranch() != BranchManager.getDefaultBranch();
          }
       });
    }
@@ -453,7 +453,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
     */
    private String addSourceBranchDefaultMenuItem(MenuManager menuManager) {
       CommandContributionItem setSourceBranchDefaultCommand;
-      if (conflicts != null && conflicts.length != 0 && conflicts[0].getSourceBranch() == BranchPersistenceManager.getDefaultBranch()) {
+      if (conflicts != null && conflicts.length != 0 && conflicts[0].getSourceBranch() == BranchManager.getDefaultBranch()) {
          setSourceBranchDefaultCommand =
                Commands.getLocalCommandContribution(getSite(), "setSourceBranchDefaultCommand",
                      "Set Source as Default Branch", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
@@ -481,7 +481,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (branchView != null) {
                branchView.setDefaultBranch(conflicts[0].getSourceBranch());
             } else {
-               BranchPersistenceManager.setDefaultBranch(conflicts[0].getSourceBranch());
+               BranchManager.setDefaultBranch(conflicts[0].getSourceBranch());
             }
             return null;
          }
@@ -489,7 +489,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          @Override
          public boolean isEnabled() {
             if (conflicts == null || conflicts.length == 0 || conflicts[0].getSourceBranch() == null) return false;
-            return conflicts[0].getSourceBranch() != BranchPersistenceManager.getDefaultBranch();
+            return conflicts[0].getSourceBranch() != BranchManager.getDefaultBranch();
          }
       });
    }
@@ -538,7 +538,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   return;
                }
                sourceBranchId = memento.getInteger(SOURCE_BRANCH_ID);
-               final Branch sourceBranch = BranchPersistenceManager.getBranch(sourceBranchId);
+               final Branch sourceBranch = BranchManager.getBranch(sourceBranchId);
                if (sourceBranch == null) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
                         "Merge View can't init due to invalid source branch id " + sourceBranchId);
@@ -546,7 +546,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   return;
                }
                destBranchId = memento.getInteger(DEST_BRANCH_ID);
-               final Branch destBranch = BranchPersistenceManager.getBranch(destBranchId);
+               final Branch destBranch = BranchManager.getBranch(destBranchId);
                if (destBranch == null) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
                         "Merge View can't init due to invalid destination branch id " + sourceBranchId);

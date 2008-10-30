@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -80,7 +80,7 @@ public class ShowArtifactInResourceHandler extends AbstractHandler {
 
          for (Artifact artifact : artifacts) {
             readPermission &= AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
-            reportBranch &= (artifact.getBranch() == BranchPersistenceManager.getDefaultBranch());
+            reportBranch &= (artifact.getBranch() == BranchManager.getDefaultBranch());
          }
          isEnabled = readPermission && reportBranch;
       }

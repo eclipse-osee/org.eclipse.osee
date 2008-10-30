@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -73,7 +73,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       TeamDefinitionArtifact tda = null;
       tda =
             (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
-                  BranchPersistenceManager.getAtsBranch(), name);
+                  BranchManager.getAtsBranch(), name);
       tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
@@ -176,7 +176,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public static TeamDefinitionArtifact getTopTeamDefinition() throws OseeCoreException {
       return (TeamDefinitionArtifact) StaticIdQuery.getSingletonArtifactOrException(
-            TeamDefinitionArtifact.ARTIFACT_NAME, TOP_TEAM_STATIC_ID, BranchPersistenceManager.getAtsBranch());
+            TeamDefinitionArtifact.ARTIFACT_NAME, TOP_TEAM_STATIC_ID, BranchManager.getAtsBranch());
    }
 
    public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {
@@ -373,7 +373,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public VersionArtifact createVersion(String name) throws OseeCoreException {
       VersionArtifact versionArt =
             (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                  BranchPersistenceManager.getAtsBranch(), name);
+                  BranchManager.getAtsBranch(), name);
       addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
       versionArt.persistAttributesAndRelations();
       AtsCache.cache(versionArt);
@@ -434,7 +434,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public Branch getTeamBranch() throws OseeCoreException {
       Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
       if (branchId != null && branchId > 0) {
-         return BranchPersistenceManager.getBranch(branchId);
+         return BranchManager.getBranch(branchId);
       } else {
          Artifact parent = getParent();
          if (parent instanceof TeamDefinitionArtifact) {

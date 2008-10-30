@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 /**
@@ -35,7 +35,7 @@ public class UserCommunity {
       try {
          communities =
                AttributeTypeManager.getValidEnumerationAttributeValues("ats.User Community",
-                     BranchPersistenceManager.getCommonBranch());
+                     BranchManager.getCommonBranch());
       } catch (OseeCoreException ex) {
          communities = new HashSet<String>();
          communities.add(ex.getLocalizedMessage());

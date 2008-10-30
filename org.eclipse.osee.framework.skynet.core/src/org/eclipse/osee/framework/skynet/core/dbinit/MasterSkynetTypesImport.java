@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.importing.SkynetTypesImporter;
 import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
@@ -32,11 +32,11 @@ import org.xml.sax.SAXException;
 /**
  * This class provides necessary functionality for branches to be loaded with SkynetDbTypes through their extension
  * points. Creation, adding skynet types and initializing a new branch should be done through
- * BranchPersistenceManager.createRootBranch.
+ * BranchManager.createRootBranch.
  * 
  * @author Andrew M. Finkbeiner
  * @author Donald G. Dunne
- * @see BranchPersistenceManager#createRootBranch(String, String, String, Collection, boolean)
+ * @see BranchManager#createRootBranch(String, String, String, Collection, boolean)
  */
 public class MasterSkynetTypesImport {
    private static final String skynetDbTypesExtensionPointId = "org.eclipse.osee.framework.skynet.core.OseeTypes";
@@ -46,13 +46,13 @@ public class MasterSkynetTypesImport {
 
    /**
     * Imports the given skynetDbTypes to the given branch. This should not be called seprately, but instead should be
-    * handled through BranchPersistenceManager.createRootBranch
+    * handled through BranchManager.createRootBranch
     * 
     * @param connection
     * @param skynetTypesImportExtensionsUniqueIds
     * @param branch
     * @throws Exception
-    * @see BranchPersistenceManager#createRootBranch(String, String, String, Collection, boolean)
+    * @see BranchManager#createRootBranch(String, String, String, Collection, boolean)
     */
    public static void importSkynetDbTypes(Collection<String> skynetTypesImportExtensionsUniqueIds, Branch branch) throws OseeCoreException {
       try {

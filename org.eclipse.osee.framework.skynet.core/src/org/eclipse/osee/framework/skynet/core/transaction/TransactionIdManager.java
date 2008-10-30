@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * Manages a cache of <code>TransactionId</code>.
@@ -283,7 +283,7 @@ public class TransactionIdManager {
                         "The transaction id " + transactionNumber + " does not exist in the databse.");
                }
             }
-            Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
+            Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
             transactionId =

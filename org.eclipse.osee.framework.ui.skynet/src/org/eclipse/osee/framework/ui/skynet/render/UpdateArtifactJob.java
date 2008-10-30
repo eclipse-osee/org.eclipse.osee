@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -83,7 +83,7 @@ public class UpdateArtifactJob extends UpdateJob {
 
    private void processUpdate() throws Exception {
       int branchId = Branch.getBranchIdFromBranchFolderName(workingFile.getParentFile().getName());
-      Branch branch = BranchPersistenceManager.getBranch(branchId);
+      Branch branch = BranchManager.getBranch(branchId);
       FileInputStream myFileInputStream = new FileInputStream(workingFile);
 
       String guid = WordUtil.getGUIDFromFileInputStream(myFileInputStream);

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -118,7 +118,7 @@ public class AtsLib implements IAtsLib {
 
    public void openArtifact(String guidOrHrid, Integer branchId, OseeAts.OpenView view) {
       try {
-         Branch branch = BranchPersistenceManager.getBranch(branchId);
+         Branch branch = BranchManager.getBranch(branchId);
          Artifact artifact = ArtifactQuery.getArtifactFromId(guidOrHrid, branch);
          openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
@@ -135,7 +135,7 @@ public class AtsLib implements IAtsLib {
       BulkLoadAtsCache.run(false);
       Artifact artifact = null;
       try {
-         artifact = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch());
+         artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getAtsBranch());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return;

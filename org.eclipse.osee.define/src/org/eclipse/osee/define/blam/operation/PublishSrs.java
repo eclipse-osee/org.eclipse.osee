@@ -12,7 +12,7 @@ package org.eclipse.osee.define.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -32,13 +32,13 @@ public class PublishSrs extends AbstractBlam {
 
       Artifact srsMasterTemplate =
             ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsMasterTemplate",
-                  BranchPersistenceManager.getCommonBranch());
+                  BranchManager.getCommonBranch());
       String masterTemplate =
             srsMasterTemplate.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT, "");
 
       Artifact srsSlaveTemplate =
             ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsSlaveTemplate",
-                  BranchPersistenceManager.getCommonBranch());
+                  BranchManager.getCommonBranch());
       String slaveTemplate =
             srsSlaveTemplate.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT, "");
 

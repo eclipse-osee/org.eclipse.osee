@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -39,16 +39,16 @@ public class ArtIdSearchItem extends WorldSearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       for (Artifact art : ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
-            BranchPersistenceManager.getDefaultBranch(), false)) {
+            BranchManager.getDefaultBranch(), false)) {
          artifacts.add(art);
       }
       for (Artifact art : ArtifactQuery.getArtifactsFromIds(Arrays.asList(enteredIds.split(",")),
-            BranchPersistenceManager.getDefaultBranch())) {
+            BranchManager.getDefaultBranch())) {
          artifacts.add(art);
       }
       if (artifacts.size() == 0) {
          AWorkbench.popup("ERROR",
-               "Didn't find any artifacts on default branch \"" + BranchPersistenceManager.getDefaultBranch() + "\"");
+               "Didn't find any artifacts on default branch \"" + BranchManager.getDefaultBranch() + "\"");
       }
       return artifacts;
    }
