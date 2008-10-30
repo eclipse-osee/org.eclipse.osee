@@ -96,7 +96,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Estimated_Completion_Date_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".estimatedCompletionDate",
                ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getDisplayName(), 80, SWT.LEFT, false,
-               SortDataType.Date, false, "Date the changes will be completed.");
+               SortDataType.Date, true, "Date the changes will be completed.");
    public static final XViewerColumn Release_Date_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".releaseDate", ATSAttributes.RELEASE_DATE_ATTRIBUTE.getDisplayName(),
                80, SWT.LEFT, false, SortDataType.Date, false, "Date the changes were made available to the users.");
