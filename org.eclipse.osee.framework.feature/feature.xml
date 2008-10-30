@@ -166,13 +166,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.resource.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.resource.locator.attribute"
          download-size="0"
          install-size="0"
@@ -271,6 +264,27 @@
 
    <plugin
          id="org.eclipse.osee.framework.derby"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.server.lookup.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
