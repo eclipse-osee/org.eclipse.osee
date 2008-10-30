@@ -188,7 +188,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
             artifact = ((ReviewSMArtifact) artifact).getParentActionArtifact();
          }
       }
-      if (artifact == null) OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Unknown parent " + art.getHumanReadableId());
+      if (artifact == null) OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unknown parent " + art.getHumanReadableId());
       return artifact;
    }
 
@@ -292,7 +292,6 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (sender.isRemote()) return;
       if (currentArtifact == null) return;
       if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       if (transData.isDeleted(currentArtifact)) {
@@ -306,16 +305,14 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
             }
          });
       }
-      if (transData.isRelAddedChangedDeleted(currentArtifact)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            @Override
-            public void run() {
-               display();
-            }
-         });
-      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            display();
+         }
+      });
    }
 }
