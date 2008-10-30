@@ -109,8 +109,7 @@ public class ATSAttributes {
    public static final ATSAttributes RESOLUTION_OVERRIDE_ATTRIBUTE =
          new ATSAttributes("Resolution Override",
                "Select if Proposed Resolution is same as Title/Description/Problem/Proposed Resolution");
-   public static final ATSAttributes USES_RESOLUTION_OPTIONS_ATTRIBUTE =
-         new ATSAttributes("Uses Resolution Options", "True if ATS object's tasks uses resolution options.");
+   // TODO Remove this after 0.5.0 release
    public static final ATSAttributes BLOCKING_REVIEW_ATTRIBUTE =
          new ATSAttributes("Blocking Review",
                "True if workflow should be blocked from contining until review is completed.");
