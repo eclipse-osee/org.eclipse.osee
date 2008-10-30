@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -61,10 +61,7 @@ public class TypeValidityManager {
    }
 
    private void populateCache() throws OseeCoreException {
-      Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
-      for (Branch branch : BranchPersistenceManager.getRootBranches()) {
-         branchToartifactTypeMap.put(branch, artifactTypes);
-      }
+      branchToartifactTypeMap.put(BranchPersistenceManager.getSystemRootBranch(), ArtifactTypeManager.getAllTypes());
 
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -76,7 +73,7 @@ public class TypeValidityManager {
                Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
 
                cacheAttributeValidity(artifactType, attributeType, branch);
-            } catch (OseeTypeDoesNotExist ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
@@ -110,14 +107,14 @@ public class TypeValidityManager {
    public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType requestedAttributeType, Branch branch) throws OseeCoreException {
       ensurePopulated();
 
-      Collection<ArtifactType> inhieritedArtifactTypes = new ArrayList<ArtifactType>();
+      Collection<ArtifactType> inheritedArtifactTypes = new HashSet<ArtifactType>();
       Branch branchCursor = branch;
       boolean notDone = true;
       while (notDone) {
          Collection<ArtifactType> artifactTypes =
                instance.attributeToartifactMap.get(branchCursor, requestedAttributeType);
          if (artifactTypes != null) {
-            inhieritedArtifactTypes.addAll(artifactTypes);
+            inheritedArtifactTypes.addAll(artifactTypes);
          }
 
          if (branchCursor.isSystemRootBranch()) {
@@ -127,18 +124,18 @@ public class TypeValidityManager {
          }
       }
 
-      if (inhieritedArtifactTypes.isEmpty()) {
+      if (inheritedArtifactTypes.isEmpty()) {
          throw new OseeTypeDoesNotExist(
                "There are no valid artifact types available for the attribute type " + requestedAttributeType);
       }
 
-      return inhieritedArtifactTypes;
+      return inheritedArtifactTypes;
    }
 
    public static Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws OseeCoreException {
       ensurePopulated();
 
-      Collection<AttributeType> inhieritedAttributeTypes = new ArrayList<AttributeType>();
+      Collection<AttributeType> inhieritedAttributeTypes = new HashSet<AttributeType>();
       Branch branchCursor = branch;
       boolean notDone = true;
       while (notDone) {
@@ -195,8 +192,7 @@ public class TypeValidityManager {
    }
 
    public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
-      if (false) {
-         // TODO: Filter Types By Branch
+      if (false) { // TODO: Filter Types By Branch
          ensurePopulated();
          Branch topLevelBranch = branch.getTopLevelBranch();
          Collection<ArtifactType> artifactTypes = instance.branchToartifactTypeMap.getValues(topLevelBranch);

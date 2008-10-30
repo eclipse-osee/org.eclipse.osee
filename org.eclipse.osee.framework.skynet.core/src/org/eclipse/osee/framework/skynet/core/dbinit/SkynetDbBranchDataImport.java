@@ -58,7 +58,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
    public void run(Connection connection) throws OseeCoreException {
       if (OseeProperties.getInstance().getDbOseeSkynetBranchImport()) {
          // Clean up and delete all branches except Common
-         for (Branch branch : BranchPersistenceManager.getBranches()) {
+         for (Branch branch : BranchPersistenceManager.getNormalBranches()) {
             if (!branch.getBranchName().equals(Branch.COMMON_BRANCH_CONFIG_ID)) {
                BranchPersistenceManager.deleteBranch(branch);
             }

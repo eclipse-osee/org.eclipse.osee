@@ -28,7 +28,7 @@ public class AddEveryoneGroupToBranches extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      for (Branch brnch : BranchPersistenceManager.getBranches()) {
+      for (Branch brnch : BranchPersistenceManager.getNormalBranches()) {
 
          if (!AccessControlManager.getInstance().getAccessControlList(brnch).isEmpty()) {
             Artifact everyone =

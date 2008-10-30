@@ -51,16 +51,15 @@ public class MergeBranchManagementTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(java.lang.Integer, java.lang.Integer)}
-    * .
+    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(Branch, Branch)} .
     */
    public void testGetMergeBranchNotCreated() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
          Branch mergeBranch =
-               BranchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
-                     ConflictTestManager.getDestBranch().getBranchId());
+               BranchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch(),
+                     ConflictTestManager.getDestBranch());
 
          assertTrue("The merge branch should be null as it hasn't been created yet", mergeBranch == null);
       } catch (Exception ex) {
@@ -72,16 +71,15 @@ public class MergeBranchManagementTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(java.lang.Integer, java.lang.Integer)}
-    * .
+    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(Branch, Branch)} .
     */
    public void testGetMergeBranchCreated() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
          Branch mergeBranch =
-               BranchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
-                     ConflictTestManager.getDestBranch().getBranchId());
+               BranchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch(),
+                     ConflictTestManager.getDestBranch());
          assertFalse(mergeBranch == null);
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(mergeBranch, true);
          if (DEBUG) {

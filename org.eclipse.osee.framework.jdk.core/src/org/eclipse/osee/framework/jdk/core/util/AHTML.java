@@ -34,25 +34,29 @@ public class AHTML {
    }
 
    public static String textToHtml(String text) {
-      String str = new String(text);
-      str = str.replaceAll("&", "&amp;");
-      str = str.replaceAll(">", "&gt;");
-      str = str.replaceAll("<", "&lt;");
-      str = str.replaceAll("\"", "&quot;");
-      str = str.replaceAll("\\n", "<br/>");
-      str = str.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
-      str = str.replaceAll("[\\x0B\\f\\r]+", "");
-      return str;
+      if (text == null) {
+         return "";
+      }
+      text = text.replaceAll("&", "&amp;");
+      text = text.replaceAll(">", "&gt;");
+      text = text.replaceAll("<", "&lt;");
+      text = text.replaceAll("\"", "&quot;");
+      text = text.replaceAll("\\n", "<br/>");
+      text = text.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+      text = text.replaceAll("[\\x0B\\f\\r]+", "");
+      return text;
    }
 
    public static String htmlToText(String html) {
-      String str = new String(html);
-      str = str.replaceAll("&amp;", "&");
-      str = str.replaceAll("&gt;", ">");
-      str = str.replaceAll("&lt;", "<");
-      str = str.replaceAll("&quot;", "\"");
-      str = str.replaceAll("&nbsp;", " ");
-      return str;
+      if (html == null) {
+         return "";
+      }
+      html = html.replaceAll("&amp;", "&");
+      html = html.replaceAll("&gt;", ">");
+      html = html.replaceAll("&lt;", "<");
+      html = html.replaceAll("&quot;", "\"");
+      html = html.replaceAll("&nbsp;", " ");
+      return html;
    }
 
    public static String getUrlPageHtml(String urlStr, InetSocketAddress addr) {

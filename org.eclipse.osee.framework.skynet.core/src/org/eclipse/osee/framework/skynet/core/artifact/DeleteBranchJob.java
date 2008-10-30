@@ -181,7 +181,7 @@ class DeleteBranchJob extends Job {
             monitor.subTask("Delete Branch");
             ConnectionHandler.runPreparedUpdate(DELETE_FROM_BRANCH_TABLE, branch.getBranchId());
             monitor.worked(1);
-            BranchPersistenceManager.removeBranchFromCache(branch.getBranchId());
+            BranchPersistenceManager.handleBranchDeletion(branch.getBranchId());
          }
       }
 

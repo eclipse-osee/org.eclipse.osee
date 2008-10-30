@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
  * @author Robert A. Fisher
  */
 public class Branch implements Comparable<Branch>, IAdaptable {
+   public static final String COMMON_BRANCH_CONFIG_ID = "Common";
    private static final String UPDATE_BRANCH_SHORT_NAME = "UPDATE osee_branch SET short_name = ? WHERE branch_id = ?";
    private final int branchId;
    private final int parentBranchId;
@@ -48,8 +49,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private final Timestamp creationDate;
    private final String creationComment;
    private final BranchType branchType;
-   public static final int NULL_PARENT_BRANCH_ID = -1;
-   public static final String COMMON_BRANCH_CONFIG_ID = "Common";
+   private Branch sourceBranch;
+   private Branch destBranch;
+   private boolean deleted;
 
    public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
       this.branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
@@ -180,7 +182,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
-      for (Branch branch : BranchPersistenceManager.getBranches()) {
+      for (Branch branch : BranchPersistenceManager.getNormalBranches()) {
          if (branch.getParentBranchId() == parentBranch.getBranchId()) {
             children.add(branch);
             if (recurse) {
@@ -222,8 +224,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return archived;
    }
 
-   public void setArchived() {
-      archived = true;
+   public void setArchived(boolean archived) {
+      this.archived = archived;
    }
 
    public boolean hasChanges() throws OseeCoreException {
@@ -343,4 +345,44 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return null;
    }
 
+   public void setMergeBranchInfo(Branch sourceBranch, Branch destBranch) {
+      this.sourceBranch = sourceBranch;
+      this.destBranch = destBranch;
+   }
+
+   public boolean isMergeBranchFor(Branch sourceBranch, Branch destBranch) {
+      return isMergeBranch() && this.sourceBranch.equals(sourceBranch) && this.destBranch.equals(destBranch);
+   }
+
+   /**
+    * @param branchTypes
+    * @return whether this branch is of one of the specified branch types
+    */
+   public boolean isOfType(BranchType... branchTypes) {
+      for (BranchType branchType : branchTypes) {
+         if (this.branchType == branchType) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public boolean matchesState(BranchState branchState) {
+      return branchState == BranchState.ALL || (isArchived() && branchState == BranchState.ARCHIVED) || (!isArchived() && branchState == BranchState.ACTIVE);
+   }
+
+   public boolean matchesControlled(BranchControlled branchControlled) {
+      return branchControlled == BranchControlled.ALL || (isChangeManaged() && branchControlled == BranchControlled.CHANGE_MANAGED) || (!isChangeManaged() && branchControlled == BranchControlled.NOT_CHANGE_MANAGED);
+   }
+
+   public void setDeleted() {
+      this.deleted = true;
+   }
+
+   /**
+    * @return the deleted
+    */
+   public boolean isDeleted() {
+      return deleted;
+   }
 }

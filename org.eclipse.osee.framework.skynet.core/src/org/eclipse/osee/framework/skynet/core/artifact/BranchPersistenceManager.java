@@ -36,9 +36,9 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -57,9 +57,9 @@ import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
 
 public class BranchPersistenceManager {
    private static final String READ_BRANCH_TABLE =
-         "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type=" + TransactionDetailsType.Baselined.getId();
+         "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
    private static final String READ_MERGE_BRANCHES =
-         "select * from osee_branch b1, osee_merge m2, osee_tx_details t2 where b1.branch_id = m2.merge_branch_id and t2.branch_id = b1.branch_id and t2.tx_type = 1";
+         "SELECT m1.* FROM osee_merge m1, osee_tx_details txd1 WHERE m1.merge_branch_id = txd1.branch_id and txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
    private static final String COMMIT_TRANSACTION =
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("tx_type", "branch_id", "transaction_id",
                TXD_COMMENT, "time", "author", "commit_art_id");
@@ -77,16 +77,11 @@ public class BranchPersistenceManager {
 
    // This hash is keyed on the branchId
    private final TreeMap<Integer, Branch> branchCache = new TreeMap<Integer, Branch>();
-   //This hash is keyed in the source branch id and destination branch id
-   private final DoubleKeyHashMap<Integer, Integer, Branch> mergeBranchCache =
-         new DoubleKeyHashMap<Integer, Integer, Branch>();
 
    public static final String COMMIT_COMMENT = "Commit Branch ";
 
    private static final boolean MERGE_DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
-   private static final boolean PERSISTENCE_DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Persistence"));
 
    private static final BranchPersistenceManager instance = new BranchPersistenceManager();
 
@@ -104,7 +99,7 @@ public class BranchPersistenceManager {
    public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       Set<Branch> branches = new HashSet<Branch>();
-      for (Branch branch : getBranches())
+      for (Branch branch : getNormalBranches())
          if (branch.isAssociatedToArtifact(associatedArtifact)) {
             branches.add(branch);
          }
@@ -123,18 +118,38 @@ public class BranchPersistenceManager {
       return getCommonBranch();
    }
 
-   public static List<Branch> getBranches() throws OseeCoreException {
-      instance.ensurePopulatedCache(false);
-      List<Branch> branches = new ArrayList<Branch>(instance.branchCache.values());
+   /**
+    * Excludes branches of type MERGE and SYSTEM_ROOT
+    * 
+    * @return branches that are not archived and are of type STANDARD, TOP_LEVEL, or BASELINE
+    * @throws OseeCoreException
+    */
+   public static List<Branch> getNormalBranches() throws OseeCoreException {
+      List<Branch> branches =
+            getBranches(BranchState.ACTIVE, BranchControlled.ALL, BranchType.STANDARD, BranchType.TOP_LEVEL,
+                  BranchType.BASELINE);
       Collections.sort(branches);
       return branches;
    }
 
-   public static Collection<Branch> refreshBranches() throws OseeCoreException {
-      instance.ensurePopulatedCache(true);
-      return getBranches();
+   public static List<Branch> getBranches(BranchState branchState, BranchControlled branchControlled, BranchType... branchTypes) throws OseeCoreException {
+      instance.ensurePopulatedCache(false);
+      List<Branch> branches = new ArrayList<Branch>(500);
+      for (Branch branch : instance.branchCache.values()) {
+         if (branch.matchesState(branchState) && branch.matchesControlled(branchControlled) && branch.isOfType(branchTypes)) {
+            branches.add(branch);
+         }
+      }
+
+      return branches;
    }
 
+   public static void refreshBranches() throws OseeCoreException {
+      instance.ensurePopulatedCache(true);
+   }
+
+   @Deprecated
+   // use getKeyedBranch() or get the branch by id or from getBranches(...)
    public static Branch getBranch(String branchName) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       for (Branch branch : instance.branchCache.values()) {
@@ -153,22 +168,31 @@ public class BranchPersistenceManager {
          try {
             chStmt = ConnectionHandler.runPreparedQuery(2000, READ_BRANCH_TABLE);
             while (chStmt.next()) {
-               int branchId = chStmt.getInt("branch_id");
-               Branch loadedBranch = initializeBranchObject(chStmt);
-               // De-Cache branch if currently archived
-               if (loadedBranch.isArchived()) {
-                  branchCache.remove(loadedBranch.getBranchId());
+               Branch cachedBranch = branchCache.get(chStmt.getInt("branch_id"));
+
+               if (cachedBranch == null) {
+                  cachedBranch = initializeBranchObject(chStmt);
+                  branchCache.put(cachedBranch.getBranchId(), cachedBranch);
                } else {
-                  // Cache branch if not already done
-                  if (!branchCache.containsKey(loadedBranch.getBranchId())) {
-                     branchCache.put(loadedBranch.getBranchId(), loadedBranch);
-                  }
-                  Branch cachedBranch = branchCache.get(branchId);
                   cachedBranch.setBranchName(chStmt.getString("branch_name"));
-                  if (systemRoot == null && cachedBranch.isSystemRootBranch()) {
-                     systemRoot = cachedBranch;
-                  }
+                  cachedBranch.setArchived(chStmt.getInt("archived") == 1);
                }
+
+               if (cachedBranch.isSystemRootBranch()) {
+                  systemRoot = cachedBranch;
+               }
+            }
+         } finally {
+            ConnectionHandler.close(chStmt);
+         }
+
+         try {
+            chStmt = ConnectionHandler.runPreparedQuery(1000, READ_MERGE_BRANCHES);
+            while (chStmt.next()) {
+               Branch sourceBranch = branchCache.get(chStmt.getInt("source_branch_id"));
+               Branch destBranch = branchCache.get(chStmt.getInt("dest_branch_id"));
+               Branch mergeBranch = branchCache.get(chStmt.getInt("merge_branch_id"));
+               mergeBranch.setMergeBranchInfo(sourceBranch, destBranch);
             }
          } finally {
             ConnectionHandler.close(chStmt);
@@ -183,21 +207,22 @@ public class BranchPersistenceManager {
       }
    }
 
-   public static Collection<Branch> getArchivedBranches() throws OseeDataStoreException {
-      Collection<Branch> archivedBranches = new ArrayList<Branch>(100);
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(500, READ_BRANCH_TABLE);
-         while (chStmt.next()) {
-            Branch branch = initializeBranchObject(chStmt);
-            if (branch.isArchived()) {
-               archivedBranches.add(branch);
-            }
+   /**
+    * returns the merge branch for this source destination pair from the cache or null if not found
+    */
+   public static Branch getMergeBranch(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+      instance.ensurePopulatedCache(false);
+      for (Branch branch : instance.branchCache.values()) {
+         if (branch.isMergeBranchFor(sourceBranch, destBranch)) {
+            return branch;
          }
-      } finally {
-         ConnectionHandler.close(chStmt);
       }
-      return archivedBranches;
+      return null;
+   }
+
+   public static Collection<Branch> getArchivedBranches() throws OseeCoreException {
+      return getBranches(BranchState.ARCHIVED, BranchControlled.ALL, BranchType.STANDARD, BranchType.TOP_LEVEL,
+            BranchType.BASELINE);
    }
 
    /**
@@ -205,7 +230,7 @@ public class BranchPersistenceManager {
     * 
     * @throws InterruptedException
     */
-   public static void deleteArchivedBranches() throws OseeDataStoreException, InterruptedException {
+   public static void deleteArchivedBranches() throws OseeCoreException, InterruptedException {
       for (Branch archivedBranch : getArchivedBranches()) {
          Job job = new DeleteBranchJob(archivedBranch);
          Jobs.startJob(job);
@@ -217,9 +242,7 @@ public class BranchPersistenceManager {
       Branch branch =
             new Branch(branchShortName, branchName, branchId, parentBranchId, archived, authorId, creationDate,
                   creationComment, associatedArtifactId, branchType);
-      if (!archived) {
-         instance.branchCache.put(branchId, branch);
-      }
+      instance.branchCache.put(branchId, branch);
       return branch;
    }
 
@@ -243,7 +266,7 @@ public class BranchPersistenceManager {
     */
    public static Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException {
       long time = 0;
-      Branch mergeBranch = getMergeBranch(sourceBranch.getBranchId(), destBranch.getBranchId());
+      Branch mergeBranch = getMergeBranch(sourceBranch, destBranch);
 
       if (mergeBranch == null) {
          if (MERGE_DEBUG) {
@@ -265,45 +288,6 @@ public class BranchPersistenceManager {
          }
       }
       return mergeBranch;
-   }
-
-   /**
-    * Checks the merge branch cache for the branch if it does not find it then it will query the database for the
-    * branch.
-    */
-   public static Branch getMergeBranch(Integer sourceBranchId, Integer destBranchId) throws OseeCoreException {
-      if (sourceBranchId < 1 || destBranchId < 1) {
-         throw new IllegalArgumentException(
-               "Branch ids are invalid source branch id:" + sourceBranchId + " destination branch id:" + destBranchId);
-      }
-
-      if (!instance.mergeBranchCache.containsKey(sourceBranchId, destBranchId)) {
-         instance.ensureMergePopulatedCache(true);
-      }
-
-      Branch mergeBranch = instance.mergeBranchCache.get(sourceBranchId, destBranchId);
-      return mergeBranch;
-   }
-
-   private synchronized void ensureMergePopulatedCache(boolean forceRead) throws OseeDataStoreException {
-      if (forceRead || mergeBranchCache.isEmpty()) {
-         ConnectionHandlerStatement chStmt = null;
-         try {
-            chStmt = ConnectionHandler.runPreparedQuery(500, READ_MERGE_BRANCHES);
-            while (chStmt.next()) {
-               int sourceBranchId = chStmt.getInt("source_branch_id");
-               int destBranchId = chStmt.getInt("dest_branch_id");
-               Branch loadedBranch = initializeBranchObject(chStmt);
-               if (loadedBranch.isArchived()) {
-                  mergeBranchCache.remove(sourceBranchId, destBranchId);
-               } else {
-                  mergeBranchCache.put(sourceBranchId, destBranchId, loadedBranch);
-               }
-            }
-         } finally {
-            ConnectionHandler.close(chStmt);
-         }
-      }
    }
 
    public static Branch getBranch(Integer branchId) throws OseeCoreException {
@@ -334,54 +318,17 @@ public class BranchPersistenceManager {
       return Jobs.startJob(new DeleteBranchJob(branch));
    }
 
-   public static void removeBranchFromCache(int branchId) {
-      instance.branchCache.remove(branchId);
-   }
-
-   public static class CommitConflictException extends RuntimeException {
-      private static final long serialVersionUID = 1L;
-
-      public CommitConflictException() {
-         super();
-      }
-
-      public CommitConflictException(String s) {
-         super(s);
-      }
-
-      public CommitConflictException(String message, Throwable cause) {
-         super(message, cause);
-      }
-
-      public CommitConflictException(Throwable cause) {
-         super(cause);
-      }
-   }
-
-   public static class NoChangesToCommitException extends RuntimeException {
-      private static final long serialVersionUID = 1L;
-
-      public NoChangesToCommitException() {
-         super();
-      }
-
-      public NoChangesToCommitException(String s) {
-         super(s);
-      }
-
-      public NoChangesToCommitException(String message, Throwable cause) {
-         super(message, cause);
-      }
-
-      public NoChangesToCommitException(Throwable cause) {
-         super(cause);
+   public static void handleBranchDeletion(int branchId) {
+      Branch branch = instance.branchCache.remove(branchId);
+      if (branch != null) {
+         branch.setDeleted();
       }
    }
 
    /**
     * Commit the net changes from the childBranch into its parent branch.
     * 
-    * @throws IllegalArgumentException
+    * @throws OseeCoreException
     */
    public static Job commitBranch(final Branch childBranch, final boolean archiveChildBranch, final boolean forceCommit) throws OseeCoreException {
       Branch parentBranch = childBranch.getParentBranch();
@@ -394,8 +341,7 @@ public class BranchPersistenceManager {
     * fromBranch's changes override those on the toBranch if overrideConflicts is true otherwise a
     * CommitConflictException is thrown.
     * 
-    * @throws CommitConflictException
-    * @throws IllegalArgumentException
+    * @throws ConflictDetectionException
     */
    public static Job commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch, boolean forceCommit) throws OseeCoreException {
       CommitJob commitJob = new CommitJob(toBranch, fromBranch, archiveFromBranch, forceCommit);
@@ -475,11 +421,15 @@ public class BranchPersistenceManager {
     */
    public static void archive(Branch branch) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
+      branch.setArchived(true);
+      validateDefaultBranch();
+   }
 
-      branch.setArchived();
-      removeBranchFromCache(branch.getBranchId());
-
-      setDefaultBranch(branch.hasParentBranch() ? branch.getParentBranch() : getCommonBranch());
+   public static void validateDefaultBranch() throws OseeCoreException {
+      Branch defaultBranch = getDefaultBranch();
+      if (defaultBranch.isArchived() || defaultBranch.isDeleted()) {
+         setDefaultBranch(defaultBranch.hasParentBranch() ? defaultBranch.getParentBranch() : getCommonBranch());
+      }
    }
 
    /**
@@ -607,24 +557,13 @@ public class BranchPersistenceManager {
       return BranchCreator.getInstance().createRootBranch(null, "System Root Branch", null, 1, true);
    }
 
-   public static List<Branch> getRootBranches() throws OseeCoreException {
-      List<Branch> branches = new ArrayList<Branch>();
-      for (Branch branch : getBranches()) {
-         if (branch.isTopLevelBranch()) {
-            branches.add(branch);
-         }
-      }
-      return branches;
+   public static List<Branch> getTopLevelBranches() throws OseeCoreException {
+      return getBranches(BranchState.ACTIVE, BranchControlled.ALL, BranchType.TOP_LEVEL);
    }
 
    public static List<Branch> getChangeManagedBranches() throws OseeCoreException {
-      List<Branch> branches = new ArrayList<Branch>();
-      for (Branch branch : getBranches()) {
-         if (branch.isChangeManaged()) {
-            branches.add(branch);
-         }
-      }
-      return branches;
+      return getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.STANDARD,
+            BranchType.TOP_LEVEL, BranchType.BASELINE);
    }
 
    public static void setDefaultBranch(Branch branch) {

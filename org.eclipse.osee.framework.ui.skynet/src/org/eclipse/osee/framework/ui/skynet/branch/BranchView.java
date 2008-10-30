@@ -452,7 +452,7 @@ public class BranchView extends ViewPart implements IActionable {
 
    private void addBranchSelectionMenu(MenuManager menuManager) {
       try {
-         for (Branch branch : BranchPersistenceManager.getBranches()) {
+         for (Branch branch : BranchPersistenceManager.getNormalBranches()) {
 
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put(BRANCH_ID, Integer.toString(branch.getBranchId()));

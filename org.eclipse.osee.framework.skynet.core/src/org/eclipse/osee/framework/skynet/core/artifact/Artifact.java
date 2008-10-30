@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
@@ -555,6 +556,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       ensureAttributesLoaded();
       List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
       if (soleAttributes.size() == 0) {
+         if (!isAttributeTypeValid(attributeTypeName)) {
+            throw new OseeArgumentException(String.format(
+                  "The attribute type %s is not valid for artifacts of type [%s]", attributeTypeName,
+                  getArtifactTypeName()));
+         }
          throw new AttributeDoesNotExist(
                "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getHumanReadableId());
       } else if (soleAttributes.size() > 1) {
@@ -819,11 +825,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public String getDescriptiveName() {
       try {
-         if (!isAttributeTypeValid("Name")) {
-            throw new IllegalStateException(String.format(
-                  "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
-                  getArtifactTypeName(), getGuid()));
-         }
          String name = getSoleAttributeValue("Name");
          return name == null ? UNNAMED : name;
       } catch (Exception ex) {

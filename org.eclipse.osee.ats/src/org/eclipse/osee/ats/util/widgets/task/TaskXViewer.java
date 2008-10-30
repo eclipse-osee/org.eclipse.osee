@@ -407,7 +407,11 @@ public class TaskXViewer extends WorldXViewer {
             @Override
             public void run() {
                try {
-                  ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+                  TaskContentProvider contentProvider =
+                        (TaskContentProvider) xTaskViewer.getXViewer().getContentProvider();
+                  if (contentProvider != null) {
+                     contentProvider.remove(loadedArtifacts.getLoadedArtifacts());
+                  }
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }

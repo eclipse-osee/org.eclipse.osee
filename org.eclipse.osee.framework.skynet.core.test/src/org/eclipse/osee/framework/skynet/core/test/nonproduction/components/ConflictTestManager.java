@@ -394,7 +394,7 @@ public class ConflictTestManager {
          }
       }
       try {
-         mBranch = BranchPersistenceManager.getMergeBranch(sBranch.getBranchId(), dBranch.getBranchId());
+         mBranch = BranchPersistenceManager.getMergeBranch(sBranch, dBranch);
       } catch (Exception ex) {
       }
 

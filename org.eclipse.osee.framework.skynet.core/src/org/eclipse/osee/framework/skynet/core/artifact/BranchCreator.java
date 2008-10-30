@@ -130,7 +130,7 @@ public class BranchCreator {
             NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       Branch childBranch =
-            initializeBranch(connection, childBranchShortName, childBranchName, null, userId, timestamp, comment,
+            initializeBranch(connection, childBranchShortName, childBranchName, userId, timestamp, comment,
                   associatedArtifact, branchType);
 
       // insert the new transaction data first.
@@ -347,11 +347,11 @@ public class BranchCreator {
     * adds a new branch to the database
     * 
     * @param branchName caller is responsible for ensuring no branch has already been given this name
-    * @param parentTransactionId the id of the parent branch or NULL_PARENT_BRANCH_ID if this branch has no parent
+    * @param parentTransactionId the id of the parent branch or null if this branch has no parent
     * @return branch object that represents the newly created branch
     * @throws OseeCoreException
     */
-   private Branch initializeBranch(Connection connection, String branchShortName, String branchName, TransactionId parentTransactionId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
+   private Branch initializeBranch(Connection connection, String branchShortName, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
       if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, SELECT_BRANCH_BY_NAME, branchName) > 0) {
@@ -359,8 +359,7 @@ public class BranchCreator {
       }
 
       int branchId = SequenceManager.getNextBranchId();
-      int parentBranchNumber =
-            parentTransactionId == null ? Branch.NULL_PARENT_BRANCH_ID : parentTransactionId.getBranch().getBranchId();
+      int parentBranchNumber = BranchPersistenceManager.getSystemRootBranch().getBranchId();
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {

@@ -311,7 +311,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      }
                   } else if (event instanceof NetworkDeletedBranchEvent) {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
-                     BranchPersistenceManager.removeBranchFromCache(branchId);
+                     BranchPersistenceManager.handleBranchDeletion(branchId);
                      try {
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
                      } catch (Exception ex) {
@@ -319,7 +319,6 @@ public class RemoteEventManager implements IServiceLookupListener {
                      }
                   } else if (event instanceof NetworkCommitBranchEvent) {
                      int branchId = ((NetworkCommitBranchEvent) event).getBranchId();
-                     BranchPersistenceManager.removeBranchFromCache(branchId);
                      try {
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Committed, branchId);
                      } catch (Exception ex) {

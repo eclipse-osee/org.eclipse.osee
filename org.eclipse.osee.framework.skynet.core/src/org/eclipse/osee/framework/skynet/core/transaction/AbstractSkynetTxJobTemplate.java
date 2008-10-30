@@ -11,17 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -32,9 +29,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Donald G. Dunne
  */
 public abstract class AbstractSkynetTxJobTemplate extends Job {
-
    private final Branch branch;
-   static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
    protected IProgressMonitor monitor;
 
    /**

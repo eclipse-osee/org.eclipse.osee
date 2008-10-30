@@ -18,13 +18,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -37,7 +37,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
@@ -111,16 +113,20 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       @SuppressWarnings("unchecked")
       public Object[] run(Object parentElement) throws Exception {
          if (parentElement instanceof BranchPersistenceManager) {
-            Collection<Branch> branches = BranchPersistenceManager.getBranches();
-            Iterator<Branch> iter = branches.iterator();
-
-            while (iter.hasNext()) {
-               Branch branch = iter.next();
-
-               if (branch.isSystemRootBranch() || (!showChildBranchesAtMainLevel && branch.hasParentBranch()) || ((!OseeProperties.isDeveloper() || !showMergeBranches) && branch.isMergeBranch())) {
-                  iter.remove();
-               }
+            List<BranchType> branchTypes = new ArrayList<BranchType>(4);
+            branchTypes.add(BranchType.TOP_LEVEL);
+            if (OseeProperties.isDeveloper() && showMergeBranches) {
+               branchTypes.add(BranchType.MERGE);
             }
+
+            if (showChildBranchesAtMainLevel) {
+               branchTypes.add(BranchType.BASELINE);
+               branchTypes.add(BranchType.STANDARD);
+            }
+
+            List<Branch> branches =
+                  BranchPersistenceManager.getBranches(BranchState.ACTIVE, BranchControlled.ALL,
+                        branchTypes.toArray(new BranchType[branchTypes.size()]));
             return branches.toArray();
          } else if (parentElement instanceof Branch) {
             Branch branch = (Branch) parentElement;
