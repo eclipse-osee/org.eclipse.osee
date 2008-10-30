@@ -30,10 +30,12 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.dialogs.ListDialogSortable;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumnSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.swt.SWT;
@@ -102,7 +104,9 @@ public class XViewerCustomMenu {
       mm.add(new Separator());
       mm.add(tableProperties);
       mm.add(viewTableReport);
-      if (xViewer.isColumnMultiEditEnabled()) mm.add(columnMultiEdit);
+      if (xViewer.isColumnMultiEditEnabled()) {
+         mm.add(columnMultiEdit);
+      }
       mm.add(viewSelectedCell);
       mm.add(copySelected);
       mm.add(copySelectedCell);
@@ -188,7 +192,7 @@ public class XViewerCustomMenu {
                AWorkbench.popup("ERROR", "No Columns Are Multi-Editable");
                return;
             }
-            ListDialog ld = new ListDialog(xViewer.getTree().getShell());
+            ListDialogSortable ld = new ListDialogSortable(new XViewerColumnSorter(), xViewer.getTree().getShell());
             ld.setMessage("Select Column to Edit");
             ld.setInput(editableColumns);
             ld.setLabelProvider(treeColumnLabelProvider);

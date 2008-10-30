@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumnLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumnSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.ColumnFilterData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeDataLabelProvider;
@@ -382,19 +383,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       table_1.setLayoutData(gd_table_1);
       hiddenColTable.getViewer().setLabelProvider(new XViewerColumnLabelProvider());
       hiddenColTable.getViewer().setContentProvider(new ArrayTreeContentProvider());
-      hiddenColTable.getViewer().setSorter(new ViewerSorter() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
-          *      java.lang.Object, java.lang.Object)
-          */
-         @SuppressWarnings("unchecked")
-         @Override
-         public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare(((XViewerColumn) e1).toString(), ((XViewerColumn) e2).toString());
-         }
-      });
+      hiddenColTable.getViewer().setSorter(new XViewerColumnSorter());
       hiddenColTable.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             updateButtonEnablements();
