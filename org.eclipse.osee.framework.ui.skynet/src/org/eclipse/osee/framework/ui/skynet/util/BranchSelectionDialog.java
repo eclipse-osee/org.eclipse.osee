@@ -14,20 +14,16 @@ import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
+import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchListComposite;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -35,7 +31,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
@@ -43,8 +38,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 public class BranchSelectionDialog extends MessageDialog {
 
    Branch selected = null;
-   private OSEEFilteredTree oseeFilteredTree;
-   private static PatternFilter patternFilter = new PatternFilter();
+   BranchListComposite branchListComposite;
 
    public BranchSelectionDialog(String title) {
       super(Display.getCurrent().getActiveShell(), title, null, null, MessageDialog.NONE,
@@ -58,64 +52,60 @@ public class BranchSelectionDialog extends MessageDialog {
 
    @Override
    protected Control createDialogArea(Composite container) {
-
-      oseeFilteredTree = new OSEEFilteredTree(container, SWT.SINGLE | SWT.BORDER, patternFilter);
-      oseeFilteredTree.getViewer().setContentProvider(new BranchContentProvider());
-      oseeFilteredTree.setInitialText("");
-      oseeFilteredTree.getFilterControl().setFocus();
-      oseeFilteredTree.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
-         public void selectionChanged(SelectionChangedEvent event) {
-            selected = getSelectedBranch();
-         }
-      });
-      oseeFilteredTree.getViewer().setLabelProvider(
-            new org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider());
-      GridData gd = new GridData(GridData.FILL_BOTH);
+      branchListComposite = new BranchListComposite(container);
+      branchListComposite.setPresentation(true);
+      GridData gd = new GridData();
       gd.heightHint = 500;
-      gd.widthHint = 500;
-      oseeFilteredTree.getViewer().getTree().setLayoutData(gd);
-      oseeFilteredTree.getViewer().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
+      gd.widthHint = 400;
+      branchListComposite.getBranchTable().getTree().setLayoutData(gd);
+      branchListComposite.getFilterText().setFocus();
+      branchListComposite.getBranchTable().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+          */
+         @Override
          public void handleEvent(Event event) {
-            if (event.button == 1) handleDoubleClick();
+            handleDoubleClick();
          }
       });
-      oseeFilteredTree.getViewer().getTree().addKeyListener(new KeyListener() {
-         public void keyPressed(KeyEvent e) {
+      branchListComposite.getBranchTable().getTree().addSelectionListener(new SelectionListener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            storeSelectedBranch();
          }
 
-         public void keyReleased(KeyEvent e) {
-            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) handleDoubleClick();
+         @Override
+         public void widgetDefaultSelected(SelectionEvent e) {
          }
       });
-      try {
-         oseeFilteredTree.getViewer().setInput(BranchPersistenceManager.getBranches());
-      } catch (OseeCoreException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
-      return container;
+      return branchListComposite.getBranchTable().getControl();
    }
 
-   private Branch getSelectedBranch() {
-      IStructuredSelection sel = (IStructuredSelection) oseeFilteredTree.getViewer().getSelection();
-      if (!sel.isEmpty() && (sel.getFirstElement() instanceof Branch)) selected = (Branch) sel.getFirstElement();
+   public Branch getSelected() {
       return selected;
    }
 
+   private void storeSelectedBranch() {
+      IStructuredSelection sel = (IStructuredSelection) branchListComposite.getBranchTable().getSelection();
+      if (!sel.isEmpty() && (sel.getFirstElement() instanceof JobbedNode)) {
+         selected = (Branch) ((JobbedNode) sel.getFirstElement()).getBackingData();
+      }
+   }
+
    private void handleDoubleClick() {
-      getSelectedBranch();
+      storeSelectedBranch();
       okPressed();
    }
 
    @Override
    protected void okPressed() {
-      if (oseeFilteredTree.getViewer().getSelection().isEmpty()) {
+      if (selected == null) {
          AWorkbench.popup("ERROR", "Must make selection.");
          return;
       }
-      oseeFilteredTree.getViewer().getTree().dispose();
       super.okPressed();
    }
 

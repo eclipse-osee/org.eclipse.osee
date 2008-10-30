@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -50,7 +49,6 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
    private static Image favoriteBranchImage = null;
    private static Image defaultBranchImage = null;
    private static Image favoriteDefaultBranchImage = null;
-   private static Image oldSnapshotImage = null;
 
    private static Image favoriteDefaultChangedManagedBranchImage = null;
    private static Image defaultChangeManagedBranchImage = null;
@@ -137,7 +135,6 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
                new OverlayImage(defaultChangeManagedBranchImage, SkynetGuiPlugin.getInstance().getImageDescriptor(
                      "star_9_9.gif"), 0, 7).createImage();
 
-         oldSnapshotImage = SkynetGuiPlugin.getInstance().getImage("old.gif");
       }
    }
 
@@ -176,7 +173,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          if (columnIndex == 0) {
             return String.valueOf(transactionData.getTransactionNumber());
          } else if (columnIndex == 2) {
-            return String.valueOf((Timestamp) transactionData.getTimeStamp());
+            return String.valueOf(transactionData.getTimeStamp());
          } else if (columnIndex == 3) {
             return transactionData.getName();
          } else if (columnIndex == 4) {
@@ -201,7 +198,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             if (columnIndex == 0) {
                return String.valueOf(headTransactionData.getTransactionNumber() + "..." + tailTransactionData.getTransactionNumber());
             } else if (columnIndex == 2) {
-               return String.valueOf((Timestamp) headTransactionData.getTimeStamp());
+               return String.valueOf(headTransactionData.getTimeStamp());
             }
          } else {
             return "Unexpected aggregation of " + headCursor.getClass().getSimpleName() + " and " + tailCursor.getClass().getSimpleName();
