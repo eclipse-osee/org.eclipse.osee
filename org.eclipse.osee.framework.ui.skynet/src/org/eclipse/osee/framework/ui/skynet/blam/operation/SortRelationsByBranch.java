@@ -43,27 +43,10 @@ public class SortRelationsByBranch extends AbstractBlam {
       Connection connection = null;
       try {
          connection = OseeDbConnection.getConnection();
-
          int totalWork = 0;
-
          monitor.beginTask(getName(), totalWork);
 
-         List<Branch> branches = BranchPersistenceManager.getBranches();
-         List<Branch> branchesToSort = new ArrayList<Branch>(branches.size());
-         branchesToSort.add(BranchPersistenceManager.getBranch("Common"));
-         branchesToSort.add(BranchPersistenceManager.getBranch("Block III - FTB0"));
-         branchesToSort.add(BranchPersistenceManager.getBranch("Block III - FTB2"));
-         branchesToSort.add(BranchPersistenceManager.getBranch("MYII V11"));
-         branchesToSort.add(BranchPersistenceManager.getBranch("AH-64 MSA PDSP"));
-         branchesToSort.add(BranchPersistenceManager.getBranch("LBA Help - FAQs - Instructions"));
-         branchesToSort.add(BranchPersistenceManager.getBranch("MYII V13"));
-         branchesToSort.add(BranchPersistenceManager.getBranch("V11_REU"));
-
-         for (Branch branch : branches) {
-            if (!branchesToSort.contains(branch)) {
-               branchesToSort.add(branch);
-            }
-         }
+         List<Branch> branchesToSort = BranchPersistenceManager.getTopLevelBranches();
 
          for (Branch branch : branchesToSort) {
             IOperation op = new UpdateRelationsSortOrder(branch);

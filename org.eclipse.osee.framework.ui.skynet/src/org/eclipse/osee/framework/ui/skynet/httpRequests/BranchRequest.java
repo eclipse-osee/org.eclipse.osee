@@ -66,7 +66,7 @@ public class BranchRequest implements IHttpServerRequest {
     */
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
       try {
-         List<Branch> branches = BranchPersistenceManager.getBranches();
+         List<Branch> branches = BranchPersistenceManager.getNormalBranches();
 
          Document doc = Jaxp.newDocument();
          Element root = Jaxp.createElement(doc, "skynet.branches", "");

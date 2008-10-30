@@ -204,7 +204,7 @@ public class BranchImportPage extends WizardDataTransferPage {
 
       try {
          int defaultBranchIndex = 0;
-         for (Branch branch : BranchPersistenceManager.getBranches()) {
+         for (Branch branch : BranchPersistenceManager.getNormalBranches()) {
             branchList.add(branch.getBranchName());
             branchList.setData(branch.getBranchName(), branch);
             if (branch.equals(defaultBranch)) {

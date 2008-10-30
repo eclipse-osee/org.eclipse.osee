@@ -13,10 +13,14 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -214,25 +218,24 @@ public class XBranchSelectWidget extends XWidget implements Listener {
          try {
             Branch branch = BranchPersistenceManager.getBranch(branchName);
             defaultBranch = branch.getBranchId();
-         } catch (Exception ex) {
-            //OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  "Unable to set default branch.", ex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Unable to set default branch.", ex);
          }
       }
    }
-   
-   public void addListener(Listener listener){
-	   listeners .add(listener);
+
+   public void addListener(Listener listener) {
+      listeners.add(listener);
    }
-   
-   public void removeListener(Listener listener){
-	   listeners.remove(listener);
+
+   public void removeListener(Listener listener) {
+      listeners.remove(listener);
    }
-   
-   private void notifyListeners(Event event){
-	   for(Listener listener:listeners){
-		   listener.handleEvent(event);
-	   }
+
+   private void notifyListeners(Event event) {
+      for (Listener listener : listeners) {
+         listener.handleEvent(event);
+      }
    }
-   
-   
+
 }
