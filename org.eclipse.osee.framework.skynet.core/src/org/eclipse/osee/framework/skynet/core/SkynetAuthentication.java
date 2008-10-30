@@ -170,7 +170,8 @@ public class SkynetAuthentication {
             if (firstTimeThrough) {
                forceAuthenticationRoutine();
             }
-            if (!OseeAuthentication.getInstance().isAuthenticated()) {
+            if (currentUser == null && !OseeAuthentication.getInstance().isAuthenticated()) {
+               popupGuestLoginNotification();
                currentUser = getUser(UserEnum.Guest);
             } else {
                String userId = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id);
@@ -199,9 +200,10 @@ public class SkynetAuthentication {
                                     UserCredentialEnum.Name), email == null ? "spawnedBySkynet" : email, userId, true);
                         persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
                      } else {
-                        AWorkbench.popup("Logged in as Guest",
-                              "If you do not expect to be logged in as Guest, please report this immediately.");
-                        currentUser = getUser(UserEnum.Guest);
+                        if (currentUser == null) {
+                           popupGuestLoginNotification();
+                           currentUser = getUser(UserEnum.Guest);
+                        }
                      }
                   }
                }
@@ -213,6 +215,18 @@ public class SkynetAuthentication {
       }
 
       return currentUser;
+   }
+
+   private static boolean notifiedAsGuest = false;
+
+   private void popupGuestLoginNotification() {
+      // Only notify once
+      if (!notifiedAsGuest) {
+         notifiedAsGuest = true;
+         AWorkbench.popup(
+               "OSEE Guest Login",
+               "You are logged into OSEE as \"Guest\".\n\nIf you do not expect to be logged in as Guest, please report this immediately.");
+      }
    }
 
    private static void persistUser(User user) throws OseeCoreException {
