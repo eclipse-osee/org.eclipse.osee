@@ -44,7 +44,6 @@
       <import plugin="org.eclipse.osee.framework.jdk.core" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.logging" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.db.connection" version="0.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osee.framework.resource.common" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.resource.locator.attribute" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.resource.locator.snapshot" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.resource.management" version="0.2.0" match="greaterOrEqual"/>
