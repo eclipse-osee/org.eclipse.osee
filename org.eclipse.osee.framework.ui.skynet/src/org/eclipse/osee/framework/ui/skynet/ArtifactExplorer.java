@@ -82,6 +82,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactPreviewMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
@@ -91,7 +92,6 @@ import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
-import org.eclipse.osee.framework.ui.skynet.util.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.HierarchicalReportDialog;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlReportJob;
@@ -438,7 +438,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       Action setDefaultBranch = new Action("Set Default Branch", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch");
+            BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch", false);
             int result = branchSelection.open();
             if (result == Window.OK) {
                BranchManager.setDefaultBranch(branchSelection.getSelection());

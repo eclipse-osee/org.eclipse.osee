@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.BranchSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.ViewPart;
@@ -47,7 +47,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
           */
          @Override
          public void run() {
-            BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch");
+            BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch", false);
             int result = branchSelection.open();
             if (result == Window.OK) {
                BranchManager.setDefaultBranch(branchSelection.getSelection());

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -39,6 +40,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
@@ -53,7 +55,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    public static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
    private final Artifact destinationArtifact;
    private List typeList;
-   private List branchList;
+   private BranchSelectComposite branchSelectComposite;
 
    private Button chkReuseArtifacts;
    private Button radImportUnderDhRoot;
@@ -192,11 +194,11 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       radImportUnderSelection.setToolTipText("All the top level artifacts that are imported " + "will become children of the selected artifact.");
       radImportUnderSelection.addListener(SWT.Selection, this);
       radImportUnderSelection.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             if (radImportUnderSelection.getSelection()) {
                Branch branch = destinationArtifact.getBranch();
-               branchList.setSelection(new String[] {branch.getBranchName()});
-               branchList.showSelection();
+               branchSelectComposite.setSelected(branch);
                populateTypeList(branch);
             }
          }
@@ -222,6 +224,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    /*
     * @see WizardPage#becomesVisible
     */
+   @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
       // policy: wizards are not allowed to come up with an error message
@@ -235,6 +238,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       return directoryFileSelector.validate(this);
    }
 
+   @Override
    protected void createOptionsGroup(Composite parent) {
       Group composite = new Group(parent, SWT.NONE);
       composite.setText("Options");
@@ -249,13 +253,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       label.setText("Artifact Type:");
       label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
-      branchList = new List(composite, SWT.BORDER | SWT.V_SCROLL);
-      GridData gridData = new GridData(GridData.FILL_BOTH);
-      gridData.heightHint = 300;
-      branchList.setLayoutData(gridData);
+      branchSelectComposite = new BranchSelectComposite(composite, SWT.BORDER, false);
 
       typeList = new List(composite, SWT.BORDER | SWT.V_SCROLL);
-      gridData = new GridData(GridData.FILL_BOTH);
+      GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.heightHint = 300;
       typeList.setLayoutData(gridData);
 
@@ -266,34 +267,23 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          defaultBranch = destinationArtifact.getBranch();
       }
 
-      try {
-         int defaultBranchIndex = 0;
-         for (Branch branch : BranchManager.getNormalBranches()) {
-            branchList.add(branch.getBranchName());
-            branchList.setData(branch.getBranchName(), branch);
-            if (branch.equals(defaultBranch)) {
-               branchList.select(defaultBranchIndex);
-            } else {
-               defaultBranchIndex++;
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-
       populateTypeList(defaultBranch);
       // Start out with an item selected
       typeList.setSelection(0);
 
-      branchList.addSelectionListener(new SelectionAdapter() {
-         public void widgetSelected(SelectionEvent event) {
-            String itemName = branchList.getItem(branchList.getSelectionIndex());
-            populateTypeList((Branch) branchList.getData(itemName));
+      branchSelectComposite.addListener(new Listener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+          */
+         @Override
+         public void handleEvent(Event event) {
+            populateTypeList(branchSelectComposite.getSelectedBranch());
          }
       });
    }
 
    private void populateTypeList(Branch branch) {
+      if (branch == null) return;
       try {
          String[] selection = typeList.getSelection();
          typeList.removeAll();
@@ -390,8 +380,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       if (chkReuseArtifacts.getSelection()) {
          return destinationArtifact.getBranch();
       } else {
-         String itemName = branchList.getItem(branchList.getSelectionIndex());
-         return (Branch) branchList.getData(itemName);
+         return branchSelectComposite.getSelectedBranch();
       }
    }
 
@@ -428,7 +417,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       super.updateWidgetEnablements();
 
       if (built) {
-         branchList.setEnabled(!radImportUnderSelection.getSelection());
+         branchSelectComposite.setEnabled(!radImportUnderSelection.getSelection());
 
          txtImportUnderFolderName.setEnabled(false);// TODO future development
          radImportUnderSelection.setEnabled(destinationArtifact != null);

@@ -70,14 +70,14 @@ public class InternalOseeHttpServlet extends HttpServlet {
          start = System.currentTimeMillis();
       }
       try {
-         if (areRequestsAllowed()) {
-            this.processingState = ProcessingStateEnum.BUSY;
-            this.request = request;
-            super.service(request, response);
-         } else {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("All requests are currently blocked.");
-         }
+         //         if (areRequestsAllowed()) {
+         this.processingState = ProcessingStateEnum.BUSY;
+         this.request = request;
+         super.service(request, response);
+         //         } else {
+         //            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+         //            response.getWriter().write("All requests are currently blocked.");
+         //         }
       } finally {
          if (areLogsAllowed()) {
             long elapsed = System.currentTimeMillis() - start;

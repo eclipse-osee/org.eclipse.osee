@@ -17,14 +17,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.dialogs.BranchSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -43,18 +41,17 @@ import org.eclipse.swt.widgets.Listener;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchSelectComposite extends Composite implements Listener {
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchSelectComposite.class);
+public class BranchSelectSimpleComposite extends Composite implements Listener {
    protected static final int SIZING_TEXT_FIELD_WIDTH = 250;
 
    private Button branchSelectButton;
    private Combo branchSelectCombo;
    private boolean entryChanged;
    private Branch currentBranch;
-   private Set<Listener> listeners;
-   private boolean allowOnlyWorkingBranches;
+   private final Set<Listener> listeners;
+   private final boolean allowOnlyWorkingBranches;
 
-   private BranchSelectComposite(Composite parent, int style, boolean allowOnlyWorkingBranches) {
+   private BranchSelectSimpleComposite(Composite parent, int style, boolean allowOnlyWorkingBranches) {
       super(parent, style);
       this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
       this.entryChanged = false;
@@ -63,12 +60,12 @@ public class BranchSelectComposite extends Composite implements Listener {
       createControl(this);
    }
 
-   public static BranchSelectComposite createWorkingBranchSelectComposite(Composite parent, int style) {
-      return new BranchSelectComposite(parent, style, true);
+   public static BranchSelectSimpleComposite createWorkingBranchSelectComposite(Composite parent, int style) {
+      return new BranchSelectSimpleComposite(parent, style, true);
    }
 
-   public static BranchSelectComposite createBranchSelectComposite(Composite parent, int style) {
-      return new BranchSelectComposite(parent, style, false);
+   public static BranchSelectSimpleComposite createBranchSelectComposite(Composite parent, int style) {
+      return new BranchSelectSimpleComposite(parent, style, false);
    }
 
    private void createControl(Composite parent) {
@@ -81,12 +78,14 @@ public class BranchSelectComposite extends Composite implements Listener {
       branchSelectCombo.setLayoutData(data);
       branchSelectCombo.setFont(parent.getFont());
       branchSelectCombo.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             updateFromSourceField();
          }
       });
 
       branchSelectCombo.addKeyListener(new KeyAdapter() {
+         @Override
          public void keyPressed(KeyEvent e) {
             // If there has been a key pressed then mark as dirty
             entryChanged = true;
@@ -94,6 +93,7 @@ public class BranchSelectComposite extends Composite implements Listener {
       });
 
       branchSelectCombo.addFocusListener(new FocusAdapter() {
+         @Override
          public void focusLost(FocusEvent e) {
             // Clear the flag to prevent constant update
             if (entryChanged) {
@@ -201,8 +201,8 @@ public class BranchSelectComposite extends Composite implements Listener {
                   }
                }
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, String.format("Unable to add invalid branch id [%s] to selection list.",
-                     toStore));
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
+                     "Unable to add invalid branch id [%s] to selection list.", toStore));
             }
          }
       }

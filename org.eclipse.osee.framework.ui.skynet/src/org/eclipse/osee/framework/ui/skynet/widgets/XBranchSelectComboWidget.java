@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
+import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectSimpleComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -34,18 +34,17 @@ import org.eclipse.swt.widgets.Listener;
 
 /**
  * @author Roberto E. Escobar
- * @author Donald G. Dunne
  */
-public class XBranchSelectWidget extends XWidget implements Listener {
+public class XBranchSelectComboWidget extends XWidget implements Listener {
    public static final String WIDGET_ID = XBranchSelectWidget.class.getSimpleName();
 
-   private BranchSelectComposite selectComposite;
+   private BranchSelectSimpleComposite selectComposite;
    private Composite composite;
    private int defaultBranch;
 
    private final List<Listener> listeners = new ArrayList<Listener>();
 
-   public XBranchSelectWidget(String label) {
+   public XBranchSelectComboWidget(String label) {
       super(label);
       this.defaultBranch = -1;
    }
@@ -79,13 +78,9 @@ public class XBranchSelectWidget extends XWidget implements Listener {
          labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(label + ":");
       }
-      selectComposite = BranchSelectComposite.createBranchSelectComposite(composite, SWT.NONE);
-      try {
-         if (defaultBranch != -1) {
-            selectComposite.setDefaultSelectedBranch(BranchManager.getBranch(defaultBranch));
-         }
-      } catch (OseeCoreException ex) {
-         // do nothing
+      selectComposite = BranchSelectSimpleComposite.createBranchSelectComposite(composite, SWT.NONE);
+      if (defaultBranch != -1) {
+         selectComposite.restoreWidgetValues(null, Integer.toString(defaultBranch));
       }
       selectComposite.addListener(this);
    }
@@ -106,7 +101,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
     */
    @Override
    public Control getControl() {
-      return selectComposite.getBranchSelectText();
+      return composite;
    }
 
    /* (non-Javadoc)
@@ -140,9 +135,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
     */
    @Override
    public Result isValid() {
-      if (selectComposite.getSelectedBranch() == null) {
-         return new Result("Must select a Branch");
-      }
+      if (selectComposite.getSelectedBranch() == null) return new Result("Must select a Branch");
       return Result.TrueResult;
    }
 
@@ -185,7 +178,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
    public void setDisplayLabel(final String displayLabel) {
       Display.getCurrent().asyncExec(new Runnable() {
          public void run() {
-            XBranchSelectWidget.super.setDisplayLabel(displayLabel);
+            XBranchSelectComboWidget.super.setDisplayLabel(displayLabel);
             getLabelWidget().setText(displayLabel);
          }
       });
@@ -199,7 +192,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       Display.getCurrent().asyncExec(new Runnable() {
          public void run() {
             if (Strings.isValid(toolTip) != false) {
-               XBranchSelectWidget.super.setToolTip(toolTip);
+               XBranchSelectComboWidget.super.setToolTip(toolTip);
                if (selectComposite != null && selectComposite.isDisposed() != true) {
                   selectComposite.setToolTipText(toolTip);
                   for (Control control : selectComposite.getChildren()) {

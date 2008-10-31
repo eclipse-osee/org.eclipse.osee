@@ -11,23 +11,18 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
-import java.util.logging.Level;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
 /**
@@ -38,7 +33,7 @@ public class ImportMetaPage extends WizardDataTransferPage {
    public static final String PAGE_NAME = "osee.define.wizardPage.importMetaPage";
 
    private DirectoryOrFileSelector directoryFileSelector;
-   private List branchList;
+   private BranchSelectComposite branchSelectComposite;
 
    private IResource currentResourceSelection;
 
@@ -104,30 +99,9 @@ public class ImportMetaPage extends WizardDataTransferPage {
       composite.setText("Destination Branch");
       GridLayout gd = new GridLayout();
       composite.setLayout(gd);
-      composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+      composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      branchList = new List(composite, SWT.BORDER | SWT.V_SCROLL);
-      GridData gridData = new GridData(GridData.FILL_BOTH);
-      gridData.heightHint = 300;
-      branchList.setLayoutData(gridData);
-
-      try {
-         Branch defaultBranch = BranchManager.getDefaultBranch();
-
-         int defaultBranchIndex = 0;
-         for (Branch branch : BranchManager.getNormalBranches()) {
-            branchList.add(branch.getBranchName());
-            branchList.setData(branch.getBranchName(), branch);
-            if (branch.equals(defaultBranch)) {
-               branchList.select(defaultBranchIndex);
-            } else {
-               defaultBranchIndex++;
-            }
-         }
-      } catch (OseeCoreException ex) {
-         branchList.add(ex.getLocalizedMessage());
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
+      branchSelectComposite = new BranchSelectComposite(composite, SWT.BORDER, false);
 
       setPageComplete(determinePageCompletion());
    }
@@ -135,6 +109,7 @@ public class ImportMetaPage extends WizardDataTransferPage {
    /*
     * @see WizardPage#becomesVisible
     */
+   @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
       // policy: wizards are not allowed to come up with an error message
@@ -153,8 +128,7 @@ public class ImportMetaPage extends WizardDataTransferPage {
    }
 
    public Branch getSelectedBranch() {
-      String itemName = branchList.getItem(branchList.getSelectionIndex());
-      return (Branch) branchList.getData(itemName);
+      return branchSelectComposite.getSelectedBranch();
    }
 
    /*

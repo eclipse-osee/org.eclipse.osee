@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.ui.skynet.branch;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -54,8 +55,14 @@ public class BranchListComposite implements IBranchEventListener {
    private Text filterText;
    private BranchNameFilter nameFilter;
    private FavoritesSorter sorter;
+   private final Collection<Branch> branches;
 
    public BranchListComposite(Composite parent) {
+      this(null, parent);
+   }
+
+   public BranchListComposite(Collection<Branch> branches, Composite parent) {
+      this.branches = branches;
       try {
 
          if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
@@ -210,7 +217,6 @@ public class BranchListComposite implements IBranchEventListener {
       public Branch getWorkingBranch() throws OseeCoreException {
          return branch;
       }
-
    }
 
    public void refresh() {
@@ -222,7 +228,11 @@ public class BranchListComposite implements IBranchEventListener {
    public void forcePopulateView() throws OseeCoreException {
       if (branchTable != null && !branchTable.getTree().isDisposed()) {
          BranchManager.refreshBranches();
-         branchTable.setInput(BranchManager.getInstance());
+         if (branches == null) {
+            branchTable.setInput(BranchManager.getInstance());
+         } else {
+            branchTable.setInput(branches);
+         }
       }
    }
 

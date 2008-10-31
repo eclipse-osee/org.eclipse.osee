@@ -8,23 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.util;
+package org.eclipse.osee.framework.ui.skynet.branch;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchListComposite;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -39,10 +42,12 @@ public class BranchSelectionDialog extends MessageDialog {
 
    Branch selected = null;
    BranchListComposite branchListComposite;
+   private final boolean allowOnlyWorkingBranches;
 
-   public BranchSelectionDialog(String title) {
+   public BranchSelectionDialog(String title, boolean allowOnlyWorkingBranches) {
       super(Display.getCurrent().getActiveShell(), title, null, null, MessageDialog.NONE,
             new String[] {"Ok", "Cancel"}, 0);
+      this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -52,9 +57,20 @@ public class BranchSelectionDialog extends MessageDialog {
 
    @Override
    protected Control createDialogArea(Composite container) {
-      branchListComposite = new BranchListComposite(container);
+      List<Branch> branches = null;
+      try {
+         if (allowOnlyWorkingBranches) {
+            branches =
+                  BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.STANDARD);
+         } else {
+            branches = BranchManager.getNormalBranches();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      branchListComposite = new BranchListComposite(branches, container);
       branchListComposite.setPresentation(true);
-      GridData gd = new GridData();
+      GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 500;
       gd.widthHint = 400;
       branchListComposite.getBranchTable().getTree().setLayoutData(gd);
@@ -109,77 +125,21 @@ public class BranchSelectionDialog extends MessageDialog {
       super.okPressed();
    }
 
-   public class BranchLabelProvider implements ILabelProvider {
-
-      public Image getImage(Object arg0) {
-         return null;
+   private static Branch createDialog(boolean allowOnlyWorkingBranches) {
+      Branch toReturn = null;
+      BranchSelectionDialog branchSelection = new BranchSelectionDialog("Select Branch", allowOnlyWorkingBranches);
+      int result = branchSelection.open();
+      if (result == Window.OK) {
+         toReturn = branchSelection.getSelection();
       }
-
-      public String getText(Object arg0) {
-         Branch type = (Branch) arg0;
-         return type.getBranchName();
-      }
-
-      public void addListener(ILabelProviderListener arg0) {
-      }
-
-      public void dispose() {
-      }
-
-      public boolean isLabelProperty(Object arg0, String arg1) {
-         return false;
-      }
-
-      public void removeListener(ILabelProviderListener arg0) {
-      }
-
+      return toReturn;
    }
 
-   public void setSelected(Branch selected) {
-      this.selected = selected;
+   public static Branch getBranchFromUser() {
+      return createDialog(false);
    }
 
-   private class BranchContentProvider implements ITreeContentProvider {
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-       */
-      public Object[] getChildren(Object parentElement) {
-         return null;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-       */
-      public Object getParent(Object element) {
-         return null;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-       */
-      public boolean hasChildren(Object element) {
-         return false;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-       */
-      public Object[] getElements(Object inputElement) {
-         return ((Collection<?>) inputElement).toArray();
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-       */
-      public void dispose() {
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-       */
-      public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      }
-
+   public static Branch getWorkingBranchFromUser() {
+      return createDialog(true);
    }
 }
