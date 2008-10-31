@@ -58,7 +58,7 @@ public class FixWordTemplateContent extends AbstractBlam {
       applicationServerAddress = OseeInfo.getValue("osee.resource.server");
 
       ArrayList<AttrData> attrDatas = loadAttrData();
-      monitor.beginTask("Fix lil Therons' big mistake", attrDatas.size());
+      monitor.beginTask("Fix word template content", attrDatas.size());
       for (AttrData attrData : attrDatas) {
          monitor.subTask(attrData.getHrid());
          String content = new String(getResource(attrData.getUri()));
