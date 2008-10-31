@@ -30,6 +30,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.nebula.widgets.calendarcombo,
  org.eclipse.osee.framework.core.connection,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,
