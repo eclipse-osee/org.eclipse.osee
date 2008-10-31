@@ -121,7 +121,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
 
             if (showChildBranchesAtMainLevel) {
                branchTypes.add(BranchType.BASELINE);
-               branchTypes.add(BranchType.STANDARD);
+               branchTypes.add(BranchType.WORKING);
             }
 
             List<Branch> branches =

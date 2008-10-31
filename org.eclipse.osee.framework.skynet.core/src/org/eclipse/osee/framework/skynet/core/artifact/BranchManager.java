@@ -126,7 +126,7 @@ public class BranchManager {
     */
    public static List<Branch> getNormalBranches() throws OseeCoreException {
       List<Branch> branches =
-            getBranches(BranchState.ACTIVE, BranchControlled.ALL, BranchType.STANDARD, BranchType.TOP_LEVEL,
+            getBranches(BranchState.ACTIVE, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
                   BranchType.BASELINE);
       Collections.sort(branches);
       return branches;
@@ -221,7 +221,7 @@ public class BranchManager {
    }
 
    public static Collection<Branch> getArchivedBranches() throws OseeCoreException {
-      return getBranches(BranchState.ARCHIVED, BranchControlled.ALL, BranchType.STANDARD, BranchType.TOP_LEVEL,
+      return getBranches(BranchState.ARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
             BranchType.BASELINE);
    }
 
@@ -562,7 +562,7 @@ public class BranchManager {
    }
 
    public static List<Branch> getChangeManagedBranches() throws OseeCoreException {
-      return getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.STANDARD,
+      return getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.WORKING,
             BranchType.TOP_LEVEL, BranchType.BASELINE);
    }
 

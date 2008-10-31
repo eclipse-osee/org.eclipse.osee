@@ -61,7 +61,7 @@ public class BranchSelectionDialog extends MessageDialog {
       try {
          if (allowOnlyWorkingBranches) {
             branches =
-                  BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.STANDARD);
+                  BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.WORKING);
          } else {
             branches = BranchManager.getNormalBranches();
          }

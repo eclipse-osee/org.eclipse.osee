@@ -172,7 +172,7 @@ public class BranchCreation implements IBranchCreation {
 
       public CreateChildBranchTx(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId) {
          super(parentBranchId, childBranchShortName, childBranchName, creationComment, associatedArtifactId, authorId,
-               BranchType.STANDARD);
+               BranchType.WORKING);
       }
 
       /* (non-Javadoc)

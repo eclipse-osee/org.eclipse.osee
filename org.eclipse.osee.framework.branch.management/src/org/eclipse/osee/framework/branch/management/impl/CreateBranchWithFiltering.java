@@ -71,7 +71,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 
    public CreateBranchWithFiltering(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String[] compressArtTypeIds, String[] preserveArtTypeIds) {
       super(parentBranchId, childBranchShortName, childBranchName, creationComment, associatedArtifactId, authorId,
-            BranchType.STANDARD);
+            BranchType.WORKING);
       this.compressArtTypeIds = compressArtTypeIds;
       this.preserveArtTypeIds = preserveArtTypeIds;
    }
