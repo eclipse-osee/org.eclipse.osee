@@ -71,7 +71,7 @@ public class OseeConnectionPool {
          connections.addElement(c);
          return c;
       } catch (Throwable th) {
-         throw new OseeDataStoreException("Unable to get a database connection: " + th.getLocalizedMessage(), th);
+         throw new OseeDataStoreException("Unable to get a database connection: ", th);
       }
    }
 

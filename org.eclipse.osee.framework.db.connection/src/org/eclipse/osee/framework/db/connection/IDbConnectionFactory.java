@@ -11,9 +11,11 @@
 
 package org.eclipse.osee.framework.db.connection;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IDbConnectionFactory {
-   IConnection get(String driver);
+   IConnection get(String driver) throws OseeCoreException;
 }

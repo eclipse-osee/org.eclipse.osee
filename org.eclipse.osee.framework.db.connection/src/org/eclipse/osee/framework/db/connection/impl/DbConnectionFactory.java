@@ -16,6 +16,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.db.connection.IBind;
 import org.eclipse.osee.framework.db.connection.IConnection;
 import org.eclipse.osee.framework.db.connection.IDbConnectionFactory;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -32,13 +34,13 @@ public class DbConnectionFactory implements IDbConnectionFactory, IBind {
     * @see org.eclipse.osee.framework.db.connection.IDbConnectionFactory#get(java.lang.String)
     */
    @Override
-   public IConnection get(String driver) {
+   public IConnection get(String driver) throws OseeCoreException {
       for (IConnection connection : connectionProviders) {
          if (connection.getDriver().equals(driver)) {
             return connection;
          }
       }
-      throw new IllegalStateException(String.format("Unable to find matching driver provider for [%s].", driver));
+      throw new OseeStateException(String.format("Unable to find matching driver provider for [%s].", driver));
    }
 
    /* (non-Javadoc)
