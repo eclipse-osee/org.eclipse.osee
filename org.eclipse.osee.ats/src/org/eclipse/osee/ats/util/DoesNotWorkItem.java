@@ -19,12 +19,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -42,7 +41,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
     * @param parent
     */
    public DoesNotWorkItem(XNavigateItem parent) {
-      super(parent, "Does Not Work - check ats.Branch Id");
+      super(parent, "Does Not Work - convertAtsLogUserIds");
    }
 
    /*
@@ -54,28 +53,28 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
-      for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType("ats.Branch Id", AtsPlugin.getAtsBranch())) {
-         int branchId = art.getSoleAttributeValue("ats.Branch Id");
-         Branch branch = null;
-         try {
-            branch = BranchManager.getBranch(branchId);
-         } catch (BranchDoesNotExist ex) {
-            System.out.println("Branch does not exist for art " + art.getHumanReadableId() + " - " + art);
-         } catch (Exception ex) {
-            System.err.println("Exception getting branch for art " + art.getHumanReadableId() + " - " + art);
-         }
-         if (branch != null) {
-            System.err.println("Branch DOES exist for art " + art.getHumanReadableId() + " - " + art);
-         }
-      }
-
-      //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-      //         @Override
-      //         protected void handleTxWork() throws OseeCoreException {
-      //            //            importTaskEstimatedHours();
+      //      for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType("ats.Branch Id", AtsPlugin.getAtsBranch())) {
+      //         int branchId = art.getSoleAttributeValue("ats.Branch Id");
+      //         Branch branch = null;
+      //         try {
+      //            branch = BranchManager.getBranch(branchId);
+      //         } catch (BranchDoesNotExist ex) {
+      //            System.out.println("Branch does not exist for art " + art.getHumanReadableId() + " - " + art);
+      //         } catch (Exception ex) {
+      //            System.err.println("Exception getting branch for art " + art.getHumanReadableId() + " - " + art);
       //         }
-      //      };
-      //      newActionTx.execute();
+      //         if (branch != null) {
+      //            System.err.println("Branch DOES exist for art " + art.getHumanReadableId() + " - " + art);
+      //         }
+      //      }
+
+      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
+         @Override
+         protected void handleTxWork() throws OseeCoreException {
+            //            convertAtsLogUserIds();
+         }
+      };
+      newActionTx.execute();
 
       //      deleteUnAssignedUserRelations();
       //      relateDonDunne();
@@ -91,6 +90,20 @@ public class DoesNotWorkItem extends XNavigateItemAction {
       // fixOseePeerReviews();
 
       AWorkbench.popup("Completed", "Complete");
+   }
+
+   private void convertAtsLogUserIds() throws OseeCoreException {
+      List<String> hrids =
+            Arrays.asList("PJDYM", "PMFNE", "1L94Y", "XV5XA", "TLP5H", "PXJ16", "M01RT", "YQ8P1", "2JDND", "XVM2A",
+                  "V3XW6", "JDNP5", "3BKPH", "L9VM4", "AR3RE", "W36HM", "2DW26", "M2W9Y", "WWSPY", "64TP4", "WN457",
+                  "Q3WLG", "MW57B", "Z9TYH", "U0JHV", "3LHN0", "PBC3S", "4B08D", "KKHLF", "7DRQP", "UP4LB", "KZ25J",
+                  "2GJ71", "FVRCC", "YP2BF", "W9D1C", "P7VGE", "WC39K");
+      for (Artifact art : ArtifactQuery.getArtifactsFromIds(hrids, AtsPlugin.getAtsBranch())) {
+         String str = art.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), null);
+         str = str.replaceAll("rj236c", "1779483");
+         art.setSoleAttributeFromString(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), str);
+         art.persistAttributes();
+      }
    }
 
    private void importTaskEstimatedHours() throws OseeCoreException {
