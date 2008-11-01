@@ -261,8 +261,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    public Artifact getAssociatedArtifact() throws OseeCoreException {
       if (associatedArtifact == null && associatedArtifactId > 0) {
-         associatedArtifact =
-               ArtifactQuery.getArtifactFromId(associatedArtifactId, BranchManager.getCommonBranch());
+         associatedArtifact = ArtifactQuery.getArtifactFromId(associatedArtifactId, BranchManager.getCommonBranch());
       }
       return associatedArtifact;
    }
@@ -351,7 +350,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public boolean isMergeBranchFor(Branch sourceBranch, Branch destBranch) {
-      return isMergeBranch() && this.sourceBranch.equals(sourceBranch) && this.destBranch.equals(destBranch);
+      return sourceBranch.equals(this.sourceBranch) && destBranch.equals(this.destBranch);
    }
 
    /**
