@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.health;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -32,8 +31,6 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -138,10 +135,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       monitor.worked(1);
       testAtsLogs();
       monitor.worked(1);
-      List<IHealthStatus> stats = monitorLog.getSevereLogs();
-      for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
-         xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
-      }
+      this.xResultData.reportSevereLoggingMonitor(monitorLog);
       xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
    }
 
@@ -285,6 +279,14 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
 
                         }
                      }
+                  }
+               }
+               // Generate html log which will exercise all the conversions
+               log.getHtml();
+               // Verify that all users are resolved
+               for (LogItem logItem : sma.getSmaMgr().getLog().getLogItems()) {
+                  if (logItem.getUser() == null) {
+                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " user == null for userId \"" + logItem.getUserId() + "\"");
                   }
                }
             } catch (Exception ex) {

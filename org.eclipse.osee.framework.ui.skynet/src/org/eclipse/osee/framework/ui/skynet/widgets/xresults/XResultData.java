@@ -12,11 +12,15 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xresults;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -54,6 +58,15 @@ public class XResultData {
 
    public void addRaw(String str) {
       sb.append(str);
+   }
+
+   public void reportSevereLoggingMonitor(SevereLoggingMonitor monitorLog) {
+      List<IHealthStatus> stats = monitorLog.getSevereLogs();
+      for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
+         if (stat.getException() != null) {
+            logError("Exception: " + Lib.exceptionToString(stat.getException()));
+         }
+      }
    }
 
    public void log(IProgressMonitor monitor, String str) {

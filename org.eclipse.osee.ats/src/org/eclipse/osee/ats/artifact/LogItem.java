@@ -28,6 +28,14 @@ public class LogItem {
    private String state;
    private User user;
    private LogType type = LogType.None;
+   private String userId;
+
+   /**
+    * @return the userId
+    */
+   public String getUserId() {
+      return userId;
+   }
 
    public LogItem() {
    }
@@ -41,6 +49,7 @@ public class LogItem {
       this.date = new Date(l.longValue());
       this.msg = msg;
       this.state = state;
+      this.userId = userId;
       this.user = SkynetAuthentication.getUserByUserId(userId);
       this.type = type;
    }
