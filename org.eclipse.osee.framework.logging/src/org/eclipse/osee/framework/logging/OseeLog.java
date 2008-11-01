@@ -41,8 +41,12 @@ public class OseeLog {
    }
 
    public static void log(Class<?> activatorClass, Level level, String message) {
-      getLog().log(activatorClass.getName(), activatorClass.getName(), level, message,
-            new Exception("used to get a stack trace"));
+      if (level == Level.SEVERE) {
+         getLog().log(activatorClass.getName(), activatorClass.getName(), level, message,
+               new Exception("used to get a stack trace"));
+      } else {
+         getLog().log(activatorClass.getName(), activatorClass.getName(), level, message, null);
+      }
    }
 
    public static void log(Class<?> activatorClass, Level level, Throwable th) {

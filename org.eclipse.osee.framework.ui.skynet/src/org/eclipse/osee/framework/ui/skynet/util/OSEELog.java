@@ -30,6 +30,7 @@ public class OSEELog {
    }
 
    public static void logException(Class<?> clazz, Exception ex, boolean popup) {
-      logException(clazz, ex.getClass().getName() + ": " + ex.getLocalizedMessage(), ex, popup);
+      String message = ex.getLocalizedMessage() == null ? ex.getClass().getName() : ex.getLocalizedMessage();
+      logException(clazz, message, ex, popup);
    }
 }
