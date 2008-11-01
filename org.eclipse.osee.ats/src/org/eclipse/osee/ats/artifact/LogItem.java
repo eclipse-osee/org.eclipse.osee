@@ -12,11 +12,8 @@ package org.eclipse.osee.ats.artifact;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -39,20 +36,16 @@ public class LogItem {
       this(type.name(), date.getTime() + "", user.getUserId(), state, msg);
    }
 
-   public LogItem(LogType type, String date, String userId, String state, String msg) {
+   public LogItem(LogType type, String date, String userId, String state, String msg) throws OseeCoreException {
       Long l = new Long(date);
       this.date = new Date(l.longValue());
       this.msg = msg;
       this.state = state;
-      try {
-         this.user = SkynetAuthentication.getUserByUserId(userId);
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      this.user = SkynetAuthentication.getUserByUserId(userId);
       this.type = type;
    }
 
-   public LogItem(String type, String date, String userId, String state, String msg) {
+   public LogItem(String type, String date, String userId, String state, String msg) throws OseeCoreException {
       this(LogType.getType(type), date, userId, state, msg);
    }
 
@@ -81,6 +74,7 @@ public class LogItem {
       this.msg = msg;
    }
 
+   @Override
    public String toString() {
       try {
          return (msg.equals("") ? "" : msg) + " (" + type + ") " + (state.equals("") ? "" : "from " + state + " ") + "by " + user.getUserId() + " on " + getDate(XDate.MMDDYYHHMM) + "\n";

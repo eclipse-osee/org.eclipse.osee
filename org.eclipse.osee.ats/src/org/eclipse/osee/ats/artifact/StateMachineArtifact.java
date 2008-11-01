@@ -255,14 +255,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       }
    }
 
-   public void notifyOriginatorAndReset() {
+   public void notifyOriginatorAndReset() throws OseeCoreException {
       if (preSaveOriginator != null && smaMgr.getOriginator() != null && !smaMgr.getOriginator().equals(
             preSaveOriginator)) {
-         try {
-            AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Originator);
-         } catch (OseeCoreException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
+         AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Originator);
       }
       preSaveOriginator = smaMgr.getOriginator();
    }
@@ -297,11 +293,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public abstract TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException;
 
-   public String getPreviewHtml() {
+   public String getPreviewHtml() throws OseeCoreException {
       return getPreviewHtml(PreviewStyle.NONE);
    }
 
-   public String getPreviewHtml(PreviewStyle... styles) {
+   public String getPreviewHtml(PreviewStyle... styles) throws OseeCoreException {
       Overview o = new Overview();
       o.addHeader(this, styles);
       o.addFooter(this, styles);

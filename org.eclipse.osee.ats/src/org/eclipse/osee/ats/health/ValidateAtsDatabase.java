@@ -110,30 +110,43 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
 
    private Collection<Artifact> artifacts;
    private XResultData xResultData;
+   private IProgressMonitor monitor;
 
    private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
+      this.monitor = monitor;
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
+      monitor.beginTask(getName(), 10);
       loadAtsBranchArtifacts();
-      //      testAtsBranchAttributeValues();
-      //      testAtsActionsHaveTeamWorkflow();
-      //      testAtsWorkflowsHaveAction();
-      //      testAtsWorkflowsHaveZeroOrOneVersion();
-      //      testTasksHaveParentWorkflow();
-      //      testReviewsHaveParentWorkflowOrActionableItems();
+      monitor.worked(1);
+      testAtsBranchAttributeValues();
+      monitor.worked(1);
+      testAtsActionsHaveTeamWorkflow();
+      monitor.worked(1);
+      testAtsWorkflowsHaveAction();
+      monitor.worked(1);
+      testAtsWorkflowsHaveZeroOrOneVersion();
+      monitor.worked(1);
+      testTasksHaveParentWorkflow();
+      monitor.worked(1);
+      testReviewsHaveParentWorkflowOrActionableItems();
+      monitor.worked(1);
       testTeamWorkflows();
-      //      testStateMachineAssignees();
+      monitor.worked(1);
+      testStateMachineAssignees();
+      monitor.worked(1);
       testAtsLogs();
+      monitor.worked(1);
       List<IHealthStatus> stats = monitorLog.getSevereLogs();
       for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
          xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
       }
-      xResultData.log("Completed processing " + artifacts.size() + " artifacts.");
+      xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
    }
 
    public void testTeamWorkflows() throws OseeCoreException {
-      xResultData.log("testTeamWorkflows");
+      xResultData.log(monitor, "testTeamWorkflows");
       for (Artifact art : artifacts) {
          if (art instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
@@ -152,7 +165,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    }
 
    public void loadAtsBranchArtifacts() throws OseeCoreException {
-      xResultData.log("testLoadAllCommonArtifacts - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
+      xResultData.log(monitor, "testLoadAllCommonArtifacts - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
       artifacts = ArtifactQuery.getArtifactsFromBranch(AtsPlugin.getAtsBranch(), false);
       if (xResultData == null) {
          xResultData = new XResultData();
@@ -160,11 +173,11 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       if (artifacts.size() == 0) {
          xResultData.logError("Artifact load returned 0 artifacts to check");
       }
-      xResultData.log("testLoadAllCommonArtifacts - Completed " + XDate.getDateNow(XDate.MMDDYYHHMM));
+      xResultData.log(monitor, "testLoadAllCommonArtifacts - Completed " + XDate.getDateNow(XDate.MMDDYYHHMM));
    }
 
    public void testAtsBranchAttributeValues() throws OseeCoreException {
-      xResultData.log("testAtsBranchAttributeValues");
+      xResultData.log(monitor, "testAtsBranchAttributeValues");
       for (Artifact artifact : artifacts) {
          for (Attribute<?> attr : artifact.getAttributes(false)) {
             if (attr.getValue() == null) {
@@ -179,7 +192,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    }
 
    public void testAtsActionsHaveTeamWorkflow() throws OseeCoreException {
-      xResultData.log("testAtsActionsHaveTeamWorkflow");
+      xResultData.log(monitor, "testAtsActionsHaveTeamWorkflow");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ActionArtifact) {
             if (((ActionArtifact) artifact).getTeamWorkFlowArtifacts().size() == 0) {
@@ -190,7 +203,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    }
 
    public void testAtsWorkflowsHaveAction() throws OseeCoreException {
-      xResultData.log("testAtsActionsHaveTeamWorkflow");
+      xResultData.log(monitor, "testAtsActionsHaveTeamWorkflow");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
             if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
@@ -201,7 +214,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    }
 
    public void testAtsWorkflowsHaveZeroOrOneVersion() throws OseeCoreException {
-      xResultData.log("testAtsWorkflowsHaveZeroOrOneVersion");
+      xResultData.log(monitor, "testAtsWorkflowsHaveZeroOrOneVersion");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
@@ -215,7 +228,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    }
 
    public void testTasksHaveParentWorkflow() throws OseeCoreException {
-      xResultData.log("testTasksHaveParentWorkflow");
+      xResultData.log(monitor, "testTasksHaveParentWorkflow");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArtifact = (TaskArtifact) artifact;
@@ -228,7 +241,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    }
 
    public void testReviewsHaveParentWorkflowOrActionableItems() throws OseeCoreException {
-      xResultData.log("testReviewsHaveParentWorkflowOrActionableItems");
+      xResultData.log(monitor, "testReviewsHaveParentWorkflowOrActionableItems");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ReviewSMArtifact) {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
@@ -240,7 +253,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    }
 
    public void testAtsLogs() throws OseeCoreException {
-      xResultData.log("testAtsLogs");
+      xResultData.log(monitor, "testAtsLogs");
       for (Artifact art : artifacts) {
          if (art instanceof StateMachineArtifact) {
             StateMachineArtifact sma = (StateMachineArtifact) art;
@@ -282,7 +295,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    }
 
    public void testStateMachineAssignees() throws OseeCoreException {
-      xResultData.log("testStateMachineAssignees");
+      xResultData.log(monitor, "testStateMachineAssignees");
       User unAssignedUser = SkynetAuthentication.getUser(UserEnum.UnAssigned);
       User noOneUser = SkynetAuthentication.getUser(UserEnum.NoOne);
       for (Artifact art : artifacts) {
@@ -294,7 +307,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                if (fixAssignees) {
                   smaMgr.getStateMgr().clearAssignees();
                   smaMgr.getSma().persistAttributesAndRelations();
-                  xResultData.log("Fixed");
+                  xResultData.log(monitor, "Fixed");
                }
             }
             if (smaMgr.getStateMgr().getAssignees().size() > 1 && smaMgr.getStateMgr().getAssignees().contains(
@@ -303,7 +316,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                      "; ", smaMgr.getStateMgr().getAssignees()));
                if (fixAssignees) {
                   smaMgr.getStateMgr().removeAssignee(unAssignedUser);
-                  xResultData.log("Fixed");
+                  xResultData.log(monitor, "Fixed");
                }
             }
             if (smaMgr.getStateMgr().getAssignees().contains(noOneUser)) {
@@ -324,7 +337,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                      } catch (OseeCoreException ex) {
                         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                      }
-                     xResultData.log("Fixed");
+                     xResultData.log(monitor, "Fixed");
                   }
                } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
                   // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
@@ -337,7 +350,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                         } catch (OseeCoreException ex) {
                            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                         }
-                        xResultData.log("Fixed");
+                        xResultData.log(monitor, "Fixed");
                      }
                   }
                }

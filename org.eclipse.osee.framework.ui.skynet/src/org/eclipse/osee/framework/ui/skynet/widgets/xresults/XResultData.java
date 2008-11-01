@@ -56,6 +56,11 @@ public class XResultData {
       sb.append(str);
    }
 
+   public void log(IProgressMonitor monitor, String str) {
+      log(str);
+      if (monitor != null) monitor.setTaskName(str);
+   }
+
    public void log(String str) {
       logStr(Type.Info, str + "\n", null);
    }

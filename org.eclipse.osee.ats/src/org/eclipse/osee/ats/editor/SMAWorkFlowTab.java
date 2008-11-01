@@ -448,11 +448,11 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       Text text = new Text(topLineComp, SWT.WRAP | SWT.NO_TRIM);
       toolkit.adapt(text, true, true);
-      text.setText(smaMgr.getEditorHeaderString());
-
-      createOriginatorHeader(topLineComp, toolkit);
-
       try {
+         text.setText(smaMgr.getEditorHeaderString());
+
+         createOriginatorHeader(topLineComp, toolkit);
+
          toolkit.createLabel(topLineComp, "Action Id:");
          text = new Text(topLineComp, SWT.NONE);
          toolkit.adapt(text, true, true);
@@ -526,7 +526,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createOriginatorHeader(Composite comp, XFormToolkit toolkit) {
+   private void createOriginatorHeader(Composite comp, XFormToolkit toolkit) throws OseeCoreException {
       if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
          toolkit.createLabel(comp, "     ");
          Hyperlink link = toolkit.createHyperlink(comp, ORIGINATOR, SWT.NONE);
@@ -544,7 +544,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                      updateOrigLabel();
                      smaMgr.getEditor().onDirtied();
                   }
-               } catch (Exception ex) {
+               } catch (OseeCoreException ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                }
             }

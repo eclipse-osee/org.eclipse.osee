@@ -127,7 +127,7 @@ public class Overview {
       }
    }
 
-   public void addHeader(StateMachineArtifact sma, PreviewStyle... styles) {
+   public void addHeader(StateMachineArtifact sma, PreviewStyle... styles) throws OseeCoreException {
       SMAManager smaMgr = new SMAManager(sma);
       startBorderTable(100, false, "");
       addTable(getLabelValue("Title", sma.getDescriptiveName()));
@@ -149,16 +149,11 @@ public class Overview {
          addTable(getLabelValue("Cancellation Reason", item.getMsg()));
       }
       if (sma instanceof TaskArtifact) {
-         try {
-            StateMachineArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
-            if (parentArt != null) {
-               this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getDescriptiveName()}));
-               this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getSmaMgr().getStateMgr().getCurrentStateName()}));
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         StateMachineArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
+         if (parentArt != null) {
+            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getDescriptiveName()}));
+            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getSmaMgr().getStateMgr().getCurrentStateName()}));
          }
-
          SMAManager taskSmaMgr = new SMAManager(sma);
          this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.toString(
                "; ", taskSmaMgr.getStateMgr().getAssignees())}));
@@ -282,7 +277,7 @@ public class Overview {
             name);
    }
 
-   public void addLog(StateMachineArtifact artifact) {
+   public void addLog(StateMachineArtifact artifact) throws OseeCoreException {
       ATSLog artifactLog = artifact.getSmaMgr().getLog();
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) addTable(artifact.getSmaMgr().getLog().getTable());
    }

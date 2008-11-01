@@ -127,7 +127,7 @@ public class SMAManager {
       return atsNote;
    }
 
-   public String getEditorHeaderString() {
+   public String getEditorHeaderString() throws OseeCoreException {
       if (sma instanceof TeamWorkFlowArtifact)
          return String.format("Current State: %s        Team: %s        Created: %s", stateMgr.getCurrentStateName(),
                ((TeamWorkFlowArtifact) sma).getTeamName(), XDate.getDateStr(atsLog.getCreationDate(), XDate.MMDDYYHHMM));
@@ -173,7 +173,7 @@ public class SMAManager {
       return AccessControlManager.getInstance().checkCurrentUserObjectPermission(sma, PermissionEnum.WRITE);
    }
 
-   public User getOriginator() {
+   public User getOriginator() throws OseeCoreException {
       return atsLog.getOriginator();
    }
 
@@ -815,7 +815,7 @@ public class SMAManager {
                toWorkPageDefinition)) {
             String errStr =
                   "Not configured to transition to \"" + toStateName + "\" from \"" + fromWorkPageDefinition.getPageName() + "\"";
-            OseeLog.log(AtsPlugin.class, Level.SEVERE,  errStr);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);
             return new Result(errStr);
          }
 

@@ -11,15 +11,20 @@
 
 package org.eclipse.osee.ats.artifact;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * @author Donald G. Dunne
@@ -41,11 +47,11 @@ public class ATSLog {
    public static enum LogType {
       None, Originated, StateComplete, StateCancelled, StateEntered, Released, Error, Assign, Note, Metrics;
 
-      public static LogType getType(String type) {
+      public static LogType getType(String type) throws OseeArgumentException {
          for (Enum<LogType> e : LogType.values()) {
             if (e.name().equals(type)) return (LogType) e;
          }
-         throw new IllegalArgumentException("Unhandled LogType");
+         throw new OseeArgumentException("Unhandled LogType: \"" + type + "\"");
       }
 
    };
@@ -56,14 +62,19 @@ public class ATSLog {
 
    @Override
    public String toString() {
-      return getLogItems().toString();
+      try {
+         return getLogItems().toString();
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return ex.getLocalizedMessage();
+      }
    }
 
-   public String getHtml() {
+   public String getHtml() throws OseeCoreException {
       return getHtml(true);
    }
 
-   public String getHtml(boolean showLog) {
+   public String getHtml(boolean showLog) throws OseeCoreException {
       if (getLogItems().size() == 0) return "";
       StringBuffer sb = new StringBuffer();
       if (showLog) sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(
@@ -73,7 +84,7 @@ public class ATSLog {
       return sb.toString();
    }
 
-   public List<LogItem> getLogItems() {
+   public List<LogItem> getLogItems() throws OseeCoreException {
       List<LogItem> logItems = new ArrayList<LogItem>();
       try {
          String xml = artifact.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
@@ -87,7 +98,11 @@ public class ATSLog {
                logItems.add(item);
             }
          }
-      } catch (Exception ex) {
+      } catch (IOException ex) {
+         OSEELog.logException(AtsPlugin.class, "Error Parsing ATS Log for " + artifact.getHumanReadableId(), ex, true);
+      } catch (SAXException ex) {
+         OSEELog.logException(AtsPlugin.class, "Error Parsing ATS Log for " + artifact.getHumanReadableId(), ex, true);
+      } catch (ParserConfigurationException ex) {
          OSEELog.logException(AtsPlugin.class, "Error Parsing ATS Log for " + artifact.getHumanReadableId(), ex, true);
       }
       return logItems;
@@ -119,13 +134,13 @@ public class ATSLog {
       }
    }
 
-   public List<LogItem> getLogItemsReversed() {
+   public List<LogItem> getLogItemsReversed() throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
       Collections.reverse(logItems);
       return logItems;
    }
 
-   public void setOriginator(User user) {
+   public void setOriginator(User user) throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
       for (LogItem item : logItems) {
          if (item.getType() == LogType.Originated) {
@@ -141,7 +156,7 @@ public class ATSLog {
     * 
     * @return Date
     */
-   public Date getCreationDate() {
+   public Date getCreationDate() throws OseeCoreException {
       LogItem logItem = getEvent(LogType.Originated);
       if (logItem == null) return null;
       return logItem.getDate();
@@ -152,7 +167,7 @@ public class ATSLog {
     * 
     * @return User
     */
-   public User getOriginator() {
+   public User getOriginator() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Originated);
       if (logItem == null) return null;
       return logItem.getUser();
@@ -165,7 +180,7 @@ public class ATSLog {
     * @param matchState
     * @param newItem
     */
-   public void overrideStateItemData(LogType matchType, String matchState, LogItem newItem) {
+   public void overrideStateItemData(LogType matchType, String matchState, LogItem newItem) throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
       for (LogItem item : logItems) {
          if (item.getType() == matchType && item.getState().equals(matchState)) {
@@ -184,7 +199,7 @@ public class ATSLog {
     * @param matchType
     * @param newItem
     */
-   public void overrideItemData(LogType matchType, LogItem newItem) {
+   public void overrideItemData(LogType matchType, LogItem newItem) throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
       for (LogItem item : logItems) {
          if (item.getType() == matchType) {
@@ -244,7 +259,7 @@ public class ATSLog {
       putLogItems(new ArrayList<LogItem>());
    }
 
-   public String getTable() {
+   public String getTable() throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       List<LogItem> logItems = getLogItems();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Event</TH>" + "<TH>State</TH><TH>Message</TH><TH>User</TH><TH>Date</TH></THEAD></TR>");
@@ -280,25 +295,25 @@ public class ATSLog {
       this.enabled = enabled;
    }
 
-   public LogItem getEvent(LogType type) {
+   public LogItem getEvent(LogType type) throws OseeCoreException {
       for (LogItem item : getLogItems())
          if (item.getType() == type) return item;
       return null;
    }
 
-   public LogItem getLastEvent(LogType type) {
+   public LogItem getLastEvent(LogType type) throws OseeCoreException {
       for (LogItem item : getLogItemsReversed())
          if (item.getType() == type) return item;
       return null;
    }
 
-   public LogItem getStateEvent(LogType type, String stateName) {
+   public LogItem getStateEvent(LogType type, String stateName) throws OseeCoreException {
       for (LogItem item : getLogItemsReversed())
          if (item.getType() == type && item.getState().equals(stateName)) return item;
       return null;
    }
 
-   public LogItem getStateEvent(LogType type) {
+   public LogItem getStateEvent(LogType type) throws OseeCoreException {
       for (LogItem item : getLogItemsReversed())
          if (item.getType() == type) return item;
       return null;

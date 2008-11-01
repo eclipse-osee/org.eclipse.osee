@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -233,6 +234,10 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       if (smaMgr.isCancelled()) {
          LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
+         if (item == null) {
+            throw new OseeStateException(
+                  "ats.Log: Cancelled state has no logItem for " + smaMgr.getSma().getHumanReadableId());
+         }
          if (item.getState().equals(atsWorkPage.getName())) {
             sb.append(" - Cancelled");
             if (!item.getMsg().equals("")) sb.append(" - Reason: " + item.getMsg());
@@ -687,7 +692,7 @@ public class SMAWorkFlowSection extends SectionPart {
       return false;
    }
 
-   public int getCreationToNowDateDeltaMinutes() {
+   public int getCreationToNowDateDeltaMinutes() throws OseeCoreException {
       Date createDate = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName()).getDate();
       long createDateLong = createDate.getTime();
       Date date = new Date();
