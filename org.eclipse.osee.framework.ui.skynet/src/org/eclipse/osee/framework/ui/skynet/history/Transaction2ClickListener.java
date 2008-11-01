@@ -34,7 +34,7 @@ public class Transaction2ClickListener implements IDoubleClickListener {
       if (selectedItem instanceof TransactionData) {
          openArtifact((TransactionData) selectedItem);
       } else {
-         OSEELog.logWarning(SkynetGuiPlugin.class, "Selected item not of expected type", true);
+         OSEELog.logSevere(SkynetGuiPlugin.class, "Selected item not of expected type", true);
       }
    }
 

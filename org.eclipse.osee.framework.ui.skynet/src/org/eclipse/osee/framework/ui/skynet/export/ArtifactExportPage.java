@@ -52,10 +52,10 @@ public class ArtifactExportPage extends WizardDataTransferPage {
                if (selectedObject instanceof Artifact) {
                   selectedArtifacts.add((Artifact) selectedObject);
                } else {
-                  OSEELog.logInfo(SkynetGuiPlugin.class, "Expected selection to be of type Artifact", true);
+                  OSEELog.logSevere(SkynetGuiPlugin.class, "Expected selection to be of type Artifact", true);
                }
             } else {
-               OSEELog.logInfo(SkynetGuiPlugin.class, "Expected selection to be of type IAdaptable", true);
+               OSEELog.logSevere(SkynetGuiPlugin.class, "Expected selection to be of type IAdaptable", true);
             }
          }
       }

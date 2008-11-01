@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -133,10 +133,9 @@ public class ImportTraceabilityJob extends Job {
       return toReturn;
    }
 
-   private void handleDirectory(File directory) throws Exception {
+   private void handleDirectory(File directory) throws IOException, OseeCoreException {
       if (directory == null || directory.getParentFile() == null) {
-         OSEELog.logWarning(DefinePlugin.class, "The path " + directory + " is invalid.", true);
-         return;
+         throw new OseeArgumentException("The path " + directory + " is invalid.");
       }
 
       pathPrefixLength = directory.getParentFile().getAbsolutePath().length();

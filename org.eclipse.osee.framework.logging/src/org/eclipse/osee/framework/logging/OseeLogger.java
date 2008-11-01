@@ -31,10 +31,6 @@ public class OseeLogger {
       listeners.add(new ConsoleLogger());
    }
 
-   public void log(String loggerName, String bundleId, Level level, String message) {
-      log(loggerName, bundleId, level, message, null);
-   }
-
    public void log(String loggerName, String bundleId, Level level, String message, Throwable th) {
 
       Level lvl = levelMap.get(loggerName);

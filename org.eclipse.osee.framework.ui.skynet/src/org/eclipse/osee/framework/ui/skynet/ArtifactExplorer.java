@@ -320,14 +320,14 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       try {
 
          if (artifact.isDeleted()) {
-            OSEELog.logInfo(SkynetGuiPlugin.class,
+            OSEELog.logSevere(SkynetGuiPlugin.class,
                   "The artifact " + artifact.getDescriptiveName() + " has been deleted.", true);
          } else {
             if (artifact.isHistorical()) {
                artifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(), false);
             }
             if (artifact.isOrphan()) {
-               OSEELog.logInfo(SkynetGuiPlugin.class,
+               OSEELog.logSevere(SkynetGuiPlugin.class,
                      "The artifact " + artifact.getDescriptiveName() + " does not have a parent (orphan).", true);
             } else {
                IWorkbenchPage page = AWorkbench.getActivePage();

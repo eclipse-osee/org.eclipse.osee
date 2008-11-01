@@ -11,73 +11,25 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
  */
 public class OSEELog {
 
-   public static void logException(Class<?> clazz, String str, Exception ex, boolean popup) {
-      if (popup && PlatformUI.isWorkbenchRunning()) {
-         if (ex == null) {
-            AWorkbench.popup("ERROR", str);
-         } else
-            AWorkbench.popup("ERROR", (str == null ? "" : str + "\n\n") + ex.getLocalizedMessage());
-      }
-      if (ex != null)
-         if (str == null || str.equals(""))
-            OseeLog.log(clazz, Level.SEVERE, ex.getLocalizedMessage(), ex);
-         else
-            OseeLog.log(clazz, Level.SEVERE, str, ex);
-      else {
-         // Throw an exception so we get a stack trace
-         try {
-            throw new OseeCoreException(str);
-         } catch (Exception ex2) {
-            if (str == null || str.equals(""))
-               OseeLog.log(clazz, Level.SEVERE, ex2.getLocalizedMessage(), ex2);
-            else
-               OseeLog.log(clazz, Level.SEVERE, str, ex2);
-         }
-      }
+   public static void logException(Class<?> clazz, String message, Exception ex, boolean popup) {
+      AWorkbench.popup("ERROR", message);
+      OseeLog.log(clazz, Level.SEVERE, message, ex);
    }
 
-   public static void logSevere(Class<?> clazz, String str, boolean popup) {
-      logException(clazz, str, new IllegalStateException(str), popup);
-   }
-
-   public static void logInfo(Class<?> clazz, String str, boolean popup) {
-      Logger logger = ConfigUtil.getConfigFactory().getLogger(clazz);
-      if (popup) AWorkbench.popup("Info", str);
-      logger.log(Level.INFO, str);
-   }
-
-   public static void logWarning(Class<?> clazz, String str, boolean popup) {
-      logWarning(clazz, str, null, popup);
-   }
-
-   public static void logWarning(Class<?> clazz, Exception ex, boolean popup) {
-      logWarning(clazz, null, ex, popup);
-   }
-
-   public static void logWarning(Class<?> clazz, String str, Exception ex, boolean popup) {
-      if (popup) AWorkbench.popup("Warning", str);
-      if (ex != null)
-         if (str == null || str.equals(""))
-            OseeLog.log(clazz, Level.WARNING, ex.getLocalizedMessage(), ex);
-         else
-            OseeLog.log(clazz, Level.WARNING, str, ex);
-      else
-         OseeLog.log(clazz, Level.WARNING, str);
+   public static void logSevere(Class<?> clazz, String message, boolean popup) {
+      AWorkbench.popup("ERROR", message);
+      OseeLog.log(clazz, Level.SEVERE, message);
    }
 
    public static void logException(Class<?> clazz, Exception ex, boolean popup) {
-      logException(clazz, null, ex, popup);
+      logException(clazz, ex.getClass().getName() + ": " + ex.getLocalizedMessage(), ex, popup);
    }
 }

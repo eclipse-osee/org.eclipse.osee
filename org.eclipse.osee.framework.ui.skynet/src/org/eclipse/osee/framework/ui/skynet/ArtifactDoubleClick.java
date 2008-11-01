@@ -55,7 +55,7 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
       }
 
       if (artifact == null) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  "The artifact associated with the double-click was null");
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "The artifact associated with the double-click was null");
       } else {
          if (AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
             if (artifact instanceof IATSArtifact)
@@ -63,10 +63,9 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
             else
                ArtifactEditor.editArtifact(artifact);
          } else {
-            OSEELog.logInfo(SkynetGuiPlugin.class,
+            OSEELog.logSevere(SkynetGuiPlugin.class,
                   "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact, true);
          }
       }
-
    }
 }

@@ -122,7 +122,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
                for (Artifact artifact : artifacts) {
                   if (!AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact,
                         PermissionEnum.READ)) {
-                     OSEELog.logInfo(SkynetGuiPlugin.class,
+                     OSEELog.logSevere(SkynetGuiPlugin.class,
                            "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact,
                            true);
                   } else
@@ -141,7 +141,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             try {
                if (!AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact,
                      PermissionEnum.READ)) {
-                  OSEELog.logInfo(SkynetGuiPlugin.class,
+                  OSEELog.logSevere(SkynetGuiPlugin.class,
                         "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact,
                         true);
                } else if (artifact != null) {
@@ -656,8 +656,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       if (branchModType == BranchEventType.Committed) {
          try {
-            changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
-                  BranchManager.getDefaultBranch()));
+            changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getDefaultBranch()));
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             closeEditor();
@@ -667,8 +666,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          try {
             if (artifact.getBranch().equals(BranchManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
                try {
-                  changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
-                        BranchManager.getDefaultBranch()));
+                  changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getDefaultBranch()));
                } catch (ArtifactDoesNotExist ex) {
                   System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
                   closeEditor();

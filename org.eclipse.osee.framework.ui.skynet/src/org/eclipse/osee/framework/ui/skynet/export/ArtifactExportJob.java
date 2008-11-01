@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.export;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,12 +22,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Ryan D. Brooks
@@ -91,7 +92,7 @@ public class ArtifactExportJob extends Job {
             InputStream inputStream = fileRenderer.getRenderInputStream(artifact, presentationType);
             Lib.inputStreamToFile(inputStream, new File(exportPath, fileName));
          } catch (OseeArgumentException ex) {
-            OSEELog.logWarning(SkynetGuiPlugin.class, "Artifact requires a FileRenderer", true);
+            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Artifact requires a FileRenderer");
          }
       }
       monitor.worked(1);

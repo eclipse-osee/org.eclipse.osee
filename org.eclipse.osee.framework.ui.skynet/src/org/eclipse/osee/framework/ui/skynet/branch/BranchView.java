@@ -1332,8 +1332,7 @@ public class BranchView extends ViewPart implements IActionable {
                if (ed.open() == 0) {
                   String artId = ed.getEntry();
                   Artifact associatedArtifact =
-                        ArtifactQuery.getArtifactFromId(Integer.parseInt(artId),
-                              BranchManager.getAtsBranch());
+                        ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), BranchManager.getAtsBranch());
                   if (MessageDialog.openConfirm(
                         Display.getCurrent().getActiveShell(),
                         "Set Associated Artifact",
@@ -1385,7 +1384,7 @@ public class BranchView extends ViewPart implements IActionable {
                   else
                      ArtifactEditor.editArtifact(selectedBranch.getAssociatedArtifact());
                } else {
-                  OSEELog.logInfo(
+                  OSEELog.logSevere(
                         SkynetGuiPlugin.class,
                         "The user " + SkynetAuthentication.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifact(),
                         true);

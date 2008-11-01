@@ -12,6 +12,7 @@
 package org.eclipse.osee.define.traceability;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,13 +59,13 @@ public class TraceabilityExtractor {
       return instance;
    }
 
-   public List<String> getTraceMarksFromFile(File sourceFile) throws Exception {
+   public List<String> getTraceMarksFromFile(File sourceFile) throws IOException {
       CharBuffer buffer = Lib.fileToCharBuffer(sourceFile);
       Matcher matcher = isScriptFile(sourceFile) ? getScriptTraceMarkMatcher() : getCodeTraceMarkMatcher();
       return getTraceMarks(buffer, matcher);
    }
 
-   public List<String> getTraceMarks(CharBuffer buffer, Matcher matcher) throws Exception {
+   public List<String> getTraceMarks(CharBuffer buffer, Matcher matcher) {
       List<String> toReturn = new ArrayList<String>();
       matcher.reset(buffer);
       while (matcher.find() != false) {
