@@ -57,13 +57,22 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IViewSite;
@@ -75,19 +84,20 @@ import org.eclipse.ui.PartInitException;
  */
 public class WorldComposite extends Composite implements IFrameworkTransactionEventListener {
 
-   private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction;
+   private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, whoAmIAction, toAction,
+         toWorkFlow;
    private final Label warningLabel, searchNameLabel, extraInfoLabel;
    private WorldSearchItem lastSearchItem;
    private final WorldXViewer xViewer;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
-   private final String viewEditorId;
    private final IViewSite viewSite;
    private WorldSearchItem searchItem;
    private TableLoadOption[] tableLoadOptions;
    private Collection<? extends Artifact> arts;
    private String loadName;
+   private final Composite toolBarComposite;
 
    /**
     * @param parent
@@ -95,13 +105,12 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
     */
    public WorldComposite(String viewEditorId, IViewSite viewSite, Composite parent, int style) {
       super(parent, style);
-      this.viewEditorId = viewEditorId;
       this.viewSite = viewSite;
 
       setLayout(new GridLayout(1, false));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      // Heaader Composite
+      // Header Composite
       Composite headerComp = new Composite(this, SWT.NONE);
       headerComp.setLayout(ALayout.getZeroMarginLayout(3, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -110,20 +119,28 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       warningLabel = new Label(headerComp, SWT.NONE);
       searchNameLabel = new Label(headerComp, SWT.NONE);
 
-      String nameStr = getWhoAmI();
-      if (AtsPlugin.isAtsAdmin()) nameStr += " - Admin";
-      if (AtsPlugin.isAtsDisableEmail()) nameStr += " - Email Disabled";
-      if (AtsPlugin.isAtsAlwaysEmailMe()) nameStr += " - AtsAlwaysEmailMe";
-      if (!nameStr.equals("")) {
-         Label label = new Label(headerComp, SWT.NONE);
-         label.setText(nameStr);
-         if (AtsPlugin.isAtsAdmin()) {
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-         } else {
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+      if (viewSite == null) {
+         toolBarComposite = new Composite(headerComp, SWT.NONE);
+         toolBarComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false, 1, 1));
+         toolBarComposite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      } else {
+         toolBarComposite = null;
+         String nameStr = getWhoAmI();
+         if (AtsPlugin.isAtsAdmin()) nameStr += " - Admin";
+         if (AtsPlugin.isAtsDisableEmail()) nameStr += " - Email Disabled";
+         if (AtsPlugin.isAtsAlwaysEmailMe()) nameStr += " - AtsAlwaysEmailMe";
+         if (!nameStr.equals("")) {
+            Label label = new Label(headerComp, SWT.NONE);
+            label.setText(nameStr);
+            if (AtsPlugin.isAtsAdmin()) {
+               label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            } else {
+               label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+            }
+            gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
+            label.setLayoutData(gd);
          }
-         gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-         label.setLayoutData(gd);
+
       }
 
       extraInfoLabel = new Label(headerComp, SWT.NONE);
@@ -476,7 +493,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       refreshAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
       refreshAction.setToolTipText("Refresh");
 
-      Action whoAmIAction = new Action("Who Am I") {
+      whoAmIAction = new Action("Who Am I") {
 
          @Override
          public void run() {
@@ -505,7 +522,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       };
       selectionMetricsAction.setToolTipText("Show Release Metrics by Selection - Ctrl-X");
 
-      Action toAction = new Action("Re-display WorkFlows as Actions", Action.AS_PUSH_BUTTON) {
+      toAction = new Action("Re-display WorkFlows as Actions", Action.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
@@ -514,7 +531,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       };
       toAction.setToolTipText("Re-display WorkFlows as Actions");
 
-      Action toWorkFlow = new Action("Re-display Actions as WorkFlows", Action.AS_PUSH_BUTTON) {
+      toWorkFlow = new Action("Re-display Actions as WorkFlows", Action.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
@@ -543,7 +560,75 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          if (AtsPlugin.isAtsAdmin()) {
             manager.add(new Separator());
          }
+      } else {
+
+         ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
+         toolBar.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1));
+
+         actionToToolItem(toolBar, expandAllAction);
+         actionToToolItem(toolBar, newWorldEditor);
+         actionToToolItem(toolBar, refreshAction);
+
+         createToolBarPulldown(toolBar, toolBarComposite);
       }
+   }
+
+   public void createToolBarPulldown(final ToolBar toolBar, Composite composite) {
+      final ToolItem dropDown = new ToolItem(toolBar, SWT.PUSH);
+      dropDown.setImage(AtsPlugin.getInstance().getImage("downTriangle.gif"));
+      final Menu menu = new Menu(composite);
+
+      dropDown.addListener(SWT.Selection, new Listener() {
+         public void handleEvent(org.eclipse.swt.widgets.Event event) {
+            Rectangle rect = dropDown.getBounds();
+            Point pt = new Point(rect.x, rect.y + rect.height);
+            pt = toolBar.toDisplay(pt);
+            menu.setLocation(pt.x, pt.y);
+            menu.setVisible(true);
+         }
+      });
+
+      actionToMenuItem(menu, filterCompletedAction);
+      new MenuItem(menu, SWT.SEPARATOR);
+      actionToMenuItem(menu, whoAmIAction);
+      actionToMenuItem(menu, releaseMetricsAction);
+      actionToMenuItem(menu, selectionMetricsAction);
+      new MenuItem(menu, SWT.SEPARATOR);
+      actionToMenuItem(menu, toAction);
+      actionToMenuItem(menu, toWorkFlow);
+      if (AtsPlugin.isAtsAdmin()) {
+         new MenuItem(menu, SWT.SEPARATOR);
+      }
+   }
+
+   private ToolItem actionToToolItem(ToolBar toolBar, Action action) {
+      final Action fAction = action;
+      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(action.getImageDescriptor().createImage());
+      item.setToolTipText(action.getToolTipText());
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            fAction.run();
+         }
+      });
+      return item;
+   }
+
+   private MenuItem actionToMenuItem(Menu menu, Action action) {
+      final Action fAction = action;
+      MenuItem item = new MenuItem(menu, SWT.PUSH);
+      item.setText(action.getText());
+      if (action.getImageDescriptor() != null) {
+         item.setImage(action.getImageDescriptor().createImage());
+      }
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            fAction.run();
+         }
+      });
+      return item;
    }
 
    public static ArrayList<Artifact> getLoadedArtifacts() {

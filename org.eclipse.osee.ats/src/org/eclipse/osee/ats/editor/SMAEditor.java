@@ -99,7 +99,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    private SMAHistoryComposite historyComposite;
    private RelationsComposite relationsComposite;
    private AttributesComposite attributesComposite;
-   private DetailsBrowserComposite detailsComposite;
    private final MultiPageEditorPart editor;
    public static enum PriviledgedEditMode {
       Off, CurrentState, Global
@@ -275,9 +274,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          setPageText(historyPageIndex, "History");
 
          createRelationsTab();
-
          createAttributesTab();
-
          createDetailsTab();
 
          setActivePage(workFlowPageIndex);
@@ -310,13 +307,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
-               AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-                        @Override
-                        protected void handleTxWork() throws OseeCoreException {
-                           smaMgr.getSma().persistAttributes();
-                        }
-                     };
+               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
+                  @Override
+                  protected void handleTxWork() throws OseeCoreException {
+                     smaMgr.getSma().persistAttributes();
+                  }
+               };
                txWrapper.execute();
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);

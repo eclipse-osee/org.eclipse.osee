@@ -318,19 +318,17 @@ public class XTaskViewer extends XWidget implements IActionable {
    }
 
    public void createTaskActionBarPulldown(final ToolBar toolBar, Composite composite) {
-      final ToolItem dropDown = new ToolItem(toolBar, SWT.DROP_DOWN);
-      dropDown.setImage(SkynetGuiPlugin.getInstance().getImage("gear.gif"));
+      final ToolItem dropDown = new ToolItem(toolBar, SWT.PUSH);
+      dropDown.setImage(AtsPlugin.getInstance().getImage("downTriangle.gif"));
       final Menu menu = new Menu(composite);
 
       dropDown.addListener(SWT.Selection, new Listener() {
          public void handleEvent(org.eclipse.swt.widgets.Event event) {
-            if (event.detail == SWT.ARROW) {
-               Rectangle rect = dropDown.getBounds();
-               Point pt = new Point(rect.x, rect.y + rect.height);
-               pt = toolBar.toDisplay(pt);
-               menu.setLocation(pt.x, pt.y);
-               menu.setVisible(true);
-            }
+            Rectangle rect = dropDown.getBounds();
+            Point pt = new Point(rect.x, rect.y + rect.height);
+            pt = toolBar.toDisplay(pt);
+            menu.setLocation(pt.x, pt.y);
+            menu.setVisible(true);
          }
       });
 
