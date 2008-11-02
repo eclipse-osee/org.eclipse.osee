@@ -70,6 +70,7 @@ public class InternalOseeHttpServlet extends HttpServlet {
          start = System.currentTimeMillis();
       }
       try {
+         System.err.println("Temp fix for postgres dbinit; remove this");
          //         if (areRequestsAllowed()) {
          this.processingState = ProcessingStateEnum.BUSY;
          this.request = request;
