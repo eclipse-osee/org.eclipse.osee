@@ -569,6 +569,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          actionToToolItem(toolBar, expandAllAction);
          actionToToolItem(toolBar, newWorldEditor);
          actionToToolItem(toolBar, refreshAction);
+         actionToToolItem(toolBar, xViewer.getCustomizeAction());
 
          createToolBarPulldown(toolBar, toolBarComposite);
       }
