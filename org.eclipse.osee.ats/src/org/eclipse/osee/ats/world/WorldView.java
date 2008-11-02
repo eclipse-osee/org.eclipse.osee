@@ -74,13 +74,12 @@ public class WorldView extends ViewPart implements IPartListener, IActionable {
    @Override
    public void createPartControl(Composite parent) {
 
-      worldComposite = new WorldComposite(VIEW_ID, getViewSite(), parent, SWT.NONE);
-      worldComposite.getXViewer().addCustomizeToViewToolbar(this);
-      OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS World");
-
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
       BulkLoadAtsCache.run(false);
 
+      worldComposite = new WorldComposite(VIEW_ID, getViewSite(), parent, SWT.NONE);
+      worldComposite.getXViewer().addCustomizeToViewToolbar(this);
+      OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS World");
       AtsPlugin.getInstance().setHelp(worldComposite.getControl(), HELP_CONTEXT_ID);
 
       SkynetContributionItem.addTo(this, false);

@@ -588,14 +588,14 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          }
       });
 
-      actionToMenuItem(menu, filterCompletedAction);
+      actionToMenuItem(menu, filterCompletedAction, SWT.CHECK);
       new MenuItem(menu, SWT.SEPARATOR);
-      actionToMenuItem(menu, whoAmIAction);
-      actionToMenuItem(menu, releaseMetricsAction);
-      actionToMenuItem(menu, selectionMetricsAction);
+      actionToMenuItem(menu, whoAmIAction, SWT.PUSH);
+      actionToMenuItem(menu, releaseMetricsAction, SWT.CHECK);
+      actionToMenuItem(menu, selectionMetricsAction, SWT.CHECK);
       new MenuItem(menu, SWT.SEPARATOR);
-      actionToMenuItem(menu, toAction);
-      actionToMenuItem(menu, toWorkFlow);
+      actionToMenuItem(menu, toAction, SWT.PUSH);
+      actionToMenuItem(menu, toWorkFlow, SWT.PUSH);
       if (AtsPlugin.isAtsAdmin()) {
          new MenuItem(menu, SWT.SEPARATOR);
       }
@@ -615,9 +615,9 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       return item;
    }
 
-   private MenuItem actionToMenuItem(Menu menu, Action action) {
+   private MenuItem actionToMenuItem(Menu menu, Action action, int buttonType) {
       final Action fAction = action;
-      MenuItem item = new MenuItem(menu, SWT.PUSH);
+      MenuItem item = new MenuItem(menu, buttonType);
       item.setText(action.getText());
       if (action.getImageDescriptor() != null) {
          item.setImage(action.getImageDescriptor().createImage());
