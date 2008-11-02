@@ -85,6 +85,9 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
          worldPageIndex = addPage(worldComposite);
          setPageText(worldPageIndex, "Main");
          setActivePage(worldPageIndex);
+         if (worldEditorInput.getCustomizeData() != null) {
+            worldComposite.setCustomizeData(worldEditorInput.getCustomizeData());
+         }
 
          if (worldEditorInput.getSearchItem() != null && worldEditorInput.getSearchType() != null) {
             worldComposite.loadTable(worldEditorInput.getSearchItem(), worldEditorInput.getSearchType(),

@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -194,6 +195,10 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       createActions();
 
       OseeEventManager.addListener(this);
+   }
+
+   public void setCustomizeData(CustomizeData customizeData) {
+      xViewer.getCustomizeMgr().loadCustomization(customizeData);
    }
 
    public Control getControl() {
@@ -435,9 +440,13 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          public void run() {
             WorldEditorInput worldEditorInput = null;
             if (arts != null) {
-               worldEditorInput = new WorldEditorInput(loadName, arts, tableLoadOptions);
+               worldEditorInput =
+                     new WorldEditorInput(loadName, arts, xViewer.getCustomizeMgr().generateCustDataFromTable(),
+                           tableLoadOptions);
             } else if (searchItem != null) {
-               worldEditorInput = new WorldEditorInput(searchItem, SearchType.Search, tableLoadOptions);
+               worldEditorInput =
+                     new WorldEditorInput(searchItem, SearchType.Search,
+                           xViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions);
             } else {
                AWorkbench.popup("ERROR", "Nothing loaded");
             }

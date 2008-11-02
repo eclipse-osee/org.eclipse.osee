@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -29,24 +30,30 @@ public class WorldEditorInput implements IEditorInput {
    private final SearchType searchType;
    private String name = "World Editor";
    private final Collection<? extends Artifact> arts;
+   private final CustomizeData customizeData;
+
+   /**
+    * @return the customizeData
+    */
+   public CustomizeData getCustomizeData() {
+      return customizeData;
+   }
 
    /**
     * @param artifact
     */
-   public WorldEditorInput(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) {
+   public WorldEditorInput(WorldSearchItem searchItem, SearchType searchType, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
       this.searchItem = searchItem;
       this.searchType = searchType;
+      this.customizeData = customizeData;
       this.tableLoadOptions = tableLoadOptions;
       this.arts = null;
    }
 
-   public WorldEditorInput(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) {
-      this(searchItem, SearchType.Search, tableLoadOptions);
-   }
-
-   public WorldEditorInput(String name, Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
+   public WorldEditorInput(String name, Collection<? extends Artifact> arts, CustomizeData customizeData, TableLoadOption... tableLoadOption) {
       this.name = name;
       this.arts = arts;
+      this.customizeData = customizeData;
       tableLoadOptions = tableLoadOption;
       this.searchType = SearchType.Search;
       this.searchItem = null;
@@ -88,6 +95,7 @@ public class WorldEditorInput implements IEditorInput {
    /* (non-Javadoc)
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
+   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
       return null;
