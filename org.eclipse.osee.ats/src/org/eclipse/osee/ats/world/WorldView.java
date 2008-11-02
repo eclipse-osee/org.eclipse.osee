@@ -78,7 +78,6 @@ public class WorldView extends ViewPart implements IPartListener, IActionable {
       BulkLoadAtsCache.run(false);
 
       worldComposite = new WorldComposite(VIEW_ID, getViewSite(), parent, SWT.NONE);
-      worldComposite.getXViewer().addCustomizeToViewToolbar(this);
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS World");
       AtsPlugin.getInstance().setHelp(worldComposite.getControl(), HELP_CONTEXT_ID);
 

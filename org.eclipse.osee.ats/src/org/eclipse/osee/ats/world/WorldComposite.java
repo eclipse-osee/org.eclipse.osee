@@ -547,6 +547,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          toolbarManager.add(expandAllAction);
          toolbarManager.add(newWorldEditor);
          toolbarManager.add(refreshAction);
+         getXViewer().addCustomizeToViewToolbar(toolbarManager);
 
          IMenuManager manager = viewSite.getActionBars().getMenuManager();
          manager.add(filterCompletedAction);

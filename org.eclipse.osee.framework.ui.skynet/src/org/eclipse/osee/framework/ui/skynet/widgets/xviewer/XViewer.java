@@ -104,6 +104,10 @@ public class XViewer extends TreeViewer {
    }
 
    public void addCustomizeToViewToolbar(final ViewPart viewPart) {
+      addCustomizeToViewToolbar(viewPart.getViewSite().getActionBars().getToolBarManager());
+   }
+
+   public void addCustomizeToViewToolbar(IToolBarManager toolbarManager) {
       Action customizeAction = new Action("Customize Table") {
 
          @Override
@@ -114,7 +118,6 @@ public class XViewer extends TreeViewer {
       customizeAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("customize.gif"));
       customizeAction.setToolTipText("Customize Table");
 
-      IToolBarManager toolbarManager = viewPart.getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(customizeAction);
    }
 
