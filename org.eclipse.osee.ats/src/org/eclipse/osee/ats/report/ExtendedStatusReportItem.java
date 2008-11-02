@@ -44,8 +44,8 @@ public class ExtendedStatusReportItem extends XNavigateItemAction {
          return;
       }
       ExtendedStatusReportJob job =
-            new ExtendedStatusReportJob("ATS Extended Status Report - " + worldView.getxViewer().getTitle(),
-                  worldView.getxViewer().getLoadedArtifacts());
+            new ExtendedStatusReportJob("ATS Extended Status Report - " + worldView.getXViewer().getTitle(),
+                  worldView.getXViewer().getLoadedArtifacts());
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();

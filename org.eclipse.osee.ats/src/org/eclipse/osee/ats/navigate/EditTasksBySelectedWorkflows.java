@@ -46,7 +46,7 @@ public class EditTasksBySelectedWorkflows extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      Set<StateMachineArtifact> smas = WorldView.getWorldView().getxViewer().getSelectedSMAArtifacts();
+      Set<StateMachineArtifact> smas = WorldView.getWorldView().getXViewer().getSelectedSMAArtifacts();
       if (smas.size() == 0) {
          AWorkbench.popup("ERROR", "Must select Action Workflows in ATS World to edit tasks.");
          return;

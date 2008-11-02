@@ -20,6 +20,13 @@
                icon="images/task.gif"
                id="org.eclipse.osee.ats.editor.TaskEditor"
                name="ATS Task Editor"/>
+         <editor
+               class="org.eclipse.osee.ats.world.WorldEditor"
+               default="false"
+               icon="images/world.gif"
+               id="org.eclipse.osee.ats.world.WorldEditor"
+               name="World Editor">
+         </editor>
    </extension>
    <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
       <ArtifactFactory classname="org.eclipse.osee.ats.artifact.AtsArtifactFactory"/>
