@@ -615,7 +615,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       return item;
    }
 
-   private MenuItem actionToMenuItem(Menu menu, Action action, int buttonType) {
+   private MenuItem actionToMenuItem(Menu menu, final Action action, final int buttonType) {
       final Action fAction = action;
       MenuItem item = new MenuItem(menu, buttonType);
       item.setText(action.getText());
@@ -625,6 +625,9 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
+            if (buttonType == SWT.CHECK) {
+               action.setChecked(!action.isChecked());
+            }
             fAction.run();
          }
       });
