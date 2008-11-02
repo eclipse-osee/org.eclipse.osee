@@ -216,9 +216,9 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             Collection<Integer> parentBranchDelConflicts = new HashSet<Integer>();
 
             ISearchPrimitive conflictCriteria =
-                  new ConflictingArtifactSearch(baseParentTransaction.getBranch().getBranchId(),
+                  new ConflictingArtifactSearch(baseParentTransaction.getBranchId(),
                         baseParentTransaction.getTransactionNumber(), headParentTransaction.getTransactionNumber(),
-                        baseTransaction.getBranch().getBranchId(), baseTransaction.getTransactionNumber(),
+                        baseTransaction.getBranchId(), baseTransaction.getTransactionNumber(),
                         toTransaction.getTransactionNumber());
 
             Collection<Artifact> artModConflicts =

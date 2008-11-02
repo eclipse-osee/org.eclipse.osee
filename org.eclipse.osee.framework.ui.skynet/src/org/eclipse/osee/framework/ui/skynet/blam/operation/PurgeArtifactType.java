@@ -33,16 +33,16 @@ public class PurgeArtifactType extends AbstractBlam {
       ArtifactType artType = variableMap.getArtifactSubtypeDescriptor("Artifact Type");
       int artTypeId = artType.getArtTypeId();
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_OCCURRENCE, artTypeId);
+         chStmt.runPreparedQuery(COUNT_ARTIFACT_OCCURRENCE, artTypeId);
          if (chStmt.next() && chStmt.getInt("artCount") != 0) {
             throw new IllegalArgumentException(
                   "Can not delete artifact type " + artType.getName() + " because there are " + chStmt.getInt("artCount") + " existing artifacts of this type.");
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
 
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, artTypeId);

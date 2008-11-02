@@ -15,8 +15,6 @@ import java.sql.Timestamp;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -34,7 +32,7 @@ public class BranchCreation implements IBranchCreation {
    private static final String BRANCH_TABLE_INSERT =
          "INSERT INTO osee_branch (branch_id, short_name, branch_name, parent_branch_id, archived, associated_art_id, branch_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-   private static final String SELECT_BRANCH_BY_NAME = "SELECT * FROM osee_branch WHERE branch_name = ?";
+   private static final String SELECT_BRANCH_BY_NAME = "SELECT count(1) FROM osee_branch WHERE branch_name = ?";
 
    private static final String INSERT_DEFAULT_BRANCH_NAMES =
          "INSERT INTO OSEE_BRANCH_DEFINITIONS (static_branch_name, mapped_branch_id) VALUES (?, ?)";
@@ -120,19 +118,7 @@ public class BranchCreation implements IBranchCreation {
       }
 
       private boolean checkAlreadyHasBranchName(String branchName) throws OseeDataStoreException {
-         Connection connection = null;
-         ConnectionHandlerStatement chStmt = null;
-         boolean alreadyHasName = false;
-         try {
-            connection = OseeDbConnection.getConnection();
-            chStmt = ConnectionHandler.runPreparedQuery(connection, SELECT_BRANCH_BY_NAME, branchName);
-            if (chStmt.next()) {
-               alreadyHasName = true;
-            }
-         } finally {
-            ConnectionHandler.close(connection, chStmt);
-         }
-         return alreadyHasName;
+         return ConnectionHandler.runPreparedQueryFetchInt(0, SELECT_BRANCH_BY_NAME, branchName) > 0;
       }
 
       public abstract void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws OseeDataStoreException;

@@ -57,7 +57,7 @@ public abstract class BaseTransactionData {
    public abstract String getInsertSql();
 
    public Object[] getSelectData() {
-      return new Object[] {itemId, transactionId.getBranch().getBranchId()};
+      return new Object[] {itemId, transactionId.getBranchId()};
    }
 
    public abstract String getSelectTxNotCurrentSql();

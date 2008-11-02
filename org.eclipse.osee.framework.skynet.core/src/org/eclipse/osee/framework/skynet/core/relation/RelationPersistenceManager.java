@@ -142,6 +142,6 @@ public class RelationPersistenceManager {
       for (RelationLink link : links) {
          data.add(new Object[] {link.getAOrder(), link.getBOrder(), link.getGammaId()});
       }
-      ConnectionHandler.runPreparedUpdateBatch(UPDATE_RELATION_ORDERS, data);
+      ConnectionHandler.runBatchUpdate(UPDATE_RELATION_ORDERS, data);
    }
 }

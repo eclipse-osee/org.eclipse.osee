@@ -39,7 +39,7 @@ public class HttpBranchCreation {
       parameters.put("branchName", childBranchName);
       parameters.put("function", "createChildBranch");
       parameters.put("authorId", getAuthorId());
-      parameters.put("parentBranchId", Integer.toString(parentTransactionId.getBranch().getBranchId()));
+      parameters.put("parentBranchId", Integer.toString(parentTransactionId.getBranchId()));
       parameters.put("associatedArtifactId", getAssociatedArtifactId(associatedArtifact));
 
       if (compressArtTypeIds != null && !compressArtTypeIds.isEmpty()) {
@@ -60,8 +60,8 @@ public class HttpBranchCreation {
    }
 
    /**
-    * Creates a new root branch. Should NOT be used outside BranchManager. If programatic access is
-    * necessary, setting the staticBranchName will add a key for this branch and allow access to the branch through
+    * Creates a new root branch. Should NOT be used outside BranchManager. If programatic access is necessary, setting
+    * the staticBranchName will add a key for this branch and allow access to the branch through
     * getKeyedBranch(staticBranchName).
     * 
     * @param shortBranchName

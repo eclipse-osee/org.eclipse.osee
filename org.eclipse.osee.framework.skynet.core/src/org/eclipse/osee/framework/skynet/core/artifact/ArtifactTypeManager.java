@@ -71,10 +71,10 @@ public class ArtifactTypeManager {
    }
 
    private void populateCache() throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_TYPES);
+         chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES);
 
          while (chStmt.next()) {
             try {
@@ -87,7 +87,7 @@ public class ArtifactTypeManager {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

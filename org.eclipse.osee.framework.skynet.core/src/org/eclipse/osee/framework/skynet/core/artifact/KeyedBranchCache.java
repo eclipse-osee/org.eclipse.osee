@@ -58,10 +58,10 @@ public class KeyedBranchCache {
    private void populateCache() throws OseeCoreException {
       keynameBranchMap = new HashMap<String, Branch>();
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(GET_BRANCH_NAMES_FROM_CONFIG);
+         chStmt.runPreparedQuery(GET_BRANCH_NAMES_FROM_CONFIG);
 
          while (chStmt.next()) {
             try {
@@ -72,7 +72,7 @@ public class KeyedBranchCache {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 }

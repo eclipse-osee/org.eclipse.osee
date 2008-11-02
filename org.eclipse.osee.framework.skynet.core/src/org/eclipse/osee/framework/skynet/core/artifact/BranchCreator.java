@@ -175,13 +175,12 @@ public class BranchCreator {
 
       HashCollection<Integer, Pair<Integer, ModificationType>> historyMap =
             new HashCollection<Integer, Pair<Integer, ModificationType>>(false, HashSet.class);
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          for (ArtifactType artifactType : preserveArtTypes) {
 
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_HISTORY, artifactType.getArtTypeId(),
-                        parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
+            chStmt.runPreparedQuery(SELECT_ARTIFACT_HISTORY, artifactType.getArtTypeId(),
+                  parentTransactionId.getTransactionNumber(), parentTransactionId.getBranchId());
 
             while (chStmt.next()) {
                historyMap.put(chStmt.getInt("transaction_id"), new Pair<Integer, ModificationType>(
@@ -192,7 +191,7 @@ public class BranchCreator {
          }
          initSelectLinkHistory(compressArtTypes, preserveArtTypes, parentTransactionId, historyMap);
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
 
       Set<Integer> transactions = new TreeSet<Integer>(historyMap.keySet()); // the tree set is to in ascending order
@@ -209,7 +208,7 @@ public class BranchCreator {
             txAddressData.add(new Object[] {nextTransactionNumber, gammaAndMod.getKey(), modType.getValue(),
                   TxChange.CURRENT.getValue()});
          }
-         ConnectionHandler.runPreparedUpdateBatch(INSERT_TX_FOR_HISTORY, txAddressData);
+         ConnectionHandler.runBatchUpdate(INSERT_TX_FOR_HISTORY, txAddressData);
          txAddressData.clear();
       }
    }
@@ -259,17 +258,15 @@ public class BranchCreator {
    }
 
    private static void populateHistoryMapWithRelations(HashCollection<Integer, Pair<Integer, ModificationType>> historyMap, String sql, TransactionId parentTransactionId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(sql, parentTransactionId.getTransactionNumber(),
-                     parentTransactionId.getBranch().getBranchId());
+         chStmt.runPreparedQuery(sql, parentTransactionId.getTransactionNumber(), parentTransactionId.getBranchId());
          while (chStmt.next()) {
             historyMap.put(chStmt.getInt("transaction_id"), new Pair<Integer, ModificationType>(
                   chStmt.getInt("link_gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type"))));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -278,7 +275,7 @@ public class BranchCreator {
          int count =
                ConnectionHandler.runPreparedUpdate(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED, newTransactionNumber,
                      TxChange.CURRENT.getValue(), artifactType.getArtTypeId(),
-                     parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
+                     parentTransactionId.getTransactionNumber(), parentTransactionId.getBranchId());
          if (count > 0) {
             OseeLog.log(SkynetActivator.class, Level.INFO,
                   "inserted " + count + " " + artifactType.getName() + " artifacts");
@@ -288,13 +285,13 @@ public class BranchCreator {
       int count =
             ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTES_GAMMAS, newTransactionNumber,
                   TxChange.CURRENT.getValue(), newTransactionNumber, parentTransactionId.getTransactionNumber(),
-                  parentTransactionId.getBranch().getBranchId());
+                  parentTransactionId.getBranchId());
       OseeLog.log(SkynetActivator.class, Level.INFO, "inserted " + count + " attributes");
 
       count =
             ConnectionHandler.runPreparedUpdate(INSERT_LINK_GAMMAS, newTransactionNumber, TxChange.CURRENT.getValue(),
                   newTransactionNumber, newTransactionNumber, parentTransactionId.getTransactionNumber(),
-                  parentTransactionId.getBranch().getBranchId());
+                  parentTransactionId.getBranchId());
       OseeLog.log(SkynetActivator.class, Level.INFO, "inserted " + count + " relations");
    }
 
@@ -325,8 +322,8 @@ public class BranchCreator {
    }
 
    /**
-    * Creates a new root branch. Should NOT be used outside BranchManager. If programatic access is
-    * necessary, setting the staticBranchName will add a key for this branch and allow access to the branch through
+    * Creates a new root branch. Should NOT be used outside BranchManager. If programatic access is necessary, setting
+    * the staticBranchName will add a key for this branch and allow access to the branch through
     * getKeyedBranch(staticBranchName).
     * 
     * @param shortBranchName
@@ -375,8 +372,8 @@ public class BranchCreator {
 
       // this needs to be after the insert in case there is an exception on insert
       Branch branch =
-            BranchManager.createBranchObject(branchShortName, branchName, branchId, parentBranchNumber,
-                  false, authorId, creationDate, creationComment, associatedArtifactId, branchType);
+            BranchManager.createBranchObject(branchShortName, branchName, branchId, parentBranchNumber, false,
+                  authorId, creationDate, creationComment, associatedArtifactId, branchType);
       if (associatedArtifact != null) {
          branch.setAssociatedArtifact(associatedArtifact);
       }
@@ -448,6 +445,15 @@ public class BranchCreator {
       }
 
       /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxFinally()
+       */
+      @Override
+      protected void handleTxFinally() throws Exception {
+         super.handleTxFinally();
+         connection.close();
+      }
+
+      /* (non-Javadoc)
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
@@ -481,7 +487,7 @@ public class BranchCreator {
             datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), SQL3DataType.INTEGER});
          }
          try {
-            ArtifactLoader.selectArtifacts(connection, datas);
+            ArtifactLoader.selectArtifacts(datas);
             String attributeGammas =
                   "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, atr1.gamma_id, txs1.mod_type, ? FROM osee_attribute atr1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
             String artifactVersionGammas =
@@ -495,15 +501,9 @@ public class BranchCreator {
 
          mergeBranch = branchWithTransactionNumber.getKey();
 
-         ConnectionHandlerStatement chStmt = null;
-
          if (createBranch) {
-            try {
-               ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
-                     destBranch.getBranchId(), mergeBranch.getBranchId(), -1);
-            } finally {
-               ConnectionHandler.close(chStmt);
-            }
+            ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
+                  destBranch.getBranchId(), mergeBranch.getBranchId(), -1);
          }
       }
 

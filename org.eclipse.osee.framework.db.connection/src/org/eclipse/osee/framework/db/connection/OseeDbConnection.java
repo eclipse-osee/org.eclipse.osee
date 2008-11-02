@@ -30,6 +30,15 @@ public class OseeDbConnection {
       return getConnection(defaultDbInformation);
    }
 
+   public static boolean hasOpenConnection() {
+      verifyDefaultDbInformation();
+      OseeConnectionPool pool = dbInfoToPools.get(defaultDbInformation);
+      if (pool == null) {
+         return false;
+      }
+      return pool.hasOpenConnection();
+   }
+
    public static OseeConnection getConnection(String serviceName) throws OseeDataStoreException {
       return getConnection(OseeDbConnection.getDatabaseService(serviceName));
    }
@@ -55,5 +64,20 @@ public class OseeDbConnection {
 
    public static DbInformation getDatabaseService(String id) {
       return Activator.getDbConnectionInformation().getDatabaseInfo(id);
+   }
+
+   /**
+    * @return whether a successful connection has been had to the database
+    */
+   public static boolean isConnectionValid() {
+      OseeConnection connection = null;
+      try {
+         connection = getConnection();
+      } catch (OseeDataStoreException ex) {
+         return false;
+      } finally {
+         ConnectionHandler.close(connection);
+      }
+      return true;
    }
 }

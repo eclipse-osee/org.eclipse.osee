@@ -77,8 +77,7 @@ public class DuplicateAttributes extends DatabaseHealthTask {
    public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
       LinkedList<DuplicateAttribute> sameValues = new LinkedList<DuplicateAttribute>();
       LinkedList<DuplicateAttribute> diffValues = new LinkedList<DuplicateAttribute>();
-      ConnectionHandlerStatement chStmt1 = null;
-      ConnectionHandlerStatement chStmt2 = null;
+      ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
       fixErrors = operation.equals(Operation.Fix);
       //--- Test's for two attributes that are on the same artifact but have different attr_ids, when ---//
       //--- the attribute type has a maximum of 1 allowable attributes. ---------------------------------//
@@ -87,16 +86,15 @@ public class DuplicateAttributes extends DatabaseHealthTask {
       monitor.subTask("Querying for Duplicate Attributes");
       if (monitor.isCanceled()) return;
       try {
-         chStmt1 = ConnectionHandler.runPreparedQuery(GET_DUPLICATE_ATTRIBUTES);
+         chStmt1.runPreparedQuery(GET_DUPLICATE_ATTRIBUTES);
          monitor.worked(6);
          monitor.subTask("Processing Results");
          if (monitor.isCanceled()) return;
          while (chStmt1.next()) {
+            ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
             try {
-               chStmt2 = ConnectionHandler.runPreparedQuery(FILTER_DELTED, chStmt1.getInt("attr_id_1"));
-               if (chStmt2.next()) {
-                  ConnectionHandler.close(chStmt2);
-                  chStmt2 = ConnectionHandler.runPreparedQuery(FILTER_DELTED, chStmt1.getInt("attr_id_2"));
+               if (ConnectionHandler.runPreparedQueryFetchInt(-1, FILTER_DELTED, chStmt1.getInt("attr_id_1")) == -1) {
+                  chStmt2.runPreparedQuery(FILTER_DELTED, chStmt1.getInt("attr_id_2"));
                   if (chStmt2.next()) {
                      DuplicateAttribute duplicateAttribute;
                      duplicateAttribute = new DuplicateAttribute();
@@ -117,17 +115,13 @@ public class DuplicateAttributes extends DatabaseHealthTask {
                         diffValues.add(duplicateAttribute);
                      }
                   }
-
                }
             } finally {
-               ConnectionHandler.close(chStmt2);
+               chStmt2.close();
             }
-
          }
-
       } finally {
-         ConnectionHandler.close(chStmt1);
-         ConnectionHandler.close(chStmt2);
+         chStmt1.close();
       }
       monitor.worked(2);
       monitor.subTask("Cleaning Up Attrinbutes");
@@ -198,14 +192,14 @@ public class DuplicateAttributes extends DatabaseHealthTask {
 
    //--- Find out if there is an attribute that is on every branch that has either one of the attributes ---//
    private void findProminentAttribute(int attrId1, int attrId2, LinkedList<Integer> branches) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, attrId1, attrId2);
+         chStmt.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, attrId1, attrId2);
          while (chStmt.next()) {
             branches.add(new Integer(chStmt.getInt("branch_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 }

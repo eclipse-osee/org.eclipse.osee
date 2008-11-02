@@ -117,10 +117,9 @@ class DeleteBranchJob extends Job {
          }
 
          monitor.beginTask("Delete Branch: " + branch, 10);
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, branch.getBranchId(),
+            chStmt.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, branch.getBranchId(),
                         branch.getBranchId(), branch.getBranchId());
 
             if (chStmt.next()) {// checking to see if there are any gammas to delete
@@ -134,7 +133,7 @@ class DeleteBranchJob extends Job {
             deleteArtifactVersions();
             deleteBranch();
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
       }
 

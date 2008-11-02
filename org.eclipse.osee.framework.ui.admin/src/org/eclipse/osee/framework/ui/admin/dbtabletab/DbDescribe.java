@@ -43,10 +43,10 @@ public class DbDescribe {
    public List<Describe> getDescription() throws OseeDataStoreException {
       if (dbColumns == null) {
          dbColumns = new ArrayList<Describe>();
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             String sql = "SELECT * FROM " + dbItem.getTableName();
-            chStmt = ConnectionHandler.runPreparedQuery(sql);
+            chStmt.runPreparedQuery(sql);
             int numberOfColumns = chStmt.getColumnCount() + 1;
             for (int columnIndex = 1; columnIndex < numberOfColumns; columnIndex++) {
                Describe describe = new Describe();
@@ -65,10 +65,10 @@ public class DbDescribe {
 
    public DbTaskList getDbTaskList(List<Describe> describeList) throws OseeDataStoreException {
       DbTaskList taskList = new DbTaskList();
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          String sql = "SELECT * FROM " + dbItem.getTableName();
-         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
             DbModel dbModel = new DbModel();
             int x = 0;
@@ -92,7 +92,7 @@ public class DbDescribe {
             taskList.addTask(dbModel);
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return taskList;
    }

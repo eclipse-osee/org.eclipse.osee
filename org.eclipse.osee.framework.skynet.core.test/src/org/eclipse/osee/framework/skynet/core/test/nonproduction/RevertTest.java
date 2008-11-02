@@ -66,15 +66,14 @@ public class RevertTest extends TestCase {
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Artifact> artifacts =
             ConflictTestManager.getArtifacts(true, ConflictTestManager.REVERT_ARTIFACT_QUERY);
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       for (Artifact artifact : artifacts) {
          try {
             if (DEBUG) {
                System.out.println("     Baselined Transactions");
             }
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_BASELINED_TRANSACTIONS, artifact.getBranch().getBranchId(),
+            chStmt.runPreparedQuery(GET_BASELINED_TRANSACTIONS, artifact.getBranch().getBranchId(),
                         artifact.getArtId(), artifact.getBranch().getBranchId(), artifact.getArtId(),
                         artifact.getBranch().getBranchId(), artifact.getArtId(), artifact.getArtId());
             while (chStmt.next()) {
@@ -85,14 +84,13 @@ public class RevertTest extends TestCase {
                }
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
          if (DEBUG) {
             System.out.println("     Nonbaselined Transactions");
          }
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_NON_BASELINED_TRANSACTIONS,
+            chStmt.runPreparedQuery(GET_NON_BASELINED_TRANSACTIONS,
                         artifact.getBranch().getBranchId(), artifact.getArtId(), artifact.getBranch().getBranchId(),
                         artifact.getArtId(), artifact.getBranch().getBranchId(), artifact.getArtId(),
                         artifact.getArtId());
@@ -104,33 +102,30 @@ public class RevertTest extends TestCase {
                }
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
          for (Pair<Integer, Integer> pairs : baselines) {
             try {
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
+               chStmt.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
                            artifact.getBranch().getBranchId());
                while (chStmt.next()) {
                   uniqueGammas.add(chStmt.getInt("gamma_id"));
                }
             } finally {
-               ConnectionHandler.close(chStmt);
+               chStmt.close();
             }
             try {
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(GAMMAS_KEEP, pairs.getKey(), artifact.getBranch().getBranchId());
+               chStmt.runPreparedQuery(GAMMAS_KEEP, pairs.getKey(), artifact.getBranch().getBranchId());
                while (chStmt.next()) {
                   keepGammas.add(chStmt.getInt("gamma_id"));
                }
             } finally {
-               ConnectionHandler.close(chStmt);
+               chStmt.close();
             }
          }
          for (Pair<Integer, Integer> pairs : nonBaselines) {
             try {
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
+               chStmt.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
                            artifact.getBranch().getBranchId());
                while (chStmt.next()) {
                   uniqueGammas.add(chStmt.getInt("gamma_id"));
@@ -138,14 +133,13 @@ public class RevertTest extends TestCase {
             } finally {
 
                try {
-                  chStmt =
-                        ConnectionHandler.runPreparedQuery(GAMMAS_KEEP, pairs.getKey(),
+                  chStmt.runPreparedQuery(GAMMAS_KEEP, pairs.getKey(),
                               artifact.getBranch().getBranchId());
                   while (chStmt.next()) {
                      keepGammas.add(chStmt.getInt("gamma_id"));
                   }
                } finally {
-                  ConnectionHandler.close(chStmt);
+                  chStmt.close();
                }
             }
          }
@@ -178,32 +172,28 @@ public class RevertTest extends TestCase {
       //Now lets check that everything is as should be
 
       for (Pair<Integer, Integer> pairs : baselines) {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(),
+         chStmt.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(),
                      pairs.getValue().intValue());
          assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d Trans %d",
                pairs.getKey(), pairs.getValue()), chStmt.next());
       }
 
       for (Pair<Integer, Integer> pairs : nonBaselines) {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(),
+         chStmt.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(),
                      pairs.getValue().intValue());
          assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d Trans %d",
                pairs.getKey(), pairs.getValue()), !chStmt.next());
       }
 
       for (Integer gammas : uniqueGammas) {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(),
+         chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(),
                      gammas.intValue());
          assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d", gammas),
                !chStmt.next());
       }
 
       for (Integer gammas : keepGammas) {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(),
+         chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(),
                      gammas.intValue());
          assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d", gammas),
                chStmt.next());
@@ -231,7 +221,7 @@ public class RevertTest extends TestCase {
             OseeLog.registerLoggerListener(monitorLog);
             Collection<Artifact> artifacts =
                   ConflictTestManager.getArtifacts(true, ConflictTestManager.REVERT_REL_LINK_QUERY);
-            ConnectionHandlerStatement chStmt = null;
+            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
             for (Artifact artifact : artifacts) {
                for (RelationLink link : artifact.getRelationsAll(true)) {
@@ -262,7 +252,7 @@ public class RevertTest extends TestCase {
                      }
                   }
                } finally {
-                  ConnectionHandler.close(chStmt);
+                  chStmt.close();
                }
 
                if (DEBUG) {
@@ -280,7 +270,7 @@ public class RevertTest extends TestCase {
                      }
                   }
                } finally {
-                  ConnectionHandler.close(chStmt);
+                  chStmt.close();
                }
                for (Pair<Integer, Integer> pairs : baselines) {
                   keepGammas.add(pairs.getKey());
@@ -296,7 +286,7 @@ public class RevertTest extends TestCase {
                         keepGammas.add(pairs.getKey());
                      }
                   } finally {
-                     ConnectionHandler.close(chStmt);
+                     chStmt.close();
                   }
                }
                if (DEBUG) {
@@ -327,7 +317,7 @@ public class RevertTest extends TestCase {
                      }
                   }
                } finally {
-                  ConnectionHandler.close(chStmt);
+                  chStmt.close();
                }
                if (DEBUG) {
                   System.out.println("     Removable Transactions");
@@ -345,7 +335,7 @@ public class RevertTest extends TestCase {
                      }
                   }
                } finally {
-                  ConnectionHandler.close(chStmt);
+                  chStmt.close();
                }
 
                for (Pair<Integer, Integer> pairs : artifactBaselines) {
@@ -362,7 +352,7 @@ public class RevertTest extends TestCase {
                         artifactKeepGammas.add(pairs.getKey());
                      }
                   } finally {
-                     ConnectionHandler.close(chStmt);
+                     chStmt.close();
                   }
                }
                if (DEBUG) {
@@ -427,7 +417,7 @@ public class RevertTest extends TestCase {
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Artifact> artifacts =
             ConflictTestManager.getArtifacts(true, ConflictTestManager.REVERT_ATTRIBUTE_QUERY);
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       for (Artifact artifact : artifacts) {
          Collection<Attribute<?>> attributs = artifact.getAttributes(true);
@@ -450,8 +440,7 @@ public class RevertTest extends TestCase {
             System.out.println("     Baselined Transactions");
          }
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_BASELINE_ATTRIBUTE, artifact.getBranch().getBranchId(),
+            chStmt.runPreparedQuery(GET_BASELINE_ATTRIBUTE, artifact.getBranch().getBranchId(),
                         attribute.getAttrId());
             while (chStmt.next()) {
                baselines.add(new Pair<Integer, Integer>(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
@@ -461,15 +450,14 @@ public class RevertTest extends TestCase {
                }
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
 
          if (DEBUG) {
             System.out.println("     Nonbaselined Transactions");
          }
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_CHANGES_ATTRIBUTE, artifact.getBranch().getBranchId(),
+            chStmt.runPreparedQuery(GET_CHANGES_ATTRIBUTE, artifact.getBranch().getBranchId(),
                         attribute.getAttrId());
             while (chStmt.next()) {
                nonBaselines.add(new Pair<Integer, Integer>(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
@@ -479,15 +467,14 @@ public class RevertTest extends TestCase {
                }
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
          for (Pair<Integer, Integer> pairs : baselines) {
             keepGammas.add(pairs.getKey());
          }
          for (Pair<Integer, Integer> pairs : nonBaselines) {
             try {
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
+               chStmt.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
                            artifact.getBranch().getBranchId());
                if (chStmt.next()) {
                   uniqueGammas.add(chStmt.getInt("gamma_id"));
@@ -495,7 +482,7 @@ public class RevertTest extends TestCase {
                   keepGammas.add(pairs.getKey());
                }
             } finally {
-               ConnectionHandler.close(chStmt);
+               chStmt.close();
             }
          }
          if (DEBUG) {
@@ -514,8 +501,7 @@ public class RevertTest extends TestCase {
             System.out.println("     Neccessary Transactions");
          }
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_BASELINE_ARTIFACT_VERSION + getGammaString(keepGammas,
+            chStmt.runPreparedQuery(GET_BASELINE_ARTIFACT_VERSION + getGammaString(keepGammas,
                         uniqueGammas) + ")", artifact.getBranch().getBranchId(), artifact.getArtId());
             while (chStmt.next()) {
                artifactBaselines.add(new Pair<Integer, Integer>(chStmt.getInt("gamma_id"),
@@ -526,14 +512,13 @@ public class RevertTest extends TestCase {
                }
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
          if (DEBUG) {
             System.out.println("     Removable Transactions");
          }
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_CHANGES_ARTIFACT_VERSION + getGammaString(keepGammas,
+            chStmt.runPreparedQuery(GET_CHANGES_ARTIFACT_VERSION + getGammaString(keepGammas,
                         uniqueGammas) + ")", artifact.getBranch().getBranchId(), artifact.getArtId());
             while (chStmt.next()) {
                artifactNonBaselines.add(new Pair<Integer, Integer>(chStmt.getInt("gamma_id"),
@@ -544,7 +529,7 @@ public class RevertTest extends TestCase {
                }
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
 
          for (Pair<Integer, Integer> pairs : artifactBaselines) {
@@ -552,8 +537,7 @@ public class RevertTest extends TestCase {
          }
          for (Pair<Integer, Integer> pairs : artifactNonBaselines) {
             try {
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
+               chStmt.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
                            artifact.getBranch().getBranchId());
                if (chStmt.next()) {
                   artifactUniqueGammas.add(chStmt.getInt("gamma_id"));
@@ -561,7 +545,7 @@ public class RevertTest extends TestCase {
                   artifactKeepGammas.add(pairs.getKey());
                }
             } finally {
-               ConnectionHandler.close(chStmt);
+               chStmt.close();
             }
          }
          if (DEBUG) {
@@ -623,67 +607,63 @@ public class RevertTest extends TestCase {
    }
 
    private void checkBaselines(Set<Pair<Integer, Integer>> baselines) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          for (Pair<Integer, Integer> pairs : baselines) {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(),
+            chStmt.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(),
                         pairs.getValue().intValue());
             assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d Trans %d",
                   pairs.getKey(), pairs.getValue()), chStmt.next());
          }
 
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
    private void checkNonBaselines(Set<Pair<Integer, Integer>> nonBaselines) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          for (Pair<Integer, Integer> pairs : nonBaselines) {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(),
+            chStmt.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(),
                         pairs.getValue().intValue());
             assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d Trans %d",
                   pairs.getKey(), pairs.getValue()), !chStmt.next());
          }
 
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
 
    }
 
    private void checkUniqueGammas(Set<Integer> uniqueGammas) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          for (Integer gammas : uniqueGammas) {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(),
+            chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(),
                         gammas.intValue());
             assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d", gammas),
                   !chStmt.next());
          }
 
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
    private void checkKeepGammas(Set<Integer> keepGammas) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          for (Integer gammas : keepGammas) {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(),
+            chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(),
                         gammas.intValue());
             assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d", gammas),
                   chStmt.next());
          }
 
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 }

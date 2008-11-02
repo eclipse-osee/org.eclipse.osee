@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -151,9 +150,9 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          nameToImportFileBranchData.put(data.getBranchName(), data);
       }
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(getConnection());
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(getConnection(), "select * from osee_branch");
+         chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {
             String name = chStmt.getString(BranchData.BRANCH_NAME);
             Long branchId = chStmt.getLong(BranchData.BRANCH_ID);
@@ -165,7 +164,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return nameToImportFileBranchData.values();
    }

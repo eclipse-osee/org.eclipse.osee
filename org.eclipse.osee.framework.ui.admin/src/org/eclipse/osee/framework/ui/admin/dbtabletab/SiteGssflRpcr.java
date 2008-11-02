@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
@@ -45,19 +44,13 @@ public class SiteGssflRpcr extends DbItem {
    }
 
    public boolean exists(String program) {
-      ConnectionHandlerStatement chStmt;
       try {
-         String query = "SELECT * FROM " + getTableName() + " WHERE PROGRAM = " + returnTic(program);
-         chStmt = ConnectionHandler.runPreparedQuery(query);
-
-         boolean b = chStmt.next();
-         ConnectionHandler.close(chStmt);
-         return (b);
+         return ConnectionHandler.runPreparedQueryFetchInt(0,
+               "SELECT count(1) FROM " + getTableName() + " WHERE PROGRAM = ?", returnTic(program)) > 0;
       } catch (OseeDataStoreException ex) {
-         ex.printStackTrace();
+         OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
+         return false;
       }
-      return false;
-
    }
 
    @Override

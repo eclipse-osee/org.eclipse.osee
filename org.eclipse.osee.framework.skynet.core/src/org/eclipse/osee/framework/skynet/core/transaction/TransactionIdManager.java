@@ -112,9 +112,9 @@ public class TransactionIdManager {
    }
 
    public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_MAX_MIN_TX, branch.getBranchId());
+         chStmt.runPreparedQuery(SELECT_MAX_MIN_TX, branch.getBranchId());
 
          // the max, min query will return exactly 1 row by definition (even if there is no max or min)
          chStmt.next();
@@ -128,7 +128,7 @@ public class TransactionIdManager {
 
          return new Pair<TransactionId, TransactionId>(getTransactionId(minId), getTransactionId(maxId));
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -142,13 +142,12 @@ public class TransactionIdManager {
     */
    public TransactionId getPriorTransaction(Timestamp time, Branch branch) throws OseeCoreException {
       TransactionId priorTransactionId = null;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(
-                     "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("time") + " < ?",
-                     branch.getBranchId(), time);
+         chStmt.runPreparedQuery(
+               "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("time") + " < ?",
+               branch.getBranchId(), time);
 
          if (chStmt.next()) {
             int priorId = chStmt.getInt("prior_id");
@@ -157,7 +156,7 @@ public class TransactionIdManager {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return priorTransactionId;
    }
@@ -171,13 +170,12 @@ public class TransactionIdManager {
     */
    public static TransactionId getPriorTransaction(TransactionId transactionId) throws OseeCoreException {
       TransactionId priorTransactionId = null;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(
-                     "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " < ?",
-                     transactionId.getBranch().getBranchId(), transactionId.getTransactionNumber());
+         chStmt.runPreparedQuery(
+               "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " < ?",
+               transactionId.getBranchId(), transactionId.getTransactionNumber());
 
          if (chStmt.next()) {
             int priorId = chStmt.getInt("prior_id");
@@ -187,7 +185,7 @@ public class TransactionIdManager {
             priorTransactionId = getTransactionId(priorId);
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return priorTransactionId;
    }
@@ -217,25 +215,22 @@ public class TransactionIdManager {
 
       Checksum checksum = new Adler32();
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
          if (startTransactionId.getTransactionNumber() == endTransactionId.getTransactionNumber()) {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS, startTransactionId.getBranch().getBranchId(),
-                        startTransactionId.getTransactionNumber());
+            chStmt.runPreparedQuery(SELECT_TX_GAMMAS, startTransactionId.getBranchId(),
+                  startTransactionId.getTransactionNumber());
          } else {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS_RANGE,
-                        startTransactionId.getBranch().getBranchId(), startTransactionId.getTransactionNumber(),
-                        endTransactionId.getTransactionNumber());
+            chStmt.runPreparedQuery(SELECT_TX_GAMMAS_RANGE, startTransactionId.getBranchId(),
+                  startTransactionId.getTransactionNumber(), endTransactionId.getTransactionNumber());
          }
          while (chStmt.next()) {
             checksum.update(toBytes(chStmt.getLong("transaction_id")), 0, 8);
             checksum.update(toBytes(chStmt.getLong("gamma_id")), 0, 8);
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
 
       return checksum;
@@ -277,7 +272,8 @@ public class TransactionIdManager {
       if (transactionId == null) {
          try {
             if (useLocalConnection) {
-               chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTION, transactionNumber);
+               chStmt = new ConnectionHandlerStatement();
+               chStmt.runPreparedQuery(SELECT_TRANSACTION, transactionNumber);
                if (!chStmt.next()) {
                   throw new TransactionDoesNotExist(
                         "The transaction id " + transactionNumber + " does not exist in the databse.");
@@ -292,7 +288,7 @@ public class TransactionIdManager {
             instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
          } finally {
             if (useLocalConnection) {
-               ConnectionHandler.close(chStmt);
+               chStmt.close();
             }
          }
       }

@@ -43,6 +43,10 @@ public class OseeConnectionPool {
       }
    }
 
+   public synchronized boolean hasOpenConnection() {
+      return connections.size() > 0;
+   }
+
    public synchronized void closeConnections() {
 
       Enumeration<OseeConnection> connlist = connections.elements();

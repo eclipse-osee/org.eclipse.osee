@@ -146,7 +146,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
          }
          monitor.subTask("Deleting Relation Addressing with non existant Artifacts");
          if (insertParameters.size() != 0) {
-            ConnectionHandler.runPreparedUpdateBatch(DELETE_FROM_TXS, insertParameters);
+            ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS, insertParameters);
          }
          deleteMap = null;
          monitor.worked(10);
@@ -167,15 +167,15 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
 
          monitor.subTask("Inserting Addressing for Deleted Artifacts");
          if (insertParametersInsert.size() != 0) {
-            ConnectionHandler.runPreparedUpdateBatch(INSERT_TXS, insertParametersInsert);
+            ConnectionHandler.runPreparedUpdate(INSERT_TXS, insertParametersInsert);
          }
          monitor.worked(5);
          monitor.subTask("Updating Addressing for Deleted Artifacts");
          if (insertParameters.size() != 0) {
-            ConnectionHandler.runPreparedUpdateBatch(UPDATE_TXS, insertParameters);
+            ConnectionHandler.runPreparedUpdate(UPDATE_TXS, insertParameters);
          }
          if (insertParametersTransaction.size() != 0) {
-            ConnectionHandler.runPreparedUpdateBatch(UPDATE_TXS_SAME, insertParametersTransaction);
+            ConnectionHandler.runPreparedUpdate(UPDATE_TXS_SAME, insertParametersTransaction);
          }
          monitor.worked(5);
          updateMap = null;
@@ -207,10 +207,10 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
    }
 
    private void loadData(String sql, boolean forDelete) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
             if (!map.containsKey(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")) && (forDelete || !deleteMap.containsKey(
                   chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")))) {
@@ -221,7 +221,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

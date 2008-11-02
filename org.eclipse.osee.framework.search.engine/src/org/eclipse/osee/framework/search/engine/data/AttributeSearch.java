@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.data;
 
-import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
@@ -41,17 +39,9 @@ public final class AttributeSearch implements ITagCollector {
 
    public Set<AttributeData> getMatchingAttributes() throws Exception {
       Set<AttributeData> toReturn = null;
-      Connection connection = null;
       long start = System.currentTimeMillis();
-      try {
-         connection = OseeDbConnection.getConnection();
-         TagProcessor.collectFromString(searchString, this);
-         toReturn = AttributeDataStore.getAttributesByTags(connection, branchId, options, this.tagStore);
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
-      }
+      TagProcessor.collectFromString(searchString, this);
+      toReturn = AttributeDataStore.getAttributesByTags(branchId, options, this.tagStore);
       if (toReturn == null) {
          toReturn = Collections.emptySet();
       }

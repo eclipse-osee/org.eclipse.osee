@@ -67,36 +67,36 @@ public class CommitTest extends TestCase {
    }
 
    public void testCommitFiltering() throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(COMMITTED_NEW_AND_DELETED_ARTIFACTS);
+         chStmt.runPreparedQuery(COMMITTED_NEW_AND_DELETED_ARTIFACTS);
          if (chStmt.next()) {
             fail(String.format(
                   "Committed New and Deleted Artifact snuck through gamma_id = %d and transaction_id = %d",
                   chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(COMMITTED_NEW_AND_DELETED_ATTRIBUTES);
+         chStmt.runPreparedQuery(COMMITTED_NEW_AND_DELETED_ATTRIBUTES);
          if (chStmt.next()) {
             fail(String.format(
                   "Committed New and Deleted Attribute snuck through gamma_id = %d and transaction_id = %d",
                   chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(COMMITTED_NEW_AND_DELETED_RELATIONS);
+         chStmt.runPreparedQuery(COMMITTED_NEW_AND_DELETED_RELATIONS);
          if (chStmt.next()) {
             fail(String.format(
                   "Committed New and Deleted Relation Links snuck through gamma_id = %d and transaction_id = %d",
                   chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       //      checkNoTxCurrent("art_id", "osee_artifact_version");
       //      checkNoTxCurrent("attr_id", "osee_attribute");
@@ -109,7 +109,7 @@ public class CommitTest extends TestCase {
 
    //Doesn't work on postgres because uses Minus.  Need to update for postrges.
    private void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       StringBuilder builder = new StringBuilder();
       builder.append(NO_TX_CURRENT_SET[0]);
       builder.append(dataId);
@@ -122,17 +122,17 @@ public class CommitTest extends TestCase {
       builder.append(NO_TX_CURRENT_SET[4]);
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(builder.toString());
+         chStmt.runPreparedQuery(builder.toString());
          if (chStmt.next()) {
             fail(String.format("No TX Current Set Failed for dataId = %s and dataTable = %s", dataId, dataTable));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
    private void checkMultipleTxCurrent(String dataId, String dataTable) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       StringBuilder builder = new StringBuilder();
       builder.append(MULTIPLE_TX_CURRENT_SET[0]);
       builder.append(dataId);
@@ -145,12 +145,12 @@ public class CommitTest extends TestCase {
       builder.append(MULTIPLE_TX_CURRENT_SET[4]);
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(builder.toString());
+         chStmt.runPreparedQuery(builder.toString());
          if (chStmt.next()) {
             fail(String.format("Multiple TX Current Set Failed for dataId = %s and dataTable = %s", dataId, dataTable));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 }

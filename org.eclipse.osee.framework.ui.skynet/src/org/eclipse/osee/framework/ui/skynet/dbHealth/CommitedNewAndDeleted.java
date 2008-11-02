@@ -105,7 +105,7 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
             insertParameters.add(new Object[] {String.valueOf(value.gammaId), String.valueOf(value.transactionId)});
          }
          if (insertParameters.size() > 0) {
-            ConnectionHandler.runPreparedUpdateBatch(REMOVE_NOT_ADDRESSED_GAMMAS, insertParameters);
+            ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_GAMMAS, insertParameters);
          }
          monitor.worked(5);
          addressing = null;
@@ -142,16 +142,16 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
 
    //LocalValues(int artId, int attributeId, int branchId, int gammaId, int relLinkId, int transactionId)
    private void loadData(String sql) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
             addressing.add(new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"),
                   chStmt.getInt("branch_id"), chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"),
                   chStmt.getInt("transaction_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 }

@@ -155,9 +155,6 @@ public class DeleteTransactionJob extends Job {
             deleteTransactionsFromTxDetails(connection, monitor, txsToDeleteQuery.getQueryId());
 
             updateTxCurrent(connection, monitor);
-         } catch (SQLException ex) {
-            //Don't try to clean up the DB if an SQL exception occurs because this is a transaction based operation
-            throw ex;
          } catch (Exception ex) {
             if (connection != null && connection.isClosed() != true) {
                txsToDeleteQuery.delete(connection);
@@ -169,7 +166,6 @@ public class DeleteTransactionJob extends Job {
             txsToDeleteQuery.delete(connection);
             ArtifactLoader.clearQuery(connection, artifactJoinId);
          }
-
       }
 
       /**
@@ -241,14 +237,14 @@ public class DeleteTransactionJob extends Job {
       }
 
       private void populateJoinQueryFromSql(Connection connection, TransactionJoinQuery joinQuery, String sql, String txFieldName, Object... data) throws OseeDataStoreException {
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(connection, sql, data);
+            chStmt.runPreparedQuery(sql, data);
             while (chStmt.next()) {
                joinQuery.add(chStmt.getInt("gamma_id"), chStmt.getInt(txFieldName));
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
       }
 
@@ -283,18 +279,18 @@ public class DeleteTransactionJob extends Job {
             }
          }
          if (data.size() > 0) {
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);
+            ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);
          }
          monitor.worked(1);
       }
    }
 
-   private void checkForModifiedBaselines(Connection conn, boolean force, int queryId) throws Exception {
-      ConnectionHandlerStatement chStmt = null;
-      chStmt = ConnectionHandler.runPreparedQuery(conn, TRANSACATION_GAMMA_IN_USE, queryId);
-      if (chStmt.next() && !force) {
+   private void checkForModifiedBaselines(Connection connection, boolean force, int queryId) throws OseeCoreException {
+      int transaction_id =
+            ConnectionHandler.runPreparedQueryFetchInt(connection, 0, TRANSACATION_GAMMA_IN_USE, queryId);
+      if (transaction_id > 0 && !force) {
          throw new OseeCoreException(
-               "The Transaction " + chStmt.getInt("transaction_id") + " holds a Gamma that is in use on other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.");
+               "The Transaction " + transaction_id + " holds a Gamma that is in use on other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.");
       }
    }
 

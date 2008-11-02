@@ -16,13 +16,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Map;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
@@ -96,21 +95,12 @@ public class CompressedContentFix {
       @Override
       public void run() {
          long time = System.currentTimeMillis();
-         Connection connection = null;
          try {
-            connection = OseeDbConnection.getConnection();
-            initializeData(connection);
-            doWork(connection, time);
+            initializeData();
+            doWork(time);
          } catch (OseeDataStoreException ex) {
-            ci.printStackTrace(ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          } finally {
-            if (connection != null) {
-               try {
-                  connection.close();
-               } catch (SQLException ex) {
-                  ci.printStackTrace(ex);
-               }
-            }
             clear();
          }
          long seconds = (System.currentTimeMillis() - time) / 1000;
@@ -122,9 +112,9 @@ public class CompressedContentFix {
          isRunning = false;
       }
 
-      private void initializeData(Connection connection) throws OseeDataStoreException {
-         nativeExtension = Util.getArtIdMap(connection, "Extension");
-         nameMap = Util.getArtIdMap(connection, "Name");
+      private void initializeData() throws OseeDataStoreException {
+         nativeExtension = Util.getArtIdMap("Extension");
+         nameMap = Util.getArtIdMap("Name");
       }
 
       private void clear() {
@@ -206,16 +196,16 @@ public class CompressedContentFix {
          return resourceExists;
       }
 
-      private void doWork(Connection connection, long time) {
-         ResultSet resultSet = null;
+      private void doWork(long time) {
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            resultSet = connection.createStatement().executeQuery(FIND_ALL_NATIVE_CONTENT_SQL);
+            chStmt.runPreparedQuery(FIND_ALL_NATIVE_CONTENT_SQL);
             int count = 0;
-            while (resultSet.next() && execute) {
-               long artId = resultSet.getLong("art_id");
-               String hrid = resultSet.getString("human_readable_id");
-               String guid = resultSet.getString("guid");
-               String uri = resultSet.getString("uri");
+            while (chStmt.next() && execute) {
+               long artId = chStmt.getLong("art_id");
+               String hrid = chStmt.getString("human_readable_id");
+               String guid = chStmt.getString("guid");
+               String uri = chStmt.getString("uri");
                processEntry(artId, hrid, guid, uri);
 
                count++;
@@ -232,15 +222,9 @@ public class CompressedContentFix {
                }
             }
          } catch (Exception ex) {
-            ci.printStackTrace(ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          } finally {
-            if (resultSet != null) {
-               try {
-                  resultSet.close();
-               } catch (SQLException ex) {
-                  ci.printStackTrace(ex);
-               }
-            }
+            chStmt.close();
          }
       }
    }

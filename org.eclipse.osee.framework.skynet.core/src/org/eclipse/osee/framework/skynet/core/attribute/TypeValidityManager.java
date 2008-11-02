@@ -63,9 +63,9 @@ public class TypeValidityManager {
    private void populateCache() throws OseeCoreException {
       branchToartifactTypeMap.put(BranchManager.getSystemRootBranch(), ArtifactTypeManager.getAllTypes());
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(2000, SELECT_ATTRIBUTE_VALIDITY);
+         chStmt.runPreparedQuery(2000, SELECT_ATTRIBUTE_VALIDITY);
          while (chStmt.next()) {
             try {
                ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
@@ -78,7 +78,7 @@ public class TypeValidityManager {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

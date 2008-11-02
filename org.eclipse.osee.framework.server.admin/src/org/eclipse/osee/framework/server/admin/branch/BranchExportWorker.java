@@ -86,14 +86,14 @@ public class BranchExportWorker extends BaseCmdWorker {
       }
 
       if (branchIds.isEmpty()) {
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(getAllBranchesQuery(includeArchivedBranches));
+            chStmt.runPreparedQuery(getAllBranchesQuery(includeArchivedBranches));
             while (chStmt.next()) {
                branchIds.add(chStmt.getInt("branch_id"));
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
       }
       println(String.format("Exporting: [%s] branches\n", branchIds.size()));

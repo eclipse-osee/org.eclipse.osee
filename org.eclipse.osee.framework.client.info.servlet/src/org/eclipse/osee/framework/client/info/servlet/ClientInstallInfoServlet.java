@@ -113,9 +113,9 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
 
    private List<ClientInstallInfo> getInfoEntry(String key) throws OseeCoreException {
       List<ClientInstallInfo> infos = new ArrayList<ClientInstallInfo>();
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(QUERY, key);
+         chStmt.runPreparedQuery(QUERY, key);
          while (chStmt.next()) {
             String name = chStmt.getString("osee_key");
             String data = chStmt.getString("osee_value");

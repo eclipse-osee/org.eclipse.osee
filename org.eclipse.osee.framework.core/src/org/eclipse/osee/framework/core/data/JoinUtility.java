@@ -110,16 +110,16 @@ public class JoinUtility {
       return new ExportImportJoinQuery();
    }
 
-   public static List<Integer> getAllTagQueueQueryIds(Connection connection) throws OseeDataStoreException {
+   public static List<Integer> getAllTagQueueQueryIds() throws OseeDataStoreException {
       List<Integer> queryIds = new ArrayList<Integer>();
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(connection, 0, SELECT_TAG_GAMMA_QUEUE_QUERIES);
+         chStmt.runPreparedQuery(SELECT_TAG_GAMMA_QUEUE_QUERIES);
          while (chStmt.next()) {
             queryIds.add(chStmt.getInt("query_id"));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return queryIds;
    }
@@ -163,7 +163,7 @@ public class JoinUtility {
             for (IJoinRow joinArray : entries) {
                data.add(joinArray.toArray());
             }
-            ConnectionHandler.runPreparedUpdate(connection, joinItem.getInsertSql(), data);
+            ConnectionHandler.runBatchUpdate(connection, joinItem.getInsertSql(), data);
             this.storedSize = this.entries.size();
             this.wasStored = true;
             this.entries.clear();
@@ -181,11 +181,11 @@ public class JoinUtility {
       }
 
       public void store() throws OseeDataStoreException {
-         store(ConnectionHandler.getConnection());
+         store(null);
       }
 
       public int delete() throws OseeDataStoreException {
-         return delete(ConnectionHandler.getConnection());
+         return delete(null);
       }
 
       public String toString() {

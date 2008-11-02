@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -39,33 +37,22 @@ public class SortRelationsByBranch extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      int totalWork = 0;
+      monitor.beginTask(getName(), totalWork);
 
-      Connection connection = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         int totalWork = 0;
-         monitor.beginTask(getName(), totalWork);
+      List<Branch> branchesToSort = BranchManager.getTopLevelBranches();
 
-         List<Branch> branchesToSort = BranchManager.getTopLevelBranches();
-
-         for (Branch branch : branchesToSort) {
-            IOperation op = new UpdateRelationsSortOrder(branch);
-            monitor.setTaskName("Executing: [UpdateRelationsSortOrder] " + branch.getBranchName());
-            op.execute(monitor, connection, 0);
-            monitor.setTaskName("");
-         }
-
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
+      for (Branch branch : branchesToSort) {
+         IOperation op = new UpdateRelationsSortOrder(branch);
+         monitor.setTaskName("Executing: [UpdateRelationsSortOrder] " + branch.getBranchName());
+         op.execute(monitor, 0);
+         monitor.setTaskName("");
       }
-
    }
    private interface IOperation {
       int getTotalWork();
 
-      void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception;
+      void execute(IProgressMonitor monitor, int startAtTxNumber) throws Exception;
    }
 
    private final class UpdateRelationsSortOrder implements IOperation {
@@ -80,32 +67,29 @@ public class SortRelationsByBranch extends AbstractBlam {
          branchToSort = branch;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute(java.sql.Connection, int)
-       */
       @Override
-      public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
+      public void execute(IProgressMonitor monitor, int startAtTxNumber) throws Exception {
          IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
          totalModCount = 0;
          subMonitor.beginTask("Update Relation Sort Order", getTotalWork());
-         updateRelationsSortOrder(subMonitor, connection, "B side", SELECT_B_RELATION_ORDER, UPDATE_B_ORDER);
-         updateRelationsSortOrder(subMonitor, connection, "A side", SELECT_A_RELATION_ORDER, UPDATE_A_ORDER);
+         updateRelationsSortOrder(subMonitor, "B side", SELECT_B_RELATION_ORDER, UPDATE_B_ORDER);
+         updateRelationsSortOrder(subMonitor, "A side", SELECT_A_RELATION_ORDER, UPDATE_A_ORDER);
          subMonitor.done();
       }
 
-      private void updateRelationsSortOrder(final IProgressMonitor monitor, final Connection connection, String name, String query, final String update) throws OseeDataStoreException {
+      private void updateRelationsSortOrder(final IProgressMonitor monitor, String name, String query, final String update) throws OseeDataStoreException {
          final List<Object[]> batchArgs = new ArrayList<Object[]>();
          final RelationOrderTracker relationOrderTracker = new RelationOrderTracker();
          monitor.subTask(String.format("Updating [%s] sort order", name));
 
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(connection, 5000, query, branchToSort.getBranchId());
+            chStmt.runPreparedQuery(5000, query, branchToSort.getBranchId());
             while (chStmt.next()) {
                relationOrderTracker.processRow(chStmt);
                if (relationOrderTracker.isUpdateRequired()) {
                   if (monitor.isCanceled() != true && batchArgs.size() >= 100000) {
-                     writeToDb(monitor, connection, update, batchArgs);
+                     writeToDb(monitor, update, batchArgs);
                      batchArgs.clear();
                   }
                   batchArgs.add(relationOrderTracker.getUpdateData());
@@ -116,18 +100,18 @@ public class SortRelationsByBranch extends AbstractBlam {
                }
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
 
          if (monitor.isCanceled() != true) {
-            writeToDb(monitor, connection, update, batchArgs);
+            writeToDb(monitor, update, batchArgs);
          }
          appendResultLine(String.format("Updated [%d] relation [%s] orders.\n", totalModCount, name));
          monitor.worked(1);
       }
 
-      private void writeToDb(IProgressMonitor monitor, Connection connection, String update, List<Object[]> data) throws OseeDataStoreException {
-         int count = ConnectionHandler.runPreparedUpdate(connection, update, data);
+      private void writeToDb(IProgressMonitor monitor, String update, List<Object[]> data) throws OseeDataStoreException {
+         int count = ConnectionHandler.runBatchUpdate(update, data);
          totalModCount += count;
          monitor.subTask(String.format("Updated [%d of %d] relation orders - overall [%d]", count, data.size(),
                totalModCount));

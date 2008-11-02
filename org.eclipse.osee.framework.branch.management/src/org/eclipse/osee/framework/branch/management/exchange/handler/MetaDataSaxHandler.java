@@ -89,9 +89,8 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
    }
 
    public void checkAndLoadTargetDbMetadata() throws Exception {
-      OseeConnection connection = null;
+      OseeConnection connection = OseeDbConnection.getConnection();
       try {
-         connection = OseeDbConnection.getConnection();
          Map<String, MetaData> targetTables = getTargetDbMetadata(connection);
 
          StringBuffer errorMessage = new StringBuffer();
@@ -112,9 +111,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
          }
          this.targetMetadataMap.putAll(targetTables);
       } finally {
-         if (connection != null) {
-            connection.close();
-         }
+         connection.close();
       }
    }
 

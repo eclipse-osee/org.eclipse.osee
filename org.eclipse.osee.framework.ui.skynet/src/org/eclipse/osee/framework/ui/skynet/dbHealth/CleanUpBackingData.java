@@ -74,13 +74,13 @@ public class CleanUpBackingData extends DatabaseHealthTask {
       if (monitor.isCanceled()) return;
 
       if (fix) {
-         ConnectionHandler.runPreparedUpdateBatch(REMOVE_GAMMAS_ARTIFACT, gammas);
+         ConnectionHandler.runPreparedUpdate(REMOVE_GAMMAS_ARTIFACT, gammas);
          monitor.worked(5);
-         ConnectionHandler.runPreparedUpdateBatch(REMOVE_GAMMAS_ATTRIBUTE, gammas);
+         ConnectionHandler.runPreparedUpdate(REMOVE_GAMMAS_ATTRIBUTE, gammas);
          monitor.worked(5);
-         ConnectionHandler.runPreparedUpdateBatch(REMOVE_GAMMAS_RELATIONS, gammas);
+         ConnectionHandler.runPreparedUpdate(REMOVE_GAMMAS_RELATIONS, gammas);
          monitor.worked(5);
-         ConnectionHandler.runPreparedUpdateBatch(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
+         ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
          monitor.worked(5);
          gammas = null;
          transactions = null;

@@ -36,9 +36,9 @@ public class Query {
    // all code that uses this is also Deprecated
    public static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, String sql, Object... data) throws OseeDataStoreException {
       A item;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql, data);
+         chStmt.runPreparedQuery(sql, data);
          while (chStmt.next()) {
             try {
                item = processor.process(chStmt);
@@ -49,7 +49,7 @@ public class Query {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 }

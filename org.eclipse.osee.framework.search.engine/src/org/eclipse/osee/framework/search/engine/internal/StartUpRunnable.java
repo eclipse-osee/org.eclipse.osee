@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.JoinUtility;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 
@@ -35,10 +32,8 @@ final class StartUpRunnable extends TimerTask {
     */
    @Override
    public void run() {
-      Connection connection = null;
       try {
-         connection = OseeDbConnection.getConnection();
-         List<Integer> queries = JoinUtility.getAllTagQueueQueryIds(connection);
+         List<Integer> queries = JoinUtility.getAllTagQueueQueryIds();
          if (queries.isEmpty() != true) {
             OseeLog.log(SearchEngineTagger.class, Level.INFO, String.format(
                   "Tagging [%d] left-over items from tag queue.", queries.size()));
@@ -48,14 +43,6 @@ final class StartUpRunnable extends TimerTask {
          }
       } catch (Exception ex) {
          OseeLog.log(SearchEngineTagger.class, Level.INFO, "Tagging on Server Startup was not run.");
-      } finally {
-         if (connection != null) {
-            try {
-               connection.close();
-            } catch (SQLException ex) {
-               OseeLog.log(SearchEngineTagger.class, Level.SEVERE, "Error closing connection during start-up.", ex);
-            }
-         }
       }
    }
 }

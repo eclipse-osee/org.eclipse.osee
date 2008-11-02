@@ -27,7 +27,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.core.connection.OseeApplicationServer;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.ActivatorHelper;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -296,12 +296,8 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     */
    public static Result areOSEEServicesAvailable() {
       StringBuffer message = new StringBuffer();
-      try {
-         if (!ConnectionHandler.isConnected()) {
-            message.append("DB Connection Unavailable");
-         }
-      } catch (Exception ex) {
-         message.append("DB Connection Unavailable: " + ex.getLocalizedMessage());
+      if (!OseeDbConnection.isConnectionValid()) {
+         message.append("DB Connection Unavailable");
       }
       try {
          if (!OseeApplicationServer.isApplicationServerAlive()) {

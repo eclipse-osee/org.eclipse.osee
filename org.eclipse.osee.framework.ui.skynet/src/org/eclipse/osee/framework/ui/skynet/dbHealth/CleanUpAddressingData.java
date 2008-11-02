@@ -72,11 +72,11 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
 
       if (fix) {
          if (gammas.size() > 0) {
-            ConnectionHandler.runPreparedUpdateBatch(REMOVE_NOT_ADDRESSED_GAMMAS, gammas);
+            ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_GAMMAS, gammas);
          }
          monitor.worked(5);
          if (transactions.size() > 0) {
-            ConnectionHandler.runPreparedUpdateBatch(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
+            ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
          }
          monitor.worked(5);
          gammas = null;

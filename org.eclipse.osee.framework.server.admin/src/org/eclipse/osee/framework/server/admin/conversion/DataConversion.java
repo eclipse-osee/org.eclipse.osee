@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.server.admin.conversion;
 
 import java.net.URI;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -105,12 +105,12 @@ public class DataConversion {
          long time = System.currentTimeMillis();
          IResourceManager resourceManager = Activator.getInstance().getResourceManager();
          IResourceLocatorManager locatorManager = Activator.getInstance().getResourceLocatorManager();
-         Connection connection = null;
          ResultSet rs = null;
+         OseeConnection connection = null;
          try {
             connection = OseeDbConnection.getConnection();
-            Map<Long, String> nativeExtension = Util.getArtIdMap(connection, "Extension");
-            Map<Long, String> nameMap = Util.getArtIdMap(connection, "Name");
+            Map<Long, String> nativeExtension = Util.getArtIdMap("Extension");
+            Map<Long, String> nameMap = Util.getArtIdMap("Name");
 
             rs = connection.createStatement().executeQuery(sql);
 
@@ -181,22 +181,16 @@ public class DataConversion {
             }
             runUpdateBatch(batchParams);
          } catch (Exception ex) {
-            ci.printStackTrace(ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Unable to save resource from DB.", ex);
          } finally {
             if (rs != null) {
                try {
                   rs.close();
                } catch (SQLException ex) {
-                  ci.printStackTrace(ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, "Unable to save resource from DB.", ex);
                }
             }
-            if (connection != null) {
-               try {
-                  connection.close();
-               } catch (SQLException ex) {
-                  ci.printStackTrace(ex);
-               }
-            }
+            ConnectionHandler.close(connection);
          }
          long seconds = (System.currentTimeMillis() - time) / 1000;
          long leftOverSeconds = seconds % 60;
@@ -209,7 +203,7 @@ public class DataConversion {
 
       private void runUpdateBatch(List<Object[]> batchParams) throws OseeDataStoreException {
          if (batchParams.size() > 0) {
-            ConnectionHandler.runPreparedUpdateBatch(updateUri, batchParams);
+            ConnectionHandler.runBatchUpdate(updateUri, batchParams);
             batchParams.clear();
          }
       }

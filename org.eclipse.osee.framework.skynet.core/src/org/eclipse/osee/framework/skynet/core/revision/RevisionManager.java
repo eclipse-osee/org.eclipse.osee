@@ -33,7 +33,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
@@ -122,16 +121,16 @@ public class RevisionManager {
    public List<TransactionData> getTransactionsPerBranch(Branch branch) throws OseeCoreException {
       List<TransactionData> transactionDetails = new LinkedList<TransactionData>();
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS, branch.getBranchId());
+         chStmt.runPreparedQuery(SELECT_TRANSACTIONS, branch.getBranchId());
 
          while (chStmt.next()) {
             transactionDetails.add(new TransactionData(chStmt.getString(TXD_COMMENT), chStmt.getTimestamp("time"),
                   chStmt.getInt("author"), chStmt.getInt("transaction_id"), -1, branch, chStmt.getInt("commit_art_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return transactionDetails;
    }
@@ -159,15 +158,15 @@ public class RevisionManager {
       if (commitArtifactIdToTransactionId == null) {
          commitArtifactIdToTransactionId = new HashMap<Integer, Set<Integer>>();
 
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_COMMIT_ART_TRANSACTIONS);
+            chStmt.runPreparedQuery(SELECT_COMMIT_ART_TRANSACTIONS);
             while (chStmt.next()) {
                int commitArtId = chStmt.getInt("commit_art_id");
                cacheTransactionDataPerCommitArtifact(commitArtId, chStmt.getInt("transaction_id"));
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
          OseeEventManager.addListener(new BranchEventListener() {
             /* (non-Javadoc)
@@ -226,7 +225,7 @@ public class RevisionManager {
    public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact, boolean includeAncestry) throws OseeCoreException {
       List<TransactionData> transactionDetails = new LinkedList<TransactionData>();
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       final Integer artId = artifact.getArtId();
       Branch cursor = artifact.getBranch();
@@ -235,9 +234,8 @@ public class RevisionManager {
       while (cursor != null) {
          try {
             int branchId = cursor.getBranchId();
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, artId, branchId, artId,
-                        branchId, artId, branchId, limit);
+            chStmt.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, artId, branchId, artId, branchId, artId,
+                  branchId, limit);
 
             while (chStmt.next()) {
                transactionDetails.add(new TransactionData(chStmt.getString(TXD_COMMENT), chStmt.getTimestamp("time"),
@@ -245,7 +243,7 @@ public class RevisionManager {
                      chStmt.getInt("commit_art_id")));
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
 
          if (includeAncestry && cursor.hasParentBranch()) {
@@ -399,13 +397,13 @@ public class RevisionManager {
          String sql =
                "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("value") + " FROM " + ATTRIBUTE_VERSION_TABLE + ", " + ATTRIBUTE_TYPE_TABLE + " WHERE art_id = ? AND " + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + " = " + ATTRIBUTE_VERSION_TABLE.column("attr_type_id") + " AND " + ATTRIBUTE_TYPE_TABLE.column("name") + " = 'Name'";
 
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(sql, artId);
+            chStmt.runPreparedQuery(sql, artId);
 
             if (chStmt.next()) name = chStmt.getString("value");
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
          bemsToName.put(artId, name);
       }
@@ -414,13 +412,11 @@ public class RevisionManager {
 
    private Collection<ArtifactChange> getArtifactChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws OseeCoreException {
       Collection<ArtifactChange> changes = new LinkedList<ArtifactChange>();
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_CHANGED_ARTIFACTS, artId,
-                     fromTransactionId.getTransactionNumber(), toTransactionId.getTransactionNumber(),
-                     fromTransactionId.getBranch().getBranchId());
+         chStmt.runPreparedQuery(GET_CHANGED_ARTIFACTS, artId, fromTransactionId.getTransactionNumber(),
+               toTransactionId.getTransactionNumber(), fromTransactionId.getBranchId());
 
          Artifact artifact = ArtifactQuery.getArtifactFromId(artId, fromTransactionId.getBranch(), true);
 
@@ -429,7 +425,7 @@ public class RevisionManager {
                   null, null, null, toTransactionId, fromTransactionId, chStmt.getInt("gamma_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return changes;
    }
@@ -456,7 +452,7 @@ public class RevisionManager {
       try {
          Query.acquireCollection(deletedArtifacts, new ArtifactChangeProcessor(baseParentTransactionId,
                headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, "Name",
-               fromTransactionId.getBranch().getBranchId(), fromTransactionId.getTransactionNumber(),
+               fromTransactionId.getBranchId(), fromTransactionId.getTransactionNumber(),
                toTransactionId.getTransactionNumber(), DELETED.getValue());
       } catch (OseeDataStoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
@@ -527,39 +523,36 @@ public class RevisionManager {
                artIdQueue.clear();
             }
 
-            ConnectionHandlerStatement chStmt = null;
+            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
             try {
                String sql =
                      "SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
                            artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
 
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(),
-                           toTransactionId.getTransactionNumber(), fromTransactionId.getBranch().getBranchId());
+               chStmt.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(),
+                     toTransactionId.getTransactionNumber(), fromTransactionId.getBranchId());
 
                while (chStmt.next()) {
                   artIdToMinOver.put(chStmt.getInt("art_id"),
                         TransactionIdManager.getTransactionId(chStmt.getInt("base_tx")));
                }
             } finally {
-               ConnectionHandler.close(chStmt);
+               chStmt.close();
             }
 
-            ConnectionHandlerStatement chStmt1 = null;
+            ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
             try {
                String sql =
                      "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
                            artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
-               chStmt1 =
-                     ConnectionHandler.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(),
-                           fromTransactionId.getBranch().getBranchId());
+               chStmt1.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(), fromTransactionId.getBranchId());
 
                while (chStmt1.next()) {
                   artIdToMaxUnder.put(chStmt1.getInt("art_id"),
                         TransactionIdManager.getTransactionId(chStmt1.getInt("base_tx")));
                }
             } finally {
-               ConnectionHandler.close(chStmt1);
+               chStmt1.close();
             }
          }
       } catch (OseeCoreException ex) {
@@ -747,12 +740,11 @@ public class RevisionManager {
 
       // Can only be on other branches it has already been saved
       if (artifact.isInDb()) {
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(),
-                        artifact.getBranch().getBranchId(), artifact.getBranch().getParentBranchId());
+            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), artifact.getBranch().getBranchId(),
+                  artifact.getBranch().getParentBranchId());
 
             while (chStmt.next()) {
                otherBranches.add(BranchManager.getBranch(chStmt.getInt("branch_id")));
@@ -760,7 +752,7 @@ public class RevisionManager {
          } catch (Exception e) {
             logger.log(Level.SEVERE, e.toString(), e);
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
       }
       return otherBranches;

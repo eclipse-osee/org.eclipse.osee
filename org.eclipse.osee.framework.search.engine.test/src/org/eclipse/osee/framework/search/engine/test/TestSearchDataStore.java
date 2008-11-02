@@ -17,7 +17,9 @@ import java.util.Set;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TransactionJoinQuery;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 import org.eclipse.osee.framework.search.engine.data.SearchTag;
@@ -49,15 +51,14 @@ public class TestSearchDataStore extends TestCase {
       return tags;
    }
 
-   public void testSearchTagDataStore() throws Exception {
+   public void testSearchTagDataStore() throws OseeDataStoreException {
       List<SearchTag> testData = getTestSearchTagDataStoreData();
       int totalTags = 0;
       for (SearchTag searchTag : testData) {
          totalTags += searchTag.cacheSize();
       }
-      Connection connection = null;
+      OseeConnection connection = OseeDbConnection.getConnection();
       try {
-         connection = OseeDbConnection.getConnection();
          int updated = SearchTagDataStore.storeTags(connection, testData);
          assertEquals(totalTags, updated);
 
@@ -74,18 +75,15 @@ public class TestSearchDataStore extends TestCase {
          updated = SearchTagDataStore.deleteTags(connection, locators);
          assertEquals(totalTags, updated);
       } finally {
-         if (connection != null) {
-            connection.close();
-         }
+         connection.close();
       }
    }
 
    public void testSearchTagDataStoreDeleteByQuery() throws Exception {
       List<SearchTag> testData = getTestSearchTagDataStoreData();
       TransactionJoinQuery joinQuery = null;
-      Connection connection = null;
+      Connection connection = OseeDbConnection.getConnection();
       try {
-         connection = OseeDbConnection.getConnection();
          int totalTags = 0;
          for (SearchTag searchTag : testData) {
             totalTags += searchTag.cacheSize();
@@ -116,9 +114,7 @@ public class TestSearchDataStore extends TestCase {
             }
          }
       } finally {
-         if (connection != null) {
-            connection.close();
-         }
+         connection.close();
       }
    }
 }

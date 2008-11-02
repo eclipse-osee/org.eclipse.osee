@@ -164,9 +164,9 @@ public class BranchManager {
       if (forceRead || branchCache.size() == 0) {
          // The branch cache can not be cleared here because applications may contain branch references.
 
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(2000, READ_BRANCH_TABLE);
+            chStmt.runPreparedQuery(2000, READ_BRANCH_TABLE);
             while (chStmt.next()) {
                Branch cachedBranch = branchCache.get(chStmt.getInt("branch_id"));
 
@@ -183,11 +183,11 @@ public class BranchManager {
                }
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
 
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(1000, READ_MERGE_BRANCHES);
+            chStmt.runPreparedQuery(1000, READ_MERGE_BRANCHES);
             while (chStmt.next()) {
                Branch sourceBranch = branchCache.get(chStmt.getInt("source_branch_id"));
                Branch destBranch = branchCache.get(chStmt.getInt("dest_branch_id"));
@@ -195,7 +195,7 @@ public class BranchManager {
                mergeBranch.setMergeBranchInfo(sourceBranch, destBranch);
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
 
          // TODO: remove this compatibility code after the 0.5.0 release
@@ -562,8 +562,8 @@ public class BranchManager {
    }
 
    public static List<Branch> getChangeManagedBranches() throws OseeCoreException {
-      return getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.WORKING,
-            BranchType.TOP_LEVEL, BranchType.BASELINE);
+      return getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.WORKING, BranchType.TOP_LEVEL,
+            BranchType.BASELINE);
    }
 
    public static void setDefaultBranch(Branch branch) {

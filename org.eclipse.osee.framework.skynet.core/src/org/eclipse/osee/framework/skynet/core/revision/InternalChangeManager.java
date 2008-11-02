@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -149,7 +148,7 @@ public class InternalChangeManager {
                hasBranch ? "Branch: " + sourceBranch : "Transaction: " + transactionId));
       }
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
 
          if (hasBranch) { //Changes per a branch
@@ -159,14 +158,12 @@ public class InternalChangeManager {
             fromTransactionId = branchStartEndTransaction.getKey();
             toTransactionId = branchStartEndTransaction.getValue();
 
-            chStmt = ConnectionHandler.runPreparedQuery(BRANCH_ARTIFACT_CHANGES, sourceBranch.getBranchId());
+            chStmt.runPreparedQuery(BRANCH_ARTIFACT_CHANGES, sourceBranch.getBranchId());
          } else { //Changes per a transaction
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
 
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(TRANSACTION_ARTIFACT_CHANGES,
-                        toTransactionId.getTransactionNumber());
+            chStmt.runPreparedQuery(TRANSACTION_ARTIFACT_CHANGES, toTransactionId.getTransactionNumber());
          }
          int count = 0;
          while (chStmt.next()) {
@@ -194,7 +191,7 @@ public class InternalChangeManager {
             System.out.println(String.format("        Found %d Changes in %s", count, Lib.getElapseString(time)));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -204,7 +201,7 @@ public class InternalChangeManager {
     * @throws OseeCoreException
     */
    private void loadRelationChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       TransactionId fromTransactionId;
       TransactionId toTransactionId;
 
@@ -217,7 +214,7 @@ public class InternalChangeManager {
          }
          //Changes per a branch
          if (hasBranch) {
-            chStmt = ConnectionHandler.runPreparedQuery(BRANCH_REL_CHANGES, sourceBranch.getBranchId());
+            chStmt.runPreparedQuery(BRANCH_REL_CHANGES, sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
                   TransactionIdManager.getStartEndPoint(sourceBranch);
@@ -226,7 +223,7 @@ public class InternalChangeManager {
             toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per a transaction
          else {
-            chStmt = ConnectionHandler.runPreparedQuery(TRANSACTION_REL_CHANGES, transactionId.getTransactionNumber());
+            chStmt.runPreparedQuery(TRANSACTION_REL_CHANGES, transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
@@ -255,7 +252,7 @@ public class InternalChangeManager {
             System.out.println(String.format("        Found %d Changes in %s", count, Lib.getElapseString(time)));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -270,8 +267,8 @@ public class InternalChangeManager {
       Map<Integer, Change> attributesWasValueCache = new HashMap<Integer, Change>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
-      ConnectionHandlerStatement chStmt1 = null;
-      ConnectionHandlerStatement chStmt2 = null;
+      ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
       ModificationType artModType;
       boolean hasBranch = sourceBranch != null;
       long time = System.currentTimeMillis();
@@ -289,7 +286,7 @@ public class InternalChangeManager {
       try {
          //Changes per a branch
          if (hasBranch) {
-            chStmt1 = ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_IS_CHANGES, sourceBranch.getBranchId());
+            chStmt1.runPreparedQuery(BRANCH_ATTRIBUTE_IS_CHANGES, sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
                   TransactionIdManager.getStartEndPoint(sourceBranch);
@@ -298,9 +295,7 @@ public class InternalChangeManager {
             toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per transaction number
          else {
-            chStmt1 =
-                  ConnectionHandler.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES,
-                        transactionId.getTransactionNumber());
+            chStmt1.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES, transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
@@ -383,7 +378,7 @@ public class InternalChangeManager {
                }
                ArtifactLoader.selectArtifacts(datas);
 
-               chStmt2 = ConnectionHandler.runPreparedQuery(sql, sqlParamter, queryId);
+               chStmt2.runPreparedQuery(sql, sqlParamter, queryId);
                int previousAttrId = -1;
 
                count = 0;
@@ -410,8 +405,8 @@ public class InternalChangeManager {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt1);
-         ConnectionHandler.close(chStmt2);
+         chStmt1.close();
+         chStmt2.close();
       }
    }
 

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
@@ -28,9 +27,9 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
       int count = 0;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(1000, READ_ATTRIBUTE_VALUES);
+         chStmt.runPreparedQuery(1000, READ_ATTRIBUTE_VALUES);
          while (chStmt.next()) {
             String value = chStmt.getString("value");
             if (value != null) {
@@ -46,7 +45,7 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
          System.out.println("count:  " + count);
       }
    }

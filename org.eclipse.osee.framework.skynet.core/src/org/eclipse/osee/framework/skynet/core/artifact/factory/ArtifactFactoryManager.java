@@ -111,10 +111,10 @@ public class ArtifactFactoryManager {
     * @throws OseeDataStoreException
     */
    private void createFactoriesFromDB() throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_FROM_FACTORY);
+         chStmt.runPreparedQuery(SELECT_FROM_FACTORY);
          while (chStmt.next()) {
             String factoryClassName = null;
             factoryClassName = chStmt.getString("factory_class");
@@ -122,7 +122,7 @@ public class ArtifactFactoryManager {
             createFactory(factoryClassName, factoryId);
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

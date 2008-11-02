@@ -126,22 +126,21 @@ public class AttributeToTransactionOperation {
 
    private void createNewAttributeMemo(Attribute<?> attribute) throws OseeDataStoreException {
       if (attribute == null) return;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       AttributeType attributeType = attribute.getAttributeType();
       int attrId = -1;
 
       // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch 
       if (attributeType.getMaxOccurrences() == 1) {
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getAttrTypeId(),
+            chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getAttrTypeId(),
                         artifact.getArtId(), artifact.getBranch().getBranchId());
 
             if (chStmt.next()) {
                attrId = chStmt.getInt("attr_id");
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
       }
       int gammaId = SequenceManager.getNextGammaId();

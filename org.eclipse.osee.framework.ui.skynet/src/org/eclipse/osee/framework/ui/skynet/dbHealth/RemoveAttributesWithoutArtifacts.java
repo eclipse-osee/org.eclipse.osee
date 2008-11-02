@@ -87,9 +87,9 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
    private void loadData() throws OseeDataStoreException {
       datas.clear();
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_WITH_NO_ARTIFACTS);
+         chStmt.runPreparedQuery(SELECT_ATTRIBUTES_WITH_NO_ARTIFACTS);
          int transactionNumber;
          int gammaIdNumber;
 
@@ -100,7 +100,7 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
                   chStmt.getInt("art_id"), chStmt.getInt("attr_id")});
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
 
    }
@@ -121,7 +121,6 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
       for (Integer[] data : datas) {
          insertParameters.add(new Object[] {data[0], data[1]});
       }
-      ConnectionHandler.runPreparedUpdateBatch(DELETE_ATTRIBUTES, insertParameters);
+      ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTES, insertParameters);
    }
-
 }

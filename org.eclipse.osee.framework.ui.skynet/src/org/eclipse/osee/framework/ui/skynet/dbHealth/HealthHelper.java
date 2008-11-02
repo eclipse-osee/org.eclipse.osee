@@ -80,14 +80,14 @@ public class HealthHelper {
 
    public static HashSet<Object[]> runSingleResultQuery(String sql, String dbColumn) throws OseeCoreException {
       HashSet<Object[]> foundItems = new HashSet<Object[]>();
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
             foundItems.add(new Object[] {chStmt.getInt(dbColumn)});
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return foundItems;
    }
@@ -103,17 +103,17 @@ public class HealthHelper {
    public static HashSet<Pair<Integer, Integer>> getNoTxCurrentSet(String dataId, String dataTable, StringBuilder builder, String data) throws OseeCoreException {
       String sql =
             NO_TX_CURRENT_SET[0] + dataId + NO_TX_CURRENT_SET[1] + dataTable + NO_TX_CURRENT_SET[2] + dataId + NO_TX_CURRENT_SET[3] + dataTable + NO_TX_CURRENT_SET[4];
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       HashSet<Pair<Integer, Integer>> noneSet = new HashSet<Pair<Integer, Integer>>();
 
       long time = System.currentTimeMillis();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
             noneSet.add(new Pair<Integer, Integer>(chStmt.getInt(dataId), chStmt.getInt("branch_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       builder.append("Found ");
       builder.append(noneSet.size());
@@ -129,12 +129,12 @@ public class HealthHelper {
    public static HashSet<LocalTxData> getMultipleTxCurrentSet(String dataId, String dataTable, StringBuilder builder, String data) throws OseeCoreException {
       String sql =
             MULTIPLE_TX_CURRENT_SET[0] + dataId + MULTIPLE_TX_CURRENT_SET[1] + dataId + MULTIPLE_TX_CURRENT_SET[2] + dataTable + MULTIPLE_TX_CURRENT_SET[3] + dataId + MULTIPLE_TX_CURRENT_SET[4];
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       HashSet<LocalTxData> multipleSet = new HashSet<LocalTxData>();
 
       long time = System.currentTimeMillis();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
             multipleSet.add(new LocalTxData(chStmt.getInt(dataId), chStmt.getInt("branch_id"),
                   chStmt.getInt("numoccurrences")));
@@ -145,7 +145,7 @@ public class HealthHelper {
          builder.append(" that have multiple tx_current values set\n");
 
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       if (DEBUG) {
          System.out.println(String.format("%sTxCurrent: The get%s Query took %s", data, data, Lib.getElapseString(time)));
@@ -164,7 +164,7 @@ public class HealthHelper {
       }
       int total = 0;
       if (insertParameters.size() > 0) {
-         total = ConnectionHandler.runPreparedUpdateBatch(sql, insertParameters);
+         total = ConnectionHandler.runPreparedUpdate(sql, insertParameters);
       }
       builder.append("Fixed " + total + " Tx_Current duplication errors\n");
    }
@@ -180,7 +180,7 @@ public class HealthHelper {
       }
       int total = 0;
       if (insertParameters.size() > 0) {
-         total = ConnectionHandler.runPreparedUpdateBatch(sql, insertParameters);
+         total = ConnectionHandler.runPreparedUpdate(sql, insertParameters);
       }
       builder.append("Fixed " + total + " Tx_Current not set errors\n");
    }

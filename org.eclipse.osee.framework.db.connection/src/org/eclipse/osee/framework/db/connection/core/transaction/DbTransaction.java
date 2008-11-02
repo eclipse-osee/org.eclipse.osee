@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
@@ -51,7 +52,7 @@ public abstract class DbTransaction {
     * @throws Exception
     */
    public void execute() throws Exception {
-      Connection connection = OseeDbConnection.getConnection();
+      OseeConnection connection = OseeDbConnection.getConnection();
       try {
          OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
          connection.setAutoCommit(false);
@@ -64,18 +65,12 @@ public abstract class DbTransaction {
          connection.rollback();
          handleTxException(ex);
       } finally {
-         if (connection != null) {
-            try {
-               connection.setAutoCommit(true);
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-            try {
-               connection.close();
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
+         try {
+            connection.setAutoCommit(true);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+         connection.close();
          handleTxFinally();
       }
    }

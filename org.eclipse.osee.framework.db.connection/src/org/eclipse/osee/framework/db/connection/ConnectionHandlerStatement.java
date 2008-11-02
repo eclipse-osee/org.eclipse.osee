@@ -12,14 +12,16 @@ package org.eclipse.osee.framework.db.connection;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -30,7 +32,53 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class ConnectionHandlerStatement {
    private ResultSet rSet;
-   private Statement statement;
+   private PreparedStatement preparedStatement;
+   private Connection connection;
+   private final boolean autoClose;
+
+   public ConnectionHandlerStatement(Connection connection) {
+      this(connection, connection == null);
+   }
+
+   public ConnectionHandlerStatement(Connection connection, boolean autoClose) {
+      this.autoClose = autoClose;
+      this.connection = connection;
+   }
+
+   public ConnectionHandlerStatement() {
+      this(null);
+   }
+
+   public void runPreparedQuery(String query, Object... data) throws OseeDataStoreException {
+      runPreparedQuery(0, query, data);
+   }
+
+   /**
+    * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
+    *           to 10,000
+    * @param query
+    * @param data
+    * @throws OseeDataStoreException
+    */
+   public void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException {
+      QueryRecord record = new QueryRecord(query, data);
+
+      try {
+         if (connection == null) {
+            connection = OseeDbConnection.getConnection(); // this allows for multiple calls to this method to have an open connection
+         }
+         preparedStatement = connection.prepareStatement(query);
+         preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
+         ConnectionHandler.populateValuesForPreparedStatement(preparedStatement, data);
+
+         record.markStart();
+         rSet = preparedStatement.executeQuery();
+         record.markEnd();
+      } catch (SQLException ex) {
+         record.setSqlException(ex);
+         throw new OseeDataStoreException(ex);
+      }
+   }
 
    public boolean next() throws OseeDataStoreException {
       if (rSet != null) {
@@ -46,22 +94,16 @@ public class ConnectionHandlerStatement {
    /**
     * @param rset The rset to set.
     */
+   @Deprecated
    public void setRset(ResultSet rset) {
       this.rSet = rset;
    }
 
    /**
-    * @return Returns the statement.
-    */
-   public Statement getStatement() {
-      return statement;
-   }
-
-   /**
     * @param statement The statement to set.
     */
-   public void setStatement(Statement statement) {
-      this.statement = statement;
+   public void setStatement(PreparedStatement statement) {
+      this.preparedStatement = statement;
    }
 
    public void close() {
@@ -69,8 +111,12 @@ public class ConnectionHandlerStatement {
          if (rSet != null) {
             rSet.close();
          }
-         if (statement != null) {
-            statement.close();
+         if (preparedStatement != null) {
+            preparedStatement.close();
+         }
+         if (autoClose && connection != null) {
+            connection.close();
+            connection = null;// this allows for multiple calls to runPreparedQuery to have an open connection
          }
       } catch (SQLException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

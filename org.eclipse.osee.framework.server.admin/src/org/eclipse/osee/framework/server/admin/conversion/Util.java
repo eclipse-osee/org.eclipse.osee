@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.conversion;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -28,18 +27,18 @@ public class Util {
    private static final String sqlExtensionTypes =
          "SELECT attr1.art_id, attr1.value FROM osee_attribute attr1 WHERE attr1.ATTR_TYPE_ID = ?";
 
-   public static Map<Long, String> getArtIdMap(Connection connection, String attrTypeName) throws OseeDataStoreException {
+   public static Map<Long, String> getArtIdMap(String attrTypeName) throws OseeDataStoreException {
       Map<Long, String> toReturn = new HashMap<Long, String>(250);
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         int typeId = ConnectionHandler.runPreparedQueryFetchInt(connection, -1, sqlExtensionTypeId, attrTypeName);
-         chStmt = ConnectionHandler.runPreparedQuery(connection, sqlExtensionTypes, typeId);
+         int typeId = ConnectionHandler.runPreparedQueryFetchInt(-1, sqlExtensionTypeId, attrTypeName);
+         chStmt.runPreparedQuery(sqlExtensionTypes, typeId);
          while (chStmt.next()) {
             toReturn.put(chStmt.getLong("art_id"), chStmt.getString("value"));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return toReturn;
    }

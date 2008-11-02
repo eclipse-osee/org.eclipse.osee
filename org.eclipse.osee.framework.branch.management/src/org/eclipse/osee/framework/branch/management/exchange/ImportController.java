@@ -87,16 +87,8 @@ final class ImportController {
    }
 
    private void checkPreconditions() throws OseeCoreException {
-      OseeConnection connection = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         if (SupportedDatabase.getDatabaseType(connection).equals(SupportedDatabase.oracle)) {
-              throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
-         }
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
+      if (SupportedDatabase.getDatabaseType().equals(SupportedDatabase.oracle)) {
+         throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
       }
    }
 
@@ -230,23 +222,18 @@ final class ImportController {
    }
 
    private void loadImportTrace(String sourceDatabaseId, Date sourceExportDate) throws OseeDataStoreException {
-      OseeConnection connection = null;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          currentSavePoint = "load.save.points";
-         connection = OseeDbConnection.getConnection();
-         chStmt =
-               ConnectionHandler.runPreparedQuery(connection, QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId,
-                     new Timestamp(sourceExportDate.getTime()));
+         chStmt.runPreparedQuery(QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId, new Timestamp(
+               sourceExportDate.getTime()));
          while (chStmt.next()) {
             String key = chStmt.getString("save_point_name");
             savePoints.put(key, new SavePoint(key));
          }
          addSavePoint(currentSavePoint);
       } finally {
-         if (connection != null) {
-            connection.close();
-         }
+         chStmt.close();
       }
    }
 
@@ -353,7 +340,7 @@ final class ImportController {
                }
                data.add(new Object[] {importIdIndex, savePoint.getName(), status, comment});
             }
-            ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_SAVE_POINT, data);
+            ConnectionHandler.runBatchUpdate(connection, INSERT_INTO_IMPORT_SAVE_POINT, data);
          } else {
             throw new Exception("Import didn't make it past initialization");
          }

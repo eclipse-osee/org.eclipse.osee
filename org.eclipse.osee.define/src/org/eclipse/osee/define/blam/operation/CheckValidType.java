@@ -47,9 +47,9 @@ public class CheckValidType extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         chStmt.runPreparedQuery(sql);
          Calendar cal = Calendar.getInstance(TimeZone.getDefault());
          List<String> datas = new LinkedList<String>();
          XResultData rd = new XResultData();
@@ -64,7 +64,7 @@ public class CheckValidType extends AbstractBlam {
                datas, headers, headers.length, 1, 3));
          rd.report("The report", Manipulations.RAW_HTML);
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 }

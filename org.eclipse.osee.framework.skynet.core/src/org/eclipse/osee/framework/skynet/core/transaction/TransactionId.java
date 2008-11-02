@@ -59,6 +59,13 @@ public class TransactionId implements Serializable {
    }
 
    /**
+    * @return Returns the branch id.
+    */
+   public int getBranchId() {
+      return branch.getBranchId();
+   }
+
+   /**
     * @return Returns the transactionId.
     */
    public int getTransactionNumber() {

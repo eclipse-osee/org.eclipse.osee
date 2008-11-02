@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.connection.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -119,13 +118,6 @@ public class DemoPurgeTest extends TestCase {
    }
 
    private int getTableRowCount(String tableName) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(String.format("select count(1) as count from %s", tableName));
-         chStmt.next();
-         return chStmt.getInt("count");
-      } finally {
-         ConnectionHandler.close(chStmt);
-      }
+      return ConnectionHandler.runPreparedQueryFetchInt(0, "SELECT count(1) FROM " + tableName);
    }
 }

@@ -522,7 +522,7 @@ public class RelationManager {
             batchArgs.add(new Object[] {link.getRelationId()});
             link.markAsPurged();
          }
-         ConnectionHandler.runPreparedUpdateBatch(PURGE_RELATION, batchArgs);
+         ConnectionHandler.runBatchUpdate(PURGE_RELATION, batchArgs);
       }
    }
 

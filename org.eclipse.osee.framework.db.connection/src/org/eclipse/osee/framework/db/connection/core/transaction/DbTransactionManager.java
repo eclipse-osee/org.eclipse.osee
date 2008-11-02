@@ -84,48 +84,6 @@ public final class DbTransactionManager extends KeyedLevelManager {
       }
    }
 
-   /**
-    * @return Returns the connection.
-    */
-   public Connection getConnection() {
-      return connection;
-   }
-
-   /**
-    * If the manager is already managing a transaction and is given a new connection, then that transaction will be
-    * marked as corrupted, and thusly all changes will be rolledback upon completion of the transaction.
-    * 
-    * @param connection The connection to set.
-    */
-   public void setConnection(Connection connection) {
-      if (this.connection == connection) return;
-
-      if (this.connection != null) {
-         try {
-            try {
-               this.connection.rollback();
-            } finally {
-               this.connection.close();
-            }
-         } catch (SQLException ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex);
-         }
-      }
-
-      this.connection = connection;
-
-      if (inTransaction()) {
-         requestRollback();
-         if (connection != null) {
-            try {
-               connection.setAutoCommit(false);
-            } catch (SQLException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
-      }
-   }
-
    /*
     * (non-Javadoc)
     * 

@@ -41,7 +41,7 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
 
       this.fromTransactionNumber = fromTransactionId.getTransactionNumber();
       this.toTransactionNumber = toTransactionId.getTransactionNumber();
-      this.branchId = fromTransactionId.getBranch().getBranchId();
+      this.branchId = fromTransactionId.getBranchId();
    }
 
    /* (non-Javadoc)

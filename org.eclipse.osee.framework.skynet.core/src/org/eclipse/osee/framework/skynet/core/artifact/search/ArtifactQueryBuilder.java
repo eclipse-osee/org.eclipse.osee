@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -382,25 +381,16 @@ public class ArtifactQueryBuilder {
    }
 
    public int countArtifacts() throws OseeDataStoreException {
-      int artifactCount = 0;
       if (emptyCriteria) {
          return 0;
       }
-      ConnectionHandlerStatement chStmt = null;
+
       count = true;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(1, getArtifactSelectSql(), queryParameters.toArray());
-
-         if (chStmt.next()) {
-            artifactCount = chStmt.getInt("count");
-         }
-
-         clearCriteria();
+         return ConnectionHandler.runPreparedQueryFetchInt(0, getArtifactSelectSql(), queryParameters.toArray());
       } finally {
-         ConnectionHandler.close(chStmt);
+         clearCriteria();
       }
-
-      return artifactCount;
    }
 
    public Artifact getArtifact() throws OseeCoreException {

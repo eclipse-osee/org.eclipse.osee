@@ -41,13 +41,7 @@ class TaggerDropAllWorker extends BaseCmdWorker {
          ConnectionHandler.runPreparedUpdate(connection, deleteSql);
          println(String.format("Dropped all tags in %s.", getElapsedTime(startTime)));
       } finally {
-         try {
-            if (connection != null) {
-               connection.close();
-            }
-         } catch (Exception ex) {
-            printStackTrace(ex);
-         }
+         ConnectionHandler.close(connection);
       }
    }
 }

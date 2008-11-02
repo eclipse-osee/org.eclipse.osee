@@ -73,16 +73,16 @@ public class DuplicateRelationOpertions extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_DUPLICATE_RELATIONS);
+         chStmt.runPreparedQuery(SELECT_DUPLICATE_RELATIONS);
          while (chStmt.next()) {
             addRelationEntry(chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_type_id"),
                   chStmt.getInt("branch_id"), chStmt.getInt("rel_link_id"), chStmt.getLong("gamma_id"),
                   chStmt.getInt("transaction_id"));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       Collection<RelationInfo> values = relationInfo.values();
       this.appendResultLine(String.format("Found [%d] potential conflicts.", values.size()));
@@ -128,7 +128,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          int modCount = 0;
          long gammaId = 0;
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(checkGammaCase, info.art_b, info.art_a, info.rel_link_type);
+            chStmt.runPreparedQuery(checkGammaCase, info.art_b, info.art_a, info.rel_link_type);
             while (chStmt.next()) {
                if (chStmt.getInt("mod_type") == 2) {
                   modCount++;
@@ -139,7 +139,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          } catch (OseeCoreException ex) {
             ex.printStackTrace();
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
          boolean added = false;
          if (modCount == 1 && count == 2) {

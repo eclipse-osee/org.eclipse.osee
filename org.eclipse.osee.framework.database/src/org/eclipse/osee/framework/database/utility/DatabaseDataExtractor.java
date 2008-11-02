@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -100,13 +99,12 @@ public class DatabaseDataExtractor {
       }
 
       public void run() {
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
          try {
             try {
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(connection, SQL_WILD_QUERY + table.getFullyQualifiedTableName());
+               chStmt.runPreparedQuery(SQL_WILD_QUERY + table.getFullyQualifiedTableName());
             } catch (OseeDataStoreException ex) {
-               chStmt = ConnectionHandler.runPreparedQuery(connection, SQL_WILD_QUERY + table.getName());
+               chStmt.runPreparedQuery(SQL_WILD_QUERY + table.getName());
             }
 
             Document document = buildXml(chStmt, table);
@@ -117,7 +115,7 @@ public class DatabaseDataExtractor {
             OseeLog.log(DatabaseActivator.class, Level.SEVERE,
                   "Error Processing Table [ " + table.getSchema() + "." + table.getName() + " ] Data ", ex);
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
       }
    }

@@ -17,8 +17,6 @@ import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,79 +39,47 @@ public class ApplicationServerDataStore {
 
    static boolean deregisterWithDb(OseeServerInfo applicationServerInfo) {
       boolean status = false;
-      OseeConnection connection = null;
       try {
-         connection = OseeDbConnection.getConnection();
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_LOOKUP_TABLE,
-               applicationServerInfo.getServerAddress(), applicationServerInfo.getPort());
+         ConnectionHandler.runPreparedUpdate(DELETE_FROM_LOOKUP_TABLE, applicationServerInfo.getServerAddress(),
+               applicationServerInfo.getPort());
          status = true;
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to deregister server from lookup table.");
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
       }
       return status;
    }
 
    static boolean registerWithDb(OseeServerInfo applicationServerInfo) {
       boolean status = false;
-      OseeConnection connection = null;
       try {
-         connection = OseeDbConnection.getConnection();
-
-         List<Object[]> data = new ArrayList<Object[]>();
-         data.add(new Object[] {applicationServerInfo.getVersion(), applicationServerInfo.getServerAddress(),
-               applicationServerInfo.getPort(), applicationServerInfo.getDateStarted(), 1});
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_LOOKUP_TABLE, data);
+         ConnectionHandler.runPreparedUpdate(INSERT_LOOKUP_TABLE, applicationServerInfo.getVersion(),
+               applicationServerInfo.getServerAddress(), applicationServerInfo.getPort(),
+               applicationServerInfo.getDateStarted(), 1);
          status = true;
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to register server into lookup table.");
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
       }
       return status;
    }
 
    static boolean updateServerState(OseeServerInfo applicationServerInfo, boolean state) throws OseeDataStoreException {
-      boolean status = false;
-      OseeConnection connection = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_LOOKUP_TABLE, state,
-               applicationServerInfo.getServerAddress(), applicationServerInfo.getPort());
-         status = true;
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
-      }
-      return status;
+      ConnectionHandler.runPreparedUpdate(UPDATE_LOOKUP_TABLE, state, applicationServerInfo.getServerAddress(),
+            applicationServerInfo.getPort());
+      return true;
    }
 
    static List<OseeServerInfo> getApplicationServerInfos(String options) throws OseeDataStoreException {
       List<OseeServerInfo> toReturn = new ArrayList<OseeServerInfo>();
-
-      OseeConnection connection = null;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         connection = OseeDbConnection.getConnection();
-         String query = String.format(SELECT_FROM_LOOKUP_TABLE, "");
-         Object[] data = null;
-         chStmt = ConnectionHandler.runPreparedQuery(connection, query, data);
+         chStmt.runPreparedQuery(String.format(SELECT_FROM_LOOKUP_TABLE, options));
          while (chStmt.next()) {
             toReturn.add(InternalOseeServerInfo.createFromData(chStmt.getString("server_address"),
                   chStmt.getInt("port"), chStmt.getString("version_id"), chStmt.getTimestamp("start_time"),
                   chStmt.getInt("accepts_requests") != 0 ? true : false));
          }
-
       } finally {
-         if (connection != null) {
-            connection.close();
-         }
+         chStmt.close();
       }
       return toReturn;
    }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -149,36 +147,26 @@ public class UpdateCurrentColumn extends AbstractBlam {
          return;
       }
       appendResultLine(String.format("Processing from transaction id [%d].\n", startAtTxNumber));
-      Connection connection = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-
-         int totalWork = 0;
-         for (Operations operationType : Operations.values()) {
-            if (variableMap.getBoolean(operationType.asLabel())) {
-               IOperation op = getOperation(operationType);
-               totalWork += op.getTotalWork();
-            }
-         }
-
-         monitor.beginTask(getName(), totalWork);
-         for (Operations operationType : Operations.values()) {
-            if (variableMap.getBoolean(operationType.asLabel())) {
-               IOperation op = getOperation(operationType);
-               monitor.setTaskName(String.format("Executing: [%s]", operationType.asLabel()));
-               op.execute(monitor, connection, startAtTxNumber);
-               monitor.setTaskName("");
-               if (monitor.isCanceled()) {
-                  break;
-               }
-            }
-         }
-      } finally {
-         if (connection != null) {
-            connection.close();
+      int totalWork = 0;
+      for (Operations operationType : Operations.values()) {
+         if (variableMap.getBoolean(operationType.asLabel())) {
+            IOperation op = getOperation(operationType);
+            totalWork += op.getTotalWork();
          }
       }
 
+      monitor.beginTask(getName(), totalWork);
+      for (Operations operationType : Operations.values()) {
+         if (variableMap.getBoolean(operationType.asLabel())) {
+            IOperation op = getOperation(operationType);
+            monitor.setTaskName(String.format("Executing: [%s]", operationType.asLabel()));
+            op.execute(monitor, startAtTxNumber);
+            monitor.setTaskName("");
+            if (monitor.isCanceled()) {
+               break;
+            }
+         }
+      }
    }
 
    private IOperation getOperation(Operations type) {
@@ -204,7 +192,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
    private interface IOperation {
       int getTotalWork();
 
-      void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception;
+      void execute(IProgressMonitor monitor, int startAtTxNumber) throws Exception;
    }
 
    private final class UpdateTxCurrentOperation implements IOperation {
@@ -227,53 +215,51 @@ public class UpdateCurrentColumn extends AbstractBlam {
        * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute()
        */
       @Override
-      public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
+      public void execute(IProgressMonitor monitor, int startAtTxNumber) throws Exception {
          totalCount = 0;
          final IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
          subMonitor.beginTask("Update Tx Current", getTotalWork());
 
          List<UpdateHelper> updates = new ArrayList<UpdateHelper>();
 
-         int txTypeNumber = updateBaselineTransactions(subMonitor, connection);
+         int txTypeNumber = updateBaselineTransactions(subMonitor);
          appendResultLine(String.format("Updated [%d] transactions to baseline transactions.\n", txTypeNumber));
 
-         updateBaselinedTransactionsToCurrent(subMonitor, connection, startAtTxNumber);
-         getUpdates(subMonitor, connection, updates, startAtTxNumber);
+         updateBaselinedTransactionsToCurrent(subMonitor, startAtTxNumber);
+         getUpdates(subMonitor, updates, startAtTxNumber);
          appendResultLine(String.format("Total items identified as latest: [%d] \n", updates.size()));
 
          long time = System.currentTimeMillis();
-         int rowsUpdated = updateTxCurrentToZeroForStaleItems(subMonitor, connection, updates);
+         int rowsUpdated = updateTxCurrentToZeroForStaleItems(subMonitor, updates);
          appendResultLine(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
                rowsUpdated));
 
          time = System.currentTimeMillis();
          appendResultLine(String.format("Going to update [%d] items to tx_current value of 1 or 2.\n", updates.size()));
-         rowsUpdated = updateTxCurrentForLatestItems(subMonitor, connection, updates);
+         rowsUpdated = updateTxCurrentForLatestItems(subMonitor, updates);
          appendResultLine(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
                rowsUpdated));
 
          subMonitor.done();
       }
 
-      private int updateBaselineTransactions(IProgressMonitor monitor, Connection connection) throws OseeDataStoreException {
+      private int updateBaselineTransactions(IProgressMonitor monitor) throws OseeDataStoreException {
          int txTypeNumber = 0;
          monitor.subTask("Update Baseline Txs - Tx Details Table");
          if (monitor.isCanceled() != true) {
-            txTypeNumber +=
-                  ConnectionHandler.runPreparedUpdate(connection, UPDATE_TX_DETAILS_NON_BASELINE_TRANSACTIONS_TO_0);
-            txTypeNumber +=
-                  ConnectionHandler.runPreparedUpdate(connection, UPDATE_TX_DETAILS_BASELINE_TRANSACTIONS_TO_1);
+            txTypeNumber += ConnectionHandler.runPreparedUpdate(UPDATE_TX_DETAILS_NON_BASELINE_TRANSACTIONS_TO_0);
+            txTypeNumber += ConnectionHandler.runPreparedUpdate(UPDATE_TX_DETAILS_BASELINE_TRANSACTIONS_TO_1);
          }
          monitor.worked(1);
          return txTypeNumber;
       }
 
-      private void updateBaselinedTransactionsToCurrent(final IProgressMonitor monitor, final Connection connection, final int txNumber) throws Exception {
+      private void updateBaselinedTransactionsToCurrent(final IProgressMonitor monitor, final int txNumber) throws Exception {
          totalCount = 0;
          monitor.subTask("Mark tx current in txs table from data in txd table");
          final int batchSize = 100000;
          final List<Object[]> batchArgs = new ArrayList<Object[]>(batchSize);
-         executeQuery(monitor, connection, new IRowProcessor() {
+         executeQuery(monitor, new IRowProcessor() {
             public void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
                int modType = chStmt.getInt("mod_type");
                int tx_current_value = TxChange.CURRENT.getValue();
@@ -284,30 +270,30 @@ public class UpdateCurrentColumn extends AbstractBlam {
                      chStmt.getInt("transaction_id")});
 
                if (monitor.isCanceled() != true && batchArgs.size() >= batchSize) {
-                  writeToDb(monitor, connection, UPDATE_TXS_CURRENT, "baselined txs", batchArgs);
+                  writeToDb(monitor, UPDATE_TXS_CURRENT, "baselined txs", batchArgs);
                   batchArgs.clear();
                }
             }
          }, 0, SELECT_BASELINED_TRANSACTIONS, txNumber);
 
          if (monitor.isCanceled() != true && batchArgs.size() > 0) {
-            writeToDb(monitor, connection, UPDATE_TXS_CURRENT, "baselined txs", batchArgs);
+            writeToDb(monitor, UPDATE_TXS_CURRENT, "baselined txs", batchArgs);
          }
          monitor.worked(1);
       }
 
-      private void writeToDb(IProgressMonitor monitor, Connection connection, String sql, String name, List<Object[]> data) throws OseeDataStoreException {
-         int count = ConnectionHandler.runPreparedUpdate(connection, sql, data);
+      private void writeToDb(IProgressMonitor monitor, String sql, String name, List<Object[]> data) throws OseeDataStoreException {
+         int count = ConnectionHandler.runBatchUpdate(sql, data);
          totalCount += count;
          monitor.subTask(String.format("Updated [%d of %d] %s - overall [%d]\n", count, data.size(), name, totalCount));
       }
 
-      private void getUpdates(IProgressMonitor monitor, Connection connection, final List<UpdateHelper> updates, int txNumber) throws Exception {
+      private void getUpdates(IProgressMonitor monitor, final List<UpdateHelper> updates, int txNumber) throws Exception {
          for (final TypesEnum type : typesQueryMap.keySet()) {
             monitor.subTask(String.format("Select Latest For [%s]", type.name()));
 
             String query = typesQueryMap.get(type).getKey();
-            int totalRows = executeQuery(monitor, connection, new IRowProcessor() {
+            int totalRows = executeQuery(monitor, new IRowProcessor() {
                public void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
                   updates.add(new UpdateHelper(type, chStmt));
                }
@@ -321,7 +307,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          }
       }
 
-      private int updateTxCurrentToZeroForStaleItems(IProgressMonitor monitor, Connection connection, List<UpdateHelper> updates) throws Exception {
+      private int updateTxCurrentToZeroForStaleItems(IProgressMonitor monitor, List<UpdateHelper> updates) throws Exception {
          monitor.subTask("Setting Stale Items to 0");
          final List<Object[]> setToUpdate = new ArrayList<Object[]>();
          IRowProcessor processor = new IRowProcessor() {
@@ -333,20 +319,20 @@ public class UpdateCurrentColumn extends AbstractBlam {
          for (UpdateHelper data : updates) {
             String query = typesQueryMap.get(data.type).getValue();
             if (query != null && monitor.isCanceled() != true) {
-               executeQuery(monitor, connection, processor, 0, query, data.branch_id, data.id);
+               executeQuery(monitor, processor, 0, query, data.branch_id, data.id);
             }
          }
 
          int updated = 0;
          if (monitor.isCanceled() != true) {
             appendResultLine(String.format("%d updates for [updateTxCurrentToZero]\n", setToUpdate.size()));
-            updated = ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT_TO_0, setToUpdate);
+            updated = ConnectionHandler.runBatchUpdate(UPDATE_TXS_CURRENT_TO_0, setToUpdate);
          }
          monitor.worked(1);
          return updated;
       }
 
-      private int updateTxCurrentForLatestItems(IProgressMonitor monitor, Connection connection, List<UpdateHelper> updates) throws OseeDataStoreException {
+      private int updateTxCurrentForLatestItems(IProgressMonitor monitor, List<UpdateHelper> updates) throws OseeDataStoreException {
          monitor.subTask("Setting Tx Current for current items");
          List<Object[]> batchArgs = new ArrayList<Object[]>();
          for (UpdateHelper data : updates) {
@@ -360,9 +346,9 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
          int update = 0;
          if (monitor.isCanceled() != true) {
-            update = ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT, batchArgs);
+            update = ConnectionHandler.runBatchUpdate(UPDATE_TXS_CURRENT, batchArgs);
          }
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT_FROM_NULL);
+         ConnectionHandler.runPreparedUpdate(UPDATE_TXS_CURRENT_FROM_NULL);
 
          monitor.worked(1);
          return update;
@@ -396,11 +382,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
          return modTypeInnerSelectMap.size();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute(org.eclipse.core.runtime.IProgressMonitor, java.sql.Connection, int)
-       */
       @Override
-      public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
+      public void execute(IProgressMonitor monitor, int startAtTxNumber) throws Exception {
          final IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
          subMonitor.beginTask("Update Mod Type", getTotalWork());
 
@@ -412,7 +395,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
                String updateSql = String.format(UPDATE_TXS_MOD_TYPE_SINGLE_CALL, innerSelect);
 
                long time = System.currentTimeMillis();
-               int count = ConnectionHandler.runPreparedUpdate(connection, updateSql, startAtTxNumber);
+               int count = ConnectionHandler.runPreparedUpdate(updateSql, startAtTxNumber);
                appendResultLine(String.format("Updated [%s] rows for [%s] in [%d]ms\n", count, type.name(),
                      (System.currentTimeMillis() - time)));
                totalModified += count;
@@ -429,15 +412,12 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
    private final class VerifyTxCurrentOperation implements IOperation {
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute(java.sql.Connection, int)
-       */
       @Override
-      public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
+      public void execute(IProgressMonitor monitor, int startAtTxNumber) throws Exception {
          final IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
          subMonitor.beginTask("Verifying Tx Current", getTotalWork());
 
-         int totalRowCount = ConnectionHandler.runPreparedQueryFetchInt(connection, -1, VERIFY_TX_CURRENT);
+         int totalRowCount = ConnectionHandler.runPreparedQueryFetchInt(-1, VERIFY_TX_CURRENT);
 
          String msg = null;
          boolean result = totalRowCount == 0;
@@ -473,11 +453,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
          modTypeVerificationMap.put(TypesEnum.relations, VERIFY_RELATION_MOD_TYPE);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute(org.eclipse.core.runtime.IProgressMonitor, java.sql.Connection, int)
-       */
       @Override
-      public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
+      public void execute(IProgressMonitor monitor, int startAtTxNumber) throws Exception {
          final IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
          subMonitor.beginTask("Verifying Tx Mod Types", getTotalWork());
          final Map<TypesEnum, Integer> results = new HashMap<TypesEnum, Integer>();
@@ -486,7 +463,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
             monitor.subTask(String.format("Verifying: [%s]", type.name()));
             String sql = modTypeVerificationMap.get(type);
             if (Strings.isValid(sql)) {
-               executeQuery(monitor, connection, new IRowProcessor() {
+               executeQuery(monitor, new IRowProcessor() {
                   @Override
                   public void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
                      int total = chStmt.getInt("total");
@@ -524,11 +501,11 @@ public class UpdateCurrentColumn extends AbstractBlam {
       void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException;
    }
 
-   private int executeQuery(IProgressMonitor monitor, Connection connection, IRowProcessor processor, int fetchSize, String sql, Object... data) throws Exception {
+   private int executeQuery(IProgressMonitor monitor, IRowProcessor processor, int fetchSize, String sql, Object... data) throws Exception {
       int totalRowCount = 0;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(connection, fetchSize, sql, data);
+         chStmt.runPreparedQuery(fetchSize, sql, data);
          while (chStmt.next()) {
             totalRowCount++;
             processor.processRow(chStmt);
@@ -537,7 +514,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return totalRowCount;
    }

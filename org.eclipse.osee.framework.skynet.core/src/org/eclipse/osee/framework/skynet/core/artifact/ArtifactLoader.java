@@ -27,8 +27,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -140,10 +138,10 @@ public final class ArtifactLoader {
     * @param allowDeleted allow the inclusion of deleted artifacts in the results
     * @throws OseeCoreException
     */
-   public static List<Artifact> loadArtifactsFromQueryId(Connection connection, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<Artifact>(fetchSize);
       try {
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             String sql;
             if (historical) {
@@ -151,7 +149,7 @@ public final class ArtifactLoader {
             } else {
                sql = allowDeleted ? SELECT_CURRENT_ARTIFACTS_WITH_DELETED : SELECT_CURRENT_ARTIFACTS;
             }
-            chStmt = ConnectionHandler.runPreparedQuery(connection, fetchSize, sql, queryId);
+            chStmt.runPreparedQuery(fetchSize, sql, queryId);
 
             int previousArtId = -1;
             int previousBranchId = -1;
@@ -165,14 +163,14 @@ public final class ArtifactLoader {
                previousBranchId = branchId;
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
 
          if (confirmer == null || confirmer.canProceed(artifacts.size())) {
             loadArtifactsData(queryId, artifacts, loadLevel, reload, historical, allowDeleted);
          }
       } finally {
-         clearQuery(connection, queryId);
+         clearQuery(queryId);
       }
       return artifacts;
    }
@@ -191,22 +189,19 @@ public final class ArtifactLoader {
     * @throws OseeCoreException
     */
    public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
-
       List<Artifact> artifacts = Collections.emptyList();
       if (insertParameters.size() > 0) {
          long time = System.currentTimeMillis();
-         OseeConnection connection = OseeDbConnection.getConnection();
          try {
-            selectArtifacts(connection, insertParameters);
+            selectArtifacts(insertParameters);
             artifacts =
-                  loadArtifactsFromQueryId(connection, queryId, loadLevel, confirmer, insertParameters.size(), reload,
-                        historical, allowDeleted);
+                  loadArtifactsFromQueryId(queryId, loadLevel, confirmer, insertParameters.size(), reload, historical,
+                        allowDeleted);
          } finally {
             OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
                   "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), artifacts.size()),
                   new Exception("Artifact Load Time"));
-            clearQuery(connection, queryId);
-            connection.close();
+            clearQuery(queryId);
          }
       }
       return artifacts;
@@ -219,7 +214,7 @@ public final class ArtifactLoader {
     * @throws OseeDataStoreException
     */
    public static int selectArtifacts(Connection connection, List<Object[]> insertParameters) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedUpdate(connection, INSERT_JOIN_ARTIFACT, insertParameters);
+      return ConnectionHandler.runBatchUpdate(connection, INSERT_JOIN_ARTIFACT, insertParameters);
    }
 
    /**
@@ -229,7 +224,7 @@ public final class ArtifactLoader {
     * @throws OseeDataStoreException
     */
    public static int selectArtifacts(List<Object[]> insertParameters) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedUpdateBatch(INSERT_JOIN_ARTIFACT, insertParameters);
+      return ConnectionHandler.runBatchUpdate(INSERT_JOIN_ARTIFACT, insertParameters);
    }
 
    /**
@@ -239,7 +234,7 @@ public final class ArtifactLoader {
     *           selectArtifacts
     */
    public static void clearQuery(int queryId) throws OseeDataStoreException {
-      clearQuery(null, queryId);
+      ConnectionHandler.runPreparedUpdate(DELETE_FROM_JOIN_ARTIFACT, queryId);
    }
 
    /**
@@ -264,11 +259,11 @@ public final class ArtifactLoader {
     * @param artifactCountEstimate
     */
    public static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionId transactionId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       long time = System.currentTimeMillis();
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
+         chStmt.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
          if (DEBUG) {
@@ -286,7 +281,7 @@ public final class ArtifactLoader {
                   transactionParameter});
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       OseeLog.log(SkynetActivator.class, Level.FINE,
             String.format("Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time),
@@ -326,7 +321,6 @@ public final class ArtifactLoader {
    }
 
    static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws OseeCoreException {
-      OseeConnection connection = OseeDbConnection.getConnection();
       int queryId = getNewQueryId();
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
@@ -338,8 +332,7 @@ public final class ArtifactLoader {
          artifacts.add(artifact);
          loadArtifactsData(queryId, artifacts, loadLevel, false, false, artifact.isDeleted());
       } finally {
-         clearQuery(connection, queryId);
-         connection.close();
+         clearQuery(queryId);
       }
    }
 
@@ -373,9 +366,9 @@ public final class ArtifactLoader {
       if (historical) {
          return; // TODO: someday we might have a use for historical relations, but not now
       }
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_RELATIONS, queryId);
+         chStmt.runPreparedQuery(artifacts.size() * 8, SELECT_RELATIONS, queryId);
          while (chStmt.next()) {
             int relationId = chStmt.getInt("rel_link_id");
             int aArtifactId = chStmt.getInt("a_art_id");
@@ -402,7 +395,7 @@ public final class ArtifactLoader {
             RelationManager.manageRelation(relation, RelationSide.SIDE_B);
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       Map<Integer, RelationLink> sideB = new HashMap<Integer, RelationLink>();
       Map<Integer, RelationLink> sideA = new HashMap<Integer, RelationLink>();
@@ -413,13 +406,13 @@ public final class ArtifactLoader {
    }
 
    private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, boolean allowDeletedArtifacts) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          if (historical) {
-            chStmt = ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_HISTORICAL_ATTRIBUTES, queryId);
+            chStmt.runPreparedQuery(artifacts.size() * 8, SELECT_HISTORICAL_ATTRIBUTES, queryId);
          } else {
             String sql = allowDeletedArtifacts ? SELECT_CURRENT_ATTRIBUTES_WITH_DELETED : SELECT_CURRENT_ATTRIBUTES;
-            chStmt = ConnectionHandler.runPreparedQuery(artifacts.size() * 8, sql, queryId);
+            chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
          }
 
          Artifact artifact = null;
@@ -464,7 +457,7 @@ public final class ArtifactLoader {
             previousAttrId = attrId;
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

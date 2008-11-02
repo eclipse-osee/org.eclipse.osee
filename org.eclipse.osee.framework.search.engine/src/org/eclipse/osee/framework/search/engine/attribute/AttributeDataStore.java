@@ -53,15 +53,15 @@ public class AttributeDataStore {
    public static Collection<AttributeData> getAttribute(final Connection connection, final int tagQueueQueryId) throws Exception {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(connection, LOAD_ATTRIBUTE, tagQueueQueryId);
+         chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
          while (chStmt.next()) {
             attributeData.add(new AttributeData(chStmt.getLong("gamma_id"), chStmt.getString("value"),
                   chStmt.getString("uri"), chStmt.getString("tagger_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
 
       return attributeData;
@@ -105,7 +105,7 @@ public class AttributeDataStore {
       return toReturn.toString();
    }
 
-   public static Set<AttributeData> getAttributesByTags(final Connection connection, final int branchId, final Options options, final Collection<Long> tagData) throws Exception {
+   public static Set<AttributeData> getAttributesByTags(final int branchId, final Options options, final Collection<Long> tagData) throws Exception {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
       String sqlQuery = getQuery(getAttributeTagQuery(tagData.size()), branchId, options);
       List<Object> params = new ArrayList<Object>();
@@ -114,33 +114,33 @@ public class AttributeDataStore {
          params.add(branchId);
       }
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(connection, sqlQuery, params.toArray(new Object[params.size()]));
+         chStmt.runPreparedQuery(sqlQuery, params.toArray(new Object[params.size()]));
          while (chStmt.next()) {
             toReturn.add(new AttributeData(chStmt.getInt("art_id"), chStmt.getLong("gamma_id"),
                   chStmt.getInt("branch_id"), chStmt.getString("value"), chStmt.getString("uri"),
                   chStmt.getString("tagger_id")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
 
       return toReturn;
    }
 
    public static String getAllTaggableGammasByBranchQuery(final Connection connection, final int branchId) throws OseeDataStoreException {
-      return getBranchTaggingQueries(connection, branchId, false);
+      return getBranchTaggingQueries(branchId, false);
    }
 
    public static Object[] getAllTaggableGammasByBranchQueryData(final int branchId) {
       return branchId > -1 ? new Object[] {branchId} : new Object[0];
    }
 
-   private static String getBranchTaggingQueries(final Connection connection, final int branchId, final boolean isCountQuery) throws OseeDataStoreException {
+   private static String getBranchTaggingQueries(final int branchId, final boolean isCountQuery) throws OseeDataStoreException {
       StringBuilder builder = new StringBuilder();
       builder.append(isCountQuery ? COUNT_TAGGABLE_ATTRIBUTES : FIND_ALL_TAGGABLE_ATTRIBUTES);
-      if (SupportedDatabase.getDatabaseType(connection) == SupportedDatabase.postgresql) {
+      if (SupportedDatabase.getDatabaseType() == SupportedDatabase.postgresql) {
          builder.append(POSTGRESQL_CHECK);
       }
       if (branchId > -1) {
@@ -149,8 +149,8 @@ public class AttributeDataStore {
       return builder.toString();
    }
 
-   public static int getTotalTaggableItems(final Connection connection, final int branchId) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(connection, -1, getBranchTaggingQueries(connection, branchId,
-            true), getAllTaggableGammasByBranchQueryData(branchId));
+   public static int getTotalTaggableItems(final int branchId) throws OseeDataStoreException {
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, getBranchTaggingQueries(branchId, true),
+            getAllTaggableGammasByBranchQueryData(branchId));
    }
 }

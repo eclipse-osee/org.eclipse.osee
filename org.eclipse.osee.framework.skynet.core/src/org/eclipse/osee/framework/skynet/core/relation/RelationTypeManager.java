@@ -127,10 +127,10 @@ public class RelationTypeManager {
    }
 
    private void populateCache() throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_LINK_TYPES);
+         chStmt.runPreparedQuery(SELECT_LINK_TYPES);
 
          while (chStmt.next()) {
             RelationType relationType =
@@ -142,7 +142,7 @@ public class RelationTypeManager {
          }
          loadLinkValidities();
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -156,16 +156,16 @@ public class RelationTypeManager {
    }
 
    private void loadLinkValidities() throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(2000, SELECT_LINK_VALIDITY);
+         chStmt.runPreparedQuery(2000, SELECT_LINK_VALIDITY);
 
          while (chStmt.next()) {
             validityMap.put(chStmt.getInt("rel_link_type_id"), chStmt.getInt("art_type_id"),
                   new ObjectPair<Integer, Integer>(chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

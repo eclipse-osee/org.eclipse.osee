@@ -124,17 +124,16 @@ public class FixWordTemplateContent extends AbstractBlam {
    private ArrayList<AttrData> loadAttrData() throws OseeDataStoreException, OseeTypeDoesNotExist {
       ArrayList<AttrData> attrData = new ArrayList<AttrData>();
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_ATTRS_TEST,
+         chStmt.runPreparedQuery(GET_ATTRS_TEST,
                      AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT));
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
                   chStmt.getString("uri")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return attrData;
    }

@@ -104,10 +104,9 @@ public class WordUtil {
 
       AttributeType attributeDescriptor = AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT);
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_WORD_VALUES, artId, attributeDescriptor.getAttrTypeId(),
+         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, attributeDescriptor.getAttrTypeId(),
                      branch.getBranchId());
 
          List<Pair<String, Integer>> values = new LinkedList<Pair<String, Integer>>();
@@ -161,7 +160,7 @@ public class WordUtil {
             return false;
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

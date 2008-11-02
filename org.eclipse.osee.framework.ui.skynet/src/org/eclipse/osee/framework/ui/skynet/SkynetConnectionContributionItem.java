@@ -45,7 +45,7 @@ public class SkynetConnectionContributionItem extends SkynetContributionItem imp
    }
 
    private void init() {
-      updateStatus(ConnectionHandler.isOpen());
+      updateStatus(OseeDbConnection.hasOpenConnection());
       ConnectionHandler.addListener(this);
       setActionHandler(new Action() {
          /*

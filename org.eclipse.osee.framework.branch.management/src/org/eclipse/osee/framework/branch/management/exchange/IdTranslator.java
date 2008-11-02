@@ -115,18 +115,16 @@ public class IdTranslator {
       return newVersion;
    }
 
-   public void load(Connection connection, String sourceDatabaseId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+   public void load(String sourceDatabaseId) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          originalToMapped.clear();
-         chStmt =
-               ConnectionHandler.runPreparedQuery(connection, SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId,
-                     getSequence());
+         chStmt.runPreparedQuery(SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequence());
          while (chStmt.next()) {
             originalToMapped.put(chStmt.getLong("original_id"), chStmt.getLong("mapped_id"));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -141,7 +139,7 @@ public class IdTranslator {
             Long mapped = originalToMapped.get(original);
             data.add(new Object[] {sequenceId, original, mapped});
          }
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_INDEX_MAP, data);
+         ConnectionHandler.runBatchUpdate(connection, INSERT_INTO_IMPORT_INDEX_MAP, data);
       }
    }
 }

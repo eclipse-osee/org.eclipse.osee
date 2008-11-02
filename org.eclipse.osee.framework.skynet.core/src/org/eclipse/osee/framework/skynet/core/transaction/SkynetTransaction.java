@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -101,52 +102,55 @@ public class SkynetTransaction {
    public synchronized void execute(IProgressMonitor monitor) throws OseeDataStoreException {
       boolean deleteTransactionDetail = false;
 
+      Connection connection = OseeDbConnection.getConnection();
       try {
-         Connection connection = ConnectionHandler.getConnection();
-         boolean insertBatchToTransactions = executeBatchToTransactions(monitor);
-         boolean insertTransactionDataItems = executeTransactionDataItems(connection);
+         try {
+            boolean insertBatchToTransactions = executeBatchToTransactions(connection, monitor);
+            boolean insertTransactionDataItems = executeTransactionDataItems(connection);
 
-         deleteTransactionDetail = !insertBatchToTransactions && !insertTransactionDataItems;
+            deleteTransactionDetail = !insertBatchToTransactions && !insertTransactionDataItems;
 
-         for (BaseTransactionData transactionData : transactionItems.keySet()) {
-            transactionData.internalClearDirtyState();
-         }
-      } catch (OseeDataStoreException ex) {
-         deleteTransactionDetail = true;
-         for (BaseTransactionData transactionData : transactionItems.keySet()) {
-            try {
-               transactionData.internalOnRollBack();
-            } catch (OseeCoreException ex1) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
-            }
-         }
-         ConnectionHandler.requestRollback();
-         OseeLog.log(SkynetActivator.class, Level.SEVERE,
-               "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
-         throw ex;
-      } finally {
-         if (deleteTransactionDetail) {
-            xModifiedEvents.clear();
-            ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_DETAIL, transactionId.getTransactionNumber());
-         } else {
             for (BaseTransactionData transactionData : transactionItems.keySet()) {
-               transactionData.internalUpdate();
+               transactionData.internalClearDirtyState();
+            }
+         } catch (OseeDataStoreException ex) {
+            deleteTransactionDetail = true;
+            for (BaseTransactionData transactionData : transactionItems.keySet()) {
+               try {
+                  transactionData.internalOnRollBack();
+               } catch (OseeCoreException ex1) {
+                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
+               }
+            }
+            ConnectionHandler.requestRollback();
+            OseeLog.log(SkynetActivator.class, Level.SEVERE,
+                  "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
+            throw ex;
+         } finally {
+            if (deleteTransactionDetail) {
+               xModifiedEvents.clear();
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_DETAIL,
+                     transactionId.getTransactionNumber());
+            } else {
+               for (BaseTransactionData transactionData : transactionItems.keySet()) {
+                  transactionData.internalUpdate();
+               }
             }
          }
+      } finally {
+         ConnectionHandler.close(connection);
       }
    }
 
    private void fetchTxNotCurrent(Connection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(connection, transactionData.getSelectTxNotCurrentSql(),
-                     transactionData.getSelectData());
+         chStmt.runPreparedQuery(transactionData.getSelectTxNotCurrentSql(), transactionData.getSelectData());
          while (chStmt.next()) {
             results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -175,20 +179,20 @@ public class SkynetTransaction {
 
       // Insert into data tables - i.e. attribute, relation and artifact version tables
       for (String itemInsertSql : dataItemInserts.keySet()) {
-         ConnectionHandler.runPreparedUpdate(connection, itemInsertSql,
+         ConnectionHandler.runBatchUpdate(connection, itemInsertSql,
                (List<Object[]>) dataItemInserts.getValues(itemInsertSql));
       }
       // Insert addressing data for changes into the txs table
-      ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_TABLE, addressingInsertData);
+      ConnectionHandler.runBatchUpdate(connection, INSERT_INTO_TRANSACTION_TABLE, addressingInsertData);
 
       // Set stale tx currents in txs table
-      ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
+      ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
       return true;
    }
 
    // Supports adding new artifacts to the artifact table and
    // updating attributes that are not versioned.
-   public boolean executeBatchToTransactions(IProgressMonitor monitor) throws OseeDataStoreException {
+   public boolean executeBatchToTransactions(Connection connection, IProgressMonitor monitor) throws OseeDataStoreException {
       Collection<String> sqls = preparedBatch.keySet();
       int size = sqls.size();
       int count = 0;
@@ -196,7 +200,7 @@ public class SkynetTransaction {
       while (iter.hasNext()) {
          monitor.subTask("Processing Prepared SQL set " + (++count) + "/" + size);
          String sql = iter.next();
-         ConnectionHandler.runPreparedUpdateBatch(sql, preparedBatch.get(sql));
+         ConnectionHandler.runBatchUpdate(connection, sql, preparedBatch.get(sql));
          monitor.worked(1);
       }
       return preparedBatch.size() > 0;

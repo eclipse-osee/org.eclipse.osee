@@ -89,13 +89,11 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 
       HashCollection<Integer, Pair<Integer, Integer>> historyMap =
             new HashCollection<Integer, Pair<Integer, Integer>>(false, HashSet.class);
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
          for (String preserveArtTypeId : preserveArtTypeIds) {
 
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(connection, SELECT_ARTIFACT_HISTORY, preserveArtTypeId,
-                        getParentBranchId());
+            chStmt.runPreparedQuery(SELECT_ARTIFACT_HISTORY, preserveArtTypeId, getParentBranchId());
 
             while (chStmt.next()) {
                int artGamma = chStmt.getInt("art_gamma_id");
@@ -115,7 +113,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
          }
          initSelectLinkHistory(compressArtTypeIds, preserveArtTypeIds, historyMap, connection);
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
 
       Set<Integer> transactions = new TreeSet<Integer>(historyMap.keySet()); // the tree set is to in ascending order
@@ -195,9 +193,9 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
    }
 
    private void populateHistoryMapWithRelations(HashCollection<Integer, Pair<Integer, Integer>> historyMap, String sql, Connection connection) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(connection, sql, getParentBranchId());
+         chStmt.runPreparedQuery(sql, getParentBranchId());
          while (chStmt.next()) {
             int linkGammaId = chStmt.getInt("link_gamma_id");
             int txCurrent = chStmt.getInt("tx_current");
@@ -208,7 +206,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
             gammasToCurrent.put(linkGammaId, txCurrent);
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

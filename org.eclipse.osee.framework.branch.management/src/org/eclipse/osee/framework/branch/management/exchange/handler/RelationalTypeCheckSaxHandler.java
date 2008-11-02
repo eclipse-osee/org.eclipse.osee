@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.util.Map;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -53,11 +52,10 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
       typeId = fieldMap.get(typeField);
       Long original = Strings.isValid(typeId) ? new Long(typeId) : -1;
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(getConnection());
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(getConnection(), String.format("select %s from %s where %s = ?",
-                     typeField, getMetaData().getTableName(), nameField), name);
+         chStmt.runPreparedQuery(String.format("select %s from %s where %s = ?", typeField,
+               getMetaData().getTableName(), nameField), name);
          if (chStmt.next()) {
             getTranslator().checkIdMapping(typeField, original, chStmt.getLong(chStmt.getColumnName(1)));
          } else {
@@ -65,7 +63,7 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
                   typeField, typeId));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

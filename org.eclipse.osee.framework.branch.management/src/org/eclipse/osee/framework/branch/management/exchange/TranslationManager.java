@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -50,16 +48,8 @@ public class TranslationManager {
    }
 
    public void loadTranslators(String sourceDatabaseId) throws OseeDataStoreException {
-      OseeConnection connection = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         for (IdTranslator translator : translators) {
-            translator.load(connection, sourceDatabaseId);
-         }
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
+      for (IdTranslator translator : translators) {
+         translator.load(sourceDatabaseId);
       }
    }
 
@@ -80,7 +70,7 @@ public class TranslationManager {
             translatedIdMap.store(connection, importSeqId);
          }
       }
-      ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_MAP, data);
+      ConnectionHandler.runBatchUpdate(connection, INSERT_INTO_IMPORT_MAP, data);
    }
 
    public boolean isTranslatable(String name) {

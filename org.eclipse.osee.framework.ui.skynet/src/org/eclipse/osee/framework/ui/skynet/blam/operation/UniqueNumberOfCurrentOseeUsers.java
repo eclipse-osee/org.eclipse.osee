@@ -37,14 +37,14 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
       // removeColonFromActionNames
       monitor.beginTask("Counting Users", IProgressMonitor.UNKNOWN);
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_USER_COUNT);
+         chStmt.runPreparedQuery(SELECT_USER_COUNT);
          if (chStmt.next()) {
             logger.log(Level.INFO, "active user count: " + chStmt.getInt("user_count"));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       monitor.done();
    }

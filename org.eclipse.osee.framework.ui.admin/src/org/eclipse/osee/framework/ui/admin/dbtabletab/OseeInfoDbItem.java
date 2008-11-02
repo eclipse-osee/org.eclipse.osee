@@ -44,15 +44,15 @@ public class OseeInfoDbItem extends DbItem {
 
    public boolean exists(String key) {
       boolean toReturn = false;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          String query = "SELECT * FROM " + getTableName() + " WHERE OSEE_KEY = " + returnTic(key);
-         chStmt = ConnectionHandler.runPreparedQuery(query);
+         chStmt.runPreparedQuery(query);
          toReturn = chStmt.next();
       } catch (OseeDataStoreException ex) {
          OSEELog.logException(AdminPlugin.class, ex, true);
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return toReturn;
    }

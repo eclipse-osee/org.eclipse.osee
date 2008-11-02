@@ -143,7 +143,7 @@ public class AccessControlManager {
    // * populates subjects access control list
    // */
    // private void populateSubjectsAccessControlList() {
-   // ConnectionHandlerStatement chStmt = null;
+   // ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
    // // select * from table order by subject_id
    // // subject_id, permission_id
    // try {
@@ -156,7 +156,7 @@ public class AccessControlManager {
    // OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
    // }
    // finally {
-   // ConnectionHandler.close(chStmt);
+   // chStmt.close();
    // }
    // }
 
@@ -164,9 +164,9 @@ public class AccessControlManager {
     * populates the branch access control list.
     */
    private void populateBranchAccessControlList() throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
+         chStmt.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
          while (chStmt.next()) {
             Integer subjectId = chStmt.getInt("privilege_entity_id");
             Integer branchId = chStmt.getInt("branch_id");
@@ -182,7 +182,7 @@ public class AccessControlManager {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -193,10 +193,9 @@ public class AccessControlManager {
     * @throws OseeDataStoreException
     */
    private void populateArtifactAccessControlList() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ConnectionHandlerStatement chStmt = null;
-
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
+         chStmt.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
 
          while (chStmt.next()) {
             Integer subjectId = chStmt.getInt("privilege_entity_id");
@@ -218,7 +217,7 @@ public class AccessControlManager {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -226,10 +225,9 @@ public class AccessControlManager {
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS, groupId,
+            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId,
                         RelationTypeManager.getType("Users").getRelationTypeId());
 
             // get group members and populate subjectToGroupCache
@@ -239,7 +237,7 @@ public class AccessControlManager {
                groupToSubjectsCache.put(groupId, groupMember);
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
       }
    }

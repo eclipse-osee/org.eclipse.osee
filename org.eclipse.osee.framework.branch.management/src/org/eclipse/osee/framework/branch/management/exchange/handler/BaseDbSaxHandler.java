@@ -90,7 +90,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
 
    protected void store(Connection connection) throws Exception {
       if (this.data.isEmpty() != true) {
-         ConnectionHandler.runPreparedUpdate(connection, getMetaData().getQuery(), this.data);
+         ConnectionHandler.runBatchUpdate(connection, getMetaData().getQuery(), this.data);
          this.data.clear();
       }
    }

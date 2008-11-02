@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.usage;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -52,7 +52,7 @@ public class SkynetUsageHandler extends Handler {
 
    @Override
    public void publish(LogRecord record) {
-      if (!ConnectionHandler.isOpen()) return;
+      if (!OseeDbConnection.hasOpenConnection()) return;
       if (record.getLevel().intValue() == Level.SEVERE.intValue() && record.getThrown() instanceof Exception) {
          UsageLog.getInstance().addEntry(new ExceptionEntry((Exception) record.getThrown()));
       }

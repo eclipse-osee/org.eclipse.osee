@@ -36,15 +36,15 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Aquiring Team Workflows");
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(200, SELECT_COMMIT_TRANSACTIONS, "Commit Branch%");
+         chStmt.runPreparedQuery(200, SELECT_COMMIT_TRANSACTIONS, "Commit Branch%");
          while (chStmt.next()) {
             if (monitor.isCanceled()) return;
             updateWorkflow(chStmt.getString("osee_comment"), chStmt.getInt("transaction_id"));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 

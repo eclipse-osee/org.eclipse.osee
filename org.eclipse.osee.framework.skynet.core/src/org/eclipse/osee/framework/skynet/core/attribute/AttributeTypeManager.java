@@ -64,10 +64,10 @@ public class AttributeTypeManager {
    }
 
    private void populateCache() throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_TYPES);
+         chStmt.runPreparedQuery(SELECT_ATTRIBUTE_TYPES);
 
          while (chStmt.next()) {
             String baseClassString = chStmt.getString("attribute_class");
@@ -89,7 +89,7 @@ public class AttributeTypeManager {
             }
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
@@ -187,9 +187,9 @@ public class AttributeTypeManager {
 
    private int getOrCreateAttributeProviderType(String attrProviderExtension) throws OseeDataStoreException {
       int attrBaseTypeId = -1;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_PROVIDER_TYPE, attrProviderExtension);
+         chStmt.runPreparedQuery(SELECT_ATTRIBUTE_PROVIDER_TYPE, attrProviderExtension);
          if (chStmt.next()) {
             attrBaseTypeId = chStmt.getInt("attr_provider_type_id");
          } else {
@@ -197,16 +197,16 @@ public class AttributeTypeManager {
             ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, attrBaseTypeId, attrProviderExtension);
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return attrBaseTypeId;
    }
 
    private int getOrCreateAttributeBaseType(String attrBaseExtension) throws OseeDataStoreException {
       int attrBaseTypeId = -1;
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_BASE_TYPE, attrBaseExtension);
+         chStmt.runPreparedQuery(SELECT_ATTRIBUTE_BASE_TYPE, attrBaseExtension);
          if (chStmt.next()) {
             attrBaseTypeId = chStmt.getInt("attr_base_type_id");
          } else {
@@ -214,7 +214,7 @@ public class AttributeTypeManager {
             ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, attrBaseTypeId, attrBaseExtension);
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
 
       return attrBaseTypeId;

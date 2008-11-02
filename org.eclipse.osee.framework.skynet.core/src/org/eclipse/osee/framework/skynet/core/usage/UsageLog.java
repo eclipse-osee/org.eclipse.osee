@@ -83,7 +83,7 @@ public class UsageLog {
       }
 
       log.clear();
-      ConnectionHandler.runPreparedUpdateBatch(INSERT_TO_LOG, data);
+      ConnectionHandler.runBatchUpdate(INSERT_TO_LOG, data);
    }
 
    private static class Kicker extends Thread {

@@ -40,11 +40,10 @@ class TaggerAllWorker extends BaseCmdWorker {
    }
 
    private void fetchAndProcessGammas(Connection connection, int branchId, TagProcessListener processor) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(connection, AttributeDataStore.getAllTaggableGammasByBranchQuery(
-                     connection, branchId), AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
+         chStmt.runPreparedQuery(AttributeDataStore.getAllTaggableGammasByBranchQuery(connection, branchId),
+               AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
          TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
          while (chStmt.next() && isExecutionAllowed()) {
             long gammaId = chStmt.getLong("gamma_id");
@@ -56,12 +55,12 @@ class TaggerAllWorker extends BaseCmdWorker {
          }
          processor.storeAndAddQueryId(connection, joinQuery);
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
    }
 
    protected void doWork(long startTime) throws Exception {
-      Connection connection = null;
+      Connection connection = OseeDbConnection.getConnection();
       try {
          String arg = getCommandInterpreter().nextArgument();
          int branchId = -1;
@@ -69,9 +68,8 @@ class TaggerAllWorker extends BaseCmdWorker {
             branchId = Integer.parseInt(arg);
          }
          println(String.format("Tagging Attributes For: [%s]", branchId > -1 ? "Branch " + branchId : "All Branches"));
-         connection = OseeDbConnection.getConnection();
 
-         int totalAttributes = AttributeDataStore.getTotalTaggableItems(connection, branchId);
+         int totalAttributes = AttributeDataStore.getTotalTaggableItems(branchId);
          processor = new TagProcessListener(startTime, totalAttributes);
          fetchAndProcessGammas(connection, branchId, processor);
          if (!processor.isProcessingDone()) {

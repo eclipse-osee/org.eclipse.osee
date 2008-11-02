@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 import org.eclipse.osee.framework.server.admin.Activator;
@@ -75,9 +76,7 @@ public class TagItemWorker extends BaseCmdWorker {
                joinQuery.delete(connection);
             }
          } finally {
-            if (connection != null) {
-               connection.close();
-            }
+            ConnectionHandler.close(connection);
          }
       } else {
          println("No Items to Tag.");

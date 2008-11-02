@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.preferences;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -140,7 +139,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       String dbStatus = "Unavailable";
       Connection connection = null;
       try {
-         connection = ConnectionHandler.getPooledConnection();
+         connection = OseeDbConnection.getConnection();
          DatabaseMetaData dbData = connection.getMetaData();
          dbStatus = getDbStatus(dbData.getDatabaseProductName(), dbData.getDatabaseProductVersion(), dbData.getURL());
          dbConnection = true;
@@ -149,12 +148,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
          dbStatus = getDbStatus(info.getDatabaseDetails().getId(), "", info.getConnectionUrl());
          dbConnection = false;
       } finally {
-         if (connection != null) {
-            try {
-               connection.close();
-            } catch (SQLException ex) {
-            }
-         }
+         ConnectionHandler.close(connection);
       }
       record = new DataRecord("Database", dbStatus);
       record.setStatus(dbConnection);

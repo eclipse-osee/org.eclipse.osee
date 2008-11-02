@@ -33,9 +33,9 @@ public class CommitTransactions extends DatabaseHealthTask {
    public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
 
       if (operation.equals(Operation.Fix)) {
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
+            chStmt.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
 
             while (chStmt.next()) {
                int transactionNumber = chStmt.getInt("transaction_id");
@@ -47,7 +47,7 @@ public class CommitTransactions extends DatabaseHealthTask {
                builder.append("For transaction: " + transactionNumber + " Number of update modTypes to 1:" + updateCount + " Number of deleted attrs: " + deleteAttrCount);
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
       }
    }

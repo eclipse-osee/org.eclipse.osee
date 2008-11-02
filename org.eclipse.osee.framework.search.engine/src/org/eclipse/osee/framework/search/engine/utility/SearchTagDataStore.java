@@ -64,7 +64,7 @@ public class SearchTagDataStore {
       return String.format(INSERT_SEARCH_TAG_BODY, dummyTable);
    }
 
-   public static int deleteTags(Connection connection, Collection<IAttributeLocator> locators) throws Exception {
+   public static int deleteTags(Connection connection, Collection<IAttributeLocator> locators) throws OseeDataStoreException {
       return deleteTags(connection, locators.toArray(new IAttributeLocator[locators.size()]));
    }
 
@@ -73,7 +73,7 @@ public class SearchTagDataStore {
       for (IAttributeLocator locator : locators) {
          datas.add(new Object[] {locator.getGammaId()});
       }
-      return ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS, datas);
+      return ConnectionHandler.runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
    }
 
    public static int storeTags(Connection connection, Collection<SearchTag> searchTags) throws OseeDataStoreException {
@@ -88,7 +88,7 @@ public class SearchTagDataStore {
             for (Long codedTag : searchTag.getTags()) {
                data.add(new Object[] {searchTag.getGammaId(), codedTag, searchTag.getGammaId(), codedTag});
             }
-            updated += ConnectionHandler.runPreparedUpdate(connection, getInsertSQL(connection), data);
+            updated += ConnectionHandler.runBatchUpdate(connection, getInsertSQL(connection), data);
          }
       }
       return updated;
@@ -98,18 +98,18 @@ public class SearchTagDataStore {
       return fetchTagEntries(connection, codedTags.toArray(new Long[codedTags.size()]));
    }
 
-   public static Set<IAttributeLocator> fetchTagEntries(Connection connection, Long... codedTags) throws Exception {
+   public static Set<IAttributeLocator> fetchTagEntries(Connection connection, Long... codedTags) throws OseeDataStoreException {
       final Set<IAttributeLocator> toReturn = new HashSet<IAttributeLocator>();
 
       for (Long codedTag : codedTags) {
-         ConnectionHandlerStatement chStmt = null;
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(connection, SELECT_SEARCH_TAGS, codedTag);
+            chStmt.runPreparedQuery(SELECT_SEARCH_TAGS, codedTag);
             while (chStmt.next()) {
                toReturn.add(new AttributeVersion(chStmt.getLong("gamma_id")));
             }
          } finally {
-            ConnectionHandler.close(chStmt);
+            chStmt.close();
          }
       }
 

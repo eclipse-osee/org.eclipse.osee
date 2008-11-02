@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.artifact.servlet;
 
-import java.sql.Connection;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
@@ -38,18 +35,6 @@ public class ArtifactUtil {
    }
 
    private static String getUri(String query, Object... dataBindings) throws OseeDataStoreException {
-      String uriValue = null;
-      Connection connection = null;
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         chStmt = ConnectionHandler.runPreparedQuery(connection, query, dataBindings);
-         if (chStmt.next()) {
-            uriValue = chStmt.getString("uri");
-         }
-      } finally {
-         ConnectionHandler.close(connection, chStmt);
-      }
-      return uriValue;
+      return ConnectionHandler.runPreparedQueryFetchString(null, query, dataBindings);
    }
 }
