@@ -60,6 +60,8 @@ public class InternalOseeHttpServlet extends HttpServlet {
             request.getQueryString()) : "";
    }
 
+   boolean firstTime = true;
+
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
     */
@@ -70,7 +72,12 @@ public class InternalOseeHttpServlet extends HttpServlet {
          start = System.currentTimeMillis();
       }
       try {
-         System.err.println("Temp fix for postgres dbinit; remove this");
+         if (firstTime) {
+            System.err.println("Temp fix for postgres dbinit; remove this");
+            System.err.println("Temp fix for postgres dbinit; remove this");
+            System.err.println("Temp fix for postgres dbinit; remove this");
+            firstTime = false;
+         }
          //         if (areRequestsAllowed()) {
          this.processingState = ProcessingStateEnum.BUSY;
          this.request = request;
