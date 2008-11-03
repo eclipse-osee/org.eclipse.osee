@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
-public class HeadlessEclipseConfigurationFactory extends BaseConfigurationFactory {
+public class HeadlessEclipseConfigurationFactory implements IOseeConfigurationFactory {
 
    private Handler handler;
 

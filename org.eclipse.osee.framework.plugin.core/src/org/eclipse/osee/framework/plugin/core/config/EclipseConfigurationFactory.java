@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 
-public class EclipseConfigurationFactory extends BaseConfigurationFactory {
+public class EclipseConfigurationFactory implements IOseeConfigurationFactory {
 
    private EclipseHandler handler;
    private Collection<Handler> extensionHandlers;

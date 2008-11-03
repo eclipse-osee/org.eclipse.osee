@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.plugin.core.config;
 
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public interface IOseeConfigurationFactory {
    OSEEConfig getOseeConfig();
-
-   DbErrorCodeLevel getDbErrorCodeLevel(SQLException ex);
 
    @Deprecated
    // use OseeLog.log() instead

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.plugin.core.config;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-public class NonEclipseConfigurationFactory extends BaseConfigurationFactory {
+public class NonEclipseConfigurationFactory implements IOseeConfigurationFactory {
 
    private Handler handler;
 
