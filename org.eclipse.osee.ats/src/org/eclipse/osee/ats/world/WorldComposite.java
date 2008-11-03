@@ -645,8 +645,8 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       return item;
    }
 
-   public static ArrayList<Artifact> getLoadedArtifacts() {
-      return WorldView.getWorldView().getXViewer().getLoadedArtifacts();
+   public ArrayList<Artifact> getLoadedArtifacts() {
+      return getXViewer().getLoadedArtifacts();
    }
 
    public void updateExtendedStatusString() {

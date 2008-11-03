@@ -27,8 +27,9 @@ import org.eclipse.ui.IEditorInput;
  */
 public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEditor {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
-   private int worldPageIndex;
+   private int mainPageIndex, metricsPageIndex;
    private WorldComposite worldComposite;
+   private WorldMetricsComposite metricsComposite;
 
    /*
     * (non-Javadoc)
@@ -47,6 +48,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    @Override
    public void dispose() {
       if (worldComposite != null) worldComposite.disposeComposite();
+      if (metricsComposite != null) metricsComposite.disposeComposite();
       super.dispose();
    }
 
@@ -82,9 +84,14 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
 
          // Create Tasks tab
          worldComposite = new WorldComposite(EDITOR_ID, null, getContainer(), SWT.NONE);
-         worldPageIndex = addPage(worldComposite);
-         setPageText(worldPageIndex, "Main");
-         setActivePage(worldPageIndex);
+         mainPageIndex = addPage(worldComposite);
+         setPageText(mainPageIndex, "Main");
+
+         metricsComposite = new WorldMetricsComposite(worldComposite, getContainer(), SWT.NONE);
+         metricsPageIndex = addPage(metricsComposite);
+         setPageText(metricsPageIndex, "Metrics");
+
+         setActivePage(mainPageIndex);
          if (worldEditorInput.getCustomizeData() != null) {
             worldComposite.setCustomizeData(worldEditorInput.getCustomizeData());
          }
