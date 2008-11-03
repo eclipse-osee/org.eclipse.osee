@@ -758,6 +758,7 @@ public class InternalEventManager {
    private static FrameworkTransactionData createTransactionDataRollup(Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       // Roll-up change information
       FrameworkTransactionData transData = new FrameworkTransactionData();
+      transData.setXModifiedEvents(xModifiedEvents);
 
       for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
          if (xModifiedEvent instanceof ArtifactModifiedEvent) {

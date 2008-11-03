@@ -36,6 +36,8 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
  */
 public class FrameworkTransactionData {
 
+   Collection<ArtifactTransactionModifiedEvent> xModifiedEvents;
+
    // artifact collections of artifacts based on artifactModType that are currently loaded in the client's artifact cache
    public Set<Artifact> cacheChangedArtifacts = new HashSet<Artifact>();
    public Set<Artifact> cacheDeletedArtifacts = new HashSet<Artifact>();
@@ -148,8 +150,7 @@ public class FrameworkTransactionData {
             }
          }
          if (artifactIds.size() > 0) {
-            artifacts.addAll(ArtifactQuery.getArtifactsFromIds(artifactIds,
-                  BranchManager.getBranch(branchId), false));
+            artifacts.addAll(ArtifactQuery.getArtifactsFromIds(artifactIds, BranchManager.getBranch(branchId), false));
          }
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
@@ -243,6 +244,20 @@ public class FrameworkTransactionData {
          if (art.getArtId() == artId) return true;
       }
       return false;
+   }
+
+   /**
+    * @return the xModifiedEvents
+    */
+   public Collection<ArtifactTransactionModifiedEvent> getXModifiedEvents() {
+      return xModifiedEvents;
+   }
+
+   /**
+    * @param modifiedEvents the xModifiedEvents to set
+    */
+   public void setXModifiedEvents(Collection<ArtifactTransactionModifiedEvent> modifiedEvents) {
+      xModifiedEvents = modifiedEvents;
    }
 
 }
