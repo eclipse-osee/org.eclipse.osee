@@ -15,12 +15,12 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
@@ -169,7 +169,7 @@ public class AdminView extends ViewPart implements IActionable {
             "Ping OSEE Instantiations?")) {
          try {
             OseeEventManager.kickBroadcastEvent(this, BroadcastEventType.Ping, new String[] {},
-                  ApplicationServer.getOseeSession().getId());
+                  ClientSessionManager.getSession().toString());
             AWorkbench.popup("Success", "Ping Sent");
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);

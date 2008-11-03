@@ -26,8 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServer;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.core.client.ServiceHealthManager;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.ActivatorHelper;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -295,24 +294,10 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     * @return Result.isFalse if not connected with getText() of problem
     */
    public static Result areOSEEServicesAvailable() {
-      StringBuffer message = new StringBuffer();
-      if (!OseeDbConnection.isConnectionValid()) {
-         message.append("DB Connection Unavailable");
+      Result toReturn = Result.TrueResult;
+      if (!ServiceHealthManager.areServicesAvailable()) {
+         toReturn = new Result(ServiceHealthManager.getServicesStatusMessage());
       }
-      try {
-         if (!OseeApplicationServer.isApplicationServerAlive()) {
-            if (message.length() > 0) {
-               message.append("\n");
-            }
-            message.append("OSEE Application Server Unavailable");
-         }
-      } catch (Exception ex) {
-         if (message.length() > 0) {
-            message.append("\n");
-         }
-         message.append("OSEE Application Server Unavailable: " + ex.getLocalizedMessage());
-      }
-      return message.length() > 0 ? new Result(message.toString()) : Result.TrueResult;
+      return toReturn;
    }
-
 }

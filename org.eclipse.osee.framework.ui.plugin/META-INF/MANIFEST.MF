@@ -28,7 +28,7 @@ Export-Package: org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.io,
  org.eclipse.osee.framework.ui.plugin.security,
  org.eclipse.osee.framework.ui.plugin.util
-Import-Package: org.eclipse.osee.framework.core.data,
- org.eclipse.osee.framework.core.connection,
+Import-Package: org.eclipse.osee.framework.core.client,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

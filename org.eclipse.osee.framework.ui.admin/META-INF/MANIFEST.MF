@@ -20,7 +20,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms,
  org.eclipse.osee.framework.database
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.db.connection,
+Import-Package: org.eclipse.osee.framework.core.client,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,
  org.eclipse.osee.framework.db.connection.core.query,
  org.eclipse.osee.framework.db.connection.core.schema,
