@@ -22,6 +22,9 @@ import java.net.URL;
  */
 public class HttpProcessor {
    private static final int CONNECTION_TIMEOUT = 1000 * 60 * 2;
+   private static final String CONTENT_LENGTH = "Content-Length";
+   private static final String CONTENT_TYPE = "Content-Type";
+   private static final String CONTENT_ENCODING = "Content-Encoding";
 
    private HttpProcessor() {
    }
@@ -64,6 +67,45 @@ public class HttpProcessor {
          throw new Exception(String.format("Error sending resource [%s]", ex.getLocalizedMessage()), ex);
       }
       return response;
+   }
+
+   public static AcquireResult post(URL url, InputStream inputStream, String contentType, String encoding, OutputStream outputStream) throws Exception {
+      AcquireResult result = new AcquireResult();
+      int code = -1;
+      HttpURLConnection connection = null;
+      InputStream httpInputStream = null;
+      try {
+         connection = setupConnection(url);
+         connection.setRequestProperty(CONTENT_LENGTH, Integer.toString(inputStream.available()));
+         connection.setRequestProperty(CONTENT_TYPE, contentType);
+         connection.setRequestProperty(CONTENT_ENCODING, encoding);
+         connection.setRequestMethod("POST");
+         connection.setAllowUserInteraction(true);
+         connection.setDoOutput(true);
+         connection.setDoInput(true);
+         connection.connect();
+         Lib.inputStreamToOutputStream(inputStream, connection.getOutputStream());
+         code = connection.getResponseCode();
+         if (code == HttpURLConnection.HTTP_ACCEPTED) {
+            httpInputStream = (InputStream) connection.getContent();
+            result.setContentType(connection.getContentType());
+            result.setEncoding(connection.getContentEncoding());
+            Lib.inputStreamToOutputStream(httpInputStream, outputStream);
+         } else {
+            throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, code));
+         }
+      } catch (Exception ex) {
+         throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, code), ex);
+      } finally {
+         result.setCode(code);
+         if (httpInputStream != null) {
+            httpInputStream.close();
+         }
+         if (connection != null) {
+            connection.disconnect();
+         }
+      }
+      return result;
    }
 
    public static String post(URL url) throws Exception {

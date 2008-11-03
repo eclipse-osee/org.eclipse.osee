@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.database;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 
@@ -53,9 +53,8 @@ public class DatabaseActivator extends OseeActivator {
       return productionDbs;
    }
 
-   public boolean isProductionDb() {
-      String dbServiceId =
-            OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
+   public boolean isProductionDb() throws OseeCoreException {
+      String dbServiceId = ClientSessionManager.getDataStoreName();
       for (String productionDb : getProductionDbs()) {
          if (dbServiceId.equals(productionDb)) {
             return true;

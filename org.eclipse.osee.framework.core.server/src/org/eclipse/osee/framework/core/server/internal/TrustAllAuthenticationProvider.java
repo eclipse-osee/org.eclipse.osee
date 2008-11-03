@@ -1,0 +1,38 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.core.server.internal;
+
+import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
+import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class TrustAllAuthenticationProvider implements IAuthenticationProvider {
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.session.management.IAuthenticationProvider#authenticate(org.eclipse.osee.framework.core.data.OseeCredential)
+    */
+   @Override
+   public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException {
+      return true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.session.management.IAuthenticationProvider#getId()
+    */
+   @Override
+   public String getId() {
+      return "TrustAll";
+   }
+
+}

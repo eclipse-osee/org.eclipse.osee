@@ -40,9 +40,10 @@ public class OseeProperties {
    @Deprecated
    private static final String OSEE_REMOTE_HTTP_UPLOAD_PATH = "osee.remote.http.upload.path";
 
-   private static final String OSEE_APPLICATION_SERVER_OVERRIDE = "osee.application.server.override";
+   public static final String OSEE_APPLICATION_SERVER_OVERRIDE = "osee.application.server.override";
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
    private static final String OSEE_LOCAL_APPLICATION_SERVER = "osee.local.application.server";
+   private static final String DEFAULT_OSEE_ARIBTRATION_SERVER = "osee.default.arbitration.server";
 
    private static OseeProperties instance = null;
    private static Logger logger = null;
@@ -171,7 +172,7 @@ public class OseeProperties {
    }
 
    public String getDefaultArbitrationServer() {
-      return "";
+      return System.getProperty(DEFAULT_OSEE_ARIBTRATION_SERVER, "");
    }
 
 }

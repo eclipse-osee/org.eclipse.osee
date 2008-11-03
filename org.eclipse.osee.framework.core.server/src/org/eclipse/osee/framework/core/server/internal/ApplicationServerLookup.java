@@ -10,18 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ApplicationServerLookup implements IApplicationServerLookup {
 
-   public OseeServerInfo searchBy(String version) {
-      // TODO :: ADD SEARCH AND SELECTION LOGIC    
-      // ApplicationServerDataStore.getApplicationServerInfos(options);
+   public OseeServerInfo getServerInfoBy(String version) throws OseeDataStoreException {
+      OseeServerInfo result = null;
+      List<OseeServerInfo> infos = ApplicationServerDataStore.getApplicationServerInfos(version);
 
-      return null;
+      //TODO: query servers to see if load balancing is also needed
+      for (OseeServerInfo info : infos) {
+         if (info.isAcceptingRequests()) {
+            result = info;
+            break;
+         }
+      }
+      return result;
    }
 }

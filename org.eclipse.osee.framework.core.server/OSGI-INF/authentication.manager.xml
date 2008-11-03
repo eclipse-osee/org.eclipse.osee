@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="authentication.manager">
+	<implementation class="org.eclipse.osee.framework.core.server.internal.AuthenticationManager"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.core.server.IAuthenticationManager"/>
+	</service>
+	<reference name="resource.provider"
+		interface="org.eclipse.osee.framework.core.server.IAuthenticationProvider"
+		bind="addAuthenticationProvider"
+		unbind="removeAuthenticationProvider"
+		cardinality="0..n"
+		policy="dynamic"/>
+</component>

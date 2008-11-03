@@ -11,7 +11,10 @@
 package org.eclipse.osee.framework.db.connection.info;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
@@ -42,8 +45,22 @@ public enum SupportedDatabase {
       }
    }
 
-   public static SupportedDatabase getDatabaseType() {
-      return OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getDbType();
+   public static SupportedDatabase getDatabaseType() throws OseeDataStoreException {
+      OseeConnection connection = null;
+      try {
+         connection = OseeDbConnection.getConnection();
+         return SupportedDatabase.getDatabaseType(connection);
+      } finally {
+         ConnectionHandler.close(connection);
+      }
    }
 
+   public static boolean areHintsSupported(Connection connection) throws OseeDataStoreException {
+      try {
+         DatabaseMetaData metaData = connection.getMetaData();
+         return SupportedDatabase.getDatabaseType(connection) == oracle && metaData.getDatabaseMajorVersion() > 10;
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
 }

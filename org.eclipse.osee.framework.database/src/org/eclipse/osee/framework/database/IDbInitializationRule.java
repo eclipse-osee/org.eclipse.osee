@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface IDbInitializationRule {
 
-   public boolean isAllowed();
+   public boolean isAllowed() throws OseeCoreException;
 }

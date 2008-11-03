@@ -31,4 +31,6 @@ public interface IApplicationServerManager {
 
    public void setServletRequestsAllowed(boolean value) throws OseeCoreException;
 
+   public boolean executeLookupRegistration();
+
 }

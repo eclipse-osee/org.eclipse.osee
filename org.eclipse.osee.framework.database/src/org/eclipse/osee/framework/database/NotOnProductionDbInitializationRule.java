@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.info.DbInformation;
+import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -19,8 +24,21 @@ public class NotOnProductionDbInitializationRule implements IDbInitializationRul
     * @see org.eclipse.osee.framework.database.IDbInitializationRule#isAllowed()
     */
    @Override
-   public boolean isAllowed() {
-      return !DatabaseActivator.getInstance().isProductionDb();
+   public boolean isAllowed() throws OseeCoreException {
+      return !isProductionDb();
+   }
+
+   public static boolean isProductionDb() {
+      boolean isProductionDb = false;
+      DbInformation dbInfo = OseeDbConnection.getDefaultDatabaseService();
+      String dbServiceId = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
+      for (String productionDb : DatabaseActivator.getInstance().getProductionDbs()) {
+         if (dbServiceId.equals(productionDb)) {
+            isProductionDb = true;
+            break;
+         }
+      }
+      return isProductionDb;
    }
 
 }

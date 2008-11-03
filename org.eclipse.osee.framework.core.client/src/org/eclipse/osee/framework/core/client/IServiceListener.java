@@ -15,4 +15,9 @@ package org.eclipse.osee.framework.core.client;
  */
 public interface IServiceListener {
 
+   /**
+    * @param serviceStatus
+    */
+   void onStatusChange(ServiceStatus serviceStatus);
+
 }

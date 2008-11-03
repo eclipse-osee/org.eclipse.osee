@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="application.lookup.server.manager">
+	<implementation class="org.eclipse.osee.framework.core.server.internal.ApplicationServerLookup"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.core.server.IApplicationServerLookup"/>
+	</service>
+</component>

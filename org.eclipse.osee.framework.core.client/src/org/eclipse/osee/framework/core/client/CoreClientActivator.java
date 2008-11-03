@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client;
 
+import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.osgi.framework.BundleContext;
 
@@ -27,6 +28,17 @@ public class CoreClientActivator extends OseeActivator {
 
    public void start(BundleContext context) throws Exception {
       super.start(context);
+      HttpServer.startServers(1);
+   }
+
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      super.stop(context);
+      savePluginPreferences();
+
+      HttpServer.stopServers();
+
+      ClientSessionManager.releaseSession();
    }
 
    public static CoreClientActivator getInstance() {

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="session.manager">
+	<implementation class="org.eclipse.osee.framework.core.server.internal.SessionManager"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.core.server.ISessionManager"/>
+	</service>
+</component>

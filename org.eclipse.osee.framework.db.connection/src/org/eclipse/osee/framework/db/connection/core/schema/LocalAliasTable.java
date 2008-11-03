@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core.schema;
 
-
 /**
  * @author Robert A. Fisher
  */
@@ -19,7 +18,7 @@ public class LocalAliasTable extends Table {
 
    public LocalAliasTable(Table aliasedTable, String aliasName) {
       super(aliasName);
-      this.declarationName = alias(aliasedTable.name, aliasName);
+      this.declarationName = String.format("%s as %s", aliasedTable.name, aliasName);
    }
 
    @Override

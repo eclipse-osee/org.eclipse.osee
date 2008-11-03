@@ -86,7 +86,7 @@ public class LoadAIsAndTeamsAction {
       new LoadAIsAndTeamsAction(false, bundleId, true).run();
    }
 
-   public static void executeForAtsRuntimeConfig(boolean prompt, String bundleId) {
+   public static void executeForAtsRuntimeConfig(boolean prompt, String bundleId) throws OseeCoreException {
       new LoadAIsAndTeamsAction(false, bundleId, !AtsPlugin.isProductionDb()).run();
    }
 

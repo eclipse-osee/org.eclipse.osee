@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.connection;
+package org.eclipse.osee.framework.core.data;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeApplicationServerContext {
+public class OseeServerContext {
 
    private static final String BASE_CONTEXT = "osee";
 
@@ -26,10 +26,12 @@ public class OseeApplicationServerContext {
    public static final String SESSION_CONTEXT = asAbsoluteContext("session");
    public static final String LOOKUP_CONTEXT = asAbsoluteContext("server/lookup");
 
+   public static final String DB_INIT_SESSION_ID = "AAABHV_DBINIT_G8Bn7ufw";
+
    private static final String asAbsoluteContext(String value) {
       return BASE_CONTEXT + "/" + value;
    }
 
-   private OseeApplicationServerContext() {
+   private OseeServerContext() {
    }
 }

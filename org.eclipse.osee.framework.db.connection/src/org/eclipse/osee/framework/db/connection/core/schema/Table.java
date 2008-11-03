@@ -10,29 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core.schema;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
-
 public class Table {
    protected String name;
-   private static final String aliassyntax;
-   private static final Matcher matcher = Pattern.compile(" *PUT_TABLE_ALIAS_HERE *").matcher("");
 
-   static {
-      aliassyntax = SupportedDatabase.getDatabaseType() == SupportedDatabase.postgresql ? " as " : " ";
-   }
+   ////   private static final String aliassyntax;
+   ////   private static final Matcher matcher = Pattern.compile(" *PUT_TABLE_ALIAS_HERE *").matcher("");
+   //
+   //   static {
+   //      aliassyntax = SupportedDatabase.getDatabaseType() == SupportedDatabase.postgresql ? " as " : " ";
+   //   }
 
-   /**
-    * Remove all PUT_TABLE_ALIAS_HERE tags and replace with table alias specific to this DB
-    * 
-    * @param sql string with replace tag PUT_TABLE_ALIAS_HERE embedded
-    * @return sql with corresponding table alias replaced
-    */
-   public static String generateTableAliasedSql(String sql) {
-      matcher.reset(sql);
-      return matcher.replaceAll(aliassyntax);
-   }
+   //   /**
+   //    * Remove all PUT_TABLE_ALIAS_HERE tags and replace with table alias specific to this DB
+   //    * 
+   //    * @param sql string with replace tag PUT_TABLE_ALIAS_HERE embedded
+   //    * @return sql with corresponding table alias replaced
+   //    */
+   //   public static String generateTableAliasedSql(String sql) {
+   //      matcher.reset(sql);
+   //      return matcher.replaceAll(aliassyntax);
+   //   }
 
    /**
     * @param name
@@ -63,45 +60,45 @@ public class Table {
       return strB.toString();
    }
 
-   public String max(String columnName, String alias) {
-      return function("max", columnName, alias);
-   }
+   //   public String max(String columnName, String alias) {
+   //      return function("max", columnName, alias);
+   //   }
 
-   public String max(String columnName) {
-      return function("max", columnName, null);
-   }
+   //   public String max(String columnName) {
+   //      return function("max", columnName, null);
+   //   }
+   //
+   //   public String min(String columnName, String alias) {
+   //      return function("min", columnName, alias);
+   //   }
+   //
+   //   public String min(String columnName) {
+   //      return function("min", columnName, null);
+   //   }
 
-   public String min(String columnName, String alias) {
-      return function("min", columnName, alias);
-   }
+   //   public static String alias(String sql, String alias) {
+   //      StringBuilder strB = new StringBuilder();
+   //      strB.append(sql);
+   //      alias(strB, alias);
+   //      return strB.toString();
+   //   }
+   //
+   //   private static void alias(StringBuilder strB, String alias) {
+   //      strB.append(aliassyntax);
+   //      strB.append(alias);
+   //   }
 
-   public String min(String columnName) {
-      return function("min", columnName, null);
-   }
-
-   public static String alias(String sql, String alias) {
-      StringBuilder strB = new StringBuilder();
-      strB.append(sql);
-      alias(strB, alias);
-      return strB.toString();
-   }
-
-   private static void alias(StringBuilder strB, String alias) {
-      strB.append(aliassyntax);
-      strB.append(alias);
-   }
-
-   private String function(String function, String columnName, String alias) {
-      StringBuilder strB = new StringBuilder(60);
-      strB.append(function);
-      strB.append("(");
-      qualifyColumnName(strB, columnName);
-      strB.append(")");
-      if (alias != null && !alias.equals("")) {
-         alias(strB, alias);
-      }
-      return strB.toString();
-   }
+   //   private String function(String function, String columnName, String alias) {
+   //      StringBuilder strB = new StringBuilder(60);
+   //      strB.append(function);
+   //      strB.append("(");
+   //      qualifyColumnName(strB, columnName);
+   //      strB.append(")");
+   //      if (alias != null && !alias.equals("")) {
+   //         alias(strB, alias);
+   //      }
+   //      return strB.toString();
+   //   }
 
    private void createValuesList(StringBuilder strB, int parameterCount) {
       strB.append("VALUES (");
@@ -139,7 +136,7 @@ public class Table {
       return column(joinColumn) + "=" + joinTable.column(joinColumn);
    }
 
-   public LocalAliasTable aliasAs(String aliasName) {
-      return new LocalAliasTable(this, aliasName);
-   }
+   //   public LocalAliasTable aliasAs(String aliasName) {
+   //      return new LocalAliasTable(this, aliasName);
+   //   }
 }

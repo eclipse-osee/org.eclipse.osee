@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -18,5 +20,16 @@ import org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet;
 public class OseeHttpServlet extends InternalOseeHttpServlet {
 
    private static final long serialVersionUID = -4747761442607851113L;
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet#checkAccessControl()
+    */
+   @Override
+   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+      String sessionId = request.getParameter("sessionId");
+      String interaction =
+            String.format("%s %s %s", request.getMethod(), request.getRequestURI(), request.getQueryString());
+      CoreServerActivator.getSessionManager().updateSessionActivity(sessionId, interaction);
+   }
 
 }

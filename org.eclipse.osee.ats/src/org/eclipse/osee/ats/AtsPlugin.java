@@ -57,7 +57,7 @@ public class AtsPlugin extends OseeUiActivator {
       emailEnabled = enabled;
    }
 
-   public static boolean isProductionDb() {
+   public static boolean isProductionDb() throws OseeCoreException {
       return DatabaseActivator.getInstance().isProductionDb();
    }
 

@@ -17,20 +17,25 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.client.ServiceHealthManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
-import org.eclipse.osee.framework.core.data.OseeApplicationServerContext;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeArbitrationServerException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.logging.BaseStatus;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -40,6 +45,8 @@ public class OseeApplicationServer {
    private static String oseeServer = null;
    private static boolean serverStatus = false;
    private static OseeServerInfo serverInfo = null;
+   private static final String ArbitrationService = "Arbitration Server";
+   private static final String ApplicationServer = "Application Server";
 
    private OseeApplicationServer() {
    }
@@ -69,7 +76,12 @@ public class OseeApplicationServer {
             } else {
                serverInfo = getOseeServerAddress();
             }
+            if (serverInfo != null) {
+               oseeServer = String.format("http://%s:%s/", serverInfo.getServerAddress(), serverInfo.getPort());
+            }
          }
+      } catch (OseeArbitrationServerException ex) {
+         ServiceHealthManager.updateStatus(ArbitrationService, new BaseStatus(Level.SEVERE, ex));
       } finally {
          boolean canConnect = false;
          HttpURLConnection connection = null;
@@ -79,6 +91,7 @@ public class OseeApplicationServer {
             connection.connect();
             canConnect = true;
          } catch (Exception ex) {
+            ServiceHealthManager.updateStatus(ApplicationServer, new BaseStatus(Level.SEVERE, ex));
          } finally {
             if (connection != null) {
                connection.disconnect();
@@ -86,7 +99,11 @@ public class OseeApplicationServer {
          }
          if (canConnect != serverStatus) {
             serverStatus = canConnect;
-            //            notifyConnectionListeners();
+         } else {
+            DateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+            ServiceHealthManager.updateStatus(ApplicationServer, new BaseStatus(Level.INFO, String.format(
+                  "%s [%s] Running Since: %s", oseeServer, serverInfo.getVersion(),
+                  format.format(serverInfo.getDateStarted()))));
          }
       }
    }
@@ -111,8 +128,7 @@ public class OseeApplicationServer {
       InputStream inputStream = null;
       try {
          String url =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.LOOKUP_CONTEXT,
-                     parameters);
+               HttpUrlBuilder.getInstance().getOsgiArbitrationServiceUrl(OseeServerContext.LOOKUP_CONTEXT, parameters);
 
          outputStream = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
@@ -140,5 +156,4 @@ public class OseeApplicationServer {
       }
       return oseeServerInfo;
    }
-
 }

@@ -11,25 +11,31 @@
 package org.eclipse.osee.framework.core.server.internal;
 
 import java.lang.Thread.State;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ApplicationServerManager implements IApplicationServerManager {
-
+   private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
    private Map<String, OseeServerThreadFactory> threadFactories;
    private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
 
@@ -39,28 +45,51 @@ public class ApplicationServerManager implements IApplicationServerManager {
    public ApplicationServerManager() {
       this.oseeHttpServlets = Collections.synchronizedMap(new HashMap<String, InternalOseeHttpServlet>());
       this.threadFactories = Collections.synchronizedMap(new HashMap<String, OseeServerThreadFactory>());
-      this.applicationServerInfo = InternalOseeServerInfo.createFromLocalInfo();
+      this.applicationServerInfo = createOseeServerInfo();
       this.isRegistered = false;
+      applicationServerInfo.setAcceptingRequests(true);
+
+      Timer timer = new Timer("Register App Server");
+      timer.schedule(new TimerTask() {
+         public void run() {
+            checkDbRegistration();
+         }
+      }, 1000);
+   }
+
+   private OseeServerInfo createOseeServerInfo() {
+      String serverAddress = "127.0.0.1";
+      try {
+         serverAddress = InetAddress.getLocalHost().getCanonicalHostName();
+      } catch (UnknownHostException ex) {
+      }
+      int port = Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
+      return new OseeServerInfo(serverAddress, port, OseeCodeVersion.getVersion(), GlobalTime.GreenwichMeanTimestamp(),
+            false);
    }
 
    private synchronized void checkDbRegistration() {
       if (!this.isRegistered) {
          try {
-            ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
-            boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
-            this.isRegistered = status;
-            if (status) {
-               ((InternalOseeServerInfo) getApplicationServerInfo()).setAcceptingRequests(true);
-            }
-            updateServletRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
+            executeLookupRegistration();
          } catch (Exception ex) {
             OseeLog.log(CoreServerActivator.class, Level.SEVERE, ex);
          }
       }
    }
 
+   public boolean executeLookupRegistration() {
+      this.isRegistered = false;
+      ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
+      boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
+      applicationServerInfo.setAcceptingRequests(status);
+      updateServletRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
+      this.isRegistered = status;
+      return isRegistered;
+   }
+
    void register(String context, InternalOseeHttpServlet servlets) {
-      checkDbRegistration();
+      //      checkDbRegistration();
       servlets.setRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
       this.oseeHttpServlets.put(context, servlets);
    }
@@ -75,7 +104,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    public ThreadFactory createNewThreadFactory(String name, int priority) {
-      checkDbRegistration();
+      //      checkDbRegistration();
       OseeServerThreadFactory factory = new OseeServerThreadFactory(name, priority);
       this.threadFactories.put(name, factory);
       return factory;
@@ -110,11 +139,11 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    public synchronized void setServletRequestsAllowed(final boolean value) throws OseeDataStoreException {
-      checkDbRegistration();
+      //      checkDbRegistration();
       if (getApplicationServerInfo().isAcceptingRequests() != value) {
          boolean wasSuccessful = ApplicationServerDataStore.updateServerState(getApplicationServerInfo(), value);
          if (wasSuccessful) {
-            ((InternalOseeServerInfo) getApplicationServerInfo()).setAcceptingRequests(value);
+            getApplicationServerInfo().setAcceptingRequests(value);
             updateServletRequestsAllowed(value);
          }
       }

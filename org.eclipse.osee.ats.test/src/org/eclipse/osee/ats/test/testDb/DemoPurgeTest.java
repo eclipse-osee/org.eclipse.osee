@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServer;
+import org.eclipse.osee.framework.core.client.ServiceHealthManager;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,8 +51,8 @@ public class DemoPurgeTest extends TestCase {
 
    public void testDemoPurge() throws Exception {
       System.out.println("Validating OSEE Application Server...");
-      if (!OseeApplicationServer.isApplicationServerAlive()) {
-         System.err.println("No OSEE Application Server running.\nExiting.");
+      if (!ServiceHealthManager.areServicesAvailable()) {
+         System.err.println(ServiceHealthManager.getServicesStatusMessage() + ". \nExiting.");
          return;
       }
       System.out.println("Begin Demo Purge Test...");

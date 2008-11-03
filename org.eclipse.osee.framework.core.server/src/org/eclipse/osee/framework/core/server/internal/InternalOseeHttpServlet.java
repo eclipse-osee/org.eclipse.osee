@@ -16,12 +16,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
-public class InternalOseeHttpServlet extends HttpServlet {
+public abstract class InternalOseeHttpServlet extends HttpServlet {
    private static final long serialVersionUID = -4965613535312739355L;
    private boolean areRequestsAllowed;
    private boolean areLogsAllowed;
@@ -60,7 +61,7 @@ public class InternalOseeHttpServlet extends HttpServlet {
             request.getQueryString()) : "";
    }
 
-   boolean firstTime = true;
+   protected abstract void checkAccessControl(HttpServletRequest request) throws OseeCoreException;
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -72,20 +73,19 @@ public class InternalOseeHttpServlet extends HttpServlet {
          start = System.currentTimeMillis();
       }
       try {
-         if (firstTime) {
-            System.err.println("Temp fix for postgres dbinit; remove this");
-            System.err.println("Temp fix for postgres dbinit; remove this");
-            System.err.println("Temp fix for postgres dbinit; remove this");
-            firstTime = false;
+         if (areRequestsAllowed()) {
+            this.processingState = ProcessingStateEnum.BUSY;
+            this.request = request;
+            try {
+               checkAccessControl(request);
+               super.service(request, response);
+            } catch (OseeCoreException ex) {
+               throw new ServletException(ex);
+            }
+         } else {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write("All requests are currently blocked.");
          }
-         //         if (areRequestsAllowed()) {
-         this.processingState = ProcessingStateEnum.BUSY;
-         this.request = request;
-         super.service(request, response);
-         //         } else {
-         //            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-         //            response.getWriter().write("All requests are currently blocked.");
-         //         }
       } finally {
          if (areLogsAllowed()) {
             long elapsed = System.currentTimeMillis() - start;

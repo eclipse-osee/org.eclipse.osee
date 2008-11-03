@@ -18,14 +18,23 @@ public class OseeConnectionPool {
    private final Vector<OseeConnection> connections;
    final private long timeout = 60000;
    private final ConnectionReaper reaper;
-   private final DbInformation dbInformation;
+   private final String dbDriver;
+   private final String dbUrl;
+   private final Properties properties;
 
    /**
     * @param dbInformation
     */
    public OseeConnectionPool(DbInformation dbInformation) {
+      this(dbInformation.getConnectionData().getDBDriver(), dbInformation.getConnectionUrl(),
+            dbInformation.getProperties());
+   }
+
+   public OseeConnectionPool(String dbDriver, String dbUrl, Properties properties) {
       connections = new Vector<OseeConnection>();
-      this.dbInformation = dbInformation;
+      this.dbDriver = dbDriver;
+      this.dbUrl = dbUrl;
+      this.properties = properties;
       reaper = new ConnectionReaper(this);
       reaper.start();
    }
@@ -79,20 +88,12 @@ public class OseeConnectionPool {
       }
    }
 
-   private OseeConnection getOseeConnection() throws Exception {
+   public OseeConnection getOseeConnection() throws Exception {
       IConnection connectionFactory =
-            org.eclipse.osee.framework.db.connection.Activator.getDbConnectionFactory().get(
-                  dbInformation.getConnectionData().getDBDriver());
-
-      // Connection properties and attributes are added in the
-      // Connection Description portion of the Database Config XML file.
-      Properties properties = dbInformation.getProperties();
-      String dbUrl = dbInformation.getConnectionUrl();
-
+            org.eclipse.osee.framework.db.connection.Activator.getDbConnectionFactory().get(dbDriver);
       OseeLog.log(Activator.class, Level.INFO, "Getting new connection: " + dbUrl);
       Connection connection = connectionFactory.getConnection(properties, dbUrl);
       connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-
       return new OseeConnection(connection, this);
    }
 

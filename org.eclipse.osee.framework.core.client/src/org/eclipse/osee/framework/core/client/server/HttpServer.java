@@ -52,7 +52,7 @@ public class HttpServer implements Runnable {
       isRemoteServer = true;
    }
 
-   protected static String getLocalServerAddress() {
+   public static String getLocalServerAddress() {
       if (serverAddress == null) {
          if (isRemoteServer) {
             try {
@@ -76,13 +76,17 @@ public class HttpServer implements Runnable {
       return serverAddress;
    }
 
-   protected static int getPortByServiceName(String serviceName) {
+   public static int getPortByServiceName(String serviceName) {
       int toReturn = -1;
       HttpServer server = availableServers.get(serviceName);
       if (server != null) {
          toReturn = server.getPort();
       }
       return toReturn;
+   }
+
+   public static int getDefaultServicePort() {
+      return getPortByServiceName(HttpServer.DEFAULT_SERVICE_NAME);
    }
 
    /**

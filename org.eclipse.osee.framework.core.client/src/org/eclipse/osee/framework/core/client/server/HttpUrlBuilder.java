@@ -16,6 +16,9 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.CorePreferences;
+import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
+import org.eclipse.osee.framework.core.exception.OseeArbitrationServerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -74,7 +77,6 @@ public class HttpUrlBuilder {
    }
 
    public String getUrlForLocalSkynetHttpServer(String context, Map<String, String> parameters) {
-      // TODO clean exception handling
       try {
          return buildUrl(getSkynetHttpLocalServerPrefix(), context, getParametersAsEncodedUrl(parameters));
       } catch (UnsupportedEncodingException ex) {
@@ -87,9 +89,17 @@ public class HttpUrlBuilder {
       return getLocalServerPrefix(HttpServer.DEFAULT_SERVICE_NAME);
    }
 
-   public String getApplicationServerPrefix() throws OseeDataStoreException {
-      //      String address = SessionManager.getOseeApplicationServer();
-      String address = "";
+   public String getApplicationServerPrefix() throws OseeDataStoreException, OseeArbitrationServerException {
+      String address = OseeApplicationServer.getOseeApplicationServer();
+      if (address.endsWith("/") != true) {
+         address += "/";
+      }
+      return address;
+   }
+
+   public String getArbitrationServerPrefix() throws OseeDataStoreException {
+      String address =
+            CoreClientActivator.getInstance().getPluginPreferences().getString(CorePreferences.ARBITRATION_SERVER);
       if (address.endsWith("/") != true) {
          address += "/";
       }
@@ -99,6 +109,14 @@ public class HttpUrlBuilder {
    public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeDataStoreException {
       try {
          return buildUrl(getApplicationServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+      } catch (UnsupportedEncodingException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public String getOsgiArbitrationServiceUrl(String context, Map<String, String> parameters) throws OseeDataStoreException {
+      try {
+         return buildUrl(getArbitrationServerPrefix(), context, getParametersAsEncodedUrl(parameters));
       } catch (UnsupportedEncodingException ex) {
          throw new OseeDataStoreException(ex);
       }

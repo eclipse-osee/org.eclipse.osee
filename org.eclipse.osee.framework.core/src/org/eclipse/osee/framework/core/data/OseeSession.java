@@ -10,52 +10,107 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.io.InputStream;
+import java.sql.Timestamp;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+
 /**
- * @author Donald G. Dunne
+ * @author Roberto E. Escobar
  */
-public class OseeSession {
+public class OseeSession extends OseeClientInfo {
 
-   private String sessionId;
-   private String machineName;
-   private String userId;
-   private String machineIp;
+   private static final long serialVersionUID = 8144856081780854567L;
+   private static final String SESSION_ID = "sessionId";
+   private static final String USER_ID = "userId";
+   private static final String CREATED_ON = "createdOn";
+   private static final String LAST_INTERACTION_DATE = "lastInteractionDate";
+   private static final String LAST_INTERACTION = "lastInteraction";
 
-   public OseeSession(String id, String machineName, String userId, String machineIp) {
-      this.sessionId = id;
-      this.machineName = machineName;
-      this.machineIp = machineIp;
-      this.userId = userId;
+   private OseeSession() {
+      super();
    }
 
-   @Override
-   public String toString() {
-      return String.format("SessionId:[%s]\tUserId:[%s]\tMachine:[%s]\tIP:[%s]", sessionId, userId, machineName,
-            machineIp);
-   }
-
-   /**
-    * @return the machineName
-    */
-   public String getMachineName() {
-      return machineName;
+   public OseeSession(String sessionId, String userId, Timestamp createdOn, String machineName, String machineIp, int port, String clientVersion, Timestamp lastInteractionDate, String lastInteractionName) {
+      super(clientVersion, machineName, machineIp, port);
+      this.properties.put(SESSION_ID, sessionId);
+      this.properties.put(USER_ID, userId);
+      this.properties.put(CREATED_ON, Long.toString(createdOn.getTime()));
+      this.properties.put(LAST_INTERACTION_DATE, Long.toString(lastInteractionDate.getTime()));
+      this.properties.put(LAST_INTERACTION, lastInteractionName);
    }
 
    /**
     * @return the userId
     */
    public String getUserId() {
-      return userId;
+      return getString(USER_ID);
    }
 
    /**
-    * @return the machineIp
+    * @return the session id
     */
-   public String getMachineIp() {
-      return machineIp;
+   public String getSessionId() {
+      return getString(SESSION_ID);
    }
 
-   public String getSessionId() {
-      return sessionId;
+   /**
+    * @return the session creation date
+    */
+   public Timestamp getCreation() {
+      return new Timestamp(Long.valueOf(getString(CREATED_ON)));
+   }
+
+   /**
+    * @return the last task performed/requested
+    */
+   public String getLastInteraction() {
+      return getString(LAST_INTERACTION);
+   }
+
+   /**
+    * @return the last communication timestamp
+    */
+   public Timestamp getLastInteractionDate() {
+      return new Timestamp(Long.valueOf(getString(LAST_INTERACTION_DATE)));
+   }
+
+   /**
+    * Set the last interaction name
+    * 
+    * @param lastInteractionName
+    */
+   public void setLastInteraction(String lastInteractionName) {
+      this.properties.put(LAST_INTERACTION, lastInteractionName);
+   }
+
+   /**
+    * Set the last interaction date
+    * 
+    * @param timestamp
+    */
+   public void setLastInteractionDate(Timestamp timestamp) {
+      this.properties.put(LAST_INTERACTION_DATE, Long.toString(timestamp.getTime()));
+   }
+
+   /**
+    * Get a the session id and version in a single string
+    * 
+    * @param the session id and version
+    */
+   public String getSessionIdAndVersion() {
+      return String.format("%s - %s", getSessionId(), getVersion());
+   }
+
+   /**
+    * Create new instance from XML input
+    * 
+    * @param OseeSession the new instance
+    * @throws OseeWrappedException
+    */
+   public static OseeSession fromXml(InputStream inputStream) throws OseeWrappedException {
+      OseeSession session = new OseeSession();
+      session.loadfromXml(inputStream);
+      return session;
    }
 
 }

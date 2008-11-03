@@ -10,27 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client;
 
-import java.util.concurrent.ScheduledFuture;
+import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class ScheduledTask implements Runnable {
-   private final String name;
-   private ScheduledFuture<ScheduledTask> futureTask;
+public interface ICredentialProvider {
 
-   protected ScheduledTask(String name) {
-      this.name = name;
-      this.futureTask = null;
-   }
+   OseeCredential getCredential() throws OseeCoreException;
 
-   public String toString() {
-      return name;
-   }
-
-   void setScheduledFuture(ScheduledFuture<ScheduledTask> futureTask) {
-      if (!this.futureTask.equals(futureTask)) {
-         this.futureTask = futureTask;
-      }
-   }
 }

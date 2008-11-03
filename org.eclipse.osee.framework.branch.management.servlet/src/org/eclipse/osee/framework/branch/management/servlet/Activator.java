@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.branch.management.servlet;
 
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -52,12 +52,12 @@ public class Activator implements BundleActivator {
       branchExchangeTracker.open();
 
       httpBranchManagementTracker =
-            new OseeHttpServiceTracker(context, OseeApplicationServerContext.BRANCH_CREATION_CONTEXT,
+            new OseeHttpServiceTracker(context, OseeServerContext.BRANCH_CREATION_CONTEXT,
                   BranchManagerServlet.class);
       httpBranchManagementTracker.open();
 
       httpBranchExportTracker =
-            new OseeHttpServiceTracker(context, OseeApplicationServerContext.BRANCH_EXCHANGE_CONTEXT,
+            new OseeHttpServiceTracker(context, OseeServerContext.BRANCH_EXCHANGE_CONTEXT,
                   BranchExchangeServlet.class);
       httpBranchExportTracker.open();
 

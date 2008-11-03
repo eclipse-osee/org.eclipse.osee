@@ -28,9 +28,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.IDbInitializationRule;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
+import org.eclipse.osee.framework.database.NotOnProductionDbInitializationRule;
 import org.eclipse.osee.framework.database.core.DbClientThread;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
@@ -163,16 +165,18 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       return canConnection;
    }
 
-   private static boolean checkPreconditions() {
+   private static boolean checkPreconditions() throws OseeCoreException {
       DbInformation dbInfo = OseeDbConnection.getDefaultDatabaseService();
+      String serverUrl = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
+      System.setProperty(OseeProperties.OSEE_APPLICATION_SERVER_OVERRIDE, serverUrl);
 
-      if (DatabaseActivator.getInstance().isProductionDb()) {
+      if (NotOnProductionDbInitializationRule.isProductionDb()) {
          System.err.println(String.format(
                "You are not allowed to run config client against production servers. %s\nExiting.",
                DatabaseActivator.getInstance().getProductionDbs()));
          return true;
       }
-      String serverUrl = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
+
       boolean serverOk = isApplicationServerAlive(serverUrl);
       System.out.println(String.format("OSEE Application Server Validation [%s]", serverOk ? "PASSED" : "FAILED"));
       if (serverOk != true) {
@@ -181,10 +185,11 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
                serverUrl));
          return false;
       }
+
       return true;
    }
 
-   public static void main(String[] args) {
+   public static void main(String[] args) throws OseeCoreException {
       boolean isConfigured = false;
       System.setProperty(OSEE_CONFIG_FACTORY,
             "org.eclipse.osee.framework.plugin.core.config.HeadlessEclipseConfigurationFactory");

@@ -35,7 +35,7 @@ public class ApplicationServerDataStore {
    private static final String DELETE_FROM_LOOKUP_TABLE =
          "DELETE FROM osee_server_lookup WHERE server_address = ? AND port = ?";
 
-   private static final String SELECT_FROM_LOOKUP_TABLE = "SELECT * FROM osee_server_lookup %s";
+   private static final String SELECT_FROM_LOOKUP_TABLE = "SELECT * FROM osee_server_lookup where version_id%s";
 
    static boolean deregisterWithDb(OseeServerInfo applicationServerInfo) {
       boolean status = false;
@@ -45,7 +45,7 @@ public class ApplicationServerDataStore {
          status = true;
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to deregister server from lookup table.");
-      }
+         }
       return status;
    }
 
@@ -58,26 +58,28 @@ public class ApplicationServerDataStore {
          status = true;
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to register server into lookup table.");
-      }
+         }
       return status;
    }
 
    static boolean updateServerState(OseeServerInfo applicationServerInfo, boolean state) throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_LOOKUP_TABLE, state, applicationServerInfo.getServerAddress(),
+      ConnectionHandler.runPreparedUpdate(UPDATE_LOOKUP_TABLE, state ? 1 : 0, applicationServerInfo.getServerAddress(),
             applicationServerInfo.getPort());
       return true;
    }
 
-   static List<OseeServerInfo> getApplicationServerInfos(String options) throws OseeDataStoreException {
+   static List<OseeServerInfo> getApplicationServerInfos(String version) throws OseeDataStoreException {
       List<OseeServerInfo> toReturn = new ArrayList<OseeServerInfo>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(String.format(SELECT_FROM_LOOKUP_TABLE, options));
+         String query = String.format(SELECT_FROM_LOOKUP_TABLE, version.contains("%") ? " LIKE ?" : " = ?");
+        chStmt.runPreparedQuery(query, version);
          while (chStmt.next()) {
-            toReturn.add(InternalOseeServerInfo.createFromData(chStmt.getString("server_address"),
-                  chStmt.getInt("port"), chStmt.getString("version_id"), chStmt.getTimestamp("start_time"),
+            toReturn.add(new OseeServerInfo(chStmt.getString("server_address"), chStmt.getInt("port"),
+                  chStmt.getString("version_id"), chStmt.getTimestamp("start_time"),
                   chStmt.getInt("accepts_requests") != 0 ? true : false));
          }
+
       } finally {
          chStmt.close();
       }

@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadFactory;
-import org.eclipse.osee.framework.core.server.internal.ApplicationServerLookup;
 import org.eclipse.osee.framework.core.server.internal.ApplicationServerManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -20,10 +21,12 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class CoreServerActivator implements BundleActivator {
 
-   private ServiceRegistration applicationManagerService;
-   private ServiceRegistration applicationLookupService;
    private ServiceTracker applicationManagerTracker;
    private ServiceTracker applicationLookupTracker;
+   private ServiceTracker authenticationServiceTracker;
+   private ServiceTracker sessionServiceTracker;
+
+   private static List<ServiceRegistration> services;
    private static CoreServerActivator instance;
 
    /*
@@ -32,18 +35,21 @@ public class CoreServerActivator implements BundleActivator {
     */
    public void start(BundleContext context) throws Exception {
       instance = this;
-
-      applicationManagerService =
-            context.registerService(IApplicationServerManager.class.getName(), new ApplicationServerManager(), null);
-
-      applicationLookupService =
-            context.registerService(IApplicationServerLookup.class.getName(), new ApplicationServerLookup(), null);
+      services = new ArrayList<ServiceRegistration>();
+      services.add(context.registerService(IApplicationServerManager.class.getName(), new ApplicationServerManager(),
+            null));
 
       applicationManagerTracker = new ServiceTracker(context, IApplicationServerManager.class.getName(), null);
       applicationManagerTracker.open();
 
       applicationLookupTracker = new ServiceTracker(context, IApplicationServerLookup.class.getName(), null);
       applicationLookupTracker.open();
+
+      authenticationServiceTracker = new ServiceTracker(context, IAuthenticationManager.class.getName(), null);
+      authenticationServiceTracker.open();
+
+      sessionServiceTracker = new ServiceTracker(context, ISessionManager.class.getName(), null);
+      sessionServiceTracker.open();
    }
 
    /*
@@ -63,20 +69,33 @@ public class CoreServerActivator implements BundleActivator {
          applicationLookupTracker = null;
       }
 
-      if (applicationLookupService != null) {
-         applicationLookupService.unregister();
-         applicationLookupService = null;
+      if (authenticationServiceTracker != null) {
+         authenticationServiceTracker.close();
+         authenticationServiceTracker = null;
       }
 
-      if (applicationManagerService != null) {
-         applicationManagerService.unregister();
-         applicationManagerService = null;
+      if (sessionServiceTracker != null) {
+         sessionServiceTracker.close();
+         sessionServiceTracker = null;
       }
+
+      for (ServiceRegistration service : services) {
+         service.unregister();
+      }
+      services.clear();
       instance = null;
    }
 
    private static CoreServerActivator getInstance() {
       return instance;
+   }
+
+   public static IAuthenticationManager getAuthenticationManager() {
+      return (IAuthenticationManager) getInstance().authenticationServiceTracker.getService();
+   }
+
+   public static ISessionManager getSessionManager() {
+      return (ISessionManager) getInstance().sessionServiceTracker.getService();
    }
 
    public static ThreadFactory createNewThreadFactory(String name) {
