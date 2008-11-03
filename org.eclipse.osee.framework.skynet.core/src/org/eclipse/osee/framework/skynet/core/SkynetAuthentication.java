@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,6 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.ICredentialProvider;
+import org.eclipse.osee.framework.core.client.server.HttpServer;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserInDatabaseMultipleTimes;
@@ -34,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
+import org.eclipse.osee.framework.ui.plugin.security.UserCredentials;
 import org.eclipse.osee.framework.ui.plugin.security.UserCredentials.UserCredentialEnum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.widgets.Display;
@@ -80,8 +88,7 @@ public class SkynetAuthentication {
             userIdToUserCache = new HashMap<String, User>(800);
             activeUserCache = new ArrayList<User>(700);
             Collection<Artifact> dbUsers =
-                  ArtifactQuery.getArtifactsFromAttributeType(User.userIdAttributeName,
-                        BranchManager.getCommonBranch());
+                  ArtifactQuery.getArtifactsFromAttributeType(User.userIdAttributeName, BranchManager.getCommonBranch());
             for (Artifact a : dbUsers) {
                User user = (User) a;
                cacheUser(user, null);
@@ -128,7 +135,7 @@ public class SkynetAuthentication {
       return OseeAuthentication.getInstance().isAuthenticated();
    }
 
-   private void forceAuthenticationRoutine() {
+   private void forceAuthenticationRoutine() throws OseeCoreException {
       OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
       if (!oseeAuthentication.isAuthenticated()) {
          if (oseeAuthentication.isLoginAllowed()) {
@@ -162,61 +169,87 @@ public class SkynetAuthentication {
       return instance.getAuthenticatedUser();
    }
 
+   private void ensureSessionCreated() throws OseeCoreException {
+      if (!ClientSessionManager.isSessionValid()) {
+         ClientSessionManager.authenticate(new ICredentialProvider() {
+
+            @Override
+            public OseeCredential getCredential() {
+               UserCredentials credentials = OseeAuthentication.getInstance().getCredentials();
+               OseeCredential credential = new OseeCredential();
+               credential.setUserId(credentials.getField(UserCredentialEnum.Id));
+               credential.setDomain(credentials.getField(UserCredentialEnum.Domain));
+               credential.setPassword(credentials.getField(UserCredentialEnum.Password));
+               HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
+               credential.setClientAddress(HttpServer.getLocalServerAddress(), HttpServer.getDefaultServicePort());
+               credential.setClientVersion(OseeCodeVersion.getVersion());
+               try {
+                  credential.setClientMachineName(InetAddress.getLocalHost().getHostName());
+               } catch (Exception ex) {
+                  credential.setClientMachineName(ex.getLocalizedMessage());
+                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+               }
+               return credential;
+            }
+
+         });
+      }
+   }
+
    private synchronized User getAuthenticatedUser() {
       try {
          if (!isBasicUsersCreated()) {
             return BootStrapUser.getInstance();
-         } else {
-            if (firstTimeThrough) {
-               forceAuthenticationRoutine();
-            }
-            if (currentUser == null && !OseeAuthentication.getInstance().isAuthenticated()) {
+         }
+         if (firstTimeThrough) {
+            forceAuthenticationRoutine();
+            firstTimeThrough = false; // firstTimeThrough must be set false after last use of its value
+         }
+         if (currentUser == null) {
+            if (!OseeAuthentication.getInstance().isAuthenticated()) {
                popupGuestLoginNotification();
                currentUser = getUser(UserEnum.Guest);
             } else {
                String userId = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id);
-               if (currentUser == null) {
-                  try {
-                     currentUser = getUserByUserId(userId);
-                     // Validate/Update user credentials
-                     String credentialEmail =
-                           OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Email);
-                     String name = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Name);
-                     if (!name.equals(userId) && !currentUser.getName().equals(name)) {
-                        currentUser.setDescriptiveName(name);
-                     }
-                     if (credentialEmail != null && credentialEmail.contains("@") && !credentialEmail.equals(currentUser.getSoleAttributeValue(
-                           "Email", ""))) {
-                        currentUser.setSoleAttributeFromString("Email", credentialEmail);
-                     }
-                     currentUser.persistAttributes();
+               try {
+                  currentUser = getUserByUserId(userId);
+                  // Validate/Update user credentials
+                  String credentialEmail =
+                        OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Email);
+                  String name = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Name);
+                  if (!name.equals(userId) && !currentUser.getName().equals(name)) {
+                     currentUser.setDescriptiveName(name);
+                  }
+                  if (credentialEmail != null && credentialEmail.contains("@") && !credentialEmail.equals(currentUser.getSoleAttributeValue(
+                        "Email", ""))) {
+                     currentUser.setSoleAttributeFromString("Email", credentialEmail);
+                  }
+                  currentUser.persistAttributes();
 
-                  } catch (UserNotInDatabase ex) {
-                     if (createUserWhenNotInDatabase) {
-                        String email =
-                              OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Email);
-                        currentUser =
-                              createUser(OseeAuthentication.getInstance().getCredentials().getField(
-                                    UserCredentialEnum.Name), email == null ? "spawnedBySkynet" : email, userId, true);
-                        persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
-                     } else {
-                        if (currentUser == null) {
-                           popupGuestLoginNotification();
-                           currentUser = getUser(UserEnum.Guest);
-                        }
+               } catch (UserNotInDatabase ex) {
+                  if (createUserWhenNotInDatabase) {
+                     String email =
+                           OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Email);
+                     currentUser =
+                           createUser(OseeAuthentication.getInstance().getCredentials().getField(
+                                 UserCredentialEnum.Name), email == null ? "spawnedBySkynet" : email, userId, true);
+                     persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
+                  } else {
+                     if (currentUser == null) {
+                        popupGuestLoginNotification();
+                        currentUser = getUser(UserEnum.Guest);
                      }
                   }
                }
             }
-            firstTimeThrough = false; // firstTimeThrough must be set false after last use of its value
          }
+         ensureSessionCreated();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
 
       return currentUser;
    }
-
    private static boolean notifiedAsGuest = false;
 
    private void popupGuestLoginNotification() {
@@ -277,9 +310,7 @@ public class SkynetAuthentication {
       duringUserCreation = true;
       User user = null;
       try {
-         user =
-               (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getCommonBranch(),
-                     name);
+         user = (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getCommonBranch(), name);
          user.setActive(active);
          user.setUserID(userID);
          user.setEmail(email);
@@ -326,9 +357,7 @@ public class SkynetAuthentication {
       User user = instance.userIdToUserCache.get(userId);
       if (user == null) {
          try {
-            user =
-                  (User) ArtifactQuery.getArtifactFromAttribute("User Id", userId,
-                        BranchManager.getCommonBranch());
+            user = (User) ArtifactQuery.getArtifactFromAttribute("User Id", userId, BranchManager.getCommonBranch());
          } catch (ArtifactDoesNotExist ex) {
             throw new UserNotInDatabase("the user with id " + userId + " was not found.");
          }
