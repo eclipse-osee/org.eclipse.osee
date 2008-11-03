@@ -14,8 +14,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.CorePreferences;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -95,8 +98,8 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
          networkButtons.put(addrs[i], button);
       }
 
-      IPreferenceStore prefStore = plugin.getPreferenceStore();
-      String inetaddress = prefStore.getString(PreferenceConstants.INETADDRESS_KEY);
+      Preferences prefStore = CoreClientActivator.getInstance().getPluginPreferences();
+      String inetaddress = prefStore.getString(CorePreferences.INETADDRESS_KEY);
 
       boolean addressSelected = false;
       if (inetaddress != null && !inetaddress.equals("")) {
@@ -153,17 +156,16 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    }
 
    public boolean performOk() {
-      IPreferenceStore prefStore = plugin.getPreferenceStore();
-
-      prefStore.putValue(PreferenceConstants.INETADDRESS_KEY, "");
+      Preferences prefStore = CoreClientActivator.getInstance().getPluginPreferences();
+      prefStore.setValue(CorePreferences.INETADDRESS_KEY, "");
       for (InetAddress address : networkButtons.keySet()) {
          if (networkButtons.get(address).getSelection()) {
-            prefStore.putValue(PreferenceConstants.INETADDRESS_KEY, address.getHostAddress());
+            prefStore.setValue(CorePreferences.INETADDRESS_KEY, address.getHostAddress());
             break;
          }
       }
 
-      prefStore.putValue(PreferenceConstants.WORDWRAP_KEY,
+      SkynetActivator.getInstance().getPreferenceStore().putValue(PreferenceConstants.WORDWRAP_KEY,
             wordWrapChkBox.getSelection() ? IPreferenceStore.TRUE : IPreferenceStore.FALSE);
 
       return super.performOk();

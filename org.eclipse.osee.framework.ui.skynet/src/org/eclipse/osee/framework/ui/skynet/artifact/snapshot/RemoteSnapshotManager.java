@@ -23,14 +23,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -110,6 +111,7 @@ class RemoteSnapshotManager {
       String name = Integer.toString(snapshot.getGamma());
       String seed = snapshot.getNamespace();
       Map<String, String> parameterMap = new HashMap<String, String>();
+      parameterMap.put("sessionId", ClientSessionManager.getSessionId());
       parameterMap.put("protocol", "snapshot");
       parameterMap.put("seed", seed);
       parameterMap.put("name", name);
@@ -118,18 +120,18 @@ class RemoteSnapshotManager {
          parameterMap.put("extension", extension);
       }
       parameterMap.put("is.overwrite.allowed", Boolean.toString(true));
+
       String urlString =
-            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
-                  parameterMap);
+            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
       return new URL(urlString);
    }
 
    private URL generatePathURL(Pair<String, String> key) throws Exception {
       Map<String, String> parameterMap = new HashMap<String, String>();
+      parameterMap.put("sessionId", ClientSessionManager.getSessionId());
       parameterMap.put("uri", generateUriFromKey(key));
       String urlString =
-            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
-                  parameterMap);
+            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
       return new URL(urlString);
    }
 

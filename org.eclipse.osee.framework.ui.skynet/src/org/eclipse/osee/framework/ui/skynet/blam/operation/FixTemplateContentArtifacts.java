@@ -16,9 +16,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeInfo;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
@@ -124,17 +123,15 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
    private ArrayList<AttrData> loadAttrData() throws OseeDataStoreException, OseeTypeDoesNotExist {
       ArrayList<AttrData> attrData = new ArrayList<AttrData>();
 
-      ConnectionHandlerStatement chStmt = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_ATTRS_TEST,
-                     AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT));
+         chStmt.runPreparedQuery(GET_ATTRS_TEST, AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT));
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
                   chStmt.getString("uri")));
          }
       } finally {
-         ConnectionHandler.close(chStmt);
+         chStmt.close();
       }
       return attrData;
    }
@@ -150,8 +147,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          parameterMap.put("extension", extension);
       }
       String urlString =
-            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
-                  parameterMap);
+            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
       return new URL(urlString);
    }
 
@@ -181,7 +177,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          address = address.substring(0, address.length() - 1);
       }
       return new URL(String.format("%s/%s?uri=%s&decompress.before.sending=true", address,
-            OseeApplicationServerContext.RESOURCE_CONTEXT, URLEncoder.encode(uriPath, "UTF-8")));
+            OseeServerContext.RESOURCE_CONTEXT, URLEncoder.encode(uriPath, "UTF-8")));
    }
 
    //To handle the case of sub-sections

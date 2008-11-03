@@ -10,28 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServer;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.client.ServiceHealthManager;
+import org.eclipse.osee.framework.core.client.ServiceStatus;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -124,57 +114,14 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
 
    private List<DataRecord> getConfigurationDetails() {
       List<DataRecord> configurationDetails = new ArrayList<DataRecord>();
-      String defaultApplicationServer = null;
-      try {
-         defaultApplicationServer = HttpUrlBuilder.getInstance().getApplicationServerPrefix();
-      } catch (OseeDataStoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
-      }
-      DataRecord record =
-            new DataRecord("Application Server", defaultApplicationServer != null ? defaultApplicationServer : "");
-      record.setStatus(OseeApplicationServer.isApplicationServerAlive());
-      configurationDetails.add(record);
 
-      boolean dbConnection = false;
-      String dbStatus = "Unavailable";
-      Connection connection = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         DatabaseMetaData dbData = connection.getMetaData();
-         dbStatus = getDbStatus(dbData.getDatabaseProductName(), dbData.getDatabaseProductVersion(), dbData.getURL());
-         dbConnection = true;
-      } catch (Exception ex) {
-         DbInformation info = OseeDbConnection.getDefaultDatabaseService();
-         dbStatus = getDbStatus(info.getDatabaseDetails().getId(), "", info.getConnectionUrl());
-         dbConnection = false;
-      } finally {
-         ConnectionHandler.close(connection);
+      Collection<ServiceStatus> serviceInfos = ServiceHealthManager.getServiceStatus();
+      for (ServiceStatus serviceInfo : serviceInfos) {
+         DataRecord record = new DataRecord(serviceInfo.getName(), serviceInfo.getDetails());
+         record.setStatus(serviceInfo.isHealthOk());
+         configurationDetails.add(record);
       }
-      record = new DataRecord("Database", dbStatus);
-      record.setStatus(dbConnection);
-      configurationDetails.add(record);
       return configurationDetails;
-   }
-
-   private String getDbStatus(String dbName, String dbVersion, String url) {
-      StringBuffer dbInfo = new StringBuffer();
-      if (Strings.isValid(dbName)) {
-         dbName = dbName.replaceAll("\n", "");
-         dbName = dbName.replaceAll("\r", "");
-      }
-      dbInfo.append(dbName);
-      dbInfo.append(" ");
-      dbInfo.append(dbVersion);
-      dbInfo.append(" - ");
-      Pattern pattern = Pattern.compile("//(.*)?.*?/(.*)");
-      Matcher matcher = pattern.matcher(url);
-      if (matcher.find()) {
-         dbInfo.append(matcher.group(1));
-         dbInfo.append(" - ");
-         dbInfo.append(matcher.group(2));
-      }
-      dbInfo.append("  ");
-      return dbInfo.toString();
    }
 
    /* (non-Javadoc)

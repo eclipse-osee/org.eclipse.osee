@@ -12,11 +12,12 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListneer;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -140,15 +141,19 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
          // original client's session id so it can be identified as the correct pong
          try {
             OseeEventManager.kickBroadcastEvent(this, BroadcastEventType.Pong, new String[] {},
-                  sender.getOseeSession().getId());
+                  sender.getOseeSession().toString());
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       } else if (broadcastEventType == BroadcastEventType.Pong) {
          // Got pong from another client; If message == this client's sessionId, then it's 
          // the response from this client's ping
-         if (message != null && message.equals(ApplicationServer.getOseeSession().getId())) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Pong: " + sender.toString());
+         try {
+            if (message != null && message.equals(ClientSessionManager.getSession().toString())) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Pong: " + sender.toString());
+            }
+         } catch (OseeAuthenticationRequiredException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Pong: " + sender.toString(), ex);
          }
       }
    }

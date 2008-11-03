@@ -134,6 +134,18 @@ public class DefaultWithStringAndIntegerFields extends FieldEditor {
       }
    }
 
+   public String getSelected() {
+      String toReturn = defaultValue;
+      if (userButton.getSelection()) {
+         String textField = text1.getText();
+         String integerField = text2.getText();
+         if (areValuesValid(textField, integerField)) {
+            toReturn = String.format("http://%s:%s", textField, integerField);
+         }
+      }
+      return toReturn;
+   }
+
    @Override
    public int getNumberOfControls() {
       return 2;

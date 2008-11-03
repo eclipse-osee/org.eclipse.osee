@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.IDbConnectionListener;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.info.DbDetailData;
-import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.swt.graphics.Image;
@@ -28,19 +30,16 @@ import org.eclipse.ui.part.ViewPart;
  * @author Jeff C. Phillips
  */
 public class SkynetConnectionContributionItem extends SkynetContributionItem implements IDbConnectionListener {
-   private static final DbDetailData dbData = OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails();
-   private static final String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
-   private static final String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
    private static final String ID = "skynet.connection";
    private static final SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
    private static final Image ENABLED = skynetGuiPlugin.getImage("repository.gif");
    private static final Image DISABLED =
          new OverlayImage(ENABLED, skynetGuiPlugin.getImageDescriptor("red_slash.gif")).createImage();
-   private static final String ENABLED_TOOLTIP = "Database is connected to " + dbName + " as " + userName + ".";
+   private static final String ENABLED_TOOLTIP = "Database is connected to %s as %s.";
    private static final String DISABLED_TOOLTIP = "Database is disconnected.";
 
    public SkynetConnectionContributionItem() {
-      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP);
+      super(ID, ENABLED, DISABLED, String.format(ENABLED_TOOLTIP, "none", "none"), DISABLED_TOOLTIP);
       init();
    }
 
@@ -55,7 +54,11 @@ public class SkynetConnectionContributionItem extends SkynetContributionItem imp
           */
          @Override
          public void run() {
-            (new HtmlDialog("OSEE Session", "", ApplicationServer.getOseeSession().toString())).open();
+            try {
+               (new HtmlDialog("OSEE Session", "", ClientSessionManager.getSession().toString())).open();
+            } catch (OseeAuthenticationRequiredException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
    }
@@ -80,7 +83,13 @@ public class SkynetConnectionContributionItem extends SkynetContributionItem imp
       Display.getDefault().asyncExec(new Runnable() {
          @Override
          public void run() {
-            updateStatus(open);
+            try {
+               setEnabledToolTip(String.format(ENABLED_TOOLTIP, ClientSessionManager.getDataStoreName(),
+                     ClientSessionManager.getDataStoreLoginName()));
+               updateStatus(open);
+            } catch (Exception ex) {
+               setEnabledToolTip(String.format(ENABLED_TOOLTIP, "none", "none"));
+            }
          }
       });
    }

@@ -12,9 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.IApplicationServerConnectionListener;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -36,8 +34,8 @@ public class ApplicationServerStatusContributionItem extends SkynetContributionI
    }
 
    private void init() {
-      updateStatus(OseeApplicationServer.isApplicationServerAlive());
-      OseeApplicationServer.addListener(this);
+      //      updateStatus(OseeApplicationServer.isApplicationServerAlive());
+      //      OseeApplicationServer.addListener(this);
    }
 
    public static void addTo(IStatusLineManager manager) {
@@ -57,11 +55,12 @@ public class ApplicationServerStatusContributionItem extends SkynetContributionI
    @Override
    protected String getDisabledToolTip() {
       String message = null;
-      try {
-         message = OseeApplicationServer.getOseeApplicationServer();
-      } catch (OseeDataStoreException ex) {
-         message = "";
-      }
+      //      try {
+      message = "";
+      //         OseeApplicationServer.getOseeApplicationServer();
+      //      } catch (OseeDataStoreException ex) {
+      message = "";
+      //      }
       return String.format("Not connected to application server [%s]", message);
    }
 
@@ -71,11 +70,12 @@ public class ApplicationServerStatusContributionItem extends SkynetContributionI
    @Override
    protected String getEnabledToolTip() {
       String message;
-      try {
-         message = OseeApplicationServer.getOseeApplicationServer();
-      } catch (OseeDataStoreException ex) {
-         message = "";
-      }
+      //      try {
+      message = "";
+      //         OseeApplicationServer.getOseeApplicationServer();
+      //      } catch (OseeDataStoreException ex) {
+      message = "";
+      //      }
       return String.format("Connected to application server [%s]", message);
    }
 

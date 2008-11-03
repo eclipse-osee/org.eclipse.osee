@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.osee.framework.skynet.core.linking.HttpServer;
+import org.eclipse.osee.framework.core.client.server.HttpServer;
 
 /**
  * @author Roberto E. Escobar

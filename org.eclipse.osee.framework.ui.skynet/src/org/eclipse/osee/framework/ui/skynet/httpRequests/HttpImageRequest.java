@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.httpRequests;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
-import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
-import org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest;
+import org.eclipse.osee.framework.core.client.server.HttpRequest;
+import org.eclipse.osee.framework.core.client.server.HttpResponse;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.IHttpServerRequest;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotManager;
 
 /**
