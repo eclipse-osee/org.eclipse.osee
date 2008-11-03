@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
 
@@ -37,9 +38,19 @@ public class SkynetActivator extends OseeUiActivator {
       return pluginInstance;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.plugin.OseeUiActivator#start(org.osgi.framework.BundleContext)
+    */
+   @Override
+   public void start(BundleContext context) throws Exception {
+      super.start(context);
+      HttpAttributeTagger.getInstance().registerWithEventManager();
+   }
+
    @Override
    public void stop(BundleContext context) throws Exception {
-      super.stop(context);
+      HttpAttributeTagger.getInstance().deregisterFromEventManager();
       if (job != null && job.getThread().isAlive()) job.getThread().interrupt();
+      super.stop(context);
    }
 }

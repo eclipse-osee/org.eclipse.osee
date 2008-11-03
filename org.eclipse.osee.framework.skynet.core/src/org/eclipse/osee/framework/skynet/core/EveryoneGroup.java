@@ -34,14 +34,12 @@ public class EveryoneGroup {
    private static void createEveryoneGroup() {
       try {
          List<Artifact> artifacts =
-               ArtifactQuery.getArtifactsFromTypeAndName("User Group", GROUP_NAME,
-                     BranchManager.getCommonBranch());
+               ArtifactQuery.getArtifactsFromTypeAndName("User Group", GROUP_NAME, BranchManager.getCommonBranch());
 
          if (!artifacts.isEmpty()) {
             everyoneGroup = artifacts.get(0);
          } else {
-            everyoneGroup =
-                  ArtifactTypeManager.addArtifact("User Group", BranchManager.getCommonBranch(), GROUP_NAME);
+            everyoneGroup = ArtifactTypeManager.addArtifact("User Group", BranchManager.getCommonBranch(), GROUP_NAME);
 
             boolean wasNotInDbInit = !SkynetDbInit.isDbInit();
             if (wasNotInDbInit) { // EveryoneGroup needs to be created under the special condition of the init
