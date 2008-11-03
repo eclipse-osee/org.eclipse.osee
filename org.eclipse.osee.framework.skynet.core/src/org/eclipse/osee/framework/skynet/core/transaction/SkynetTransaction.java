@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
@@ -104,39 +105,39 @@ public class SkynetTransaction {
 
       Connection connection = OseeDbConnection.getConnection();
       try {
-         try {
-            boolean insertBatchToTransactions = executeBatchToTransactions(connection, monitor);
-            boolean insertTransactionDataItems = executeTransactionDataItems(connection);
+      	try {
+         boolean insertBatchToTransactions = executeBatchToTransactions(connection, monitor);
+         boolean insertTransactionDataItems = executeTransactionDataItems(connection);
 
-            deleteTransactionDetail = !insertBatchToTransactions && !insertTransactionDataItems;
+         deleteTransactionDetail = !insertBatchToTransactions && !insertTransactionDataItems;
 
-            for (BaseTransactionData transactionData : transactionItems.keySet()) {
-               transactionData.internalClearDirtyState();
-            }
-         } catch (OseeDataStoreException ex) {
-            deleteTransactionDetail = true;
-            for (BaseTransactionData transactionData : transactionItems.keySet()) {
-               try {
-                  transactionData.internalOnRollBack();
-               } catch (OseeCoreException ex1) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
-               }
-            }
-            ConnectionHandler.requestRollback();
-            OseeLog.log(SkynetActivator.class, Level.SEVERE,
-                  "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
-            throw ex;
-         } finally {
-            if (deleteTransactionDetail) {
-               xModifiedEvents.clear();
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_DETAIL,
-                     transactionId.getTransactionNumber());
-            } else {
-               for (BaseTransactionData transactionData : transactionItems.keySet()) {
-                  transactionData.internalUpdate();
-               }
+         for (BaseTransactionData transactionData : transactionItems.keySet()) {
+            transactionData.internalClearDirtyState();
+         }
+      } catch (OseeDataStoreException ex) {
+         deleteTransactionDetail = true;
+         for (BaseTransactionData transactionData : transactionItems.keySet()) {
+            try {
+               transactionData.internalOnRollBack();
+            } catch (OseeCoreException ex1) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
             }
          }
+         ConnectionHandler.requestRollback();
+         OseeLog.log(SkynetActivator.class, Level.SEVERE,
+               "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
+         throw ex;
+      } finally {
+         if (deleteTransactionDetail) {
+            xModifiedEvents.clear();
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_DETAIL,
+                     transactionId.getTransactionNumber());
+         } else {
+            for (BaseTransactionData transactionData : transactionItems.keySet()) {
+               transactionData.internalUpdate();
+            }
+         }
+      }
       } finally {
          ConnectionHandler.close(connection);
       }
@@ -206,12 +207,12 @@ public class SkynetTransaction {
       return preparedBatch.size() > 0;
    }
 
-   public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeDataStoreException {
+   public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(sourceObject), artifactModType, artifact,
             getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
    }
 
-   public void addRelationModifiedEvent(Object sourceObject, RelationModType relationModType, RelationLink link, Branch branch, String relationType) {
+   public void addRelationModifiedEvent(Object sourceObject, RelationModType relationModType, RelationLink link, Branch branch, String relationType) throws OseeAuthenticationRequiredException {
       xModifiedEvents.add(new RelationModifiedEvent(new Sender(sourceObject), relationModType, link, branch,
             relationType));
    }
@@ -221,8 +222,12 @@ public class SkynetTransaction {
     */
    public void kickEvents() {
       if (xModifiedEvents.size() > 0) {
-         OseeEventManager.kickTransactionEvent(this, xModifiedEvents);
-         xModifiedEvents.clear();
+         try {
+            OseeEventManager.kickTransactionEvent(this, xModifiedEvents);
+            xModifiedEvents.clear();
+         } catch (OseeAuthenticationRequiredException ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         }
       }
    }
 

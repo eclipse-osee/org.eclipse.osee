@@ -14,12 +14,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -41,8 +43,9 @@ public class HttpBranchExchange {
       execute(parameters);
    }
 
-   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, int... branchIds) throws OseeDataStoreException {
+   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, int... branchIds) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("function", BRANCH_IMPORT);
       if (!path.startsWith("exchange://")) {
          path = "exchange://" + path;
@@ -62,7 +65,7 @@ public class HttpBranchExchange {
       try {
          String returnVal =
                HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
-                     OseeApplicationServerContext.BRANCH_EXCHANGE_CONTEXT, parameters)));
+                     OseeServerContext.BRANCH_EXCHANGE_CONTEXT, parameters)));
          OseeLog.log(HttpBranchExchange.class, Level.INFO, returnVal);
       } catch (Exception ex) {
          throw new OseeDataStoreException(ex);

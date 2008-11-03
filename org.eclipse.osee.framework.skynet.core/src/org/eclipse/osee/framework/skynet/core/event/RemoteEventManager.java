@@ -26,9 +26,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.info.DbDetailData;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkTransactio
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
@@ -93,21 +94,17 @@ public class RemoteEventManager implements IServiceLookupListener {
 
    private RemoteEventManager() {
       super();
-
-      DbDetailData dbData = OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails();
-      String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
-      String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
-
-      ACCEPTABLE_SERVICE = dbName + ":" + userName;
-
       try {
+         // We need to trigger authentication before attempting to get database information from client session manager.
+         SkynetAuthentication.getUser();
+         ACCEPTABLE_SERVICE =
+               ClientSessionManager.getDataStoreName() + ":" + ClientSessionManager.getDataStoreLoginName();
          this.listener = new EventListener();
          this.myReference = (ISkynetEventListener) OseeJini.getRemoteReference(listener);
 
          addListenerForEventService();
-      } catch (ExportException ex) {
+      } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-
       }
    }
 
@@ -272,7 +269,11 @@ public class RemoteEventManager implements IServiceLookupListener {
                   Sender sender = new Sender((event).getNetworkSender());
                   // If the sender's sessionId is the same as this client, then this event was
                   // created in this client and returned by remote event manager; ignore and continue
-                  if (sender.isLocal()) continue;
+                  try {
+                     if (sender.isLocal()) continue;
+                  } catch (OseeAuthenticationRequiredException ex1) {
+                     OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
+                  }
 
                   if (event instanceof NetworkAccessControlArtifactsEvent) {
                      try {

@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -42,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
  */
 class DeleteBranchJob extends Job {
    private static final String COUNT_CHILD_BRANCHES =
-         "SELECT " + Table.alias("count(branch_id)", "child_branches") + " FROM " + BRANCH_TABLE + " WHERE " + BRANCH_TABLE.column("parent_branch_id") + "=?";
+         "SELECT count(branch_id) as child_branches FROM " + BRANCH_TABLE + " WHERE " + BRANCH_TABLE.column("parent_branch_id") + "=?";
    private static final LocalAliasTable T1 = new LocalAliasTable(TRANSACTION_DETAIL_TABLE, "t1");
    private static final LocalAliasTable T2 = new LocalAliasTable(TRANSACTIONS_TABLE, "t2");
    private static final String SEARCH_FOR_DELETABLE_GAMMAS =

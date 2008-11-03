@@ -12,17 +12,29 @@
 package org.eclipse.osee.framework.skynet.core.dbinit;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.PERMISSION_TABLE;
+import java.io.File;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.ICredentialProvider;
+import org.eclipse.osee.framework.core.client.server.HttpServer;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeDatabaseId;
 import org.eclipse.osee.framework.core.data.OseeInfo;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.database.IDbInitializationRule;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.data.SchemaData;
@@ -30,12 +42,19 @@ import org.eclipse.osee.framework.database.utility.DatabaseConfigurationData;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -73,7 +92,7 @@ public class SkynetDbInit implements IDbInitializationTask {
       DbInit.addIndeces(schemas, userSpecifiedConfig, connection, databaseType);
       DbInit.addViews(connection, databaseType);
       OseeInfo.putValue(OseeDatabaseId.getKey(), GUID.generateGuidStr());
-      ApplicationServer.initialize();
+      initializeApplicationServer();
       populateSequenceTable();
       addDefaultPermissions();
    }
@@ -84,6 +103,69 @@ public class SkynetDbInit implements IDbInitializationTask {
 
    public static void setIsInDbInit(boolean isInDbInit) {
       SkynetDbInit.isInDbInit = isInDbInit;
+   }
+
+   private static void initializeApplicationServer() throws OseeCoreException {
+      DbInformation dbInfo = OseeDbConnection.getDefaultDatabaseService();
+      String resourceServer = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
+      if (Strings.isValid(resourceServer) != true) {
+         throw new OseeDataStoreException(
+               String.format(
+                     "Invalid resource server address [%s]. Please ensure db service info has a valid resource server defined.",
+                     resourceServer));
+      }
+
+      try {
+         Map<String, String> parameters = new HashMap<String, String>();
+         parameters.put("registerToLookup", "true");
+         String url =
+               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.LOOKUP_CONTEXT, parameters);
+         String response = HttpProcessor.post(new URL(url));
+         OseeLog.log(SkynetActivator.class, Level.INFO, response);
+      } catch (Exception ex1) {
+         throw new OseeDataStoreException(ex1);
+      }
+
+      ClientSessionManager.authenticate(new ICredentialProvider() {
+
+         @Override
+         public OseeCredential getCredential() throws OseeCoreException {
+            OseeCredential credential = new OseeCredential();
+            credential.setUserId(OseeServerContext.DB_INIT_SESSION_ID);
+            credential.setDomain("DBINIT");
+            credential.setPassword(OseeServerContext.DB_INIT_SESSION_ID);
+            HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
+            credential.setClientAddress(HttpServer.getLocalServerAddress(), HttpServer.getDefaultServicePort());
+            credential.setClientVersion(OseeCodeVersion.getVersion());
+            try {
+               credential.setClientMachineName(InetAddress.getLocalHost().getHostName());
+            } catch (Exception ex) {
+               throw new OseeWrappedException(ex);
+            }
+            return credential;
+         }
+
+      });
+
+      boolean displayWarning = false;
+      String server = HttpUrlBuilder.getInstance().getApplicationServerPrefix();
+      try {
+         URL serverUrl = new URL(server);
+         Socket socket = new Socket(serverUrl.getHost(), serverUrl.getPort());
+         if (socket.getInetAddress().isLoopbackAddress()) {
+            OseeLog.log(CoreClientActivator.class, Level.INFO, "Deleting binary data from application server...");
+            String binaryDataPath = OseeProperties.getInstance().getOseeApplicationServerData();
+            Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
+            Lib.deleteDir(new File(binaryDataPath + File.separator + "snapshot"));
+         } else {
+            displayWarning = true;
+         }
+      } catch (Exception ex) {
+         displayWarning = true;
+      }
+      if (displayWarning) {
+         OseeLog.log(CoreClientActivator.class, Level.WARNING, "Unable to delete binary data from application server");
+      }
    }
 
    private List<URL> getSchemaFiles() throws OseeCoreException {

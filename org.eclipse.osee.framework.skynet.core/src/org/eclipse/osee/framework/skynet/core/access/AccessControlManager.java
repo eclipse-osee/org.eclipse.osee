@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
@@ -692,7 +693,7 @@ public class AccessControlManager {
       }
    }
 
-   public void unLockObject(Artifact object, Artifact subject) throws OseeDataStoreException {
+   public void unLockObject(Artifact object, Artifact subject) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       Integer objectArtId = object.getArtId();
       Integer branchId = object.getBranch().getBranchId();
       Integer lockedBranchId;

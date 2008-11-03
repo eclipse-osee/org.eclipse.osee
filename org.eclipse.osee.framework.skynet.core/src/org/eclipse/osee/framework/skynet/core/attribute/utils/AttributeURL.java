@@ -15,11 +15,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -29,7 +31,7 @@ public class AttributeURL {
    private AttributeURL() {
    }
 
-   public static URL getStorageURL(Attribute<?> attribute, String extension) throws OseeDataStoreException {
+   public static URL getStorageURL(Attribute<?> attribute, String extension) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       try {
          return getStorageURL(attribute.getGammaId(), attribute.getArtifact().getHumanReadableId(), extension);
       } catch (MalformedURLException ex) {
@@ -37,8 +39,9 @@ public class AttributeURL {
       }
    }
 
-   public static URL getStorageURL(int gammaId, String artifactHrid, String extension) throws OseeDataStoreException, MalformedURLException {
+   public static URL getStorageURL(int gammaId, String artifactHrid, String extension) throws OseeDataStoreException, MalformedURLException, OseeAuthenticationRequiredException {
       Map<String, String> parameterMap = new HashMap<String, String>();
+      parameterMap.put("sessionId", ClientSessionManager.getSessionId());
       parameterMap.put("protocol", "attr");
       parameterMap.put("seed", Integer.toString(gammaId));
       parameterMap.put("name", artifactHrid);
@@ -46,8 +49,7 @@ public class AttributeURL {
          parameterMap.put("extension", extension);
       }
       String urlString =
-            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
-                  parameterMap);
+            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
       return new URL(urlString);
    }
 
@@ -56,8 +58,7 @@ public class AttributeURL {
          Map<String, String> parameterMap = new HashMap<String, String>();
          parameterMap.put("uri", uri);
          String urlString =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
-                     parameterMap);
+               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
          return new URL(urlString);
       } catch (Exception ex) {
          throw new OseeDataStoreException(ex);

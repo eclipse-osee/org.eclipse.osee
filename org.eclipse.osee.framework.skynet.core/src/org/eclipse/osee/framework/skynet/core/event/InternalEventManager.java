@@ -93,18 +93,22 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            if (sender.isLocal() && remoteEventServiceEventType.isLocalEventType()) {
-               for (IEventListner listener : listeners) {
-                  if (listener instanceof IRemoteEventManagerEventListener) {
-                     // Don't fail on any one listener's exception
-                     try {
-                        ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender,
-                              remoteEventServiceEventType);
-                     } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            try {
+               if (sender.isLocal() && remoteEventServiceEventType.isLocalEventType()) {
+                  for (IEventListner listener : listeners) {
+                     if (listener instanceof IRemoteEventManagerEventListener) {
+                        // Don't fail on any one listener's exception
+                        try {
+                           ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender,
+                                 remoteEventServiceEventType);
+                        } catch (Exception ex) {
+                           OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        }
                      }
                   }
                }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
       };
@@ -137,22 +141,23 @@ public class InternalEventManager {
       }
       Runnable runnable = new Runnable() {
          public void run() {
-            // Kick from REMOTE
-            if (sender.isRemote() || (sender.isLocal() && broadcastEventType.isLocalEventType())) {
-               for (IEventListner listener : listeners) {
-                  if (listener instanceof IBroadcastEventListneer) {
-                     // Don't fail on any one listener's exception
-                     try {
-                        ((IBroadcastEventListneer) listener).handleBroadcastEvent(sender, broadcastEventType, userIds,
-                              message);
-                     } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            try {
+               // Kick from REMOTE
+               if (sender.isRemote() || (sender.isLocal() && broadcastEventType.isLocalEventType())) {
+                  for (IEventListner listener : listeners) {
+                     if (listener instanceof IBroadcastEventListneer) {
+                        // Don't fail on any one listener's exception
+                        try {
+                           ((IBroadcastEventListneer) listener).handleBroadcastEvent(sender, broadcastEventType,
+                                 userIds, message);
+                        } catch (Exception ex) {
+                           OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        }
                      }
                   }
                }
-            }
-            // Kick REMOTE (If source was Local and this was not a default branch changed event
-            try {
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
+
                if (sender.isLocal() && broadcastEventType.isRemoteEventType()) {
                   RemoteEventManager.kick(new NetworkBroadcastEvent(broadcastEventType.name(), message,
                         sender.getNetworkSender()));
@@ -185,32 +190,32 @@ public class InternalEventManager {
       }
       Runnable runnable = new Runnable() {
          public void run() {
+            try {
+               // Log if this is a loopback and what is happening
+               if (enableRemoteEventLoopback) {
+                  OseeLog.log(
+                        InternalEventManager.class,
+                        Level.WARNING,
+                        "OEM: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               }
 
-            // Log if this is a loopback and what is happening
-            if (enableRemoteEventLoopback) {
-               OseeLog.log(
-                     InternalEventManager.class,
-                     Level.WARNING,
-                     "OEM: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
-            }
-
-            // Kick LOCAL
-            if (!enableRemoteEventLoopback || (enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote())) {
-               if (sender.isRemote() || (sender.isLocal() && branchEventType.isLocalEventType())) {
-                  for (IEventListner listener : listeners) {
-                     if (listener instanceof IBranchEventListener) {
-                        // Don't fail on any one listener's exception
-                        try {
-                           ((IBranchEventListener) listener).handleBranchEvent(sender, branchEventType, branchId);
-                        } catch (Exception ex) {
-                           OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+               // Kick LOCAL
+               if (!enableRemoteEventLoopback || (enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote())) {
+                  if (sender.isRemote() || (sender.isLocal() && branchEventType.isLocalEventType())) {
+                     for (IEventListner listener : listeners) {
+                        if (listener instanceof IBranchEventListener) {
+                           // Don't fail on any one listener's exception
+                           try {
+                              ((IBranchEventListener) listener).handleBranchEvent(sender, branchEventType, branchId);
+                           } catch (Exception ex) {
+                              OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                           }
                         }
                      }
                   }
                }
-            }
-            // Kick REMOTE (If source was Local and this was not a default branch changed event
-            try {
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
+
                if (sender.isLocal() && branchEventType.isRemoteEventType()) {
                   if (branchEventType == BranchEventType.Added) {
                      RemoteEventManager.kick(new NetworkNewBranchEvent(branchId, sender.getNetworkSender()));
@@ -570,31 +575,31 @@ public class InternalEventManager {
          public void run() {
             // Roll-up change information
             FrameworkTransactionData transData = createTransactionDataRollup(xModifiedEventsCopy);
+            try {
+               // Log if this is a loopback and what is happening
+               if (enableRemoteEventLoopback) {
+                  OseeLog.log(
+                        InternalEventManager.class,
+                        Level.WARNING,
+                        "OEM: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               }
 
-            // Log if this is a loopback and what is happening
-            if (enableRemoteEventLoopback) {
-               OseeLog.log(
-                     InternalEventManager.class,
-                     Level.WARNING,
-                     "OEM: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
-            }
-
-            // Kick LOCAL
-            if (!enableRemoteEventLoopback || (enableRemoteEventLoopback && sender.isRemote())) {
-               for (IEventListner listener : listeners) {
-                  if (listener instanceof IFrameworkTransactionEventListener) {
-                     // Don't fail on any one listener's exception
-                     try {
-                        ((IFrameworkTransactionEventListener) listener).handleFrameworkTransactionEvent(sender,
-                              transData);
-                     } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+               // Kick LOCAL
+               if (!enableRemoteEventLoopback || (enableRemoteEventLoopback && sender.isRemote())) {
+                  for (IEventListner listener : listeners) {
+                     if (listener instanceof IFrameworkTransactionEventListener) {
+                        // Don't fail on any one listener's exception
+                        try {
+                           ((IFrameworkTransactionEventListener) listener).handleFrameworkTransactionEvent(sender,
+                                 transData);
+                        } catch (Exception ex) {
+                           OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        }
                      }
                   }
                }
-            }
-            // Kick REMOTE (If source was Local and this was not a default branch changed event
-            try {
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
+
                if (sender.isLocal()) {
                   List<ISkynetEvent> events = generateNetworkSkynetEvents(sender, xModifiedEventsCopy);
                   RemoteEventManager.kick(events);

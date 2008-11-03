@@ -11,11 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -28,13 +29,13 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
  */
 public class OseeEventManager {
 
-   private static Sender getSender(Object sourceObject) {
+   private static Sender getSender(Object sourceObject) throws OseeAuthenticationRequiredException {
       // Sender came from Remote Event Manager if source == sender
       if ((sourceObject instanceof Sender) && ((Sender) sourceObject).isRemote()) {
          return (Sender) sourceObject;
       }
       // Else, create new sender based on sourceObject
-      return new Sender(sourceObject, ApplicationServer.getOseeSession());
+      return new Sender(sourceObject, ClientSessionManager.getSession());
    }
 
    /**
@@ -82,9 +83,11 @@ public class OseeEventManager {
     * @param sender
     * @param branchModType
     * @param branchId
+    * @throws OseeAuthenticationRequiredException
+    * @throws OseeAuthenticationRequiredException
     * @throws OseeCoreException
     */
-   public static void kickAccessControlArtifactsEvent(Object source, final AccessControlEventType accessControlModType, final LoadedArtifacts loadedArtifacts) {
+   public static void kickAccessControlArtifactsEvent(Object source, final AccessControlEventType accessControlModType, final LoadedArtifacts loadedArtifacts) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) return;
       InternalEventManager.kickAccessControlArtifactsEvent(getSender(source), accessControlModType, loadedArtifacts);
    }
@@ -168,8 +171,9 @@ public class OseeEventManager {
     * 
     * @param source
     * @param xModifiedEvents
+    * @throws OseeAuthenticationRequiredException
     */
-   public static void kickTransactionEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+   public static void kickTransactionEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) return;
       InternalEventManager.kickTransactionEvent(getSender(source), xModifiedEvents);
    }

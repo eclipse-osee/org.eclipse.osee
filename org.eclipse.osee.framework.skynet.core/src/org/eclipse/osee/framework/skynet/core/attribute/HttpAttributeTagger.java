@@ -14,105 +14,77 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionEventCompleted;
-import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionEvent;
-import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener;
+import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * @author Roberto E. Escobar
  */
-public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransactionListener {
+public class HttpAttributeTagger {
    private static final HttpAttributeTagger instance = new HttpAttributeTagger();
    private static final String XML_START = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><AttributeTag>";
    private static final String XML_FINISH = "</AttributeTag>";
    private static final String PREFIX = "<entry gammaId=\"";
    private static final String POSTFIX = "\"/>\n";
    private final ExecutorService executor;
-   private final StringBuffer taggingInfo;
-   private int count;
+   private final EventRelay eventRelay;
 
    protected HttpAttributeTagger() {
-      this.taggingInfo = new StringBuffer();
       this.executor = Executors.newSingleThreadExecutor();
-      this.count = 0;
-      ConnectionHandler.addDbTransactionListener(this);
+      this.eventRelay = new EventRelay();
+      OseeEventManager.addListener(eventRelay);
    }
 
    public static HttpAttributeTagger getInstance() {
       return instance;
    }
 
-   private void addAttributeGammaForTagging(int attributeGammaId) {
-      this.taggingInfo.append(PREFIX);
-      this.taggingInfo.append(attributeGammaId);
-      this.taggingInfo.append(POSTFIX);
-      this.count++;
+   public void registerWithEventManager() {
+      OseeEventManager.addListener(eventRelay);
    }
 
-   private void sendToTagger(boolean isCommitted) {
-      if (this.taggingInfo.length() > 0) {
-         if (isCommitted) {
-            Future<?> future = this.executor.submit(new TagService(taggingInfo.toString()));
-            if (SkynetDbInit.isDbInit()) {
-               try {
-                  future.get();
-               } catch (Exception ex) {
-                  OseeLog.log(TagService.class, Level.SEVERE, "Error while waiting for tagger to complete.", ex);
-               }
-            }
-         }
-         this.taggingInfo.delete(0, taggingInfo.length());
-         this.count = 0;
-      }
-   }
-
-   public int getGammaQueueSize() {
-      return count;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener#notifyOnAttributeSave(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
-   @Override
-   public void notifyOnAttributeSave(Artifact artifact) throws Exception {
-      List<Attribute<?>> attributes = artifact.getAttributes(false);
-      for (Attribute<?> attribute : attributes) {
-         if (attribute.isDirty() && attribute.getAttributeType().isTaggable()) {
-            addAttributeGammaForTagging(attribute.getGammaId());
-         }
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener#onEvent(org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionEvent)
-    */
-   @Override
-   public void onEvent(IDbTransactionEvent event) {
-      if (event instanceof DbTransactionEventCompleted) {
-         DbTransactionEventCompleted eventCompleted = (DbTransactionEventCompleted) event;
-         sendToTagger(eventCompleted.isCommitted());
-      }
+   public void deregisterFromEventManager() {
+      OseeEventManager.removeListener(eventRelay);
    }
 
    private final class TagService implements Runnable {
-      private String toSend;
+      private final Set<Integer> changedGammas;
 
-      public TagService(String toSend) {
-         this.toSend = toSend;
+      public TagService() {
+         this.changedGammas = new HashSet<Integer>();
+      }
+
+      public void add(int attributeGammaId) {
+         changedGammas.add(attributeGammaId);
+      }
+
+      public int size() {
+         return changedGammas.size();
       }
 
       public void run() {
@@ -121,18 +93,22 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
          ByteArrayInputStream inputStream = null;
          try {
             Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("sessionId", ClientSessionManager.getSessionId());
             if (SkynetDbInit.isDbInit()) {
                parameters.put("wait", "true");
             }
-            StringBuffer payload = new StringBuffer();
-            payload.append(XML_START);
-            payload.append(toSend);
+            StringBuilder payload = new StringBuilder(XML_START);
+            for (int data : changedGammas) {
+               payload.append(PREFIX);
+               payload.append(data);
+               payload.append(POSTFIX);
+            }
             payload.append(XML_FINISH);
 
             inputStream = new ByteArrayInputStream(payload.toString().getBytes("UTF-8"));
             String url =
-                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
-                        OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT, parameters);
+                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_TAGGING_CONTEXT,
+                        parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
             OseeLog.log(TagService.class, Level.FINEST, String.format("Transmitted to Tagger in [%d ms]",
                   System.currentTimeMillis() - start));
@@ -143,12 +119,94 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
             response.append(ex.getLocalizedMessage());
             OseeLog.log(TagService.class, Level.SEVERE, response.toString(), ex);
          } finally {
-            this.toSend = null;
+            changedGammas.clear();
             if (inputStream != null) {
                try {
                   inputStream.close();
                } catch (IOException ex) {
                   OseeLog.log(TagService.class, Level.SEVERE, ex.toString(), ex);
+               }
+            }
+         }
+      }
+   }
+
+   private final class EventRelay implements IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionsDeletedEventListener {
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
+       */
+      @Override
+      public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
+       */
+      @Override
+      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
+       */
+      @Override
+      public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
+         //         if (sender.isRemote()) {
+         //            return;
+         //         }
+         //         try {
+         //            loadedArtifacts.
+         //            //TODO: implements
+         //            //            Map<String, String> parameters = new HashMap<String, String>();
+         //            //            parameters.put("sessionId", ClientSessionManager.getSessionId());
+         //            //            parameters.put("queryId", Integer.toString(transactionJoinId));
+         //            //            String url =
+         //            //                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_TAGGING_CONTEXT,
+         //            //                        parameters);
+         //            //            String response = HttpProcessor.delete(new URL(url));
+         //
+         //         } catch (Exception ex) {
+         //            OseeLog.log(SkynetActivator.class, Level.WARNING, "Error Deleting Tags during purge.", ex);
+         //         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener#handleArtifactsChangeTypeEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
+       */
+      @Override
+      public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener#handleTransactionsDeletedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int[])
+       */
+      @Override
+      public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
+       */
+      @Override
+      public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData txData) throws OseeCoreException {
+         if (sender.isRemote()) {
+            return;
+         }
+         TagService taggingInfo = new TagService();
+         for (ArtifactTransactionModifiedEvent event : txData.getXModifiedEvents()) {
+            if (event instanceof ArtifactModifiedEvent) {
+               for (SkynetAttributeChange change : ((ArtifactModifiedEvent) event).getAttributeChanges()) {
+                  taggingInfo.add(change.getGammaId());
+               }
+            }
+         }
+         if (taggingInfo.size() > 0) {
+            Future<?> future = executor.submit(taggingInfo);
+            if (SkynetDbInit.isDbInit()) {
+               try {
+                  future.get();
+               } catch (Exception ex) {
+                  OseeLog.log(TagService.class, Level.SEVERE, "Error while waiting for tagger to complete.", ex);
                }
             }
          }

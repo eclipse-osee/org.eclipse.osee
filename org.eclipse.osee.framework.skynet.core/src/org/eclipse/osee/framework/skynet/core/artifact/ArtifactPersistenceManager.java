@@ -16,17 +16,14 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -44,7 +41,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -58,7 +54,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOp
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -219,17 +214,6 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   private void notifyOnAttributeSave(Artifact artifact) {
-      try {
-         List<IAttributeSaveListener> listeners = attributeSaveListeners.getObjects();
-         for (IAttributeSaveListener listener : listeners) {
-            listener.notifyOnAttributeSave(artifact);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-   }
-
    public void persistArtifact(Artifact artifact, SkynetTransaction transaction) throws OseeCoreException {
       workingOn(artifact.getInternalDescriptiveName());
       ModificationType modType;
@@ -257,8 +241,6 @@ public class ArtifactPersistenceManager {
       // Add Attributes to Transaction
       AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, transaction);
       operation.execute();
-
-      notifyOnAttributeSave(artifact);
 
       // Kick Local Event
       transaction.addArtifactModifiedEvent(this, artifactModType, artifact);
@@ -1025,6 +1007,7 @@ public class ArtifactPersistenceManager {
          } finally {
             connection.close();
          }
+
       }
 
       @Override
@@ -1198,17 +1181,6 @@ public class ArtifactPersistenceManager {
          int artifactVersions =
                ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ARTIFACT_VERSIONS, transactionJoinId);
          int artifact = ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ARTIFACT, queryId);
-
-         // Delete tags for purged artifacts
-         try {
-            Map<String, String> parameters = new HashMap<String, String>();
-            parameters.put("queryId", Integer.toString(transactionJoinId));
-            String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
-            String response = HttpProcessor.delete(new URL(url));
-
-         } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.WARNING, "Error Deleting Tags during purge.", ex);
-         }
 
          OseeLog.log(
                SkynetActivator.class,

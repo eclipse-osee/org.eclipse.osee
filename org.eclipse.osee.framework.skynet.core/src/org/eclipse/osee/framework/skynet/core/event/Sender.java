@@ -5,9 +5,13 @@
  */
 package org.eclipse.osee.framework.skynet.core.event;
 
+import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.OseeClientSession;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
-import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
-import org.eclipse.osee.framework.skynet.core.dbinit.OseeSession;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
  * @author Donald G. Dunne
@@ -15,28 +19,29 @@ import org.eclipse.osee.framework.skynet.core.dbinit.OseeSession;
 public class Sender {
 
    String sourceObject;
-   private final OseeSession oseeSession;
+   private final OseeClientSession oseeSession;
 
-   public Sender(Object sourceObject, OseeSession oseeSession) {
+   public Sender(Object sourceObject, OseeClientSession oseeSession) {
       this.sourceObject = InternalEventManager.getObjectSafeName(sourceObject);
       this.oseeSession = oseeSession;
    }
 
    public Sender(NetworkSender networkSender) {
-      this(networkSender.sourceObject, new OseeSession(networkSender.sessionId, networkSender.machineName,
-            networkSender.userId, networkSender.machineIp));
+      this(networkSender.sourceObject, new OseeClientSession(networkSender.sessionId, networkSender.machineName,
+            networkSender.userId, networkSender.machineIp, networkSender.port, networkSender.clientVersion));
    }
 
-   public Sender(Object sourceObject) {
+   public Sender(Object sourceObject) throws OseeAuthenticationRequiredException {
       this.sourceObject = InternalEventManager.getObjectSafeName(sourceObject);
-      this.oseeSession = ApplicationServer.getOseeSession();
+      this.oseeSession = ClientSessionManager.getSession();
    }
 
-   public boolean isRemote() {
-      return oseeSession.getId() != ApplicationServer.getOseeSession().getId();
+   public boolean isRemote() throws OseeAuthenticationRequiredException {
+      OseeClientSession session = ClientSessionManager.getSession();
+      return oseeSession.getId().equals(session.getId()) && !oseeSession.getVersion().equals(session.getVersion());
    }
 
-   public boolean isLocal() {
+   public boolean isLocal() throws OseeAuthenticationRequiredException {
       return !isRemote();
    }
 
@@ -47,7 +52,7 @@ public class Sender {
    /**
     * @return the oseeSession
     */
-   public OseeSession getOseeSession() {
+   public OseeClientSession getOseeSession() {
       return oseeSession;
    }
 
@@ -67,12 +72,17 @@ public class Sender {
 
    public NetworkSender getNetworkSender() {
       return new NetworkSender(sourceObject, oseeSession.getId(), oseeSession.getMachineName(),
-            oseeSession.getUserId(), oseeSession.getMachineIp());
+            oseeSession.getUserId(), oseeSession.getMachineIp(), oseeSession.getPort(), oseeSession.getVersion());
    }
 
    @Override
    public String toString() {
-      return "Sender: " + (isRemote() ? "Remote" : "Local") + " [" + oseeSession.toString() + "  [" + sourceObject + "]]";
+      String remote = "Source Unknown";
+      try {
+         remote = (isRemote() ? "Remote" : "Local");
+      } catch (OseeAuthenticationRequiredException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      }
+      return "Sender: " + remote + " [" + oseeSession.toString() + "  [" + sourceObject + "]]";
    }
-
 }

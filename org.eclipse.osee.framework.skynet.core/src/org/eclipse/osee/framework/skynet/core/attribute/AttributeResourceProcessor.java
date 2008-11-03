@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.net.URL;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
@@ -32,7 +33,7 @@ public class AttributeResourceProcessor extends AbstractResourceProcessor {
       return AttributeURL.getDeleteURL(dataToStore.getLocator());
    }
 
-   protected URL getStorageURL(DataStore dataToStore) throws OseeDataStoreException {
+   protected URL getStorageURL(DataStore dataToStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       return AttributeURL.getStorageURL(attribute, dataToStore.getExtension());
    }
 }

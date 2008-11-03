@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -156,8 +157,9 @@ public class AttributeToTransactionOperation {
     * persistence layer needs, allowing the attribute to be destroyed and released back to the system.
     * 
     * @throws OseeDataStoreException
+    * @throws OseeAuthenticationRequiredException
     */
-   private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws OseeDataStoreException {
+   private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       if (!attribute.isInDatastore()) return;
 
       int attrGammaId;

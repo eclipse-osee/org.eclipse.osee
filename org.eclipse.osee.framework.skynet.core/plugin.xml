@@ -19,15 +19,15 @@
    <extension-point id="AttributeType" name="AttributeType" schema="schema/AttributeType.exsd"/>
    <extension-point id="AttributeDataProvider" name="AttributeDataProvider" schema="schema/AttributeDataProvider.exsd"/>
    <extension-point id="OseeDbImportData" name="OseeDbImportData" schema="schema/OseeDbImportData.exsd"/>
+   <extension
+         id="SkynetDbInit"
+         name="SkynetDbInit"
+         point="org.eclipse.osee.framework.database.IDbInitializationTask">
+      <DatabaseTask
+            classname="org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit">
+      </DatabaseTask>
+   </extension>
    
-      <extension
-            id="SkynetDbInit"
-            name="SkynetDbInit"
-            point="org.eclipse.osee.framework.database.IDbInitializationTask">
-         <DatabaseTask
-               classname="org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit">
-         </DatabaseTask>
-      </extension>
       <extension
             id="SkynetDbBranchDataImport"
             name="SkynetDbBranchDataImport"
@@ -228,12 +228,6 @@
          <HtmlImageHandler
                ClassName="org.eclipse.osee.framework.skynet.core.httpRequests.EMZHtmlImageHandler">
          </HtmlImageHandler>
-      </extension>
-      <extension
-            point="org.eclipse.core.runtime.preferences">
-         <initializer
-               class="org.eclipse.osee.framework.skynet.core.preferences.PreferenceInitializer">
-         </initializer>
       </extension>
       <extension
             id="BooleanAttribute"

@@ -16,7 +16,9 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -26,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
@@ -74,6 +75,7 @@ public class HttpBranchCreation {
     */
    public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, int parentBranchId, boolean systemRootBranch) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("branchName", branchName);
       parameters.put("function", "createRootBranch");
       parameters.put("authorId", getAuthorId());
@@ -99,7 +101,7 @@ public class HttpBranchCreation {
       try {
          response =
                HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
-                     OseeApplicationServerContext.BRANCH_CREATION_CONTEXT, parameters)));
+                     OseeServerContext.BRANCH_CREATION_CONTEXT, parameters)));
          int branchId = Integer.parseInt(response);
          branch = BranchManager.getBranch(branchId);
       } catch (NumberFormatException ex) {
