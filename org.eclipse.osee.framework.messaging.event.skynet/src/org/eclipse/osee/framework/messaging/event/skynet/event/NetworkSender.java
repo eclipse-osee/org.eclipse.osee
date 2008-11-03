@@ -18,13 +18,16 @@ public class NetworkSender implements Serializable {
    public String machineName;
    public String userId;
    public String machineIp;
+   public String clientVersion;
+   public int port;
 
-   public NetworkSender(Object sourceObject, String sessionId, String machineName, String userId, String machineIp) {
+   public NetworkSender(Object sourceObject, String sessionId, String machineName, String userId, String machineIp, int port, String clientVersion) {
       this.sessionId = sessionId;
       this.sourceObject = sourceObject;
       this.machineName = machineName;
       this.userId = userId;
       this.machineIp = machineIp;
+      this.port = port;
+      this.clientVersion = clientVersion;
    }
-
 }
