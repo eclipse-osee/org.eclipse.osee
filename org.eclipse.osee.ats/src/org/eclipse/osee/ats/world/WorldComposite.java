@@ -87,8 +87,7 @@ import org.eclipse.ui.PartInitException;
  */
 public class WorldComposite extends Composite implements IFrameworkTransactionEventListener {
 
-   private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, whoAmIAction, toAction,
-         toWorkFlow;
+   private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toWorkFlow;
    private final Label warningLabel, searchNameLabel, extraInfoLabel;
    private WorldSearchItem lastSearchItem;
    private final WorldXViewer xViewer;
@@ -524,15 +523,6 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       refreshAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
       refreshAction.setToolTipText("Refresh");
 
-      whoAmIAction = new Action("Who Am I") {
-
-         @Override
-         public void run() {
-            MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Who Am I", getWhoAmI());
-         }
-      };
-      whoAmIAction.setToolTipText("Who Am I");
-
       releaseMetricsAction = new Action("Show Release Metrics by Release Version - Ctrl-Z", Action.AS_CHECK_BOX) {
 
          @Override
@@ -591,7 +581,6 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          IMenuManager manager = viewSite.getActionBars().getMenuManager();
          manager.add(filterCompletedAction);
          manager.add(new Separator());
-         manager.add(whoAmIAction);
          manager.add(releaseMetricsAction);
          manager.add(selectionMetricsAction);
          manager.add(new Separator());
@@ -631,7 +620,6 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
 
       actionToMenuItem(menu, filterCompletedAction, SWT.CHECK);
       new MenuItem(menu, SWT.SEPARATOR);
-      actionToMenuItem(menu, whoAmIAction, SWT.PUSH);
       actionToMenuItem(menu, releaseMetricsAction, SWT.CHECK);
       actionToMenuItem(menu, selectionMetricsAction, SWT.CHECK);
       new MenuItem(menu, SWT.SEPARATOR);

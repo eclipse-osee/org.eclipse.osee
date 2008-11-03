@@ -106,7 +106,7 @@ public class WorldEditorInput implements IEditorInput {
     */
    @Override
    public String getName() {
-      if (searchItem.getName() != null) {
+      if (searchItem != null && searchItem.getName() != null) {
          return searchItem.getName();
       }
       return name;

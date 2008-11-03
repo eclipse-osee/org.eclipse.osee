@@ -82,7 +82,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
 
          setPartName(editorInput.getName());
 
-         // Create Tasks tab
+         // Create Main tab
          worldComposite = new WorldComposite(EDITOR_ID, null, getContainer(), SWT.NONE);
          mainPageIndex = addPage(worldComposite);
          setPageText(mainPageIndex, "Main");

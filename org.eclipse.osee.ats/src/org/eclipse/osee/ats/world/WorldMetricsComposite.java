@@ -80,7 +80,6 @@ public class WorldMetricsComposite extends ScrolledComposite {
       refreshAction.setText("Display/Refresh Metrics");
       refreshAction.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
       refreshAction.setToolTipText("Recalculate and Update Metrics");
-      adapt(refreshAction.getControl());
       refreshAction.addSelectionListener(new SelectionAdapter() {
          /* (non-Javadoc)
           * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)

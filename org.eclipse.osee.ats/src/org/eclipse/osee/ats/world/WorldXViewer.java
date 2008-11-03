@@ -81,6 +81,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 
 /**
  * @author Donald G. Dunne
@@ -144,6 +146,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
           */
          @Override
          public void run() {
+            if (getContentProvider() == null) return;
             ((WorldContentProvider) getContentProvider()).remove(transData.cacheDeletedArtifacts);
             update(transData.cacheChangedArtifacts, null);
             refresh(transData.cacheRelationAddedArtifacts);
@@ -171,7 +174,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    Action editAssigneeAction;
    Action editActionableItemsAction;
    Action convertActionableItemsAction;
-   Action openInAtsEditorAction, openInMassEditorAction;
+   Action openInAtsEditorAction, openInMassEditorAction, openInNewEditorAction;
    Action favoritesAction;
    Action subscribedAction;
    Action openInArtifactEditorAction;
@@ -275,7 +278,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          }
       };
 
-      openInMassEditorAction = new Action("Mass Edit", Action.AS_PUSH_BUTTON) {
+      openInMassEditorAction = new Action("Open in Mass Editor", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             if (getSelectedArtifacts().size() == 0) {
@@ -283,6 +286,27 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                return;
             }
             MassArtifactEditor.editArtifacts("", getSelectedArtifacts());
+         }
+      };
+
+      openInNewEditorAction = new Action("Open in New Editor", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            if (getSelectedArtifacts().size() == 0) {
+               AWorkbench.popup("Error", "No items selected");
+               return;
+            }
+            WorldEditorInput worldEditorInput =
+                  new WorldEditorInput("ATS Editor - selected", getSelectedArtifacts(),
+                        getCustomizeMgr().generateCustDataFromTable());
+            if (worldEditorInput != null) {
+               IWorkbenchPage page = AWorkbench.getActivePage();
+               try {
+                  page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
+               } catch (PartInitException ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+               }
+            }
          }
       };
 
@@ -380,14 +404,13 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       try {
          if (useArts.size() > 0) {
             if (persist) {
-               AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
+               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
 
-                        @Override
-                        protected void handleTxWork() throws OseeCoreException {
-                           ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
-                        }
-                     };
+                  @Override
+                  protected void handleTxWork() throws OseeCoreException {
+                     ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
+                  }
+               };
                txWrapper.execute();
             } else {
                ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
@@ -494,6 +517,8 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       openInAtsEditorAction.setEnabled(getSelectedArtifacts() != null);
       mm.insertBefore(MENU_GROUP_PRE, openInMassEditorAction);
       openInMassEditorAction.setEnabled(getSelectedArtifacts() != null);
+      mm.insertBefore(MENU_GROUP_PRE, openInNewEditorAction);
+      openInNewEditorAction.setEnabled(getSelectedArtifacts() != null);
       if (AtsPlugin.isAtsAdmin()) {
          mm.insertBefore(MENU_GROUP_PRE, openInArtifactEditorAction);
          openInArtifactEditorAction.setEnabled(getSelectedArtifacts() != null);
@@ -742,18 +767,17 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   new HtmlDialog((purge ? "Purge" : "Delete") + " ATS Objects", "", AHTML.simplePage(results));
             dialog.open();
             if (dialog.getReturnCode() == 0) {
-               AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
+               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
 
-                        @Override
-                        protected void handleTxWork() throws OseeCoreException {
-                           if (purge) {
-                              ArtifactPersistenceManager.purgeArtifacts(deleteArts);
-                           } else {
-                              ArtifactPersistenceManager.deleteArtifact(deleteArts.toArray(new Artifact[deleteArts.size()]));
-                           }
-                        }
-                     };
+                  @Override
+                  protected void handleTxWork() throws OseeCoreException {
+                     if (purge) {
+                        ArtifactPersistenceManager.purgeArtifacts(deleteArts);
+                     } else {
+                        ArtifactPersistenceManager.deleteArtifact(deleteArts.toArray(new Artifact[deleteArts.size()]));
+                     }
+                  }
+               };
                txWrapper.execute();
                AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed",
                      (purge ? "Purge" : "Delete") + " Completed");
