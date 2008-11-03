@@ -30,7 +30,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
@@ -163,7 +165,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
 
       xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
-            updateExtraInfoLine();
+            try {
+               updateExtraInfoLine();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
       xViewer.getTree().addKeyListener(new KeyListener() {
@@ -175,7 +181,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
             if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
                if (event.keyCode == 'a') {
                   xViewer.getTree().setSelection(xViewer.getTree().getItems());
-                  updateExtraInfoLine();
+                  try {
+                     updateExtraInfoLine();
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  }
                } else if (event.keyCode == 'z') {
                   releaseMetricsAction.setChecked(!releaseMetricsAction.isChecked());
                   releaseMetricsAction.run();
@@ -390,26 +400,38 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    public void setTableTitle(final String title, final boolean warning) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (warning)
-               warningLabel.setImage(AtsPlugin.getInstance().getImage("warn.gif"));
-            else
-               warningLabel.setImage(null);
-            searchNameLabel.setText(title);
-            searchNameLabel.getParent().layout();
-            xViewer.setReportingTitle(title + " - " + XDate.getDateNow());
-            updateExtraInfoLine();
+            try {
+               if (warning)
+                  warningLabel.setImage(AtsPlugin.getInstance().getImage("warn.gif"));
+               else
+                  warningLabel.setImage(null);
+               searchNameLabel.setText(title);
+               searchNameLabel.getParent().layout();
+               xViewer.setReportingTitle(title + " - " + XDate.getDateNow());
+               updateExtraInfoLine();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
          };
       });
    }
 
-   public void updateExtraInfoLine() {
+   public void updateExtraInfoLine() throws OseeCoreException {
       if (extraInfoLabel == null || extraInfoLabel.isDisposed()) return;
+      String str = "";
       if (releaseMetricsAction.isChecked()) {
-         extraInfoLabel.setText(SMAMetrics.getReleaseEstRemainMetrics(getXViewer().getSelectedSMAArtifacts()));
+         VersionArtifact verArt = null;
+         Set<StateMachineArtifact> smaArts = getXViewer().getSelectedSMAArtifacts();
+         if (smaArts.size() != 0) {
+            verArt = smaArts.iterator().next().getTargetedForVersion();
+            SMAMetrics sMet = new SMAMetrics(smaArts, verArt);
+            str = sMet.toString();
+         }
       } else if (selectionMetricsAction.isChecked()) {
-         extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getXViewer().getSelectedSMAArtifacts()));
+         SMAMetrics sMet = new SMAMetrics(getXViewer().getSelectedSMAArtifacts(), null);
+         str = sMet.toString();
       } else
-         extraInfoLabel.setText("");
+         extraInfoLabel.setText(str);
       extraInfoLabel.getParent().layout();
    }
 
@@ -516,7 +538,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          @Override
          public void run() {
             if (releaseMetricsAction.isChecked()) selectionMetricsAction.setChecked(false);
-            updateExtraInfoLine();
+            try {
+               updateExtraInfoLine();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
          }
       };
       releaseMetricsAction.setToolTipText("Show Release Metrics by Release Version - Ctrl-Z");
@@ -526,7 +552,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          @Override
          public void run() {
             if (selectionMetricsAction.isChecked()) releaseMetricsAction.setChecked(false);
-            updateExtraInfoLine();
+            try {
+               updateExtraInfoLine();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
          }
       };
       selectionMetricsAction.setToolTipText("Show Release Metrics by Selection - Ctrl-X");
@@ -715,7 +745,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               updateExtraInfoLine();
+               try {
+                  updateExtraInfoLine();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               }
             }
          });
       }

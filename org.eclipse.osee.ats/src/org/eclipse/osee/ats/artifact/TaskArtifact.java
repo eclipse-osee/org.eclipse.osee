@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
@@ -281,18 +280,9 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
          return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
-    */
    @Override
-   public String getWorldViewImplementer() throws OseeCoreException {
-      return Artifacts.toString("; ", getImplementers());
-   }
-
-   public Collection<User> getImplementers() {
-      return smaMgr.getStateMgr().getAssignees(TaskStates.InWork.name());
+   public Collection<User> getImplementers() throws OseeCoreException {
+      return getImplementersByState(TaskStates.InWork.name());
    }
 
    /*

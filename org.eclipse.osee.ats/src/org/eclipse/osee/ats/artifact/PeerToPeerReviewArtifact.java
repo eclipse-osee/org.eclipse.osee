@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -180,14 +181,13 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
          return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
-    */
    @Override
-   public String getWorldViewImplementer() throws OseeCoreException {
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(PeerToPeerReviewState.Review.name()));
+   public Collection<User> getImplementers() throws OseeCoreException {
+      Collection<User> users = getImplementersByState(PeerToPeerReviewState.Review.name());
+      for (UserRole role : userRoleManager.getUserRoles()) {
+         users.add(role.getUser());
+      }
+      return users;
    }
 
    /*

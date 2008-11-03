@@ -13,6 +13,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -32,15 +33,18 @@ public class XBarGraphTable extends XWidget {
    private final String percentHeader;
    private final Map<String, Integer> itemToValueMap;
    private Table table;
+   private final String valuePostFix;
 
-   /**
-    * @param label
-    */
    public XBarGraphTable(String label, String itemHeader, String percentHeader, Map<String, Integer> itemToValueMap) {
+      this(label, itemHeader, percentHeader, itemToValueMap, "%");
+   }
+
+   public XBarGraphTable(String label, String itemHeader, String percentHeader, Map<String, Integer> itemToValueMap, String valuePostFix) {
       super(label);
       this.itemHeader = itemHeader;
       this.percentHeader = percentHeader;
       this.itemToValueMap = itemToValueMap;
+      this.valuePostFix = valuePostFix;
    }
 
    /* (non-Javadoc)
@@ -54,12 +58,15 @@ public class XBarGraphTable extends XWidget {
       table = new Table(parent, SWT.BORDER);
       table.setHeaderVisible(true);
       table.setLinesVisible(true);
+      if (isFillHorizontally()) {
+         table.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      }
       TableColumn column1 = new TableColumn(table, SWT.NONE);
       column1.setText(itemHeader);
-      column1.setWidth(100);
+      column1.setWidth(300);
       final TableColumn column2 = new TableColumn(table, SWT.NONE);
       column2.setText(percentHeader);
-      column2.setWidth(200);
+      column2.setWidth(500);
       for (String itemName : itemToValueMap.keySet()) {
          TableItem item = new TableItem(table, SWT.NONE);
          item.setText(itemName);
@@ -81,14 +88,19 @@ public class XBarGraphTable extends XWidget {
                int percent = percents[index];
                Color foreground = gc.getForeground();
                Color background = gc.getBackground();
-               gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-               gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
+               if (valuePostFix.equals("%") && percent == 100) {
+                  gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
+                  gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
+               } else {
+                  gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+                  gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
+               }
                int width = (column2.getWidth() - 1) * percent / 100;
                gc.fillGradientRectangle(event.x, event.y, width, event.height, true);
                Rectangle rect2 = new Rectangle(event.x, event.y, width - 1, event.height - 1);
                gc.drawRectangle(rect2);
                gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
-               String text = percent + "%";
+               String text = percent + valuePostFix;
                Point size = event.gc.textExtent(text);
                int offset = Math.max(0, (event.height - size.y) / 2);
                gc.drawText(text, event.x + 2, event.y + offset, true);
@@ -97,7 +109,6 @@ public class XBarGraphTable extends XWidget {
             }
          }
       });
-
    }
 
    /* (non-Javadoc)

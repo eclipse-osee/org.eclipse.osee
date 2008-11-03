@@ -47,8 +47,16 @@ public abstract class XWidget {
    protected boolean verticalLabel = false;
    protected boolean fillVertically = false;
    protected boolean fillHorizontally = false;
+
+   /**
+    * @return the fillHorizontally
+    */
+   public boolean isFillHorizontally() {
+      return fillHorizontally;
+   }
+
    protected boolean displayLabel = true;
-   private Set<XModifiedListener> modifiedListeners = new LinkedHashSet<XModifiedListener>();
+   private final Set<XModifiedListener> modifiedListeners = new LinkedHashSet<XModifiedListener>();
    private MouseListener mouseLabelListener;
 
    /**
@@ -367,6 +375,7 @@ public abstract class XWidget {
     */
    public abstract String getReportData();
 
+   @Override
    public String toString() {
       return toReport();
    }

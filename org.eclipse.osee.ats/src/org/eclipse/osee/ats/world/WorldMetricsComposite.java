@@ -5,20 +5,14 @@
  */
 package org.eclipse.osee.ats.world;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphTable;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -59,17 +53,12 @@ public class WorldMetricsComposite extends Composite {
       adapt(this);
 
       creatToolBar(this);
-      //      try {
-      //         handleUpdateMetrics();
-      //      } catch (OseeCoreException ex) {
-      //         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      //      }
    }
 
    private void creatToolBar(Composite composite) {
       toolBarComposite = new Composite(composite, SWT.NONE);
       toolBarComposite.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, false, false, 1, 1));
-      toolBarComposite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      toolBarComposite.setLayout(new GridLayout(1, false));
       adapt(toolBarComposite);
 
       ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
@@ -106,34 +95,16 @@ public class WorldMetricsComposite extends Composite {
       adapt(metricsComposite);
 
       addSpace();
+      SMAMetrics sMet = new SMAMetrics(worldComposite.getLoadedArtifacts(), null);
       Label label = new Label(metricsComposite, SWT.NONE);
-      label.setText("Number of Workflows: " + getLoadedWorkflowArtifacts().size());
+      label.setText(sMet.toStringLong());
       adapt(label);
       addSpace();
-      createFullPercentChart(metricsComposite);
+      createFullPercentChart(sMet, metricsComposite);
       addSpace();
-      createAssigneesChart(metricsComposite);
+      createCompletedByAssigneesChart(sMet, metricsComposite);
 
       layout();
-   }
-
-   private Collection<TeamWorkFlowArtifact> getLoadedWorkflowArtifacts() throws OseeCoreException {
-      Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
-      for (Artifact art : worldComposite.getLoadedArtifacts()) {
-         if (art instanceof ActionArtifact) {
-            teams.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
-         }
-         if (art instanceof TeamWorkFlowArtifact) {
-            teams.add((TeamWorkFlowArtifact) art);
-         }
-         if (art instanceof TaskArtifact) {
-            teams.add(((TaskArtifact) art).getParentTeamWorkflow());
-         }
-         if (art instanceof ReviewSMArtifact) {
-            teams.add(((ReviewSMArtifact) art).getParentTeamWorkflow());
-         }
-      }
-      return teams;
    }
 
    private void addSpace() {
@@ -142,20 +113,40 @@ public class WorldMetricsComposite extends Composite {
       adapt(label);
    }
 
-   public void createFullPercentChart(Composite parent) {
+   public void createFullPercentChart(SMAMetrics sMet, Composite parent) {
       Map<String, Integer> itemToValueMap = new HashMap<String, Integer>();
-      itemToValueMap.put("All", 85);
-      XBarGraphTable table = new XBarGraphTable("Complete", "Loaded", "Complete", itemToValueMap);
+      itemToValueMap.put(
+            "By Team Percents (" + sMet.getCummulativePercentComplete() + "/" + sMet.getNumObjects() + ")",
+            (int) sMet.getPercentCompleteByTeamPercents());
+      itemToValueMap.put(
+            "By Team Workflow (" + sMet.getCompletedTeamWorkflows().size() + "/" + sMet.getNumTeamWfs() + ")",
+            (int) sMet.getPercentCompleteByWorkflow());
+      XBarGraphTable table = new XBarGraphTable("Total Percent Complete", "", "Percent Complete", itemToValueMap);
+      table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
    }
 
-   public void createAssigneesChart(Composite parent) {
+   public void createCompletedByAssigneesChart(SMAMetrics sMet, Composite parent) {
       Map<String, Integer> itemToValueMap = new HashMap<String, Integer>();
-      itemToValueMap.put("Don", 85);
-      itemToValueMap.put("Ryan", 35);
-      itemToValueMap.put("Andy", 4);
-      XBarGraphTable table = new XBarGraphTable("Complete by Assignee", "User", "Complete", itemToValueMap);
+      for (User user : sMet.getAssigneesAssignedOrCompleted()) {
+         int completed =
+               sMet.getUserToCompletedSmas().containsKey(user) ? sMet.getUserToCompletedSmas().getValues(user).size() : 0;
+         int inWork =
+               sMet.getUserToAssignedSmas().containsKey(user) ? sMet.getUserToAssignedSmas().getValues(user).size() : 0;
+         int total = completed + inWork;
+         int percentComplete = 0;
+         if (completed == total) {
+            percentComplete = 100;
+         } else if (completed != 0 && total != 0) {
+            double percent = new Double(completed) / total * 100.0;
+            percentComplete = (int) percent;
+         }
+         itemToValueMap.put(user.getName() + "(" + completed + "/" + total + ")", percentComplete);
+      }
+      XBarGraphTable table =
+            new XBarGraphTable("Completed by Assignee", "User", "Percent Complete", itemToValueMap, "%");
+      table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
    }

@@ -163,14 +163,9 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
          return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
-    */
    @Override
-   public String getWorldViewImplementer() throws OseeCoreException {
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(DecisionReviewState.Decision.name()));
+   public Collection<User> getImplementers() throws OseeCoreException {
+      return getImplementersByState(DecisionReviewState.Decision.name());
    }
 
    /*

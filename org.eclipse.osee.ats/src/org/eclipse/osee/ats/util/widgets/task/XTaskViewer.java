@@ -140,7 +140,11 @@ public class XTaskViewer extends XWidget implements IActionable {
          xViewer.setLabelProvider(new TaskLabelProvider(xViewer));
          xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
-               updateExtraInfoLine();
+               try {
+                  updateExtraInfoLine();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               }
             }
          });
          xViewer.getTree().addKeyListener(new KeyListener() {
@@ -148,21 +152,25 @@ public class XTaskViewer extends XWidget implements IActionable {
             }
 
             public void keyReleased(KeyEvent event) {
-               if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
-                  if (event.keyCode == 'a') {
-                     xViewer.getTree().setSelection(xViewer.getTree().getItems());
-                     updateExtraInfoLine();
-                  } else if (event.keyCode == 'x') {
-                     if (selectionMetricsMenuItem != null) {
-                        selectionMetricsMenuItem.setSelection(!selectionMetricsMenuItem.getSelection());
+               try {
+                  if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
+                     if (event.keyCode == 'a') {
+                        xViewer.getTree().setSelection(xViewer.getTree().getItems());
                         updateExtraInfoLine();
-                     }
-                  } else if (event.keyCode == 'f') {
-                     if (filterCompletedMenuItem != null) {
-                        filterCompletedMenuItem.setSelection(!filterCompletedMenuItem.getSelection());
-                        handleFilterAction();
+                     } else if (event.keyCode == 'x') {
+                        if (selectionMetricsMenuItem != null) {
+                           selectionMetricsMenuItem.setSelection(!selectionMetricsMenuItem.getSelection());
+                           updateExtraInfoLine();
+                        }
+                     } else if (event.keyCode == 'f') {
+                        if (filterCompletedMenuItem != null) {
+                           filterCompletedMenuItem.setSelection(!filterCompletedMenuItem.getSelection());
+                           handleFilterAction();
+                        }
                      }
                   }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
             }
          });
@@ -297,7 +305,7 @@ public class XTaskViewer extends XWidget implements IActionable {
 
    }
 
-   public void updateExtraInfoLine() {
+   public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection())
          extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getXViewer().getSelectedSMAArtifacts()));
       else
@@ -337,7 +345,11 @@ public class XTaskViewer extends XWidget implements IActionable {
       selectionMetricsMenuItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            updateExtraInfoLine();
+            try {
+               updateExtraInfoLine();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
       });
 

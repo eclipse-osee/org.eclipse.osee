@@ -291,7 +291,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       if (verArts.size() > 1) {
          String errStr =
                "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,  errStr, null);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
          return XViewerCells.getCellExceptionString(errStr);
       }
       VersionArtifact verArt = verArts.iterator().next();
@@ -299,7 +299,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false)) {
          String errStr =
                "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,  errStr, null);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
          return XViewerCells.getCellExceptionString(errStr);
       }
       return verArt.getDescriptiveName();
@@ -351,8 +351,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
                selectedAlias.add((ActionableItemArtifact) obj);
             }
 
-            ActionableItemsTx txWrapper =
-                  new ActionableItemsTx(BranchManager.getAtsBranch(), selectedAlias, null);
+            ActionableItemsTx txWrapper = new ActionableItemsTx(BranchManager.getAtsBranch(), selectedAlias, null);
             txWrapper.execute();
             toReturn = txWrapper.getResult();
          }
@@ -416,8 +415,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Convert", sb.toString())) {
                Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
                toProcess.add(selectedAia);
-               ActionableItemsTx txWrapper =
-                     new ActionableItemsTx(BranchManager.getAtsBranch(), toProcess, newTeamDef);
+               ActionableItemsTx txWrapper = new ActionableItemsTx(BranchManager.getAtsBranch(), toProcess, newTeamDef);
                txWrapper.execute();
                toReturn = txWrapper.getResult();
             }
@@ -492,14 +490,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return date;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
-    */
    @Override
-   public String getWorldViewImplementer() throws OseeCoreException {
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(DefaultTeamState.Implement.name()));
+   public Collection<User> getImplementers() throws OseeCoreException {
+      return getImplementersByState(DefaultTeamState.Implement.name());
    }
 
    /*

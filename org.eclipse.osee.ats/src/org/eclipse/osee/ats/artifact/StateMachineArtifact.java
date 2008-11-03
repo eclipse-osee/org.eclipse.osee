@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.artifact;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -183,7 +184,20 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     */
    @Override
    public String getWorldViewImplementer() throws OseeCoreException {
-      return null;
+      return Artifacts.toString("; ", getImplementers());
+   }
+
+   public Collection<User> getImplementersByState(String stateName) throws OseeCoreException {
+      Collection<User> users = smaMgr.getStateMgr().getAssignees(stateName);
+      LogItem item = smaMgr.getLog().getStateEvent(LogType.StateComplete, stateName);
+      if (item != null) {
+         users.add(item.getUser());
+      }
+      return users;
+   }
+
+   public Collection<User> getImplementers() throws OseeCoreException {
+      return Collections.emptyList();
    }
 
    /* (non-Javadoc)
