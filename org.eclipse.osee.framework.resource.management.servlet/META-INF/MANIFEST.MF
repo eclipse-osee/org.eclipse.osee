@@ -8,8 +8,9 @@ Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet;version="2.4.0",
  javax.servlet.http;version="2.4.0",
- org.eclipse.osee.framework.core.connection,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.resource.management,

@@ -8,7 +8,6 @@ Bundle-Vendor: Boeing
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.servlet;version="2.4.0",
  javax.servlet.http;version="2.4.0",
- org.eclipse.osee.framework.core.connection,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.server,
  org.eclipse.osee.framework.db.connection.exception,

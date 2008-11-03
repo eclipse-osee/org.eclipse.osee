@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.servlet;
 
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -39,7 +39,7 @@ public class Activator implements BundleActivator {
       resourceLocatorManagerTracker.open();
 
       servletTracker =
-            new OseeHttpServiceTracker(context, OseeApplicationServerContext.RESOURCE_CONTEXT, ResourceManagerServlet.class);
+            new OseeHttpServiceTracker(context, OseeServerContext.RESOURCE_CONTEXT, ResourceManagerServlet.class);
       servletTracker.open();
    }
 

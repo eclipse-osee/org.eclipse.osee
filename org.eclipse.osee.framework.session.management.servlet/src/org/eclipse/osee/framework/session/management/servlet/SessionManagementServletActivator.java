@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.session.management.servlet;
 
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
-import org.eclipse.osee.framework.session.management.ISessionManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -34,7 +34,7 @@ public class SessionManagementServletActivator implements BundleActivator {
       serviceTracker.open();
 
       httpServiceTracker =
-            new OseeHttpServiceTracker(context, OseeApplicationServerContext.SESSION_CONTEXT,
+            new OseeHttpServiceTracker(context, OseeServerContext.SESSION_CONTEXT,
                   SessionManagementServlet.class);
       httpServiceTracker.open();
    }

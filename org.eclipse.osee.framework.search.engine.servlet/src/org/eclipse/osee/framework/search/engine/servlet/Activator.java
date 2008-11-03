@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.servlet;
 
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
@@ -40,11 +40,11 @@ public class Activator implements BundleActivator {
       taggerServiceTracker.open();
 
       searchEngineHttpTracker =
-            new OseeHttpServiceTracker(context, OseeApplicationServerContext.SEARCH_CONTEXT, SearchEngineServlet.class);
+            new OseeHttpServiceTracker(context, OseeServerContext.SEARCH_CONTEXT, SearchEngineServlet.class);
       searchEngineHttpTracker.open();
 
       searchEngineTaggerHttpTracker =
-            new OseeHttpServiceTracker(context, OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT,
+            new OseeHttpServiceTracker(context, OseeServerContext.SEARCH_TAGGING_CONTEXT,
                   SearchEngineTaggerServlet.class);
       searchEngineTaggerHttpTracker.open();
    }

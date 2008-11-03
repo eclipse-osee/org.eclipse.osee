@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.lookup.servlet;
 
-import org.eclipse.osee.framework.core.connection.OseeApplicationServerContext;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -25,7 +25,7 @@ public class ServerLookupActivator implements BundleActivator {
     */
    public void start(BundleContext context) throws Exception {
       httpTracker =
-            new OseeHttpServiceTracker(context, OseeApplicationServerContext.LOOKUP_CONTEXT, ServerLookupServlet.class);
+            new OseeHttpServiceTracker(context, OseeServerContext.LOOKUP_CONTEXT, ServerLookupServlet.class);
       httpTracker.open();
    }
 

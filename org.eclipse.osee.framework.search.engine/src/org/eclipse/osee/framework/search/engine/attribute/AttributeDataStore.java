@@ -143,6 +143,7 @@ public class AttributeDataStore {
       if (SupportedDatabase.getDatabaseType() == SupportedDatabase.postgresql) {
          builder.append(POSTGRESQL_CHECK);
       }
+
       if (branchId > -1) {
          builder.append(RESTRICT_BY_BRANCH);
       }

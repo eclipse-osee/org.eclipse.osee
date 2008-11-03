@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.lookup.servlet;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,6 +33,14 @@ public class ServerLookupServlet extends OseeHttpServlet {
    private static final long serialVersionUID = -7055381632202456561L;
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.OseeHttpServlet#checkAccessControl(javax.servlet.http.HttpServletRequest)
+    */
+   @Override
+   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+      // Allow access to all 
+   }
+
+   /* (non-Javadoc)
     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
     */
    @Override
@@ -40,18 +51,50 @@ public class ServerLookupServlet extends OseeHttpServlet {
 
          OseeServerInfo info = null;
          if (Strings.isValid(version)) {
-            info = CoreServerActivator.getApplicationServerLookup().searchBy(version);
+            info = CoreServerActivator.getApplicationServerLookup().getServerInfoBy(version);
          } else {
             wasBadRequest = true;
          }
 
          if (info == null) {
             response.setStatus(wasBadRequest ? HttpServletResponse.SC_BAD_REQUEST : HttpServletResponse.SC_NO_CONTENT);
+            response.setContentType("txt/plain");
             response.getWriter().write(
                   String.format("Unable to locate application server matching - [%s]", request.toString()));
+            response.getWriter().flush();
+            response.getWriter().close();
          } else {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            info.write(stream);
+
             response.setStatus(HttpServletResponse.SC_OK);
-            info.write(response.getOutputStream());
+            response.setContentType("txt/xml");
+            response.setContentLength(stream.size());
+            Lib.inputStreamToOutputStream(new ByteArrayInputStream(stream.toByteArray()), response.getOutputStream());
+            response.getOutputStream().flush();
+         }
+      } catch (Exception ex) {
+         OseeLog.log(ServerLookupActivator.class, Level.SEVERE, String.format(
+               "Failed to process application server lookup request [%s]", request.toString()), ex);
+         response.getWriter().write(Lib.exceptionToString(ex));
+         response.getWriter().flush();
+         response.getWriter().close();
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    */
+   @Override
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      try {
+         boolean isRegistrationToLookupTableRequested = Boolean.valueOf(request.getParameter("registerToLookup"));
+         if (isRegistrationToLookupTableRequested) {
+            boolean wasSuccessful = CoreServerActivator.getApplicationServerManager().executeLookupRegistration();
+            response.setStatus(wasSuccessful ? HttpServletResponse.SC_ACCEPTED : HttpServletResponse.SC_CONFLICT);
+            response.setContentType("txt/plain");
+            response.getWriter().write(
+                  String.format("Registration into server lookup was a [%s]", wasSuccessful ? "success" : "failure"));
          }
       } catch (Exception ex) {
          OseeLog.log(ServerLookupActivator.class, Level.SEVERE, String.format(
