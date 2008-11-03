@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphTable;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -32,27 +33,38 @@ import org.eclipse.swt.widgets.ToolItem;
 /**
  * @author Donald G. Dunne
  */
-public class WorldMetricsComposite extends Composite {
+public class WorldMetricsComposite extends ScrolledComposite {
 
    private Composite toolBarComposite;
    private Composite metricsComposite;
    private final WorldComposite worldComposite;
    private final Color BACKGROUND_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
    private final Color FOREGROUND_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
+   private final Composite mainComp;
 
    /**
     * @param parent
     * @param style
     */
    public WorldMetricsComposite(WorldComposite worldComposite, Composite parent, int style) {
-      super(parent, style);
+      super(parent, style | SWT.V_SCROLL | SWT.H_SCROLL);
       this.worldComposite = worldComposite;
 
-      setLayout(new GridLayout(1, false));
+      setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
-      adapt(this);
 
-      creatToolBar(this);
+      mainComp = new Composite(this, SWT.NONE);
+      mainComp.setLayout(new GridLayout());
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      adapt(mainComp);
+
+      adapt(this);
+      creatToolBar(mainComp);
+
+      setContent(mainComp);
+      setExpandHorizontal(true);
+      setExpandVertical(true);
+      layout();
    }
 
    private void creatToolBar(Composite composite) {
@@ -89,9 +101,9 @@ public class WorldMetricsComposite extends Composite {
       if (metricsComposite != null) {
          metricsComposite.dispose();
       }
-      metricsComposite = new Composite(this, SWT.NONE);
+      metricsComposite = new Composite(mainComp, SWT.NONE);
       metricsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-      metricsComposite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      metricsComposite.setLayout(ALayout.getZeroMarginLayout(1, true));
       adapt(metricsComposite);
 
       addSpace();
@@ -104,7 +116,16 @@ public class WorldMetricsComposite extends Composite {
       addSpace();
       createCompletedByAssigneesChart(sMet, metricsComposite);
 
-      layout();
+      mainComp.layout();
+      computeScrollSize();
+   }
+
+   public void computeScrollSize() {
+      this.computeScrollSize(mainComp);
+   }
+
+   private void computeScrollSize(Composite viewableArea) {
+      this.setMinSize(viewableArea.computeSize(SWT.DEFAULT, SWT.DEFAULT));
    }
 
    private void addSpace() {
@@ -142,7 +163,7 @@ public class WorldMetricsComposite extends Composite {
             double percent = new Double(completed) / total * 100.0;
             percentComplete = (int) percent;
          }
-         itemToValueMap.put(user.getName() + "(" + completed + "/" + total + ")", percentComplete);
+         itemToValueMap.put(user.getName() + " (" + completed + "/" + total + ")", percentComplete);
       }
       XBarGraphTable table =
             new XBarGraphTable("Completed by Assignee", "User", "Percent Complete", itemToValueMap, "%");
