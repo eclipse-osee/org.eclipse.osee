@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.NotOnProductionDbInitializationRule;
 import org.eclipse.osee.framework.database.core.DbClientThread;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
+import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
@@ -166,7 +167,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
    }
 
    private static boolean checkPreconditions() throws OseeCoreException {
-      DbInformation dbInfo = OseeDbConnection.getDefaultDatabaseService();
+      DbInformation dbInfo = Activator.getDbConnectionInformation().getSelectedDatabaseInfo();
       String serverUrl = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
       System.setProperty(OseeProperties.OSEE_APPLICATION_SERVER_OVERRIDE, serverUrl);
 

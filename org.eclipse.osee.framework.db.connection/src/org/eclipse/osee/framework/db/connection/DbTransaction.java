@@ -24,19 +24,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public abstract class DbTransaction {
-   private Connection connection;
-   private boolean autoClose;
 
    /**
     * Transaction Constructor
     */
    public DbTransaction() {
-      this.autoClose = true;
-   }
-
-   public DbTransaction(Connection connection) {
-      this.connection = connection;
-      this.autoClose = false;
    }
 
    /**
@@ -55,9 +47,7 @@ public abstract class DbTransaction {
     * @throws Exception
     */
    public void execute() throws OseeCoreException {
-      if (connection == null) {
-         connection = OseeDbConnection.getConnection();
-      }
+      OseeConnection connection = OseeDbConnection.getConnection();
       boolean initialAutoCommit = true;
       try {
          OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
@@ -89,13 +79,8 @@ public abstract class DbTransaction {
          } catch (SQLException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         if (autoClose) {
-            try {
-               connection.close();
-            } catch (SQLException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
+         connection.close();
+
          handleTxFinally();
       }
    }

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
@@ -131,7 +131,7 @@ public class SessionManager implements ISessionManager {
 
    private OseeSessionGrant internalCreateGrant(SessionData sessionData) throws OseeDataStoreException {
       OseeSessionGrant sessionGrant = new OseeSessionGrant(sessionData.getSessionId());
-      DbInformation dbInformation = OseeDbConnection.getDefaultDatabaseService();
+      DbInformation dbInformation = Activator.getDbConnectionInformation().getSelectedDatabaseInfo();
       sessionGrant.setUserArtifactId(sessionData.getSession().getUserId());
       sessionGrant.setDbDriver(dbInformation.getConnectionData().getDBDriver());
       sessionGrant.setDbUrl(dbInformation.getConnectionUrl());
