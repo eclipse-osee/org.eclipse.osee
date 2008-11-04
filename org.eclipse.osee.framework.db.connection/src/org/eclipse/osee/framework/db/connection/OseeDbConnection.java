@@ -40,9 +40,10 @@ public class OseeDbConnection {
    }
 
    public static OseeConnection getConnection() throws OseeDataStoreException {
-      return getConnection(getDefaultDatabaseService());
+      return getConnection(dbDriver, dbUrl, dbConnectionProperties);
    }
 
+   @Deprecated
    public static OseeConnection getConnection(String serviceName) throws OseeDataStoreException {
       return getConnection(OseeDbConnection.getDatabaseService(serviceName));
    }

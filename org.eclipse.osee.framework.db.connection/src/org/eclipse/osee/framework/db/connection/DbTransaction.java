@@ -61,13 +61,11 @@ public abstract class DbTransaction {
          OseeLog.log(Activator.class, Level.FINEST, ex);
          try {
             connection.rollback();
-            if (connection instanceof OseeConnection) {
-               ((OseeConnection) connection).destroy();
-            }
-
+            connection.destroy();
          } catch (SQLException ex1) {
             throw new OseeWrappedException(ex1);
          }
+
          handleTxException(ex);
          if (ex instanceof OseeCoreException) {
             throw (OseeCoreException) ex;
