@@ -11,23 +11,21 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Robert A. Fisher
  */
 public class RoughRelation {
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(RoughRelation.class);
-
    private String relTypeName;
    private String aGuid;
    private String bGuid;
@@ -44,27 +42,28 @@ public class RoughRelation {
       this.bOrderValue = bOrderValue;
    }
 
-   public void makeReal(Branch branch, IProgressMonitor monitor) throws OseeCoreException {
+   public void makeReal(SkynetTransaction transaction, IProgressMonitor monitor) throws OseeCoreException {
       RelationType relationType = RelationTypeManager.getType(relTypeName);
-      Artifact aArt = ArtifactQuery.getArtifactFromId(aGuid, branch);
-      Artifact bArt = ArtifactQuery.getArtifactFromId(bGuid, branch);
+      Artifact aArt = ArtifactQuery.getArtifactFromId(aGuid, transaction.getBranch());
+      Artifact bArt = ArtifactQuery.getArtifactFromId(bGuid, transaction.getBranch());
 
       if (aArt == null || bArt == null) {
-         logger.log(Level.WARNING, "The relation of type " + relTypeName + " could not be created.");
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+               "The relation of type " + relTypeName + " could not be created.");
          if (aArt == null) {
-            logger.log(Level.WARNING, "The artifact with guid: " + aGuid + " does not exist.");
+            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "The artifact with guid: " + aGuid + " does not exist.");
          }
          if (bArt == null) {
-            logger.log(Level.WARNING, "The artifact with guid: " + bGuid + " does not exist.");
+            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "The artifact with guid: " + bGuid + " does not exist.");
          }
       } else {
          try {
             monitor.subTask(aArt.getDescriptiveName() + " <--> " + bArt.getDescriptiveName());
             monitor.worked(1);
             RelationManager.addRelation(relationType, aArt, bArt, rationale);
-            aArt.persistRelations();
+            aArt.persistRelations(transaction);
          } catch (IllegalArgumentException ex) {
-            logger.log(Level.WARNING, ex.toString());
+            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, ex.getLocalizedMessage());
          }
       }
    }

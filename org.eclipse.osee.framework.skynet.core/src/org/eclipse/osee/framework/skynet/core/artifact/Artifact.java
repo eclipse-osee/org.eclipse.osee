@@ -928,9 +928,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public final void persistAttributes() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch);
-      persistAttributes(transaction);
-      transaction.execute();
+      if (isDirty()) {
+         SkynetTransaction transaction = new SkynetTransaction(branch);
+         persistAttributes(transaction);
+         transaction.execute();
+      }
    }
 
    public final void persistAttributes(SkynetTransaction transaction) throws OseeCoreException {

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -196,21 +197,13 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      final Artifact parentArtifact = parentUnivGroupItem.getArtifact();
                      final Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
-                     SkynetTransaction transaction = new SkynetTransaction(BranchManager.getDefaultBranch());
                      for (Artifact artifact : insertArts) {
                         // Remove item from old group
                         parentArtifact.deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact);
                         // Add items to new group
                         targetArtifact.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact);
                      }
-                     parentArtifact.persistAttributesAndRelations(transaction);
-                     targetArtifact.persistAttributesAndRelations(transaction);
-
-                     try {
-                        transaction.execute();
-                     } catch (Exception ex) {
-                        OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-                     }
+                     Artifacts.persistInTransaction(parentArtifact, targetArtifact);
                   }
                }
             }

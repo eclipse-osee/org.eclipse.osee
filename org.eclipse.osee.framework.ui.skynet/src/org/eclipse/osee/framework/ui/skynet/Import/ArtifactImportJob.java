@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -64,27 +64,22 @@ public class ArtifactImportJob extends Job {
 
          monitor.beginTask("Creating Artifacts", roughArtifacts.size() + roughRelations.size());
 
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(branch) {
-            @Override
-            protected void handleTxWork() throws OseeCoreException {
-               for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
-                  // the getReal call with recursively call get real on all descendants of roughArtifact
-                  importRoot.addChild(roughArtifact.getReal(branch, monitor, artifactResolver));
-               }
+         SkynetTransaction transaction = new SkynetTransaction(branch);
+         for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
+            // the getReal call with recursively call get real on all descendants of roughArtifact
+            importRoot.addChild(roughArtifact.getReal(transaction, monitor, artifactResolver));
+         }
 
-               monitor.setTaskName("Creating Relations");
-               for (RoughRelation roughRelation : roughRelations) {
-                  roughRelation.makeReal(branch, monitor);
-               }
+         monitor.setTaskName("Creating Relations");
+         for (RoughRelation roughRelation : roughRelations) {
+            roughRelation.makeReal(transaction, monitor);
+         }
+         importRoot.persistAttributesAndRelations(transaction);
 
-               importRoot.persistAttributesAndRelations();
-
-               monitor.setTaskName("Committing Transaction");
-               monitor.subTask(""); // blank out leftover relation subtask
-               monitor.worked(1); // cause the status to update
-            }
-         };
-         txWrapper.execute();
+         monitor.setTaskName("Committing Transaction");
+         monitor.subTask(""); // blank out leftover relation subtask
+         monitor.worked(1); // cause the status to update
+         transaction.execute();
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
          toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * Utility methods for common tasks performed on Artifact's.
@@ -72,17 +72,16 @@ public final class Artifacts {
       return names;
    }
 
-   public static void persistInTransaction(final Collection<? extends Artifact> artifacts) throws Exception {
-      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
+   public static void persistInTransaction(final Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      persistInTransaction(artifacts.toArray(new Artifact[artifacts.size()]));
+   }
 
-         @Override
-         protected void handleTxWork() throws OseeCoreException {
-            for (Artifact art : artifacts)
-               art.persistAttributesAndRelations();
-         }
-
-      };
-      newActionTx.execute();
+   public static void persistInTransaction(Artifact... artifacts) throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(artifacts[0].getBranch());
+      for (Artifact art : artifacts) {
+         art.persistAttributesAndRelations(transaction);
+      }
+      transaction.execute();
    }
 
    /**

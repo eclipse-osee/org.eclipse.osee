@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -96,8 +96,8 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void setInputs() {
       try {
-         cmbAttributeDescriptors.setInput(TypeValidityManager.getValidAttributeTypes(
-               BranchManager.getDefaultBranch()).toArray(AttributeType.EMPTY_ARRAY));
+         cmbAttributeDescriptors.setInput(TypeValidityManager.getValidAttributeTypes(BranchManager.getDefaultBranch()).toArray(
+               AttributeType.EMPTY_ARRAY));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (OseeCoreException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});
@@ -165,25 +165,21 @@ public class AttributeFindReplaceDialog extends Dialog {
             try {
                monitor.beginTask("Find/Replace " + attributeName + " Attribute Value", artifacts.size());
 
-               AbstractSkynetTxTemplate modifyArtifactTx = new AbstractSkynetTxTemplate(branch) {
-
-                  @Override
-                  protected void handleTxWork() throws OseeCoreException {
-                     for (Artifact artifact : artifacts) {
-                        monitor.subTask("Modifying " + artifact.getDescriptiveName());
-                        for (Attribute<?> attribute : artifact.getAttributes(attributeName)) {
-                           Matcher matcher = pattern.matcher(attribute.toString());
-                           attribute.setFromString(matcher.replaceAll(replaceText));
-                        }
-                        artifact.persistAttributes();
-                        monitor.worked(1);
-                        if (monitor.isCanceled()) {
-                           throw new IllegalStateException("USER CANCELLED");
-                        }
-                     }
+               SkynetTransaction transaction = new SkynetTransaction(branch);
+               for (Artifact artifact : artifacts) {
+                  monitor.subTask("Modifying " + artifact.getDescriptiveName());
+                  for (Attribute<?> attribute : artifact.getAttributes(attributeName)) {
+                     Matcher matcher = pattern.matcher(attribute.toString());
+                     attribute.setFromString(matcher.replaceAll(replaceText));
                   }
-               };
-               modifyArtifactTx.execute();
+                  artifact.persistAttributes(transaction);
+                  monitor.worked(1);
+                  if (monitor.isCanceled()) {
+                     throw new IllegalStateException("USER CANCELLED");
+                  }
+               }
+
+               transaction.execute();
                toReturn = Status.OK_STATUS;
             } catch (Exception ex) {
                if (ex.getMessage().equals("USER CANCELLED")) {

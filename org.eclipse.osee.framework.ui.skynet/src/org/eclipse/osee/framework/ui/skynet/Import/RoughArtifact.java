@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Robert A. Fisher
@@ -182,7 +183,7 @@ public class RoughArtifact {
       return children;
    }
 
-   public Artifact getReal(Branch branch, IProgressMonitor monitor, IArtifactImportResolver artifactResolver) throws OseeCoreException {
+   public Artifact getReal(SkynetTransaction transaction, IProgressMonitor monitor, IArtifactImportResolver artifactResolver) throws OseeCoreException {
       if (realArtifact != null) {
          return realArtifact;
       }
@@ -195,7 +196,7 @@ public class RoughArtifact {
       }
 
       for (RoughArtifact roughArtifact : children) {
-         Artifact tempArtifact = roughArtifact.getReal(branch, monitor, artifactResolver);
+         Artifact tempArtifact = roughArtifact.getReal(transaction, monitor, artifactResolver);
          if (realArtifact != null && tempArtifact != null) {
             if (tempArtifact.getParent() == null) {
                realArtifact.addChild(tempArtifact);
@@ -207,7 +208,7 @@ public class RoughArtifact {
       }
 
       if (realArtifact != null) {
-         realArtifact.persistAttributesAndRelations();
+         realArtifact.persistAttributesAndRelations(transaction);
       }
       return realArtifact;
    }
