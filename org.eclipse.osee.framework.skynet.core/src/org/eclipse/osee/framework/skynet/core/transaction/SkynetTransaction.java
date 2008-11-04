@@ -239,7 +239,7 @@ public class SkynetTransaction extends DbTransaction {
     * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
     */
    @Override
-   protected void handleTxWork(Connection connection) throws OseeCoreException {
+   protected final void handleTxWork(Connection connection) throws OseeCoreException {
       executeBatchToTransactions(connection);
       executeTransactionDataItems(connection);
 

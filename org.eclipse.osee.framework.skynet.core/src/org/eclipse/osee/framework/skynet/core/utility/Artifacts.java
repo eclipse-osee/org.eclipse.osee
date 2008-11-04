@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -74,13 +75,13 @@ public final class Artifacts {
 
    public static void persistInTransaction(final Collection<? extends Artifact> artifacts) throws OseeCoreException {
       persistInTransaction(artifacts.toArray(new Artifact[artifacts.size()]));
-   }
+         }
 
    public static void persistInTransaction(Artifact... artifacts) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(artifacts[0].getBranch());
       for (Artifact art : artifacts) {
          art.persistAttributesAndRelations(transaction);
-      }
+   }
       transaction.execute();
    }
 

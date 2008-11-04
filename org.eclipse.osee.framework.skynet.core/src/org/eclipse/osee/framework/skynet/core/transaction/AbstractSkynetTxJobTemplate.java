@@ -73,53 +73,29 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
          return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, result.getText(), null);
       }
       try {
-         SkynetTx createTasksTx = new SkynetTx(branch);
-         createTasksTx.execute();
+         SkynetTransaction transaction = new SkynetTransaction(branch);
+         handleTxWork(transaction);
+         transaction.execute();
       } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
+      } finally{
+         try {
+            handleTxFinally();
+         } catch (OseeCoreException ex) {
+            return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
+         }
       }
       return Status.OK_STATUS;
    }
 
-   private class SkynetTx extends AbstractSkynetTxTemplate {
-      /**
-       * @param branch
-       */
-      public SkynetTx(Branch branch) {
-         super(branch);
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxWork()
-       */
-      @Override
-      protected void handleTxWork() throws OseeCoreException {
-         // This calls the containing class's version of the method
-         AbstractSkynetTxJobTemplate.this.handleTxWork();
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxFinally()
-       */
-      @Override
-      protected void handleTxFinally() throws OseeCoreException {
-         super.handleTxFinally();
-         // This calls the containing class's version of the method
-         AbstractSkynetTxJobTemplate.this.handleTxFinally();
-      }
-   }
-
    /**
     * Provides the transaction's work implementation.
+    * @param transaction 
     * 
     * @throws Exception
     */
-   protected abstract void handleTxWork() throws OseeCoreException;
+   protected abstract void handleTxWork(SkynetTransaction transaction) throws OseeCoreException;
 
    /**
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
@@ -128,7 +104,6 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
     * @throws Exception
     */
    protected void handleTxFinally() throws OseeCoreException {
-      // override to add additional code to finally
    }
 
 }
