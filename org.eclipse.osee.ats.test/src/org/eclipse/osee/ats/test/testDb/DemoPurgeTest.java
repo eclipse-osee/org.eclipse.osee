@@ -23,7 +23,9 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
 /**
@@ -64,13 +66,16 @@ public class DemoPurgeTest extends TestCase {
       Set<Artifact> artsToPurge = new HashSet<Artifact>();
 
       // Create Action, Workflow and Tasks
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
       ActionArtifact actionArt =
             NewActionJob.createAction(null, "Action to Purge", "description", ChangeType.Improvement,
                   PriorityType.Priority_2, Arrays.asList("Other"), false, null,
                   org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ActionableItemArtifact.class,
                         ArtifactQuery.getArtifactsFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, "SAW Test",
-                              AtsPlugin.getAtsBranch())));
-      actionArt.persistAttributesAndRelations();
+                              AtsPlugin.getAtsBranch())), transaction);
+      actionArt.persistAttributesAndRelations(transaction);
+      transaction.execute();
+      
       artsToPurge.add(actionArt);
       artsToPurge.addAll(actionArt.getTeamWorkFlowArtifacts());
 
