@@ -47,7 +47,10 @@ public abstract class DbTransaction {
     * @throws Exception
     */
    public void execute() throws OseeCoreException {
-      OseeConnection connection = OseeDbConnection.getConnection();
+      execute(OseeDbConnection.getConnection(), true);
+   }
+
+   public void execute(OseeConnection connection, boolean commit) throws OseeCoreException {
       boolean initialAutoCommit = true;
       try {
          OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
@@ -55,7 +58,9 @@ public abstract class DbTransaction {
          connection.setAutoCommit(false);
          ConnectionHandler.deferConstraintChecking(connection);
          handleTxWork(connection);
-         connection.commit();
+         if (commit) {
+            connection.commit();
+         }
          OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.FINEST, ex);
@@ -77,7 +82,9 @@ public abstract class DbTransaction {
          } catch (SQLException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         connection.close();
+         if (commit) {
+            connection.close();
+         }
 
          handleTxFinally();
       }

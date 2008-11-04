@@ -78,14 +78,6 @@ public class SkynetTransaction extends DbTransaction {
       this.branch = branch;
    }
 
-   /**
-    * @param connection
-    */
-   public SkynetTransaction(Connection connection, Branch branch) {
-      super(connection);
-      this.branch = branch;
-   }
-
    public void addArtifactToPersist(Artifact artifact) throws OseeCoreException {
       ModificationType modType;
       ArtifactModType artifactModType;

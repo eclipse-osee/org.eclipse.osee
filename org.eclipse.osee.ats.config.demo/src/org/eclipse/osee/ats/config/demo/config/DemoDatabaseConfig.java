@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -26,6 +25,7 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.vue.AtsDbConfig;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * @author Donald G. Dunne
  */
 public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitializationTask {
-   public void run(Connection connection) throws OseeCoreException {
+   public void run(OseeConnection connection) throws OseeCoreException {
 
       new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
       new DemoTestWorkFlowDefinition().config(WriteType.New, null);

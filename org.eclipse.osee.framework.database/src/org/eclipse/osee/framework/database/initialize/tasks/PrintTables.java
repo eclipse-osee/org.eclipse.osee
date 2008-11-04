@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.data.SchemaData;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 public class PrintTables implements IDbInitializationTask {
@@ -30,7 +31,7 @@ public class PrintTables implements IDbInitializationTask {
       this.userConfig = userConfig;
    }
 
-   public void run(Connection connection) throws OseeCoreException {
+   public void run(OseeConnection connection) throws OseeCoreException {
       Set<String> keys = userConfig.keySet();
       for (String key : keys) {
          SchemaData schemaData = userConfig.get(key);

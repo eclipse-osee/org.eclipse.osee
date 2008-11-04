@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Connection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang.time.StopWatch;
@@ -29,9 +27,9 @@ import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.IDbInitializationRule;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.NotOnProductionDbInitializationRule;
-import org.eclipse.osee.framework.database.core.DbClientThread;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
 import org.eclipse.osee.framework.db.connection.Activator;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
@@ -45,28 +43,17 @@ import org.osgi.framework.Bundle;
 /**
  * @author Roberto E. Escobar
  */
-public class LaunchOseeDbConfigClient extends DbClientThread {
+public class LaunchOseeDbConfigClient {
    private static final String dbInitExtensionPointId = "org.eclipse.osee.framework.database.IDbInitializationTask";
    private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
-   private LaunchOseeDbConfigClient(DbInformation databaseService) {
-      super("Config Client Thread", databaseService);
+   private LaunchOseeDbConfigClient() {
    }
 
-   @Override
-   public void processTask() throws InvalidRegistryObjectException {
+   private static void processTask(OseeConnection connection) throws InvalidRegistryObjectException {
       OseeLog.log(DatabaseActivator.class, Level.INFO, "Begin Database Initialization...");
-      run(connection, GroupSelection.getInstance().getDbInitTasks());
-      OseeLog.log(DatabaseActivator.class, Level.INFO, "Database Initialization Complete.");
-   }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
-    */
-   public void run(Connection connection, List<String> extensionIds) throws InvalidRegistryObjectException {
-      for (String pointId : extensionIds) {
+      for (String pointId : GroupSelection.getInstance().getDbInitTasks()) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(pointId);
          if (extension == null) {
             OseeLog.log(DatabaseActivator.class, Level.SEVERE, "Unable to locate extension [" + pointId + "]");
@@ -84,13 +71,15 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
             }
          }
       }
+
+      OseeLog.log(DatabaseActivator.class, Level.INFO, "Database Initialization Complete.");
    }
 
    /**
     * @param skynetDbTypesExtensions
     * @param extensionIds
     */
-   private boolean runDbInitTasks(IExtension extension, Connection connection) {
+   private static boolean runDbInitTasks(IExtension extension, OseeConnection connection) {
       IConfigurationElement[] elements = extension.getConfigurationElements();
       String classname = null;
       String bundleName = null;
@@ -175,7 +164,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
          System.err.println(String.format(
                "You are not allowed to run config client against production servers. %s\nExiting.",
                DatabaseActivator.getInstance().getProductionDbs()));
-         return true;
+         return false;
       }
 
       boolean serverOk = isApplicationServerAlive(serverUrl);
@@ -201,9 +190,9 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
 
       if (checkPreconditions()) {
-         DbInformation dbInfo = OseeDbConnection.getDefaultDatabaseService();
-         String dbName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
-         String userName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.UserName);
+         DbInformation databaseService = OseeDbConnection.getDefaultDatabaseService();
+         String dbName = databaseService.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
+         String userName = databaseService.getDatabaseDetails().getFieldValue(ConfigField.UserName);
 
          boolean isPromptEnabled = OseeProperties.getInstance().isPromptEnabled();
          String line = null;
@@ -215,24 +204,25 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
          }
          if (line.equalsIgnoreCase("Y")) {
             isConfigured = true;
-            System.out.println("Configuring Database...");
+            OseeLog.log(DatabaseActivator.class, Level.INFO, "Configuring Database...");
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            LaunchOseeDbConfigClient configClient = new LaunchOseeDbConfigClient(dbInfo);
-            configClient.start();
+
+            OseeConnection connection = OseeDbConnection.getConnection(databaseService);
             try {
-               configClient.join();
-            } catch (InterruptedException ex) {
-               ex.printStackTrace();
+               processTask(connection);
+            } catch (Throwable ex) {
+               OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
+            } finally {
+               connection.close();
+               stopWatch.stop();
+               System.out.println(String.format("Database Configurationg completed in [%s] ms", stopWatch));
             }
-            stopWatch.stop();
-            System.out.println(String.format("Database Configurationg completed in [%s] ms", stopWatch));
          }
       }
 
       if (isConfigured != true) {
          System.out.println("Database will not be configured. ");
-         Runtime.getRuntime().exit(0);
       }
    }
 }

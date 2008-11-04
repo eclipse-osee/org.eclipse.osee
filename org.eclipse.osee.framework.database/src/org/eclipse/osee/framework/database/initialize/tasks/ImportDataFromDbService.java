@@ -39,7 +39,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       this.userSpecifiedConfig = userSpecifiedConfig;
    }
 
-   public void run(Connection connection) throws OseeCoreException {
+   public void run(OseeConnection connection) throws OseeCoreException {
       Set<String> importConnections = getImportConnections();
       for (String importFromDbService : importConnections) {
          System.out.println("Import Table Data from Db: " + importFromDbService);

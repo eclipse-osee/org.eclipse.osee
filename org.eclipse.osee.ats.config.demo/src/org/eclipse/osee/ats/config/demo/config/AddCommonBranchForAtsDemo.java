@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.UserEnum;
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustom
  */
 public class AddCommonBranchForAtsDemo extends AddCommonBranch {
 
-   public void run(Connection connection) throws OseeCoreException {
+   public void run(OseeConnection connection) throws OseeCoreException {
       super.run(connection);
 
       // Create Default Users

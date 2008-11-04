@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.dbinit;
 
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -41,7 +41,7 @@ public class AddCommonBranch implements IDbInitializationTask {
     * 
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
-   public void run(Connection connection) throws OseeCoreException {
+   public void run(OseeConnection connection) throws OseeCoreException {
       BranchManager.createSystemRootBranch();
 
       // Create branch, import skynet types and initialize

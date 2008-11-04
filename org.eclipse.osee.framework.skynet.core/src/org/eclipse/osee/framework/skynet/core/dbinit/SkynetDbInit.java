@@ -16,7 +16,6 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +41,7 @@ import org.eclipse.osee.framework.database.utility.DatabaseConfigurationData;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -71,7 +71,7 @@ public class SkynetDbInit implements IDbInitializationTask {
          "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID", "PERMISSION_NAME");
    private static boolean isInDbInit;
 
-   public void run(Connection connection) throws OseeCoreException {
+   public void run(OseeConnection connection) throws OseeCoreException {
       setIsInDbInit(true);
       SkynetAuthentication.setBasicUsersCreated(false);
       DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(connection, getSchemaFiles());
@@ -91,8 +91,8 @@ public class SkynetDbInit implements IDbInitializationTask {
       DbInit.addTables(schemas, userSpecifiedConfig, connection, databaseType);
       DbInit.addIndeces(schemas, userSpecifiedConfig, connection, databaseType);
       DbInit.addViews(connection, databaseType);
-      OseeInfo.putValue(OseeDatabaseId.getKey(), GUID.generateGuidStr());
       initializeApplicationServer();
+      OseeInfo.putValue(OseeDatabaseId.getKey(), GUID.generateGuidStr());
       populateSequenceTable();
       addDefaultPermissions();
    }

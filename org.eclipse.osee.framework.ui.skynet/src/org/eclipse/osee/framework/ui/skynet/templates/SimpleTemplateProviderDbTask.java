@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.templates;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,7 +35,7 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
-   public void run(Connection connection) throws OseeCoreException {
+   public void run(OseeConnection connection) throws OseeCoreException {
       try {
          processTemplatesForDBInit();
       } catch (IOException ex) {
