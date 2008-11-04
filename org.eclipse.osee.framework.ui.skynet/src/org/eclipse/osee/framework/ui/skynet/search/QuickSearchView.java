@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -181,7 +181,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       branchLabel = new Label(parent, SWT.NONE);
       branchLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      SkynetContributionItem.addTo(this, true);
+      OseeContributionItem.addTo(this, true);
 
       createActions();
 

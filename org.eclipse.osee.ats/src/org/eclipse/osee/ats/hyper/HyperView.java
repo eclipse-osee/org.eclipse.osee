@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -229,7 +229,7 @@ public class HyperView extends ViewPart implements IPartListener {
       debug.report("createPartControl");
 
       if (OseeDbConnection.hasOpenConnection()) {
-         SkynetContributionItem.addTo(this, true);
+         OseeContributionItem.addTo(this, true);
       }
 
       canvas = new FigureCanvas(parent);

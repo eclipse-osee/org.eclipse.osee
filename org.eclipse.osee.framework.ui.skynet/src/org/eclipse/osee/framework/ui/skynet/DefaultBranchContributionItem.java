@@ -29,22 +29,20 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Robert A. Fisher
  */
-public class SkynetDefaultBranchContributionItem extends SkynetContributionItem implements IBranchEventListener {
+public class DefaultBranchContributionItem extends OseeContributionItem implements IBranchEventListener {
    private static final String ID = "skynet.defaultBranch";
    private static final Image ENABLED = SkynetGuiPlugin.getInstance().getImage("branch.gif");
-   private static final Image DISABLED = ENABLED;
-   private static final String ENABLED_TOOLTIP = "The default branch that Skynet is working from.";
+   private static final String ENABLED_TOOLTIP =
+         "The default branch that Skynet is working from.\nDouble-click to change.";
    private static final String DISABLED_TOOLTIP = ENABLED_TOOLTIP;
 
-   public SkynetDefaultBranchContributionItem() {
-      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP, 25);
+   public DefaultBranchContributionItem() {
+      super(ID, 25);
       init();
+   }
+
+   private void init() {
       setActionHandler(new Action() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.action.Action#run()
-          */
          @Override
          public void run() {
             BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch", false);
@@ -54,9 +52,6 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
             }
          }
       });
-   }
-
-   private void init() {
       updateStatus(true);
       updateInfo();
       OseeEventManager.addListener(this);
@@ -64,19 +59,16 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
 
    private void updateInfo() {
       setText(BranchManager.getDefaultBranch().getDisplayName());
-      setToolTipText(ENABLED_TOOLTIP + "\nDouble-click to change.");
-      setImage(BranchLabelProvider.getBranchImage(BranchManager.getDefaultBranch()));
    }
 
    public static void addTo(IStatusLineManager manager) {
       for (IContributionItem item : manager.getItems())
-         if (item instanceof SkynetDefaultBranchContributionItem) return;
-      manager.add(new SkynetDefaultBranchContributionItem());
+         if (item instanceof DefaultBranchContributionItem) return;
+      manager.add(new DefaultBranchContributionItem());
    }
 
    public static void addTo(ViewPart view, boolean update) {
       addTo(view.getViewSite().getActionBars().getStatusLineManager());
-
       if (update) view.getViewSite().getActionBars().updateActionBars();
    }
 
@@ -113,6 +105,38 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledImage()
+    */
+   @Override
+   protected Image getDisabledImage() {
+      return ENABLED;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledToolTip()
+    */
+   @Override
+   protected String getDisabledToolTip() {
+      return DISABLED_TOOLTIP;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledImage()
+    */
+   @Override
+   protected Image getEnabledImage() {
+      return BranchLabelProvider.getBranchImage(BranchManager.getDefaultBranch());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledToolTip()
+    */
+   @Override
+   protected String getEnabledToolTip() {
+      return ENABLED_TOOLTIP;
    }
 
 }

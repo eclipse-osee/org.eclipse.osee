@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -78,7 +78,7 @@ public class NavigateView extends ViewPart implements IActionable {
       BulkLoadAtsCache.run(false);
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
-      SkynetContributionItem.addTo(this, false);
+      OseeContributionItem.addTo(this, false);
 
       xNavComp = new AtsNavigateComposite(new AtsNavigateViewItems(), parent, SWT.NONE);
 

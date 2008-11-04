@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -143,7 +143,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    protected void addPages() {
 
       try {
-         SkynetContributionItem.addTo(this, true);
+         OseeContributionItem.addTo(this, true);
 
          IEditorInput editorInput = getEditorInput();
          if (editorInput instanceof TaskEditorInput) {

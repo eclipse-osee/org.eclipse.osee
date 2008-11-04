@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -110,7 +110,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
       treeViewer.getTree().setMenu(popupMenu);
       createActions();
 
-      SkynetContributionItem.addTo(this, true);
+      OseeContributionItem.addTo(this, true);
 
       explore(artifact);
    }

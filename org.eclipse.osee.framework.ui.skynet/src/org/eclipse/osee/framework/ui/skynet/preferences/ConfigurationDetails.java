@@ -24,14 +24,20 @@ import org.eclipse.osee.framework.core.client.ServiceStatus;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -41,9 +47,12 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class ConfigurationDetails extends PreferencePage implements IWorkbenchPreferencePage {
    private static final Image STATUS_OK = SkynetGuiPlugin.getInstance().getImage("green_light.gif");
    private static final Image STATUS_ERROR = SkynetGuiPlugin.getInstance().getImage("red_light.gif");
+   private static final int TEXT_MARGIN = 10;
+   private Table table;
 
    public ConfigurationDetails() {
       super();
+      this.table = null;
    }
 
    /* (non-Javadoc)
@@ -51,6 +60,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
     */
    @Override
    protected Control createContents(Composite parent) {
+
       Composite content = new Composite(parent, SWT.NONE);
       GridLayout layout = new GridLayout();
       layout.marginHeight = 0;
@@ -63,14 +73,14 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       layout1.marginHeight = 0;
       layout1.marginWidth = 0;
       composite.setLayout(layout1);
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       composite.setText("Connections");
 
       TableViewer tableViewer = new TableViewer(composite, SWT.READ_ONLY);
       tableViewer.setContentProvider(new ArrayContentProvider());
-      Table table = tableViewer.getTable();
+      table = tableViewer.getTable();
       table.setLayout(new GridLayout());
-      table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       table.setHeaderVisible(true);
       table.setLinesVisible(true);
 
@@ -105,10 +115,15 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
             }
          }
       });
+
       tableViewer.setInput(getConfigurationDetails());
-      tc2.getColumn().pack();
-      tc3.getColumn().pack();
-      table.layout();
+
+      Listener paintListener = new PaintListener();
+      table.addListener(SWT.MeasureItem, paintListener);
+      table.addListener(SWT.EraseItem, paintListener);
+      table.addListener(SWT.PaintItem, paintListener);
+
+      pack();
       return content;
    }
 
@@ -130,6 +145,13 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
    public void init(IWorkbench workbench) {
       setPreferenceStore(SkynetActivator.getInstance().getPreferenceStore());
       setDescription("See below for OSEE configuration details.");
+   }
+
+   private void pack() {
+      for (int i = 0; i < 3; i++) {
+         table.getColumn(i).pack();
+      }
+      table.pack();
    }
 
    private class DataRecord {
@@ -157,6 +179,79 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
 
       public void setStatus(boolean status) {
          this.status = status;
+      }
+   }
+
+   private final class PaintListener implements Listener {
+      public void handleEvent(Event event) {
+
+         switch (event.type) {
+            case SWT.MeasureItem: {
+               TableItem item = (TableItem) event.item;
+
+               Image image = item.getImage(event.index);
+               if (image != null) {
+                  Rectangle rect = image.getBounds();
+                  event.width += rect.width;
+                  event.height = Math.max(event.height, rect.height + 2);
+               }
+
+               String text = getText(event.gc, item, event.index);
+               if (text != null) {
+                  Point size = event.gc.textExtent(text);
+                  event.width = size.x;
+                  event.height = Math.max(event.height, size.y + 2);
+               }
+               break;
+            }
+            case SWT.PaintItem: {
+               TableItem item = (TableItem) event.item;
+               String text = getText(event.gc, item, event.index);
+               if (text != null) {
+
+                  Point size = event.gc.textExtent(text);
+                  int offset2 = event.index == 0 ? Math.min(0, (event.height - size.y) / 2) : 0;
+                  event.gc.drawText(text, event.x + TEXT_MARGIN, event.y + offset2, true);
+               }
+               Image image = item.getImage(event.index);
+               if (image != null) {
+                  int x = event.x + event.width;
+                  Rectangle rect = image.getBounds();
+                  int offset = Math.max(0, (event.height - rect.height) / 2);
+                  event.gc.drawImage(image, x, event.y + offset);
+               }
+               break;
+            }
+            case SWT.EraseItem: {
+               event.detail &= ~SWT.FOREGROUND;
+               break;
+            }
+         }
+      }
+
+      String getText(GC gc, TableItem item, int columnIndex) {
+         String text = item.getText(columnIndex);
+         if (text != null && columnIndex < 2) {
+            int pixelWidth = item.getTextBounds(columnIndex + 1).x - item.getTextBounds(columnIndex).x;
+            Point size1 = gc.textExtent(text);
+
+            double charactersToPixels = (double) text.length() / (double) size1.x;
+            int charactersAllowed = (int) (pixelWidth * charactersToPixels) - TEXT_MARGIN;
+            if (charactersAllowed > 0) {
+               StringBuilder builder = new StringBuilder();
+               int count = 0;
+               for (int index = 0; index < text.length(); index++) {
+                  builder.append(text.charAt(index));
+                  if (count == charactersAllowed) {
+                     count = 0;
+                     builder.append("\n");
+                  }
+                  count++;
+               }
+               text = builder.toString().trim();
+            }
+         }
+         return text;
       }
    }
 

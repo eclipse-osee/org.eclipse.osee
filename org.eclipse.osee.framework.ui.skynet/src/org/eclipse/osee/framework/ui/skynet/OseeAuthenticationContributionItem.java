@@ -32,22 +32,21 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Roberto E. Escobar
  */
-public class SkynetAuthenticationContributionItem extends SkynetContributionItem implements IAccessControlEventListener {
+public class OseeAuthenticationContributionItem extends OseeContributionItem implements IAccessControlEventListener {
 
    private static final String ID = "skynet.authentication";
-
-   private static final OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
 
    private static final Image ENABLED_IMAGE = SkynetGuiPlugin.getInstance().getImage("user.gif");
    private static final Image DISABLED_IMAGE =
          new OverlayImage(ENABLED_IMAGE, SkynetGuiPlugin.getInstance().getImageDescriptor("red_slash.gif")).createImage();
 
-   private static String ENABLED_TOOLTIP = "Authenticated as: ";
-   private static String DISABLED_TOOLTIP = "Not Authenticated.\n" + "Double-Click to Log On.";
-   final SkynetAuthenticationContributionItem contributionItem;
+   private static String ENABLED_TOOLTIP = "Authenticated as: %s (%s)\nDouble-Click to Log Off.";
+   private static String DISABLED_TOOLTIP = "Not Authenticated.\nDouble-Click to Log On.";
 
-   public SkynetAuthenticationContributionItem() {
-      super(ID, ENABLED_IMAGE, DISABLED_IMAGE, ENABLED_TOOLTIP, DISABLED_TOOLTIP);
+   final OseeAuthenticationContributionItem contributionItem;
+
+   public OseeAuthenticationContributionItem() {
+      super(ID);
       init();
       contributionItem = this;
    }
@@ -57,6 +56,7 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
 
          @Override
          public void run() {
+            OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
             if (oseeAuthentication.isAuthenticated()) {
                boolean result =
                      MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Log Off...",
@@ -80,8 +80,8 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
 
    public static void addTo(IStatusLineManager manager) {
       for (IContributionItem item : manager.getItems())
-         if (item instanceof SkynetAuthenticationContributionItem) return;
-      manager.add(new SkynetAuthenticationContributionItem());
+         if (item instanceof OseeAuthenticationContributionItem) return;
+      manager.add(new OseeAuthenticationContributionItem());
    }
 
    @Override
@@ -99,18 +99,47 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               if (oseeAuthentication.isAuthenticated()) {
-                  User skynetName = SkynetAuthentication.getUser();
 
-                  contributionItem.setEnabledToolTip(String.format(
-                        ENABLED_TOOLTIP + "%s (%s)\nDouble-Click to Log Off.",
-                        (skynetName != null ? skynetName.getName() : skynetName),
-                        oseeAuthentication.getCredentials().getField(UserCredentialEnum.Id)));
-               }
-               updateStatus(oseeAuthentication.isAuthenticated());
+               updateStatus(OseeAuthentication.getInstance().isAuthenticated());
             }
          });
       }
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledImage()
+    */
+   @Override
+   protected Image getDisabledImage() {
+      return DISABLED_IMAGE;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledToolTip()
+    */
+   @Override
+   protected String getDisabledToolTip() {
+      return DISABLED_TOOLTIP;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledImage()
+    */
+   @Override
+   protected Image getEnabledImage() {
+      return ENABLED_IMAGE;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledToolTip()
+    */
+   @Override
+   protected String getEnabledToolTip() {
+      if (OseeAuthentication.getInstance().isAuthenticated()) {
+         User skynetName = SkynetAuthentication.getUser();
+         return String.format(ENABLED_TOOLTIP, (skynetName != null ? skynetName.getName() : skynetName),
+               OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id));
+      }
+      return DISABLED_TOOLTIP;
+   }
 }

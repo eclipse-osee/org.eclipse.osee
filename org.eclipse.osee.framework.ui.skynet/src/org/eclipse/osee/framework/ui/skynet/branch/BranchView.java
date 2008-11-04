@@ -72,7 +72,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.TreeViewerReport;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -406,7 +406,7 @@ public class BranchView extends ViewPart implements IActionable {
 
       setHelpContexts();
 
-      SkynetContributionItem.addTo(this, true);
+      OseeContributionItem.addTo(this, true);
 
       branchListComposite.getFilterText().addModifyListener(new ModifyListener() {
          public void modifyText(ModifyEvent e) {

@@ -138,7 +138,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
       new SearchDragAndDrop(viewer.getTable(), VIEW_ID);
 
-      SkynetContributionItem.addTo(this, false);
+      OseeContributionItem.addTo(this, false);
       getSite().getActionBars().updateActionBars();
       OseeEventManager.addListener(this);
    }

@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
@@ -213,7 +213,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       menuManager.add(new Separator());
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
-      SkynetContributionItem.addTo(this, true);
+      OseeContributionItem.addTo(this, true);
       getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView", menuManager,
             xMergeViewer.getXViewer());
 

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -71,7 +71,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    protected void addPages() {
 
       try {
-         SkynetContributionItem.addTo(this, true);
+         OseeContributionItem.addTo(this, true);
 
          IEditorInput editorInput = getEditorInput();
          WorldEditorInput worldEditorInput = null;

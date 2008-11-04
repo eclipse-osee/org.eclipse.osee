@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public class AdminContributionItem extends SkynetContributionItem {
+public class AdminContributionItem extends OseeContributionItem {
 
    private static final String ID = "ats.admin";
 
@@ -28,7 +28,7 @@ public class AdminContributionItem extends SkynetContributionItem {
    private static String DISABLED_TOOLTIP = "";
 
    public AdminContributionItem() {
-      super(ID, ENABLED_IMAGE, DISABLED_IMAGE, ENABLED_TOOLTIP, DISABLED_TOOLTIP);
+      super(ID);
       init();
    }
 
@@ -40,6 +40,38 @@ public class AdminContributionItem extends SkynetContributionItem {
       for (IContributionItem item : manager.getItems())
          if (item instanceof AdminContributionItem) return;
       manager.add(new AdminContributionItem());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledImage()
+    */
+   @Override
+   protected Image getDisabledImage() {
+      return DISABLED_IMAGE;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledToolTip()
+    */
+   @Override
+   protected String getDisabledToolTip() {
+      return DISABLED_TOOLTIP;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledImage()
+    */
+   @Override
+   protected Image getEnabledImage() {
+      return ENABLED_IMAGE;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledToolTip()
+    */
+   @Override
+   protected String getEnabledToolTip() {
+      return ENABLED_TOOLTIP;
    }
 
 }

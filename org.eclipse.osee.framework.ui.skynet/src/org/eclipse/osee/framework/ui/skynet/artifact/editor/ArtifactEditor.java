@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
@@ -193,7 +193,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
     */
    @Override
    protected void createPages() {
-      SkynetContributionItem.addTo(this, true);
+      OseeContributionItem.addTo(this, true);
 
       previewPageIndex = createPreviewPage();
       setPageText(previewPageIndex, "Preview");

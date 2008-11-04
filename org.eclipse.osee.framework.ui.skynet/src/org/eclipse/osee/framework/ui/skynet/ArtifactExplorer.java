@@ -296,7 +296,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       createSetDefaultBranchAction();
       OseeAts.addBugToViewToolbar(this, this, SkynetActivator.getInstance(), VIEW_ID, "Artifact Explorer");
 
-      SkynetContributionItem.addTo(this, false);
+      OseeContributionItem.addTo(this, false);
       getViewSite().getActionBars().updateActionBars();
 
       updateEnablementsEtAl();

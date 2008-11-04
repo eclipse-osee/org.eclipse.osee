@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
@@ -216,7 +216,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    protected void createPages() {
       super.createPages();
-      SkynetContributionItem.addTo(this, true);
+      OseeContributionItem.addTo(this, true);
    }
 
    /*

@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -81,7 +81,7 @@ public class WorldView extends ViewPart implements IPartListener, IActionable {
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS World");
       AtsPlugin.getInstance().setHelp(worldComposite.getControl(), HELP_CONTEXT_ID);
 
-      SkynetContributionItem.addTo(this, false);
+      OseeContributionItem.addTo(this, false);
    }
 
    public String getActionDescription() {
