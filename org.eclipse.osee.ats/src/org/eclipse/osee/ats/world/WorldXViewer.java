@@ -71,6 +71,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
@@ -175,7 +176,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    Action editAssigneeAction;
    Action editActionableItemsAction;
    Action convertActionableItemsAction;
-   Action openInAtsEditorAction, openInMassEditorAction, openInNewEditorAction;
+   Action openInAtsEditorAction, openInMassEditorAction, openSelectedInNewEditorAction;
    Action favoritesAction;
    Action subscribedAction;
    Action openInArtifactEditorAction;
@@ -290,7 +291,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          }
       };
 
-      openInNewEditorAction = new Action("Open in New Editor", Action.AS_PUSH_BUTTON) {
+      openSelectedInNewEditorAction = new Action("Open Selected in New Editor", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             if (getSelectedArtifacts().size() == 0) {
@@ -298,8 +299,8 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                return;
             }
             WorldEditorInput worldEditorInput =
-                  new WorldEditorInput("ATS Editor - selected", getSelectedArtifacts(),
-                        getCustomizeMgr().generateCustDataFromTable());
+                  new WorldEditorInput("ATS - " + getSelectedArtifacts().size() + " Selected", getSelectedArtifacts(),
+                        getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None);
             if (worldEditorInput != null) {
                IWorkbenchPage page = AWorkbench.getActivePage();
                try {
@@ -518,8 +519,8 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       openInAtsEditorAction.setEnabled(getSelectedArtifacts() != null);
       mm.insertBefore(MENU_GROUP_PRE, openInMassEditorAction);
       openInMassEditorAction.setEnabled(getSelectedArtifacts() != null);
-      mm.insertBefore(MENU_GROUP_PRE, openInNewEditorAction);
-      openInNewEditorAction.setEnabled(getSelectedArtifacts() != null);
+      mm.insertBefore(MENU_GROUP_PRE, openSelectedInNewEditorAction);
+      openSelectedInNewEditorAction.setEnabled(getSelectedArtifacts() != null);
       if (AtsPlugin.isAtsAdmin()) {
          mm.insertBefore(MENU_GROUP_PRE, openInArtifactEditorAction);
          openInArtifactEditorAction.setEnabled(getSelectedArtifacts() != null);
@@ -768,14 +769,14 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   new HtmlDialog((purge ? "Purge" : "Delete") + " ATS Objects", "", AHTML.simplePage(results));
             dialog.open();
             if (dialog.getReturnCode() == 0) {
-               if (purge) {
-                  ArtifactPersistenceManager.purgeArtifacts(deleteArts);
-               } else {
+                     if (purge) {
+                        ArtifactPersistenceManager.purgeArtifacts(deleteArts);
+                     } else {
                   SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
                   ArtifactPersistenceManager.deleteArtifact(transaction, false,
                         deleteArts.toArray(new Artifact[deleteArts.size()]));
                   transaction.execute();
-               }
+                     }
 
                AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed",
                      (purge ? "Purge" : "Delete") + " Completed");

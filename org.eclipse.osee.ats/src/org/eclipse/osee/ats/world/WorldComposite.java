@@ -484,6 +484,32 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       newWorldEditor.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newWorld.gif"));
       newWorldEditor.setToolTipText("Open in New Editor");
 
+      Action newWorldEditorSelected = new Action("Open Selected in New Editor") {
+
+         @Override
+         public void run() {
+
+            if (xViewer.getSelectedArtifacts().size() == 0) {
+               AWorkbench.popup("ERROR", "Select items to open");
+               return;
+            }
+            WorldEditorInput worldEditorInput =
+                  new WorldEditorInput("ATS - " + xViewer.getSelectedArtifacts().size() + " Selected",
+                        xViewer.getSelectedArtifacts(), xViewer.getCustomizeMgr().generateCustDataFromTable(),
+                        tableLoadOptions);
+            if (worldEditorInput != null) {
+               IWorkbenchPage page = AWorkbench.getActivePage();
+               try {
+                  page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
+               } catch (PartInitException ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+               }
+            }
+         }
+      };
+      newWorldEditorSelected.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newWorldSelected.gif"));
+      newWorldEditorSelected.setToolTipText("Open Selected in New Editor");
+
       Action expandAllAction = new Action("Expand All") {
 
          @Override
@@ -575,6 +601,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          toolbarManager.add(new NewAction());
          toolbarManager.add(expandAllAction);
          toolbarManager.add(newWorldEditor);
+         toolbarManager.add(newWorldEditorSelected);
          toolbarManager.add(refreshAction);
          getXViewer().addCustomizeToViewToolbar(toolbarManager);
 
@@ -596,6 +623,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
 
          actionToToolItem(toolBar, expandAllAction);
          actionToToolItem(toolBar, newWorldEditor);
+         actionToToolItem(toolBar, newWorldEditorSelected);
          actionToToolItem(toolBar, refreshAction);
          actionToToolItem(toolBar, xViewer.getCustomizeAction());
 

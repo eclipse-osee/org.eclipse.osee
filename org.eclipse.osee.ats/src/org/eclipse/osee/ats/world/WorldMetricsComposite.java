@@ -136,11 +136,16 @@ public class WorldMetricsComposite extends ScrolledComposite {
    public void createFullPercentChart(SMAMetrics sMet, Composite parent) {
       Map<String, Integer> itemToValueMap = new HashMap<String, Integer>();
       itemToValueMap.put(
-            "By Team Percents (" + sMet.getCummulativePercentComplete() + "/" + sMet.getNumObjects() + ")",
+            "By Team Percents (" + sMet.getCummulativeTeamPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
             (int) sMet.getPercentCompleteByTeamPercents());
       itemToValueMap.put(
             "By Team Workflow (" + sMet.getCompletedTeamWorkflows().size() + "/" + sMet.getNumTeamWfs() + ")",
-            (int) sMet.getPercentCompleteByWorkflow());
+            (int) sMet.getPercentCompleteByTeamWorkflow());
+      itemToValueMap.put(
+            "By Task Percents (" + sMet.getCummulativeTaskPercentComplete() + "/" + sMet.getNumTasks() + ")",
+            (int) sMet.getPercentCompleteByTaskPercents());
+      itemToValueMap.put("By Task (" + sMet.getCompletedTaskWorkflows().size() + "/" + sMet.getNumTasks() + ")",
+            (int) sMet.getPercentCompleteByTaskWorkflow());
       XBarGraphTable table = new XBarGraphTable("Total Percent Complete", "", "Percent Complete", itemToValueMap);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);

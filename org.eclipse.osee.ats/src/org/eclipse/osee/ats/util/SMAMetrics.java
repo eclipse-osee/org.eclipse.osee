@@ -38,17 +38,12 @@ public class SMAMetrics {
    double hrsRemain = 0;
    double hrsSpent = 0;
    double manDaysNeeded = 0;
-   double cummulativePercentComplete = 0;
+   double cummulativeTeamPercentComplete = 0;
    double percentCompleteByTeamPercents = 0;
-   double percentCompleteByWorkflow = 0;
-   int numObjects = 0;
-
-   /**
-    * @return the numObjects
-    */
-   public int getNumObjects() {
-      return numObjects;
-   }
+   double percentCompleteByTeamWorkflow = 0;
+   double cummulativeTaskPercentComplete = 0;
+   double percentCompleteByTaskPercents = 0;
+   double percentCompleteByTaskWorkflow = 0;
 
    Date estRelDate;
    long daysTillRel = 0;
@@ -230,6 +225,20 @@ public class SMAMetrics {
    }
 
    /**
+    * @return the cummulativeTaskPercentComplete
+    */
+   public double getCummulativeTaskPercentComplete() {
+      return cummulativeTaskPercentComplete;
+   }
+
+   /**
+    * @return the percentCompleteByTaskPercents
+    */
+   public double getPercentCompleteByTaskPercents() {
+      return percentCompleteByTaskPercents;
+   }
+
+   /**
     * @return the manDaysNeeded
     */
    public double getManDaysNeeded() {
@@ -246,15 +255,15 @@ public class SMAMetrics {
    /**
     * @return the cummulativePercentComplete
     */
-   public double getCummulativePercentComplete() {
-      return cummulativePercentComplete;
+   public double getCummulativeTeamPercentComplete() {
+      return cummulativeTeamPercentComplete;
    }
 
    /**
     * @param cummulativePercentComplete the cummulativePercentComplete to set
     */
    public void setCummulativePercentComplete(double cummulativePercentComplete) {
-      this.cummulativePercentComplete = cummulativePercentComplete;
+      this.cummulativeTeamPercentComplete = cummulativePercentComplete;
    }
 
    /**
@@ -274,11 +283,28 @@ public class SMAMetrics {
       return teams;
    }
 
-   public double getPercentCompleteByWorkflow() {
-      if (getTeamArts().size() == 0) return 100;
+   public double getPercentCompleteByTeamWorkflow() {
+      if (getTeamArts().size() == 0) return 0;
       double completed = getCompletedTeamWorkflows().size();
       if (completed == 0) return 0;
       return completed / getTeamArts().size() * 100;
+   }
+
+   public Collection<TaskArtifact> getCompletedTaskWorkflows() {
+      Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+      for (TaskArtifact team : getTaskArts()) {
+         if (team.getSmaMgr().isCancelledOrCompleted()) {
+            tasks.add(team);
+         }
+      }
+      return tasks;
+   }
+
+   public double getPercentCompleteByTaskWorkflow() {
+      if (getTaskArts().size() == 0) return 0;
+      double completed = getCompletedTaskWorkflows().size();
+      if (completed == 0) return 0;
+      return completed / getTaskArts().size() * 100;
    }
 
    /**
@@ -331,24 +357,30 @@ public class SMAMetrics {
             }
          }
       }
-      numObjects = getNumTasks() + getNumTeamWfs() + getNumReviews();
       estHours = 0;
       hrsRemain = 0;
       hrsSpent = 0;
       manDaysNeeded = 0;
-      cummulativePercentComplete = 0;
+      cummulativeTeamPercentComplete = 0;
       manDaysNeeded = 0;
       for (TeamWorkFlowArtifact team : teamArts) {
          hrsRemain += team.getWorldViewRemainHours();
          estHours += team.getWorldViewEstimatedHours();
          hrsSpent += team.getWorldViewHoursSpentTotal();
          manDaysNeeded += team.getWorldViewManDaysNeeded();
-         cummulativePercentComplete += team.getWorldViewPercentCompleteTotal();
+         cummulativeTeamPercentComplete += team.getWorldViewPercentCompleteTotal();
       }
       if (hrsRemain != 0) manDaysNeeded = hrsRemain / manDayHrs;
       percentCompleteByTeamPercents = 0;
-      if (numObjects > 0 && cummulativePercentComplete > 0) {
-         percentCompleteByTeamPercents = cummulativePercentComplete / numObjects;
+      if (getNumTeamWfs() > 0 && cummulativeTeamPercentComplete > 0) {
+         percentCompleteByTeamPercents = cummulativeTeamPercentComplete / getNumTeamWfs();
+      }
+      for (TaskArtifact task : taskArts) {
+         cummulativeTaskPercentComplete += task.getWorldViewPercentCompleteTotal();
+      }
+      percentCompleteByTaskPercents = 0;
+      if (getNumTasks() > 0 && cummulativeTaskPercentComplete > 0) {
+         percentCompleteByTaskPercents = cummulativeTaskPercentComplete / getNumTasks();
       }
 
       estRelDate = null;
