@@ -13,14 +13,13 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -197,26 +196,18 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      final Artifact parentArtifact = parentUnivGroupItem.getArtifact();
                      final Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
-                     AbstractSkynetTxTemplate relateArtifactTx =
-                           new AbstractSkynetTxTemplate(BranchManager.getDefaultBranch()) {
-
-                              @Override
-                              protected void handleTxWork() throws OseeCoreException {
-                                 for (Artifact artifact : insertArts) {
-                                    // Remove item from old group
-                                    parentArtifact.deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
-                                          artifact);
-                                    // Add items to new group
-                                    targetArtifact.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
-                                          artifact);
-                                 }
-                                 parentArtifact.persistAttributesAndRelations();
-                                 targetArtifact.persistAttributesAndRelations();
-                              }
-                           };
+                     SkynetTransaction transaction = new SkynetTransaction(BranchManager.getDefaultBranch());
+                     for (Artifact artifact : insertArts) {
+                        // Remove item from old group
+                        parentArtifact.deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact);
+                        // Add items to new group
+                        targetArtifact.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact);
+                     }
+                     parentArtifact.persistAttributesAndRelations(transaction);
+                     targetArtifact.persistAttributesAndRelations(transaction);
 
                      try {
-                        relateArtifactTx.execute();
+                        transaction.execute();
                      } catch (Exception ex) {
                         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                      }
@@ -294,26 +285,19 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
          AWorkbench.popup("ERROR", "Artifact(s) already related.");
          return;
       }
-      AbstractSkynetTxTemplate relateArtifactTx =
-            new AbstractSkynetTxTemplate(BranchManager.getDefaultBranch()) {
-
-               @Override
-               protected void handleTxWork() throws OseeCoreException {
-                  for (Artifact art : artsToRelate) {
-                     if (!dragOverExplorerItem.contains(art)) {
-                        dragOverExplorerItem.getArtifact().addRelation(
-                              CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art);
-                     }
-                  }
-                  dragOverExplorerItem.getArtifact().persistRelations();
-               }
-            };
-
       try {
-         relateArtifactTx.execute();
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getDefaultBranch());
+
+         for (Artifact art : artsToRelate) {
+            if (!dragOverExplorerItem.contains(art)) {
+               dragOverExplorerItem.getArtifact().addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art);
+            }
+         }
+         dragOverExplorerItem.getArtifact().persistRelations(transaction);
+
+         transaction.execute();
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-
    }
 }

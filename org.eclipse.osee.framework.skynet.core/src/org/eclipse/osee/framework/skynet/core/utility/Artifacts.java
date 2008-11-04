@@ -85,19 +85,6 @@ public final class Artifacts {
       newActionTx.execute();
    }
 
-   public static void delete(final Collection<? extends Artifact> artifacts) throws Exception {
-      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
-
-         @Override
-         protected void handleTxWork() throws OseeCoreException {
-            for (Artifact art : artifacts)
-               art.delete();
-         }
-
-      };
-      newActionTx.execute();
-   }
-
    /**
     * Recurses default hierarchy and collections children of parentArtifact that are of type class
     * 
