@@ -68,7 +68,6 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
    private CoreRelationEnumeration(boolean sideA, String typeName) {
       this.relationSide = sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;
       this.typeName = typeName;
-      RelationPersistenceManager.sideHash.put(typeName, sideA, this);
    }
 
    /**

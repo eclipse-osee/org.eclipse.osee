@@ -8,16 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.db.connection.core.transaction;
+package org.eclipse.osee.framework.db.connection;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.Activator;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -27,13 +24,19 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public abstract class DbTransaction {
+   private Connection connection;
+   private boolean autoClose;
 
    /**
     * Transaction Constructor
-    * 
-    * @param branch The branch this transaction should operate on
     */
    public DbTransaction() {
+      this.autoClose = true;
+   }
+
+   public DbTransaction(Connection connection) {
+      this.connection = connection;
+      this.autoClose = false;
    }
 
    /**
@@ -41,7 +44,7 @@ public abstract class DbTransaction {
     * 
     * @return String transaction class Name
     */
-   protected String getTxName() {
+   private String getTxName() {
       return this.getClass().getCanonicalName();
    }
 
@@ -51,26 +54,48 @@ public abstract class DbTransaction {
     * 
     * @throws Exception
     */
-   public void execute() throws Exception {
-      OseeConnection connection = OseeDbConnection.getConnection();
+   public void execute() throws OseeCoreException {
+      if (connection == null) {
+         connection = OseeDbConnection.getConnection();
+      }
+      boolean initialAutoCommit = true;
       try {
          OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
-         DbTransaction.deferConstraintChecking(connection);
+         ConnectionHandler.deferConstraintChecking(connection);
          handleTxWork(connection);
          connection.commit();
          OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.FINEST, ex);
-         connection.rollback();
+         try {
+            connection.rollback();
+            if (connection instanceof OseeConnection) {
+               ((OseeConnection) connection).destroy();
+            }
+
+         } catch (SQLException ex1) {
+            throw new OseeWrappedException(ex1);
+         }
          handleTxException(ex);
+         if (ex instanceof OseeCoreException) {
+            throw (OseeCoreException) ex;
+         }
+         throw new OseeWrappedException(ex);
       } finally {
          try {
-            connection.setAutoCommit(true);
-         } catch (Exception ex) {
+            connection.setAutoCommit(initialAutoCommit);
+         } catch (SQLException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         connection.close();
+         if (autoClose) {
+            try {
+               connection.close();
+            } catch (SQLException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
          handleTxFinally();
       }
    }
@@ -79,9 +104,9 @@ public abstract class DbTransaction {
     * Provides the transaction's work implementation.
     * 
     * @param connection
-    * @throws Exception
+    * @throws OseeCoreException TODO
     */
-   protected abstract void handleTxWork(Connection connection) throws Exception;
+   protected abstract void handleTxWork(Connection connection) throws OseeCoreException;
 
    /**
     * When an exception is detected during transaction processing, the exception is caught and passed to this method.
@@ -91,9 +116,7 @@ public abstract class DbTransaction {
     * @param ex
     * @throws Exception
     */
-   protected void handleTxException(Exception ex) throws Exception {
-      // override to handle transaction exception
-      throw ex;
+   protected void handleTxException(Exception ex) {
    }
 
    /**
@@ -102,21 +125,7 @@ public abstract class DbTransaction {
     * 
     * @throws Exception
     */
-   protected void handleTxFinally() throws Exception {
+   protected void handleTxFinally() throws OseeCoreException {
       // override to add additional code to finally
-   }
-
-   /**
-    * Cause constraint checking to be deferred until the end of the current transaction.
-    * 
-    * @param connection
-    * @throws OseeDataStoreException
-    */
-   public static void deferConstraintChecking(Connection connection) throws OseeDataStoreException {
-      if (SupportedDatabase.getDatabaseType(connection) == SupportedDatabase.derby) {
-         return;
-      }
-      // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
-      ConnectionHandler.runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");
    }
 }

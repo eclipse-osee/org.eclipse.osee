@@ -12,10 +12,12 @@
 package org.eclipse.osee.framework.db.connection;
 
 import java.util.Properties;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.pool.OseeConnectionPool;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -71,13 +73,12 @@ public class OseeDbConnection {
     * @return whether a successful connection has been had to the database
     */
    public static boolean isConnectionValid() {
-      OseeConnection connection = null;
       try {
-         connection = getConnection();
+         OseeConnection connection = getConnection();
+         connection.close();
       } catch (OseeDataStoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
-      } finally {
-         ConnectionHandler.close(connection);
       }
       return true;
    }

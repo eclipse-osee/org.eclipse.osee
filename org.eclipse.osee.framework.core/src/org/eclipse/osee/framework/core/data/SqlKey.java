@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import java.sql.Connection;
 import java.util.Properties;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 /**
  * @author Roberto E. Escobar
@@ -48,13 +45,7 @@ public class SqlKey {
 
    private static String getFormattedSql(String sql) throws OseeDataStoreException {
       if (areHintsAllowed == null) {
-         Connection connection = null;
-         try {
-            connection = OseeDbConnection.getConnection();
-            areHintsAllowed = SupportedDatabase.areHintsSupported(connection);
-         } finally {
-            ConnectionHandler.close(connection);
-         }
+         areHintsAllowed = ConnectionHandler.areHintsSupported();
       }
       return String.format(sql, areHintsAllowed ? SqlKey.ORDERED_HINT : "");
    }

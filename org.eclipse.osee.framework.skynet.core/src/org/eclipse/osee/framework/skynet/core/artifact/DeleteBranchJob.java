@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import java.sql.Connection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,9 +25,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -89,7 +91,7 @@ class DeleteBranchJob extends Job {
       return toReturn;
    }
 
-   private final class DeleteBranchTx extends AbstractDbTxTemplate {
+   private final class DeleteBranchTx extends DbTransaction {
       private final Branch branch;
       private final IProgressMonitor monitor;
       private IStatus txResult;
@@ -110,7 +112,7 @@ class DeleteBranchJob extends Job {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException {
+      protected void handleTxWork(Connection connection) throws OseeCoreException {
          if (ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_CHILD_BRANCHES, branch.getBranchId()) > 0) {
             throw new OseeCoreException("Can not delete a branch that has children");
          }
@@ -118,8 +120,8 @@ class DeleteBranchJob extends Job {
          monitor.beginTask("Delete Branch: " + branch, 10);
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, branch.getBranchId(),
-                        branch.getBranchId(), branch.getBranchId());
+            chStmt.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, branch.getBranchId(), branch.getBranchId(),
+                  branch.getBranchId());
 
             if (chStmt.next()) {// checking to see if there are any gammas to delete
                // before inserting into delete table
@@ -142,8 +144,7 @@ class DeleteBranchJob extends Job {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxFinally()
        */
       @Override
-      protected void handleTxFinally() throws Exception {
-         super.handleTxFinally();
+      protected void handleTxFinally() throws OseeCoreException {
          monitor.done();
          if (getResult().equals(Status.OK_STATUS)) {
             OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, branch.getBranchId());

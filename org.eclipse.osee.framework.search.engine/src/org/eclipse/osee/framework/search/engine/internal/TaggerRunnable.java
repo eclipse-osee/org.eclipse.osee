@@ -20,7 +20,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.JoinItem;
 import org.eclipse.osee.framework.core.data.JoinUtility.TransactionJoinQuery;
-import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Activator;
@@ -129,7 +130,7 @@ class TaggerRunnable implements Runnable {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
        */
       @Override
-      protected void handleTxWork(Connection connection) throws Exception {
+      protected void handleTxWork(Connection connection) throws OseeCoreException {
          Collection<AttributeData> attributeDatas = AttributeDataStore.getAttribute(connection, getTagQueueQueryId());
          try {
             deleteOldSearchTags(connection, attributeDatas);
@@ -160,7 +161,7 @@ class TaggerRunnable implements Runnable {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxFinally()
        */
       @Override
-      protected void handleTxFinally() throws Exception {
+      protected void handleTxFinally() throws OseeCoreException {
          super.handleTxFinally();
          for (SearchTag searchTag : this.searchTags) {
             searchTag.clearCache();

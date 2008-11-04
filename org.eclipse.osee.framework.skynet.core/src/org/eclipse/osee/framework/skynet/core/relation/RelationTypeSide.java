@@ -11,6 +11,9 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -25,6 +28,12 @@ public class RelationTypeSide implements IRelationEnumeration {
    public RelationTypeSide(RelationType type, RelationSide side, Artifact artifact) {
       this.type = type;
       this.side = side;
+      this.artifact = artifact;
+   }
+
+   public RelationTypeSide(String typeName, String sideName, Artifact artifact) throws OseeTypeDoesNotExist, OseeDataStoreException, OseeArgumentException {
+      this.type = RelationTypeManager.getType(typeName);
+      this.side = type.isSideAName(sideName) ? RelationSide.SIDE_A : RelationSide.SIDE_B;
       this.artifact = artifact;
    }
 
@@ -90,6 +99,13 @@ public class RelationTypeSide implements IRelationEnumeration {
    public boolean equals(Object arg0) {
       if (arg0 instanceof RelationTypeSide) {
          RelationTypeSide arg = (RelationTypeSide) arg0;
+         if (artifact == null && arg.artifact == null) {
+
+         } else if (artifact == null) {
+            return false;
+         } else if (arg.artifact == null) {
+            return false;
+         }
          return type.equals(arg.type) && side.equals(arg.side) && artifact.equals(arg.artifact);
       }
       return false;
@@ -103,7 +119,9 @@ public class RelationTypeSide implements IRelationEnumeration {
       int hashCode = 11;
       hashCode = hashCode * 31 + type.hashCode();
       hashCode = hashCode * 31 + side.hashCode();
-      hashCode = hashCode * 31 + artifact.hashCode();
+      if (artifact != null) {
+         hashCode = hashCode * 31 + artifact.hashCode();
+      }
       return hashCode;
    }
 }

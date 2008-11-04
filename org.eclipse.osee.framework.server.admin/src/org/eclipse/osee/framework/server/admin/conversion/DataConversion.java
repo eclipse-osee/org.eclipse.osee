@@ -190,7 +190,9 @@ public class DataConversion {
                   OseeLog.log(Activator.class, Level.SEVERE, "Unable to save resource from DB.", ex);
                }
             }
-            ConnectionHandler.close(connection);
+            if (connection != null) {
+               connection.close();
+            }
          }
          long seconds = (System.currentTimeMillis() - time) / 1000;
          long leftOverSeconds = seconds % 60;

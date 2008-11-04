@@ -53,7 +53,7 @@ public class BranchTaggerRunnable implements Runnable {
        * @see org.eclipse.osee.framework.search.engine.internal.ConvertToTagQueueTx#doWork(java.sql.Connection)
        */
       @Override
-      protected void convertInput(Connection connection) throws OseeDataStoreException {
+      protected void convertInput(Connection connection) throws OseeDataStoreException, Exception {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
          try {
             String sql = AttributeDataStore.getAllTaggableGammasByBranchQuery(connection, branchId);

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -56,7 +57,10 @@ public class DeleteArtifactHandler extends AbstractHandler {
                         " Are you sure you want to delete this artifact and all of the default hierarchy children?",
                         MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == 0) {
-               ArtifactPersistenceManager.deleteArtifact(artifacts.toArray(new Artifact[artifacts.size()]));
+               Artifact[] artifactsArray = artifacts.toArray(new Artifact[artifacts.size()]);
+               SkynetTransaction transaction = new SkynetTransaction(artifactsArray[0].getBranch());
+               ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
+               transaction.execute();
             }
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);

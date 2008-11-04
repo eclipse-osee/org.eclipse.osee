@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
@@ -88,7 +89,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.data.add(objects);
    }
 
-   protected void store(Connection connection) throws Exception {
+   protected void store(Connection connection) throws OseeDataStoreException {
       if (this.data.isEmpty() != true) {
          ConnectionHandler.runBatchUpdate(connection, getMetaData().getQuery(), this.data);
          this.data.clear();

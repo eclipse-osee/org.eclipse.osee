@@ -38,28 +38,10 @@ public abstract class AbstractSkynetTxTemplate {
     * @param object
     * @throws IllegalArgumentExpception if argument is null
     */
-   protected void checkForNull(Object object) {
+   private void checkForNull(Object object) {
       if (object == null) {
          throw new IllegalArgumentException("Error argument was null.");
       }
-   }
-
-   /**
-    * Gets the name of this transaction. This is provided mainly for logging purposes.
-    * 
-    * @return String transaction class Name
-    */
-   protected String getTxName() {
-      return this.getClass().getCanonicalName();
-   }
-
-   /**
-    * Gets the transaction builder managing this transaction
-    * 
-    * @return transactionBuilder This transaction's builder
-    */
-   protected SkynetTransactionBuilder getTxBuilder() {
-      return SkynetTransactionManager.getTransactionBuilder(branch);
    }
 
    /**
@@ -78,18 +60,7 @@ public abstract class AbstractSkynetTxTemplate {
     * @throws Exception
     */
    public void execute() throws OseeCoreException {
-      try {
-         SkynetTransactionManager.startBatchLevel(this, branch);
-         //         OseeLog.log(SkynetActivator.class,Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
 
-         handleTxWork();
-
-         SkynetTransactionManager.setBatchLevelAsSuccessful(this, branch);
-         //         OseeLog.log(SkynetActivator.class,Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
-      } finally {
-         SkynetTransactionManager.endBatchLevel(this, branch);
-         handleTxFinally();
-      }
    }
 
    /**

@@ -7,10 +7,8 @@ package org.eclipse.osee.ats.util;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -78,13 +76,6 @@ public enum AtsRelation implements IRelationEnumeration {
    private AtsRelation(boolean sideA, String typeName) {
       this.relationSide = sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;
       this.typeName = typeName;
-      RelationPersistenceManager.sideHash.put(typeName, sideA, this);
-   }
-
-   public static IRelationEnumeration getRelationSide(String relationTypeName, String relationSide, Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      RelationType relationType = RelationTypeManager.getType(relationTypeName);
-      boolean isSideA = (relationType.getSideAName().equals(relationSide));
-      return RelationPersistenceManager.sideHash.get(relationTypeName, isSideA);
    }
 
    /**

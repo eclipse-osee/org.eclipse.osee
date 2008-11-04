@@ -77,7 +77,7 @@ public class TranslationManager {
       return translatorMap.containsKey(name.toLowerCase());
    }
 
-   public Object translate(String name, Object original) throws Exception {
+   public Object translate(String name, Object original) throws OseeDataStoreException {
       Object toReturn = original;
       if (original != null && !useOriginalIds) {
          IdTranslator translator = translatorMap.get(name.toLowerCase());

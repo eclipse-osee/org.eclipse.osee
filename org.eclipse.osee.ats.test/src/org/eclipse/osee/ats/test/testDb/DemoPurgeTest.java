@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.client.ServiceHealthManager;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
@@ -86,9 +87,7 @@ public class DemoPurgeTest extends TestCase {
       checkThatIncreased(preCreateActionCount, postCreateActionCount);
 
       // Purge Action, Workflow and Tasks
-      for (Artifact artifact : artsToPurge) {
-         artifact.purgeFromBranch();
-      }
+      ArtifactPersistenceManager.purgeArtifacts(artsToPurge);
 
       // Count rows and check that same as when began
       System.out.println("Post Purge Table Counts.");

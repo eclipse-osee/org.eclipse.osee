@@ -52,6 +52,11 @@ public class OseeConnection implements Connection {
       return true;
    }
 
+   public void destroy() throws SQLException {
+      conn.close();
+      close();
+   }
+
    public boolean inUse() {
       return inuse;
    }

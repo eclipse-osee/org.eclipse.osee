@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -767,18 +768,15 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   new HtmlDialog((purge ? "Purge" : "Delete") + " ATS Objects", "", AHTML.simplePage(results));
             dialog.open();
             if (dialog.getReturnCode() == 0) {
-               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
+               if (purge) {
+                  ArtifactPersistenceManager.purgeArtifacts(deleteArts);
+               } else {
+                  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+                  ArtifactPersistenceManager.deleteArtifact(transaction, false,
+                        deleteArts.toArray(new Artifact[deleteArts.size()]));
+                  transaction.execute();
+               }
 
-                  @Override
-                  protected void handleTxWork() throws OseeCoreException {
-                     if (purge) {
-                        ArtifactPersistenceManager.purgeArtifacts(deleteArts);
-                     } else {
-                        ArtifactPersistenceManager.deleteArtifact(deleteArts.toArray(new Artifact[deleteArts.size()]));
-                     }
-                  }
-               };
-               txWrapper.execute();
                AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed",
                      (purge ? "Purge" : "Delete") + " Completed");
             }

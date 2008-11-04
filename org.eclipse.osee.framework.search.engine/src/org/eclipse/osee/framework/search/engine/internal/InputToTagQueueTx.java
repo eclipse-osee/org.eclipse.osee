@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
-import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 
@@ -48,8 +50,12 @@ public abstract class InputToTagQueueTx extends DbTransaction {
     * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
     */
    @Override
-   protected void handleTxWork(Connection connection) throws Exception {
-      convertInput(connection);
+   protected void handleTxWork(Connection connection) throws OseeCoreException {
+      try {
+         convertInput(connection);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
       storeQueryIds(connection);
       if (listener != null) {
          listener.onTagExpectedQueryIdSubmits(this.queryIds.size());
@@ -61,7 +67,7 @@ public abstract class InputToTagQueueTx extends DbTransaction {
     * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxException(java.lang.Exception)
     */
    @Override
-   protected void handleTxException(Exception ex) throws Exception {
+   protected void handleTxException(Exception ex) {
       this.isOkToDispatch = false;
       if (listener != null) {
          if (queryIds.isEmpty()) {
@@ -72,14 +78,13 @@ public abstract class InputToTagQueueTx extends DbTransaction {
             }
          }
       }
-      throw new Exception(String.format("Error during [%s] - ", this.getClass()), ex);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxFinally()
     */
    @Override
-   protected void handleTxFinally() throws Exception {
+   protected void handleTxFinally() throws OseeCoreException {
       super.handleTxFinally();
       if (this.isOkToDispatch) {
          for (int queryId : queryIds) {

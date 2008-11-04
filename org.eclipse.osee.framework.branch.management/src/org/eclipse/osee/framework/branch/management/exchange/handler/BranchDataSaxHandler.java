@@ -98,17 +98,17 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   private void checkSelectedBranches(int... branchesToImport) throws Exception {
+   private void checkSelectedBranches(int... branchesToImport) throws OseeDataStoreException {
       if (branchesToImport != null && branchesToImport.length > 0) {
          if (!areAvailable(branchesToImport)) {
-            throw new Exception(String.format(
+            throw new OseeDataStoreException(String.format(
                   "Branches not found in import file:\n\t\t- selected to import: [%s]\n\t\t- in import file: [%s]",
                   branchesToImport, getAllBranchDataFromImportFile()));
          }
       }
    }
 
-   public int[] store(boolean writeToDb, int... branchesToImport) throws Exception {
+   public int[] store(boolean writeToDb, int... branchesToImport) throws OseeDataStoreException {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
       branchesToStore = checkTargetDbBranches(branchesToStore);

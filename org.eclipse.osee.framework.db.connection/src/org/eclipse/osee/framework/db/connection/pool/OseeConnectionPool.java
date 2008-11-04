@@ -99,7 +99,7 @@ public class OseeConnectionPool {
 
    public synchronized void returnConnection(OseeConnection conn) {
       try {
-         if (conn == null || conn.isClosed()) {
+         if (conn.isClosed()) {
             removeConnection(conn);
          } else {
             conn.expireLease();

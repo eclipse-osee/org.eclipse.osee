@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,26 +24,19 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -53,18 +45,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
-import org.eclipse.osee.framework.skynet.core.transaction.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionBuilder;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -72,9 +57,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Robert A. Fisher
  */
 public class ArtifactPersistenceManager {
-   private static final String INSERT_ARTIFACT =
-         "INSERT INTO " + ARTIFACT_TABLE + " (art_id, art_type_id, guid, human_readable_id) VALUES (?, ?, ?, ?)";
-
    private static final String REMOVE_EMPTY_TRANSACTION_DETAILS =
          "DELETE FROM osee_tx_details det WHERE det.branch_id = ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs where txs.transaction_id = det.transaction_id)";
 
@@ -171,9 +153,6 @@ public class ArtifactPersistenceManager {
    private static final String REVERT_ARTIFACT_VERSION_DATA =
          "DELETE FROM osee_artifact_version where gamma_id in (SELECT gamma_id FROM osee_artifact_version art WHERE art.art_id = ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs WHERE txs.gamma_id = art.gamma_id))";
 
-   private final ExtensionDefinedObjects<IAttributeSaveListener> attributeSaveListeners;
-
-   private IProgressMonitor monitor;
    public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
    public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
 
@@ -185,72 +164,10 @@ public class ArtifactPersistenceManager {
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Persistence"));
 
    private ArtifactPersistenceManager() {
-      this.attributeSaveListeners =
-            new ExtensionDefinedObjects<IAttributeSaveListener>(
-                  "org.eclipse.osee.framework.skynet.core.AttributeSaveListener", "AttributeSaveListener", "classname");
    }
 
    public static ArtifactPersistenceManager getInstance() {
       return instance;
-   }
-
-   /**
-    * Sets the monitor to report work to. Passing a <code>null</null> will cause the manager
-    * to stop reporting work.
-    * 
-    * @param monitor The monitor to report work to, or <code>null</code> to stop reporting.
-    */
-   public void setProgressMonitor(IProgressMonitor monitor) {
-      this.monitor = monitor;
-   }
-
-   protected void workedOneUnit() {
-      if (monitor != null) monitor.worked(1);
-   }
-
-   protected void workingOn(String name) {
-      if (monitor != null) {
-         monitor.subTask(name);
-      }
-   }
-
-   public void persistArtifact(Artifact artifact, SkynetTransaction transaction) throws OseeCoreException {
-      workingOn(artifact.getInternalDescriptiveName());
-      ModificationType modType;
-      ArtifactModType artifactModType;
-
-      if (artifact.isInDb()) {
-         if (artifact.isDeleted()) {
-            modType = ModificationType.DELETED;
-            artifactModType = ArtifactModType.Deleted;
-         } else {
-            modType = ModificationType.CHANGE;
-            artifactModType = ArtifactModType.Changed;
-         }
-      } else {
-         modType = ModificationType.NEW;
-         artifactModType = ArtifactModType.Added;
-         transaction.addToBatch(INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(), artifact.getGuid(),
-               artifact.getHumanReadableId());
-      }
-
-      int artGamma = SequenceManager.getNextGammaId();
-      artifact.setGammaId(artGamma);
-      processTransactionForArtifact(artifact, modType, transaction, artGamma);
-
-      // Add Attributes to Transaction
-      AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, transaction);
-      operation.execute();
-
-      // Kick Local Event
-      transaction.addArtifactModifiedEvent(this, artifactModType, artifact);
-
-      workedOneUnit();
-   }
-
-   private void processTransactionForArtifact(Artifact artifact, ModificationType modType, SkynetTransaction transaction, int artGamma) {
-      transaction.addTransactionDataItem(new ArtifactTransactionData(artifact, artGamma,
-            transaction.getTransactionId(), modType, transaction.getBranch()));
    }
 
    /**
@@ -470,21 +387,19 @@ public class ArtifactPersistenceManager {
       return artIdList.toString();
    }
 
-   public static void deleteArtifact(final Artifact... artifacts) throws OseeCoreException {
-      deleteArtifact(false, artifacts);
-   }
-
    /**
+    * @param transaction TODO
+    * @param overrideDeleteCheck if <b>true</b> deletes without checking preconditions
     * @param artifacts The artifacts to delete.
     */
-   public static void deleteArtifact(boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
+   public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
       if (artifacts.length == 0) return;
 
-      if (overrideDeleteCheck != true) {
+      if (!overrideDeleteCheck) {
          // Confirm artifacts are fit to delete
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
             Result result = check.isDeleteable(Arrays.asList(artifacts));
-            if (result.isFalse()) throw new IllegalStateException(result.getText());
+            if (result.isFalse()) throw new OseeStateException(result.getText());
          }
       }
       //Bulk Load Artifacts
@@ -496,67 +411,34 @@ public class ArtifactPersistenceManager {
             }
          }
       }
-      ArtifactQuery.getArtifactsFromIds(artIds, artifacts[0].getBranch(), true);
-      final Branch branch = artifacts[0].getBranch();
-      if (SkynetTransactionManager.isInBatch(branch)) {
-         for (Artifact artifact : artifacts) {
-            deleteTrace(artifact, SkynetTransactionManager.getTransactionBuilder(branch), true);
-         }
-      } else {
-         AbstractSkynetTxTemplate deleteTx = new AbstractSkynetTxTemplate(branch) {
-            @Override
-            protected void handleTxWork() throws OseeCoreException {
-               for (Artifact artifact : artifacts) {
-                  if (!artifact.isDeleted()) {
-                     deleteTrace(artifact, getTxBuilder(), true);
-                  }
-               }
-            }
-         };
-         deleteTx.execute();
+      Branch branch = artifacts[0].getBranch();
+      ArtifactQuery.getArtifactsFromIds(artIds, branch, true);
+
+      for (Artifact artifact : artifacts) {
+         deleteTrace(artifact, transaction, true);
       }
    }
 
    /**
     * @param artifact
     * @param builder
-    * @param reorderReloations TODO
+    * @param reorderReloations
     * @throws Exception
     */
-   public static void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder, boolean reorderRelations) throws OseeCoreException {
+   private static void deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations) throws OseeCoreException {
       if (!artifact.isDeleted()) {
          // This must be done first since the the actual deletion of an artifact clears out the link manager
          for (Artifact childArtifact : artifact.getChildren()) {
-            deleteTrace(childArtifact, builder, false);
+            deleteTrace(childArtifact, transaction, false);
          }
          try {
             artifact.setDeleted();
-            builder.deleteArtifact(artifact, reorderRelations);
+            transaction.deleteArtifact(artifact, reorderRelations);
          } catch (Exception ex) {
             artifact.setNotDeleted();
             throw new OseeCoreException(ex);
          }
       }
-   }
-
-   /**
-    * @param artifact
-    * @param transaction
-    * @param reorderRelations TODO
-    * @throws Exception
-    */
-   public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder, boolean reorderRelations) throws OseeCoreException {
-      if (!artifact.isInDb()) return;
-
-      processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SequenceManager.getNextGammaId());
-
-      // Kick Local Event
-      transaction.addArtifactModifiedEvent(this, ArtifactModType.Deleted, artifact);
-
-      RelationManager.deleteRelationsAll(artifact, reorderRelations);
-      artifact.deleteAttributes();
-
-      artifact.persistAttributesAndRelations();
    }
 
    /**
@@ -566,140 +448,107 @@ public class ArtifactPersistenceManager {
     * 
     * @param artifact
     */
-   public void purgeArtifactFromBranch(int branchId, int artId) throws OseeCoreException {
-      revertArtifact(branchId, artId);
+   public static void purgeArtifactFromBranch(Connection connection, int branchId, int artId) throws OseeCoreException {
+      revertArtifact(connection, branchId, artId);
 
       //Remove from Baseline
-      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_ATTRIBUTE_TRANS, branchId, artId);
-      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_RELATION_TRANS, branchId, artId, artId);
-      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ATTRIBUTE_TRANS, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_RELATION_TRANS, branchId, artId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
    }
 
-   public void revertAttribute(Attribute<?> attribute) throws OseeDataStoreException {
-      revertAttribute(attribute.getArtifact().getBranch().getBranchId(), attribute.getArtifact().getArtId(),
-            attribute.getAttrId());
+   public static void revertAttribute(Connection connection, Attribute<?> attribute) throws OseeDataStoreException {
+      revertAttribute(connection, attribute.getArtifact().getBranch().getBranchId(),
+            attribute.getArtifact().getArtId(), attribute.getAttrId());
    }
 
-   public void revertAttribute(int branchId, int artId, int attributeId) throws OseeDataStoreException {
+   public static void revertAttribute(Connection connection, int branchId, int artId, int attributeId) throws OseeDataStoreException {
+
+      long time = System.currentTimeMillis();
+      long totalTime = time;
+
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      List<Object[]> insertParameters = new LinkedList<Object[]>();
       try {
-         new RevertAttrDbTx(branchId, artId, attributeId).execute();
-      } catch (Exception ex) {
-         throw new OseeDataStoreException(ex);
+         chStmt.runPreparedQuery(REVERT_ATTRIBUTE_SELECT, branchId, artId, attributeId);
+         while (chStmt.next()) {
+            insertParameters.add(new Object[] {chStmt.getInt("transaction_id")});
+            if (DEBUG) {
+               System.out.println(String.format("  Revert Attribute: Delete Gamma ID = %d , Transaction ID = %d",
+                     chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+            }
+         }
+      } finally {
+         chStmt.close();
       }
-   }
-
-   private final class RevertAttrDbTx extends AbstractDbTxTemplate {
-      int branchId;
-      int artId;
-      int attributeId;
-
-      public RevertAttrDbTx(int branchId, int artId, int attributeId) {
-         this.branchId = branchId;
-         this.artId = artId;
-         this.attributeId = attributeId;
+      if (DEBUG) {
+         System.out.println(String.format("  Revert Attribute: Ran the Attribute Select Query in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
       }
 
-      @Override
-      protected void handleTxWork() throws OseeDataStoreException {
-         //Clean up the Attribute Addressing
-         long time = System.currentTimeMillis();
-         long totalTime = time;
-         OseeConnection connection = OseeDbConnection.getConnection();
+      ConnectionHandler.runPreparedUpdate(connection, REVERT_ATTRIBUTE_ADDRESSING, branchId, artId, attributeId);
+
+      if (DEBUG) {
          try {
-            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
-            List<Object[]> insertParameters = new LinkedList<Object[]>();
-            try {
-               chStmt.runPreparedQuery(REVERT_ATTRIBUTE_SELECT, branchId, artId, attributeId);
-               while (chStmt.next()) {
-                  insertParameters.add(new Object[] {chStmt.getInt("transaction_id")});
-                  if (DEBUG) {
-                     System.out.println(String.format("  Revert Attribute: Delete Gamma ID = %d , Transaction ID = %d",
-                           chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-                  }
-               }
-            } finally {
-               chStmt.close();
-            }
-            if (DEBUG) {
-               System.out.println(String.format("  Revert Attribute: Ran the Attribute Select Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-
-            ConnectionHandler.runPreparedUpdate(connection, REVERT_ATTRIBUTE_ADDRESSING, branchId, artId, attributeId);
-
-            if (DEBUG) {
-               try {
-                  chStmt.runPreparedQuery(REVERT_ATTRIBUTE_CURRENT_SELECT, branchId, artId, attributeId);
-                  while (chStmt.next()) {
-                     System.out.println(String.format(
-                           "  Revert Attribute: Set Current Gamma ID = %d , Transaction ID = %d",
-                           chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-                  }
-               } finally {
-                  chStmt.close();
-               }
-            }
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "  Revert Attribute: Ran the Revert Attribute Current Select Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            //Set Attribute baseline transactions to current
-            ConnectionHandler.runPreparedUpdate(connection, REVERT_ATTRIBUTE_SET_CURRENT, branchId, artId, attributeId);
-            if (DEBUG) {
-               System.out.println(String.format("  Revert Attribute: Ran the Revert Attribute Current Set Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            //Clean up artifact version Addressing.
-            if (insertParameters.size() > 0) {
-               ConnectionHandler.runBatchUpdate(connection, REVERT_ARTIFACT_VERSION_ADDRESSING, insertParameters);
-            }
-            if (DEBUG) {
-               System.out.println(String.format("  Revert Attribute: Ran the Artifact Version Current Set Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            //Set Artifact Version transactions to current
-            updateArtifactVersion(connection, branchId, artId);
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "  Revert Attribute: Ran the Revert Artifact Version Current Set Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-
-            //Remove old attribute data
-            ConnectionHandler.runPreparedUpdate(connection, REVERT_ATTRIBUTE_DATA, attributeId);
-            if (DEBUG) {
-               System.out.println(String.format("  Revert Attribute: Removed old attribute data in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            //Remove old artifact version data
-            ConnectionHandler.runPreparedUpdate(connection, REVERT_ARTIFACT_VERSION_DATA, artId);
-            if (DEBUG) {
-               System.out.println(String.format("  Revert Attribute: Removed old artifact version data in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            ConnectionHandler.runPreparedUpdate(connection, REMOVE_EMPTY_TRANSACTION_DETAILS, branchId);
-            if (DEBUG) {
-               System.out.println(String.format("  Revert Attribute: Removed empty tx details data in %s",
-                     Lib.getElapseString(time)));
-               System.out.println(String.format("  Revert Attribute: Reverted the Attribute %d in %s", attributeId,
-                     Lib.getElapseString(totalTime)));
+            chStmt.runPreparedQuery(REVERT_ATTRIBUTE_CURRENT_SELECT, branchId, artId, attributeId);
+            while (chStmt.next()) {
+               System.out.println(String.format("  Revert Attribute: Set Current Gamma ID = %d , Transaction ID = %d",
+                     chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
             }
          } finally {
-            connection.close();
+            chStmt.close();
          }
       }
+      if (DEBUG) {
+         System.out.println(String.format("  Revert Attribute: Ran the Revert Attribute Current Select Query in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      //Set Attribute baseline transactions to current
+      ConnectionHandler.runPreparedUpdate(connection, REVERT_ATTRIBUTE_SET_CURRENT, branchId, artId, attributeId);
+      if (DEBUG) {
+         System.out.println(String.format("  Revert Attribute: Ran the Revert Attribute Current Set Query in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      //Clean up artifact version Addressing.
+      if (insertParameters.size() > 0) {
+         ConnectionHandler.runBatchUpdate(connection, REVERT_ARTIFACT_VERSION_ADDRESSING, insertParameters);
+      }
+      if (DEBUG) {
+         System.out.println(String.format("  Revert Attribute: Ran the Artifact Version Current Set Query in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      //Set Artifact Version transactions to current
+      updateArtifactVersion(connection, branchId, artId);
+      if (DEBUG) {
+         System.out.println(String.format(
+               "  Revert Attribute: Ran the Revert Artifact Version Current Set Query in %s", Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
 
-      @Override
-      protected void handleTxFinally() throws Exception {
-         super.handleTxFinally();
+      //Remove old attribute data
+      ConnectionHandler.runPreparedUpdate(connection, REVERT_ATTRIBUTE_DATA, attributeId);
+      if (DEBUG) {
+         System.out.println(String.format("  Revert Attribute: Removed old attribute data in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      //Remove old artifact version data
+      ConnectionHandler.runPreparedUpdate(connection, REVERT_ARTIFACT_VERSION_DATA, artId);
+      if (DEBUG) {
+         System.out.println(String.format("  Revert Attribute: Removed old artifact version data in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      ConnectionHandler.runPreparedUpdate(connection, REMOVE_EMPTY_TRANSACTION_DETAILS, branchId);
+      if (DEBUG) {
+         System.out.println(String.format("  Revert Attribute: Removed empty tx details data in %s",
+               Lib.getElapseString(time)));
+         System.out.println(String.format("  Revert Attribute: Reverted the Attribute %d in %s", attributeId,
+               Lib.getElapseString(totalTime)));
       }
    }
 
@@ -707,148 +556,111 @@ public class ArtifactPersistenceManager {
     * @deprecated Not really deprecated but not usable yet because we don't handle fixing the reordering issue that may
     *             have occured
     */
-   private void revertRelationLink(RelationLink link) throws OseeCoreException {
+   private void revertRelationLink(Connection connection, RelationLink link) throws OseeCoreException {
       //Only reverts relation links that don't span multiple branches.  Need to revisit if additional functionality is needed.
       if (!link.getArtifactA().getBranch().equals(link.getArtifactB().getBranch())) {
          throw new OseeArgumentException(String.format("Can not revert Relation %d. Relation spans multiple branches",
                link.getRelationId()));
       }
-      revertRelationLink(link.getArtifactA().getBranch().getBranchId(), link.getRelationId(),
+      revertRelationLink(connection, link.getArtifactA().getBranch().getBranchId(), link.getRelationId(),
             link.getArtifactA().getArtId(), link.getArtifactB().getArtId());
    }
 
-   public void revertRelationLink(int branchId, int relLinkId, int aArtId, int bArtId) throws OseeDataStoreException {
+   private void revertRelationLink(Connection connection, int branchId, int relLinkId, int aArtId, int bArtId) throws OseeDataStoreException {
+      long time = System.currentTimeMillis();
+      long totalTime = time;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+
+      List<Object[]> insertParameters = new LinkedList<Object[]>();
       try {
-         new RevertRelDbTx(branchId, relLinkId, aArtId, bArtId).execute();
-      } catch (Exception ex) {
-         throw new OseeDataStoreException(ex);
+         chStmt.runPreparedQuery(REVERT_REL_LINK_SELECT, branchId, relLinkId);
+         while (chStmt.next()) {
+            insertParameters.add(new Object[] {chStmt.getInt("transaction_id")});
+            if (DEBUG) {
+               System.out.println(String.format("  RevertRelationLink: Delete Gamma ID = %d , Transaction ID = %d",
+                     chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+            }
+         }
+      } finally {
+         chStmt.close();
       }
-   }
-
-   private final class RevertRelDbTx extends AbstractDbTxTemplate {
-      int branchId;
-      int relLinkId;
-      int aArtId;
-      int bArtId;
-
-      public RevertRelDbTx(int branchId, int relLinkId, int aArtId, int bArtId) {
-         this.branchId = branchId;
-         this.relLinkId = relLinkId;
-         this.aArtId = aArtId;
-         this.bArtId = bArtId;
+      if (DEBUG) {
+         System.out.println(String.format("  RevertRelationLink: Ran the Relation Select Query in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
       }
 
-      @Override
-      protected void handleTxWork() throws OseeDataStoreException {
-         //Clean up the Attribute Addressing
-         long time = System.currentTimeMillis();
-         long totalTime = time;
-         OseeConnection connection = OseeDbConnection.getConnection();
+      ConnectionHandler.runPreparedUpdate(connection, REVERT_REL_LINK_ADDRESSING, branchId, relLinkId);
+
+      if (DEBUG) {
          try {
-            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
-
-            List<Object[]> insertParameters = new LinkedList<Object[]>();
-            try {
-               chStmt.runPreparedQuery(REVERT_REL_LINK_SELECT, branchId, relLinkId);
-               while (chStmt.next()) {
-                  insertParameters.add(new Object[] {chStmt.getInt("transaction_id")});
-                  if (DEBUG) {
-                     System.out.println(String.format(
-                           "  RevertRelationLink: Delete Gamma ID = %d , Transaction ID = %d",
-                           chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-                  }
-               }
-            } finally {
-               chStmt.close();
-            }
-            if (DEBUG) {
-               System.out.println(String.format("  RevertRelationLink: Ran the Relation Select Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-
-            ConnectionHandler.runPreparedUpdate(connection, REVERT_REL_LINK_ADDRESSING, branchId, relLinkId);
-
-            if (DEBUG) {
-               try {
-                  chStmt.runPreparedQuery(REVERT_REL_LINK_CURRENT_SELECT, branchId, relLinkId);
-                  while (chStmt.next()) {
-                     System.out.println(String.format(
-                           "  RevertRelationLink: Set Current Gamma ID = %d , Transaction ID = %d",
-                           chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-                  }
-               } finally {
-                  chStmt.close();
-               }
-            }
-            if (DEBUG) {
+            chStmt.runPreparedQuery(REVERT_REL_LINK_CURRENT_SELECT, branchId, relLinkId);
+            while (chStmt.next()) {
                System.out.println(String.format(
-                     "  RevertRelationLink: Ran the Revert Relation Link Current Select Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            //Set Attribute baseline transactions to current
-            ConnectionHandler.runPreparedUpdate(connection, REVERT_REL_LINK_SET_CURRENT, branchId, relLinkId);
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "  RevertRelationLink: Ran the Revert Relation Link Current Set Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            //Clean up artifact version Addressing.
-            if (insertParameters.size() > 0) {
-               ConnectionHandler.runBatchUpdate(connection, REVERT_ARTIFACT_VERSION_ADDRESSING, insertParameters);
-            }
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "  RevertRelationLink: Ran the Artifact Version Current Set Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            //Set Artifact Version transactions to current
-            updateArtifactVersion(connection, branchId, aArtId);
-            updateArtifactVersion(connection, branchId, bArtId);
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "  RevertRelationLink: Ran the Revert Artifact Version Current Set Query in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-
-            //Remove old attribute data
-            ConnectionHandler.runPreparedUpdate(connection, REVERT_REL_LINK_DATA, relLinkId);
-            if (DEBUG) {
-               System.out.println(String.format("  RevertRelationLink: Removed old rel link data in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            //Remove old artifact version data
-            ConnectionHandler.runPreparedUpdate(connection, REVERT_ARTIFACT_VERSION_DATA, aArtId);
-            ConnectionHandler.runPreparedUpdate(connection, REVERT_ARTIFACT_VERSION_DATA, bArtId);
-            if (DEBUG) {
-               System.out.println(String.format("  RevertRelationLink: Removed old artifact version data in %s",
-                     Lib.getElapseString(time)));
-               time = System.currentTimeMillis();
-            }
-            ConnectionHandler.runPreparedUpdate(connection, REMOVE_EMPTY_TRANSACTION_DETAILS, branchId);
-            if (DEBUG) {
-               System.out.println(String.format("  RevertRelationLink: Removed empty tx details data in %s",
-                     Lib.getElapseString(time)));
-               System.out.println(String.format("  RevertRelationLink: Reverted the Relation Link %d in %s", relLinkId,
-                     Lib.getElapseString(totalTime)));
+                     "  RevertRelationLink: Set Current Gamma ID = %d , Transaction ID = %d",
+                     chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
             }
          } finally {
-            connection.close();
+            chStmt.close();
          }
       }
+      if (DEBUG) {
+         System.out.println(String.format(
+               "  RevertRelationLink: Ran the Revert Relation Link Current Select Query in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      //Set Attribute baseline transactions to current
+      ConnectionHandler.runPreparedUpdate(connection, REVERT_REL_LINK_SET_CURRENT, branchId, relLinkId);
+      if (DEBUG) {
+         System.out.println(String.format("  RevertRelationLink: Ran the Revert Relation Link Current Set Query in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      //Clean up artifact version Addressing.
+      if (insertParameters.size() > 0) {
+         ConnectionHandler.runBatchUpdate(connection, REVERT_ARTIFACT_VERSION_ADDRESSING, insertParameters);
+      }
+      if (DEBUG) {
+         System.out.println(String.format("  RevertRelationLink: Ran the Artifact Version Current Set Query in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      //Set Artifact Version transactions to current
+      updateArtifactVersion(connection, branchId, aArtId);
+      updateArtifactVersion(connection, branchId, bArtId);
+      if (DEBUG) {
+         System.out.println(String.format(
+               "  RevertRelationLink: Ran the Revert Artifact Version Current Set Query in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
 
-      @Override
-      protected void handleTxFinally() throws Exception {
-         super.handleTxFinally();
+      //Remove old attribute data
+      ConnectionHandler.runPreparedUpdate(connection, REVERT_REL_LINK_DATA, relLinkId);
+      if (DEBUG) {
+         System.out.println(String.format("  RevertRelationLink: Removed old rel link data in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      //Remove old artifact version data
+      ConnectionHandler.runPreparedUpdate(connection, REVERT_ARTIFACT_VERSION_DATA, aArtId);
+      ConnectionHandler.runPreparedUpdate(connection, REVERT_ARTIFACT_VERSION_DATA, bArtId);
+      if (DEBUG) {
+         System.out.println(String.format("  RevertRelationLink: Removed old artifact version data in %s",
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
+      ConnectionHandler.runPreparedUpdate(connection, REMOVE_EMPTY_TRANSACTION_DETAILS, branchId);
+      if (DEBUG) {
+         System.out.println(String.format("  RevertRelationLink: Removed empty tx details data in %s",
+               Lib.getElapseString(time)));
+         System.out.println(String.format("  RevertRelationLink: Reverted the Relation Link %d in %s", relLinkId,
+               Lib.getElapseString(totalTime)));
       }
    }
 
-   private void updateArtifactVersion(Connection connection, int branchId, int artId) throws OseeDataStoreException {
+   private static void updateArtifactVersion(Connection connection, int branchId, int artId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       //Set Artifact Version transactions to current
       if (DEBUG) {
@@ -866,153 +678,121 @@ public class ArtifactPersistenceManager {
       ConnectionHandler.runPreparedUpdate(connection, REVERT_ARTIFACT_VERSION_SET_CURRENT, artId, branchId, artId);
    }
 
-   public void revertArtifact(Artifact artifact) throws OseeCoreException {
+   public static void revertArtifact(Connection connection, Artifact artifact) throws OseeCoreException {
       if (artifact == null) return;
-      revertArtifact(artifact.getBranch().getBranchId(), artifact.getArtId());
+      revertArtifact(connection, artifact.getBranch().getBranchId(), artifact.getArtId());
    }
 
-   public void revertArtifact(int branchId, int artId) throws OseeCoreException {
+   public static void revertArtifact(Connection connection, int branchId, int artId) throws OseeCoreException {
+      TransactionJoinQuery gammaIdsModifications = JoinUtility.createTransactionJoinQuery();
+      TransactionJoinQuery gammaIdsBaseline = JoinUtility.createTransactionJoinQuery();
+
+      long time = System.currentTimeMillis();
+      long totalTime = time;
+      //Get attribute Gammas
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
-         new RevertDbTx(branchId, artId).execute();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         chStmt.runPreparedQuery(GET_GAMMAS_REVERT, branchId, artId, branchId, artId, artId, branchId, artId);
+         while (chStmt.next()) {
+            if (chStmt.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
+               gammaIdsModifications.add(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id"));
+            } else {
+               gammaIdsBaseline.add(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id"));
+            }
+         }
+      } finally {
+         chStmt.close();
       }
-   }
-   private final class RevertDbTx extends AbstractDbTxTemplate {
-      int branchId;
-      int artId;
-
-      public RevertDbTx(int branchId, int artId) {
-         this.branchId = branchId;
-         this.artId = artId;
+      if (DEBUG) {
+         System.out.println(String.format(" Took %s to run the gamma selection Query", Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
       }
-
-      @Override
-      protected void handleTxWork() throws OseeCoreException {
-         TransactionJoinQuery gammaIdsModifications = JoinUtility.createTransactionJoinQuery();
-         TransactionJoinQuery gammaIdsBaseline = JoinUtility.createTransactionJoinQuery();
-         OseeConnection connection = OseeDbConnection.getConnection();
-
+      if (!gammaIdsModifications.isEmpty()) {
          try {
-            long time = System.currentTimeMillis();
-            long totalTime = time;
-            //Get attribute Gammas
-            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
-            try {
-               chStmt.runPreparedQuery(GET_GAMMAS_REVERT, branchId, artId, branchId, artId, artId, branchId, artId);
-               while (chStmt.next()) {
-                  if (chStmt.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
-                     gammaIdsModifications.add(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id"));
-                  } else {
-                     gammaIdsBaseline.add(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id"));
-                  }
-               }
-            } finally {
-               chStmt.close();
-            }
+            gammaIdsModifications.store(connection);
+            int gammaIdModsQID = gammaIdsModifications.getQueryId();
+
+            int count = ConnectionHandler.runPreparedUpdate(connection, DELETE_TXS_GAMMAS_REVERT, gammaIdModsQID);
+
             if (DEBUG) {
-               System.out.println(String.format(" Took %s to run the gamma selection Query", Lib.getElapseString(time)));
+               System.out.println(String.format("Deleted %d txs for gamma revert in %s", count,
+                     Lib.getElapseString(time)));
                time = System.currentTimeMillis();
-            }
-            if (!gammaIdsModifications.isEmpty()) {
                try {
-                  gammaIdsModifications.store(connection);
-                  int gammaIdModsQID = gammaIdsModifications.getQueryId();
-
-                  int count = ConnectionHandler.runPreparedUpdate(connection, DELETE_TXS_GAMMAS_REVERT, gammaIdModsQID);
-
-                  if (DEBUG) {
-                     System.out.println(String.format("Deleted %d txs for gamma revert in %s", count,
-                           Lib.getElapseString(time)));
-                     time = System.currentTimeMillis();
-                     try {
-                        chStmt.runPreparedQuery("Select * from osee_join_transaction where query_id = ?",
-                              gammaIdModsQID);
-                        while (chStmt.next()) {
-                           System.out.println(String.format(
-                                 " Revert Artifact: Addressing Gamma_id = %d Transaction Id = %d ",
-                                 chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-                        }
-                     } finally {
-                        chStmt.close();
-                     }
-                     try {
-                        chStmt.runPreparedQuery(REVERT_SELECT, gammaIdModsQID);
-                        while (chStmt.next()) {
-                           System.out.println(String.format("     Revert Artifact: Gammas To Remove %d",
-                                 chStmt.getInt("gamma_id")));
-                        }
-                     } finally {
-                        chStmt.close();
-                     }
-                     System.out.println(String.format("     Displayed all the data in %s", Lib.getElapseString(time)));
+                  chStmt.runPreparedQuery("Select * from osee_join_transaction where query_id = ?", gammaIdModsQID);
+                  while (chStmt.next()) {
+                     System.out.println(String.format(
+                           " Revert Artifact: Addressing Gamma_id = %d Transaction Id = %d ",
+                           chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
                   }
-
-                  time = System.currentTimeMillis();
-                  count =
-                        ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTE_GAMMAS_REVERT, gammaIdModsQID);
-                  if (DEBUG) {
-                     System.out.println(String.format("   Deleted %d attribute gammas for revert in %s", count,
-                           Lib.getElapseString(time)));
-                  }
-                  time = System.currentTimeMillis();
-                  ConnectionHandler.runPreparedUpdate(connection, DELETE_RELATION_GAMMAS_REVERT, gammaIdModsQID);
-                  if (DEBUG) {
-                     System.out.println(String.format("   Deleted %d relation gammas for revert in %s", count,
-                           Lib.getElapseString(time)));
-                  }
-                  time = System.currentTimeMillis();
-                  ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_GAMMAS_REVERT, gammaIdModsQID);
-                  if (DEBUG) {
-                     System.out.println(String.format("   Deleted %d artifact gammas for revert in %s", count,
-                           Lib.getElapseString(time)));
-                  }
-
-                  time = System.currentTimeMillis();
-                  if (!gammaIdsBaseline.isEmpty()) {
-                     gammaIdsBaseline.store(connection);
-                     count =
-                           ConnectionHandler.runPreparedUpdate(connection, SET_TX_CURRENT_REVERT,
-                                 gammaIdsBaseline.getQueryId());
-                     if (DEBUG) {
-                        System.out.println(String.format("   Set %d tx currents for revert in %s", count,
-                              Lib.getElapseString(time)));
-
-                        chStmt.runPreparedQuery("Select * from osee_join_transaction where query_id = ?",
-                              gammaIdsBaseline.getQueryId());
-                        while (chStmt.next()) {
-                           System.out.println(String.format(
-                                 " Revert Artifact: Baseline Gamma_id = %d Transaction Id = %d",
-                                 chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-                        }
-                     }
-                  }
-
-                  time = System.currentTimeMillis();
-                  ConnectionHandler.runPreparedUpdate(connection, REMOVE_EMPTY_TRANSACTION_DETAILS, branchId);
-                  if (DEBUG) {
-                     System.out.println(String.format("   Cleaned up the Transaction Detail Table in %s",
-                           Lib.getElapseString(time)));
-                     System.out.println(String.format(" Reverted the Artifact %d in %s", artId,
-                           Lib.getElapseString(totalTime)));
-
-                  }
-
                } finally {
-                  gammaIdsModifications.delete(connection);
-                  gammaIdsBaseline.delete(connection);
                   chStmt.close();
                }
+               try {
+                  chStmt.runPreparedQuery(REVERT_SELECT, gammaIdModsQID);
+                  while (chStmt.next()) {
+                     System.out.println(String.format("     Revert Artifact: Gammas To Remove %d",
+                           chStmt.getInt("gamma_id")));
+                  }
+               } finally {
+                  chStmt.close();
+               }
+               System.out.println(String.format("     Displayed all the data in %s", Lib.getElapseString(time)));
             }
+
+            time = System.currentTimeMillis();
+            count = ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTE_GAMMAS_REVERT, gammaIdModsQID);
+            if (DEBUG) {
+               System.out.println(String.format("   Deleted %d attribute gammas for revert in %s", count,
+                     Lib.getElapseString(time)));
+            }
+            time = System.currentTimeMillis();
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_RELATION_GAMMAS_REVERT, gammaIdModsQID);
+            if (DEBUG) {
+               System.out.println(String.format("   Deleted %d relation gammas for revert in %s", count,
+                     Lib.getElapseString(time)));
+            }
+            time = System.currentTimeMillis();
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_GAMMAS_REVERT, gammaIdModsQID);
+            if (DEBUG) {
+               System.out.println(String.format("   Deleted %d artifact gammas for revert in %s", count,
+                     Lib.getElapseString(time)));
+            }
+
+            time = System.currentTimeMillis();
+            if (!gammaIdsBaseline.isEmpty()) {
+               gammaIdsBaseline.store(connection);
+               count =
+                     ConnectionHandler.runPreparedUpdate(connection, SET_TX_CURRENT_REVERT,
+                           gammaIdsBaseline.getQueryId());
+               if (DEBUG) {
+                  System.out.println(String.format("   Set %d tx currents for revert in %s", count,
+                        Lib.getElapseString(time)));
+
+                  chStmt.runPreparedQuery("Select * from osee_join_transaction where query_id = ?",
+                        gammaIdsBaseline.getQueryId());
+                  while (chStmt.next()) {
+                     System.out.println(String.format(" Revert Artifact: Baseline Gamma_id = %d Transaction Id = %d",
+                           chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+                  }
+               }
+            }
+
+            time = System.currentTimeMillis();
+            ConnectionHandler.runPreparedUpdate(connection, REMOVE_EMPTY_TRANSACTION_DETAILS, branchId);
+            if (DEBUG) {
+               System.out.println(String.format("   Cleaned up the Transaction Detail Table in %s",
+                     Lib.getElapseString(time)));
+               System.out.println(String.format(" Reverted the Artifact %d in %s", artId,
+                     Lib.getElapseString(totalTime)));
+
+            }
+
          } finally {
-            connection.close();
+            gammaIdsModifications.delete(connection);
+            gammaIdsBaseline.delete(connection);
+            chStmt.close();
          }
-
-      }
-
-      @Override
-      protected void handleTxFinally() throws Exception {
-         super.handleTxFinally();
       }
    }
 
@@ -1076,139 +856,7 @@ public class ArtifactPersistenceManager {
       ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE, attributeId);
    }
 
-   private static final String INSERT_SELECT_RELATIONS =
-         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT ?, ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
-
-   private static final String INSERT_SELECT_ATTRIBUTES =
-         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT ?, ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_attribute att1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
-
-   private static final String INSERT_SELECT_ARTIFACTS =
-         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT ?, ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_artifact art1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id";
-
-   private static final String COUNT_ARTIFACT_VIOLATIONS =
-         "SELECT art1.art_id, txd1.branch_id FROM osee_join_artifact al1, osee_artifact art1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id";
-   private static final String DELETE_FROM_TXS_USING_JOIN_TRANSACTION =
-         "DELETE FROM osee_txs txs1 WHERE EXISTS ( select 1 from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.transaction_id = txs1.transaction_id AND jt1.gamma_id = txs1.gamma_id)";
-   private static final String DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION =
-         "DELETE FROM osee_tx_details txd1 WHERE EXISTS ( select 1 from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.transaction_id = txd1.transaction_id AND not exists ( select * from osee_txs txs1 where txs1.transaction_id = jt1.transaction_id))";
-   private static final String DELETE_FROM_RELATION_VERSIONS =
-         "DELETE FROM osee_relation_link rel1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = rel1.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
-   private static final String DELETE_FROM_ATTRIBUTE_VERSIONS =
-         "DELETE FROM osee_attribute attr1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = attr1.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
-   private static final String DELETE_FROM_ARTIFACT_VERSIONS =
-         "DELETE FROM osee_artifact_version artv1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = artv1.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
-   private static final String DELETE_FROM_ARTIFACT =
-         "DELETE FROM osee_artifact art1 WHERE EXISTS ( select * from osee_join_artifact ja1 WHERE ja1.query_id = ? AND ja1.art_id = art1.art_id AND not exists ( select * from osee_artifact_version artv1 where artv1.art_id = ja1.art_id))";
-
-   /**
-    * @param artifactsToPurge
-    * @param collection
-    * @throws OseeCoreException
-    */
    public static void purgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
-      //first determine if the purge is legal.
-      List<Object[]> batchParameters = new ArrayList<Object[]>();
-      int queryId = ArtifactLoader.getNewQueryId();
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-      OseeConnection connection = OseeDbConnection.getConnection();
-      try {
-         for (Artifact art : artifactsToPurge) {
-            for (Branch branch : art.getBranch().getChildBranches(true)) {
-               batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), branch.getBranchId(),
-                     SQL3DataType.INTEGER});
-            }
-         }
-         if (batchParameters.size() > 0) {
-            ArtifactLoader.selectArtifacts(connection, batchParameters);
-            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
-            try {
-               chStmt.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
-               boolean failed = false;
-               StringBuilder sb = new StringBuilder();
-               while (chStmt.next()) {
-                  failed = true;
-                  sb.append("ArtifactId[");
-                  sb.append(chStmt.getInt("art_id"));
-                  sb.append("] BranchId[");
-                  sb.append(chStmt.getInt("branch_id"));
-                  sb.append("]\n");
-               }
-               if (failed) {
-                  throw new OseeCoreException(String.format(
-                        "Unable to purge because the following artifacts exist on child branches.\n%s", sb.toString()));
-               }
-            } finally {
-               ArtifactLoader.clearQuery(connection, queryId);
-               chStmt.close();
-            }
-         }
-
-         // now load the artifacts to be purged
-         batchParameters.clear();
-         queryId = ArtifactLoader.getNewQueryId();
-         insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-         // insert into the artifact_join_table
-         for (Artifact art : artifactsToPurge) {
-            batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), art.getBranch().getBranchId(),
-                  SQL3DataType.INTEGER});
-         }
-         ArtifactLoader.selectArtifacts(connection, batchParameters);
-
-         //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
-         int transactionJoinId = ArtifactLoader.getNewQueryId();
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_SELECT_RELATIONS, transactionJoinId, insertTime,
-               queryId);
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_SELECT_ATTRIBUTES, transactionJoinId, insertTime,
-               queryId);
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_SELECT_ARTIFACTS, transactionJoinId, insertTime,
-               queryId);
-
-         //delete from the txs table
-         int txsDeletes =
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION,
-                     transactionJoinId);
-
-         int txdDeletes =
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION,
-                     transactionJoinId);
-
-         int relationVersions =
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_RELATION_VERSIONS, transactionJoinId);
-         int attributeVersions =
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ATTRIBUTE_VERSIONS, transactionJoinId);
-         int artifactVersions =
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ARTIFACT_VERSIONS, transactionJoinId);
-         int artifact = ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ARTIFACT, queryId);
-
-         OseeLog.log(
-               SkynetActivator.class,
-               Level.INFO,
-               String.format(
-                     "Purge Row Deletes: txs rows [%d], rel ver rows [%d], attr ver rows [%d] art ver rows [%d] art rows [%d].  txs vs. total versions [%d vs %d]",
-                     txsDeletes, relationVersions, attributeVersions, artifactVersions, artifact, txsDeletes,
-                     (relationVersions + attributeVersions + artifactVersions)));
-
-         ConnectionHandler.runPreparedUpdate(connection, "DELETE FROM osee_join_transaction where query_id = ?",
-               transactionJoinId);
-
-         for (Artifact art : artifactsToPurge) {
-            art.setDeleted();
-            for (RelationLink rel : art.getRelationsAll(false)) {
-               rel.markAsPurged();
-            }
-            for (Attribute<?> attr : art.internalGetAttributes()) {
-               attr.markAsPurged();
-            }
-         }
-
-         // Kick Local and Remote Events
-         OseeEventManager.kickArtifactsPurgedEvent(instance, new LoadedArtifacts(artifactsToPurge));
-
-      } finally {
-         ArtifactLoader.clearQuery(connection, queryId);
-         connection.close();
-      }
+      new PurgeDbTransaction(artifactsToPurge).execute();
    }
 }

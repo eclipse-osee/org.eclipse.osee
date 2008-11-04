@@ -50,7 +50,7 @@ public class AttributeDataStore {
    private AttributeDataStore() {
    }
 
-   public static Collection<AttributeData> getAttribute(final Connection connection, final int tagQueueQueryId) throws Exception {
+   public static Collection<AttributeData> getAttribute(final Connection connection, final int tagQueueQueryId) throws OseeDataStoreException {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
@@ -105,7 +105,7 @@ public class AttributeDataStore {
       return toReturn.toString();
    }
 
-   public static Set<AttributeData> getAttributesByTags(final int branchId, final Options options, final Collection<Long> tagData) throws Exception {
+   public static Set<AttributeData> getAttributesByTags(final int branchId, final Options options, final Collection<Long> tagData) throws OseeDataStoreException {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
       String sqlQuery = getQuery(getAttributeTagQuery(tagData.size()), branchId, options);
       List<Object> params = new ArrayList<Object>();

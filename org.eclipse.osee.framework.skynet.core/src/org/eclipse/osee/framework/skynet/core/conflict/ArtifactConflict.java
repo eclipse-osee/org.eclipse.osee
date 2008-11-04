@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -221,7 +220,7 @@ public class ArtifactConflict extends Conflict {
    }
 
    public void revertSourceArtifact() throws OseeCoreException {
-      ArtifactPersistenceManager.getInstance().revertArtifact(getSourceArtifact());
+      getSourceArtifact().revert();
    }
 
    public int getMergeGammaId() throws BranchMergeException {

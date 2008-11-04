@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.access;
 
+import java.sql.Connection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,9 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
@@ -229,7 +228,7 @@ public class AccessControlManager {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId,
-                        RelationTypeManager.getType("Users").getRelationTypeId());
+                  RelationTypeManager.getType("Users").getRelationTypeId());
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {
@@ -716,20 +715,9 @@ public class AccessControlManager {
    /**
     * Removes all locks from a branch
     */
-   public void removeAllPermissionsFromBranch(final OseeConnection connection, final Branch branch) throws OseeCoreException {
-      try {
-         AbstractDbTxTemplate dbTxWrapper = new AbstractDbTxTemplate() {
-            @Override
-            protected void handleTxWork() throws OseeCoreException {
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getBranchId());
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_BRANCH_ACL_FROM_BRANCH, branch.getBranchId());
-            }
-
-         };
-         dbTxWrapper.execute();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+   public void removeAllPermissionsFromBranch(final Connection connection, final Branch branch) throws OseeCoreException {
+      ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getBranchId());
+      ConnectionHandler.runPreparedUpdate(connection, DELETE_BRANCH_ACL_FROM_BRANCH, branch.getBranchId());
    }
 
    /**

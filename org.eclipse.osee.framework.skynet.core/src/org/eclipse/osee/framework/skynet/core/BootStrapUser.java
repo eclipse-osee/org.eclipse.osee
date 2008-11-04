@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
-
 /**
  * @author Ryan D. Brooks
  */
@@ -90,16 +89,6 @@ public class BootStrapUser extends User {
    @Override
    public Boolean isActive() {
       return true;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.User#isVersionControlled()
-    */
-   @Override
-   public boolean isVersionControlled() {
-      return false;
    }
 
    /*

@@ -15,12 +15,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -85,7 +88,7 @@ public class ExchangeUtil {
       return rootDirectory;
    }
 
-   public static void readExchange(File zipFile, String fileToProcess, ContentHandler handler) throws Exception {
+   public static void readExchange(File zipFile, String fileToProcess, ContentHandler handler) throws OseeCoreException {
       InputStream inputStream = null;
       try {
          File entry = new File(zipFile, fileToProcess);
@@ -93,9 +96,15 @@ public class ExchangeUtil {
          XMLReader reader = XMLReaderFactory.createXMLReader();
          reader.setContentHandler(handler);
          reader.parse(new InputSource(inputStream));
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
       } finally {
          if (inputStream != null) {
-            inputStream.close();
+            try {
+               inputStream.close();
+            } catch (IOException ex) {
+               throw new OseeWrappedException(ex);
+            }
          }
       }
    }

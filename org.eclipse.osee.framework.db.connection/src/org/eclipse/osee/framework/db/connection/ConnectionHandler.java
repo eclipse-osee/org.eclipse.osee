@@ -13,19 +13,16 @@ package org.eclipse.osee.framework.db.connection;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
-import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionManager;
-import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -35,70 +32,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public final class ConnectionHandler {
 
-   private static List<IDbConnectionListener> listeners = new CopyOnWriteArrayList<IDbConnectionListener>();
-
-   private static final ThreadLocal<DbTransactionManager> dbTransactionManager =
-         new ThreadLocal<DbTransactionManager>() {
-            @Override
-            protected DbTransactionManager initialValue() {
-               DbTransactionManager dbTransactionManager = new DbTransactionManager();
-
-               return dbTransactionManager;
-            }
-         };
-
-   private static final Queue<Connection> pooledConnections = new LinkedList<Connection>();
-
-   public static void addListener(IDbConnectionListener listener) {
-      listeners.add(listener);
-   }
-
-   public static void removeListener(IDbConnectionListener listener) {
-      listeners.remove(listener);
-   }
-
-   private static void notifyConnectionListeners() {
-      for (IDbConnectionListener listener : listeners) {
-         listener.onConnectionStatusUpdate(OseeDbConnection.hasOpenConnection());
-      }
-   }
-
-   public static Connection getPooledConnection() throws OseeDataStoreException {
-      Connection pooledConnection;
-      synchronized (pooledConnections) {
-         if (pooledConnections.isEmpty()) {
-            pooledConnection = OseeDbConnection.getConnection();
-         } else {
-            pooledConnection = pooledConnections.poll();
-         }
-      }
-
-      return pooledConnection;
-   }
-
-   public static void repoolConnection(Connection connection) {
-      synchronized (pooledConnections) {
-         pooledConnections.add(connection);
-      }
-   }
-
    private static void close(PreparedStatement stmt) {
       if (stmt != null) {
          try {
             stmt.close();
          } catch (SQLException ex) {
             OseeLog.log(Activator.class, Level.WARNING, "Unable to close database statement: ", ex);
-         }
-      }
-   }
-
-   public static void close(Connection connection) {
-      if (connection != null) {
-         try {
-            connection.close();
-         } catch (SQLException ex) {
-            OseeLog.log(Activator.class, Level.WARNING,
-                  "Unable to close database connection: " + ex.getLocalizedMessage(), ex);
          }
       }
    }
@@ -346,31 +285,40 @@ public final class ConnectionHandler {
       }
    }
 
-   public static void startTransactionLevel(Object key) throws OseeDataStoreException {
-      dbTransactionManager.get().startTransactionLevel(key);
+   /**
+    * Cause constraint checking to be deferred until the end of the current transaction.
+    * 
+    * @param connection
+    * @throws OseeDataStoreException
+    */
+   public static void deferConstraintChecking(Connection connection) throws OseeDataStoreException {
+      if (SupportedDatabase.getDatabaseType(connection) == SupportedDatabase.derby) {
+         return;
+      }
+      // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
+      runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");
    }
 
-   public static void setTransactionLevelAsSuccessful(Object key) {
-      dbTransactionManager.get().setTransactionLevelSuccess(key);
-   }
-
-   public static void endTransactionLevel(Object key) {
+   public static DatabaseMetaData getMetaData() throws OseeDataStoreException {
+      OseeConnection connection = OseeDbConnection.getConnection();
       try {
-         dbTransactionManager.get().endTransactionLevel(key);
-      } catch (OseeDataStoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return connection.getMetaData();
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      } finally {
+         connection.close();
       }
    }
 
-   public static void requestRollback() {
-      dbTransactionManager.get().requestRollback();
-   }
-
-   public static void addDbTransactionListener(IDbTransactionListener listener) {
-      dbTransactionManager.get().addListener(listener);
-   }
-
-   public static boolean removeDbTransactionListener(IDbTransactionListener listener) {
-      return dbTransactionManager.get().removeListener(listener);
+   public static boolean areHintsSupported() throws OseeDataStoreException {
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         DatabaseMetaData metaData = connection.getMetaData();
+         return SupportedDatabase.getDatabaseType(connection) == SupportedDatabase.oracle && metaData.getDatabaseMajorVersion() > 10;
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      } finally {
+         connection.close();
+      }
    }
 }

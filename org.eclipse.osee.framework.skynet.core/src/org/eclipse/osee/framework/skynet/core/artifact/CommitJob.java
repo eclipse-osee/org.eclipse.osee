@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,9 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -142,7 +141,7 @@ class CommitJob extends Job {
       return toReturn;
    }
 
-   private final class CommitDbTx extends AbstractDbTxTemplate {
+   private final class CommitDbTx extends DbTransaction {
       private int newTransactionNumber;
       private final Branch toBranch;
       private final Branch fromBranch;
@@ -150,8 +149,6 @@ class CommitJob extends Job {
       private boolean success = true;
       private int fromBranchId = -1;
       private List<Object[]> relLinks;
-      private List<Object[]> attributes;
-      private List<Object[]> artifacts;
 
       private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch, ConflictManagerExternal conflictManager) {
          super();
@@ -160,8 +157,6 @@ class CommitJob extends Job {
          this.newTransactionNumber = -1;
          this.archiveBranch = archiveBranch;
          relLinks = new ArrayList<Object[]>();
-         attributes = new ArrayList<Object[]>();
-         artifacts = new ArrayList<Object[]>();
       }
 
       /*
@@ -170,7 +165,7 @@ class CommitJob extends Job {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException {
+      protected void handleTxWork(Connection connection) throws OseeCoreException {
          monitor.beginTask("Acquire from branch transactions", 100);
 
          User userToBlame = SkynetAuthentication.getUser();
@@ -180,230 +175,224 @@ class CommitJob extends Job {
          int count = 0;
          //Load new and deleted artifact so that they can be compressed out of the commit transaction
 
-         OseeConnection connection = OseeDbConnection.getConnection();
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
          try {
-            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
-            try {
-               chStmt.runPreparedQuery(REVERT_DELETED_NEW, fromBranch.getBranchId(), fromBranch.getBranchId());
+            chStmt.runPreparedQuery(REVERT_DELETED_NEW, fromBranch.getBranchId(), fromBranch.getBranchId());
 
-               while (chStmt.next()) {
-                  ArtifactPersistenceManager.getInstance().revertArtifact(chStmt.getInt("branch_id"),
-                        chStmt.getInt("art_id"));
-                  count++;
-               }
-            } finally {
-               chStmt.close();
+            while (chStmt.next()) {
+               ArtifactPersistenceManager.revertArtifact(connection, chStmt.getInt("branch_id"),
+                     chStmt.getInt("art_id"));
+               count++;
             }
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "   Reverted %d Artifacts in %s to avoid committing new and deleted artifacts", count,
-                     Lib.getElapseString(time)));
-            }
-            time = System.currentTimeMillis();
-            count = 0;
-            try {
-               chStmt.runPreparedQuery(REVERT_DELETED_NEW_ATTRIBUTE, fromBranch.getBranchId(), fromBranch.getBranchId());
-
-               while (chStmt.next()) {
-                  ArtifactPersistenceManager.getInstance().revertAttribute(chStmt.getInt("branch_id"),
-                        chStmt.getInt("art_id"), chStmt.getInt("attr_id"));
-                  count++;
-               }
-            } finally {
-               chStmt.close();
-            }
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "   Reverted %d Attributes in %s to avoid committing new and deleted attributes", count,
-                     Lib.getElapseString(time)));
-            }
-            //TODO Need to add in the Relation Link filter in the same mold as the above two filters. 
-            //Added it in but not with a revert. just set tx_current to zero so it doesn't get committed
-            time = System.currentTimeMillis();
-
-            try {
-               chStmt.runPreparedQuery(REVERT_DELETED_NEW_REL_LINK, fromBranch.getBranchId(), fromBranch.getBranchId());
-
-               while (chStmt.next()) {
-                  relLinks.add(new Object[] {chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")});
-                  if (DEBUG) {
-                     System.out.println(String.format(
-                           "    Setting transaction to 0 where gamma_id = %d and transaction_id = %d",
-                           chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-                  }
-               }
-               if (relLinks.size() > 0) {
-                  ConnectionHandler.runBatchUpdate(connection, UPDATE_DELETED_NEW, relLinks);
-               }
-            } finally {
-               chStmt.close();
-            }
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "   Set Tx_current to 0 for %d Relation Links in %s to avoid committing new and deleted attributes",
-                     relLinks.size(), Lib.getElapseString(time)));
-            }
-            time = System.currentTimeMillis();
-            if (fromBranch != null) {
-               newTransactionNumber =
-                     BranchManager.addCommitTransactionToDatabase(connection, toBranch, fromBranch, userToBlame);
-               fromBranchId = fromBranch.getBranchId();
-               AccessControlManager.getInstance().removeAllPermissionsFromBranch(connection, fromBranch);
-            } else {
-               //Commit transaction instead of a branch
-            }
-            if (DEBUG) {
-               System.out.println(String.format("   Added commit transaction [%d] into the DB in %s",
-                     newTransactionNumber, Lib.getElapseString(time)));
-            }
-
-            monitor.worked(25);
-            monitor.setTaskName("Commit transactions");
-
-            time = System.currentTimeMillis();
-            //Set the tx_current on the destination branch to 0 for the attributes that will be updated
-            int insertCount =
-                  ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_ATTRIBUTES,
-                        toBranch.getBranchId(), fromBranchId);
-            if (DEBUG) {
-               count = insertCount;
-               System.out.println(String.format(
-                     "   Updated %d TX_Current values on Destination Branch for Attributes in %s", count,
-                     Lib.getElapseString(time)));
-            }
-
-            time = System.currentTimeMillis();
-            //Add the new attribute value to the destination branch
-            insertCount +=
-                  ConnectionHandler.runPreparedUpdate(connection, COMMIT_ATTRIBUTES, newTransactionNumber, fromBranchId);
-            if (DEBUG) {
-               System.out.println(String.format("   Commited %d Attributes in %s", insertCount - count,
-                     Lib.getElapseString(time)));
-               count = insertCount;
-            }
-
-            time = System.currentTimeMillis();
-            insertCount +=
-                  ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_ARTIFACTS,
-                        toBranch.getBranchId(), fromBranchId);
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "   Updated %d TX_Current values on Destination Branch for Artifacts in %s", insertCount - count,
-                     Lib.getElapseString(time)));
-               count = insertCount;
-            }
-
-            time = System.currentTimeMillis();
-            insertCount +=
-                  ConnectionHandler.runPreparedUpdate(connection, COMMIT_ARTIFACTS, newTransactionNumber, fromBranchId);
-            if (DEBUG) {
-               System.out.println(String.format("   Commited %d Artifacts in %s", insertCount - count,
-                     Lib.getElapseString(time)));
-               count = insertCount;
-            }
-
-            time = System.currentTimeMillis();
-            insertCount +=
-                  ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_RELATIONS,
-                        toBranch.getBranchId(), fromBranchId);
-            if (DEBUG) {
-               System.out.println(String.format(
-                     "   Updated %d TX_Current values on Destination Branch for Relations in %s", insertCount - count,
-                     Lib.getElapseString(time)));
-               count = insertCount;
-            }
-
-            time = System.currentTimeMillis();
-            insertCount +=
-                  ConnectionHandler.runPreparedUpdate(connection, COMMIT_RELATIONS, newTransactionNumber, fromBranchId);
-            if (DEBUG) {
-               System.out.println(String.format("   Commited %d Relations in %s", insertCount - count,
-                     Lib.getElapseString(time)));
-               count = insertCount;
-            }
-
-            //Change all modifications on artifacts/relation/attributes that are modified but should be new, because both new'd 
-            //and modified on the same branch.
-            time = System.currentTimeMillis();
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_MODIFICATION_ID, newTransactionNumber, fromBranchId,
-                  newTransactionNumber, fromBranchId, newTransactionNumber, fromBranchId);
-            if (DEBUG) {
-               System.out.println(String.format("   Updated modification types for new and modified to modified in %s",
-                     Lib.getElapseString(time)));
-            }
-
-            //add in all merge branch changes over any other source branch changes.
-            time = System.currentTimeMillis();
-            if (conflictManager.originalConflictsExist()) {
-               count = 0;
-               for (Conflict conflict : conflictManager.getOriginalConflicts()) {
-                  if (conflict.statusResolved()) {
-                     count++;
-                     if (MERGE_DEBUG) {
-                        System.out.println(String.format(
-                              "     Using Merge value for Artifact %d item %s, setting gamma id to %d where it was %d",
-                              conflict.getArtifact().getArtId(), conflict.getChangeItem(), conflict.getMergeGammaId(),
-                              conflict.getSourceGamma()));
-                     }
-                     ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_TRANSACTIONS,
-                           conflict.getMergeGammaId(), newTransactionNumber, conflict.getSourceGamma());
-                     conflict.setStatus(Conflict.Status.COMMITTED);
-                  }
-               }
-               if (DEBUG) {
-                  System.out.println(String.format("    Added %d Merge Values in %s", count, Lib.getElapseString(time)));
-               }
-
-               time = System.currentTimeMillis();
-               //insert transaction id into the branch table
-               ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_TRANSACTION_ID, newTransactionNumber,
-                     fromBranch.getBranchId(), toBranch.getBranchId());
-               if (DEBUG) {
-                  System.out.println(String.format("   Updated the Merge Transaction Id in the conflict table in %s",
-                        Lib.getElapseString(time)));
-               }
-            }
-
-            if (relLinks.size() > 0) {
-               ConnectionHandler.runBatchUpdate(connection, RESET_DELETED_NEW, relLinks);
-            }
-
-            time = System.currentTimeMillis();
-            if (insertCount > 0) {
-               Object[] dataList =
-                     new Object[] {toBranch.getBranchId(), newTransactionNumber, toBranch.getBranchId(),
-                           newTransactionNumber};
-               // reload the committed artifacts since the commit changed them on the destination branch
-               ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true, null, null, true);
-               if (DEBUG) {
-                  System.out.println(String.format("   Reloaded the Artifacts after the commit in %s",
-                        Lib.getElapseString(time)));
-               }
-
-               if (archiveBranch) {
-                  fromBranch.archive();
-               }
-
-            } else {
-               throw new IllegalStateException(" A branch can not be commited without any changes made.");
-            }
-
-            if (DEBUG) {
-               System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(totalTime)));
-            }
-            success = true;
-            monitor.done();
          } finally {
-            connection.close();
+            chStmt.close();
          }
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "   Reverted %d Artifacts in %s to avoid committing new and deleted artifacts", count,
+                  Lib.getElapseString(time)));
+         }
+         time = System.currentTimeMillis();
+         count = 0;
+         try {
+            chStmt.runPreparedQuery(REVERT_DELETED_NEW_ATTRIBUTE, fromBranch.getBranchId(), fromBranch.getBranchId());
+
+            while (chStmt.next()) {
+               ArtifactPersistenceManager.revertAttribute(connection, chStmt.getInt("branch_id"),
+                     chStmt.getInt("art_id"), chStmt.getInt("attr_id"));
+               count++;
+            }
+         } finally {
+            chStmt.close();
+         }
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "   Reverted %d Attributes in %s to avoid committing new and deleted attributes", count,
+                  Lib.getElapseString(time)));
+         }
+         //TODO Need to add in the Relation Link filter in the same mold as the above two filters. 
+         //Added it in but not with a revert. just set tx_current to zero so it doesn't get committed
+         time = System.currentTimeMillis();
+
+         try {
+            chStmt.runPreparedQuery(REVERT_DELETED_NEW_REL_LINK, fromBranch.getBranchId(), fromBranch.getBranchId());
+
+            while (chStmt.next()) {
+               relLinks.add(new Object[] {chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")});
+               if (DEBUG) {
+                  System.out.println(String.format(
+                        "    Setting transaction to 0 where gamma_id = %d and transaction_id = %d",
+                        chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
+               }
+            }
+            if (relLinks.size() > 0) {
+               ConnectionHandler.runBatchUpdate(connection, UPDATE_DELETED_NEW, relLinks);
+            }
+         } finally {
+            chStmt.close();
+         }
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "   Set Tx_current to 0 for %d Relation Links in %s to avoid committing new and deleted attributes",
+                  relLinks.size(), Lib.getElapseString(time)));
+         }
+         time = System.currentTimeMillis();
+         if (fromBranch != null) {
+            newTransactionNumber =
+                  BranchManager.addCommitTransactionToDatabase(connection, toBranch, fromBranch, userToBlame);
+            fromBranchId = fromBranch.getBranchId();
+            AccessControlManager.getInstance().removeAllPermissionsFromBranch(connection, fromBranch);
+         } else {
+            //Commit transaction instead of a branch
+         }
+         if (DEBUG) {
+            System.out.println(String.format("   Added commit transaction [%d] into the DB in %s",
+                  newTransactionNumber, Lib.getElapseString(time)));
+         }
+
+         monitor.worked(25);
+         monitor.setTaskName("Commit transactions");
+
+         time = System.currentTimeMillis();
+         //Set the tx_current on the destination branch to 0 for the attributes that will be updated
+         int insertCount =
+               ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_ATTRIBUTES,
+                     toBranch.getBranchId(), fromBranchId);
+         if (DEBUG) {
+            count = insertCount;
+            System.out.println(String.format(
+                  "   Updated %d TX_Current values on Destination Branch for Attributes in %s", count,
+                  Lib.getElapseString(time)));
+         }
+
+         time = System.currentTimeMillis();
+         //Add the new attribute value to the destination branch
+         insertCount +=
+               ConnectionHandler.runPreparedUpdate(connection, COMMIT_ATTRIBUTES, newTransactionNumber, fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format("   Commited %d Attributes in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
+
+         time = System.currentTimeMillis();
+         insertCount +=
+               ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_ARTIFACTS, toBranch.getBranchId(),
+                     fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "   Updated %d TX_Current values on Destination Branch for Artifacts in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
+
+         time = System.currentTimeMillis();
+         insertCount +=
+               ConnectionHandler.runPreparedUpdate(connection, COMMIT_ARTIFACTS, newTransactionNumber, fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format("   Commited %d Artifacts in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
+
+         time = System.currentTimeMillis();
+         insertCount +=
+               ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_RELATIONS, toBranch.getBranchId(),
+                     fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "   Updated %d TX_Current values on Destination Branch for Relations in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
+
+         time = System.currentTimeMillis();
+         insertCount +=
+               ConnectionHandler.runPreparedUpdate(connection, COMMIT_RELATIONS, newTransactionNumber, fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format("   Commited %d Relations in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
+
+         //Change all modifications on artifacts/relation/attributes that are modified but should be new, because both new'd 
+         //and modified on the same branch.
+         time = System.currentTimeMillis();
+         ConnectionHandler.runPreparedUpdate(connection, UPDATE_MODIFICATION_ID, newTransactionNumber, fromBranchId,
+               newTransactionNumber, fromBranchId, newTransactionNumber, fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format("   Updated modification types for new and modified to modified in %s",
+                  Lib.getElapseString(time)));
+         }
+
+         //add in all merge branch changes over any other source branch changes.
+         time = System.currentTimeMillis();
+         if (conflictManager.originalConflictsExist()) {
+            count = 0;
+            for (Conflict conflict : conflictManager.getOriginalConflicts()) {
+               if (conflict.statusResolved()) {
+                  count++;
+                  if (MERGE_DEBUG) {
+                     System.out.println(String.format(
+                           "     Using Merge value for Artifact %d item %s, setting gamma id to %d where it was %d",
+                           conflict.getArtifact().getArtId(), conflict.getChangeItem(), conflict.getMergeGammaId(),
+                           conflict.getSourceGamma()));
+                  }
+                  ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_TRANSACTIONS,
+                        conflict.getMergeGammaId(), newTransactionNumber, conflict.getSourceGamma());
+                  conflict.setStatus(Conflict.Status.COMMITTED);
+               }
+            }
+            if (DEBUG) {
+               System.out.println(String.format("    Added %d Merge Values in %s", count, Lib.getElapseString(time)));
+            }
+
+            time = System.currentTimeMillis();
+            //insert transaction id into the branch table
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_TRANSACTION_ID, newTransactionNumber,
+                  fromBranch.getBranchId(), toBranch.getBranchId());
+            if (DEBUG) {
+               System.out.println(String.format("   Updated the Merge Transaction Id in the conflict table in %s",
+                     Lib.getElapseString(time)));
+            }
+         }
+
+         if (relLinks.size() > 0) {
+            ConnectionHandler.runBatchUpdate(connection, RESET_DELETED_NEW, relLinks);
+         }
+
+         time = System.currentTimeMillis();
+         if (insertCount > 0) {
+            Object[] dataList =
+                  new Object[] {toBranch.getBranchId(), newTransactionNumber, toBranch.getBranchId(),
+                        newTransactionNumber};
+            // reload the committed artifacts since the commit changed them on the destination branch
+            ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true, null, null, true);
+            if (DEBUG) {
+               System.out.println(String.format("   Reloaded the Artifacts after the commit in %s",
+                     Lib.getElapseString(time)));
+            }
+
+            if (archiveBranch) {
+               fromBranch.archive();
+            }
+
+         } else {
+            throw new IllegalStateException(" A branch can not be commited without any changes made.");
+         }
+
+         if (DEBUG) {
+            System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(totalTime)));
+         }
+         success = true;
+         monitor.done();
       }
 
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxFinally()
        */
       @Override
-      protected void handleTxFinally() throws Exception {
-         super.handleTxFinally();
+      protected void handleTxFinally() throws OseeCoreException {
          if (success) {
             OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, fromBranchId);
          }
@@ -415,8 +404,7 @@ class CommitJob extends Job {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxException(java.lang.Exception)
        */
       @Override
-      protected void handleTxException(Exception ex) throws Exception {
-         super.handleTxException(ex);
+      protected void handleTxException(Exception ex) {
          success = false;
       }
    }

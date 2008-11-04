@@ -31,11 +31,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -396,31 +394,21 @@ public class BranchCreator {
     * Creates a new merge branch based on the artifacts from the source branch
     */
    public Branch createMergeBranch(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws OseeCoreException {
-      try {
-         CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, destBranch, artIds);
-         createMergeBranchTx.execute();
-         return createMergeBranchTx.getMergeBranch();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, destBranch, artIds);
+      createMergeBranchTx.execute();
+      return createMergeBranchTx.getMergeBranch();
    }
 
    public void addArtifactsToBranch(Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
-      try {
-         CreateMergeBranchTx createMergeBranchTx =
-               new CreateMergeBranchTx(sourceBranch, destBranch, artIds, mergeBranch);
-         createMergeBranchTx.execute();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, destBranch, artIds, mergeBranch);
+      createMergeBranchTx.execute();
    }
 
-   private final class CreateMergeBranchTx extends AbstractDbTxTemplate {
+   private final class CreateMergeBranchTx extends DbTransaction {
       private Branch sourceBranch;
       private Branch destBranch;
       private Collection<Integer> artIds;
       private Branch mergeBranch;
-      private OseeConnection connection;
 
       /**
        * @param sourceBranch
@@ -445,20 +433,10 @@ public class BranchCreator {
       }
 
       /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxFinally()
-       */
-      @Override
-      protected void handleTxFinally() throws Exception {
-         super.handleTxFinally();
-         connection.close();
-      }
-
-      /* (non-Javadoc)
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException {
-         connection = OseeDbConnection.getConnection();
+      protected void handleTxWork(Connection connection) throws OseeCoreException {
          boolean createBranch = (mergeBranch == null);
 
          if (artIds == null || artIds.isEmpty()) {
@@ -493,8 +471,8 @@ public class BranchCreator {
             String artifactVersionGammas =
                   "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, arv1.gamma_id, txs1.mod_type, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
 
-            insertGammas(attributeGammas, branchWithTransactionNumber.getValue(), queryId);
-            insertGammas(artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId);
+            insertGammas(connection, attributeGammas, branchWithTransactionNumber.getValue(), queryId);
+            insertGammas(connection, artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId);
          } finally {
             ArtifactLoader.clearQuery(connection, queryId);
          }
@@ -502,8 +480,8 @@ public class BranchCreator {
          mergeBranch = branchWithTransactionNumber.getKey();
 
          if (createBranch) {
-               ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
-                     destBranch.getBranchId(), mergeBranch.getBranchId(), -1);
+            ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
+                  destBranch.getBranchId(), mergeBranch.getBranchId(), -1);
          }
       }
 
@@ -511,7 +489,7 @@ public class BranchCreator {
          return mergeBranch;
       }
 
-      private void insertGammas(String sql, int baselineTransactionNumber, int queryId) throws OseeDataStoreException {
+      private void insertGammas(Connection connection, String sql, int baselineTransactionNumber, int queryId) throws OseeDataStoreException {
          ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
                sourceBranch.getBranchId(), queryId);
       }

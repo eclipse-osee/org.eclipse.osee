@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalT
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
-import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
@@ -173,7 +173,7 @@ final class ImportController {
       handler.setTranslator(translator);
    }
 
-   private void process(BaseDbSaxHandler handler, Connection connection, ImportFile importSourceFile) throws Exception {
+   private void process(BaseDbSaxHandler handler, Connection connection, ImportFile importSourceFile) throws OseeCoreException {
       MetaData metadata = checkMetadata(importSourceFile);
       initializeHandler(connection, handler, metadata);
       ExchangeUtil.readExchange(importSource, importSourceFile.getFileName(), handler);
@@ -193,7 +193,7 @@ final class ImportController {
          currentSavePoint = item.getSource();
          if (!doesSavePointExist(currentSavePoint)) {
             DbTransaction importTx = new DbTransaction() {
-               protected void handleTxWork(Connection connection) throws Exception {
+               protected void handleTxWork(Connection connection) throws OseeCoreException {
                   MetaData metadata = checkMetadata(item);
                   initializeHandler(connection, handler, metadata);
                   if (item.getPriority() > 0) {
@@ -268,7 +268,7 @@ final class ImportController {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
        */
       @Override
-      protected void handleTxWork(Connection connection) throws Exception {
+      protected void handleTxWork(Connection connection) throws OseeCoreException {
          // Import Branches
          currentSavePoint = manifestHandler.getBranchFile().getSource();
 
@@ -308,7 +308,7 @@ final class ImportController {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
        */
       @Override
-      protected void handleTxWork(Connection connection) throws Exception {
+      protected void handleTxWork(Connection connection) throws OseeCoreException {
          if (manifestHandler != null && translator != null) {
             int importIdIndex = SequenceManager.getNextImportId();
             String sourceDatabaseId = manifestHandler.getSourceDatabaseId();
@@ -317,7 +317,7 @@ final class ImportController {
             ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_SOURCES, importIdIndex,
                   sourceDatabaseId, exportDate, importDate);
 
-            DbTransaction.deferConstraintChecking(connection);
+            ConnectionHandler.deferConstraintChecking(connection);
             translator.store(connection, importIdIndex);
 
             List<Object[]> data = new ArrayList<Object[]>();
@@ -340,7 +340,7 @@ final class ImportController {
             }
             ConnectionHandler.runBatchUpdate(connection, INSERT_INTO_IMPORT_SAVE_POINT, data);
          } else {
-            throw new Exception("Import didn't make it past initialization");
+            throw new OseeStateException("Import didn't make it past initialization");
          }
       }
    }

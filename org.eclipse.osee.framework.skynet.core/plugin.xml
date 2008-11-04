@@ -14,20 +14,19 @@
    <extension-point id="WordMLConversionHandler" name="WordMLConversionHandler" schema="schema/WordMLConversionHandler.exsd"/>
    <extension-point id="HtmlImageHandler" name="HtmlImageHandler" schema="schema/HtmlImageHandler.exsd"/>
    <extension-point id="WebPage" name="WebPage" schema="schema/WebPage.exsd"/>
-   <extension-point id="AttributeSaveListener" name="AttributeSaveListener" schema="schema/AttributeSaveListener.exsd"/>
    <extension-point id="ArtifactCheck" name="ArtifactCheck" schema="schema/ArtifactCheck.exsd"/>
    <extension-point id="AttributeType" name="AttributeType" schema="schema/AttributeType.exsd"/>
    <extension-point id="AttributeDataProvider" name="AttributeDataProvider" schema="schema/AttributeDataProvider.exsd"/>
    <extension-point id="OseeDbImportData" name="OseeDbImportData" schema="schema/OseeDbImportData.exsd"/>
-   <extension
-         id="SkynetDbInit"
-         name="SkynetDbInit"
-         point="org.eclipse.osee.framework.database.IDbInitializationTask">
-      <DatabaseTask
-            classname="org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit">
-      </DatabaseTask>
-   </extension>
    
+      <extension
+            id="SkynetDbInit"
+            name="SkynetDbInit"
+            point="org.eclipse.osee.framework.database.IDbInitializationTask">
+         <DatabaseTask
+               classname="org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit">
+         </DatabaseTask>
+      </extension>
       <extension
             id="SkynetDbBranchDataImport"
             name="SkynetDbBranchDataImport"
@@ -348,12 +347,6 @@
          <CharacterAttributeDataProvider
                class="org.eclipse.osee.framework.skynet.core.attribute.providers.ClobAttributeDataProvider">
          </CharacterAttributeDataProvider>
-      </extension>
-      <extension
-            point="org.eclipse.osee.framework.skynet.core.AttributeSaveListener">
-         <AttributeSaveListener
-               classname="org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger">
-         </AttributeSaveListener>
       </extension>
    
 </plugin>

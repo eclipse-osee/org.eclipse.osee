@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+
 /**
  * @author Robert A. Fisher
  */
@@ -87,9 +89,9 @@ public class RelationType implements Comparable<RelationType> {
       return shortName;
    }
 
-   public boolean isSideAName(String sideName) {
+   public boolean isSideAName(String sideName) throws OseeArgumentException {
       if (!sideAName.equals(sideName) && !sideBName.equals(sideName)) {
-         throw new IllegalArgumentException("sideName does not match either of the available side names");
+         throw new OseeArgumentException("sideName does not match either of the available side names");
       }
 
       return sideAName.equals(sideName);

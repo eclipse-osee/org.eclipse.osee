@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -444,7 +443,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Reverting Attribute %d", getAttrId()));
       }
-      ArtifactPersistenceManager.getInstance().revertAttribute(getSourceAttribute());
+      getSourceAttribute().revert();
    }
 
    /* (non-Javadoc)
@@ -457,9 +456,7 @@ public class AttributeConflict extends Conflict {
       }
       Artifact artifact;
       try {
-         artifact =
-               ArtifactQuery.getArtifactFromId(getArtifact().getArtId(),
-                     BranchManager.getBranch(mergeBranchId));
+         artifact = ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), BranchManager.getBranch(mergeBranchId));
       } catch (ArtifactDoesNotExist ex) {
          return false;
       }

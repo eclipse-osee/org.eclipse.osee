@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -46,7 +47,7 @@ public class BranchDefinitionsSaxHandler extends BaseDbSaxHandler {
    }
 
    @Override
-   protected void processData(Map<String, String> dataMap) throws Exception {
+   protected void processData(Map<String, String> dataMap) throws OseeDataStoreException {
       Integer branchId = new Integer(dataMap.get("mapped_branch_id"));
       if (allowedBranches.contains(branchId)) {
          Object[] objectData = DataToSql.toDataArray(getConnection(), getMetaData(), getTranslator(), dataMap);
@@ -59,7 +60,7 @@ public class BranchDefinitionsSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public void store() throws Exception {
+   public void store() throws OseeDataStoreException {
       super.store(this.getConnection());
    }
 }

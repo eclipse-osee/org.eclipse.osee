@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -26,6 +25,8 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.IDbConnectionListener;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.BaseStatus;
@@ -47,7 +48,6 @@ public class ServiceHealthManager {
       this.services = Collections.synchronizedMap(new HashMap<String, ServiceStatus>());
       this.serviceListeners = Collections.synchronizedSet(new HashSet<IServiceListener>());
       this.dataStoreMonitor = new DataStoreMonitor();
-      ConnectionHandler.addListener(this.dataStoreMonitor);
    }
 
    private static ServiceHealthManager getInstance() {
@@ -170,15 +170,11 @@ public class ServiceHealthManager {
                }
 
                if (!isAlive && throwable == null) {
-                  Connection connection = null;
                   try {
-                     connection = ConnectionHandler.getPooledConnection();
+                     OseeConnection connection = OseeDbConnection.getConnection();
+                     connection.close();
                   } catch (Exception ex) {
                      throwable = ex;
-                  } finally {
-                     if (connection != null) {
-                        connection.close();
-                     }
                   }
                }
                ServiceHealthManager.updateStatus(DATABASE_SERVICE, new BaseStatus(isAlive ? Level.INFO : Level.SEVERE,
@@ -188,22 +184,8 @@ public class ServiceHealthManager {
       }
 
       private String getDbConnectionDetails() throws OseeDataStoreException, SQLException {
-         String dbStatus = null;
-         Connection connection = null;
-         try {
-            connection = ConnectionHandler.getPooledConnection();
-            DatabaseMetaData dbData = connection.getMetaData();
-            dbStatus =
-                  getDbStatus(dbData.getDatabaseProductName(), dbData.getDatabaseProductVersion(), dbData.getURL());
-         } finally {
-            if (connection != null) {
-               try {
-                  connection.close();
-               } catch (SQLException ex) {
-               }
-            }
-         }
-         return dbStatus;
+         DatabaseMetaData dbData = ConnectionHandler.getMetaData();
+         return getDbStatus(dbData.getDatabaseProductName(), dbData.getDatabaseProductVersion(), dbData.getURL());
       }
 
       private String getDbStatus(String dbName, String dbVersion, String url) {

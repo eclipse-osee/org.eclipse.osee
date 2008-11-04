@@ -15,9 +15,10 @@ import java.sql.Timestamp;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
-import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
@@ -92,7 +93,7 @@ public class BranchCreation implements IBranchCreation {
          return branchId;
       }
 
-      protected void handleTxWork(Connection connection) throws Exception {
+      protected void handleTxWork(Connection connection) throws OseeCoreException {
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          branchId =
                initializeBranch(connection, childBranchShortName, childBranchName, parentBranchId, authorId, timestamp,

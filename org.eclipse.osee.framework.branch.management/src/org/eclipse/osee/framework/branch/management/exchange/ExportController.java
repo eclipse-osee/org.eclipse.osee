@@ -27,8 +27,10 @@ import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -122,7 +124,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
     * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
     */
    @Override
-   protected void handleTxWork(Connection connection) throws Exception {
+   protected void handleTxWork(Connection connection) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       List<AbstractExportItem> taskList = ExchangeDb.createTaskList();
       try {
@@ -137,7 +139,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          for (Future<?> future : futures) {
             future.get();
             if (this.errorList.size() > 0) {
-               throw new Exception(errorList.toString());
+               throw new OseeCoreException(errorList.toString());
             }
          }
 
@@ -156,6 +158,8 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
                tempFolder.renameTo(target);
             }
          }
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
       } finally {
          cleanUp(connection, taskList);
       }

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 
@@ -28,7 +27,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    private final Artifact artifact;
 
-   public ArtifactTransactionData(Artifact artifact, int gammaId, TransactionId transactionId, ModificationType modificationType, Branch branch) {
+   public ArtifactTransactionData(Artifact artifact, int gammaId, TransactionId transactionId, ModificationType modificationType) {
       super(artifact.getArtId(), gammaId, transactionId, modificationType);
       this.artifact = artifact;
    }

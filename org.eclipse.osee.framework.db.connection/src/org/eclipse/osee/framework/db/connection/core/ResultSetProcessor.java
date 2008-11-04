@@ -27,11 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class ResultSetProcessor {
-
-   public ResultSetProcessor() {
-   }
-
-   public IVariantData parse(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, OseeWrappedException {
+   public static IVariantData parse(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, OseeWrappedException {
       IVariantData toReturn = new VariantData();
       int numberOfColumns = chStmt.getColumnCount() + 1;
       for (int index = 1; index < numberOfColumns; index++) {
@@ -79,11 +75,11 @@ public class ResultSetProcessor {
       return toReturn;
    }
 
-   private String getErrorMessage(String name, String typeName) {
+   private static String getErrorMessage(String name, String typeName) {
       return String.format("Unable to convert [%s] of raw type [%s] to string.", name, typeName);
    }
 
-   private byte[] streamToByteArray(InputStream inputStream) throws OseeWrappedException {
+   private static byte[] streamToByteArray(InputStream inputStream) throws OseeWrappedException {
       byte[] toReturn = new byte[0];
       if (inputStream != null) {
          try {

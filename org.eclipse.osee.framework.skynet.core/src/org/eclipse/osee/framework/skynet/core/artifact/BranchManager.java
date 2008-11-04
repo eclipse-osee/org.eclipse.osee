@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +34,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
@@ -274,6 +274,10 @@ public class BranchManager {
             time = System.currentTimeMillis();
          }
          mergeBranch = BranchCreator.getInstance().createMergeBranch(sourceBranch, destBranch, expectedArtIds);
+
+         mergeBranch.setMergeBranchInfo(sourceBranch, destBranch);
+         instance.branchCache.put(mergeBranch.getBranchId(), mergeBranch);
+
          if (MERGE_DEBUG) {
             System.out.println(String.format("     Branch created in %s", Lib.getElapseString(time)));
          }
@@ -385,7 +389,7 @@ public class BranchManager {
    /**
     * @throws OseeDataStoreException
     */
-   static int addCommitTransactionToDatabase(OseeConnection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
+   static int addCommitTransactionToDatabase(Connection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
       int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();

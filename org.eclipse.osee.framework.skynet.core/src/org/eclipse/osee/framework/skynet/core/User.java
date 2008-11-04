@@ -119,11 +119,6 @@ public class User extends Artifact implements Serializable {
       setSoleAttributeValue(Attributes.Active.toString(), required);
    }
 
-   @Override
-   public boolean isVersionControlled() {
-      return true;
-   }
-
    /**
     * @param favoriteBranch
     */

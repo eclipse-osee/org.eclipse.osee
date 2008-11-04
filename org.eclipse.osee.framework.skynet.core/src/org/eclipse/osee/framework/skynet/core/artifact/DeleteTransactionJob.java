@@ -25,9 +25,10 @@ import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -138,7 +139,7 @@ public class DeleteTransactionJob extends Job {
        * AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork(Connection connection) throws Exception {
+      protected void handleTxWork(Connection connection) throws OseeCoreException {
          TransactionJoinQuery txsToDeleteQuery = JoinUtility.createTransactionJoinQuery();
          try {
             monitor.beginTask(getName(), getTotalWork());
@@ -156,15 +157,23 @@ public class DeleteTransactionJob extends Job {
 
             updateTxCurrent(connection, monitor);
          } catch (Exception ex) {
+            try {
+               if (connection != null && connection.isClosed() != true) {
+                  txsToDeleteQuery.delete(connection);
+                  ArtifactLoader.clearQuery(connection, artifactJoinId);
+               }
+            } catch (SQLException sqlEx) {
+               throw new OseeWrappedException(sqlEx);
+            }
+            throw new OseeWrappedException(ex);
+         }
+         try {
             if (connection != null && connection.isClosed() != true) {
                txsToDeleteQuery.delete(connection);
                ArtifactLoader.clearQuery(connection, artifactJoinId);
             }
-            throw ex;
-         }
-         if (connection != null && connection.isClosed() != true) {
-            txsToDeleteQuery.delete(connection);
-            ArtifactLoader.clearQuery(connection, artifactJoinId);
+         } catch (SQLException ex) {
+            throw new OseeWrappedException(ex);
          }
       }
 

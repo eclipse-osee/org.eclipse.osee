@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.swt.widgets.Control;
 
@@ -42,10 +46,14 @@ public class InRelationFilter extends SearchFilter {
       String sideName = relationSideList.getCombo().getText();
 
       RelationType linkDescriptor = (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
-      ISearchPrimitive primitive = new InRelationSearch(type, linkDescriptor.isSideAName(sideName));
-      if (not) primitive = new NotSearch(primitive);
+      try {
+         ISearchPrimitive primitive = new InRelationSearch(type, linkDescriptor.isSideAName(sideName));
+         if (not) primitive = new NotSearch(primitive);
 
-      filterViewer.addItem(primitive, getFilterName(), type, sideName);
+         filterViewer.addItem(primitive, getFilterName(), type, sideName);
+      } catch (OseeArgumentException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    /*

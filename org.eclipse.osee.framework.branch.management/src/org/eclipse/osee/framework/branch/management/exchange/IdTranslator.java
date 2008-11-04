@@ -57,7 +57,7 @@ public class IdTranslator {
       return this.aliases;
    }
 
-   public Object getId(Object original) throws Exception {
+   public Object getId(Object original) throws OseeDataStoreException {
       Long originalLong = null;
       if (original instanceof Double) {
          originalLong = ((Double) original).longValue();

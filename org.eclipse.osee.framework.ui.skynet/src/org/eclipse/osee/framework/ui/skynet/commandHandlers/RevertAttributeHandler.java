@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import java.sql.Connection;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -21,6 +22,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -66,16 +69,23 @@ public class RevertAttributeHandler extends AbstractHandler {
       }
 
       @Override
-      protected IStatus run(IProgressMonitor monitor) {
+      protected IStatus run(final IProgressMonitor monitor) {
          IStatus toReturn;
          try {
             monitor.beginTask("Reverting ...", attributes.size());
 
-            for (Attribute<?> attribute : attributes) {
-               monitor.setTaskName(attribute.getArtifact().getInternalDescriptiveName() + " : " + attribute.getDisplayableString());
-               ArtifactPersistenceManager.getInstance().revertAttribute(attribute);
-               monitor.worked(1);
-            }
+            DbTransaction dbTransaction = new DbTransaction() {
+               @Override
+               protected void handleTxWork(Connection connection) throws OseeCoreException {
+                  for (Attribute<?> attribute : attributes) {
+                     monitor.setTaskName(attribute.getArtifact().getInternalDescriptiveName() + " : " + attribute.getDisplayableString());
+                     ArtifactPersistenceManager.revertAttribute(connection, attribute);
+                     monitor.worked(1);
+                  }
+               }
+            };
+            dbTransaction.execute();
+
             toReturn = Status.OK_STATUS;
          } catch (Exception ex) {
             toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
@@ -100,7 +110,6 @@ public class RevertAttributeHandler extends AbstractHandler {
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
             List<Attribute> changes = Handlers.processSelectionObjects(Attribute.class, structuredSelection);
-            ;
 
             if (changes.isEmpty()) {
                return false;
@@ -108,7 +117,7 @@ public class RevertAttributeHandler extends AbstractHandler {
 
             this.attributes = changes;
 
-            for (Attribute attribute : attributes) {
+            for (Attribute<?> attribute : attributes) {
                if (attributes == null) {
 
                }

@@ -22,21 +22,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
@@ -45,48 +46,83 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 
 /**
  * @author Robert A. Fisher
  */
-public class SkynetTransaction {
+public class SkynetTransaction extends DbTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
          "UPDATE osee_txs txs1 SET tx_current = 0 WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
-
-   private static final String DELETE_TRANSACTION_DETAIL = "DELETE FROM osee_tx_details WHERE transaction_id =?";
+   private static final String INSERT_ARTIFACT =
+         "INSERT INTO osee_artifact (art_id, art_type_id, guid, human_readable_id) VALUES (?, ?, ?, ?)";
    private static final String INSERT_INTO_TRANSACTION_TABLE =
          "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, ?)";
    private final Map<String, List<Object[]>> preparedBatch = new HashMap<String, List<Object[]>>();
-   private String transactionName;
-   private String comment;
-   private final TransactionId transactionId;
-   private final Branch branch;
+   private TransactionId transactionId;
    private final List<ArtifactTransactionModifiedEvent> xModifiedEvents =
          new ArrayList<ArtifactTransactionModifiedEvent>();
    private final Map<BaseTransactionData, BaseTransactionData> transactionItems =
          new HashMap<BaseTransactionData, BaseTransactionData>();
+   private final Branch branch;
 
-   public SkynetTransaction(Branch branch) throws OseeDataStoreException {
-      this(branch, SkynetAuthentication.getUser());
+   /**
+    * @return the branch
+    */
+   public Branch getBranch() {
+      return branch;
    }
 
-   public SkynetTransaction(Branch branch, String comment) throws OseeDataStoreException {
-      this(branch, SkynetAuthentication.getUser(), comment);
-   }
-
-   public SkynetTransaction(Branch branch, User userToBlame) throws OseeDataStoreException {
-      this(branch, userToBlame, "");
-   }
-
-   public SkynetTransaction(Branch branch, User userToBlame, String comment) throws OseeDataStoreException {
+   public SkynetTransaction(Branch branch) {
       this.branch = branch;
-      this.comment = comment;
-      transactionId = TransactionIdManager.createNextTransactionId(branch, userToBlame, comment);
    }
 
-   public void addToBatch(String sql, Object... data) {
-      if (sql == null) throw new IllegalArgumentException("SQL can not be null.");
+   /**
+    * @param connection
+    */
+   public SkynetTransaction(Connection connection, Branch branch) {
+      super(connection);
+      this.branch = branch;
+   }
+
+   public void addArtifactToPersist(Artifact artifact) throws OseeCoreException {
+      ModificationType modType;
+      ArtifactModType artifactModType;
+
+      if (artifact.isInDb()) {
+         if (artifact.isDeleted()) {
+            modType = ModificationType.DELETED;
+            artifactModType = ArtifactModType.Deleted;
+         } else {
+            modType = ModificationType.CHANGE;
+            artifactModType = ArtifactModType.Changed;
+         }
+      } else {
+         modType = ModificationType.NEW;
+         artifactModType = ArtifactModType.Added;
+         addToBatch(INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(), artifact.getGuid(),
+               artifact.getHumanReadableId());
+      }
+
+      int artGamma = SequenceManager.getNextGammaId();
+      artifact.setGammaId(artGamma);
+      processTransactionForArtifact(artifact, modType, artGamma);
+
+      // Add Attributes to Transaction
+      AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, this);
+      operation.execute();
+
+      // Kick Local Event
+      addArtifactModifiedEvent("persistArtifact()", artifactModType, artifact);
+   }
+
+   private void processTransactionForArtifact(Artifact artifact, ModificationType modType, int artGamma) throws OseeDataStoreException {
+      addTransactionDataItem(new ArtifactTransactionData(artifact, artGamma, getTransactionId(), modType));
+   }
+
+   private void addToBatch(String sql, Object... data) throws OseeArgumentException {
+      if (sql == null) throw new OseeArgumentException("SQL can not be null.");
 
       List<Object[]> statementData;
 
@@ -98,49 +134,6 @@ public class SkynetTransaction {
       }
 
       statementData.add(data);
-   }
-
-   public synchronized void execute(IProgressMonitor monitor) throws OseeDataStoreException {
-      boolean deleteTransactionDetail = false;
-
-      Connection connection = OseeDbConnection.getConnection();
-      try {
-      	try {
-         boolean insertBatchToTransactions = executeBatchToTransactions(connection, monitor);
-         boolean insertTransactionDataItems = executeTransactionDataItems(connection);
-
-         deleteTransactionDetail = !insertBatchToTransactions && !insertTransactionDataItems;
-
-         for (BaseTransactionData transactionData : transactionItems.keySet()) {
-            transactionData.internalClearDirtyState();
-         }
-      } catch (OseeDataStoreException ex) {
-         deleteTransactionDetail = true;
-         for (BaseTransactionData transactionData : transactionItems.keySet()) {
-            try {
-               transactionData.internalOnRollBack();
-            } catch (OseeCoreException ex1) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
-            }
-         }
-         ConnectionHandler.requestRollback();
-         OseeLog.log(SkynetActivator.class, Level.SEVERE,
-               "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
-         throw ex;
-      } finally {
-         if (deleteTransactionDetail) {
-            xModifiedEvents.clear();
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_DETAIL,
-                     transactionId.getTransactionNumber());
-         } else {
-            for (BaseTransactionData transactionData : transactionItems.keySet()) {
-               transactionData.internalUpdate();
-            }
-         }
-      }
-      } finally {
-         ConnectionHandler.close(connection);
-      }
    }
 
    private void fetchTxNotCurrent(Connection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeDataStoreException {
@@ -155,9 +148,9 @@ public class SkynetTransaction {
       }
    }
 
-   public boolean executeTransactionDataItems(Connection connection) throws OseeDataStoreException {
+   private void executeTransactionDataItems(Connection connection) throws OseeDataStoreException {
       if (transactionItems.isEmpty()) {
-         return false;
+         return;
       }
 
       List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
@@ -188,28 +181,21 @@ public class SkynetTransaction {
 
       // Set stale tx currents in txs table
       ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
-      return true;
    }
 
-   // Supports adding new artifacts to the artifact table and
-   // updating attributes that are not versioned.
-   public boolean executeBatchToTransactions(Connection connection, IProgressMonitor monitor) throws OseeDataStoreException {
+   // Supports adding new artifacts to the artifact table
+   private void executeBatchToTransactions(Connection connection) throws OseeDataStoreException {
       Collection<String> sqls = preparedBatch.keySet();
-      int size = sqls.size();
-      int count = 0;
       Iterator<String> iter = sqls.iterator();
       while (iter.hasNext()) {
-         monitor.subTask("Processing Prepared SQL set " + (++count) + "/" + size);
          String sql = iter.next();
          ConnectionHandler.runBatchUpdate(connection, sql, preparedBatch.get(sql));
-         monitor.worked(1);
       }
-      return preparedBatch.size() > 0;
    }
 
    public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(sourceObject), artifactModType, artifact,
-            getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
+            getTransactionId().getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
    }
 
    public void addRelationModifiedEvent(Object sourceObject, RelationModType relationModType, RelationLink link, Branch branch, String relationType) throws OseeAuthenticationRequiredException {
@@ -218,73 +204,13 @@ public class SkynetTransaction {
    }
 
    /**
-    * Kicks local and remote events
+    * @return Returns the transactionId.
+    * @throws OseeDataStoreException
     */
-   public void kickEvents() {
-      if (xModifiedEvents.size() > 0) {
-         try {
-            OseeEventManager.kickTransactionEvent(this, xModifiedEvents);
-            xModifiedEvents.clear();
-         } catch (OseeAuthenticationRequiredException ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-         }
+   public TransactionId getTransactionId() throws OseeDataStoreException {
+      if (transactionId == null) {
+         transactionId = TransactionIdManager.createNextTransactionId(branch, SkynetAuthentication.getUser(), "");
       }
-   }
-
-   /**
-    * @return Returns the transactionName.
-    */
-   public String getTransactionName() {
-      return transactionName;
-   }
-
-   /**
-    * @param transactionName The transactionName to set.
-    */
-   public void setTransactionName(String transactionName) {
-      this.transactionName = transactionName;
-   }
-
-   /**
-    * @return Returns the transactionId.
-    */
-   public Integer getTransactionNumber() {
-      return transactionId.getTransactionNumber();
-   }
-
-   /**
-    * @return Returns the comment.
-    */
-   public String getComment() {
-      return comment;
-   }
-
-   /**
-    * @param comment The comment to set.
-    */
-   public void setComment(String comment) {
-      this.comment = comment;
-   }
-
-   /**
-    * Returns the amount of work that this Transaction has to do. This value is suitable for using to compute total work
-    * for status to an IProgressMonitor.
-    */
-   protected int getWork() {
-      return preparedBatch.keySet().size() + transactionItems.size();
-   }
-
-   /**
-    * @return Returns the branch.
-    */
-   public Branch getBranch() {
-      return branch;
-   }
-
-   /**
-    * @return Returns the transactionId.
-    */
-   public TransactionId getTransactionId() {
       return transactionId;
    }
 
@@ -300,6 +226,53 @@ public class SkynetTransaction {
          }
       } else {
          transactionItems.put(dataItem, dataItem);
+      }
+   }
+
+   public void deleteArtifact(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
+      if (!artifact.isInDb()) return;
+
+      processTransactionForArtifact(artifact, ModificationType.DELETED, SequenceManager.getNextGammaId());
+
+      // Kick Local Event
+      addArtifactModifiedEvent(this, ArtifactModType.Deleted, artifact);
+
+      RelationManager.deleteRelationsAll(artifact, reorderRelations);
+      artifact.deleteAttributes();
+
+      artifact.persistAttributesAndRelations();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
+    */
+   @Override
+   protected void handleTxWork(Connection connection) throws OseeCoreException {
+      executeBatchToTransactions(connection);
+      executeTransactionDataItems(connection);
+
+      for (BaseTransactionData transactionData : transactionItems.keySet()) {
+         transactionData.internalClearDirtyState();
+         transactionData.internalUpdate();
+      }
+
+      if (xModifiedEvents.size() > 0) {
+         OseeEventManager.kickTransactionEvent(this, xModifiedEvents);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxException(java.lang.Exception)
+    */
+   @Override
+   protected void handleTxException(Exception ex) {
+      xModifiedEvents.clear();
+      for (BaseTransactionData transactionData : transactionItems.keySet()) {
+         try {
+            transactionData.internalOnRollBack();
+         } catch (OseeCoreException ex1) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
+         }
       }
    }
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
@@ -64,7 +66,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -162,11 +164,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return artifactType.getAnnotationImage(getMainAnnotationType());
-   }
-
-   public boolean isVersionControlled() {
-      return true;
-      // return controlLevel.isVersionControlled();
    }
 
    /**
@@ -500,7 +497,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return attributes.getValues();
    }
 
-   void deleteAttributes() {
+   public void deleteAttributes() {
       for (Attribute<?> attribute : attributes.getValues()) {
          attribute.delete();
       }
@@ -898,8 +895,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return false;
    }
 
+   public void revert() throws OseeCoreException {
+      DbTransaction dbTransaction = new DbTransaction() {
+         @Override
+         protected void handleTxWork(Connection connection) throws OseeCoreException {
+            ArtifactPersistenceManager.revertArtifact(connection, Artifact.this);
+         }
+      };
+      dbTransaction.execute();
+   }
+
    /**
-    * Reverts this artifact's attributes and relations back to the last state saved. This will have no effect if the
+    * Reloads this artifact's attributes and relations back to the last state saved. This will have no effect if the
     * artifact has never been saved.
     * 
     * @throws MultipleArtifactsExist
@@ -921,41 +928,54 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public final void persistAttributes() throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(branch);
+      persistAttributes(transaction);
+      transaction.execute();
+   }
+
+   public final void persistAttributes(SkynetTransaction transaction) throws OseeCoreException {
       if (!AccessControlManager.checkObjectPermission(getBranch(), PermissionEnum.WRITE)) {
-         throw new IllegalArgumentException(
+         throw new OseeArgumentException(
                "No write permissions for the branch that this artifact belongs to:" + getBranch());
       }
       if (isHistorical()) {
-         throw new IllegalArgumentException(
+         throw new OseeArgumentException(
                "The artifact " + getGuid() + " must be at the head of the branch to be edited.");
       }
 
       if (isDirty()) {
-         AbstractSkynetTxTemplate artifactPersistTx = new AbstractSkynetTxTemplate(getBranch()) {
-            @Override
-            protected void handleTxWork() throws OseeCoreException {
-
-               getTxBuilder().addArtifactToPersist(Artifact.this);
-               onAttributePersist();
-            }
-         };
-         artifactPersistTx.execute();
+         transaction.addArtifactToPersist(this);
+         onAttributePersist();
       }
    }
 
    public final void persistRelations() throws OseeCoreException {
-      RelationManager.persistRelationsFor(this, null);
+      SkynetTransaction transaction = new SkynetTransaction(branch);
+      persistRelations(transaction);
+      transaction.execute();
+   }
+
+   public final void persistRelations(SkynetTransaction transaction) throws OseeCoreException {
+      RelationManager.persistRelationsFor(transaction, this, null);
    }
 
    public final void persistRelations(Collection<RelationType> relationTypes) throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(branch);
       for (RelationType relationType : relationTypes) {
-         RelationManager.persistRelationsFor(this, relationType);
+         RelationManager.persistRelationsFor(transaction, this, relationType);
       }
+      transaction.execute();
    }
 
    public final void persistAttributesAndRelations() throws OseeCoreException {
-      persistAttributes();
-      persistRelations();
+      SkynetTransaction transaction = new SkynetTransaction(branch);
+      persistAttributesAndRelations(transaction);
+      transaction.execute();
+   }
+
+   public final void persistAttributesAndRelations(SkynetTransaction transaction) throws OseeCoreException {
+      persistAttributes(transaction);
+      persistRelations(transaction);
    }
 
    /**
@@ -1025,26 +1045,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * Removes artifact from a specific branch
     */
    public void delete() throws OseeCoreException {
-      ArtifactPersistenceManager.deleteArtifact(this);
-   }
-
-   /**
-    * Removes artifact from a specific branch
-    * 
-    * @param overrideDeleteCheck if <b>true</b> deletes without checking preconditions
-    * @throws OseeCoreException
-    */
-   public void delete(boolean overrideDeleteCheck) throws OseeCoreException {
-      ArtifactPersistenceManager.deleteArtifact(overrideDeleteCheck, this);
+      SkynetTransaction transaction = new SkynetTransaction(branch);
+      ArtifactPersistenceManager.deleteArtifact(transaction, false, this);
+      transaction.execute();
    }
 
    /**
     * Remove artifact from a specific branch in the database
     * 
+    * @param connection TODO
     * @throws OseeCoreException
     */
-   public void purgeFromBranch() throws OseeCoreException {
-      ArtifactPersistenceManager.purgeArtifacts(Collections.getAggregate(this));
+   public void purgeFromBranch(Connection connection) throws OseeCoreException {
+      ArtifactPersistenceManager.purgeArtifactFromBranch(connection, branch.getBranchId(), artId);
    }
 
    public boolean isDeleted() {

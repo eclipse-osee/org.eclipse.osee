@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.menu;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,13 +23,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -136,7 +138,12 @@ public class GlobalMenu {
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
-               ArtifactPersistenceManager.deleteArtifact(artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]));
+
+               Artifact[] artifactsArray = artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]);
+               SkynetTransaction transaction = new SkynetTransaction(artifactsArray[0].getBranch());
+               ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
+               transaction.execute();
+
                try {
                   for (GlobalMenuListener listener : listeners) {
                      listener.actioned(GlobalMenuItem.DeleteArtifacts, artifactsToBeDeleted);
@@ -163,7 +170,7 @@ public class GlobalMenu {
             Job job = new Job("Purge artifact") {
 
                @Override
-               protected IStatus run(IProgressMonitor monitor) {
+               protected IStatus run(final IProgressMonitor monitor) {
                   IStatus toReturn = Status.CANCEL_STATUS;
 
                   // Notify and confirm that menus should be actioned
@@ -178,26 +185,22 @@ public class GlobalMenu {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
                   monitor.beginTask("Purge artifact", artifactsToBePurged.size());
-                  final IProgressMonitor fMonitor = monitor;
 
-                  AbstractSkynetTxTemplate purgeTx =
-                        new AbstractSkynetTxTemplate(artifactsToBePurged.iterator().next().getBranch()) {
-                           @Override
-                           protected void handleTxWork() throws OseeCoreException {
-                              for (Artifact artifactToPurge : artifactsToBePurged) {
-                                 if (!artifactToPurge.isDeleted()) {
-                                    fMonitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
-                                    artifactToPurge.purgeFromBranch();
-                                 }
-                                 fMonitor.worked(1);
-                              }
-                              fMonitor.done();
+                  DbTransaction dbTransaction = new DbTransaction() {
+                     @Override
+                     protected void handleTxWork(Connection connection) throws OseeCoreException {
+                        for (Artifact artifactToPurge : artifactsToBePurged) {
+                           if (!artifactToPurge.isDeleted()) {
+                              monitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
+                              artifactToPurge.purgeFromBranch(connection);
                            }
-                        };
-
+                           monitor.worked(1);
+                        }
+                     }
+                  };
                   // Perform the purge transaction
                   try {
-                     purgeTx.execute();
+                     dbTransaction.execute();
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
