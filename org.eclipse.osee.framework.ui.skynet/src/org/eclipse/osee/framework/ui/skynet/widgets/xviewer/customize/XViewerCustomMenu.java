@@ -95,9 +95,6 @@ public class XViewerCustomMenu {
       });
    }
 
-   /**
-    * 
-    */
    protected void setupMenu() {
       MenuManager mm = xViewer.getMenuManager();
       mm.add(new GroupMarker(XViewer.MENU_GROUP_PRE));
