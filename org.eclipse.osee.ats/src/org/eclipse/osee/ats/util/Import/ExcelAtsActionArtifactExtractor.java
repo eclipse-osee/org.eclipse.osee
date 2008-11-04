@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -193,7 +194,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       return true;
    }
 
-   public void createArtifactsAndNotify() {
+   public void createArtifactsAndNotify(SkynetTransaction transaction) {
       AtsPlugin.setEmailEnabled(false);
       System.out.println("Creating...");
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
@@ -202,7 +203,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
             ActionArtifact actionArt =
                   NewActionJob.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
                         AtsPriority.PriorityType.getPriority(aData.priorityStr), aData.userComms, false, null,
-                        ActionableItemArtifact.getActionableItems(aData.actionableItems));
+                        ActionableItemArtifact.getActionableItems(aData.actionableItems),transaction);
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
                VersionArtifact verArt = AtsCache.getSoleArtifactByName(aData.version, VersionArtifact.class);
@@ -216,7 +217,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                }
             }
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-               team.persistAttributesAndRelations();
+               team.persistAttributesAndRelations(transaction);
             }
             teamWfs.addAll(actionArt.getTeamWorkFlowArtifacts());
          }

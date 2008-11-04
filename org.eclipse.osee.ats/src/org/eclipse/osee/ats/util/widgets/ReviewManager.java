@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -56,10 +57,11 @@ public class ReviewManager {
     * Create a new decision review configured and transitioned to handle action validation
     * 
     * @param force will force the creation of the review without checking that a review should be created
+    * @param transaction 
     * @return new review
     * @throws
     */
-   public DecisionReviewArtifact createValidateReview(boolean force) throws OseeCoreException {
+   public DecisionReviewArtifact createValidateReview(boolean force, SkynetTransaction transaction) throws OseeCoreException {
       // If not validate page, don't do anything
       if (!force && !AtsWorkDefinitions.isValidatePage(smaMgr.getWorkPageDefinition())) {
          return null;
@@ -83,7 +85,7 @@ public class ReviewManager {
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
 
          SMAManager revSmaMgr = new SMAManager(decRev);
-         revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), smaMgr.getOriginator(), true);
+         revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), smaMgr.getOriginator(), true, transaction);
 
          return decRev;
 

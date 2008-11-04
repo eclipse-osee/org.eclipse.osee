@@ -39,6 +39,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserEnum;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -529,6 +531,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private void handleTransition() {
 
       try {
+         
          if (smaMgr.getBranchMgr().isWorkingBranch() && !atsWorkPage.isAllowTransitionWithWorkingBranch()) {
             AWorkbench.popup("ERROR",
                   "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
@@ -548,7 +551,9 @@ public class SMAWorkFlowSection extends SectionPart {
          if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name())) {
             EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
             if (cancelDialog.open() != 0) return;
-            Result result = smaMgr.transitionToCancelled(cancelDialog.getEntry(), true);
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            Result result = smaMgr.transitionToCancelled(cancelDialog.getEntry(), true,transaction);
+            transaction.execute();
             if (result.isFalse()) {
                result.popup();
                return;
@@ -637,7 +642,9 @@ public class SMAWorkFlowSection extends SectionPart {
 
          smaMgr.getSma().persistAttributes();
 
-         Result result = smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true, false);
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         Result result = smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true, false, transaction);
+         transaction.execute();
          if (result.isFalse()) {
             result.popup();
             return;

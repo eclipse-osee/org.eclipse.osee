@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -746,12 +747,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return isRelationsAndArtifactsDirty(smaEditorRelations);
    }
 
-   public void saveSMA() {
+   public void saveSMA(SkynetTransaction transaction) {
       try {
          Set<Artifact> artifacts = new HashSet<Artifact>();
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts)
-            artifact.persistAttributesAndRelations();
+            artifact.persistAttributesAndRelations(transaction);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't save artifact " + getHumanReadableId(), ex, true);
       }
@@ -842,7 +843,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @throws Exception
     */
-   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws OseeCoreException {
+   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
    }
 
    /*

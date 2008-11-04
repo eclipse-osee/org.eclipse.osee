@@ -17,9 +17,8 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.WorldView;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.FileSelector;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -103,8 +102,8 @@ public class ActionImportPage extends WizardDataTransferPage {
    }
 
    /**
-    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all
-    * events and enablements for controls on this page. Subclasses may extend.
+    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
+    * and enablements for controls on this page. Subclasses may extend.
     * 
     * @param event Event
     */
@@ -119,8 +118,8 @@ public class ActionImportPage extends WizardDataTransferPage {
       if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
       setPageComplete(determinePageCompletion());
    } /*
-                     * @see WizardPage#becomesVisible
-                     */
+                       * @see WizardPage#becomesVisible
+                       */
 
    public void setVisible(boolean visible) {
       super.setVisible(visible);
@@ -137,20 +136,15 @@ public class ActionImportPage extends WizardDataTransferPage {
    public boolean finish() {
       final File file = fileSelector.getFile();
       try {
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
 
-            @Override
-            protected void handleTxWork()throws OseeCoreException{
-               ExcelAtsActionArtifactExtractor extractor =
-                     new ExcelAtsActionArtifactExtractor(BranchManager.getAtsBranch(),
-                           emailPocs.getSelection());
-               extractor.discoverArtifactAndRelationData(file);
-               if (extractor.dataIsValid()) extractor.createArtifactsAndNotify();
-               WorldView.loadIt("Imported Action Artifacts", extractor.getActionArts());
-               AWorkbench.popup("Complete", "Action Import Complete");
-            }
-         };
-         txWrapper.execute();
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         ExcelAtsActionArtifactExtractor extractor =
+               new ExcelAtsActionArtifactExtractor(BranchManager.getAtsBranch(), emailPocs.getSelection());
+         extractor.discoverArtifactAndRelationData(file);
+         if (extractor.dataIsValid()) extractor.createArtifactsAndNotify(transaction);
+         WorldView.loadIt("Imported Action Artifacts", extractor.getActionArts());
+         AWorkbench.popup("Complete", "Action Import Complete");
+         transaction.execute();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }

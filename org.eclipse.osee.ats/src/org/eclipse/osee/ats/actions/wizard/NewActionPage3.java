@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -55,11 +56,11 @@ public class NewActionPage3 extends WizardPage {
       getWizardXWidgetExtensions();
    }
 
-   public void notifyAtsWizardItemExtensions(ActionArtifact action) {
+   public void notifyAtsWizardItemExtensions(ActionArtifact action, SkynetTransaction transaction) {
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
             if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) item.wizardCompleted(
-                  action, wizard);
+                  action, wizard, transaction);
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }

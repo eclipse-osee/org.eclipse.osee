@@ -49,13 +49,14 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
-import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
@@ -127,18 +128,14 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
       } else {
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws OseeCoreException {
-                  if (getActivePage() == attributesPageIndex) {
-                     smaMgr.getSma().persistAttributes();
-                  }
-                  // Save widget data to artifact
-                  workFlowTab.saveXWidgetToArtifact();
-                  smaMgr.getSma().saveSMA();
-               }
-            };
-            txWrapper.execute();
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            if (getActivePage() == attributesPageIndex) {
+               smaMgr.getSma().persistAttributes(transaction);
+            }
+            // Save widget data to artifact
+            workFlowTab.saveXWidgetToArtifact();
+            smaMgr.getSma().saveSMA(transaction);
+            transaction.execute();
             workFlowTab.refresh();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
@@ -627,7 +624,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    public void setPriviledgedEditMode(PriviledgedEditMode priviledgedEditMode) throws OseeCoreException {
       this.priviledgedEditMode = priviledgedEditMode;
-      smaMgr.getSma().saveSMA();
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      smaMgr.getSma().saveSMA(transaction);
       workFlowTab.refresh();
    }
 

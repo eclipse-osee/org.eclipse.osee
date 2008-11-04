@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -69,21 +69,23 @@ public class NewActionJob extends Job {
 
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-
-            @Override
-            protected void handleTxWork() throws OseeCoreException {
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         
+//         AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
+         
+//            @Override
+//            protected void handleTxWork() throws OseeCoreException {
                if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
                actionArt =
                      createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,
-                           needByDate, actionableItems);
+                           needByDate, actionableItems, transaction);
 
-               if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt);
+               if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt, transaction);
 
                monitor.subTask("Persisting");
-            }
-         };
-         newActionTx.execute();
+//            }
+//         };
+               transaction.execute();
 
          // Because this is a job, it will automatically kill any popups that are created during.
          // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
@@ -120,7 +122,7 @@ public class NewActionJob extends Job {
       return ttNum;
    }
 
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
+   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
@@ -149,9 +151,9 @@ public class NewActionJob extends Job {
 
       // Create team workflow artifacts
       for (TeamDefinitionArtifact teamDef : teams) {
-         actionArt.createTeamWorkflow(teamDef, actionableItems, teamDef.getLeads(actionableItems));
+         actionArt.createTeamWorkflow(teamDef, actionableItems, teamDef.getLeads(actionableItems), transaction);
       }
-      actionArt.persistAttributesAndRelations();
+      actionArt.persistAttributesAndRelations(transaction);
       return actionArt;
 
    }

@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -34,10 +35,11 @@ public class PeerToPeerReviewWorkflowManager {
     * @param toState
     * @param user User to transition to OR null if should use user of current state
     * @param popup
+    * @param transaction 
     * @return Result
     * @throws Exception
     */
-   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup) throws OseeCoreException {
+   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Result result = setPrepareStateData(reviewArt, roles, "DoThis.java", 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -45,7 +47,7 @@ public class PeerToPeerReviewWorkflowManager {
       }
       result =
             reviewArt.getSmaMgr().transition(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(),
-                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false);
+                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false, transaction);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -60,7 +62,7 @@ public class PeerToPeerReviewWorkflowManager {
 
       result =
             reviewArt.getSmaMgr().transition(DefaultTeamState.Completed.name(),
-                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false);
+                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false, transaction);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;

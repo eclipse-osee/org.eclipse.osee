@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -79,7 +79,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       actionableItemsDam = new XActionableItemsDam(this);
    }
 
-   public void resetAttributesOffChildren() throws OseeCoreException {
+   public void resetAttributesOffChildren(SkynetTransaction transaction) throws OseeCoreException {
       resetActionItemsOffChildren();
       resetChangeTypeOffChildren();
       resetPriorityOffChildren();
@@ -87,7 +87,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       resetTitleOffChildren();
       resetValidationOffChildren();
       resetDescriptionOffChildren();
-      persistAttributes();
+      persistAttributes(transaction);
    }
 
    public boolean hasAtsWorldChildren() throws OseeCoreException {
@@ -705,21 +705,17 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       final StringBuffer sb = new StringBuffer();
 
-      AbstractSkynetTxTemplate transaction = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
 
-         @Override
-         protected void handleTxWork() throws OseeCoreException {
-            for (ActionableItemArtifact aia : diag.getChecked()) {
-               Result result = addActionableItemToTeamsOrAddTeams(aia);
-               sb.append(result.getText());
-            }
-         }
-      };
+      for (ActionableItemArtifact aia : diag.getChecked()) {
+         Result result = addActionableItemToTeamsOrAddTeams(aia, transaction);
+         sb.append(result.getText());
+      }
       transaction.execute();
       return new Result(true, sb.toString());
    }
 
-   public Result addActionableItemToTeamsOrAddTeams(ActionableItemArtifact aia) throws OseeCoreException {
+   public Result addActionableItemToTeamsOrAddTeams(ActionableItemArtifact aia, SkynetTransaction transaction) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (TeamDefinitionArtifact tda : TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia))) {
          boolean teamExists = false;
@@ -741,14 +737,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             }
          }
          if (!teamExists) {
-            createTeamWorkflow(tda, Arrays.asList(aia), tda.getLeads());
+            createTeamWorkflow(tda, Arrays.asList(aia), tda.getLeads(), transaction);
             sb.append(aia.getDescriptiveName() + " => added team workflow \"" + tda.getDescriptiveName() + "\"\n");
          }
       }
       return new Result(true, sb.toString());
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees) throws OseeCoreException {
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
       String teamWorkflowArtifactName = TeamWorkFlowArtifact.ARTIFACT_NAME;
       IAtsTeamWorkflow teamExt = null;
 
@@ -767,17 +763,18 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
 
       // NOTE: The persist of the workflow will auto-email the assignees
-      TeamWorkFlowArtifact teamArt = createTeamWorkflow(teamDef, actionableItems, assignees, teamWorkflowArtifactName);
+      TeamWorkFlowArtifact teamArt =
+            createTeamWorkflow(teamDef, actionableItems, assignees, teamWorkflowArtifactName, transaction);
       // Notify extension that workflow was created
       if (teamExt != null) teamExt.teamWorkflowCreated(teamArt);
       return teamArt;
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String artifactName) throws OseeCoreException {
-      return createTeamWorkflow(teamDef, actionableItems, assignees, null, null, artifactName);
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String artifactName, SkynetTransaction transaction) throws OseeCoreException {
+      return createTeamWorkflow(teamDef, actionableItems, assignees, null, null, artifactName, transaction);
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, String artifactName) throws OseeCoreException {
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, String artifactName, SkynetTransaction transaction) throws OseeCoreException {
 
       // Make sure team doesn't already exist
       for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
@@ -789,13 +786,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       TeamWorkFlowArtifact teamArt = null;
       if (guid == null)
-         teamArt =
-               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName,
-                     BranchManager.getAtsBranch());
+         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, BranchManager.getAtsBranch());
       else
          teamArt =
-               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName,
-                     BranchManager.getAtsBranch(), guid, hrid);
+               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, BranchManager.getAtsBranch(), guid,
+                     hrid);
       setArtifactIdentifyData(this, teamArt);
 
       teamArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
@@ -816,7 +811,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       // Relate Action to WorkFlow
       addRelation(AtsRelation.ActionToWorkflow_WorkFlow, teamArt);
 
-      teamArt.persistAttributesAndRelations();
+      teamArt.persistAttributesAndRelations(transaction);
 
       return teamArt;
    }

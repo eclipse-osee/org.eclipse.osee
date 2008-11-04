@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -89,10 +89,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#saveSMA()
     */
    @Override
-   public void saveSMA() {
-      super.saveSMA();
+   public void saveSMA(SkynetTransaction transaction) {
+      super.saveSMA(transaction);
       try {
-         getParentActionArtifact().resetAttributesOffChildren();
+         getParentActionArtifact().resetAttributesOffChildren(transaction);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't reset Action parent of children", ex, true);
       }
@@ -351,9 +351,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
                selectedAlias.add((ActionableItemArtifact) obj);
             }
 
-            ActionableItemsTx txWrapper = new ActionableItemsTx(BranchManager.getAtsBranch(), selectedAlias, null);
-            txWrapper.execute();
-            toReturn = txWrapper.getResult();
+            toReturn = actionableItemsTx(BranchManager.getAtsBranch(), selectedAlias, null);
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -415,9 +413,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Convert", sb.toString())) {
                Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
                toProcess.add(selectedAia);
-               ActionableItemsTx txWrapper = new ActionableItemsTx(BranchManager.getAtsBranch(), toProcess, newTeamDef);
-               txWrapper.execute();
-               toReturn = txWrapper.getResult();
+               toReturn = actionableItemsTx(BranchManager.getAtsBranch(), toProcess, newTeamDef);
             }
          }
       }
@@ -552,37 +548,16 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return this;
    }
 
-   private final class ActionableItemsTx extends AbstractSkynetTxTemplate {
-
-      private Result workResult;
-      private final Set<ActionableItemArtifact> selectedAlias;
-      private final TeamDefinitionArtifact teamDefinition;
-
-      public ActionableItemsTx(Branch branch, Set<ActionableItemArtifact> selectedAlias, TeamDefinitionArtifact teamDefinition) {
-         super(branch);
-         this.workResult = Result.TrueResult;
-         this.selectedAlias = selectedAlias;
-         this.teamDefinition = teamDefinition;
+   private Result actionableItemsTx(Branch branch, Set<ActionableItemArtifact> selectedAlias, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
+      Result workResult = actionableItemsDam.setActionableItems(selectedAlias);
+      if (workResult.isTrue()) {
+         if (teamDefinition != null) setTeamDefinition(teamDefinition);
+         SkynetTransaction transaction = new SkynetTransaction(branch);
+         getParentActionArtifact().resetAttributesOffChildren(transaction);
+         persistAttributes(transaction);
+         transaction.execute();
       }
-
-      public Result getResult() {
-         return workResult;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
-       */
-      @Override
-      protected void handleTxWork() throws OseeCoreException {
-         workResult = actionableItemsDam.setActionableItems(selectedAlias);
-         if (workResult.isTrue()) {
-            if (teamDefinition != null) setTeamDefinition(teamDefinition);
-            getParentActionArtifact().resetAttributesOffChildren();
-            persistAttributes();
-         }
-      }
+      return workResult;
    }
 
    /* (non-Javadoc)

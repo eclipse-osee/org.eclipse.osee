@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -50,16 +51,18 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
    private final boolean emailPOCs;
    private SMAManager smaMgr;
    private final boolean persist;
-
+   private SkynetTransaction transaction;
+   
    public static String getDescription() {
       return description;
    }
 
-   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, boolean persist) {
+   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, boolean persist, SkynetTransaction transaction) {
       super(artifact.getBranch());
       this.emailPOCs = emailPOCs;
       this.persist = persist;
-
+      this.transaction = transaction;
+      
       if (!(artifact instanceof StateMachineArtifact)) {
          throw new IllegalArgumentException("Artifact must be StateMachineArtifact");
       }
@@ -196,8 +199,10 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
          }
          AtsPlugin.setEmailEnabled(true);
 
-         if (taskArt.isCompleted()) taskArt.transitionToCompleted(false);
-         if (persist) taskArt.persistAttributesAndRelations();
+         
+         
+         if (taskArt.isCompleted()) taskArt.transitionToCompleted(false, transaction);
+         if (persist) taskArt.persistAttributesAndRelations(transaction);
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
             AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Assigned);
          }

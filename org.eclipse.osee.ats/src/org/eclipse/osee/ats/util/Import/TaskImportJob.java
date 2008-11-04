@@ -19,11 +19,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -31,13 +28,13 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 public class TaskImportJob extends Job {
    private final File file;
    private ExcelAtsTaskArtifactExtractor atsTaskExtractor;
-   private final boolean persist;
+   private SkynetTransaction transaction;
 
-   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor, Branch branch, boolean persist) throws IllegalArgumentException, CoreException {
+   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor, SkynetTransaction transaction) throws IllegalArgumentException, CoreException {
       super("Importing Tasks");
       this.file = file;
       this.atsTaskExtractor = atsTaskExtractor;
-      this.persist = persist;
+      this.transaction = transaction;
    }
 
    public IStatus run(final IProgressMonitor monitor) {
@@ -45,16 +42,12 @@ public class TaskImportJob extends Job {
       try {
          atsTaskExtractor.setMonitor(monitor);
          monitor.beginTask("Importing Tasks", 0);
-         if (persist) {
-            AbstractSkynetTxTemplate txWrapper = new ExtractArtifactTx(atsTaskExtractor.getBranch(), file, monitor);
-            txWrapper.execute();
+         if (file != null && file.isFile()) {
+            atsTaskExtractor.discoverArtifactAndRelationData(file);
          } else {
-            if (file != null && file.isFile()) {
-               atsTaskExtractor.discoverArtifactAndRelationData(file);
-            } else {
-               throw new IllegalStateException("All files passed must be a file");
-            }
+            throw new IllegalStateException("All files passed must be a file");
          }
+         transaction.execute();
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -63,35 +56,5 @@ public class TaskImportJob extends Job {
          monitor.done();
       }
       return toReturn;
-   }
-   private final class ExtractArtifactTx extends AbstractSkynetTxTemplate {
-
-      private IProgressMonitor monitor;
-      private File file;
-
-      public ExtractArtifactTx(Branch branch, File file, IProgressMonitor monitor) {
-         super(branch);
-         this.file = file;
-         this.monitor = monitor;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
-       */
-      @Override
-      protected void handleTxWork() throws OseeCoreException {
-         if (file != null && file.isFile()) {
-            atsTaskExtractor.discoverArtifactAndRelationData(file);
-         } else {
-            throw new OseeArgumentException("All files passed must be a file");
-         }
-         System.out.println("Committing Transaction");
-         monitor.setTaskName("Committing Transaction");
-         monitor.subTask(""); // blank out leftover relation subtask
-         monitor.worked(1); // cause the status to update
-      }
-
    }
 }

@@ -357,13 +357,17 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       resetActionArtifactAction = new Action("Reset Action off Children", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
-               try {
-                  actionArt.resetAttributesOffChildren();
-               } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+            SkynetTransaction transaction;
+            try {
+               transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+               for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
+                  actionArt.resetAttributesOffChildren(transaction);
                }
+               transaction.execute();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
+
          }
       };
    }
@@ -769,14 +773,14 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   new HtmlDialog((purge ? "Purge" : "Delete") + " ATS Objects", "", AHTML.simplePage(results));
             dialog.open();
             if (dialog.getReturnCode() == 0) {
-                     if (purge) {
-                        ArtifactPersistenceManager.purgeArtifacts(deleteArts);
-                     } else {
+               if (purge) {
+                  ArtifactPersistenceManager.purgeArtifacts(deleteArts);
+               } else {
                   SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
                   ArtifactPersistenceManager.deleteArtifact(transaction, false,
                         deleteArts.toArray(new Artifact[deleteArts.size()]));
                   transaction.execute();
-                     }
+               }
 
                AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed",
                      (purge ? "Purge" : "Delete") + " Completed");

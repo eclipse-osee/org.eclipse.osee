@@ -54,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -357,28 +357,19 @@ public class SMAManager {
       if (result != 0) {
          return false;
       }
-      if (persist) {
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-            @Override
-            protected void handleTxWork() throws OseeCoreException {
-               promptChangeVersionHelper(smas, vld, persist);
-            }
-         };
-         txWrapper.execute();
-      } else {
-         promptChangeVersionHelper(smas, vld, persist);
-      }
-      return true;
-   }
-
-   private static void promptChangeVersionHelper(Collection<? extends TeamWorkFlowArtifact> smas, VersionListDialog vld, boolean persist) throws OseeCoreException {
       Object obj = vld.getResult()[0];
       VersionArtifact newVersion = (VersionArtifact) obj;
-
       for (TeamWorkFlowArtifact teamArt : smas) {
          teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, newVersion);
-         if (persist) teamArt.persistRelations();
       }
+      if (persist) {
+    	  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+    	  for (TeamWorkFlowArtifact teamArt : smas) {
+    		  teamArt.persistRelations(transaction);
+    	  }
+    	  transaction.execute();
+      } 
+      return true;
    }
 
    public boolean promptChangeType(boolean persist) {
@@ -402,19 +393,16 @@ public class SMAManager {
             dialog.setSelected(teams.iterator().next().getChangeType());
          }
          if (dialog.open() == 0) {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws OseeCoreException {
-
-                  for (TeamWorkFlowArtifact team : teams) {
-                     if (team.getChangeType() != dialog.getSelection()) {
-                        team.setChangeType(dialog.getSelection());
-                        team.saveSMA();
-                     }
+        	
+        	SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+        	 
+        	  for (TeamWorkFlowArtifact team : teams) {
+                  if (team.getChangeType() != dialog.getSelection()) {
+                     team.setChangeType(dialog.getSelection());
+                     team.saveSMA(transaction);
                   }
                }
-            };
-            txWrapper.execute();
+        	transaction.execute();
          }
          return true;
       } catch (Exception ex) {
@@ -444,18 +432,15 @@ public class SMAManager {
             ald.setSelected(teams.iterator().next().getPriority());
          }
          if (ald.open() == 0) {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws OseeCoreException {
-                  for (TeamWorkFlowArtifact team : teams) {
-                     if (team.getPriority() != ald.getSelection()) {
-                        team.setPriority(ald.getSelection());
-                        team.saveSMA();
-                     }
-                  }
-               }
-            };
-            txWrapper.execute();
+        	 
+        	 SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+              for (TeamWorkFlowArtifact team : teams) {
+                 if (team.getPriority() != ald.getSelection()) {
+                    team.setPriority(ald.getSelection());
+                    team.saveSMA(transaction);
+                 }
+              }
+            transaction.execute();
          }
          return true;
       } catch (Exception ex) {
@@ -776,27 +761,27 @@ public class SMAManager {
       return taskMgr;
    }
 
-   public Result transition(String toStateName, User toAssignee, boolean persist) {
+   public Result transition(String toStateName, User toAssignee, boolean persist, SkynetTransaction transaction) {
       List<User> users = new ArrayList<User>();
       if (toAssignee != null && !toStateName.equals(DefaultTeamState.Completed.name()) && !toStateName.equals(DefaultTeamState.Cancelled.name())) users.add(toAssignee);
-      return transition(toStateName, users, persist, false);
+      return transition(toStateName, users, persist, false, transaction);
    }
 
-   public Result transitionToCancelled(String reason, boolean persist) {
+   public Result transitionToCancelled(String reason, boolean persist, SkynetTransaction transaction) {
       Result result =
-            transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason, false);
+            transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason, false, transaction);
       return result;
    }
 
-   public Result transition(String toStateName, Collection<User> toAssignees, boolean persist, boolean overrideTransitionCheck) {
-      return transition(toStateName, toAssignees, persist, null, overrideTransitionCheck);
+   public Result transition(String toStateName, Collection<User> toAssignees, boolean persist, boolean overrideTransitionCheck, SkynetTransaction transaction) {
+      return transition(toStateName, toAssignees, persist, null, overrideTransitionCheck, transaction);
    }
 
-   public Result transition(String toStateName, User toAssignee, boolean persist, boolean overrideTransitionCheck) {
-      return transition(toStateName, Arrays.asList(toAssignee), persist, null, overrideTransitionCheck);
+   public Result transition(String toStateName, User toAssignee, boolean persist, boolean overrideTransitionCheck, SkynetTransaction transaction) {
+      return transition(toStateName, Arrays.asList(toAssignee), persist, null, overrideTransitionCheck, transaction);
    }
 
-   private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck) {
+   private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck, SkynetTransaction transaction) {
       try {
          // Validate assignees
          if (getStateMgr().getAssignees().contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || getStateMgr().getAssignees().contains(
@@ -832,23 +817,10 @@ public class SMAManager {
             Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
             if (result.isFalse()) return result;
          }
-
+         transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
+               cancelReason, transaction);
          if (persist) {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-
-               @Override
-               protected void handleTxWork() throws OseeCoreException {
-                  transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
-                        cancelReason);
-               }
-
-            };
-            txWrapper.execute();
-            // This should only send subscribed notifications as saveSMA() done before 
             OseeNotificationManager.sendNotifications();
-         } else {
-            transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
-                  cancelReason);
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -857,7 +829,7 @@ public class SMAManager {
       return Result.TrueResult;
    }
 
-   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason) throws OseeCoreException {
+   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason, SkynetTransaction transaction) throws OseeCoreException {
       // Log transition
       if (toPage.isCancelledPage()) {
          atsLog.addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), cancelReason);
@@ -869,7 +841,7 @@ public class SMAManager {
       stateMgr.transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
 
       if (getSma().isValidationRequired()) {
-         getReviewManager().createValidateReview(false);
+         getReviewManager().createValidateReview(false, transaction);
       }
 
       AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Subscribed, AtsNotifyUsers.NotifyType.Completed,
@@ -877,10 +849,10 @@ public class SMAManager {
 
       // Persist
       if (persist) {
-         getSma().persistAttributesAndRelations();
+         getSma().persistAttributesAndRelations(transaction);
       }
 
-      getSma().transitioned(fromPage, toPage, toAssignees, true);
+      getSma().transitioned(fromPage, toPage, toAssignees, true, transaction);
 
       // Notify extension points of transition
       for (IAtsStateItem item : stateItems.getStateItems(fromPage.getId())) {

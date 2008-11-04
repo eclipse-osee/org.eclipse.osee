@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
@@ -79,9 +80,9 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    }
 
    @Override
-   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws OseeCoreException {
-      super.transitioned(fromPage, toPage, toAssignees, persist);
+   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+      super.transitioned(fromPage, toPage, toAssignees, persist, transaction);
       for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts())
-         taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist);
+         taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist, transaction);
    }
 }

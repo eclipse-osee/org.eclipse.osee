@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.artifact;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -33,7 +34,7 @@ public class DecisionReviewWorkflowManager {
     * @return Result
     * @throws Exception
     */
-   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.DecisionReviewState toState, User user, boolean popup) throws OseeCoreException {
+   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.DecisionReviewState toState, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
       if (reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals(
@@ -47,7 +48,7 @@ public class DecisionReviewWorkflowManager {
          result =
                reviewArt.getSmaMgr().transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(),
                      (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
-                     false);
+                     false, transaction);
       }
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -66,7 +67,7 @@ public class DecisionReviewWorkflowManager {
 
       result =
             reviewArt.getSmaMgr().transition(toState.name(),
-                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false);
+                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false, transaction);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;

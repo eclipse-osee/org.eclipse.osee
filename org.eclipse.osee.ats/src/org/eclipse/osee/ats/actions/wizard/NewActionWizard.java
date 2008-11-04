@@ -19,6 +19,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -131,9 +132,9 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return ((XDate) page2.getXWidget("Deadline")).getDate();
    }
 
-   public void notifyAtsWizardItemExtensions(ActionArtifact action) {
+   public void notifyAtsWizardItemExtensions(ActionArtifact action, SkynetTransaction transaction) {
       if (page3 != null) {
-         page3.notifyAtsWizardItemExtensions(action);
+         page3.notifyAtsWizardItemExtensions(action, transaction);
       }
    }
 
