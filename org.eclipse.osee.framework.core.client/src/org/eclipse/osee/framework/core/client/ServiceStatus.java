@@ -59,4 +59,8 @@ public class ServiceStatus {
       Throwable throwable = healthStatus.getException();
       return throwable != null ? Lib.exceptionToString(throwable) : "No Errors";
    }
+
+   public Throwable getError() {
+      return healthStatus.getException();
+   }
 }

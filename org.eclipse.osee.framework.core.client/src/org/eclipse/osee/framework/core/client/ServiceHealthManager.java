@@ -50,10 +50,6 @@ public class ServiceHealthManager {
       ConnectionHandler.addListener(this.dataStoreMonitor);
    }
 
-   public static boolean isInNormalMode() {
-      return true;
-   }
-
    private static ServiceHealthManager getInstance() {
       return instance;
    }
