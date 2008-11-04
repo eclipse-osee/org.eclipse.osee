@@ -89,8 +89,7 @@ import org.eclipse.ui.PlatformUI;
 public class XTaskViewer extends XWidget implements IActionable {
 
    private TaskXViewer xViewer;
-   private ToolItem currentStateFilterItem;
-   private MenuItem currentStateFilterMenuItem, filterCompletedMenuItem, selectionMetricsMenuItem;
+   private MenuItem filterCompletedMenuItem, selectionMetricsMenuItem;
    private final IXTaskViewer iXTaskViewer;
 
    /**
@@ -100,7 +99,6 @@ public class XTaskViewer extends XWidget implements IActionable {
       return iXTaskViewer;
    }
 
-   private TaskCurrentStateFilter currentStateFilter = null;
    private Label extraInfoLabel;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
 
@@ -185,7 +183,6 @@ public class XTaskViewer extends XWidget implements IActionable {
          tree.setHeaderVisible(true);
          tree.setLinesVisible(true);
          if (toolkit != null) toolkit.adapt(tree);
-         updateCurrentStateFilter();
          setupDragAndDropSupport();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -205,9 +202,6 @@ public class XTaskViewer extends XWidget implements IActionable {
       String str = "";
       if (filterCompletedMenuItem != null && filterCompletedMenuItem.getSelection()) {
          str += "[Complete/Cancel Filter]";
-      }
-      if (currentStateFilterItem != null && currentStateFilterItem.getSelection()) {
-         str += "[State Filter]";
       }
       xViewer.setExtendedStatusString(str);
       xViewer.refresh();
@@ -236,20 +230,6 @@ public class XTaskViewer extends XWidget implements IActionable {
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
-
-      currentStateFilterItem = new ToolItem(toolBar, SWT.CHECK);
-      currentStateFilterItem.setImage(AtsPlugin.getInstance().getImage("currentState.gif"));
-      currentStateFilterItem.setToolTipText("Filter by Current State.");
-      currentStateFilterItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               updateCurrentStateFilter();
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
-            }
-         }
-      });
 
       if (iXTaskViewer.isTaskable()) {
 
@@ -313,18 +293,6 @@ public class XTaskViewer extends XWidget implements IActionable {
       extraInfoLabel.getParent().layout();
    }
 
-   public void updateCurrentStateFilter() throws OseeCoreException {
-      if (currentStateFilterItem != null && currentStateFilterItem.getSelection()) {
-         currentStateFilter = new TaskCurrentStateFilter(iXTaskViewer.getCurrentStateName());
-         getXViewer().addFilter(currentStateFilter);
-      } else {
-         if (currentStateFilter != null) getXViewer().removeFilter(currentStateFilter);
-         currentStateFilter = null;
-      }
-      if (currentStateFilterMenuItem != null) currentStateFilterMenuItem.setSelection(currentStateFilterItem.getSelection());
-      updateExtendedStatusString();
-   }
-
    public void createTaskActionBarPulldown(final ToolBar toolBar, Composite composite) {
       final ToolItem dropDown = new ToolItem(toolBar, SWT.PUSH);
       dropDown.setImage(AtsPlugin.getInstance().getImage("downTriangle.gif"));
@@ -354,20 +322,6 @@ public class XTaskViewer extends XWidget implements IActionable {
       });
 
       new MenuItem(menu, SWT.SEPARATOR);
-
-      currentStateFilterMenuItem = new MenuItem(menu, SWT.CHECK);
-      currentStateFilterMenuItem.setText("Filter by Current State");
-      currentStateFilterMenuItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            currentStateFilterItem.setSelection(!currentStateFilterItem.getSelection());
-            try {
-               updateCurrentStateFilter();
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
-            }
-         }
-      });
 
       filterCompletedMenuItem = new MenuItem(menu, SWT.CHECK);
       filterCompletedMenuItem.setText("Filter Out Completed/Cancelled - Ctrl-F");
