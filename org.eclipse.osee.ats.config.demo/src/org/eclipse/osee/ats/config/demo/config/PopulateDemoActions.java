@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -110,10 +111,11 @@ public class PopulateDemoActions extends XNavigateItemAction {
          saw2BranchTx.execute();
 
          // Create SAW_Bld_2 Actions 
+         SkynetTransaction sawActionsTransaction = new SkynetTransaction(BranchManager.getAtsBranch());
          Set<ActionArtifact> actionArts =
                createActions(DemoDbActionData.getReqSawActionsData(),
-                     DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null);
-
+                     DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null,sawActionsTransaction);
+         sawActionsTransaction.execute();
          // Sleep to wait for the persist of the actions
          DemoDbUtil.sleep(3000);
 
@@ -365,18 +367,19 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private void createNonReqChangeDemoActions() throws Exception {
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
-      createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_3.toString(), null);
+      createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_3.toString(), null, transaction);
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_2");
-      createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null);
+      createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null, transaction);
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_1");
       createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_1.toString(),
-            DefaultTeamState.Completed);
+            DefaultTeamState.Completed, transaction);
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "createNonReqChangeDemoActions - getGenericActionData");
-      createActions(DemoDbActionData.getGenericActionData(), null, null);
+      createActions(DemoDbActionData.getGenericActionData(), null, null, transaction);
    }
 
-   private Set<ActionArtifact> createActions(Set<DemoDbActionData> actionDatas, String versionStr, DefaultTeamState toStateOverride) throws Exception {
+   private Set<ActionArtifact> createActions(Set<DemoDbActionData> actionDatas, String versionStr, DefaultTeamState toStateOverride, SkynetTransaction transaction) throws Exception {
       Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {
@@ -386,7 +389,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             ActionArtifact actionArt =
                   NewActionJob.createAction(null, prefixTitle + " " + aData.postFixTitle,
                         TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], PriorityType.Priority_1,
-                        aData.getUserCommunities(), false, null, aData.getActionableItems());
+                        aData.getUserCommunities(), false, null, aData.getActionableItems(), transaction);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : actionArt.getTeamWorkFlowArtifacts()) {
                TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);
@@ -398,7 +401,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   }
                }
                // Transition to desired state
-               dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false);
+               dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false, transaction);
                teamWf.persistAttributesAndRelations();
                if (versionStr != null && !versionStr.equals("")) {
                   VersionArtifact verArt =
