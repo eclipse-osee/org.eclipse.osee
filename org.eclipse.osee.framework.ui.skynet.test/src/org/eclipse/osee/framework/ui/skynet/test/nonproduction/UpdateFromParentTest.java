@@ -9,7 +9,7 @@ import java.util.Collection;
 import junit.framework.TestCase;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.database.DatabaseActivator;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,7 +34,7 @@ public class UpdateFromParentTest extends TestCase {
    protected void setUp() throws Exception {
       super.setUp();
       ConflictTestManager.initializeConflictTest();
-      assertFalse(DatabaseActivator.getInstance().isProductionDb());
+      assertFalse(ClientSessionManager.isProductionDataStore());
    }
 
    public void testUpdateFromParent() throws Exception {
