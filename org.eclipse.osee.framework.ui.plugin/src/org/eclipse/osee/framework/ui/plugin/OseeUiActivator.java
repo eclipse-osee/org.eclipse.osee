@@ -26,8 +26,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.osee.framework.core.client.ServiceHealthManager;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.ActivatorHelper;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
@@ -295,8 +295,8 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     */
    public static Result areOSEEServicesAvailable() {
       Result toReturn = Result.TrueResult;
-      if (!ServiceHealthManager.areServicesAvailable()) {
-         toReturn = new Result(ServiceHealthManager.getServicesStatusMessage());
+      if (!OseeLog.isStatusOk()) {
+         toReturn = new Result(OseeLog.getStatusReport());
       }
       return toReturn;
    }

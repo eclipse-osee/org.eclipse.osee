@@ -8,6 +8,7 @@ Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
+ org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,

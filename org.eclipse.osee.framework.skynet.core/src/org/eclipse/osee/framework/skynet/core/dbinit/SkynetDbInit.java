@@ -16,6 +16,7 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,15 +42,15 @@ import org.eclipse.osee.framework.database.utility.DatabaseConfigurationData;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
+import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
-import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -106,8 +107,8 @@ public class SkynetDbInit implements IDbInitializationTask {
    }
 
    private static void initializeApplicationServer() throws OseeCoreException {
-      DbInformation dbInfo = OseeDbConnection.getDefaultDatabaseService();
-      String resourceServer = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
+      IDatabaseInfo dbInfo = DatabaseInfoManager.getDefault();
+      String resourceServer = dbInfo.getDefaultArbitrationServer();
       if (Strings.isValid(resourceServer) != true) {
          throw new OseeDataStoreException(
                String.format(

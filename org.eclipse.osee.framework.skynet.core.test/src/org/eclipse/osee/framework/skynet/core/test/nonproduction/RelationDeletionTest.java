@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.skynet.core.test.nonproduction;
 import java.util.List;
 import java.util.logging.Level;
 import junit.framework.TestCase;
-import org.eclipse.osee.framework.database.DatabaseActivator;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -30,21 +30,17 @@ public class RelationDeletionTest extends TestCase {
 
    protected void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse(DatabaseActivator.getInstance().isProductionDb());
+      assertFalse(ClientSessionManager.isProductionDataStore());
    }
 
    public void testDeleteRelationPersistsBothSides() {
       SevereLoggingMonitor monitor = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitor);
       try {
-         Artifact parent =
-               ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
-         Artifact child1 =
-               ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
-         Artifact child2 =
-               ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
-         Artifact child3 =
-               ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
+         Artifact parent = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
+         Artifact child1 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
+         Artifact child2 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
+         Artifact child3 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
          parent.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child1);
          parent.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child2);
          parent.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child3);

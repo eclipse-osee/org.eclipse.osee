@@ -93,6 +93,6 @@ public class ArbitrationServerPage extends FieldEditorPreferencePage implements 
     */
    public void init(IWorkbench workbench) {
       setPreferenceStore(SkynetActivator.getInstance().getPreferenceStore());
-      setDescription("Select an arbitration server or specify a server address and port in the entry boxes below.");
+      setDescription("Select an arbitration server or specify a server address and port in the entry boxes below. NOTE: Must restart workbench after change.");
    }
 }

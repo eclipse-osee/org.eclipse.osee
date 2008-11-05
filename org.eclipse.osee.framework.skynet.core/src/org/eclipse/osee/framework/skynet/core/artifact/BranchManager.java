@@ -56,6 +56,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
 
 public class BranchManager {
+   private static final BranchManager instance = new BranchManager();
+
    private static final String READ_BRANCH_TABLE =
          "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
    private static final String READ_MERGE_BRANCHES =
@@ -82,8 +84,6 @@ public class BranchManager {
 
    private static final boolean MERGE_DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
-
-   private static final BranchManager instance = new BranchManager();
 
    private Branch systemRoot;
 

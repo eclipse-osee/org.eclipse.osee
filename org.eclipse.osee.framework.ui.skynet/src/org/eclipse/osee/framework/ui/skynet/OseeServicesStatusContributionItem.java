@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.core.client.IServiceListener;
-import org.eclipse.osee.framework.core.client.ServiceHealthManager;
-import org.eclipse.osee.framework.core.client.ServiceStatus;
+import org.eclipse.osee.framework.logging.IHealthStatus;
+import org.eclipse.osee.framework.logging.IStatusListener;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeServicesStatusContributionItem extends OseeContributionItem implements IServiceListener {
+public class OseeServicesStatusContributionItem extends OseeContributionItem implements IStatusListener {
    private static final String ID = "osee.service.status";
    private static final Image ENABLED_IMAGE = SkynetGuiPlugin.getInstance().getImage("appserver.gif");
    private static final Image DISABLED_IMAGE =
@@ -35,7 +35,7 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
       super(ID);
       errorMessage = null;
       okMessage = null;
-      ServiceHealthManager.addListener(this);
+      OseeLog.register(this);
    }
 
    /* (non-Javadoc)
@@ -43,7 +43,7 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
     */
    @Override
    public void dispose() {
-      ServiceHealthManager.removeListener(this);
+      OseeLog.deregister(this);
       super.dispose();
    }
 
@@ -86,21 +86,22 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.client.IServiceListener#onStatusChange(org.eclipse.osee.framework.core.client.ServiceStatus)
+    * @see org.eclipse.osee.framework.logging.IStatusListener#onStatus(org.eclipse.osee.framework.logging.IHealthStatus)
     */
    @Override
-   public void onStatusChange(final ServiceStatus serviceStatus) {
+   public void onStatus(final IHealthStatus status) {
       Display.getDefault().asyncExec(new Runnable() {
          @Override
          public void run() {
-            if (serviceStatus.isHealthOk()) {
-               okMessage = serviceStatus.getDetails();
+            if (status.isOk()) {
+               okMessage = status.getMessage();
             } else {
-               Throwable error = serviceStatus.getError();
+               Throwable error = status.getException();
                errorMessage = error != null ? error.getLocalizedMessage() : "Undefined Error";
             }
-            updateStatus(serviceStatus.isHealthOk());
+            updateStatus(status.isOk());
          }
       });
+
    }
 }

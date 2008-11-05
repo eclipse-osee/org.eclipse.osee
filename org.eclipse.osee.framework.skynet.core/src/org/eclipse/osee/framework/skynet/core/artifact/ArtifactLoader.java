@@ -406,7 +406,7 @@ public final class ArtifactLoader {
       try {
          if (historical) {
             chStmt.runPreparedQuery(artifacts.size() * 8,
-                        ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ATTRIBUTES), queryId);
+                  ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ATTRIBUTES), queryId);
          } else {
             String sql = allowDeletedArtifacts ? SELECT_CURRENT_ATTRIBUTES_WITH_DELETED : SELECT_CURRENT_ATTRIBUTES;
             chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);

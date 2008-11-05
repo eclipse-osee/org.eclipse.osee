@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -19,8 +18,8 @@ import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.osee.framework.core.client.ServiceHealthManager;
-import org.eclipse.osee.framework.core.client.ServiceStatus;
+import org.eclipse.osee.framework.logging.IHealthStatus;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -129,11 +128,9 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
 
    private List<DataRecord> getConfigurationDetails() {
       List<DataRecord> configurationDetails = new ArrayList<DataRecord>();
-
-      Collection<ServiceStatus> serviceInfos = ServiceHealthManager.getServiceStatus();
-      for (ServiceStatus serviceInfo : serviceInfos) {
-         DataRecord record = new DataRecord(serviceInfo.getName(), serviceInfo.getDetails());
-         record.setStatus(serviceInfo.isHealthOk());
+      for (IHealthStatus status : OseeLog.getStatus()) {
+         DataRecord record = new DataRecord(status.getSourceName(), status.getMessage());
+         record.setStatus(status.isOk());
          configurationDetails.add(record);
       }
       return configurationDetails;
