@@ -165,10 +165,15 @@ public class TaskXViewer extends WorldXViewer {
       editTaskTitleAction = new Action("Edit Task Title", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            SMAManager taskSmaMgr = new SMAManager(getSelectedTaskArtifact());
-            if (taskSmaMgr.promptChangeAttribute(ATSAttributes.TITLE_ATTRIBUTE, false)) {
-               editor.onDirtied();
-               update(getSelectedTaskArtifacts().toArray(), null);
+            try {
+               SMAManager taskSmaMgr = new SMAManager(getSelectedTaskArtifact());
+               boolean success = taskSmaMgr.promptChangeAttribute(ATSAttributes.TITLE_ATTRIBUTE, false);
+               if (success) {
+                  editor.onDirtied();
+                  update(getSelectedTaskArtifacts().toArray(), null);
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };
@@ -216,9 +221,11 @@ public class TaskXViewer extends WorldXViewer {
          @Override
          public void run() {
             try {
-               if (ArtifactPromptChange.promptChangeFloatAttribute(
-                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
-                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedTaskArtifacts(), false)) {
+               boolean success =
+                     ArtifactPromptChange.promptChangeFloatAttribute(
+                           ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
+                           ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedTaskArtifacts(), false);
+               if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
@@ -231,10 +238,16 @@ public class TaskXViewer extends WorldXViewer {
       editTaskRelatedStateAction = new Action("Edit Task Related to State", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (SMAManager.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, getSelectedTaskArtifacts(),
-                  false)) {
-               editor.onDirtied();
-               update(getSelectedTaskArtifacts().toArray(), null);
+            try {
+               boolean success =
+                     SMAManager.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE,
+                           getSelectedTaskArtifacts(), false);
+               if (success) {
+                  editor.onDirtied();
+                  update(getSelectedTaskArtifacts().toArray(), null);
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };
@@ -242,9 +255,16 @@ public class TaskXViewer extends WorldXViewer {
       editTaskNotesAction = new Action("Edit Task Notes", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (SMAManager.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, getSelectedTaskArtifacts(), false)) {
-               editor.onDirtied();
-               update(getSelectedTaskArtifacts().toArray(), null);
+            try {
+               boolean success =
+                     SMAManager.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, getSelectedTaskArtifacts(),
+                           false);
+               if (success) {
+                  editor.onDirtied();
+                  update(getSelectedTaskArtifacts().toArray(), null);
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };

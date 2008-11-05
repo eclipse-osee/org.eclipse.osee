@@ -28,14 +28,14 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * 
  * @author Donald G. Dunne
  */
-public abstract class AbstractSkynetTxJobTemplate extends Job {
+public abstract class SkynetTransactionJobTemplate extends Job {
    private final Branch branch;
    protected IProgressMonitor monitor;
 
    /**
     * @param name
     */
-   public AbstractSkynetTxJobTemplate(String name, Branch branch) {
+   public SkynetTransactionJobTemplate(String name, Branch branch) {
       super(name);
       this.branch = branch;
    }

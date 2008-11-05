@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
@@ -64,17 +65,19 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       populateProgramBranch(CISBuilds.CIS_Bld_1.name());
 
       // Map team definitions versions to their related branches
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW), SawBuilds.SAW_Bld_1.name(),
-            SawBuilds.SAW_Bld_1.name());
+            SawBuilds.SAW_Bld_1.name(), transaction);
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), CISBuilds.CIS_Bld_1.name(),
-            CISBuilds.CIS_Bld_1.name());
+            CISBuilds.CIS_Bld_1.name(), transaction);
+      transaction.execute();
    }
 
-   public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName) throws OseeCoreException {
+   public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName, SkynetTransaction transaction) throws OseeCoreException {
       Branch branch = BranchManager.getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
       verArt.setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), branch.getBranchId());
-      verArt.persistAttributes();
+      verArt.persistAttributes(transaction);
    }
 
    public static enum SawBuilds {

@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListene
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -199,8 +198,12 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       editNotesAction = new Action("Edit Notes", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (SMAManager.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, getSelectedSMAArtifacts(), true)) {
-               update(getSelectedSMAArtifacts().toArray(), null);
+            try {
+               if (SMAManager.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, getSelectedSMAArtifacts(), true)) {
+                  update(getSelectedSMAArtifacts().toArray(), null);
+               }
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };
@@ -449,18 +452,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       }
       try {
          if (useArts.size() > 0) {
-            if (persist) {
-               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-
-                  @Override
-                  protected void handleTxWork() throws OseeCoreException {
-                     ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
-                  }
-               };
-               txWrapper.execute();
-            } else {
-               ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
-            }
+            ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

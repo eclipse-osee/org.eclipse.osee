@@ -76,7 +76,7 @@ public class ArtifactPromptChange {
       return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX, artifacts, persist);
    }
 
-   public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
+   public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist ) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX, Arrays.asList(artifact),
             persist);
    }
@@ -165,7 +165,7 @@ public class ArtifactPromptChange {
       return true;
    }
 
-   public static boolean promptChangeStringAttribute(String attributeName, String displayName, String validationRegEx, final Collection<? extends Artifact> smas, boolean persist) throws Exception {
+   public static boolean promptChangeStringAttribute(String attributeName, String displayName, String validationRegEx, final Collection<? extends Artifact> smas, boolean persist) throws OseeCoreException {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);

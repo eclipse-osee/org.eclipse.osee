@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
@@ -42,17 +45,24 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportJob;
+import org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver;
+import org.eclipse.osee.framework.ui.skynet.Import.NewArtifactImportResolver;
+import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineExtractor;
+import org.eclipse.osee.framework.ui.skynet.handler.GeneralWordOutlineHandler;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -93,28 +103,27 @@ public class PopulateDemoActions extends XNavigateItemAction {
          DemoDbUtil.setDefaultBranch(BranchManager.getKeyedBranch(SawBuilds.SAW_Bld_1.name()));
 
          // Import all requirements on SAW_Bld_1 Branch
-         DemoDbImportReqsTx importTx = new DemoDbImportReqsTx(BranchManager.getAtsBranch(), !SkynetDbInit.isDbInit());
-         importTx.execute();
+         demoDbImportReqsTx();
 
          DemoDbUtil.sleep(5000);
 
          // Create traceability between System, Subsystem and Software requirements
-         DemoDbTraceabilityTx traceTx =
-               new DemoDbTraceabilityTx(BranchManager.getAtsBranch(), !SkynetDbInit.isDbInit());
-         traceTx.execute();
+         SkynetTransaction demoDbTraceability = new SkynetTransaction(BranchManager.getAtsBranch());
+         demoDbTraceabilityTx(demoDbTraceability);
+         demoDbTraceability.execute();
 
          DemoDbUtil.sleep(5000);
 
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
-         CreateMainWorkingBranchTx saw2BranchTx =
-               new CreateMainWorkingBranchTx(BranchManager.getAtsBranch(), !SkynetDbInit.isDbInit());
-         saw2BranchTx.execute();
+         SkynetTransaction createMainWorkingBranch = new SkynetTransaction(BranchManager.getAtsBranch());
+         createMainWorkingBranchTx(createMainWorkingBranch, !SkynetDbInit.isDbInit());
+         createMainWorkingBranch.execute();
 
          // Create SAW_Bld_2 Actions 
          SkynetTransaction sawActionsTransaction = new SkynetTransaction(BranchManager.getAtsBranch());
          Set<ActionArtifact> actionArts =
                createActions(DemoDbActionData.getReqSawActionsData(),
-                     DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null,sawActionsTransaction);
+                     DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null, sawActionsTransaction);
          sawActionsTransaction.execute();
          // Sleep to wait for the persist of the actions
          DemoDbUtil.sleep(3000);
@@ -163,24 +172,17 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   public class CreateMainWorkingBranchTx extends AbstractSkynetTxTemplate {
-      public CreateMainWorkingBranchTx(Branch branch, boolean popup) {
-         super(branch);
-      }
-
-      @Override
-      protected void handleTxWork() throws OseeCoreException {
-         try {
-            OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
-            // Create SAW_Bld_2 branch off SAW_Bld_1
-            createChildMainWorkingBranch(SawBuilds.SAW_Bld_1.name(), SawBuilds.SAW_Bld_2.name());
-            DemoDbUtil.sleep(5000);
-            // Map team definitions versions to their related branches
-            DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
-                  SawBuilds.SAW_Bld_2.name(), SawBuilds.SAW_Bld_2.name());
-         } catch (Exception ex) {
-            OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
-         }
+   private void createMainWorkingBranchTx(SkynetTransaction createMainWorkingBranch, boolean b) throws OseeCoreException {
+      try {
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
+         // Create SAW_Bld_2 branch off SAW_Bld_1
+         createChildMainWorkingBranch(SawBuilds.SAW_Bld_1.name(), SawBuilds.SAW_Bld_2.name());
+         DemoDbUtil.sleep(5000);
+         // Map team definitions versions to their related branches
+         DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
+               SawBuilds.SAW_Bld_2.name(), SawBuilds.SAW_Bld_2.name(), createMainWorkingBranch);
+      } catch (Exception ex) {
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -369,9 +371,11 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void createNonReqChangeDemoActions() throws Exception {
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
-      createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_3.toString(), null, transaction);
+      createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_3.toString(), null,
+            transaction);
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_2");
-      createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null, transaction);
+      createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null,
+            transaction);
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_1");
       createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_1.toString(),
             DefaultTeamState.Completed, transaction);
@@ -414,6 +418,153 @@ public class PopulateDemoActions extends XNavigateItemAction {
          }
       }
       return actionArts;
+   }
+
+   private void demoDbImportReqsTx() throws OseeCoreException {
+      try {
+         importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SOFTWARE_REQUIREMENT + "s",
+               Requirements.SOFTWARE_REQUIREMENT, "support/SAW-SoftwareRequirements.xml");
+         importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SYSTEM_REQUIREMENT + "s",
+               Requirements.SYSTEM_REQUIREMENT, "support/SAW-SystemRequirements.xml");
+         importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SUBSYSTEM_REQUIREMENT + "s",
+               Requirements.SUBSYSTEM_REQUIREMENT, "support/SAW-SubsystemRequirements.xml");
+      } catch (Exception ex) {
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void importRequirements(String buildName, String rootArtifactName, String requirementArtifactName, String filename) throws Exception {
+
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,
+            "Importing \"" + rootArtifactName + "\" requirements on branch \"" + buildName + "\"");
+      Branch branch = BranchManager.getKeyedBranch(buildName);
+      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName("Folder", rootArtifactName, branch);
+
+      File file = OseeAtsConfigDemoPlugin.getInstance().getPluginFile(filename);
+      IArtifactImportResolver artifactResolver = new NewArtifactImportResolver();
+      ArtifactType mainDescriptor = ArtifactTypeManager.getType(requirementArtifactName);
+      ArtifactExtractor extractor =
+            new WordOutlineExtractor(mainDescriptor, branch, 0, new GeneralWordOutlineHandler());
+      Job job = new ArtifactImportJob(file, systemReq, extractor, branch, artifactResolver);
+      job.setPriority(Job.LONG);
+      job.schedule();
+      job.join();
+      // Validate that something was imported
+      if (systemReq.getChildren().size() == 0) throw new IllegalStateException("Artifacts were not imported");
+
+   }
+
+   private void relate(IRelationEnumeration relationSide, Artifact artifact, Collection<Artifact> artifacts) throws OseeCoreException {
+      for (Artifact otherArtifact : artifacts) {
+         artifact.addRelation(relationSide, otherArtifact);
+      }
+   }
+
+   private void demoDbTraceabilityTx(SkynetTransaction transaction) throws OseeCoreException {
+      try {
+         Collection<Artifact> systemArts = DemoDbUtil.getArtTypeRequirements(Requirements.SYSTEM_REQUIREMENT, "Robot");
+
+         Collection<Artifact> component = DemoDbUtil.getArtTypeRequirements(Requirements.COMPONENT, "API");
+         component.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.COMPONENT, "Hardware"));
+         component.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.COMPONENT, "Sensor"));
+
+         Collection<Artifact> subSystemArts =
+               DemoDbUtil.getArtTypeRequirements(Requirements.SUBSYSTEM_REQUIREMENT, "Robot");
+         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.SUBSYSTEM_REQUIREMENT, "Video"));
+         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.SUBSYSTEM_REQUIREMENT, "Interface"));
+
+         Collection<Artifact> softArts = DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, "Robot");
+         softArts.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, "Interface"));
+
+         // Relate System to SubSystem to Software Requirements
+         for (Artifact systemArt : systemArts) {
+            relate(CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL, systemArt, subSystemArts);
+            systemArt.persistRelations(transaction);
+
+            for (Artifact subSystemArt : subSystemArts) {
+               relate(CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL, subSystemArt, softArts);
+               subSystemArt.persistRelations(transaction);
+            }
+         }
+
+         // Relate System, SubSystem and Software Requirements to Componets
+         for (Artifact art : systemArts) {
+            relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
+            art.persistRelations(transaction);
+         }
+         for (Artifact art : subSystemArts) {
+            relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
+            art.persistRelations(transaction);
+         }
+         for (Artifact art : softArts) {
+            relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
+         }
+
+         // Create Test Script Artifacts
+         Set<Artifact> verificationTests = new HashSet<Artifact>();
+         Artifact verificationHeader =
+               ArtifactQuery.getArtifactFromTypeAndName("Folder", "Verification Tests",
+                     BranchManager.getDefaultBranch());
+         if (verificationHeader == null) throw new IllegalStateException("Could not find Verification Tests header");
+         for (String str : new String[] {"A", "B", "C"}) {
+            Artifact newArt =
+                  ArtifactTypeManager.addArtifact(Requirements.TEST_SCRIPT, verificationHeader.getBranch(),
+                        "Verification Test " + str);
+            verificationTests.add(newArt);
+            verificationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
+            newArt.persistAttributesAndRelations(transaction);
+         }
+         Artifact verificationTestsArray[] = verificationTests.toArray(new Artifact[verificationTests.size()]);
+
+         // Create Validation Test Procedure Artifacts
+         Set<Artifact> validationTests = new HashSet<Artifact>();
+         Artifact validationHeader =
+               ArtifactQuery.getArtifactFromTypeAndName("Folder", "Validation Tests", BranchManager.getDefaultBranch());
+         if (validationHeader == null) throw new IllegalStateException("Could not find Validation Tests header");
+         for (String str : new String[] {"1", "2", "3"}) {
+            Artifact newArt =
+                  ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, validationHeader.getBranch(),
+                        "Validation Test " + str);
+            validationTests.add(newArt);
+            validationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
+            newArt.persistAttributesAndRelations(transaction);
+         }
+         Artifact validationTestsArray[] = validationTests.toArray(new Artifact[validationTests.size()]);
+
+         // Create Integration Test Procedure Artifacts
+         Set<Artifact> integrationTests = new HashSet<Artifact>();
+         Artifact integrationHeader =
+               ArtifactQuery.getArtifactFromTypeAndName("Folder", "Integration Tests", BranchManager.getDefaultBranch());
+         if (integrationHeader == null) throw new IllegalStateException("Could not find integration Tests header");
+         for (String str : new String[] {"X", "Y", "Z"}) {
+            Artifact newArt =
+                  ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, integrationHeader.getBranch(),
+                        "integration Test " + str);
+            integrationTests.add(newArt);
+            integrationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
+            newArt.persistAttributesAndRelations(transaction);
+         }
+         Artifact integrationTestsArray[] = integrationTests.toArray(new Artifact[integrationTests.size()]);
+
+         // Relate Software Artifacts to Tests
+         Artifact softReqsArray[] = softArts.toArray(new Artifact[softArts.size()]);
+         softReqsArray[0].addRelation(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[0]);
+         softReqsArray[0].addRelation(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[1]);
+         softReqsArray[1].addRelation(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[0]);
+         softReqsArray[1].addRelation(CoreRelationEnumeration.Validation__Validator, validationTestsArray[1]);
+         softReqsArray[2].addRelation(CoreRelationEnumeration.Validation__Validator, validationTestsArray[0]);
+         softReqsArray[2].addRelation(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[1]);
+         softReqsArray[3].addRelation(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[0]);
+         softReqsArray[4].addRelation(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[2]);
+         softReqsArray[5].addRelation(CoreRelationEnumeration.Validation__Validator, validationTestsArray[2]);
+
+         for (Artifact artifact : softArts) {
+            artifact.persistAttributesAndRelations(transaction);
+         }
+
+      } catch (Exception ex) {
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
+      }
    }
 
 }

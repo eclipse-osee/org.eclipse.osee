@@ -379,7 +379,7 @@ public class SMAManager {
       return false;
    }
 
-   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
+   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist ) {
 
       for (TeamWorkFlowArtifact team : teams) {
          SMAManager smaMgr = new SMAManager(team);
@@ -555,17 +555,12 @@ public class SMAManager {
       return false;
    }
 
-   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Collection<? extends StateMachineArtifact> smas, boolean persist) {
-      try {
+   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                null, smas, persist);
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
-      return false;
    }
 
-   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Artifact sma, boolean persist) {
+   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Artifact sma, boolean persist ) {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(new Artifact[] {sma}), persist);
@@ -633,7 +628,7 @@ public class SMAManager {
       return false;
    }
 
-   public boolean promptChangeEstimatedReleaseDate() {
+   public boolean promptChangeEstimatedReleaseDate( ) {
       try {
          VersionArtifact verArt = getTargetedForVersion();
          if (verArt != null) {
