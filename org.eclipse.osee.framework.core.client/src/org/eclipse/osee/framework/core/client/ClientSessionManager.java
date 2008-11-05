@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -104,15 +105,21 @@ public class ClientSessionManager {
    }
 
    public synchronized static OseeClientSession authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
-      OseeCredential credential = credentialProvider.getCredential();
-      oseeSessionGrant = internalAcquireSession(credential);
+      try {
+         OseeCredential credential = credentialProvider.getCredential();
+         oseeSessionGrant = internalAcquireSession(credential);
 
-      OseeDbConnection.setDatabaseInfo(oseeSessionGrant.getDatabaseInfo());
+         OseeDbConnection.setDatabaseInfo(oseeSessionGrant.getDatabaseInfo());
 
-      oseeSession =
-            new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
-                  oseeSessionGrant.getUserArtifactId(), clientInfo.getClientAddress(), clientInfo.getPort(),
-                  clientInfo.getVersion());
+         oseeSession =
+               new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
+                     oseeSessionGrant.getUserArtifactId(), clientInfo.getClientAddress(), clientInfo.getPort(),
+                     clientInfo.getVersion());
+      } catch (OseeCoreException ex) {
+         OseeLog.reportStatus(new BaseStatus("Session Manager", Level.SEVERE, ex));
+         throw ex;
+      }
+      OseeLog.reportStatus(new BaseStatus("Session Manager", Level.INFO, "%s", oseeSession));
       return oseeSession;
    }
 

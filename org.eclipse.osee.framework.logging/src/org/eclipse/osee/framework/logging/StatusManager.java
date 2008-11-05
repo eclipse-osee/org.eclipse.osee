@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.logging;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -27,7 +27,7 @@ class StatusManager {
    private Map<IStatusListener, IStatusListenerFilter> filters;
 
    public StatusManager() {
-      this.services = Collections.synchronizedMap(new HashMap<String, IHealthStatus>());
+      this.services = Collections.synchronizedMap(new TreeMap<String, IHealthStatus>());
       this.listeners = new CopyOnWriteArrayList<IStatusListener>();
       this.filters = new ConcurrentHashMap<IStatusListener, IStatusListenerFilter>();
    }
@@ -62,6 +62,7 @@ class StatusManager {
    }
 
    public Collection<IHealthStatus> getHealthStatus() {
+
       return services.values();
    }
 

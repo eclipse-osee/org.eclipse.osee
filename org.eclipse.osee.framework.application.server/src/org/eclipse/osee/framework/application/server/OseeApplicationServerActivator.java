@@ -35,20 +35,23 @@ public class OseeApplicationServerActivator implements BundleActivator {
    private static final List<String> STOPPABLE_BUNDLE_LIST;
    static {
       STOPPABLE_BUNDLE_LIST = new ArrayList<String>();
-      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.common");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.core.server");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.artifact.servlet");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.branch.management");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.branch.management.servlet");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.client.info.servlet");
       STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.locator.attribute");
       STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.locator.snapshot");
       STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.management");
-      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.provider.common");
-      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.provider.attribute");
-      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.provider.snapshot");
-      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.branch.management");
-      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.search.engine");
-      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.server.admin");
       STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.management.servlet");
-      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.branch.management.servlet");
-      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.artifact.servlet");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.provider.attribute");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.provider.common");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.provider.snapshot");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.search.engine");
       STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.search.engine.servlet");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.server.admin");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.server.lookup.servlet");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.session.management.servlet");
    }
 
    /*
