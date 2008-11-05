@@ -33,7 +33,7 @@ public abstract class DbTransaction {
     * @throws OseeStateException
     */
    public DbTransaction() throws OseeStateException {
-      OseeDbConnection.reportTxStart(this);
+      OseeDbConnection.reportTxCreation(this);
    }
 
    /**
