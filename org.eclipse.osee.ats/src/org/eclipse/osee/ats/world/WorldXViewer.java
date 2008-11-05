@@ -170,6 +170,9 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       OseeEventManager.addListener(this);
    }
 
+   Action editStatusAction;
+   Action editNotesAction;
+   Action editEstimateAction;
    Action editChangeTypeAction;
    Action editPriorityAction;
    Action editTargetVersionAction;
@@ -192,6 +195,43 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             updateMenuActions();
          }
       });
+
+      editNotesAction = new Action("Edit Notes", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            if (SMAManager.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, getSelectedSMAArtifacts(), true)) {
+               update(getSelectedSMAArtifacts().toArray(), null);
+            }
+         }
+      };
+
+      editStatusAction = new Action("Edit Status", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            try {
+               if (SMAManager.promptChangeStatus(getSelectedSMAArtifacts(), true)) {
+                  update(getSelectedSMAArtifacts().toArray(), null);
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      };
+
+      editEstimateAction = new Action("Edit Estimated Hours", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            try {
+               if (ArtifactPromptChange.promptChangeFloatAttribute(
+                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
+                     ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedSMAArtifacts(), true)) {
+                  update(getSelectedSMAArtifacts().toArray(), null);
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      };
 
       editChangeTypeAction = new Action("Edit Change Type", Action.AS_PUSH_BUTTON) {
          @Override
@@ -500,6 +540,15 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
       mm.insertBefore(MENU_GROUP_PRE, editAssigneeAction);
       editAssigneeAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
+
+      mm.insertBefore(MENU_GROUP_PRE, editStatusAction);
+      editStatusAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
+
+      mm.insertBefore(MENU_GROUP_PRE, editEstimateAction);
+      editEstimateAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
+
+      mm.insertBefore(MENU_GROUP_PRE, editNotesAction);
+      editNotesAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editActionableItemsAction);
       editActionableItemsAction.setEnabled(getSelectedActionArtifacts().size() == 1 || getSelectedTeamWorkflowArtifacts().size() == 1);

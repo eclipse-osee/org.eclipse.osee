@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
+import org.eclipse.osee.ats.world.AtsMetricsComposite;
+import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -47,11 +49,12 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IXTaskViewer {
+public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
-   private int taskPageIndex;
+   private int taskPageIndex, metricsPageIndex;
    private SMATaskComposite taskComposite;
    private Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+   private AtsMetricsComposite metricsComposite;
 
    /*
     * (non-Javadoc)
@@ -64,7 +67,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
          for (TaskArtifact taskArt : tasks) {
             taskArt.saveSMA(transaction);
-            }
+         }
          transaction.execute();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -104,9 +107,9 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    public void dispose() {
       for (TaskArtifact taskArt : tasks)
          if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMAEditorDirty().isTrue()) taskArt.revertSMA();
-      if (taskComposite != null) {
-         taskComposite.dispose();
-      }
+      if (taskComposite != null) taskComposite.disposeTaskComposite();
+      if (metricsComposite != null) metricsComposite.disposeComposite();
+
       super.dispose();
    }
 
@@ -154,6 +157,10 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          taskComposite = new SMATaskComposite(this, getContainer(), SWT.NONE);
          taskPageIndex = addPage(taskComposite);
          setPageText(taskPageIndex, "Tasks");
+
+         metricsComposite = new AtsMetricsComposite(this, getContainer(), SWT.NONE);
+         metricsPageIndex = addPage(metricsComposite);
+         setPageText(metricsPageIndex, "Metrics");
 
          setActivePage(taskPageIndex);
       } catch (Exception ex) {
@@ -315,6 +322,14 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          monitor.done();
          return Status.OK_STATUS;
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsArtifacts()
+    */
+   @Override
+   public Collection<? extends Artifact> getMetricsArtifacts() {
+      return tasks;
    }
 
 }

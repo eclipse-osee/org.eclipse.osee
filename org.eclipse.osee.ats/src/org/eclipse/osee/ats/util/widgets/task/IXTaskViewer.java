@@ -31,8 +31,6 @@ public interface IXTaskViewer {
 
    public IDirtiableEditor getEditor() throws OseeCoreException;
 
-
-
    public boolean isTaskable() throws OseeCoreException;
 
    public String getCurrentStateName() throws OseeCoreException;

@@ -33,11 +33,11 @@ import org.eclipse.swt.widgets.ToolItem;
 /**
  * @author Donald G. Dunne
  */
-public class WorldMetricsComposite extends ScrolledComposite {
+public class AtsMetricsComposite extends ScrolledComposite {
 
    private Composite toolBarComposite;
    private Composite metricsComposite;
-   private final WorldComposite worldComposite;
+   private final IAtsMetricsProvider iAtsMetricsProvider;
    private final Color BACKGROUND_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
    private final Color FOREGROUND_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
    private final Composite mainComp;
@@ -46,9 +46,9 @@ public class WorldMetricsComposite extends ScrolledComposite {
     * @param parent
     * @param style
     */
-   public WorldMetricsComposite(WorldComposite worldComposite, Composite parent, int style) {
+   public AtsMetricsComposite(IAtsMetricsProvider iAtsMetricsProvider, Composite parent, int style) {
       super(parent, style | SWT.V_SCROLL | SWT.H_SCROLL);
-      this.worldComposite = worldComposite;
+      this.iAtsMetricsProvider = iAtsMetricsProvider;
 
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -106,7 +106,7 @@ public class WorldMetricsComposite extends ScrolledComposite {
       adapt(metricsComposite);
 
       addSpace();
-      SMAMetrics sMet = new SMAMetrics(worldComposite.getLoadedArtifacts(), null);
+      SMAMetrics sMet = new SMAMetrics(iAtsMetricsProvider.getMetricsArtifacts(), null);
       Label label = new Label(metricsComposite, SWT.NONE);
       label.setText(sMet.toStringLong());
       adapt(label);

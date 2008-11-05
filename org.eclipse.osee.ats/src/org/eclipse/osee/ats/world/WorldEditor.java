@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -25,11 +27,11 @@ import org.eclipse.ui.IEditorInput;
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEditor {
+public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEditor, IAtsMetricsProvider {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
    private int mainPageIndex, metricsPageIndex;
    private WorldComposite worldComposite;
-   private WorldMetricsComposite metricsComposite;
+   private AtsMetricsComposite metricsComposite;
 
    /*
     * (non-Javadoc)
@@ -85,9 +87,9 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
          // Create Main tab
          worldComposite = new WorldComposite(EDITOR_ID, null, getContainer(), SWT.NONE);
          mainPageIndex = addPage(worldComposite);
-         setPageText(mainPageIndex, "Main");
+         setPageText(mainPageIndex, "Actions");
 
-         metricsComposite = new WorldMetricsComposite(worldComposite, getContainer(), SWT.NONE);
+         metricsComposite = new AtsMetricsComposite(this, getContainer(), SWT.NONE);
          metricsPageIndex = addPage(metricsComposite);
          setPageText(metricsPageIndex, "Metrics");
 
@@ -113,5 +115,13 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getArtifacts()
+    */
+   @Override
+   public Collection<? extends Artifact> getMetricsArtifacts() {
+      return worldComposite.getLoadedArtifacts();
    }
 }

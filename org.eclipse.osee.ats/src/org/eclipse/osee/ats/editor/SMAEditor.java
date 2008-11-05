@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.editor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -22,16 +21,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
+import org.eclipse.osee.ats.world.AtsMetricsComposite;
+import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -68,7 +66,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -92,16 +89,17 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private SMAManager smaMgr;
-   private int workFlowPageIndex, taskPageIndex, historyPageIndex, relationPageIndex, attributesPageIndex,
-         detailsPageIndex;
+   private int workFlowPageIndex, taskPageIndex, metricsPageIndex, historyPageIndex, relationPageIndex,
+         attributesPageIndex, detailsPageIndex;
    private SMAWorkFlowTab workFlowTab;
    private SMATaskComposite taskComposite;
    private SMAHistoryComposite historyComposite;
    private RelationsComposite relationsComposite;
    private AttributesComposite attributesComposite;
+   private AtsMetricsComposite metricsComposite;
    private final MultiPageEditorPart editor;
    public static enum PriviledgedEditMode {
       Off, CurrentState, Global
@@ -174,6 +172,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (relationsComposite != null) {
          relationsComposite.disposeRelationsComposite();
       }
+      if (metricsComposite != null) metricsComposite.disposeComposite();
+
       super.dispose();
    }
 
@@ -275,6 +275,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          createRelationsTab();
          createAttributesTab();
          createDetailsTab();
+         createMetricsTab();
 
          setActivePage(workFlowPageIndex);
       } catch (Exception ex) {
@@ -290,6 +291,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       new DetailsBrowserComposite(smaMgr.getSma(), composite, SWT.NONE, null);
       detailsPageIndex = addPage(composite);
       setPageText(detailsPageIndex, "Details");
+   }
+
+   private void createMetricsTab() {
+      Composite composite = createCommonPageComposite();
+      createCommonToolBar(composite);
+      metricsComposite = new AtsMetricsComposite(this, getContainer(), SWT.NONE);
+      metricsPageIndex = addPage(metricsComposite);
+      setPageText(metricsPageIndex, "Metrics");
+
    }
 
    private void createAttributesTab() {
@@ -739,6 +749,14 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public String getActionDescription() {
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsArtifacts()
+    */
+   @Override
+   public Collection<? extends Artifact> getMetricsArtifacts() {
+      return Arrays.asList(smaMgr.getSma());
    }
 
 }
