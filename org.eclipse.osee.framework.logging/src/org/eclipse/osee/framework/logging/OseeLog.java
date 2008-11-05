@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.logging;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.logging.Level;
 
 /**
@@ -81,14 +81,20 @@ public class OseeLog {
       getLog().setLevel(loggerName, level);
    }
 
-   public static void report(IHealthStatus status) {
+   public static void reportStatus(IHealthStatus status) {
       getSM().report(status);
    }
 
-   public static void report(List<IHealthStatus> status) {
-      for (IHealthStatus s : status) {
-         getSM().report(s);
-      }
+   public static String getStatusReport() {
+      return getSM().getReport();
+   }
+
+   public static boolean isStatusOk() {
+      return getSM().isStatusOk();
+   }
+
+   public static Collection<IHealthStatus> getStatus() {
+      return getSM().getHealthStatus();
    }
 
    public static boolean register(IStatusListener listener, IStatusListenerFilter filter) {

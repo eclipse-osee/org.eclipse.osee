@@ -16,11 +16,14 @@ import java.util.logging.Level;
  * @author Andrew M. Finkbeiner
  */
 public interface IHealthStatus {
+
+   public String getSourceName();
+
    public Throwable getException();
 
    public String getMessage();
 
-   public String getPlugin();
-
    public Level getLevel();
+
+   public boolean isOk();
 }

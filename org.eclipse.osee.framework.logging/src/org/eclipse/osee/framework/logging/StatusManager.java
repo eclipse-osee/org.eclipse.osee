@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.logging;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,19 +22,28 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Andrew M. Finkbeiner
  */
 class StatusManager {
-   List<IStatusListener> listeners;
-   Map<IStatusListener, IStatusListenerFilter> filters;
+   private final Map<String, IHealthStatus> services;
+   private List<IStatusListener> listeners;
+   private Map<IStatusListener, IStatusListenerFilter> filters;
 
    public StatusManager() {
-      listeners = new CopyOnWriteArrayList<IStatusListener>();
-      filters = new ConcurrentHashMap<IStatusListener, IStatusListenerFilter>();
+      this.services = Collections.synchronizedMap(new HashMap<String, IHealthStatus>());
+      this.listeners = new CopyOnWriteArrayList<IStatusListener>();
+      this.filters = new ConcurrentHashMap<IStatusListener, IStatusListenerFilter>();
    }
 
    public void report(IHealthStatus status) {
-      for (IStatusListener listener : listeners) {
-         IStatusListenerFilter filter = filters.get(listener);
-         if (filter == null || filter.isInterested(status)) {
-            listener.onStatus(status);
+      if (status != null) {
+         IHealthStatus storedStatus = services.get(status.getSourceName());
+         if (storedStatus == null) {
+            services.put(status.getSourceName(), status);
+         }
+         //         serviceStatus.setHealthStatus(status);
+         for (IStatusListener listener : listeners) {
+            IStatusListenerFilter filter = filters.get(listener);
+            if (filter == null || filter.isInterested(status)) {
+               listener.onStatus(status);
+            }
          }
       }
    }
@@ -47,5 +59,31 @@ class StatusManager {
 
    public boolean deregister(IStatusListener listener) {
       return listeners.remove(listener);
+   }
+
+   public Collection<IHealthStatus> getHealthStatus() {
+      return services.values();
+   }
+
+   public boolean isStatusOk() {
+      boolean result = true;
+      for (IHealthStatus status : getHealthStatus()) {
+         result &= status.isOk();
+      }
+      return result;
+   }
+
+   public String getReport() {
+      StringBuilder message = new StringBuilder();
+      Collection<IHealthStatus> serviceInfos = getHealthStatus();
+      for (IHealthStatus status : serviceInfos) {
+         if (!status.isOk()) {
+            message.append(status.getSourceName());
+            message.append(". Error: ");
+            message.append(status.getMessage());
+            message.append("\n");
+         }
+      }
+      return message.toString();
    }
 }

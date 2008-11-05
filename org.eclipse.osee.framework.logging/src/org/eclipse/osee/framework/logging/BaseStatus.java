@@ -17,41 +17,27 @@ import java.util.logging.Level;
  * @author Andrew M. Finkbeiner
  */
 public class BaseStatus implements IHealthStatus, Serializable {
-
-   /**
-    * 
-    */
    private static final long serialVersionUID = -3767182052813764517L;
-   private Level level;
-   private Throwable th;
-   private String message;
-   private Object[] args;
-   private String formattedMessage = null;
+   private final Level level;
+   private final Throwable th;
+   private final String message;
+   private final Object[] args;
+   private final String sourceName;
 
-   public BaseStatus(Level level, Throwable th, String message, Object... args) {
+   public BaseStatus(String sourceName, Level level, Throwable th, String message, Object... args) {
+      this.sourceName = sourceName;
       this.level = level;
       this.th = th;
       this.message = message;
       this.args = args;
    }
 
-   public BaseStatus(Level level, Throwable th, String message) {
-      this.level = level;
-      this.th = th;
-      this.message = message;
-      this.args = null;
+   public BaseStatus(String sourceName, Level level, String message, Object... args) {
+      this(sourceName, level, null, message, args);
    }
 
-   public BaseStatus(Level level, Throwable th) {
-      this(level, th, th.getMessage());
-   }
-
-   public BaseStatus(Level level, String message, Object... args) {
-      this(level, null, message, args);
-   }
-
-   public BaseStatus(Level level, String message) {
-      this(level, null, message);
+   public BaseStatus(String sourceName, Level level, Throwable th) {
+      this(sourceName, level, th, th.getMessage(), (Object[]) null);
    }
 
    /* (non-Javadoc)
@@ -67,22 +53,15 @@ public class BaseStatus implements IHealthStatus, Serializable {
     */
    @Override
    public String getMessage() {
-      if (formattedMessage == null) {
-         if (args == null) {
-            formattedMessage = message;
-         } else {
-            formattedMessage = String.format(message, args);
-         }
+      String toReturn = null;
+      if (message != null && args != null) {
+         toReturn = String.format(message, args);
+      } else if (message != null) {
+         toReturn = message;
+      } else {
+         toReturn = "Unavailable";
       }
-      return formattedMessage;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IStatus#getPlugin()
-    */
-   @Override
-   public String getPlugin() {
-      return "";
+      return toReturn;
    }
 
    /* (non-Javadoc)
@@ -91,5 +70,21 @@ public class BaseStatus implements IHealthStatus, Serializable {
    @Override
    public Level getLevel() {
       return this.level;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.logging.IHealthStatus#getSourceName()
+    */
+   @Override
+   public String getSourceName() {
+      return sourceName;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.logging.IHealthStatus#isOk()
+    */
+   @Override
+   public boolean isOk() {
+      return Level.INFO.intValue() >= getLevel().intValue();
    }
 }
