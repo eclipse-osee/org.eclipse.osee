@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -76,7 +77,7 @@ public class UserRoleManager {
       return users;
    }
 
-   private void saveRoleItems(Set<UserRole> defectItems, boolean persist) {
+   private void saveRoleItems(Set<UserRole> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
          StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
          for (UserRole item : defectItems)
@@ -84,14 +85,14 @@ public class UserRoleManager {
          sb.append("</" + ATS_DEFECT_TAG + ">");
          artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
          updateAssignees();
-         if (persist) artifact.persistAttributes();
-         rollupHoursSpentToReviewState(persist);
+         if (persist) artifact.persistAttributes(transaction);
+         rollupHoursSpentToReviewState(persist, transaction);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, "Can't create ats review defect document", ex, true);
       }
    }
 
-   public void addOrUpdateUserRole(UserRole userRole, boolean persist) throws OseeCoreException {
+   public void addOrUpdateUserRole(UserRole userRole, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       Set<UserRole> roleItems = getUserRoles();
       boolean found = false;
       for (UserRole uRole : roleItems) {
@@ -101,7 +102,7 @@ public class UserRoleManager {
          }
       }
       if (!found) roleItems.add(userRole);
-      saveRoleItems(roleItems, persist);
+      saveRoleItems(roleItems, persist, transaction);
    }
 
    private void updateAssignees() throws OseeCoreException {
@@ -125,14 +126,10 @@ public class UserRoleManager {
       artifact.getSmaMgr().getStateMgr().setAssignees(assignees);
    }
 
-   public void removeUserRole(UserRole userRole, boolean persist) throws OseeCoreException {
+   public void removeUserRole(UserRole userRole, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       Set<UserRole> roleItems = getUserRoles();
       roleItems.remove(userRole);
-      saveRoleItems(roleItems, persist);
-   }
-
-   public void clearLog(boolean persist) {
-      saveRoleItems(new HashSet<UserRole>(), persist);
+      saveRoleItems(roleItems, persist, transaction);
    }
 
    public String getTable() throws OseeCoreException {
@@ -189,12 +186,12 @@ public class UserRoleManager {
       this.enabled = enabled;
    }
 
-   public void rollupHoursSpentToReviewState(boolean persist) throws OseeCoreException {
+   public void rollupHoursSpentToReviewState(boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       double hoursSpent = 0.0;
       for (UserRole role : getUserRoles())
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       SMAManager smaMgr = new SMAManager(artifact);
       smaMgr.getStateMgr().setMetrics(hoursSpent, smaMgr.getStateMgr().getPercentComplete(), true);
-      if (persist) artifact.persistAttributes();
+      if (persist) artifact.persistAttributes(transaction);
    }
 }

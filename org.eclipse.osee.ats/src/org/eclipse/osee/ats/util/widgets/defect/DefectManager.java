@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -83,20 +84,20 @@ public class DefectManager {
       return x;
    }
 
-   private void saveDefectItems(Set<DefectItem> defectItems, boolean persist) {
+   private void saveDefectItems(Set<DefectItem> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
          StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
          for (DefectItem item : defectItems)
             sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
          sb.append("</" + ATS_DEFECT_TAG + ">");
          artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
-         if (persist) artifact.persistAttributes();
+         if (persist) artifact.persistAttributes(transaction);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, "Can't create ats review defect document", ex, true);
       }
    }
 
-   public void addOrUpdateDefectItem(DefectItem defectItem, boolean persist) throws OseeCoreException {
+   public void addOrUpdateDefectItem(DefectItem defectItem, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       Set<DefectItem> defectItems = getDefectItems();
       boolean found = false;
       for (DefectItem dItem : defectItems) {
@@ -106,23 +107,19 @@ public class DefectManager {
          }
       }
       if (!found) defectItems.add(defectItem);
-      saveDefectItems(defectItems, persist);
+      saveDefectItems(defectItems, persist, transaction);
    }
 
-   public void removeDefectItem(DefectItem defectItem, boolean persist) throws OseeCoreException {
+   public void removeDefectItem(DefectItem defectItem, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       Set<DefectItem> defectItems = getDefectItems();
       defectItems.remove(defectItem);
-      saveDefectItems(defectItems, persist);
+      saveDefectItems(defectItems, persist, transaction);
    }
 
-   public void addDefectItem(String description, boolean persist) throws OseeCoreException {
+   public void addDefectItem(String description, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       DefectItem item = new DefectItem();
       item.setDescription(description);
-      addOrUpdateDefectItem(item, persist);
-   }
-
-   public void clearLog(boolean persist) {
-      saveDefectItems(new HashSet<DefectItem>(), persist);
+      addOrUpdateDefectItem(item, persist, transaction);
    }
 
    public String getTable() throws OseeCoreException {

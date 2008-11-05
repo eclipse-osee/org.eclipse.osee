@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.EnumStringSingleSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
@@ -164,7 +165,9 @@ public class DefectXViewer extends XViewer {
             modified = handleAltLeftClick(treeColumn, treeItem);
          }
          if (modified) {
-            xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false);
+            SkynetTransaction transaction = new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch());
+            xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false, transaction);
+            transaction.execute();
             xDefectViewer.refresh();
             xDefectViewer.notifyXModifiedListeners();
             update(defectItem, null);
@@ -270,7 +273,9 @@ public class DefectXViewer extends XViewer {
             throw new IllegalStateException("Unhandled defect column");
 
          if (modified) {
-            xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false);
+            SkynetTransaction transaction = new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch());
+            xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false, transaction);
+            transaction.execute();
             xDefectViewer.notifyXModifiedListeners();
             update(defectItem, null);
             return true;

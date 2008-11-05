@@ -40,7 +40,7 @@ public class PeerToPeerReviewWorkflowManager {
     * @throws Exception
     */
    public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
-      Result result = setPrepareStateData(reviewArt, roles, "DoThis.java", 100, .2);
+      Result result = setPrepareStateData(reviewArt, roles, "DoThis.java", 100, .2, transaction);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -54,7 +54,7 @@ public class PeerToPeerReviewWorkflowManager {
       }
       if (toState == PeerToPeerReviewArtifact.PeerToPeerReviewState.Review) return Result.TrueResult;
 
-      result = setReviewStateData(reviewArt, roles, defects, 100, .2);
+      result = setReviewStateData(reviewArt, roles, defects, 100, .2, transaction);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -70,21 +70,21 @@ public class PeerToPeerReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setPrepareStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
+   public static Result setPrepareStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
       if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Prepare")) return new Result(
             "Action not in Prepare state");
       if (roles != null) for (UserRole role : roles)
-         reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false);
+         reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false, transaction);
       reviewArt.setSoleAttributeValue(ATSAttributes.LOCATION_ATTRIBUTE.getStoreName(), reviewMaterials);
       reviewArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
-   public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<DefectItem> defects, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
+   public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<DefectItem> defects, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
       if (roles != null) for (UserRole role : roles)
-         reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false);
+         reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false, transaction);
       if (defects != null) for (DefectItem defect : defects)
-         reviewArt.getDefectManager().addOrUpdateDefectItem(defect, false);
+         reviewArt.getDefectManager().addOrUpdateDefectItem(defect, false, transaction);
       reviewArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }

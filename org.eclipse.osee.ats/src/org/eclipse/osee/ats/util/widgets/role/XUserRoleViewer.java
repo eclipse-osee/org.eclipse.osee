@@ -25,12 +25,11 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -230,29 +229,18 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
                   "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            if (persist) {
-               AbstractSkynetTxTemplate transactionWrapper =
-                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-
-                        @Override
-                        protected void handleTxWork() throws OseeCoreException {
-                           removeUserRoleHelper(items);
-                        }
-
-                     };
-               transactionWrapper.execute();
-            } else {
-               removeUserRoleHelper(items);
-            }
+            SkynetTransaction transaction = new SkynetTransaction(reviewArt.getArtifact().getBranch());
+            removeUserRoleHelper(items, persist, transaction);
+            transaction.execute();
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
    }
 
-   private void removeUserRoleHelper(List<UserRole> items) throws OseeCoreException {
+   private void removeUserRoleHelper(List<UserRole> items, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       for (UserRole userRole : items) {
-         reviewArt.getUserRoleManager().removeUserRole(userRole, false);
+         reviewArt.getUserRoleManager().removeUserRole(userRole, persist, transaction);
          xViewer.remove(userRole);
       }
       loadTable();
@@ -261,7 +249,9 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    public void handleNewUserRole() {
       try {
-         reviewArt.getUserRoleManager().addOrUpdateUserRole(new UserRole(), false);
+         SkynetTransaction transaction = new SkynetTransaction(reviewArt.getArtifact().getBranch());
+         reviewArt.getUserRoleManager().addOrUpdateUserRole(new UserRole(), false, transaction);
+         transaction.execute();
          notifyXModifiedListeners();
          loadTable();
       } catch (Exception ex) {

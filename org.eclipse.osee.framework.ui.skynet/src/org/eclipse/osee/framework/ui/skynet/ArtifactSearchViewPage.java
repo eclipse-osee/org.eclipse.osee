@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -695,35 +695,29 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             }
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Set All Partitions",
                   "Set All Partitions on Artifacts\n\n" + sb.toString())) {
+               try {
+                  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getDefaultBranch());
 
-               AbstractSkynetTxTemplate partitionsTx =
-                     new AbstractSkynetTxTemplate(BranchManager.getDefaultBranch()) {
-
-                        @Override
-                        protected void handleTxWork() throws OseeCoreException {
-                           for (Artifact art : arts) {
-                              for (String partition : partitions) {
-                                 boolean found = false;
-                                 for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
-                                    if (attr.toString().equals(partition)) {
-                                       found = true;
-                                       break;
-                                    }
-                                 }
-                                 if (!found) {
-                                    art.addAttribute(Requirements.PARTITION, partition);
-                                 }
-                              }
-                              for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
-                                 if (attr.toString().equals("Unspecified")) attr.delete();
-                              }
-
-                              art.persistAttributes();
+                  for (Artifact art : arts) {
+                     for (String partition : partitions) {
+                        boolean found = false;
+                        for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
+                           if (attr.toString().equals(partition)) {
+                              found = true;
+                              break;
                            }
                         }
-                     };
-               try {
-                  partitionsTx.execute();
+                        if (!found) {
+                           art.addAttribute(Requirements.PARTITION, partition);
+                        }
+                     }
+                     for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
+                        if (attr.toString().equals("Unspecified")) attr.delete();
+                     }
+
+                     art.persistAttributes(transaction);
+                  }
+                  transaction.execute();
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }

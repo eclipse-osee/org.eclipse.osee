@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -259,12 +259,14 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
                      "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
          ed.setFillVertically(true);
          if (ed.open() == 0) {
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
             for (String str : ed.getEntry().split("\n")) {
                str = str.replaceAll("\r", "");
                if (!str.equals("")) {
-                  reviewArt.getDefectManager().addDefectItem(str, false);
+                  reviewArt.getDefectManager().addDefectItem(str, false, transaction);
                }
             }
+            transaction.execute();
             loadTable();
             notifyXModifiedListeners();
          }
@@ -288,29 +290,19 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
                   "Delete Defects", "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            if (persist) {
-               AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-
-                        @Override
-                        protected void handleTxWork() throws OseeCoreException {
-                           deleteDefectHelper(items);
-                        }
-                     };
-               txWrapper.execute();
-            } else {
-               deleteDefectHelper(items);
-            }
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            deleteDefectHelper(items, persist, transaction);
+            transaction.execute();
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
    }
 
-   private void deleteDefectHelper(List<DefectItem> items) {
+   private void deleteDefectHelper(List<DefectItem> items, boolean persist, SkynetTransaction transaction) {
       try {
          for (DefectItem defectItem : items) {
-            reviewArt.getDefectManager().removeDefectItem(defectItem, false);
+            reviewArt.getDefectManager().removeDefectItem(defectItem, persist, transaction);
             xViewer.remove(defectItem);
          }
          loadTable();
@@ -326,7 +318,9 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
                   "Enter Defect Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            reviewArt.getDefectManager().addDefectItem(ed.getEntry(), false);
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            reviewArt.getDefectManager().addDefectItem(ed.getEntry(), false, transaction);
+            transaction.execute();
             notifyXModifiedListeners();
             loadTable();
          } catch (Exception ex) {

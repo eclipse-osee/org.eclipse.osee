@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 /**
  * @author Robert A. Fisher
  */
-public class SkynetTransaction extends DbTransaction {
+public final class SkynetTransaction extends DbTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
          "UPDATE osee_txs txs1 SET tx_current = 0 WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
    private static final String INSERT_ARTIFACT =
@@ -66,7 +66,9 @@ public class SkynetTransaction extends DbTransaction {
    private final Map<BaseTransactionData, BaseTransactionData> transactionItems =
          new HashMap<BaseTransactionData, BaseTransactionData>();
    private final Branch branch;
-
+   private boolean madeChanges = false;
+   
+   
    /**
     * @return the branch
     */
@@ -79,6 +81,7 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    public void addArtifactToPersist(Artifact artifact) throws OseeCoreException {
+      madeChanges = true;
       ModificationType modType;
       ArtifactModType artifactModType;
 
@@ -186,13 +189,21 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+      madeChanges = true;
       xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(sourceObject), artifactModType, artifact,
             getTransactionId().getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
    }
 
    public void addRelationModifiedEvent(Object sourceObject, RelationModType relationModType, RelationLink link, Branch branch, String relationType) throws OseeAuthenticationRequiredException {
+      madeChanges = true;
       xModifiedEvents.add(new RelationModifiedEvent(new Sender(sourceObject), relationModType, link, branch,
             relationType));
+   }
+   
+   public void execute() throws OseeCoreException {
+      if(madeChanges){
+         super.execute();
+      }
    }
 
    /**
@@ -207,6 +218,7 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    public void addTransactionDataItem(BaseTransactionData dataItem) {
+      madeChanges = true;
       BaseTransactionData oldDataItem = transactionItems.remove(dataItem);
 
       if (oldDataItem != null) {
@@ -223,7 +235,7 @@ public class SkynetTransaction extends DbTransaction {
 
    public void deleteArtifact(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
       if (!artifact.isInDb()) return;
-
+      madeChanges = true;
       processTransactionForArtifact(artifact, ModificationType.DELETED, SequenceManager.getNextGammaId());
 
       // Kick Local Event
@@ -239,7 +251,7 @@ public class SkynetTransaction extends DbTransaction {
     * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
     */
    @Override
-   protected final void handleTxWork(Connection connection) throws OseeCoreException {
+   protected void handleTxWork(Connection connection) throws OseeCoreException {
       executeBatchToTransactions(connection);
       executeTransactionDataItems(connection);
 
