@@ -19,10 +19,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 
@@ -61,11 +60,12 @@ public class BlamJob extends Job {
             operation.setWorkflowEditor(editor);
             Branch branch = operation.wrapOperationForBranch(variableMap);
             if (branch == null) {
-               operation.runOperation(variableMap, subMonitor);
+               operation.runOperation(variableMap, subMonitor, null);
             } else {
-               new BlamOperationTx(branch, operation, subMonitor).execute();
+               SkynetTransaction transaction = new SkynetTransaction(branch);
+               operation.runOperation(variableMap, subMonitor, transaction);
+               transaction.execute();
             }
-
             monitor.worked(1);
          }
 
@@ -95,29 +95,6 @@ public class BlamJob extends Job {
    private void notifyListeners(IBlamEvent event) {
       for (IBlamEventListener listener : listeners) {
          listener.onEvent(event);
-      }
-   }
-
-   final private class BlamOperationTx extends AbstractSkynetTxTemplate {
-      private IProgressMonitor monitor;
-      BlamOperation operation;
-
-      public BlamOperationTx(Branch branch, BlamOperation operation, IProgressMonitor monitor) {
-         super(branch);
-         this.monitor = monitor;
-         this.operation = operation;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
-       */
-      @Override
-      protected void handleTxWork() throws OseeCoreException {
-         try {
-            operation.runOperation(variableMap, monitor);
-         } catch (Exception ex) {
-            throw new OseeCoreException(ex);
-         }
       }
    }
 }

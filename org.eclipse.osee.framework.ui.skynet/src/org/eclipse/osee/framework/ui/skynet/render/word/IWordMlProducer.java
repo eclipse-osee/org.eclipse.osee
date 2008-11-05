@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -17,6 +18,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public interface IWordMlProducer {
 
-   public BlamVariableMap process(BlamVariableMap variableMap) throws Exception;
+   public BlamVariableMap process(BlamVariableMap variableMap) throws OseeCoreException;
 
 }

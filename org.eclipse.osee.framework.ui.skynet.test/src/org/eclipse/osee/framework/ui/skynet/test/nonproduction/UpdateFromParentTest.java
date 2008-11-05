@@ -6,9 +6,7 @@
 package org.eclipse.osee.framework.ui.skynet.test.nonproduction;
 
 import java.util.Collection;
-
 import junit.framework.TestCase;
-
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
@@ -21,6 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateFromParentBranc
 
 /**
  * Tests the BLAM operation updateFromParentBranch.
+ * 
  * @author Jeff C. Phillips
  */
 public class UpdateFromParentTest extends TestCase {
@@ -42,27 +41,29 @@ public class UpdateFromParentTest extends TestCase {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       BlamVariableMap variableMap = new BlamVariableMap();
-      Collection<Artifact> sourceArtifacts = ConflictTestManager.getArtifacts(true, ConflictTestManager.UPDATE_PARENT_QUERY);
-      Collection<Artifact> destinationArtifacts = ConflictTestManager.getArtifacts(false, ConflictTestManager.UPDATE_PARENT_QUERY);
+      Collection<Artifact> sourceArtifacts =
+            ConflictTestManager.getArtifacts(true, ConflictTestManager.UPDATE_PARENT_QUERY);
+      Collection<Artifact> destinationArtifacts =
+            ConflictTestManager.getArtifacts(false, ConflictTestManager.UPDATE_PARENT_QUERY);
       Artifact sourceArtifact = sourceArtifacts.iterator().next();
       Artifact destArtifact = destinationArtifacts.iterator().next();
-      
-      if(DEBUG){
-    	  System.out.println("Before update");
-    	  System.out.println("Source Artifact Name: " + sourceArtifact.getDescriptiveName());
-      	  System.out.println("Dest Artifact Name: " + destArtifact.getDescriptiveName());
+
+      if (DEBUG) {
+         System.out.println("Before update");
+         System.out.println("Source Artifact Name: " + sourceArtifact.getDescriptiveName());
+         System.out.println("Dest Artifact Name: " + destArtifact.getDescriptiveName());
       }
-      
+
       variableMap.setValue("Parent Branch Artifacts to update to Child Branch", destinationArtifacts);
       variableMap.setValue("Child Branch Name", sourceArtifacts.iterator().next().getBranch());
       UpdateFromParentBranch updateFromParentBranch = new UpdateFromParentBranch();
-      updateFromParentBranch.runOperation(variableMap, new NullProgressMonitor());
+      updateFromParentBranch.runOperation(variableMap, new NullProgressMonitor(), null);
       sourceArtifact.reloadAttributesAndRelations();
-      
-      if(DEBUG){
-    	  System.out.println("After update");
-    	  System.out.println("Source Artifact Name: " + sourceArtifact.getDescriptiveName());
-      	  System.out.println("Dest Artifact Name: " + destArtifact.getDescriptiveName());
+
+      if (DEBUG) {
+         System.out.println("After update");
+         System.out.println("Source Artifact Name: " + sourceArtifact.getDescriptiveName());
+         System.out.println("Dest Artifact Name: " + destArtifact.getDescriptiveName());
       }
       assertTrue(sourceArtifact.getDescriptiveName().equals(destArtifact.getDescriptiveName()));
    }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -24,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public class SrsProducer implements IWordMlProducer {
 
-   public BlamVariableMap process(BlamVariableMap variableMap) throws IOException, OseeCoreException {
+   public BlamVariableMap process(BlamVariableMap variableMap) throws OseeCoreException {
       if (variableMap == null) throw new IllegalArgumentException("variableMap must not be null");
 
       String name = variableMap.getString("Name");

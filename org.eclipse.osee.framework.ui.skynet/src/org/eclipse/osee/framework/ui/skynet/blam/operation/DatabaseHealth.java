@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask.Operation;
@@ -37,7 +38,7 @@ public class DatabaseHealth extends AbstractBlam {
    }
 
    @Override
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
       runTasks(variableMap, monitor);
    }
 

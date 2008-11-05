@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.DeleteTransactionJob;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
@@ -25,7 +26,7 @@ public class DeleteTransaction extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
       List<Integer> txs = Lib.stringToIntegerList(variableMap.getString("Transaction List"));
       boolean force = variableMap.getBoolean("Force Delete");
       int[] txIds = new int[txs.size()];

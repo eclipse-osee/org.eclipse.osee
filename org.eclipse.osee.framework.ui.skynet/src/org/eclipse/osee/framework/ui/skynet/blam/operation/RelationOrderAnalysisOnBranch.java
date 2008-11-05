@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -109,7 +110,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
 	 * org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void runOperation(BlamVariableMap variableMap,
-			IProgressMonitor monitor) throws Exception {
+			IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
 		appendResultLine("\nCurrent Status:\n\n");
 		for(Branch branch:branchToArtifactsToSort.keySet()){
 			appendResultLine(String

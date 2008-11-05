@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
@@ -53,7 +54,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
    private String applicationServerAddress;
 
    @Override
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
       applicationServerAddress = OseeInfo.getValue("osee.resource.server");
 
       ArrayList<AttrData> attrDatas = loadAttrData();

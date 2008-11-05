@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
@@ -34,7 +35,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {

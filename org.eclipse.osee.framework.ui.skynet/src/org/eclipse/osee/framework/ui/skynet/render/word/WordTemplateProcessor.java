@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -38,7 +39,9 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -106,7 +109,6 @@ public class WordTemplateProcessor {
    private static final String[] NUMBER =
          new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
 
-   private String masterTemplate;
    private String slaveTemplate;
    private boolean outlining;
    private boolean recurseChildren;
@@ -114,24 +116,12 @@ public class WordTemplateProcessor {
    private String headingAttributeName;
    private List<AttributeElement> attributeElements = new LinkedList<AttributeElement>();
    final List<Artifact> nonTemplateArtifacts = new LinkedList<Artifact>();
-   private boolean saveParagraphNumOnArtifact = false;
    private Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private int previousTemplateCopyIndex;
+   private WordTemplateRenderer renderer;
 
-   public WordTemplateProcessor() {
-      this(null, null);
-   }
-
-   /**
-    * only used for SRS publishing
-    * 
-    * @param masterTemplate
-    * @param slaveTemplate
-    * @throws CoreException
-    */
-   public WordTemplateProcessor(String masterTemplate, String slaveTemplate) {
-      this.masterTemplate = masterTemplate;
-      this.slaveTemplate = slaveTemplate;
+   public WordTemplateProcessor(WordTemplateRenderer renderer) {
+      this.renderer = renderer;
       loadIgnoreAttributeExtensions();
    }
 
@@ -141,7 +131,17 @@ public class WordTemplateProcessor {
     * 
     * @throws IOException
     */
-   public void publishSRS(BlamVariableMap variableMap) throws Exception {
+   public void publishSRS(BlamVariableMap variableMap) throws OseeCoreException {
+      Artifact srsMasterTemplate =
+            ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsMasterTemplate",
+                  BranchManager.getCommonBranch());
+      String masterTemplate = srsMasterTemplate.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT, "");
+
+      Artifact srsSlaveTemplate =
+            ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsSlaveTemplate",
+                  BranchManager.getCommonBranch());
+      slaveTemplate = srsSlaveTemplate.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT, "");
+
       IFolder folder = FileSystemRenderer.ensureRenderFolderExists(PresentationType.PREVIEW);
       String fileName = "SRS_" + Lib.getDateTimeString() + ".xml";
       AIFile.writeToFile(folder.getFile(fileName), applySRSTemplate(variableMap, masterTemplate, folder, null, null));
@@ -153,11 +153,16 @@ public class WordTemplateProcessor {
     * 
     * @throws IOException
     */
-   private InputStream applySRSTemplate(BlamVariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws Exception {
-      CharBackedInputStream charBak = new CharBackedInputStream();
-      WordMLProducer wordMl = new WordMLProducer(charBak);
-
-      template = handleSettingParagraphNumbersForSRS(template, outlineType, nextParagraphNumber, wordMl);
+   private InputStream applySRSTemplate(BlamVariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws OseeCoreException {
+      WordMLProducer wordMl;
+      CharBackedInputStream charBak;
+      try {
+         charBak = new CharBackedInputStream();
+         wordMl = new WordMLProducer(charBak);
+         template = handleSettingParagraphNumbersForSRS(template, outlineType, nextParagraphNumber, wordMl);
+      } catch (CharacterCodingException ex) {
+         throw new OseeWrappedException(ex);
+      }
       template = WordUtil.stripSpellCheck(template);
 
       Matcher matcher = headElementsPattern.matcher(template);
@@ -178,9 +183,13 @@ public class WordTemplateProcessor {
             processArtifactSet(elementValue, variableMap.getArtifacts(artifactSetName), wordMl, outlineType,
                   PresentationType.PREVIEW);
          } else if (elementType.equals(EXTENSION_PROCESSOR)) {
-            processExtensionTemplate(elementValue, variableMap, folder, wordMl);
+            try {
+               processExtensionTemplate(elementValue, variableMap, folder, wordMl);
+            } catch (CoreException ex) {
+               throw new OseeWrappedException(ex);
+            }
          } else {
-            throw new IllegalArgumentException("Invalid input: " + elementType);
+            throw new OseeArgumentException("Invalid input: " + elementType);
          }
       }
       // Write out the last of the template
@@ -300,8 +309,10 @@ public class WordTemplateProcessor {
 
    /**
     * Only used by Publish SRS
+    * 
+    * @throws CoreException
     */
-   private void processExtensionTemplate(String elementValue, BlamVariableMap variableMap, IFolder folder, WordMLProducer wordMl) throws Exception {
+   private void processExtensionTemplate(String elementValue, BlamVariableMap variableMap, IFolder folder, WordMLProducer wordMl) throws OseeCoreException, CoreException {
       String extensionName;
       String subdocumentName = null;
       boolean doSubDocuments = false;
@@ -418,7 +429,7 @@ public class WordTemplateProcessor {
             String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
             CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
-            if (paragraphNumber != null && saveParagraphNumOnArtifact) {
+            if (paragraphNumber != null && renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
                if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
                   artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
                   artifact.persistAttributes();
@@ -566,25 +577,6 @@ public class WordTemplateProcessor {
       wordMl.addWordMl("</ns0:" + name + "><w:p/>");
    }
 
-   /**
-    * Returns the set of keys necessary for the template
-    */
-   public Set<String> getTemplateKeys() {
-      Set<String> keySet;
-      keySet = new HashSet<String>();
-
-      Matcher matcher = setNamePattern.matcher(masterTemplate);
-      while (matcher.find()) {
-         String key = WordUtil.textOnly(matcher.group(2));
-         if (!keySet.add(key)) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-                  "The Set_Name " + key + " appears in template more than once");
-         }
-      }
-
-      return keySet;
-   }
-
    private String getArtifactSetXml(String artifactElement) {
       artifactElement = artifactElement.replaceAll("<(\\w+:)?Artifact/?>", "");
       artifactElement = artifactElement.replaceAll("<(\\w+:)?Set_Name>.*?</(\\w+:)?Set_Name>", "");
@@ -654,13 +646,6 @@ public class WordTemplateProcessor {
       }
    }
 
-   /**
-    * @return Returns the slaveTemplate.
-    */
-   public String getSlaveTemplate() {
-      return slaveTemplate;
-   }
-
    private void loadIgnoreAttributeExtensions() {
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       if (extensionRegistry != null) {
@@ -676,13 +661,6 @@ public class WordTemplateProcessor {
             }
          }
       }
-   }
-
-   /**
-    * @param saveParagraphNumOnArtifact the saveParagraphNumOnArtifact to set
-    */
-   public void setSaveParagraphNumOnArtifact(boolean saveParagraphNumOnArtifact) {
-      this.saveParagraphNumOnArtifact = saveParagraphNumOnArtifact;
    }
 
    private Collection<String> orderAttributeNames(Collection<AttributeType> attributeTypes) {

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -137,7 +138,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
       int startAtTxNumber = 0;
       try {
          startAtTxNumber = Integer.parseInt(variableMap.getString("From Transaction Number"));

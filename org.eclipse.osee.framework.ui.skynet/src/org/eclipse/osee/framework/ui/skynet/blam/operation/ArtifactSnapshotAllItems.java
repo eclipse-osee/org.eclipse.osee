@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public class ArtifactSnapshotAllItems extends AbstractBlam {
 
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
       try {
          Branch branch = variableMap.getBranch("Branch");
 

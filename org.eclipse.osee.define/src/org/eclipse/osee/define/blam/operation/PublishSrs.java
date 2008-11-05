@@ -11,13 +11,10 @@
 package org.eclipse.osee.define.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
  * We need to create an SRSRenderer that provides the correct templates. Then we'll use it instead of the WordTemplate
@@ -28,24 +25,11 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 
 public class PublishSrs extends AbstractBlam {
 
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-
-      Artifact srsMasterTemplate =
-            ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsMasterTemplate",
-                  BranchManager.getCommonBranch());
-      String masterTemplate =
-            srsMasterTemplate.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT, "");
-
-      Artifact srsSlaveTemplate =
-            ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsSlaveTemplate",
-                  BranchManager.getCommonBranch());
-      String slaveTemplate =
-            srsSlaveTemplate.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT, "");
-
-      boolean updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers");
-      WordTemplateProcessor processor = new WordTemplateProcessor(masterTemplate, slaveTemplate);
-      processor.setSaveParagraphNumOnArtifact(updateParagraphNumber);
-      processor.publishSRS(variableMap);
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
+      String updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers").toString();
+      WordTemplateRenderer srsRenderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
+      srsRenderer.setOptions(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber);
+      srsRenderer.publishSRS(variableMap);
    }
 
    /*

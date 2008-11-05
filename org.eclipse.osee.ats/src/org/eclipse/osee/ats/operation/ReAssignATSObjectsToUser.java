@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -46,7 +47,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
+   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {

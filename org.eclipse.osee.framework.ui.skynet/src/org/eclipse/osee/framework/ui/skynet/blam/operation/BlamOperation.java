@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
 
@@ -24,7 +25,7 @@ public interface BlamOperation {
    public static final String branchXWidgetXml =
          "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
 
-   public abstract void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception;
+   public abstract void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception;
 
    public abstract String getXWidgetsXml();
 

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -25,9 +26,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 public class PruneWorkspace extends AbstractBlam {
    /**
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap,
-    *      org.eclipse.core.runtime.IProgressMonitor)
+    *      org.eclipse.core.runtime.IProgressMonitor, SkynetTransaction)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
       File keeperFile = new File(variableMap.getString("Preserve List File"));
       File workspacePath = new File(variableMap.getString("Workspace Path"));
       String filePathPattern = variableMap.getString("File Path Pattern");

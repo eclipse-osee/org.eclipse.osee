@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
@@ -35,19 +36,19 @@ public class PublishRequirements extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
       String updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers").toString();
 
       for (Artifact artifact : variableMap.getArtifacts("artifacts")) {
          try {
-            publish(monitor, artifact, updateParagraphNumber);
+            publish(monitor, artifact, updateParagraphNumber, transaction);
          } catch (OseeStateException ex) {
             OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
          }
       }
    }
 
-   private void publish(IProgressMonitor monitor, Artifact artifact, String updateParagraphNumber) throws OseeCoreException {
+   private void publish(IProgressMonitor monitor, Artifact artifact, String updateParagraphNumber, SkynetTransaction transaction) throws OseeCoreException {
       if (monitor.isCanceled()) {
          return;
       }
@@ -55,7 +56,7 @@ public class PublishRequirements extends AbstractBlam {
          List<Artifact> nonFolderChildren = new ArrayList<Artifact>();
          for (Artifact child : artifact.getChildren()) {
             if (child.isOfType("Folder")) {
-               publish(monitor, child, updateParagraphNumber);
+               publish(monitor, child, updateParagraphNumber, transaction);
             } else {
                nonFolderChildren.add(child);
             }

@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.w3c.dom.Element;
@@ -58,6 +59,9 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  * @author Jeff C. Phillips
  */
 public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
+   private static final Pattern pattern =
+         Pattern.compile("<v:imagedata[^>]*src=\"wordml://(\\d+\\.\\w+)\"[^>]*>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    public static final String WORD_RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.word";
    public static final String DEFAULT_SET_NAME = "Default";
    public static final String ARTIFACT_NAME = "Word Renderer";
@@ -71,10 +75,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
    public static final String UPDATE_PARAGRAPH_NUMBER_OPTION = "updateParagraphNumber";
 
-   private static final Pattern pattern =
-         Pattern.compile("<v:imagedata[^>]*src=\"wordml://(\\d+\\.\\w+)\"[^>]*>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor();
+   private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this);
 
    /**
     * @param rendererId
@@ -89,6 +90,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    @Override
    public WordTemplateRenderer newInstance() throws OseeCoreException {
       return new WordTemplateRenderer(getId());
+   }
+
+   public void publishSRS(BlamVariableMap variableMap) throws OseeCoreException {
+      templateProcessor.publishSRS(variableMap);
    }
 
    /**
@@ -401,7 +406,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
 
       template = WordUtil.removeGUIDFromTemplate(template);
-      templateProcessor.setSaveParagraphNumOnArtifact(getBooleanOption(UPDATE_PARAGRAPH_NUMBER_OPTION));
       return templateProcessor.applyTemplate(artifacts, template, null, presentationType);
    }
 
