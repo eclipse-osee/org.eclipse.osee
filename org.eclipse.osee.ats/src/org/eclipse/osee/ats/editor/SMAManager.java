@@ -360,7 +360,6 @@ public class SMAManager {
       }
       Object obj = vld.getResult()[0];
       VersionArtifact newVersion = (VersionArtifact) obj;
-
       for (TeamWorkFlowArtifact teamArt : smas) {
          teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, newVersion);
       }
@@ -395,17 +394,17 @@ public class SMAManager {
             dialog.setSelected(teams.iterator().next().getChangeType());
          }
          if (dialog.open() == 0) {
-
+        	
         	SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
         	 
-                  for (TeamWorkFlowArtifact team : teams) {
-                     if (team.getChangeType() != dialog.getSelection()) {
-                        team.setChangeType(dialog.getSelection());
+        	  for (TeamWorkFlowArtifact team : teams) {
+                  if (team.getChangeType() != dialog.getSelection()) {
+                     team.setChangeType(dialog.getSelection());
                      team.saveSMA(transaction);
-                     }
                   }
-        	transaction.execute();
                }
+        	transaction.execute();
+         }
          return true;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
@@ -436,14 +435,14 @@ public class SMAManager {
          if (ald.open() == 0) {
         	 
         	 SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-                  for (TeamWorkFlowArtifact team : teams) {
-                     if (team.getPriority() != ald.getSelection()) {
-                        team.setPriority(ald.getSelection());
+              for (TeamWorkFlowArtifact team : teams) {
+                 if (team.getPriority() != ald.getSelection()) {
+                    team.setPriority(ald.getSelection());
                     team.saveSMA(transaction);
-                     }
-                  }
+                 }
+              }
             transaction.execute();
-               }
+         }
          return true;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
@@ -462,7 +461,7 @@ public class SMAManager {
             if (((TaskArtifact) smas.iterator().next()).isUsingTaskResolutionOptions()) {
                options = ((TaskArtifact) smas.iterator().next()).getTaskResolutionOptionDefintions();
             }
-         }
+   }
          for (StateMachineArtifact sma : smas) {
             SMAManager smaMgr = new SMAManager(sma);
             if (smaMgr.isReleased()) {
@@ -860,10 +859,10 @@ public class SMAManager {
 
       // Notify extension points of transition
       for (IAtsStateItem item : stateItems.getStateItems(fromPage.getId())) {
-         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees);
+         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees, transaction);
       }
       for (IAtsStateItem item : stateItems.getStateItems(toPage.getId())) {
-         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees);
+         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees, transaction);
       }
    }
 

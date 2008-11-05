@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -293,7 +294,7 @@ public class AtsBranchManager {
       return Result.TrueResult;
    }
 
-   private void createNecessaryBranchEventReviews(StateEventType stateEventType, SMAManager smaMgr) throws OseeCoreException {
+   private void createNecessaryBranchEventReviews(StateEventType stateEventType, SMAManager smaMgr, SkynetTransaction transaction) throws OseeCoreException {
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
          throw new IllegalStateException("Invalid stateEventType = " + stateEventType);
       }
@@ -304,11 +305,11 @@ public class AtsBranchManager {
             if (eventType != null && eventType == stateEventType) {
                if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
                   DecisionReviewArtifact decArt = AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, smaMgr);
-                  if (decArt != null) decArt.persistAttributesAndRelations();
+                  if (decArt != null) decArt.persistAttributesAndRelations(transaction);
                } else if (ruleId.equals(AtsAddPeerToPeerReviewRule.ID)) {
                   PeerToPeerReviewArtifact peerArt =
-                        AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr);
-                  if (peerArt != null) peerArt.persistAttributesAndRelations();
+                        AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr, transaction);
+                  if (peerArt != null) peerArt.persistAttributesAndRelations(transaction);
                }
             }
          }
@@ -387,7 +388,9 @@ public class AtsBranchManager {
             BranchManager.createWorkingBranch(parentTransactionId, finalBranchShortName, branchName,
                   stateMachineArtifact);
             // Create reviews as necessary
-            createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr);
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr, transaction);
+            transaction.execute();
          }
       };
 
@@ -537,7 +540,9 @@ public class AtsBranchManager {
          if (result == 0) {
             BranchManager.commitBranch(branch, true, true);
             // Create reviews as necessary
-            createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr);
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
+            transaction.execute();
          } else if (result == 1) {
             MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getStartEndPoint(branch).getKey());
          }

@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 
 /**
@@ -50,17 +50,11 @@ public class NewPeerToPeerReviewJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         AbstractSkynetTxTemplate newPeerToPeerTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
-
-            @Override
-            protected void handleTxWork() throws OseeCoreException {
-               peerToPeerReviewArtifact =
-                     teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(reviewTitle, againstState);
-               peerToPeerReviewArtifact.persistAttributesAndRelations();
-            }
-
-         };
-         newPeerToPeerTx.execute();
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         peerToPeerReviewArtifact =
+               teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(reviewTitle, againstState, transaction);
+         peerToPeerReviewArtifact.persistAttributesAndRelations(transaction);
+         transaction.execute();
 
          AtsLib.openAtsAction(peerToPeerReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {

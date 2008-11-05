@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -41,8 +42,8 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
     *      java.lang.String, java.lang.String, java.util.Collection)
     */
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
-      super.transitioned(smaMgr, fromState, toState, toAssignees);
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees,  SkynetTransaction transaction) throws OseeCoreException {
+      super.transitioned(smaMgr, fromState, toState, toAssignees, transaction);
       if (!toState.equals(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) return;
       // Set Assignees to all user roles users
       Set<User> assignees = new HashSet<User>();
@@ -52,7 +53,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
       assignees.addAll(smaMgr.getStateMgr().getAssignees());
 
       smaMgr.getStateMgr().setAssignees(assignees);
-      smaMgr.getSma().persistAttributes();
+      smaMgr.getSma().persistAttributes(transaction);
    }
 
    /* (non-Javadoc)

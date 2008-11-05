@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
@@ -68,7 +69,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef, TeamDefinitionOptions... teamDefinitionOptions) throws OseeCoreException {
+   public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef, SkynetTransaction transaction, TeamDefinitionOptions... teamDefinitionOptions) throws OseeCoreException {
       List<Object> teamDefOptions = Collections.getAggregate((Object[]) teamDefinitionOptions);
       TeamDefinitionArtifact tda = null;
       tda =
@@ -91,22 +92,22 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       if (teamDefOptions.contains(TeamDefinitionOptions.RequireTargetedVersion)) {
          tda.addWorkRule(RuleWorkItemId.atsRequireTargetedVersion.name());
       }
-      tda.persistAttributesAndRelations();
+      tda.persistAttributesAndRelations(transaction);
 
       Artifact parentTeamDefinition = parentTeamDef;
       if (parentTeamDefinition == null) {
          // Relate to team heading
-         parentTeamDef = AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact();
+         parentTeamDef = AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction);
       }
       parentTeamDef.addChild(tda);
-      parentTeamDef.persistAttributesAndRelations();
+      parentTeamDef.persistAttributesAndRelations(transaction);
 
       // Relate to actionable items
       for (ActionableItemArtifact aia : actionableItems) {
          tda.addRelation(AtsRelation.TeamActionableItem_ActionableItem, aia);
       }
 
-      tda.persistAttributesAndRelations();
+      tda.persistAttributesAndRelations(transaction);
       AtsCache.cache(tda);
       return tda;
    }

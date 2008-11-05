@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -86,20 +86,15 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                final Collection<Artifact> artsToReAssign = dialog.getSelection();
 
                // Make the changes and persist
-               AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-                        @Override
-                        protected void handleTxWork() throws OseeCoreException {
-                           for (Artifact artifact : artsToReAssign) {
-                              if (artifact instanceof StateMachineArtifact) {
-                                 ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().removeAssignee(fromUser);
-                                 ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().addAssignee(toUser);
-                              }
-                              artifact.persistAttributesAndRelations();
-                           }
-                        }
-                     };
-               txWrapper.execute();
+               SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+               for (Artifact artifact : artsToReAssign) {
+                  if (artifact instanceof StateMachineArtifact) {
+                     ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().removeAssignee(fromUser);
+                     ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().addAssignee(toUser);
+                  }
+                  artifact.persistAttributesAndRelations(transaction);
+               }
+               transaction.execute();
                OseeNotificationManager.sendNotifications();
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);

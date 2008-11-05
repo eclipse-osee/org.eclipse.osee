@@ -95,15 +95,15 @@ public class ReviewManager {
       return null;
    }
 
-   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState) throws OseeCoreException {
-      return createNewPeerToPeerReview(reviewTitle, againstState, SkynetAuthentication.getUser(), new Date());
+   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
+      return createNewPeerToPeerReview(reviewTitle, againstState, SkynetAuthentication.getUser(), new Date(), transaction);
    }
 
-   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, User origUser, Date origDate) throws OseeCoreException {
-      return createNewPeerToPeerReview(smaMgr.getSma(), reviewTitle, againstState, origUser, origDate);
+   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, User origUser, Date origDate, SkynetTransaction transaction) throws OseeCoreException {
+      return createNewPeerToPeerReview(smaMgr.getSma(), reviewTitle, againstState, origUser, origDate, transaction);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String reviewTitle, String againstState, User origUser, Date origDate) throws OseeCoreException {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String reviewTitle, String againstState, User origUser, Date origDate, SkynetTransaction transaction) throws OseeCoreException {
       PeerToPeerReviewArtifact peerToPeerRev =
             (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(PeerToPeerReviewArtifact.ARTIFACT_NAME,
                   BranchManager.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
@@ -122,7 +122,7 @@ public class ReviewManager {
       peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
       peerToPeerRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.DecisionReviewState.Prepare.name(),
             "", origDate, origUser);
-      peerToPeerRev.persistAttributesAndRelations();
+      peerToPeerRev.persistAttributesAndRelations(transaction);
       return peerToPeerRev;
    }
 

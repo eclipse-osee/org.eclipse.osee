@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -100,7 +101,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#transitioned(org.eclipse.osee.ats.editor.SMAManager, java.lang.String, java.lang.String, java.util.Collection)
     */
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
    }
 
    /* (non-Javadoc)

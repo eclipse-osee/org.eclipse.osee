@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -132,11 +131,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       } else {
          try {
             SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-                  if (getActivePage() == attributesPageIndex) {
+            if (getActivePage() == attributesPageIndex) {
                smaMgr.getSma().persistAttributes(transaction);
-                  }
-                  // Save widget data to artifact
-                  workFlowTab.saveXWidgetToArtifact();
+            }
+            // Save widget data to artifact
+            workFlowTab.saveXWidgetToArtifact();
             smaMgr.getSma().saveSMA(transaction);
             transaction.execute();
             workFlowTab.refresh();
@@ -307,13 +306,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
-               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-                  @Override
-                  protected void handleTxWork() throws OseeCoreException {
-                     smaMgr.getSma().persistAttributes();
-                  }
-               };
-               txWrapper.execute();
+               smaMgr.getSma().persistAttributes();
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }

@@ -1053,6 +1053,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
+    * Removes artifact from a specific branch
+    */
+   public void delete(SkynetTransaction transaction) throws OseeCoreException {
+      ArtifactPersistenceManager.deleteArtifact(transaction, false, this);
+   }
+   
+   /**
     * Remove artifact from a specific branch in the database
     * 
     * @param connection TODO

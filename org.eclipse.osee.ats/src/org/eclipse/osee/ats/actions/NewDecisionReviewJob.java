@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 
 /**
@@ -51,16 +50,8 @@ public class NewDecisionReviewJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         AbstractSkynetTxTemplate newDecisionReviewTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
-
-            @Override
-            protected void handleTxWork() throws OseeCoreException {
-               decisionReviewArtifact = createNewDecisionReview(teamParent, reviewBlockType, againstCurrentState);
-               decisionReviewArtifact.persistAttributesAndRelations();
-            }
-
-         };
-         newDecisionReviewTx.execute();
+         decisionReviewArtifact = createNewDecisionReview(teamParent, reviewBlockType, againstCurrentState);
+         decisionReviewArtifact.persistAttributesAndRelations();
          AtsLib.openAtsAction(decisionReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();
@@ -103,7 +94,8 @@ public class NewDecisionReviewJob extends Job {
 
       // Initialize state machine
       decRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
-      decRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.DecisionReviewState.Prepare.name(), "");
+      decRev.getSmaMgr().getLog().addLog(LogType.StateEntered,
+            DecisionReviewArtifact.DecisionReviewState.Prepare.name(), "");
       if (assignees != null && assignees.size() > 0) {
          decRev.getSmaMgr().getStateMgr().setAssignees(assignees);
       }

@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionParameter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
 /**
@@ -46,8 +47,8 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
     *      java.lang.String, java.lang.String, java.util.Collection)
     */
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
-      super.transitioned(smaMgr, fromState, toState, toAssignees);
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+      super.transitioned(smaMgr, fromState, toState, toAssignees, transaction);
 
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       for (String ruleId : Arrays.asList(AtsAddDecisionReviewRule.ID, AtsAddPeerToPeerReviewRule.ID)) {
@@ -60,11 +61,11 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
             if (eventType != null && toState.equals(forState) && eventType == StateEventType.TransitionTo) {
                if (ruleId.startsWith(AtsAddDecisionReviewRule.ID)) {
                   DecisionReviewArtifact decArt = AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, smaMgr);
-                  if (decArt != null) decArt.persistAttributesAndRelations();
+                  if (decArt != null) decArt.persistAttributesAndRelations(transaction);
                } else if (ruleId.startsWith(AtsAddPeerToPeerReviewRule.ID)) {
                   PeerToPeerReviewArtifact peerArt =
-                        AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr);
-                  if (peerArt != null) peerArt.persistAttributesAndRelations();
+                        AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr, transaction);
+                  if (peerArt != null) peerArt.persistAttributesAndRelations(transaction);
                }
             }
          }

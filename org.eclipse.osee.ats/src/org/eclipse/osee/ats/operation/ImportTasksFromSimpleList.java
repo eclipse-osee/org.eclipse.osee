@@ -25,8 +25,6 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -86,15 +84,8 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                }
                try {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-                  AbstractSkynetTxTemplate txWrapper =
-                        new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-                           @Override
-                           protected void handleTxWork() throws OseeCoreException {
-                              handleCreateTasks(assignees, titles, teamArt);
-                              teamArt.persistAttributesAndRelations();
-                           }
-                        };
-                  txWrapper.execute();
+                  handleCreateTasks(assignees, titles, teamArt);
+                  teamArt.persistAttributesAndRelations();
                } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                   return;

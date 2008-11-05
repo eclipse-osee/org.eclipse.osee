@@ -69,7 +69,7 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -1321,21 +1321,14 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                   "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getDescriptiveName() + "?")) {
                ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
                final Artifact[] artifactsToBeRelated = artData.getArtifacts();
-
-               AbstractSkynetTxTemplate replaceRelationTx = new AbstractSkynetTxTemplate(parentArtifact.getBranch()) {
-
-                  @Override
-                  protected void handleTxWork() throws OseeCoreException {
-                     // Replace all of the parent relations
-                     for (Artifact artifact : artifactsToBeRelated) {
-                        artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
-                        artifact.persistAttributesAndRelations();
-                     }
-                  }
-               };
-
                try {
-                  replaceRelationTx.execute();
+                  SkynetTransaction transaction = new SkynetTransaction(parentArtifact.getBranch());
+                  // Replace all of the parent relations
+                  for (Artifact artifact : artifactsToBeRelated) {
+                     artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+                     artifact.persistAttributesAndRelations(transaction);
+                  }
+                  transaction.execute();
                } catch (Exception ex) {
                   OSEELog.logException(getClass(), ex, true);
                }

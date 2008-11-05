@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.swt.widgets.Display;
@@ -138,36 +138,31 @@ public class LoadAIsAndTeamsAction {
       if (workFlow == null) throw new IllegalArgumentException("ATS config items can't be loaded.");
 
       try {
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         // Get or create ATS root artifact
+         Artifact atsHeading = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact(transaction);
 
-            @Override
-            protected void handleTxWork() throws OseeCoreException {
-               // Get or create ATS root artifact
-               Artifact atsHeading = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
+         // Create Actionable Items
+         DiagramNode workPage = workFlow.getPage("Actionable Items");
+         addActionableItem(atsHeading, workPage, transaction);
+         atsHeading.persistAttributesAndRelations(transaction);
 
-               // Create Actionable Items
-               DiagramNode workPage = workFlow.getPage("Actionable Items");
-               addActionableItem(atsHeading, workPage);
-               atsHeading.persistAttributesAndRelations();
+         // Create Teams
+         workPage = workFlow.getPage("Teams");
+         addTeam(atsHeading, workPage, transaction);
+         atsHeading.persistAttributesAndRelations(transaction);
 
-               // Create Teams
-               workPage = workFlow.getPage("Teams");
-               addTeam(atsHeading, workPage);
-               atsHeading.persistAttributesAndRelations();
-
-            }
-         };
-         txWrapper.execute();
+         transaction.execute();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   private TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page) throws OseeCoreException {
+   private TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page, SkynetTransaction transaction) throws OseeCoreException {
       // System.out.println("Adding Team " + page.getName());
       TeamDefinitionArtifact teamDefArt = null;
       if (page.getName().equals(AtsConfig.TEAMS_HEADING)) {
-         teamDefArt = AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact();
+         teamDefArt = AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction);
       } else {
 
          ArrayList<User> leads = new ArrayList<User>();
@@ -242,7 +237,7 @@ public class LoadAIsAndTeamsAction {
          if (teamDefArt == null) {
             teamDefArt =
                   TeamDefinitionArtifact.createNewTeamDefinition(page.getName(), fullName, desc, leads, members,
-                        actionableItems, parent,
+                        actionableItems, parent,transaction,
                         teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
          }
          for (String staticId : staticIds) {
@@ -269,12 +264,12 @@ public class LoadAIsAndTeamsAction {
 
       // Handle all team children
       for (DiagramNode childPage : page.getToPages())
-         if (childPage.getPageType() == PageType.Team) addTeam(teamDefArt, (DiagramNode) childPage);
+         if (childPage.getPageType() == PageType.Team) addTeam(teamDefArt, (DiagramNode) childPage, transaction);
 
       return teamDefArt;
    }
 
-   private ActionableItemArtifact addActionableItem(Artifact parent, DiagramNode page) throws OseeCoreException {
+   private ActionableItemArtifact addActionableItem(Artifact parent, DiagramNode page, SkynetTransaction transaction) throws OseeCoreException {
       // System.out.println("Processing page " + page.getName());
       ActionableItemArtifact aia = null;
       boolean getOrCreate = false;
@@ -295,7 +290,7 @@ public class LoadAIsAndTeamsAction {
          }
       }
       if (page.getName().equals(AtsConfig.ACTIONABLE_ITEMS_HEADING)) {
-         aia = AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact();
+         aia = AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact(transaction);
       } else {
          if (getOrCreate) {
             try {
@@ -318,18 +313,18 @@ public class LoadAIsAndTeamsAction {
                aia.addRelation(AtsRelation.TeamLead_Lead, user);
             }
 
-            aia.persistAttributes();
+            aia.persistAttributes(transaction);
             idToActionItem.put(page.getId(), aia);
             parent.addChild(aia);
-            parent.persistAttributesAndRelations();
+            parent.persistAttributesAndRelations(transaction);
          }
       }
       for (DiagramNode childPage : page.getToPages()) {
-         addActionableItem(aia, (DiagramNode) childPage);
+         addActionableItem(aia, (DiagramNode) childPage, transaction);
       }
       aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
 
-      aia.persistAttributes();
+      aia.persistAttributes(transaction);
       return aia;
    }
 

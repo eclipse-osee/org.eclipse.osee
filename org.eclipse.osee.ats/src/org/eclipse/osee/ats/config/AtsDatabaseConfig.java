@@ -19,6 +19,8 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
@@ -47,12 +49,14 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    }
 
    private void createAtsTopLevelConfigObjects() throws OseeCoreException {
-      AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
-      AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact();
-      AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact();
-      AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact();
-      AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact();
-      AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact();
-      AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact();
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      AtsConfig.getInstance().getOrCreateAtsHeadingArtifact(transaction);
+      AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction);
+      AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact(transaction);
+      AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact(transaction);
+      AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(transaction);
+      AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact(transaction);
+      AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(transaction);
+      transaction.execute();
    }
 }

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
@@ -57,10 +58,11 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
     * 
     * @param atsAddPeerToPeerReviewRule
     * @param smaMgr
+    * @param transaction 
     * @return review
     * @throws OseeCoreException
     */
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(WorkRuleDefinition atsAddPeerToPeerReviewRule, SMAManager smaMgr) throws OseeCoreException {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(WorkRuleDefinition atsAddPeerToPeerReviewRule, SMAManager smaMgr, SkynetTransaction transaction) throws OseeCoreException {
       if (!atsAddPeerToPeerReviewRule.getId().startsWith(AtsAddPeerToPeerReviewRule.ID)) {
          throw new IllegalArgumentException("WorkRuleDefinition must be AtsAddPeerToPeerReviewRule.ID");
       }
@@ -71,7 +73,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
       }
       PeerToPeerReviewArtifact peerArt =
             ReviewManager.createNewPeerToPeerReview(smaMgr.getSma(), title, getValueOrDefault(smaMgr,
-                  atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState), SkynetAuthentication.getUser(), new Date());
+                  atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState), SkynetAuthentication.getUser(), new Date(), transaction);
       String desc = getValueOrDefault(smaMgr, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
       if (desc != null && !desc.equals("")) {
          peerArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);

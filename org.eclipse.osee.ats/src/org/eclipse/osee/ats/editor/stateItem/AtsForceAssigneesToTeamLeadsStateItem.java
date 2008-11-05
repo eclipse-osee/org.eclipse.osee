@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -42,14 +43,14 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
     *      java.lang.String, java.lang.String, java.util.Collection)
     */
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
-      super.transitioned(smaMgr, fromState, toState, toAssignees);
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+      super.transitioned(smaMgr, fromState, toState, toAssignees, transaction);
       if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (AtsWorkDefinitions.isForceAssigneesToTeamLeads(smaMgr.getWorkPageDefinitionByName(toState)))) {
          // Set Assignees to all user roles users
          try {
             Collection<User> teamLeads = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
             smaMgr.getStateMgr().setAssignees(teamLeads);
-            smaMgr.getSma().persistAttributes();
+            smaMgr.getSma().persistAttributes(transaction);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }

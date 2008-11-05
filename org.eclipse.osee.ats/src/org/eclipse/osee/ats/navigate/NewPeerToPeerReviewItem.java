@@ -17,11 +17,10 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemListDialog;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -55,19 +54,14 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
          final EntryDialog ed = new EntryDialog("Peer Review Title", "Enter Peer Review Title");
          if (ed.open() == 0) {
             try {
-               AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-                        @Override
-                        protected void handleTxWork() throws OseeCoreException {
-                           PeerToPeerReviewArtifact peerArt =
-                                 ReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null,
-                                       SkynetAuthentication.getUser(), new Date());
-                           peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
-                           peerArt.persistAttributesAndRelations();
-                           AtsLib.openAtsAction(peerArt, AtsOpenOption.OpenAll);
-                        }
-                     };
-               txWrapper.execute();
+               SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+               PeerToPeerReviewArtifact peerArt =
+                     ReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null, SkynetAuthentication.getUser(),
+                           new Date(), transaction);
+               peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
+               peerArt.persistAttributesAndRelations(transaction);
+               AtsLib.openAtsAction(peerArt, AtsOpenOption.OpenAll);
+               transaction.execute();
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }

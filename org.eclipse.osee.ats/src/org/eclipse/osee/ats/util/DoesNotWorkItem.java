@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -68,13 +68,9 @@ public class DoesNotWorkItem extends XNavigateItemAction {
       //         }
       //      }
 
-      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-         @Override
-         protected void handleTxWork() throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
             //            convertAtsLogUserIds();
-         }
-      };
-      newActionTx.execute();
+      transaction.execute();
 
       //      deleteUnAssignedUserRelations();
       //      relateDonDunne();
