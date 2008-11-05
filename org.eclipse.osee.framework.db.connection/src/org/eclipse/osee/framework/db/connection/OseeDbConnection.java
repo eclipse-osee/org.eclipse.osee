@@ -40,11 +40,10 @@ public class OseeDbConnection {
       return getConnection(databaseInfo);
    }
 
-   //   public static OseeConnection getConnection(String serviceName) throws OseeDataStoreException {
-   //      return getConnection(DatabaseInfoManager.getDataStoreById(serviceName));
-   //   }
-
    public static OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeDataStoreException {
+      if (databaseInfo == null) {
+         throw new OseeDataStoreException("Unable to get connection - database info was null.");
+      }
       OseeConnectionPool pool = dbInfoToPools.get(databaseInfo.getId());
       if (pool == null) {
          pool =

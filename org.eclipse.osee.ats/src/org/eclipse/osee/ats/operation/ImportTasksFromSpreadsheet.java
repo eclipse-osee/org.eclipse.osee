@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.util.Import.ExcelAtsTaskArtifactExtractor;
 import org.eclipse.osee.ats.util.Import.TaskImportJob;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -52,58 +51,10 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
-   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor)throws OseeCoreException{
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            try {
-               List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
-               String filename = variableMap.getString(TASK_IMPORT_SPREADSHEET);
-               boolean persist = variableMap.getBoolean(PERSIST);
-               boolean emailPocs = variableMap.getBoolean(EMAIL_POCS);
-
-               if (artifacts.size() == 0) {
-                  AWorkbench.popup("ERROR", "Must drag in Team Workflow to add tasks.");
-                  return;
-               }
-               if (artifacts.size() > 1) {
-                  AWorkbench.popup("ERROR", "Only drag ONE Team Workflow.");
-                  return;
-               }
-               Artifact artifact = artifacts.iterator().next();
-               if (!(artifact instanceof TeamWorkFlowArtifact)) {
-                  AWorkbench.popup("ERROR", "Artifact MUST be Team Workflow");
-                  return;
-               }
-               if (filename == null || filename.equals("")) {
-                  AWorkbench.popup("ERROR", "Must enter valid filename.");
-                  return;
-               }
-               File file = new File(filename);
-               try {
-                  //this is odd, but this is passed into the TaskImportJob and the execel extractor, execute() is called after the extractor has been run
-                  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-                  Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
-                        (TeamWorkFlowArtifact) artifact, emailPocs, persist, transaction), transaction));
-               } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
-                  return;
-               }
-
-               SMAEditor.editArtifact(artifact);
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
-            }
-         };
-      });
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#widgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)throws OseeCoreException{
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && taskableStateMachineArtifact != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;
@@ -145,6 +96,55 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
     */
    public void setTaskableStateMachineArtifact(TaskableStateMachineArtifact taskableStateMachineArtifact) {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
+    */
+   @Override
+   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor, final SkynetTransaction transaction) throws Exception {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            try {
+               List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
+               String filename = variableMap.getString(TASK_IMPORT_SPREADSHEET);
+               boolean persist = variableMap.getBoolean(PERSIST);
+               boolean emailPocs = variableMap.getBoolean(EMAIL_POCS);
+
+               if (artifacts.size() == 0) {
+                  AWorkbench.popup("ERROR", "Must drag in Team Workflow to add tasks.");
+                  return;
+               }
+               if (artifacts.size() > 1) {
+                  AWorkbench.popup("ERROR", "Only drag ONE Team Workflow.");
+                  return;
+               }
+               Artifact artifact = artifacts.iterator().next();
+               if (!(artifact instanceof TeamWorkFlowArtifact)) {
+                  AWorkbench.popup("ERROR", "Artifact MUST be Team Workflow");
+                  return;
+               }
+               if (filename == null || filename.equals("")) {
+                  AWorkbench.popup("ERROR", "Must enter valid filename.");
+                  return;
+               }
+               File file = new File(filename);
+               try {
+                  //this is odd, but this is passed into the TaskImportJob and the execel extractor, execute() is called after the extractor has been run
+                  //                  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+                  Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
+                        (TeamWorkFlowArtifact) artifact, emailPocs, persist, transaction), transaction));
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  return;
+               }
+
+               SMAEditor.editArtifact(artifact);
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         };
+      });
    }
 
 }

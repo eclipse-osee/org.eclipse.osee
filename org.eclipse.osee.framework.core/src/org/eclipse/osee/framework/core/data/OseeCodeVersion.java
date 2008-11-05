@@ -51,24 +51,6 @@ public class OseeCodeVersion {
       return getInstance().get();
    }
 
-   /**
-    * Determine is version is development version
-    * 
-    * @return <b>true</b> if is development version. <b>false</b> not in development
-    */
-   public static boolean isDevelopement() {
-      return getInstance().isDevelopmentVersion();
-   }
-
-   /**
-    * This method public for testing purposes only
-    * 
-    * @param oseeVersion the oseeVersion to set
-    */
-   public static void internalSetVersion(String version) {
-      getInstance().set(version);
-   }
-
    private String get() {
       if (oseeVersion == null) {
          try {
@@ -84,14 +66,6 @@ public class OseeCodeVersion {
          }
       }
       return oseeVersion;
-   }
-
-   private boolean isDevelopmentVersion() {
-      return get().equals(DEFAULT_DEVELOPMENT_VERSION);
-   }
-
-   private void set(String oseeVersion) {
-      this.oseeVersion = oseeVersion;
    }
 
    private String loadVersionInfo() throws IOException {
