@@ -9,11 +9,10 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.db.connection.impl;
+package org.eclipse.osee.framework.db.connection.internal;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.framework.db.connection.IBind;
 import org.eclipse.osee.framework.db.connection.IConnection;
 import org.eclipse.osee.framework.db.connection.IDbConnectionFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;

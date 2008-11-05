@@ -37,9 +37,8 @@ import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -435,9 +434,13 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    }
 
    private String getWhoAmI() {
-      return SkynetAuthentication.getUser().getName() + " - " + OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
-            ConfigField.DatabaseName) + " - " + OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
-            ConfigField.UserName);
+      String userName = SkynetAuthentication.getUser().getName();
+      try {
+         return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
+               ClientSessionManager.getDataStoreLoginName());
+      } catch (OseeCoreException ex) {
+         return userName;
+      }
    }
 
    protected void createActions() {

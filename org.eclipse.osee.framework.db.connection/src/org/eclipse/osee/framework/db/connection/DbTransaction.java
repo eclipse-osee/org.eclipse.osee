@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -53,7 +54,7 @@ public abstract class DbTransaction {
    public void execute(OseeConnection connection, boolean commit) throws OseeCoreException {
       boolean initialAutoCommit = true;
       try {
-         OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         OseeLog.log(InternalActivator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
          ConnectionHandler.deferConstraintChecking(connection);
@@ -61,16 +62,15 @@ public abstract class DbTransaction {
          if (commit) {
             connection.commit();
          }
-         OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
+         OseeLog.log(InternalActivator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.FINEST, ex);
+         OseeLog.log(InternalActivator.class, Level.FINEST, ex);
          try {
             connection.rollback();
             connection.destroy();
          } catch (SQLException ex1) {
             throw new OseeWrappedException(ex1);
          }
-
          handleTxException(ex);
          if (ex instanceof OseeCoreException) {
             throw (OseeCoreException) ex;
@@ -80,7 +80,7 @@ public abstract class DbTransaction {
          try {
             connection.setAutoCommit(initialAutoCommit);
          } catch (SQLException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
          }
          if (commit) {
             connection.close();

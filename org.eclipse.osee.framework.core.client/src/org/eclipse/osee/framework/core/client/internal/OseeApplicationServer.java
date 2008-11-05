@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.core.client.ServiceHealthManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -83,9 +82,8 @@ public class OseeApplicationServer {
       isServerAlive = checkStatus();
       if (isServerAlive) {
          DateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-         ServiceHealthManager.updateStatus(ApplicationServer, new BaseStatus(Level.INFO, String.format(
-               "%s [%s] Running Since: %s", oseeServer, serverInfo.getVersion(),
-               format.format(serverInfo.getDateStarted()))));
+         OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.INFO, "%s [%s] Running Since: %s", oseeServer,
+               serverInfo.getVersion(), format.format(serverInfo.getDateStarted())));
       }
    }
 
@@ -98,7 +96,7 @@ public class OseeApplicationServer {
          connection.connect();
          canConnect = true;
       } catch (Exception ex) {
-         ServiceHealthManager.updateStatus(ApplicationServer, new BaseStatus(Level.SEVERE, ex));
+         OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.SEVERE, ex));
       } finally {
          if (connection != null) {
             connection.disconnect();
@@ -130,13 +128,19 @@ public class OseeApplicationServer {
 
          outputStream = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
+         try {
+            OseeLog.reportStatus(new BaseStatus(ArbitrationService, Level.INFO, "%s",
+                  HttpUrlBuilder.getInstance().getArbitrationServerPrefix()));
+         } catch (OseeDataStoreException ex) {
+            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+         }
          if (result.getCode() == HttpURLConnection.HTTP_OK) {
             inputStream = new ByteArrayInputStream(outputStream.toByteArray());
             oseeServerInfo = OseeServerInfo.fromXml(inputStream);
          }
       } catch (Exception ex) {
-         ServiceHealthManager.updateStatus(ArbitrationService, new BaseStatus(Level.SEVERE, String.format(
-               "Error requesting application server for version [%s]", OseeCodeVersion.getVersion()), ex));
+         OseeLog.reportStatus(new BaseStatus(ArbitrationService, Level.SEVERE, ex,
+               "Error requesting application server for version [%s]", OseeCodeVersion.getVersion()));
       } finally {
          if (inputStream != null) {
             try {
@@ -151,12 +155,6 @@ public class OseeApplicationServer {
             } catch (IOException ex) {
                OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
             }
-         }
-         try {
-            ServiceHealthManager.updateStatus(ArbitrationService, new BaseStatus(Level.SEVERE, String.format("%s",
-                  HttpUrlBuilder.getInstance().getArbitrationServerPrefix())));
-         } catch (OseeDataStoreException ex) {
-            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
          }
       }
       return oseeServerInfo;

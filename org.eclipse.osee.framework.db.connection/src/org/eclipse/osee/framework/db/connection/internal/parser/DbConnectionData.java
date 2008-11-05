@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.db.connection.info;
+package org.eclipse.osee.framework.db.connection.internal.parser;
 
 import java.util.ArrayList;
 import java.util.Properties;

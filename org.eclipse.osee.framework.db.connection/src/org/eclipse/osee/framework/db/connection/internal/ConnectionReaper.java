@@ -1,4 +1,5 @@
-package org.eclipse.osee.framework.db.connection.pool;
+package org.eclipse.osee.framework.db.connection.internal;
+
 
 class ConnectionReaper extends Thread {
 

@@ -8,11 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.db.connection.info;
+package org.eclipse.osee.framework.db.connection.internal.parser;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.db.connection.info.DbInformation.DbObjectType;
+import org.eclipse.osee.framework.db.connection.internal.parser.DbInformation.DbObjectType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Element;

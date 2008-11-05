@@ -14,7 +14,7 @@ package org.eclipse.osee.ats;
 import org.eclipse.osee.ats.util.AtsAdmin;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
-import org.eclipse.osee.framework.database.DatabaseActivator;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -58,7 +58,7 @@ public class AtsPlugin extends OseeUiActivator {
    }
 
    public static boolean isProductionDb() throws OseeCoreException {
-      return DatabaseActivator.getInstance().isProductionDb();
+      return ClientSessionManager.isProductionDataStore();
    }
 
    public static Cursor getHandCursor() {

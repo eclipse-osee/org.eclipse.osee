@@ -17,7 +17,7 @@ import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
-import org.eclipse.osee.framework.db.connection.pool.OseeConnectionPool;
+import org.eclipse.osee.framework.db.connection.internal.OseeConnectionPool;
 
 public class OseeConnection implements Connection {
 

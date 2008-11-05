@@ -26,15 +26,12 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.IDbInitializationRule;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
-import org.eclipse.osee.framework.database.NotOnProductionDbInitializationRule;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
-import org.eclipse.osee.framework.db.connection.Activator;
+import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
+import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
-import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
-import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -71,7 +68,6 @@ public class LaunchOseeDbConfigClient {
             }
          }
       }
-
       OseeLog.log(DatabaseActivator.class, Level.INFO, "Database Initialization Complete.");
    }
 
@@ -156,14 +152,13 @@ public class LaunchOseeDbConfigClient {
    }
 
    private static boolean checkPreconditions() throws OseeCoreException {
-      DbInformation dbInfo = Activator.getDbConnectionInformation().getSelectedDatabaseInfo();
-      String serverUrl = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
+      IDatabaseInfo dbInfo = DatabaseInfoManager.getDefault();
+      String serverUrl = dbInfo.getDefaultArbitrationServer();
       System.setProperty(OseeProperties.OSEE_APPLICATION_SERVER_OVERRIDE, serverUrl);
 
-      if (NotOnProductionDbInitializationRule.isProductionDb()) {
+      if (dbInfo.isProduction()) {
          System.err.println(String.format(
-               "You are not allowed to run config client against production servers. %s\nExiting.",
-               DatabaseActivator.getInstance().getProductionDbs()));
+               "You are not allowed to run config client against production: [%s].\nExiting.", dbInfo.getDatabaseName()));
          return false;
       }
 
@@ -190,9 +185,9 @@ public class LaunchOseeDbConfigClient {
       Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
 
       if (checkPreconditions()) {
-         DbInformation databaseService = OseeDbConnection.getDefaultDatabaseService();
-         String dbName = databaseService.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
-         String userName = databaseService.getDatabaseDetails().getFieldValue(ConfigField.UserName);
+         IDatabaseInfo dbInfo = DatabaseInfoManager.getDefault();
+         String dbName = dbInfo.getDatabaseName();
+         String userName = dbInfo.getDatabaseLoginName();
 
          boolean isPromptEnabled = OseeProperties.getInstance().isPromptEnabled();
          String line = null;
@@ -208,7 +203,7 @@ public class LaunchOseeDbConfigClient {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
 
-            OseeConnection connection = OseeDbConnection.getConnection(databaseService);
+            OseeConnection connection = OseeDbConnection.getConnection(dbInfo);
             try {
                processTask(connection);
             } catch (Throwable ex) {

@@ -11,12 +11,12 @@
 
 package org.eclipse.osee.framework.db.connection;
 
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
-import org.eclipse.osee.framework.db.connection.pool.OseeConnectionPool;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
+import org.eclipse.osee.framework.db.connection.internal.OseeConnectionPool;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -24,15 +24,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class OseeDbConnection {
 
-   private static final CompositeKeyHashMap<String, Properties, OseeConnectionPool> dbInfoToPools =
-         new CompositeKeyHashMap<String, Properties, OseeConnectionPool>();
+   private static final Map<String, OseeConnectionPool> dbInfoToPools = new HashMap<String, OseeConnectionPool>();
 
-   private static String dbDriver = "";
-   private static String dbUrl = "";
-   private static Properties dbConnectionProperties = null;
+   private static IDatabaseInfo databaseInfo = null;
 
    public static boolean hasOpenConnection() {
-      OseeConnectionPool pool = dbInfoToPools.get(dbUrl, dbConnectionProperties);
+      OseeConnectionPool pool = dbInfoToPools.get(databaseInfo.getId());
       if (pool == null) {
          return false;
       }
@@ -40,34 +37,22 @@ public class OseeDbConnection {
    }
 
    public static OseeConnection getConnection() throws OseeDataStoreException {
-      return getConnection(dbDriver, dbUrl, dbConnectionProperties);
+      return getConnection(databaseInfo);
    }
 
-   @Deprecated
-   public static OseeConnection getConnection(String serviceName) throws OseeDataStoreException {
-      return getConnection(OseeDbConnection.getDatabaseService(serviceName));
-   }
+   //   public static OseeConnection getConnection(String serviceName) throws OseeDataStoreException {
+   //      return getConnection(DatabaseInfoManager.getDataStoreById(serviceName));
+   //   }
 
-   public static OseeConnection getConnection(DbInformation dbInformation) throws OseeDataStoreException {
-      return getConnection(dbInformation.getConnectionData().getDBDriver(), dbInformation.getConnectionUrl(),
-            dbInformation.getProperties());
-   }
-
-   public static OseeConnection getConnection(String dbDriver, String dbUrl, Properties dbProperties) throws OseeDataStoreException {
-      OseeConnectionPool pool = dbInfoToPools.get(dbUrl, dbProperties);
+   public static OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeDataStoreException {
+      OseeConnectionPool pool = dbInfoToPools.get(databaseInfo.getId());
       if (pool == null) {
-         pool = new OseeConnectionPool(dbDriver, dbUrl, dbProperties);
-         dbInfoToPools.put(dbUrl, dbProperties, pool);
+         pool =
+               new OseeConnectionPool(databaseInfo.getDriver(), databaseInfo.getConnectionUrl(),
+                     databaseInfo.getConnectionProperties());
+         dbInfoToPools.put(databaseInfo.getId(), pool);
       }
       return pool.getConnection();
-   }
-
-   public static DbInformation getDefaultDatabaseService() {
-      return Activator.getDbConnectionInformation().getSelectedDatabaseInfo();
-   }
-
-   public static DbInformation getDatabaseService(String id) {
-      return Activator.getDbConnectionInformation().getDatabaseInfo(id);
    }
 
    /**
@@ -78,7 +63,7 @@ public class OseeDbConnection {
          OseeConnection connection = getConnection();
          connection.close();
       } catch (OseeDataStoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
          return false;
       }
       return true;
@@ -89,9 +74,7 @@ public class OseeDbConnection {
     * @param dbUrl
     * @param dbConnectionProperties
     */
-   public static void setDefaultConnectionInfo(String dbDriver, String dbUrl, Properties dbConnectionProperties) {
-      OseeDbConnection.dbDriver = dbDriver;
-      OseeDbConnection.dbUrl = dbUrl;
-      OseeDbConnection.dbConnectionProperties = dbConnectionProperties;
+   public static void setDatabaseInfo(IDatabaseInfo databaseInfo) {
+      OseeDbConnection.databaseInfo = databaseInfo;
    }
 }

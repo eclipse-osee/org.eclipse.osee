@@ -11,14 +11,13 @@
 
 package org.eclipse.osee.framework.db.connection;
 
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IDbConnectionInformation {
 
-   public DbInformation getDatabaseInfo(String servicesId);
+   public IDatabaseInfo getDatabaseInfo(String servicesId);
 
-   public DbInformation getSelectedDatabaseInfo();
+   public IDatabaseInfo getSelectedDatabaseInfo();
 }

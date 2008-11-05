@@ -8,16 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.client;
+
+package org.eclipse.osee.framework.db.connection.internal;
 
 /**
- * @author Roberto E. Escobar
+ * @author Andrew M. Finkbeiner
  */
-public interface IServiceListener {
+public interface IBind {
+   void bind(Object obj);
 
-   /**
-    * @param serviceStatus
-    */
-   void onStatusChange(ServiceStatus serviceStatus);
-
+   void unbind(Object obj);
 }

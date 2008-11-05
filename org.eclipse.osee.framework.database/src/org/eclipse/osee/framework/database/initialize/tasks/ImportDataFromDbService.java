@@ -23,12 +23,12 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.utility.DatabaseDataExtractor;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.FileUtility;
+import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
+import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
-import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 public class ImportDataFromDbService implements IDbInitializationTask {
@@ -44,14 +44,13 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       for (String importFromDbService : importConnections) {
          System.out.println("Import Table Data from Db: " + importFromDbService);
 
-         DbInformation databaseService = OseeDbConnection.getDatabaseService(importFromDbService);
-
-         OseeConnection importConnection = OseeDbConnection.getConnection(databaseService);
+         IDatabaseInfo dbInfo = DatabaseInfoManager.getDataStoreById(importFromDbService);
+         OseeConnection importConnection = OseeDbConnection.getConnection(dbInfo);
          if (importConnection != null) {
             try {
                System.out.println("Gathering information from ..." + importFromDbService);
 
-               String userName = databaseService.getDatabaseDetails().getFieldValue(ConfigField.UserName);
+               String userName = dbInfo.getDatabaseLoginName();
                if (userName != null && !userName.equals("")) {
 
                   Set<String> schemasToGet = new TreeSet<String>();

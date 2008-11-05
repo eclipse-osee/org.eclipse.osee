@@ -10,13 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 
 /**
  * The main plug-in class to be used in the desktop.
@@ -40,26 +34,5 @@ public class DatabaseActivator extends OseeActivator {
     */
    public static DatabaseActivator getInstance() {
       return plugin;
-   }
-
-   public List<String> getProductionDbs() {
-      List<String> productionDbs = new ArrayList<String>();
-      List<IConfigurationElement> elements =
-            ExtensionPoints.getExtensionElements(DatabaseActivator.getInstance(), "ProductionDatabase",
-                  "ProductionDatabase");
-      for (IConfigurationElement element : elements) {
-         productionDbs.add(element.getAttribute("databaseInstance"));
-      }
-      return productionDbs;
-   }
-
-   public boolean isProductionDb() throws OseeCoreException {
-      String dbServiceId = ClientSessionManager.getDataStoreName();
-      for (String productionDb : getProductionDbs()) {
-         if (dbServiceId.equals(productionDb)) {
-            return true;
-         }
-      }
-      return false;
    }
 }

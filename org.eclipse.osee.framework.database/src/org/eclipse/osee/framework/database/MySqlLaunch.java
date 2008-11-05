@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.database;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -24,9 +24,9 @@ public class MySqlLaunch {
    private static final int NUMBER_OF_TRIES = 10;
    private static final long SLEEP_TIME = 2000;
    private String installLocation;
-   private DbInformation dbInfo;
+   private IDatabaseInfo dbInfo;
 
-   public MySqlLaunch(DbInformation dbInfo, String installLocation) {
+   public MySqlLaunch(IDatabaseInfo dbInfo, String installLocation) {
       this.installLocation = installLocation;
       this.dbInfo = dbInfo;
    }

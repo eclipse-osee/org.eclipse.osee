@@ -9,18 +9,15 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.db.connection.impl;
+package org.eclipse.osee.framework.db.connection.internal;
 
 import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_DB_CONNECTION_ID;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.Activator;
-import org.eclipse.osee.framework.db.connection.IBind;
+import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.IDbConnectionInformation;
 import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer;
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
-import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -28,18 +25,18 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DbConnectionInformationImpl implements IDbConnectionInformation, IBind {
 
-   private Map<String, DbInformation> dbInfo;
-   private DbInformation selectedDbInfo;
+   private Map<String, IDatabaseInfo> dbInfo;
+   private IDatabaseInfo selectedDbInfo;
 
    public DbConnectionInformationImpl() {
-      dbInfo = new HashMap<String, DbInformation>();
+      dbInfo = new HashMap<String, IDatabaseInfo>();
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformation#getDatabaseInfo(java.lang.String)
     */
    @Override
-   public DbInformation getDatabaseInfo(String servicesId) {
+   public IDatabaseInfo getDatabaseInfo(String servicesId) {
       return dbInfo.get(servicesId);
    }
 
@@ -47,7 +44,7 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
     * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformation#getSelectedDatabaseInfo()
     */
    @Override
-   public DbInformation getSelectedDatabaseInfo() {
+   public IDatabaseInfo getSelectedDatabaseInfo() {
       if (selectedDbInfo == null) {
          String dbConnectionId = System.getProperty(OSEE_DB_CONNECTION_ID);
          if (dbConnectionId != null && dbConnectionId.length() > 0) {
@@ -70,11 +67,11 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
    public void bind(Object obj) {
       IDbConnectionInformationContributer contributer = (IDbConnectionInformationContributer) obj;
       try {
-         for (DbInformation info : contributer.getDbInformation()) {
-            dbInfo.put(info.getDatabaseSetupDetails().getId(), info);
+         for (IDatabaseInfo info : contributer.getDbInformation()) {
+            dbInfo.put(info.getId(), info);
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
       }
    }
 
@@ -85,11 +82,11 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
    public void unbind(Object obj) {
       IDbConnectionInformationContributer contributer = (IDbConnectionInformationContributer) obj;
       try {
-         for (DbInformation info : contributer.getDbInformation()) {
-            dbInfo.remove(info.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName));
+         for (IDatabaseInfo info : contributer.getDbInformation()) {
+            dbInfo.remove(info.getDatabaseName());
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
       }
    }
 

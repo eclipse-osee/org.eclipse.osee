@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -37,7 +38,7 @@ public final class ConnectionHandler {
          try {
             stmt.close();
          } catch (SQLException ex) {
-            OseeLog.log(Activator.class, Level.WARNING, "Unable to close database statement: ", ex);
+            OseeLog.log(InternalActivator.class, Level.WARNING, "Unable to close database statement: ", ex);
          }
       }
    }
@@ -166,7 +167,7 @@ public final class ConnectionHandler {
             }
          }
          details.append("]\n");
-         OseeLog.log(Activator.class, Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n", ex);
+         OseeLog.log(InternalActivator.class, Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n", ex);
          throw new OseeDataStoreException(ex);
       } finally {
          close(preparedStatement);
@@ -240,7 +241,7 @@ public final class ConnectionHandler {
          if (update >= 0) {
             returnCount += update;
          } else if (Statement.EXECUTE_FAILED == update) {
-            OseeLog.log(Activator.class, Level.SEVERE, "sql execute failed.");
+            OseeLog.log(InternalActivator.class, Level.SEVERE, "sql execute failed.");
          } else if (Statement.SUCCESS_NO_INFO == update) {
             returnCount++;
          }
@@ -256,7 +257,8 @@ public final class ConnectionHandler {
             if (dataValue instanceof String) {
                int length = ((String) dataValue).length();
                if (length > 4000) {
-                  OseeLog.log(Activator.class, Level.WARNING, "SQL value too long:" + length + "\nValue: " + dataValue);
+                  OseeLog.log(InternalActivator.class, Level.WARNING,
+                        "SQL value too long:" + length + "\nValue: " + dataValue);
                   dataValue = ((String) dataValue).substring(0, 3999);
                }
             }

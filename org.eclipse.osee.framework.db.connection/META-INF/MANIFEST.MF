@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Connection Plug-in
-Bundle-SymbolicName: org.eclipse.osee.framework.db.connection
+Bundle-SymbolicName: org.eclipse.osee.framework.db.connection;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.db.connection.Activator
+Bundle-Activator: org.eclipse.osee.framework.db.connection.internal.InternalActivator
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.logging,

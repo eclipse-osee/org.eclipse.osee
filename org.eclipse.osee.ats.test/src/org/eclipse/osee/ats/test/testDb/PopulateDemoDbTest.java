@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.test.testDb;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
-import org.eclipse.osee.framework.core.client.ServiceHealthManager;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -23,8 +23,8 @@ public class PopulateDemoDbTest extends TestCase {
       // This test should only be run on test db
       assertFalse(AtsPlugin.isProductionDb());
       System.out.println("Validating OSEE Application Server...");
-      if (!ServiceHealthManager.areServicesAvailable()) {
-         System.err.println(ServiceHealthManager.getServicesStatusMessage() + ". \nExiting.");
+      if (!OseeLog.isStatusOk()) {
+         System.err.println(OseeLog.getStatusReport() + ". \nExiting.");
          return;
       }
    }

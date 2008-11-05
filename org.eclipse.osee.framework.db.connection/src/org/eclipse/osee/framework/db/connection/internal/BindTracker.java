@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.db.connection;
+package org.eclipse.osee.framework.db.connection.internal;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

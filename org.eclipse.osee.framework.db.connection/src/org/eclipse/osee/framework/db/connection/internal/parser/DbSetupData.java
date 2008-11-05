@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.db.connection.info;
+package org.eclipse.osee.framework.db.connection.internal.parser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class DbSetupData {
    }
 
    public enum ServerInfoFields {
-      id, dbInfo, hostAddress, port, connectsWith, serverConfig, applicationServer;
+      id, dbInfo, hostAddress, port, connectsWith, serverConfig, applicationServer, isProduction;
    }
 
    Map<ServerInfoFields, String> serverFieldMap;

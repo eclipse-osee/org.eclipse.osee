@@ -84,11 +84,15 @@ public class ClientSessionManager {
    }
 
    public static String getDataStoreLoginName() throws OseeCoreException {
-      return getSessionGrant().getDbConnectionProperties().getProperty("user");
+      return getSessionGrant().getDatabaseInfo().getDatabaseLoginName();
    }
 
    public static String getDataStoreName() throws OseeCoreException {
-      return getSessionGrant().getDbConnectionName();
+      return getSessionGrant().getDatabaseInfo().getDatabaseName();
+   }
+
+   public static boolean isProductionDataStore() throws OseeCoreException {
+      return getSessionGrant().getDatabaseInfo().isProduction();
    }
 
    public static String getSQL(String key) throws OseeCoreException {
@@ -103,8 +107,7 @@ public class ClientSessionManager {
       OseeCredential credential = credentialProvider.getCredential();
       oseeSessionGrant = internalAcquireSession(credential);
 
-      OseeDbConnection.setDefaultConnectionInfo(oseeSessionGrant.getDbDriver(), oseeSessionGrant.getDbUrl(),
-            oseeSessionGrant.getDbConnectionProperties());
+      OseeDbConnection.setDatabaseInfo(oseeSessionGrant.getDatabaseInfo());
 
       oseeSession =
             new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),

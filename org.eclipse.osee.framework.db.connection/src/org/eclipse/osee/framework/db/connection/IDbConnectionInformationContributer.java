@@ -11,11 +11,10 @@
 
 package org.eclipse.osee.framework.db.connection;
 
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IDbConnectionInformationContributer {
-   DbInformation[] getDbInformation() throws Exception;
+   IDatabaseInfo[] getDbInformation() throws Exception;
 }

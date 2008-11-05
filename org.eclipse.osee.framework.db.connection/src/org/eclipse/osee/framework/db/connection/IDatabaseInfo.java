@@ -8,17 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.db.connection;
 
+import java.util.Properties;
+
 /**
- * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
  */
-public interface IDbConnectionListener {
+public interface IDatabaseInfo {
 
-   /**
-    * @param open
-    */
-   public void onConnectionStatusUpdate(boolean open);
+   String getId();
 
+   String getDatabaseName();
+
+   String getDatabaseLoginName();
+
+   String getDriver();
+
+   String getConnectionUrl();
+
+   Properties getConnectionProperties();
+
+   String getDefaultArbitrationServer();
+
+   boolean isProduction();
 }

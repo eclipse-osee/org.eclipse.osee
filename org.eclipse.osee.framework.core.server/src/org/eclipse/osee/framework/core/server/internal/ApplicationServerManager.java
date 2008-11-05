@@ -26,10 +26,11 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
+import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
+import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -51,9 +52,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.isRegistered = false;
       applicationServerInfo.setAcceptingRequests(true);
 
-      DbInformation dbInformation = OseeDbConnection.getDefaultDatabaseService();
-      OseeDbConnection.setDefaultConnectionInfo(dbInformation.getConnectionData().getDBDriver(),
-            dbInformation.getConnectionUrl(), dbInformation.getProperties());
       Timer timer = new Timer("Register App Server");
       timer.schedule(new TimerTask() {
          public void run() {
@@ -85,11 +83,15 @@ public class ApplicationServerManager implements IApplicationServerManager {
 
    public boolean executeLookupRegistration() {
       this.isRegistered = false;
-      ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
-      boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
-      applicationServerInfo.setAcceptingRequests(status);
-      updateServletRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
-      this.isRegistered = status;
+      IDatabaseInfo info = DatabaseInfoManager.getDefault();
+      if (info != null) {
+         OseeDbConnection.setDatabaseInfo(info);
+         ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
+         boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
+         applicationServerInfo.setAcceptingRequests(status);
+         updateServletRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
+         this.isRegistered = status;
+      }
       return isRegistered;
    }
 

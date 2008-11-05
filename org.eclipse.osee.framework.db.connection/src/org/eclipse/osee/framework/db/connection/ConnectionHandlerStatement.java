@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -119,7 +120,7 @@ public class ConnectionHandlerStatement {
             connection = null;// this allows for multiple calls to runPreparedQuery to have an open connection
          }
       } catch (SQLException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
       }
    }
 

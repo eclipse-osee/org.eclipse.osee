@@ -8,17 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.db.connection.info;
+package org.eclipse.osee.framework.db.connection.internal.parser;
 
 import java.util.Properties;
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
+import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
+import org.eclipse.osee.framework.db.connection.internal.parser.DbDetailData.ConfigField;
+import org.eclipse.osee.framework.db.connection.internal.parser.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DbInformation {
+public class DbInformation implements IDatabaseInfo {
 
    private DbDetailData dbDetailData;
    private DbSetupData dbSetupData;
@@ -77,18 +79,73 @@ public class DbInformation {
    }
 
    public String toString() {
-      return getFormattedURL() + " : user=" + dbDetailData.getFieldValue(ConfigField.UserName);
+      return getFormattedURL() + " : user=" + getDatabaseLoginName();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getConnectionUrl()
+    */
+   @Override
    public String getConnectionUrl() {
       return getFormattedURL() + getConnectionData().getAttributes();
    }
 
-   public Properties getProperties() {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getConnectionProperties()
+    */
+   @Override
+   public Properties getConnectionProperties() {
       Properties properties = getConnectionData().getProperties();
-      properties.setProperty("user", getDatabaseDetails().getFieldValue(ConfigField.UserName));
+      properties.setProperty("user", getDatabaseLoginName());
       properties.setProperty("password", getDatabaseDetails().getFieldValue(ConfigField.Password));
       return properties;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDatabaseLoginName()
+    */
+   @Override
+   public String getDatabaseLoginName() {
+      return getDatabaseDetails().getFieldValue(ConfigField.UserName);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDatabaseName()
+    */
+   @Override
+   public String getDatabaseName() {
+      return getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDriver()
+    */
+   @Override
+   public String getDriver() {
+      return getConnectionData().getDBDriver();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDefaultArbitrationServer()
+    */
+   @Override
+   public String getDefaultArbitrationServer() {
+      return getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getId()
+    */
+   @Override
+   public String getId() {
+      return getDatabaseSetupDetails().getId();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#isProduction()
+    */
+   @Override
+   public boolean isProduction() {
+      return Boolean.valueOf(getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.isProduction));
+   }
 }

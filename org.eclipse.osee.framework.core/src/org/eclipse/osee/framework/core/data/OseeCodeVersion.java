@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.CoreActivator;
-import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -78,7 +77,7 @@ public class OseeCodeVersion {
                oseeVersion = oseeVersion.replace("^0=", "");
             }
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, "Can't access OseeVersion.txt\n" + Lib.exceptionToString(ex));
+            OseeLog.log(CoreActivator.class, Level.SEVERE, "Can't access OseeVersion.txt\n" + Lib.exceptionToString(ex));
          }
          if (oseeVersion == null) {
             oseeVersion = DEFAULT_DEVELOPMENT_VERSION;

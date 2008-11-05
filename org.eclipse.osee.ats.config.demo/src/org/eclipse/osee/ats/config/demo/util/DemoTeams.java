@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
-import org.eclipse.osee.framework.database.DatabaseActivator;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -40,7 +40,7 @@ public class DemoTeams {
 
    public TeamDefinitionArtifact getTeamDef(Team team) throws OseeCoreException {
       // Add check to keep exception from occurring for OSEE developers running against production
-      if (DatabaseActivator.getInstance().isProductionDb()) return null;
+      if (ClientSessionManager.isProductionDataStore()) return null;
       try {
          return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
                team.name().replaceAll("_", " "), AtsPlugin.getAtsBranch());

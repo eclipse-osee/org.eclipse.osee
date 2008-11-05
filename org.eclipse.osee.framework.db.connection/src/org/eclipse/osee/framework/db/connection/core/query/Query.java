@@ -12,11 +12,10 @@ package org.eclipse.osee.framework.db.connection.core.query;
 
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.Activator;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -44,8 +43,8 @@ public class Query {
                item = processor.process(chStmt);
                if (processor.validate(item)) collection.add(item);
             } catch (IllegalStateException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Encountered Exception when trying to acquire a collection.",
-                     ex);
+               OseeLog.log(InternalActivator.class, Level.SEVERE,
+                     "Encountered Exception when trying to acquire a collection.", ex);
             }
          }
       } finally {
