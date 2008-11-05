@@ -13,12 +13,15 @@ package org.eclipse.osee.ats.artifact;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
+import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -68,7 +71,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    /**
-    * Allow parent SMA's assignees and all priviledged users up Team tree
+    * Allow parent SMA's assignees and all privileged users up Team tree
     * 
     * @throws OseeCoreException
     */
@@ -107,6 +110,23 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    @Override
    public boolean isTaskable() {
       return false;
+   }
+
+   public boolean isUsingTaskResolutionOptions() throws OseeCoreException {
+      return (getTaskResolutionOptionDefintions().size() == 0);
+   }
+
+   public List<TaskResOptionDefinition> getTaskResolutionOptionDefintions() throws OseeCoreException {
+      TeamWorkFlowArtifact team = getParentTeamWorkflow();
+      if (team == null) return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
+      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getSmaMgr().getWorkPageDefinition());
+   }
+
+   public TaskResOptionDefinition getTaskResolutionOptionDefinition(String optionName) throws OseeCoreException {
+      for (TaskResOptionDefinition def : getTaskResolutionOptionDefintions()) {
+         if (def.getName().equals(optionName)) return def;
+      }
+      return null;
    }
 
    @Override

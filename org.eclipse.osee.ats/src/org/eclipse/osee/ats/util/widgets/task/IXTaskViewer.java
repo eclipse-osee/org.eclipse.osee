@@ -11,10 +11,8 @@
 package org.eclipse.osee.ats.util.widgets.task;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
@@ -33,9 +31,7 @@ public interface IXTaskViewer {
 
    public IDirtiableEditor getEditor() throws OseeCoreException;
 
-   public boolean isUsingTaskResolutionOptions() throws OseeCoreException;
 
-   public List<TaskResOptionDefinition> getResOptions() throws OseeCoreException;
 
    public boolean isTaskable() throws OseeCoreException;
 

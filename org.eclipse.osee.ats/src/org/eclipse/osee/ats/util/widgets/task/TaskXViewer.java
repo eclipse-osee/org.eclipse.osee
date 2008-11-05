@@ -13,11 +13,8 @@ package org.eclipse.osee.ats.util.widgets.task;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -29,7 +26,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
+import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -57,8 +54,6 @@ public class TaskXViewer extends WorldXViewer {
 
    private final XTaskViewer xTaskViewer;
    private final IDirtiableEditor editor;
-   private final List<TaskResOptionDefinition> taskResOptionDefinitions;
-   private Map<String, TaskResOptionDefinition> nameToResOptionDef = null;
    private boolean tasksEditable = true;
    private static String viewerId = GUID.generateGuidStr();
 
@@ -66,10 +61,9 @@ public class TaskXViewer extends WorldXViewer {
     * @param parent
     * @param style
     */
-   public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, List<TaskResOptionDefinition> taskResOptionDefinition, XTaskViewer xTaskViewer) {
+   public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, XTaskViewer xTaskViewer) {
       super(parent, style, new TaskXViewerFactory());
       this.editor = editor;
-      this.taskResOptionDefinitions = taskResOptionDefinition;
       this.xTaskViewer = xTaskViewer;
    }
 
@@ -87,7 +81,12 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    public boolean isUsingTaskResolutionOptions() {
-      return this.taskResOptionDefinitions != null && taskResOptionDefinitions.size() > 0;
+      try {
+         return getSelectedTaskArtifact().isUsingTaskResolutionOptions();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return false;
    }
 
    @Override
@@ -104,7 +103,7 @@ public class TaskXViewer extends WorldXViewer {
    public void set(Collection<? extends Artifact> artifacts) {
       for (Artifact art : artifacts)
          if (!(art instanceof TaskArtifact)) throw new IllegalArgumentException("set only allowed for TaskArtifact");
-      ((TaskContentProvider) getContentProvider()).set(artifacts);
+      ((WorldContentProvider) getContentProvider()).set(artifacts);
    }
 
    @Override
@@ -117,11 +116,11 @@ public class TaskXViewer extends WorldXViewer {
    public void add(Collection<Artifact> artifacts) {
       for (Artifact art : artifacts)
          if (!(art instanceof TaskArtifact)) throw new IllegalArgumentException("add only allowed for TaskArtifact");
-      ((TaskContentProvider) getContentProvider()).add(artifacts);
+      ((WorldContentProvider) getContentProvider()).add(artifacts);
    }
 
    public void removeTask(final Collection<TaskArtifact> artifacts) {
-      ((TaskContentProvider) getContentProvider()).remove(artifacts);
+      ((WorldContentProvider) getContentProvider()).remove(artifacts);
    }
 
    public TaskArtifact getSelectedTaskArtifact() {
@@ -192,8 +191,7 @@ public class TaskXViewer extends WorldXViewer {
          @Override
          public void run() {
             try {
-               if (SMAManager.promptChangeStatus((isUsingTaskResolutionOptions() ? taskResOptionDefinitions : null),
-                     getSelectedTaskArtifacts(), false)) {
+               if (SMAManager.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
@@ -317,7 +315,7 @@ public class TaskXViewer extends WorldXViewer {
 
    public boolean handleChangeResolution() throws OseeCoreException {
       if (isUsingTaskResolutionOptions()) {
-         if (SMAManager.promptChangeStatus(taskResOptionDefinitions, getSelectedTaskArtifacts(), false)) {
+         if (SMAManager.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();
             update(getSelectedTaskArtifacts().toArray(), null);
             return true;
@@ -382,19 +380,6 @@ public class TaskXViewer extends WorldXViewer {
       this.tasksEditable = tasksEditable;
    }
 
-   /**
-    * @return the TaskResOptionDefinition
-    */
-   public TaskResOptionDefinition getTaskResOptionDefinition(String optionName) {
-      if (nameToResOptionDef == null) {
-         nameToResOptionDef = new HashMap<String, TaskResOptionDefinition>();
-         for (TaskResOptionDefinition def : taskResOptionDefinitions) {
-            nameToResOptionDef.put(def.getName(), def);
-         }
-      }
-      return nameToResOptionDef.get(optionName);
-   }
-
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
       try {
@@ -407,8 +392,8 @@ public class TaskXViewer extends WorldXViewer {
             @Override
             public void run() {
                try {
-                  TaskContentProvider contentProvider =
-                        (TaskContentProvider) xTaskViewer.getXViewer().getContentProvider();
+                  WorldContentProvider contentProvider =
+                        (WorldContentProvider) xTaskViewer.getXViewer().getContentProvider();
                   if (contentProvider != null) {
                      contentProvider.remove(loadedArtifacts.getLoadedArtifacts());
                   }
@@ -427,7 +412,7 @@ public class TaskXViewer extends WorldXViewer {
       try {
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
          // ContentProvider ensures in display thread
-         ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+         ((WorldContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -452,7 +437,7 @@ public class TaskXViewer extends WorldXViewer {
          @Override
          public void run() {
             if (xTaskViewer.getXViewer().getContentProvider() == null) return;
-            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
+            ((WorldContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
             xTaskViewer.getXViewer().update(transData.cacheChangedArtifacts, null);
 
             try {
@@ -467,7 +452,7 @@ public class TaskXViewer extends WorldXViewer {
                               AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
                               AtsPlugin.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
                   if (artifacts.size() > 0) {
-                     ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
+                     ((WorldContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
                   }
 
                   // Remove any tasks related to parent sma
@@ -476,7 +461,7 @@ public class TaskXViewer extends WorldXViewer {
                               AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
                               AtsPlugin.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
                   if (artifacts.size() > 0) {
-                     ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
+                     ((WorldContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
                   }
                }
             } catch (Exception ex) {

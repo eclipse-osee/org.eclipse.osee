@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -65,7 +64,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
          for (TaskArtifact taskArt : tasks) {
             taskArt.saveSMA(transaction);
-         }
+            }
          transaction.execute();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -193,16 +192,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getOptions()
-    */
-   public List<TaskResOptionDefinition> getResOptions() throws OseeCoreException {
-      if (((TaskEditorInput) getEditorInput()).getResOptions() != null) return ((TaskEditorInput) getEditorInput()).getResOptions();
-      return new ArrayList<TaskResOptionDefinition>();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getParentSmaMgr()
     */
    public SMAManager getParentSmaMgr() throws OseeCoreException {
@@ -233,20 +222,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTaskable()
     */
    public boolean isTaskable() throws OseeCoreException {
-      return false;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isUsingTaskResolutionOptions()
-    */
-   public boolean isUsingTaskResolutionOptions() throws OseeCoreException {
-      try {
-         return getResOptions().size() > 0;
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
       return false;
    }
 

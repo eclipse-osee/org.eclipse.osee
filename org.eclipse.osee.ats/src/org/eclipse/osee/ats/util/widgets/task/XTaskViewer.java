@@ -31,6 +31,8 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
+import org.eclipse.osee.ats.world.WorldContentProvider;
+import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -129,13 +131,12 @@ public class XTaskViewer extends XWidget implements IActionable {
          createTaskActionBar(mainComp);
 
          xViewer =
-               new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(),
-                     iXTaskViewer.getResOptions(), this);
+               new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
          xViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
          xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-         xViewer.setContentProvider(new TaskContentProvider(xViewer));
-         xViewer.setLabelProvider(new TaskLabelProvider(xViewer));
+         xViewer.setContentProvider(new WorldContentProvider(xViewer));
+         xViewer.setLabelProvider(new WorldLabelProvider(xViewer));
          xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                try {

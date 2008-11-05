@@ -89,7 +89,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toWorkFlow;
    private final Label warningLabel, searchNameLabel, extraInfoLabel;
    private WorldSearchItem lastSearchItem;
-   private final WorldXViewer xViewer;
+   private final WorldXViewer worldXViewer;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
@@ -149,19 +149,19 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       gd.horizontalSpan = 3;
       extraInfoLabel.setLayoutData(gd);
 
-      xViewer = new WorldXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-      xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+      worldXViewer = new WorldXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+      worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xViewer.setContentProvider(new WorldContentProvider(xViewer));
-      xViewer.setLabelProvider(new WorldLabelProvider(xViewer));
+      worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
+      worldXViewer.setLabelProvider(new WorldLabelProvider(worldXViewer));
 
-      Tree tree = xViewer.getTree();
+      Tree tree = worldXViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
 
-      xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+      worldXViewer.addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             try {
                updateExtraInfoLine();
@@ -170,7 +170,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
             }
          }
       });
-      xViewer.getTree().addKeyListener(new KeyListener() {
+      worldXViewer.getTree().addKeyListener(new KeyListener() {
          public void keyPressed(KeyEvent event) {
          }
 
@@ -178,7 +178,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
             // if CTRL key is already pressed
             if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
                if (event.keyCode == 'a') {
-                  xViewer.getTree().setSelection(xViewer.getTree().getItems());
+                  worldXViewer.getTree().setSelection(worldXViewer.getTree().getItems());
                   try {
                      updateExtraInfoLine();
                   } catch (OseeCoreException ex) {
@@ -198,7 +198,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          }
       });
 
-      new WorldViewDragAndDrop(xViewer, viewEditorId);
+      new WorldViewDragAndDrop(worldXViewer, viewEditorId);
       parent.layout();
       createActions();
 
@@ -206,11 +206,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    }
 
    public void setCustomizeData(CustomizeData customizeData) {
-      xViewer.getCustomizeMgr().loadCustomization(customizeData);
+      worldXViewer.getCustomizeMgr().loadCustomization(customizeData);
    }
 
    public Control getControl() {
-      return xViewer.getControl();
+      return worldXViewer.getControl();
    }
 
    public void loadIt(final String name, final Collection<? extends Artifact> arts, final TableLoadOption... tableLoadOption) {
@@ -252,7 +252,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
                else
                   otherArts.add(art);
             }
-            xViewer.set(worldArts);
+            worldXViewer.set(worldArts);
             if (arts.size() == 0)
                setTableTitle("No Results Found - " + name, true);
             else
@@ -364,7 +364,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          cancel = false;
          searchItem.setCancelled(cancel);
          final Collection<Artifact> artifacts;
-         xViewer.clear();
+         worldXViewer.clear();
          try {
             artifacts = searchItem.performSearchGetResults(false, searchType);
             if (artifacts.size() == 0) {
@@ -405,7 +405,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
                   warningLabel.setImage(null);
                searchNameLabel.setText(title);
                searchNameLabel.getParent().layout();
-               xViewer.setReportingTitle(title + " - " + XDate.getDateNow());
+               worldXViewer.setReportingTitle(title + " - " + XDate.getDateNow());
                updateExtraInfoLine();
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -465,12 +465,12 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
             WorldEditorInput worldEditorInput = null;
             if (arts != null) {
                worldEditorInput =
-                     new WorldEditorInput(loadName, arts, xViewer.getCustomizeMgr().generateCustDataFromTable(),
+                     new WorldEditorInput(loadName, arts, worldXViewer.getCustomizeMgr().generateCustDataFromTable(),
                            tableLoadOptions);
             } else if (searchItem != null) {
                worldEditorInput =
                      new WorldEditorInput(searchItem, SearchType.Search,
-                           xViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions);
+                           worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions);
             } else {
                AWorkbench.popup("ERROR", "Nothing loaded");
             }
@@ -492,14 +492,14 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          @Override
          public void run() {
 
-            if (xViewer.getSelectedArtifacts().size() == 0) {
+            if (worldXViewer.getSelectedArtifacts().size() == 0) {
                AWorkbench.popup("ERROR", "Select items to open");
                return;
             }
             WorldEditorInput worldEditorInput =
-                  new WorldEditorInput("ATS - " + xViewer.getSelectedArtifacts().size() + " Selected",
-                        xViewer.getSelectedArtifacts(), xViewer.getCustomizeMgr().generateCustDataFromTable(),
-                        tableLoadOptions);
+                  new WorldEditorInput("ATS - " + worldXViewer.getSelectedArtifacts().size() + " Selected",
+                        worldXViewer.getSelectedArtifacts(),
+                        worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions);
             if (worldEditorInput != null) {
                IWorkbenchPage page = AWorkbench.getActivePage();
                try {
@@ -517,7 +517,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
 
          @Override
          public void run() {
-            xViewer.expandAll();
+            worldXViewer.expandAll();
          }
       };
       expandAllAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("expandAll.gif"));
@@ -528,12 +528,12 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          @Override
          public void run() {
             if (filterCompletedAction.isChecked()) {
-               xViewer.addFilter(worldCompletedFilter);
+               worldXViewer.addFilter(worldCompletedFilter);
             } else {
-               xViewer.removeFilter(worldCompletedFilter);
+               worldXViewer.removeFilter(worldCompletedFilter);
             }
             updateExtendedStatusString();
-            xViewer.refresh();
+            worldXViewer.refresh();
          }
       };
       filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
@@ -628,7 +628,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          actionToToolItem(toolBar, newWorldEditor);
          actionToToolItem(toolBar, newWorldEditorSelected);
          actionToToolItem(toolBar, refreshAction);
-         actionToToolItem(toolBar, xViewer.getCustomizeAction());
+         actionToToolItem(toolBar, worldXViewer.getCustomizeAction());
 
          createToolBarPulldown(toolBar, toolBarComposite);
       }
@@ -699,12 +699,12 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    }
 
    public void updateExtendedStatusString() {
-      xViewer.setExtendedStatusString(filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "");
+      worldXViewer.setExtendedStatusString(filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "");
    }
 
    public void redisplayAsAction() {
       try {
-         TreeItem treeItem[] = xViewer.getTree().getItems();
+         TreeItem treeItem[] = worldXViewer.getTree().getItems();
          Set<Artifact> arts = new HashSet<Artifact>();
          for (TreeItem item : treeItem) {
             Object obj = item.getData();
@@ -724,7 +724,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
 
    public void redisplayAsWorkFlow() {
       try {
-         TreeItem treeItem[] = xViewer.getTree().getItems();
+         TreeItem treeItem[] = worldXViewer.getTree().getItems();
          Set<Artifact> arts = new HashSet<Artifact>();
          for (TreeItem item : treeItem) {
             if (item.getData() instanceof Artifact) {
@@ -743,8 +743,8 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
 
    public void disposeComposite() {
       OseeEventManager.removeListener(this);
-      if (xViewer != null && !xViewer.getTree().isDisposed()) {
-         xViewer.dispose();
+      if (worldXViewer != null && !worldXViewer.getTree().isDisposed()) {
+         worldXViewer.dispose();
       }
    }
 
@@ -752,7 +752,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
     * @return the xViewer
     */
    public WorldXViewer getXViewer() {
-      return xViewer;
+      return worldXViewer;
    }
 
    /* (non-Javadoc)

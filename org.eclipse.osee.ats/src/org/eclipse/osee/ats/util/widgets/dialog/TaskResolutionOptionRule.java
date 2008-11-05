@@ -32,6 +32,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
    private final List<TaskResOptionDefinition> options = new ArrayList<TaskResOptionDefinition>();
    public static String ATS_TASK_OPTIONS_TAG = "AtsTaskOptions";
    public static String WORK_TYPE = "AtsTaskResolutionOptions";
+   public static List<TaskResOptionDefinition> EMPTY_TASK_RESOLUTION_OPTIONS = new ArrayList<TaskResOptionDefinition>();
 
    public TaskResolutionOptionRule(String name, String id, String value) {
       super(name, id, null, WORK_TYPE);
@@ -50,7 +51,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
    public static List<TaskResOptionDefinition> getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(workPageDefinition);
       if (taskResolutionOptionRule != null) return taskResolutionOptionRule.getOptions();
-      return new ArrayList<TaskResOptionDefinition>();
+      return EMPTY_TASK_RESOLUTION_OPTIONS;
    }
 
    public static TaskResolutionOptionRule getTaskResolutionOptionRule(WorkPageDefinition workPageDefinition) throws OseeCoreException {

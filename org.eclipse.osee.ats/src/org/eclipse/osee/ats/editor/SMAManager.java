@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSLog;
 import org.eclipse.osee.ats.artifact.ATSNote;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -359,6 +360,7 @@ public class SMAManager {
       }
       Object obj = vld.getResult()[0];
       VersionArtifact newVersion = (VersionArtifact) obj;
+
       for (TeamWorkFlowArtifact teamArt : smas) {
          teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, newVersion);
       }
@@ -393,17 +395,17 @@ public class SMAManager {
             dialog.setSelected(teams.iterator().next().getChangeType());
          }
          if (dialog.open() == 0) {
-        	
+
         	SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
         	 
-        	  for (TeamWorkFlowArtifact team : teams) {
-                  if (team.getChangeType() != dialog.getSelection()) {
-                     team.setChangeType(dialog.getSelection());
+                  for (TeamWorkFlowArtifact team : teams) {
+                     if (team.getChangeType() != dialog.getSelection()) {
+                        team.setChangeType(dialog.getSelection());
                      team.saveSMA(transaction);
+                     }
                   }
-               }
         	transaction.execute();
-         }
+               }
          return true;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
@@ -434,14 +436,14 @@ public class SMAManager {
          if (ald.open() == 0) {
         	 
         	 SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-              for (TeamWorkFlowArtifact team : teams) {
-                 if (team.getPriority() != ald.getSelection()) {
-                    team.setPriority(ald.getSelection());
+                  for (TeamWorkFlowArtifact team : teams) {
+                     if (team.getPriority() != ald.getSelection()) {
+                        team.setPriority(ald.getSelection());
                     team.saveSMA(transaction);
-                 }
-              }
+                     }
+                  }
             transaction.execute();
-         }
+               }
          return true;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
@@ -450,15 +452,17 @@ public class SMAManager {
    }
 
    public boolean promptChangeStatus(boolean persist) throws OseeCoreException {
-      return promptChangeStatus(null, persist);
+      return promptChangeStatus(Arrays.asList(sma), persist);
    }
 
-   public boolean promptChangeStatus(List<TaskResOptionDefinition> options, boolean persist) throws OseeCoreException {
-      return promptChangeStatus(options, Arrays.asList(sma), persist);
-   }
-
-   public static boolean promptChangeStatus(List<TaskResOptionDefinition> options, final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeStatus(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
       try {
+         List<TaskResOptionDefinition> options = null;
+         if (smas.iterator().next() instanceof TaskArtifact) {
+            if (((TaskArtifact) smas.iterator().next()).isUsingTaskResolutionOptions()) {
+               options = ((TaskArtifact) smas.iterator().next()).getTaskResolutionOptionDefintions();
+            }
+         }
          for (StateMachineArtifact sma : smas) {
             SMAManager smaMgr = new SMAManager(sma);
             if (smaMgr.isReleased()) {

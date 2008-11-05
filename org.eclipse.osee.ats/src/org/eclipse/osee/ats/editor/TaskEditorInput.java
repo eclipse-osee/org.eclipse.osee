@@ -14,10 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -28,7 +25,6 @@ public class TaskEditorInput implements IEditorInput {
 
    private final Collection<TaskArtifact> taskArts;
    private final String name;
-   private List<TaskResOptionDefinition> resOptions;
 
    /**
     * @param artifact
@@ -36,15 +32,14 @@ public class TaskEditorInput implements IEditorInput {
    public TaskEditorInput(String name, Collection<TaskArtifact> taskArts, List<TaskResOptionDefinition> resOptions) {
       this.name = name;
       this.taskArts = taskArts;
-      this.resOptions = resOptions;
    }
 
    public TaskEditorInput(String name, Collection<TaskArtifact> taskArts) {
       this.name = name;
       this.taskArts = taskArts;
-      this.resOptions = null;
    }
 
+   @Override
    public boolean equals(Object obj) {
       return false;
    }
@@ -61,18 +56,6 @@ public class TaskEditorInput implements IEditorInput {
     */
    public String getName() {
       return name;
-   }
-
-   /**
-    * @return the resOptions
-    */
-   public List<TaskResOptionDefinition> getResOptions() throws OseeCoreException {
-      if (resOptions == null) {
-         resOptions =
-               TaskResolutionOptionRule.getTaskResolutionOptions(taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPageDefinitionByName(
-                     DefaultTeamState.Implement.name()));
-      }
-      return resOptions;
    }
 
    /* (non-Javadoc)

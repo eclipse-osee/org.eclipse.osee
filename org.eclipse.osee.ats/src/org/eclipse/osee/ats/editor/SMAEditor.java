@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -21,15 +22,16 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
+import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -67,6 +69,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -129,11 +132,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       } else {
          try {
             SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-            if (getActivePage() == attributesPageIndex) {
+                  if (getActivePage() == attributesPageIndex) {
                smaMgr.getSma().persistAttributes(transaction);
-            }
-            // Save widget data to artifact
-            workFlowTab.saveXWidgetToArtifact();
+                  }
+                  // Save widget data to artifact
+                  workFlowTab.saveXWidgetToArtifact();
             smaMgr.getSma().saveSMA(transaction);
             transaction.execute();
             workFlowTab.refresh();
@@ -557,15 +560,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getResOptions()
-    */
-   public List<TaskResOptionDefinition> getResOptions() throws OseeCoreException {
-      return TaskResolutionOptionRule.getTaskResolutionOptions(smaMgr.getWorkPageDefinition());
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTabName()
     */
    public String getTabName() throws OseeCoreException {
@@ -591,16 +585,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    public boolean isTaskable() throws OseeCoreException {
       return smaMgr.isTaskable();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isUsingTaskResolutionOptions()
-    */
-   public boolean isUsingTaskResolutionOptions() throws OseeCoreException {
-      if (smaMgr.getWorkPageDefinition() == null) return false;
-      return (smaMgr.getWorkPageDefinition().getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE).size() == 1);
    }
 
    /*
