@@ -10,16 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 public class WorldLabelProvider extends XViewerLabelProvider {
 
@@ -52,11 +58,36 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
+   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
+      try {
+         if ((element instanceof TaskArtifact) && xCol.equals(WorldXViewerFactory.Resolution_Col)) {
+            TaskArtifact taskArt = (TaskArtifact) element;
+            TaskResOptionDefinition def = taskArt.getTaskResolutionOptionDefinition(taskArt.getWorldViewResolution());
+            if (def != null) {
+               return Display.getCurrent().getSystemColor(def.getColorInt());
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return null;
+   }
+
+   @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          // NOTE: HRID, Type, Title are handled by XViewerValueColumn values
          if (!(element instanceof IWorldViewArtifact)) return "";
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
+         Artifact art = (Artifact) element;
+         if (art.isDeleted()) {
+            if (xCol.equals(WorldXViewerFactory.ID_Col))
+               return art.getHumanReadableId();
+            else if (xCol.equals(WorldXViewerFactory.Title_Col))
+               return art.getInternalDescriptiveName();
+            else
+               return "<deleted>";
+         }
          if (xCol.equals(WorldXViewerFactory.Type_Col)) return wva.getWorldViewType();
          if (xCol.equals(WorldXViewerFactory.State_Col)) return wva.getWorldViewState();
          if (xCol.equals(WorldXViewerFactory.Assignees_Col)) return wva.getWorldViewActivePoc();
