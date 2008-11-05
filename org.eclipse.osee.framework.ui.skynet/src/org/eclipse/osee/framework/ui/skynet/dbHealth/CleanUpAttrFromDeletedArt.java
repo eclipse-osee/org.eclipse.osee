@@ -2,7 +2,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 public class CleanUpAttrFromDeletedArt extends DatabaseHealthTask {
    private static final String INSERT_ATTRS_TO_ART_COMMIT_TRANSACTION =
@@ -23,7 +23,7 @@ public class CleanUpAttrFromDeletedArt extends DatabaseHealthTask {
    }
 
    @Override
-   public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
+   public void run(VariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
 
       boolean fix = operation == Operation.Fix;
 

@@ -63,6 +63,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -365,7 +366,8 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             try {
-               RendererManager.previewInJob(getSelectedArtifacts(viewer), ITemplateRenderer.PREVIEW_WITH_RECURSE);
+               RendererManager.previewInJob(getSelectedArtifacts(viewer), new VariableMap(
+                     ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }

@@ -17,17 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyQuadHashMap;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyTripleHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -63,17 +59,9 @@ public class DuplicateRelationOpertions extends AbstractBlam {
                1806458, 1806457, 1806456, 261365};
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   @Override
-   public Branch wrapOperationForBranch(BlamVariableMap variableMap) throws OseeArgumentException {
-      return variableMap.getBranch("Parent Branch");
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(SELECT_DUPLICATE_RELATIONS);
@@ -221,8 +209,6 @@ public class DuplicateRelationOpertions extends AbstractBlam {
       private int art_a;
       private int art_b;
       private List<Pair<Long, Integer>> relLinksToGammas;
-      private int branch;
-      private int transaction;
 
       RelationInfo(int a_art_id, int b_art_id, int relLinkTypeId, int branchId) {
          this.rel_link_type = relLinkTypeId;
@@ -246,5 +232,4 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          relLinksToGammas.add(new Pair<Long, Integer>(gammaId, transactionId));
       }
    }
-
 }

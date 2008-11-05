@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BrowserComposite;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Ryan D. Brooks
@@ -73,7 +74,11 @@ public class RendererManager {
       }
    }
 
-   public static FileRenderer getBestFileRenderer(PresentationType presentationType, Artifact artifact, String... options) throws OseeCoreException {
+   public static FileRenderer getBestFileRenderer(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      return getBestFileRenderer(presentationType, artifact, null);
+   }
+
+   public static FileRenderer getBestFileRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
       IRenderer bestRenderer = getBestRenderer(presentationType, artifact, options);
       if (bestRenderer instanceof FileRenderer) {
          return (FileRenderer) bestRenderer;
@@ -81,7 +86,7 @@ public class RendererManager {
       throw new OseeArgumentException("No FileRenderer found for " + artifact);
    }
 
-   private static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, String... options) throws OseeCoreException {
+   private static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
       IRenderer bestRenderer = getBestRendererPrototype(presentationType, artifact).newInstance();
       bestRenderer.setOptions(options);
       return bestRenderer;
@@ -103,7 +108,7 @@ public class RendererManager {
       return bestRendererPrototype;
    }
 
-   private static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, List<Artifact> artifacts, String... options) throws OseeCoreException {
+   private static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, List<Artifact> artifacts, VariableMap options) throws OseeCoreException {
       HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap =
             new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
       for (Artifact artifact : artifacts) {
@@ -121,11 +126,15 @@ public class RendererManager {
       return rendererArtifactMap;
    }
 
-   public static void preview(Artifact artifact, IProgressMonitor monitor, String... options) throws OseeCoreException {
+   public static void preview(Artifact artifact, IProgressMonitor monitor, VariableMap options) throws OseeCoreException {
       getBestRenderer(PresentationType.PREVIEW, artifact, options).preview(artifact, monitor);
    }
 
-   public static void previewInJob(final Artifact artifact, String... options) throws OseeCoreException {
+   public static void previewInJob(final Artifact artifact) throws OseeCoreException {
+      previewInJob(artifact, null);
+   }
+
+   public static void previewInJob(final Artifact artifact, VariableMap options) throws OseeCoreException {
       previewInJob(getBestRenderer(PresentationType.PREVIEW, artifact, options), artifact);
    }
 
@@ -139,14 +148,18 @@ public class RendererManager {
       Jobs.run("Preview " + artifact.getDescriptiveName(), runnable, logger, SkynetGuiPlugin.PLUGIN_ID, false);
    }
 
-   public static void previewInJob(final List<Artifact> artifacts, final String... options) throws OseeCoreException {
+   public static void previewInJob(final List<Artifact> artifacts) throws OseeCoreException {
+      previewInJob(artifacts, null);
+   }
+
+   public static void previewInJob(final List<Artifact> artifacts, final VariableMap options) throws OseeCoreException {
       if (artifacts.size() == 1) {
          previewInJob(artifacts.get(0), options);
       } else {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
             public void run(IProgressMonitor monitor) throws Exception {
                HashCollection<IRenderer, Artifact> rendererArtifactMap =
-                     createRenderMap(PresentationType.PREVIEW, artifacts);
+                     createRenderMap(PresentationType.PREVIEW, artifacts, options);
 
                for (IRenderer renderer : rendererArtifactMap.keySet()) {
                   renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), monitor);
@@ -158,7 +171,7 @@ public class RendererManager {
       }
    }
 
-   public static void preview(final List<Artifact> artifacts, IProgressMonitor monitor, final String... options) throws OseeCoreException {
+   public static void preview(final List<Artifact> artifacts, IProgressMonitor monitor, final VariableMap options) throws OseeCoreException {
       if (artifacts.size() == 1) {
          preview(artifacts.get(0), monitor, options);
       } else {
@@ -171,15 +184,24 @@ public class RendererManager {
       }
    }
 
-   public static void edit(final List<Artifact> artifacts, IProgressMonitor monitor, final String... options) throws OseeCoreException {
-      HashCollection<IRenderer, Artifact> rendererArtifactMap = createRenderMap(PresentationType.EDIT, artifacts);
+   public static void edit(final List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
+      edit(artifacts, monitor, null);
+   }
+
+   public static void edit(final List<Artifact> artifacts, IProgressMonitor monitor, final VariableMap options) throws OseeCoreException {
+      HashCollection<IRenderer, Artifact> rendererArtifactMap =
+            createRenderMap(PresentationType.EDIT, artifacts, options);
 
       for (IRenderer renderer : rendererArtifactMap.keySet()) {
          renderer.edit((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), monitor);
       }
    }
 
-   public static void editInJob(final List<Artifact> artifacts, final String... options) throws OseeCoreException {
+   public static void editInJob(final List<Artifact> artifacts) throws OseeCoreException {
+      editInJob(artifacts, null);
+   }
+
+   public static void editInJob(final List<Artifact> artifacts, final VariableMap options) throws OseeCoreException {
       if (ArtifactGuis.checkOtherEdit(artifacts)) {
          if (artifacts.size() == 1) {
             editInJob(artifacts.get(0), options);
@@ -195,7 +217,11 @@ public class RendererManager {
       }
    }
 
-   public static void editInJob(final Artifact artifact, final String... options) throws OseeCoreException {
+   public static void editInJob(final Artifact artifact) throws OseeCoreException {
+      editInJob(artifact, null);
+   }
+
+   public static void editInJob(final Artifact artifact, final VariableMap options) throws OseeCoreException {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
             getBestRenderer(PresentationType.EDIT, artifact, options).edit(artifact, monitor);
@@ -210,16 +236,20 @@ public class RendererManager {
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, boolean show) throws OseeStateException, OseeCoreException {
-      return getBestRenderer(PresentationType.MERGE, baseVersion, "fileName", fileName).compare(baseVersion,
-            newerVersion, monitor, PresentationType.MERGE, show);
+      return getBestRenderer(PresentationType.MERGE, baseVersion, new VariableMap("fileName", fileName)).compare(
+            baseVersion, newerVersion, monitor, PresentationType.MERGE, show);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, boolean show) throws OseeCoreException {
-      return getBestRenderer(PresentationType.MERGE_EDIT, baseVersion, "fileName", fileName).compare(baseVersion,
-            newerVersion, baseFile, newerFile, PresentationType.MERGE_EDIT, show);
+      return getBestRenderer(PresentationType.MERGE_EDIT, baseVersion, new VariableMap("fileName", fileName)).compare(
+            baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE_EDIT, show);
    }
 
-   public static void diffInJob(final Artifact baseVersion, final Artifact newerVersion, final String... options) {
+   public static void diffInJob(final Artifact baseVersion, final Artifact newerVersion) {
+      diffInJob(baseVersion, newerVersion, null);
+   }
+
+   public static void diffInJob(final Artifact baseVersion, final Artifact newerVersion, final VariableMap options) {
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws OseeCoreException {
@@ -233,18 +263,30 @@ public class RendererManager {
 
    }
 
-   public static String diff(final Artifact baseVersion, final Artifact newerVersion, IProgressMonitor monitor, boolean show, final String... options) throws OseeCoreException {
+   public static String diff(final Artifact baseVersion, final Artifact newerVersion, IProgressMonitor monitor, boolean show) throws OseeCoreException {
+      return diff(baseVersion, newerVersion, monitor, show, null);
+   }
+
+   public static String diff(final Artifact baseVersion, final Artifact newerVersion, IProgressMonitor monitor, boolean show, final VariableMap options) throws OseeCoreException {
       // To handle comparisons with new or deleted artifacts
       Artifact artifactToSelectRender = baseVersion == null ? newerVersion : baseVersion;
       IRenderer renderer = getBestRenderer(PresentationType.DIFF, artifactToSelectRender, options);
       return renderer.compare(baseVersion, newerVersion, new NullProgressMonitor(), PresentationType.DIFF, show);
    }
 
-   public static String diff(final Artifact baseVersion, final Artifact newerVersion, boolean show, final String... options) throws OseeCoreException {
+   public static String diff(final Artifact baseVersion, final Artifact newerVersion, boolean show) throws OseeCoreException {
+      return diff(baseVersion, newerVersion, show, null);
+   }
+
+   public static String diff(final Artifact baseVersion, final Artifact newerVersion, boolean show, final VariableMap options) throws OseeCoreException {
       return diff(baseVersion, newerVersion, new NullProgressMonitor(), show, options);
    }
 
-   public static void diffInJob(final List<Artifact> baseArtifacts, final List<Artifact> newerArtifacts, final String... options) {
+   public static void diffInJob(final List<Artifact> baseArtifacts, final List<Artifact> newerArtifacts) {
+      diffInJob(baseArtifacts, newerArtifacts, null);
+   }
+
+   public static void diffInJob(final List<Artifact> baseArtifacts, final List<Artifact> newerArtifacts, final VariableMap options) {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws OseeCoreException {
             Artifact sampleArtifact = baseArtifacts.get(0) == null ? newerArtifacts.get(0) : baseArtifacts.get(0);
@@ -256,7 +298,11 @@ public class RendererManager {
       Jobs.run("Combined Diff", runnable, logger, SkynetGuiPlugin.PLUGIN_ID);
    }
 
-   public static void previewInComposite(final BrowserComposite previewComposite, final Artifact artifact, final String... options) {
+   public static void previewInComposite(final BrowserComposite previewComposite, final Artifact artifact) {
+      previewInComposite(previewComposite, artifact, null);
+   }
+
+   public static void previewInComposite(final BrowserComposite previewComposite, final Artifact artifact, final VariableMap options) {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
             IRenderer renderer = getBestRenderer(PresentationType.PREVIEW_IN_COMPOSITE, artifact, options);
@@ -273,7 +319,11 @@ public class RendererManager {
       Jobs.run("Preview " + artifact.getDescriptiveName(), runnable, logger, SkynetGuiPlugin.PLUGIN_ID, false);
    }
 
-   public static String renderToHtml(Artifact artifact, String... options) throws OseeCoreException {
-      return getBestRenderer(PresentationType.PREVIEW_IN_COMPOSITE, artifact).generateHtml(artifact);
+   public static String renderToHtml(Artifact artifact) throws OseeCoreException {
+      return renderToHtml(artifact, null);
+   }
+
+   public static String renderToHtml(Artifact artifact, VariableMap options) throws OseeCoreException {
+      return getBestRenderer(PresentationType.PREVIEW_IN_COMPOSITE, artifact, options).generateHtml(artifact);
    }
 }

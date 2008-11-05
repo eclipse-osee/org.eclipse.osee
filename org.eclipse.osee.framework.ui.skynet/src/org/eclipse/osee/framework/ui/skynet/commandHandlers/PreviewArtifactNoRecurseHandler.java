@@ -10,20 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Jeff C. Phillips
  */
 public class PreviewArtifactNoRecurseHandler extends PreviewArtifactHandler {
-   public static String[] options = new String[0];
-
    /*
     * (non-Javadoc)
     * 
     * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactHandler#getPreviewType()
     */
    @Override
-   protected String[] getPreviewOptions() {
-      return options;
+   protected VariableMap getPreviewOptions() throws OseeArgumentException {
+      return null;
    }
 }

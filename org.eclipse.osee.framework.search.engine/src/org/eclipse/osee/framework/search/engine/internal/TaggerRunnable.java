@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -118,13 +119,14 @@ class TaggerRunnable implements Runnable {
    }
 
    private final class AttributeToTagTx extends DbTransaction implements ITagCollector {
-      private final Deque<SearchTag> searchTags;
-      private SearchTag currentTag;
-
-      public AttributeToTagTx() {
-         this.searchTags = new LinkedList<SearchTag>();
-         this.currentTag = null;
+      /**
+       * @throws OseeStateException
+       */
+      public AttributeToTagTx() throws OseeStateException {
       }
+
+      private final Deque<SearchTag> searchTags = new LinkedList<SearchTag>();
+      private SearchTag currentTag;
 
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)

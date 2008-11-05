@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
@@ -69,7 +70,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
    private String[] preserveArtTypeIds;
    private Map<Integer, Integer> gammasToCurrent = new HashMap<Integer, Integer>();
 
-   public CreateBranchWithFiltering(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String[] compressArtTypeIds, String[] preserveArtTypeIds) {
+   public CreateBranchWithFiltering(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String[] compressArtTypeIds, String[] preserveArtTypeIds) throws OseeStateException {
       super(parentBranchId, childBranchShortName, childBranchName, creationComment, associatedArtifactId, authorId,
             BranchType.WORKING);
       this.compressArtTypeIds = compressArtTypeIds;

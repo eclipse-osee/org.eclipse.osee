@@ -29,7 +29,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor";
    private OverviewPage overviewPage;
    private List<XWidget> widgets;
-   private BlamVariableMap blamVariableMap;
+   private VariableMap blamVariableMap;
 
    @Override
    protected void addPages() {
@@ -111,13 +111,13 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
    protected void setInput(IEditorInput input) {
       super.setInput(input);
 
-      blamVariableMap = new BlamVariableMap();
+      blamVariableMap = new VariableMap();
    }
 
    /**
     * @return the blamVariableMap
     */
-   protected BlamVariableMap getBlamVariableMap() {
+   protected VariableMap getBlamVariableMap() {
       return blamVariableMap;
    }
 }

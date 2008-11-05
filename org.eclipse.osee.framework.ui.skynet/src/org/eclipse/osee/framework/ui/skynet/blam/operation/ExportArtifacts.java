@@ -27,10 +27,9 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -44,15 +43,15 @@ public class ExportArtifacts extends AbstractBlam {
    private static final int NUM_FIXED_COLUMNS = 4;
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       init();
 
       List<Artifact> parentArtifacts = variableMap.getArtifacts("artifacts");
       List<Artifact> artifacts;
 
-      if (variableMap.getValue(Boolean.class, "Include Children")) {
+      if (variableMap.getBoolean("Include Children")) {
          artifacts = new ArrayList<Artifact>(400);
          for (Artifact artifact : parentArtifacts) {
             artifacts.add(artifact);

@@ -13,14 +13,13 @@ package org.eclipse.osee.ats.util.Import;
 
 import java.io.File;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -28,13 +27,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class TaskImportJob extends Job {
    private final File file;
    private ExcelAtsTaskArtifactExtractor atsTaskExtractor;
-   private SkynetTransaction transaction;
 
-   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor, SkynetTransaction transaction) throws IllegalArgumentException, CoreException {
+   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor) {
       super("Importing Tasks");
       this.file = file;
       this.atsTaskExtractor = atsTaskExtractor;
-      this.transaction = transaction;
    }
 
    public IStatus run(final IProgressMonitor monitor) {
@@ -45,9 +42,8 @@ public class TaskImportJob extends Job {
          if (file != null && file.isFile()) {
             atsTaskExtractor.discoverArtifactAndRelationData(file);
          } else {
-            throw new IllegalStateException("All files passed must be a file");
+            throw new OseeArgumentException("All files passed must be a file");
          }
-         transaction.execute();
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

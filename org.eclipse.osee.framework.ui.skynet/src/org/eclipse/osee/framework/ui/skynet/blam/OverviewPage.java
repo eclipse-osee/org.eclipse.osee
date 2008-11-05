@@ -118,7 +118,7 @@ public class OverviewPage extends FormPage implements IActionable {
       Action runAction = new Action("Run Workflow in Job", Action.AS_PUSH_BUTTON) {
          public void run() {
 
-            BlamVariableMap blamVariableMap = editor.getBlamVariableMap();
+            VariableMap blamVariableMap = editor.getBlamVariableMap();
             for (DynamicXWidgetLayoutData xWidgetData : dynamicXWidgetLayout.getLayoutDatas()) {
                XWidget widget = xWidgetData.getXWidget();
                blamVariableMap.setValue(widget.getLabel(), widget.getData());

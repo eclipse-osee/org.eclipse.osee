@@ -24,74 +24,37 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 /**
  * @author Ryan D. Brooks
  */
-public class BlamVariableMap {
-   private final HashMap<String, BlamVariable> variableMap;
+public class VariableMap {
+   private final HashMap<String, Object> variableMap = new HashMap<String, Object>();
 
-   public BlamVariableMap() {
-      super();
-      variableMap = new HashMap<String, BlamVariable>();
+   public VariableMap() {
    }
 
    /**
-    * This method is used by the Blam engine to put all Blam variables (parameters and local) into the map and should
-    * not be used directly by Blam operations
-    * 
-    * @param name
-    * @param object
+    * @throws OseeArgumentException
     */
-   protected void addBlamVariable(String name, Object object) {
-      variableMap.put(name, new BlamVariable(object));
-   }
-
-   private BlamVariable getBlamVariable(String name) throws IllegalArgumentException {
-      BlamVariable variable = variableMap.get(name);
-      if (variable == null) {
-         throw new IllegalArgumentException("No variable existing with the name " + name);
+   public VariableMap(Object... optionArgs) throws OseeArgumentException {
+      for (int i = 0; i < optionArgs.length; i += 2) {
+         if (optionArgs[i] instanceof String) {
+            variableMap.put((String) optionArgs[i], optionArgs[i + 1]);
+         } else if (optionArgs[i] == null) {
+            throw new OseeArgumentException(String.format("The %dth option must not be null", i));
+         } else {
+            throw new OseeArgumentException(String.format("The %dth option must be of type string but is of type %s",
+                  i, optionArgs[i].getClass().getName()));
+         }
       }
-      return variable;
-   }
-
-   protected void aliasVariable(String existingName, String alias) {
-      BlamVariable variable = getBlamVariable(existingName);
-      variableMap.put(alias, variable);
    }
 
    public void setValue(String variableName, Object value) {
-      BlamVariable variable = variableMap.get(variableName);
-      if (variable == null) {
-         addBlamVariable(variableName, value);
-      } else {
-         variable.setValue(value);
-      }
+      variableMap.put(variableName, value);
    }
 
-   private static class BlamVariable {
-      private Object value;
-
-      public BlamVariable(Object value) {
-         this.value = value;
-      }
-
-      public Object getValue() {
-         return value;
-      }
-
-      public void setValue(Object value) {
-         this.value = value;
-      }
-   }
-
-   public List<Artifact> getArtifacts(String parameterName) throws OseeArgumentException {
-      Collection<Artifact> arts = getCollection(Artifact.class, parameterName);
-      if (arts == null) return new ArrayList<Artifact>();
-      return new ArrayList<Artifact>(arts);
-   }
-
-   public ArtifactType getArtifactSubtypeDescriptor(String parameterName) throws OseeArgumentException {
+   public ArtifactType getArtifactType(String parameterName) throws OseeArgumentException {
       return getSingleCollectionValue(ArtifactType.class, parameterName);
    }
 
-   public AttributeType getAttributeDescriptor(String parameterName) throws OseeArgumentException {
+   public AttributeType getAttributeType(String parameterName) throws OseeArgumentException {
       return getSingleCollectionValue(AttributeType.class, parameterName);
    }
 
@@ -116,6 +79,14 @@ public class BlamVariableMap {
       return getValue(User.class, parameterName);
    }
 
+   public List<Artifact> getArtifacts(String parameterName) throws OseeArgumentException {
+      Collection<Artifact> artiafcts = getCollection(Artifact.class, parameterName);
+      if (artiafcts == null) {
+         return new ArrayList<Artifact>();
+      }
+      return new ArrayList<Artifact>(artiafcts);
+   }
+
    private <T> T getSingleCollectionValue(Class<T> clazz, String parameterName) throws OseeArgumentException {
       Collection<T> objects = getCollection(clazz, parameterName);
       if (objects.size() != 1) {
@@ -124,13 +95,17 @@ public class BlamVariableMap {
       return objects.iterator().next();
    }
 
-   public <T> T getValue(Class<T> clazz, String variableName) throws OseeArgumentException {
-      Object object = getBlamVariable(variableName).getValue();
+   private <T> T getValue(Class<T> clazz, String variableName) throws OseeArgumentException {
+      Object value = variableMap.get(variableName);
 
-      if (object != null && !clazz.isInstance(object)) {
+      if (value != null && !clazz.isInstance(value)) {
          throw new OseeArgumentException(
-               "Expecting object of type " + clazz.getName() + " not " + object.getClass().getName());
+               "Expecting object of type " + clazz.getName() + " not " + value.getClass().getName());
       }
-      return clazz.cast(object);
+      return clazz.cast(value);
+   }
+
+   public Object getValue(String variableName) throws OseeArgumentException {
+      return variableMap.get(variableName);
    }
 }

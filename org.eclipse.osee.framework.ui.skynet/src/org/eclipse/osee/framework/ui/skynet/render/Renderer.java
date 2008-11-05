@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
 
 /**
@@ -26,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
  */
 public abstract class Renderer implements IRenderer {
    private String rendererId;
-   private final HashMap<String, String> options = new HashMap<String, String>();
+   private VariableMap options;
 
    /**
     * @param rendererId
@@ -184,29 +185,31 @@ public abstract class Renderer implements IRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#setRendererOptions(java.lang.String[])
     */
    @Override
-   public void setOptions(String... optionArgs) {
-      for (int i = 0; i < optionArgs.length; i += 2) {
-         options.put(optionArgs[i], optionArgs[i + 1]);
-      }
+   public void setOptions(VariableMap options) throws OseeArgumentException {
+      this.options = options;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getOption(java.lang.String[])
     */
    @Override
-   public String getOption(String key) {
-      return options.get(key);
+   public Object getOption(String key) throws OseeArgumentException {
+      return options.getValue(key);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getBooleanOption(java.lang.String)
     */
    @Override
-   public boolean getBooleanOption(String key) {
-      String value = getOption(key);
-      if (value == null) {
-         return false;
-      }
-      return Boolean.parseBoolean(value);
+   public boolean getBooleanOption(String key) throws OseeArgumentException {
+      return options.getBoolean(key);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getBooleanOption(java.lang.String)
+    */
+   public String getStringOption(String key) throws OseeArgumentException {
+      return options.getString(key);
+   }
+
 }

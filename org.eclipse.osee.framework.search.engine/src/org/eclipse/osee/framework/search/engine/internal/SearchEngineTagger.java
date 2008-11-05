@@ -22,6 +22,7 @@ import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
@@ -83,7 +84,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
     * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByBranchId(org.eclipse.osee.framework.search.engine.ITagListener, int)
     */
    @Override
-   public void tagByBranchId(ITagListener listener, int branchId) {
+   public void tagByBranchId(ITagListener listener, int branchId) throws OseeStateException {
       this.executor.submit(new BranchTaggerRunnable(this, listener, branchId, false, CACHE_LIMIT));
    }
 
@@ -91,7 +92,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
     * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByBranchId(int)
     */
    @Override
-   public void tagByBranchId(int branchId) {
+   public void tagByBranchId(int branchId) throws OseeStateException {
       tagByBranchId(null, branchId);
    }
 
@@ -199,7 +200,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       private final int queryId;
       private int updated;
 
-      public DeleteTagsTx(int queryId) {
+      public DeleteTagsTx(int queryId) throws OseeStateException {
          super();
          this.queryId = queryId;
          this.updated = -1;

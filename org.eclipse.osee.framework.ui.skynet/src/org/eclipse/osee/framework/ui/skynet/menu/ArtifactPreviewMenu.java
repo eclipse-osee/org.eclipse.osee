@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -69,7 +70,7 @@ public class ArtifactPreviewMenu {
 
       previewWithChildRecursionItem.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent ev) {
-            preview(viewer, ITemplateRenderer.PREVIEW_WITH_RECURSE);
+            preview(viewer, ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
          }
       });
 
@@ -123,9 +124,9 @@ public class ArtifactPreviewMenu {
       });
    }
 
-   private static void preview(Viewer viewer, String... options) {
+   private static void preview(Viewer viewer, Object... options) {
       try {
-         RendererManager.previewInJob(getSelectedArtifacts(viewer), options);
+         RendererManager.previewInJob(getSelectedArtifacts(viewer), new VariableMap(options));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

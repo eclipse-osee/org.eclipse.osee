@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 
 /**
@@ -21,9 +23,9 @@ public class PreviewArtifactWithRecurseHandler extends PreviewArtifactHandler {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactHandler#getPreviewType()
     */
-	
+
    @Override
-   protected String[] getPreviewOptions() {
-      return ITemplateRenderer.PREVIEW_WITH_RECURSE;
+   protected VariableMap getPreviewOptions() throws OseeArgumentException {
+      return new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
    }
 }

@@ -264,6 +264,12 @@ final class ImportController {
 
    private final class ImportBranchesTx extends DbTransaction {
 
+      /**
+       * @throws OseeStateException
+       */
+      public ImportBranchesTx() throws OseeStateException {
+      }
+
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
        */
@@ -303,6 +309,12 @@ final class ImportController {
    }
 
    private final class CommitImportSavePointsTx extends DbTransaction {
+
+      /**
+       * @throws OseeStateException
+       */
+      public CommitImportSavePointsTx() throws OseeStateException {
+      }
 
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)

@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -120,7 +121,7 @@ public class MergeUtility {
     */
    public static String showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
       if (art1 == null || art2 == null) return " ";
-      return RendererManager.diff(art1, art2, true, "fileName", fileName);
+      return RendererManager.diff(art1, art2, true, new VariableMap("fileName", fileName));
    }
 
    /*

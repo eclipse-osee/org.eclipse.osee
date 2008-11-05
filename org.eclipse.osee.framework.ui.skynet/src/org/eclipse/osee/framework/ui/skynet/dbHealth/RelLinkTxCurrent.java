@@ -14,7 +14,7 @@ import java.util.HashSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Theron Virgin
@@ -31,7 +31,7 @@ public class RelLinkTxCurrent extends DatabaseHealthTask {
       return "Check for TX_Current Relation Link Errors";
    }
 
-   public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
+   public void run(VariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
       monitor.beginTask("Verify TX_Current Relation Link Errors", 100);
       String[] columnHeaders = new String[] {"Count", "Rel Link Id", "Branch id"};
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));

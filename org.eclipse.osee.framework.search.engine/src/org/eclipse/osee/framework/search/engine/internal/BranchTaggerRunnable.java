@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -27,7 +28,7 @@ public class BranchTaggerRunnable implements Runnable {
    private final int branchId;
    private final BranchToQueryTx branchToQueryTx;
 
-   BranchTaggerRunnable(ISearchEngineTagger tagger, ITagListener listener, int branchId, boolean isCacheAll, int cacheLimit) {
+   BranchTaggerRunnable(ISearchEngineTagger tagger, ITagListener listener, int branchId, boolean isCacheAll, int cacheLimit) throws OseeStateException {
       this.branchToQueryTx = new BranchToQueryTx(tagger, listener, isCacheAll, cacheLimit);
       this.branchId = branchId;
    }
@@ -45,7 +46,7 @@ public class BranchTaggerRunnable implements Runnable {
    }
 
    private final class BranchToQueryTx extends InputToTagQueueTx {
-      public BranchToQueryTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) {
+      public BranchToQueryTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) throws OseeStateException {
          super(tagger, listener, isCacheAll, cacheLimit);
       }
 

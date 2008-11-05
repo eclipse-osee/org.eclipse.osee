@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -20,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Ryan D. Brooks
@@ -30,14 +29,14 @@ public class SetRequirementCategory extends AbstractBlam {
    private final HashMap<String, Artifact> reqs = new HashMap<String, Artifact>();
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Generating Reports", 100);
 
       Branch branch = variableMap.getBranch("Branch");
       String excelMlPath = variableMap.getString("ExcelML Priority File");
-      boolean bulkLoad = variableMap.getValue(Boolean.class, "Bulk Load");
+      boolean bulkLoad = variableMap.getBoolean("Bulk Load");
 
       ExtractReqPriority extractor = new ExtractReqPriority(excelMlPath);
       reqPriorities = extractor.getReqPriorities();
@@ -48,12 +47,14 @@ public class SetRequirementCategory extends AbstractBlam {
          }
       }
 
+      SkynetTransaction transaction = new SkynetTransaction(branch);
       for (String requirementName : reqPriorities.keySet()) {
-         updateCategory(bulkLoad, branch, requirementName.trim());
+         updateCategory(transaction, bulkLoad, branch, requirementName.trim());
       }
+      transaction.execute();
    }
 
-   private void updateCategory(boolean bulkLoad, Branch branch, String requirementName) throws OseeCoreException {
+   private void updateCategory(SkynetTransaction transaction, boolean bulkLoad, Branch branch, String requirementName) throws OseeCoreException {
       try {
          Artifact requirement;
          if (bulkLoad) {
@@ -70,7 +71,7 @@ public class SetRequirementCategory extends AbstractBlam {
             throw new MultipleArtifactsExist(requirement.getDescriptiveName());
          } else {
             requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
-            requirement.persistAttributes();
+            requirement.persistAttributes(transaction);
          }
       } catch (MultipleArtifactsExist ex) {
          List<Artifact> artiafcts =
@@ -80,7 +81,7 @@ public class SetRequirementCategory extends AbstractBlam {
                OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");
             } else {
                requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
-               requirement.persistAttributes();
+               requirement.persistAttributes(transaction);
             }
          }
       } catch (ArtifactDoesNotExist ex) {
@@ -102,13 +103,5 @@ public class SetRequirementCategory extends AbstractBlam {
     */
    public String getDescriptionUsage() {
       return "Sets the Category attribute on software requirements.";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
-    */
-   @Override
-   public Branch wrapOperationForBranch(BlamVariableMap variableMap) throws OseeArgumentException {
-      return variableMap.getBranch("Branch");
    }
 }

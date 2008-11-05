@@ -2,8 +2,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * 
@@ -17,7 +16,7 @@ public class UpdateWordFormattedContentAttributes extends AbstractBlam {
 	private static final String UPDATE_ATTR_VAL_WORD_TEMP = "update osee_valid_attributes set attr_type_id = 962 where attr_type_id = 19";
 	
 	@Override
-	public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
+	public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 		monitor.beginTask("Update Word Fromatted Content attributes", 4);
 		monitor.setTaskName("UPDATE_ATTRIBUTE_TYPE_WHOLE_WORD");
 		ConnectionHandler.runPreparedUpdate(UPDATE_ATTRIBUTE_TYPE_WHOLE_WORD);

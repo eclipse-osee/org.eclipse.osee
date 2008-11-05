@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,8 +29,11 @@ public abstract class DbTransaction {
 
    /**
     * Transaction Constructor
+    * 
+    * @throws OseeStateException
     */
-   public DbTransaction() {
+   public DbTransaction() throws OseeStateException {
+      OseeDbConnection.reportTxStart(this);
    }
 
    /**
@@ -58,6 +62,9 @@ public abstract class DbTransaction {
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
          ConnectionHandler.deferConstraintChecking(connection);
+         if (commit) {
+            OseeDbConnection.reportTxStart(this);
+         }
          handleTxWork(connection);
          if (commit) {
             connection.commit();
@@ -84,6 +91,7 @@ public abstract class DbTransaction {
          }
          if (commit) {
             connection.close();
+            OseeDbConnection.reportTxEnd(this);
          }
 
          handleTxFinally();

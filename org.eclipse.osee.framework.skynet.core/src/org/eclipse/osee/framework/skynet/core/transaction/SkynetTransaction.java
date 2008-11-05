@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -76,7 +77,7 @@ public final class SkynetTransaction extends DbTransaction {
       return branch;
    }
 
-   public SkynetTransaction(Branch branch) {
+   public SkynetTransaction(Branch branch) throws OseeStateException {
       this.branch = branch;
    }
 

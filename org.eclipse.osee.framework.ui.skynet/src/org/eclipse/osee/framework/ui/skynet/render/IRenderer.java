@@ -13,9 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Jeff C. Phillips
@@ -65,11 +67,11 @@ public interface IRenderer {
 
    public abstract String getId();
 
-   public abstract void setOptions(String... optionArgs);
+   public abstract void setOptions(VariableMap options) throws OseeArgumentException;
 
-   public abstract String getOption(String key);
+   public abstract Object getOption(String key) throws OseeArgumentException;
 
-   public abstract boolean getBooleanOption(String key);
+   public abstract boolean getBooleanOption(String key) throws OseeArgumentException;
 
    public abstract IRenderer newInstance() throws OseeCoreException;
 }

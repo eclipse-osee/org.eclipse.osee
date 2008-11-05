@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
@@ -79,7 +80,7 @@ public class BranchCreation implements IBranchCreation {
       protected String creationComment;
       private BranchType branchType;
 
-      public CreateBranchTx(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, BranchType branchType) {
+      public CreateBranchTx(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, BranchType branchType) throws OseeStateException {
          this.parentBranchId = parentBranchId;
          this.childBranchShortName = childBranchShortName;
          this.childBranchName = childBranchName;
@@ -137,7 +138,7 @@ public class BranchCreation implements IBranchCreation {
 
       private String staticBranchName;
 
-      public CreateTopLevelBranchTx(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName, boolean systemRootBranch) {
+      public CreateTopLevelBranchTx(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName, boolean systemRootBranch) throws OseeStateException {
          super(parentBranchId, childBranchShortName, childBranchName, creationComment, associatedArtifactId, authorId,
                systemRootBranch ? BranchType.SYSTEM_ROOT : BranchType.TOP_LEVEL);
          this.staticBranchName = staticBranchName;
@@ -157,7 +158,7 @@ public class BranchCreation implements IBranchCreation {
 
    private final class CreateChildBranchTx extends CreateBranchTx {
 
-      public CreateChildBranchTx(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId) {
+      public CreateChildBranchTx(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId) throws OseeStateException {
          super(parentBranchId, childBranchShortName, childBranchName, creationComment, associatedArtifactId, authorId,
                BranchType.WORKING);
       }

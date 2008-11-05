@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
@@ -131,7 +131,7 @@ public class WordTemplateProcessor {
     * 
     * @throws IOException
     */
-   public void publishSRS(BlamVariableMap variableMap) throws OseeCoreException {
+   public void publishSRS(VariableMap variableMap) throws OseeCoreException {
       Artifact srsMasterTemplate =
             ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsMasterTemplate",
                   BranchManager.getCommonBranch());
@@ -153,7 +153,7 @@ public class WordTemplateProcessor {
     * 
     * @throws IOException
     */
-   private InputStream applySRSTemplate(BlamVariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws OseeCoreException {
+   private InputStream applySRSTemplate(VariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws OseeCoreException {
       WordMLProducer wordMl;
       CharBackedInputStream charBak;
       try {
@@ -312,7 +312,7 @@ public class WordTemplateProcessor {
     * 
     * @throws CoreException
     */
-   private void processExtensionTemplate(String elementValue, BlamVariableMap variableMap, IFolder folder, WordMLProducer wordMl) throws OseeCoreException, CoreException {
+   private void processExtensionTemplate(String elementValue, VariableMap variableMap, IFolder folder, WordMLProducer wordMl) throws OseeCoreException, CoreException {
       String extensionName;
       String subdocumentName = null;
       boolean doSubDocuments = false;
@@ -355,7 +355,7 @@ public class WordTemplateProcessor {
 
             matcher = argumentElementsPattern.matcher(elementValue);
 
-            BlamVariableMap newVariableMap = doSubDocuments ? new BlamVariableMap() : null;
+            VariableMap newVariableMap = doSubDocuments ? new VariableMap() : null;
 
             while (matcher.find()) {
                matcher = keyValueElementsPattern.matcher(matcher.group(4));

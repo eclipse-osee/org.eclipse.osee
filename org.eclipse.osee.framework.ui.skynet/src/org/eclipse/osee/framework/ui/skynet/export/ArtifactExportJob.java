@@ -87,7 +87,7 @@ public class ArtifactExportJob extends Job {
          }
       } else {
          try {
-            FileRenderer fileRenderer = RendererManager.getBestFileRenderer(presentationType, artifact);
+            FileRenderer fileRenderer = RendererManager.getBestFileRenderer(presentationType, artifact, null);
             String fileName = artifact.getSafeName() + "." + fileRenderer.getAssociatedExtension(artifact);
             InputStream inputStream = fileRenderer.getRenderInputStream(artifact, presentationType);
             Lib.inputStreamToFile(inputStream, new File(exportPath, fileName));

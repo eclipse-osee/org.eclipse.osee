@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -414,8 +415,9 @@ public class BranchCreator {
        * @param sourceBranch
        * @param destBranch
        * @param artIds
+       * @throws OseeStateException
        */
-      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) {
+      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws OseeStateException {
          this(sourceBranch, destBranch, artIds, null);
       }
 
@@ -423,9 +425,9 @@ public class BranchCreator {
        * @param sourceBranch
        * @param destBranch
        * @param artIds
+       * @throws OseeStateException
        */
-      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds, Branch mergeBranch) {
-         super();
+      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds, Branch mergeBranch) throws OseeStateException {
          this.sourceBranch = sourceBranch;
          this.destBranch = destBranch;
          this.artIds = artIds;

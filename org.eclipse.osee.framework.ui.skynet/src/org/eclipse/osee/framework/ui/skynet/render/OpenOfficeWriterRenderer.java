@@ -72,7 +72,7 @@ public class OpenOfficeWriterRenderer extends FileRenderer implements ITemplateR
    }
 
    private String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      return TemplateManager.getTemplate(this, artifact, presentationType.name(), getOption(TEMPLATE_OPTION)).getSoleAttributeValue(
+      return TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION)).getSoleAttributeValue(
             NativeArtifact.CONTENT_NAME);
    }
 }

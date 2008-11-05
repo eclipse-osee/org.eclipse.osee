@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictTestManager;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateFromParentBranch;
 
 /**
@@ -40,7 +40,7 @@ public class UpdateFromParentTest extends TestCase {
    public void testUpdateFromParent() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
-      BlamVariableMap variableMap = new BlamVariableMap();
+      VariableMap variableMap = new VariableMap();
       Collection<Artifact> sourceArtifacts =
             ConflictTestManager.getArtifacts(true, ConflictTestManager.UPDATE_PARENT_QUERY);
       Collection<Artifact> destinationArtifacts =
@@ -57,7 +57,7 @@ public class UpdateFromParentTest extends TestCase {
       variableMap.setValue("Parent Branch Artifacts to update to Child Branch", destinationArtifacts);
       variableMap.setValue("Child Branch Name", sourceArtifacts.iterator().next().getBranch());
       UpdateFromParentBranch updateFromParentBranch = new UpdateFromParentBranch();
-      updateFromParentBranch.runOperation(variableMap, new NullProgressMonitor(), null);
+      updateFromParentBranch.runOperation(variableMap, new NullProgressMonitor());
       sourceArtifact.reloadAttributesAndRelations();
 
       if (DEBUG) {

@@ -28,9 +28,9 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -94,12 +94,11 @@ class DeleteBranchJob extends Job {
    private final class DeleteBranchTx extends DbTransaction {
       private final Branch branch;
       private final IProgressMonitor monitor;
-      private IStatus txResult;
+      private IStatus txResult = Status.CANCEL_STATUS;
 
-      public DeleteBranchTx(Branch branch, IProgressMonitor monitor) {
+      public DeleteBranchTx(Branch branch, IProgressMonitor monitor) throws OseeStateException {
          this.branch = branch;
          this.monitor = monitor;
-         this.txResult = Status.CANCEL_STATUS;
       }
 
       public IStatus getResult() {

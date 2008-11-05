@@ -23,11 +23,10 @@ import org.eclipse.osee.ats.util.Import.ExcelAtsTaskArtifactExtractor;
 import org.eclipse.osee.ats.util.Import.TaskImportJob;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
@@ -99,10 +98,10 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
     */
    @Override
-   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor, final SkynetTransaction transaction) throws Exception {
+   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
@@ -130,10 +129,10 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                }
                File file = new File(filename);
                try {
-                  //this is odd, but this is passed into the TaskImportJob and the execel extractor, execute() is called after the extractor has been run
+                  //this is odd, but this is passed into the TaskImportJob and the excel extractor, execute() is called after the extractor has been run
                   //                  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
                   Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
-                        (TeamWorkFlowArtifact) artifact, emailPocs, persist, transaction), transaction));
+                        (TeamWorkFlowArtifact) artifact, emailPocs, persist)));
                } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                   return;

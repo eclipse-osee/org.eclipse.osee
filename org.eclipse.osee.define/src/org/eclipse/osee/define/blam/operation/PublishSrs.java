@@ -11,8 +11,7 @@
 package org.eclipse.osee.define.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
@@ -25,10 +24,10 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 public class PublishSrs extends AbstractBlam {
 
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
-      String updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers").toString();
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
       WordTemplateRenderer srsRenderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
-      srsRenderer.setOptions(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber);
+      srsRenderer.setOptions(new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber));
       srsRenderer.publishSRS(variableMap);
    }
 

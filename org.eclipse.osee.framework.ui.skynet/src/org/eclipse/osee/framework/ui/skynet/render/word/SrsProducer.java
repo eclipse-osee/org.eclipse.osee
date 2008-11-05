@@ -16,14 +16,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Jeff C. Phillips
  */
 public class SrsProducer implements IWordMlProducer {
 
-   public BlamVariableMap process(BlamVariableMap variableMap) throws OseeCoreException {
+   public VariableMap process(VariableMap variableMap) throws OseeCoreException {
       if (variableMap == null) throw new IllegalArgumentException("variableMap must not be null");
 
       String name = variableMap.getString("Name");

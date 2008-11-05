@@ -130,7 +130,7 @@ public class WholeDocumentRenderer extends WordRenderer {
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
       String diffPath;
-      String fileName = getOption("filename");
+      String fileName = getStringOption("filename");
       if (fileName == null || fileName.equals("")) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();

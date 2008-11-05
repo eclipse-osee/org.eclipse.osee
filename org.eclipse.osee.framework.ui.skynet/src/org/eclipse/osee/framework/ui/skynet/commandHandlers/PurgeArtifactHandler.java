@@ -66,20 +66,17 @@ public class PurgeArtifactHandler extends AbstractHandler {
             protected IStatus run(final IProgressMonitor monitor) {
                IStatus toReturn = Status.CANCEL_STATUS;
                monitor.beginTask("Purge artifact", artifacts.size());
-
-               DbTransaction transaction = new DbTransaction() {
-                  @Override
-                  protected void handleTxWork(Connection connection) throws OseeCoreException {
-                     for (Artifact artifactToPurge : artifacts) {
-                        monitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
-                        artifactToPurge.purgeFromBranch(connection);
-                        monitor.worked(1);
-                     }
-                  }
-               };
-
                try {
-                  transaction.execute();
+                  new DbTransaction() {
+                     @Override
+                     protected void handleTxWork(Connection connection) throws OseeCoreException {
+                        for (Artifact artifactToPurge : artifacts) {
+                           monitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
+                           artifactToPurge.purgeFromBranch(connection);
+                           monitor.worked(1);
+                        }
+                     }
+                  }.execute();
                   toReturn = Status.OK_STATUS;
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

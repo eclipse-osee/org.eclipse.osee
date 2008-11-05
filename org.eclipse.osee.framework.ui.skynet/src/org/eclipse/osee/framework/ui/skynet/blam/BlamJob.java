@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 
@@ -30,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
  */
 public class BlamJob extends Job {
    private final BlamWorkflow workflow;
-   private final BlamVariableMap variableMap;
+   private final VariableMap variableMap;
    private final WorkflowEditor editor;
    private final Collection<IBlamEventListener> listeners;
 
@@ -58,14 +56,7 @@ public class BlamJob extends Job {
             IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
 
             operation.setWorkflowEditor(editor);
-            Branch branch = operation.wrapOperationForBranch(variableMap);
-            if (branch == null) {
-               operation.runOperation(variableMap, subMonitor, null);
-            } else {
-               SkynetTransaction transaction = new SkynetTransaction(branch);
-               operation.runOperation(variableMap, subMonitor, transaction);
-               transaction.execute();
-            }
+            operation.runOperation(variableMap, subMonitor);
             monitor.worked(1);
          }
 

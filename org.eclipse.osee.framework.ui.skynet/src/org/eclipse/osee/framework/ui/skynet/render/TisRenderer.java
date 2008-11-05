@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.BasicTemplateAttributeHandler;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler;
@@ -66,7 +66,7 @@ public class TisRenderer extends WordTemplateRenderer {
       if (PresentationType.EDIT == presentationType) {
          return super.getRenderInputStream(artifacts, presentationType);
       }
-      final BlamVariableMap variableMap = new BlamVariableMap();
+      final VariableMap variableMap = new VariableMap();
       String template;
 
       if (artifacts.isEmpty()) {

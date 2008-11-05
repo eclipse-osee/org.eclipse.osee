@@ -11,13 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Jeff C. Phillips
  */
 public interface IWordMlProducer {
 
-   public BlamVariableMap process(BlamVariableMap variableMap) throws OseeCoreException;
+   public VariableMap process(VariableMap variableMap) throws OseeCoreException;
 
 }

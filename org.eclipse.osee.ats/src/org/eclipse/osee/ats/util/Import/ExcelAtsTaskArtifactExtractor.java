@@ -51,18 +51,15 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
    private final boolean emailPOCs;
    private SMAManager smaMgr;
    private final boolean persist;
-   private SkynetTransaction transaction;
-   
+
    public static String getDescription() {
       return description;
    }
 
-   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, boolean persist, SkynetTransaction transaction) {
+   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, boolean persist) {
       super(artifact.getBranch());
       this.emailPOCs = emailPOCs;
       this.persist = persist;
-      this.transaction = transaction;
-      
       if (!(artifact instanceof StateMachineArtifact)) {
          throw new IllegalArgumentException("Artifact must be StateMachineArtifact");
       }
@@ -99,14 +96,14 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                break;
             }
          if (!fullRow) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Empty Row Found => " + rowNum + " skipping...");
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
             return;
          }
 
          AtsPlugin.setEmailEnabled(false);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Null header column => " + i);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
             } else if (headerRow[i].equalsIgnoreCase("Originator")) {
                String userName = row[i];
                User u = null;
@@ -114,7 +111,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   u = SkynetAuthentication.getUser();
                else
                   u = SkynetAuthentication.getUserByName(userName, false);
-               if (u == null) OseeLog.log(AtsPlugin.class, Level.SEVERE,  String.format(
+               if (u == null) OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
                      "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
                taskArt.getSmaMgr().getLog().setOriginator(u);
             } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
@@ -194,15 +191,17 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   taskArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hours);
                }
             } else {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Unhandled column => " + headerRow[i]);
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
             }
          }
          AtsPlugin.setEmailEnabled(true);
 
-         
-         
+         SkynetTransaction transaction = new SkynetTransaction(taskArt.getBranch());
          if (taskArt.isCompleted()) taskArt.transitionToCompleted(false, transaction);
-         if (persist) taskArt.persistAttributesAndRelations(transaction);
+         if (persist) {
+            taskArt.persistAttributesAndRelations(transaction);
+         }
+         transaction.execute();
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
             AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Assigned);
          }

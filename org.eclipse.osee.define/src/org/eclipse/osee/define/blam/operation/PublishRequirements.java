@@ -15,14 +15,12 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -34,21 +32,28 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 public class PublishRequirements extends AbstractBlam {
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
-      String updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers").toString();
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
+      List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
 
-      for (Artifact artifact : variableMap.getArtifacts("artifacts")) {
+      SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch());
+      VariableMap options =
+            new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
+                  ITemplateRenderer.TEMPLATE_OPTION, ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE,
+                  ITemplateRenderer.TRANSACTION_OPTION, transaction);
+      for (Artifact artifact : artifacts) {
          try {
-            publish(monitor, artifact, updateParagraphNumber, transaction);
+            publish(monitor, artifact, options);
          } catch (OseeStateException ex) {
             OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
          }
       }
+      transaction.execute();
    }
 
-   private void publish(IProgressMonitor monitor, Artifact artifact, String updateParagraphNumber, SkynetTransaction transaction) throws OseeCoreException {
+   private void publish(IProgressMonitor monitor, Artifact artifact, VariableMap options) throws OseeCoreException {
       if (monitor.isCanceled()) {
          return;
       }
@@ -56,16 +61,14 @@ public class PublishRequirements extends AbstractBlam {
          List<Artifact> nonFolderChildren = new ArrayList<Artifact>();
          for (Artifact child : artifact.getChildren()) {
             if (child.isOfType("Folder")) {
-               publish(monitor, child, updateParagraphNumber, transaction);
+               publish(monitor, child, options);
             } else {
                nonFolderChildren.add(child);
             }
          }
-         RendererManager.preview(nonFolderChildren, monitor, WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-               updateParagraphNumber, ITemplateRenderer.TEMPLATE_OPTION, ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE);
+         RendererManager.preview(nonFolderChildren, monitor, options);
       } else {
-         RendererManager.preview(artifact, monitor, WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-               updateParagraphNumber, ITemplateRenderer.TEMPLATE_OPTION, ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE);
+         RendererManager.preview(artifact, monitor, options);
       }
    }
 
@@ -81,13 +84,5 @@ public class PublishRequirements extends AbstractBlam {
     */
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
-    */
-   @Override
-   public Branch wrapOperationForBranch(BlamVariableMap variableMap) throws OseeArgumentException {
-      return variableMap.getArtifacts("artifacts").get(0).getBranch();
    }
 }

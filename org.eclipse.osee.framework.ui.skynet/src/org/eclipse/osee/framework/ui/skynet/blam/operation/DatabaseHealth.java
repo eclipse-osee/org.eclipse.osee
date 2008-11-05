@@ -19,8 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask.Operation;
 import org.osgi.framework.Bundle;
@@ -38,7 +37,7 @@ public class DatabaseHealth extends AbstractBlam {
    }
 
    @Override
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor, SkynetTransaction transaction) throws Exception {
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       runTasks(variableMap, monitor);
    }
 
@@ -74,7 +73,7 @@ public class DatabaseHealth extends AbstractBlam {
       }
    }
 
-   private void runTasks(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   private void runTasks(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       int count = 0;
       for (String taskName : dbFix.keySet()) {
          if (variableMap.getBoolean(taskName)) {

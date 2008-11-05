@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -142,21 +143,18 @@ class CommitJob extends Job {
    }
 
    private final class CommitDbTx extends DbTransaction {
-      private int newTransactionNumber;
+      private int newTransactionNumber = -1;
       private final Branch toBranch;
       private final Branch fromBranch;
       private final boolean archiveBranch;
       private boolean success = true;
       private int fromBranchId = -1;
-      private List<Object[]> relLinks;
+      private List<Object[]> relLinks = new ArrayList<Object[]>();
 
-      private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch, ConflictManagerExternal conflictManager) {
-         super();
+      private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch, ConflictManagerExternal conflictManager) throws OseeStateException {
          this.toBranch = toBranch;
          this.fromBranch = fromBranch;
-         this.newTransactionNumber = -1;
          this.archiveBranch = archiveBranch;
-         relLinks = new ArrayList<Object[]>();
       }
 
       /*

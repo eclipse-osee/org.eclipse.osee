@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.w3c.dom.Element;
@@ -92,7 +92,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       return new WordTemplateRenderer(getId());
    }
 
-   public void publishSRS(BlamVariableMap variableMap) throws OseeCoreException {
+   public void publishSRS(VariableMap variableMap) throws OseeCoreException {
       templateProcessor.publishSRS(variableMap);
    }
 
@@ -115,7 +115,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               String file = getOption("fileName");
+               String file = getStringOption("fileName");
                if (file == null) {
                   if (baseArtifacts.size() == 1) {
                      file =
@@ -255,7 +255,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
       String diffPath;
 
-      String fileName = getOption("fileName");
+      String fileName = getStringOption("fileName");
       if (fileName == null || fileName.equals("")) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
@@ -410,7 +410,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      return TemplateManager.getTemplate(this, artifact, presentationType.name(), getOption(TEMPLATE_OPTION)).getSoleAttributeValue(
+      return TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION)).getSoleAttributeValue(
             WordAttribute.WHOLE_WORD_CONTENT);
    }
 }

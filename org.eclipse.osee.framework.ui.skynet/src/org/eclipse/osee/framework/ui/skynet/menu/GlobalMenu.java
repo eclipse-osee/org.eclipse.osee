@@ -186,21 +186,19 @@ public class GlobalMenu {
                   }
                   monitor.beginTask("Purge artifact", artifactsToBePurged.size());
 
-                  DbTransaction dbTransaction = new DbTransaction() {
-                     @Override
-                     protected void handleTxWork(Connection connection) throws OseeCoreException {
-                        for (Artifact artifactToPurge : artifactsToBePurged) {
-                           if (!artifactToPurge.isDeleted()) {
-                              monitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
-                              artifactToPurge.purgeFromBranch(connection);
-                           }
-                           monitor.worked(1);
-                        }
-                     }
-                  };
-                  // Perform the purge transaction
                   try {
-                     dbTransaction.execute();
+                     new DbTransaction() {
+                        @Override
+                        protected void handleTxWork(Connection connection) throws OseeCoreException {
+                           for (Artifact artifactToPurge : artifactsToBePurged) {
+                              if (!artifactToPurge.isDeleted()) {
+                                 monitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
+                                 artifactToPurge.purgeFromBranch(connection);
+                              }
+                              monitor.worked(1);
+                           }
+                        }
+                     }.execute();
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
