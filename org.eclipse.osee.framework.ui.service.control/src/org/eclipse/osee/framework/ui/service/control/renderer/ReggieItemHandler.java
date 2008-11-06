@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceRegistrar;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -110,7 +110,7 @@ public class ReggieItemHandler implements IRenderer {
 
    private static void populteAllowedGroups() {
       allowedGroups.clear();
-      String[] tempGroups = ConfigUtil.getConfigFactory().getOseeConfig().getJiniServiceGroups();
+      String[] tempGroups = JiniLookupGroupConfig.getOseeJiniServiceGroups();
       for (String toStore : tempGroups) {
          if (!allowedGroups.contains(toStore)) {
             allowedGroups.add(toStore);

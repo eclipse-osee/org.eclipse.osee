@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.service.control.view;
 
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.actions.HideLookupsAction;
 import org.eclipse.osee.framework.ui.service.control.actions.KillServiceAction;
@@ -45,7 +45,7 @@ public class ServiceManagerView extends ViewPart implements IActionable {
       createServicesViewerPopUp();
       createLookupViewerPopUp();
 
-      this.setContentDescription("Jini Groups { " + StringFormat.commaSeparate(ConfigUtil.getConfigFactory().getOseeConfig().getJiniServiceGroups()) + " }");
+      this.setContentDescription("Jini Groups { " + StringFormat.commaSeparate(JiniLookupGroupConfig.getOseeJiniServiceGroups()) + " }");
 
       OseeAts.addBugToViewToolbar(this, this, ControlPlugin.getInstance(), VIEW_ID, "Service Manager");
    }
