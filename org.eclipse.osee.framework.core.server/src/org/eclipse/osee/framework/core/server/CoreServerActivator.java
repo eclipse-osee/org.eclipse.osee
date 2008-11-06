@@ -36,6 +36,7 @@ public class CoreServerActivator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       instance = this;
       services = new ArrayList<ServiceRegistration>();
+      
       services.add(context.registerService(IApplicationServerManager.class.getName(), new ApplicationServerManager(),
             null));
 

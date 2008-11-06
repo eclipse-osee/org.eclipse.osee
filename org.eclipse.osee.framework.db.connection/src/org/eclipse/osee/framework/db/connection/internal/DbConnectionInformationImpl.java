@@ -27,9 +27,11 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
 
    private Map<String, IDatabaseInfo> dbInfo;
    private IDatabaseInfo selectedDbInfo;
+   private Object myWait;
 
    public DbConnectionInformationImpl() {
       dbInfo = new HashMap<String, IDatabaseInfo>();
+      myWait = new Object();
    }
 
    /* (non-Javadoc)
@@ -50,8 +52,22 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
          if (dbConnectionId != null && dbConnectionId.length() > 0) {
             selectedDbInfo = getDatabaseInfo(dbConnectionId);
             if (selectedDbInfo == null) {
-               throw new IllegalStateException(String.format("DB connection information was not found. [%s]",
+               long endTime = System.currentTimeMillis() + (1000*20);
+               long timeLeft = 1000*20;
+               while(timeLeft > 0 && selectedDbInfo == null){
+                  synchronized (myWait) {
+                     try{
+                        myWait.wait(timeLeft);
+                     } catch (InterruptedException ex) {
+                     }
+                     selectedDbInfo = getDatabaseInfo(dbConnectionId);
+                  }
+                  timeLeft = endTime - System.currentTimeMillis();
+               }
+               if (selectedDbInfo == null) {
+                  throw new IllegalStateException(String.format("DB connection information was not found. [%s]",
                      dbConnectionId));
+               }
             }
          } else {
             throw new IllegalStateException("No DB connection information provided");
@@ -73,6 +89,9 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
       } catch (Exception ex) {
          OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
       }
+      synchronized (myWait) {
+         myWait.notifyAll();   
+      }      
    }
 
    /* (non-Javadoc)

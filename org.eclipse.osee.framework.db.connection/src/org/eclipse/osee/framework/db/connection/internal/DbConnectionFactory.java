@@ -24,9 +24,11 @@ import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 public class DbConnectionFactory implements IDbConnectionFactory, IBind {
 
    private List<IConnection> connectionProviders;
+   private Object myWait;
 
    public DbConnectionFactory() {
       connectionProviders = new CopyOnWriteArrayList<IConnection>();
+      myWait = new Object();
    }
 
    /* (non-Javadoc)
@@ -34,12 +36,35 @@ public class DbConnectionFactory implements IDbConnectionFactory, IBind {
     */
    @Override
    public IConnection get(String driver) throws OseeCoreException {
+      IConnection selectedDriver = getIneternal(driver);
+      if (selectedDriver == null) {
+         long endTime = System.currentTimeMillis() + (1000 * 20);
+         long timeLeft = 1000 * 20;
+         while (timeLeft > 0 && selectedDriver == null) {
+            synchronized (myWait) {
+               try {
+                  myWait.wait(timeLeft);
+               } catch (InterruptedException ex) {
+               }
+               selectedDriver = getIneternal(driver);
+            }
+            timeLeft = endTime - System.currentTimeMillis();
+         }
+      }
+      if (selectedDriver == null) {
+         throw new OseeStateException(String.format("Unable to find matching driver provider for [%s].", driver,
+               driver));
+      }
+      return selectedDriver;
+   }
+
+   private IConnection getIneternal(String driver) {
       for (IConnection connection : connectionProviders) {
          if (connection.getDriver().equals(driver)) {
             return connection;
          }
       }
-      throw new OseeStateException(String.format("Unable to find matching driver provider for [%s].", driver));
+      return null;
    }
 
    /* (non-Javadoc)
@@ -48,6 +73,9 @@ public class DbConnectionFactory implements IDbConnectionFactory, IBind {
    @Override
    public void bind(Object connection) {
       connectionProviders.add((IConnection) connection);
+      synchronized (myWait) {
+         myWait.notifyAll();
+      }
    }
 
    /* (non-Javadoc)

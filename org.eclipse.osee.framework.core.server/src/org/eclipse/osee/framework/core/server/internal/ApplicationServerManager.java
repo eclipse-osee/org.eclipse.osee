@@ -18,13 +18,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ThreadFactory;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
-import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
@@ -32,7 +28,6 @@ import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -51,13 +46,17 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.applicationServerInfo = createOseeServerInfo();
       this.isRegistered = false;
       applicationServerInfo.setAcceptingRequests(true);
-
-      Timer timer = new Timer("Register App Server");
-      timer.schedule(new TimerTask() {
+      
+      new Thread(new Runnable(){
+         @Override
          public void run() {
-            checkDbRegistration();
+            try{
+               executeLookupRegistration();
+            } catch (Exception ex){
+               ex.printStackTrace();
+            }
          }
-      }, 1000);
+      }).start();
    }
 
    private OseeServerInfo createOseeServerInfo() {
@@ -69,16 +68,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
       int port = Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
       return new OseeServerInfo(serverAddress, port, OseeCodeVersion.getVersion(), GlobalTime.GreenwichMeanTimestamp(),
             false);
-   }
-
-   private synchronized void checkDbRegistration() {
-      if (!this.isRegistered) {
-         try {
-            executeLookupRegistration();
-         } catch (Exception ex) {
-            OseeLog.log(CoreServerActivator.class, Level.SEVERE, ex);
-         }
-      }
    }
 
    public boolean executeLookupRegistration() {
@@ -96,7 +85,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    void register(String context, InternalOseeHttpServlet servlets) {
-      //      checkDbRegistration();
       servlets.setRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
       this.oseeHttpServlets.put(context, servlets);
    }
@@ -111,7 +99,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    public ThreadFactory createNewThreadFactory(String name, int priority) {
-      //      checkDbRegistration();
       OseeServerThreadFactory factory = new OseeServerThreadFactory(name, priority);
       this.threadFactories.put(name, factory);
       return factory;
@@ -146,7 +133,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    public synchronized void setServletRequestsAllowed(final boolean value) throws OseeDataStoreException {
-      //      checkDbRegistration();
       if (getApplicationServerInfo().isAcceptingRequests() != value) {
          boolean wasSuccessful = ApplicationServerDataStore.updateServerState(getApplicationServerInfo(), value);
          if (wasSuccessful) {

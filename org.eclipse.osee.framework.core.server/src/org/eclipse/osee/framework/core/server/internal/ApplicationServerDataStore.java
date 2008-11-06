@@ -44,7 +44,7 @@ public class ApplicationServerDataStore {
                applicationServerInfo.getPort());
          status = true;
       } catch (OseeCoreException ex) {
-         OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to deregister server from lookup table.");
+         OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to deregister server from lookup table.", ex);
          }
       return status;
    }
@@ -57,8 +57,8 @@ public class ApplicationServerDataStore {
                applicationServerInfo.getDateStarted(), 1);
          status = true;
       } catch (OseeCoreException ex) {
-         OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to register server into lookup table.");
-         }
+         OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to register server into lookup table.", ex);
+      }
       return status;
    }
 
