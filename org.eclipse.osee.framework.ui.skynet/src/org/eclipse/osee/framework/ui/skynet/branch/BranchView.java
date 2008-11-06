@@ -54,8 +54,8 @@ import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionExcep
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -140,7 +140,7 @@ public class BranchView extends ViewPart implements IActionable {
     */
    public BranchView() {
       super();
-
+      UserCache.getUser();
       this.preferencesService = Platform.getPreferencesService();
 
       IEclipsePreferences instanceNode =

@@ -31,11 +31,11 @@ public class OseeServerInfo extends BaseExchangeData {
 
    public OseeServerInfo(String serverAddress, int port, String version, Timestamp dateStarted, boolean isAcceptingRequests) {
       this();
-      this.properties.put(SERVER_ADDRESS, serverAddress);
-      this.properties.put(PORT, Integer.toString(port));
-      this.properties.put(VERSION, version);
-      this.properties.put(DATE_CREATED, Long.toString(dateStarted.getTime()));
-      this.properties.put(IS_ACCEPTING_REQUESTS, Boolean.toString(isAcceptingRequests));
+      this.backingData.put(SERVER_ADDRESS, serverAddress);
+      this.backingData.put(PORT, Integer.toString(port));
+      this.backingData.put(VERSION, version);
+      this.backingData.put(DATE_CREATED, Long.toString(dateStarted.getTime()));
+      this.backingData.put(IS_ACCEPTING_REQUESTS, Boolean.toString(isAcceptingRequests));
    }
 
    /**
@@ -77,7 +77,7 @@ public class OseeServerInfo extends BaseExchangeData {
     * @param whether server is accepting requests
     */
    public void setAcceptingRequests(boolean value) {
-      properties.put(IS_ACCEPTING_REQUESTS, Boolean.toString(value));
+      backingData.put(IS_ACCEPTING_REQUESTS, Boolean.toString(value));
    }
 
    /**

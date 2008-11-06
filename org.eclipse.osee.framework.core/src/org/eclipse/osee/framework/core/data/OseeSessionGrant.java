@@ -5,16 +5,10 @@
  */
 package org.eclipse.osee.framework.core.data;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.Properties;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.core.CoreActivator;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -44,11 +38,11 @@ public class OseeSessionGrant extends BaseExchangeData {
 
    public OseeSessionGrant(String sessionId) {
       super();
-      this.properties.put(SESSION_ID, sessionId);
+      this.backingData.put(SESSION_ID, sessionId);
    }
 
    public void setUserArtifactId(String userArtifactId) {
-      this.properties.put(USER_ARTIFACT_ID, userArtifactId);
+      this.backingData.put(USER_ARTIFACT_ID, userArtifactId);
    }
 
    public String getUserArtifactId() {
@@ -64,30 +58,22 @@ public class OseeSessionGrant extends BaseExchangeData {
    }
 
    public void setDatabaseInfo(IDatabaseInfo dbInfo) {
-      this.properties.put(DB_DRIVER, dbInfo.getDriver());
-      this.properties.put(DB_CONNECTION_URL, dbInfo.getConnectionUrl());
-      this.properties.put(DB_DEFAULT_ARB_SERVER, dbInfo.getDefaultArbitrationServer());
-      this.properties.put(DB_LOGIN_NAME, dbInfo.getDatabaseLoginName());
-      this.properties.put(DB_DATABASE_NAME, dbInfo.getDatabaseName());
-      this.properties.put(DB_IS_PRODUCTION, Boolean.toString(dbInfo.isProduction()));
-      this.properties.put(DB_ID, dbInfo.getId());
-      this.properties.put(DB_CONNECT_PROPERTIES, dbInfo.getConnectionProperties().toString());
+      this.backingData.put(DB_DRIVER, dbInfo.getDriver());
+      this.backingData.put(DB_CONNECTION_URL, dbInfo.getConnectionUrl());
+      this.backingData.put(DB_DEFAULT_ARB_SERVER, dbInfo.getDefaultArbitrationServer());
+      this.backingData.put(DB_LOGIN_NAME, dbInfo.getDatabaseLoginName());
+      this.backingData.put(DB_DATABASE_NAME, dbInfo.getDatabaseName());
+      this.backingData.put(DB_IS_PRODUCTION, Boolean.toString(dbInfo.isProduction()));
+      this.backingData.put(DB_ID, dbInfo.getId());
+      putProperties(DB_CONNECT_PROPERTIES, dbInfo.getConnectionProperties());
    }
 
-   public void setSqlProperties(Properties connectProperties) {
-      this.properties.put(SQL_PROPERTIES, connectProperties.toString());
+   public void setSqlProperties(Properties sqlProperties) {
+      putProperties(SQL_PROPERTIES, sqlProperties);
    }
 
-   public Properties getSqlProperties() throws OseeWrappedException {
-      String values = getString(SQL_PROPERTIES);
-      if (Strings.isValid(values)) {
-         try {
-            properties.load(new StringReader(values.substring(1, values.length() - 1)));
-         } catch (IOException ex) {
-            throw new OseeWrappedException(ex);
-         }
-      }
-      return properties;
+   public Properties getSqlProperties() {
+      return getPropertyString(SQL_PROPERTIES);
    }
 
    public static OseeSessionGrant fromXml(InputStream inputStream) throws OseeWrappedException {
@@ -103,15 +89,7 @@ public class OseeSessionGrant extends BaseExchangeData {
        */
       @Override
       public Properties getConnectionProperties() {
-         String values = getString(DB_CONNECT_PROPERTIES);
-         if (Strings.isValid(values)) {
-            try {
-               properties.load(new StringReader(values.substring(1, values.length() - 1)));
-            } catch (IOException ex) {
-               OseeLog.log(CoreActivator.class, Level.SEVERE, ex);
-            }
-         }
-         return properties;
+         return getPropertyString(DB_CONNECT_PROPERTIES);
       }
 
       /* (non-Javadoc)

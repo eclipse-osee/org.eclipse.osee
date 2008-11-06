@@ -32,6 +32,7 @@ public class UserIdManager {
          toReturn = SystemUser.BootStrap.getUserID();
       } else {
          //         ConnectionHandler.runPreparedQueryFetchString(defaultValue, query, data);
+         toReturn = SystemUser.Guest.getUserID();
       }
       return toReturn;
    }

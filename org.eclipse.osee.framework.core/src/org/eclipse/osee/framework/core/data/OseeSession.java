@@ -32,11 +32,11 @@ public class OseeSession extends OseeClientInfo {
 
    public OseeSession(String sessionId, String userId, Timestamp createdOn, String machineName, String machineIp, int port, String clientVersion, Timestamp lastInteractionDate, String lastInteractionName) {
       super(clientVersion, machineName, machineIp, port);
-      this.properties.put(SESSION_ID, sessionId);
-      this.properties.put(USER_ID, userId);
-      this.properties.put(CREATED_ON, Long.toString(createdOn.getTime()));
-      this.properties.put(LAST_INTERACTION_DATE, Long.toString(lastInteractionDate.getTime()));
-      this.properties.put(LAST_INTERACTION, lastInteractionName);
+      this.backingData.put(SESSION_ID, sessionId);
+      this.backingData.put(USER_ID, userId);
+      this.backingData.put(CREATED_ON, Long.toString(createdOn.getTime()));
+      this.backingData.put(LAST_INTERACTION_DATE, Long.toString(lastInteractionDate.getTime()));
+      this.backingData.put(LAST_INTERACTION, lastInteractionName);
    }
 
    /**
@@ -80,7 +80,7 @@ public class OseeSession extends OseeClientInfo {
     * @param lastInteractionName
     */
    public void setLastInteraction(String lastInteractionName) {
-      this.properties.put(LAST_INTERACTION, lastInteractionName);
+      this.backingData.put(LAST_INTERACTION, lastInteractionName);
    }
 
    /**
@@ -89,7 +89,7 @@ public class OseeSession extends OseeClientInfo {
     * @param timestamp
     */
    public void setLastInteractionDate(Timestamp timestamp) {
-      this.properties.put(LAST_INTERACTION_DATE, Long.toString(timestamp.getTime()));
+      this.backingData.put(LAST_INTERACTION_DATE, Long.toString(timestamp.getTime()));
    }
 
    /**

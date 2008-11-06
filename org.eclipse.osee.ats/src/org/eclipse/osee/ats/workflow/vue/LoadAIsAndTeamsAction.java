@@ -37,8 +37,8 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -145,14 +145,13 @@ public class LoadAIsAndTeamsAction {
          // Create Actionable Items
          DiagramNode workPage = workFlow.getPage("Actionable Items");
          addActionableItem(atsHeading, workPage, transaction);
-         atsHeading.persistAttributesAndRelations(transaction);
 
          // Create Teams
          workPage = workFlow.getPage("Teams");
          addTeam(atsHeading, workPage, transaction);
+
          atsHeading.persistAttributesAndRelations(transaction);
 
-         transaction.execute();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -237,7 +236,7 @@ public class LoadAIsAndTeamsAction {
          if (teamDefArt == null) {
             teamDefArt =
                   TeamDefinitionArtifact.createNewTeamDefinition(page.getName(), fullName, desc, leads, members,
-                        actionableItems, parent,transaction,
+                        actionableItems, parent, transaction,
                         teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
          }
          for (String staticId : staticIds) {
@@ -259,7 +258,7 @@ public class LoadAIsAndTeamsAction {
                System.err.println(ex.getLocalizedMessage());
             }
          }
-         teamDefArt.persistAttributesAndRelations();
+         teamDefArt.persistAttributesAndRelations(transaction);
       }
 
       // Handle all team children

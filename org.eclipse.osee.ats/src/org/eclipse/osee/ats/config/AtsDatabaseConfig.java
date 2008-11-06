@@ -49,6 +49,10 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    }
 
    private void createAtsTopLevelConfigObjects() throws OseeCoreException {
+      SkynetTransaction transaction1 = new SkynetTransaction(BranchManager.getAtsBranch());
+      AtsConfig.getInstance().getOrCreateAtsHeadingArtifact(transaction1);
+      transaction1.execute();
+
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
       AtsConfig.getInstance().getOrCreateAtsHeadingArtifact(transaction);
       AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction);

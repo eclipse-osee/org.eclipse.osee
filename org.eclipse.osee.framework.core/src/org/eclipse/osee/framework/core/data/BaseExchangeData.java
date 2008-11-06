@@ -10,23 +10,20 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Properties;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 
-/**
- * @author Roberto E. Escobar
- */
 public class BaseExchangeData implements Serializable {
    private static final long serialVersionUID = -3844333805269321833L;
-   private static final String EMPTY_STRING = "";
-   protected final Properties properties;
+   protected final PropertyStore backingData;
 
    public BaseExchangeData() {
       super();
-      this.properties = new Properties();
+      this.backingData = new PropertyStore(Integer.toString(this.hashCode()));
    }
 
    protected String getString(String key) {
-      String toReturn = this.properties.getProperty(key);
-      return toReturn != null ? toReturn : EMPTY_STRING;
+      return backingData.get(key);
    }
 
    /**
@@ -37,7 +34,8 @@ public class BaseExchangeData implements Serializable {
     */
    protected void loadfromXml(InputStream inputStream) throws OseeWrappedException {
       try {
-         this.properties.loadFromXML(inputStream);
+         PropertyStoreWriter writer = new PropertyStoreWriter();
+         writer.load(backingData, inputStream);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }
@@ -51,7 +49,8 @@ public class BaseExchangeData implements Serializable {
     */
    public void write(OutputStream outputStream) throws OseeWrappedException {
       try {
-         properties.storeToXML(outputStream, String.format("Type: %s", this.getClass().getCanonicalName()), "UTF-8");
+         PropertyStoreWriter writer = new PropertyStoreWriter();
+         writer.save(backingData, outputStream);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }
@@ -59,6 +58,25 @@ public class BaseExchangeData implements Serializable {
 
    @Override
    public String toString() {
-      return this.properties.toString();
+      return this.backingData.toString();
+   }
+
+   protected void putProperties(String fieldName, Properties properties) {
+      for (Object theKey : properties.keySet()) {
+         String keyStr = String.format("%s.%s", fieldName, theKey);
+         backingData.put(keyStr, properties.getProperty((String) theKey));
+      }
+   }
+
+   protected Properties getPropertyString(String fieldName) {
+      String prefix = fieldName + ".";
+      Properties toReturn = new Properties();
+      for (String key : backingData.keySet()) {
+         if (key.startsWith(prefix)) {
+            String normalizedKey = key.substring(prefix.length(), key.length());
+            toReturn.put(normalizedKey, backingData.get(key));
+         }
+      }
+      return toReturn;
    }
 }

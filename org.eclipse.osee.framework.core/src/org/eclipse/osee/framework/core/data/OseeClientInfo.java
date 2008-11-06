@@ -23,22 +23,22 @@ public class OseeClientInfo extends BaseExchangeData {
 
    public OseeClientInfo(String clientVersion, String machineName, String address, int port) {
       super();
-      this.properties.put(CLIENT_VERSION, clientVersion);
-      this.properties.put(CLIENT_MACHINE_NAME, machineName);
+      this.backingData.put(CLIENT_VERSION, clientVersion);
+      this.backingData.put(CLIENT_MACHINE_NAME, machineName);
       setClientAddress(address, port);
    }
 
    public void setClientAddress(String address, int port) {
-      this.properties.put(CLIENT_IP_ADDRESS, address);
-      this.properties.put(CLIENT_PORT, Integer.toString(port));
+      this.backingData.put(CLIENT_IP_ADDRESS, address);
+      this.backingData.put(CLIENT_PORT, Integer.toString(port));
    }
 
    public void setClientVersion(String version) {
-      this.properties.put(CLIENT_VERSION, version);
+      this.backingData.put(CLIENT_VERSION, version);
    }
 
    public void setClientMachineName(String name) {
-      this.properties.put(CLIENT_MACHINE_NAME, name);
+      this.backingData.put(CLIENT_MACHINE_NAME, name);
    }
 
    public String getClientAddress() {

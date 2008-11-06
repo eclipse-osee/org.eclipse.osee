@@ -23,15 +23,15 @@ public class OseeCredential extends OseeClientInfo {
    }
 
    public void setUserId(String userId) {
-      this.properties.put(USER_ID, userId);
+      this.backingData.put(USER_ID, userId);
    }
 
    public void setPassword(String password) {
-      this.properties.put(PASSWORD, password);
+      this.backingData.put(PASSWORD, password);
    }
 
    public void setDomain(String domain) {
-      this.properties.put(DOMAIN, domain);
+      this.backingData.put(DOMAIN, domain);
    }
 
    public String getUserId() {
@@ -51,7 +51,7 @@ public class OseeCredential extends OseeClientInfo {
    }
 
    public void setAuthenticationProtocol(String protocol) {
-      this.properties.put(AUTHENTICATION_PROTOCOL, protocol);
+      this.backingData.put(AUTHENTICATION_PROTOCOL, protocol);
    }
 
    /**
