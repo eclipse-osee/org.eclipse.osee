@@ -140,8 +140,7 @@ public final class ConnectionHandler {
          record.setSqlException(ex);
          SQLException exlist;
          if ((exlist = ex.getNextException()) != null) {
-            System.out.println("this is the next exception");
-            exlist.printStackTrace();
+            OseeLog.log(InternalActivator.class, Level.SEVERE, "This is the nested exception", exlist);
          }
          StringBuilder details = new StringBuilder(dataList.size() * dataList.get(0).length * 20);
          details.append("[ DATA OBJECT: \n");
