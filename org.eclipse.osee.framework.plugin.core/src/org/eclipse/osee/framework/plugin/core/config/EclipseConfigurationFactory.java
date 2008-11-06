@@ -41,10 +41,6 @@ public class EclipseConfigurationFactory implements IOseeConfigurationFactory {
       return handler;
    }
 
-   public OSEEConfig getOseeConfig() {
-      return OSEEConfig.getInstance();
-   }
-
    public Logger getLogger(Class<?> classname) {
       Logger logger = Logger.getLogger(classname.getName());
       if (logger.getHandlers().length < 1) {

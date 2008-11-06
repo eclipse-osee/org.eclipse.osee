@@ -29,10 +29,6 @@ public class NonEclipseConfigurationFactory implements IOseeConfigurationFactory
       System.out.println("Status: " + message);
    }
 
-   public OSEEConfig getOseeConfig() {
-      return OSEEConfig.getInstance();
-   }
-
    public void reportError(Throwable th, String title, String message, String className) {
       System.out.println(title + " (" + className + ")");
       System.out.println(message);

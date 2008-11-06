@@ -64,10 +64,6 @@ public class HeadlessEclipseConfigurationFactory implements IOseeConfigurationFa
       System.out.println("Status: " + message);
    }
 
-   public OSEEConfig getOseeConfig() {
-      return OSEEConfig.getInstance();
-   }
-
    private static void createDir(File file) {
       boolean created = file.mkdirs();
 

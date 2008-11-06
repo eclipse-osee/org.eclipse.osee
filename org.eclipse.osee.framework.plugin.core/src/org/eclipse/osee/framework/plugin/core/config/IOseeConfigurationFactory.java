@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.plugin.core.config;
 import java.util.logging.Logger;
 
 public interface IOseeConfigurationFactory {
-   OSEEConfig getOseeConfig();
 
    @Deprecated
    // use OseeLog.log() instead
