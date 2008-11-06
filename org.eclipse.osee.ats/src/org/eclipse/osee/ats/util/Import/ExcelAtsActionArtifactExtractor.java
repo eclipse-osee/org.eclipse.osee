@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
@@ -105,7 +105,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
             break;
          }
       if (!fullRow) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Empty Row Found => " + rowNum + " skipping...");
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
          return;
       }
 
@@ -113,7 +113,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       ActionData aData = new ActionData();
       for (int i = 0; i < cols.length; i++) {
          if (headerRow[i] == null) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Null header column => " + i);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
          } else if (headerRow[i].equalsIgnoreCase(Columns.Title.name())) {
             if (cols[i].equals("")) return;
             aData.title = cols[i];
@@ -179,7 +179,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          // Else if assignees, confirm that they are valid
          if (aData.assigneeStrs.size() > 0) {
             for (String assignee : aData.assigneeStrs) {
-               User user = UserCache.getUserByName(assignee, false);
+               User user = UserCache.getUserByName(assignee);
                if (user == null)
                   rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                else
@@ -203,7 +203,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
             ActionArtifact actionArt =
                   NewActionJob.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
                         AtsPriority.PriorityType.getPriority(aData.priorityStr), aData.userComms, false, null,
-                        ActionableItemArtifact.getActionableItems(aData.actionableItems),transaction);
+                        ActionableItemArtifact.getActionableItems(aData.actionableItems), transaction);
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
                VersionArtifact verArt = AtsCache.getSoleArtifactByName(aData.version, VersionArtifact.class);

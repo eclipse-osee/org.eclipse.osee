@@ -262,11 +262,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             }
          }
       }
-      try {
-         transaction.execute();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      transaction.execute();
    }
 
    private static void relateIfNotRelated(Artifact parent, Artifact child) throws OseeCoreException {

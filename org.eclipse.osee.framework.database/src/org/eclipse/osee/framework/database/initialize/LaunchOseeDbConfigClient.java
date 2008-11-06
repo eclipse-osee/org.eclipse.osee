@@ -57,10 +57,10 @@ public class LaunchOseeDbConfigClient {
          } else {
             String extsionPointId = extension.getExtensionPointUniqueIdentifier();
             if (dbInitExtensionPointId.equals(extsionPointId)) {
-               boolean success = runDbInitTasks(extension, connection);
-               if (!success) {
-                  OseeLog.log(DatabaseActivator.class, Level.SEVERE, "Aborting due to errors.");
-                  break;
+               try {
+                  runDbInitTasks(extension, connection);
+               } catch (Throwable th) {
+                  OseeLog.log(DatabaseActivator.class, Level.SEVERE, th);
                }
             } else {
                OseeLog.log(DatabaseActivator.class, Level.SEVERE,
@@ -74,8 +74,12 @@ public class LaunchOseeDbConfigClient {
    /**
     * @param skynetDbTypesExtensions
     * @param extensionIds
+    * @throws OseeCoreException
+    * @throws ClassNotFoundException
+    * @throws IllegalAccessException
+    * @throws InstantiationException
     */
-   private static boolean runDbInitTasks(IExtension extension, OseeConnection connection) {
+   private static void runDbInitTasks(IExtension extension, OseeConnection connection) throws OseeCoreException, InstantiationException, IllegalAccessException, ClassNotFoundException {
       IConfigurationElement[] elements = extension.getConfigurationElements();
       String classname = null;
       String bundleName = null;
@@ -89,37 +93,22 @@ public class LaunchOseeDbConfigClient {
       }
       if (classname != null && bundleName != null) {
          Bundle bundle = Platform.getBundle(bundleName);
-         try {
-            boolean isExecutionAllowed = true;
-            if (Strings.isValid(initRuleClassName)) {
-               isExecutionAllowed = false;
-               try {
-                  Class<?> taskClass = bundle.loadClass(initRuleClassName);
-                  IDbInitializationRule rule = (IDbInitializationRule) taskClass.newInstance();
-                  isExecutionAllowed = rule.isAllowed();
-               } catch (Exception ex) {
-                  OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
-                  return false;
-               }
-            }
+         boolean isExecutionAllowed = true;
+         if (Strings.isValid(initRuleClassName)) {
+            isExecutionAllowed = false;
+            Class<?> taskClass = bundle.loadClass(initRuleClassName);
+            IDbInitializationRule rule = (IDbInitializationRule) taskClass.newInstance();
+            isExecutionAllowed = rule.isAllowed();
+         }
 
-            OseeLog.log(DatabaseActivator.class, isExecutionAllowed ? Level.INFO : Level.WARNING, String.format(
-                  "%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
-                  extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
-            if (isExecutionAllowed) {
-               IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
-               task.run(connection);
-            }
-         } catch (Exception ex) {
-            OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
-            return false;
-         } catch (NoClassDefFoundError er) {
-            OseeLog.log(DatabaseActivator.class, Level.SEVERE, er);
-            return false;
+         OseeLog.log(DatabaseActivator.class, isExecutionAllowed ? Level.INFO : Level.WARNING, String.format(
+               "%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
+               extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
+         if (isExecutionAllowed) {
+            IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
+            task.run(connection);
          }
       }
-
-      return true;
    }
 
    private static String waitForUserResponse() {

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -46,10 +47,10 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
    }
 
    public static XViewerCustomizationArtifact getAtsCustArtifact() {
-      return getAtsCustArtifactOrCreate(false);
+      return getAtsCustArtifactOrCreate(false, null);
    }
 
-   public static XViewerCustomizationArtifact getAtsCustArtifactOrCreate(boolean create) {
+   public static XViewerCustomizationArtifact getAtsCustArtifactOrCreate(boolean create, SkynetTransaction transaction) {
       if (xViewerCustomizationArtifact == null) {
          try {
             Collection<Artifact> arts =
@@ -61,7 +62,7 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
                xViewerCustomizationArtifact =
                      (XViewerCustomizationArtifact) ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME,
                            BranchManager.getCommonBranch(), ARTIFACT_TYPE_NAME);
-               xViewerCustomizationArtifact.persistAttributes();
+               xViewerCustomizationArtifact.persistAttributes(transaction);
             } else if (arts.size() != 1) throw new IllegalArgumentException(
                   "Should only be one " + ARTIFACT_TYPE_NAME + ".  Found " + arts.size() + ".  ATS not configured in OSEE?.");
          } catch (OseeCoreException ex) {

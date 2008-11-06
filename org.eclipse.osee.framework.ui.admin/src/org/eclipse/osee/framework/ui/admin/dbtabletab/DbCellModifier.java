@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
@@ -107,7 +107,7 @@ public class DbCellModifier implements ICellModifier {
       } else if (dbItem.isBems(property)) {
          try {
             String newName = (String) value;
-            User newUser = UserCache.getUserByName(newName, false);
+            User newUser = UserCache.getUserByName(newName);
             String oldBems = (String) wasObj;
             if (!newUser.getUserId().equals(oldBems)) {
                dbModel.setColumn(columnIndex, newUser.getUserId());

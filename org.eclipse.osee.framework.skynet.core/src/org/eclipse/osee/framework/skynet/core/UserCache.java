@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * <b>Skynet Authentication</b><br/> Provides mapping of the current Authenticated User Id to its User Artifact in the
@@ -123,11 +124,11 @@ public class UserCache {
       return ClientUser.getInstance().getMainUser();
    }
 
-   static void persistUser(User user) throws OseeCoreException {
+   static void persistUser(User user, SkynetTransaction transaction) throws OseeCoreException {
       synchronized (duringUserCreation) {
          duringUserCreation.setValue(true);
          try {
-            user.persistAttributesAndRelations();
+            user.persistAttributesAndRelations(transaction);
             instance.cacheUser(user, null);
          } finally {
             duringUserCreation.setValue(false);
@@ -135,7 +136,7 @@ public class UserCache {
       }
    }
 
-   public static User createUser(OseeUser userEnum) throws OseeCoreException {
+   public static User createUser(OseeUser userEnum, SkynetTransaction transaction) throws OseeCoreException {
       instance.loadUsersCache();
       // Determine if user with id has already been created; boot strap issue with dbInit
       User user = instance.userIdToUserCache.get(userEnum.getUserID());
@@ -150,10 +151,10 @@ public class UserCache {
             instance.activeUserCache.add(user);
          }
          instance.enumeratedUserCache.put(userEnum, user);
-         user.persistAttributes();
+         user.persistAttributes(transaction);
       } else {
          user = createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
-         persistUser(user);
+         persistUser(user, transaction);
       }
       return user;
    }
@@ -208,7 +209,7 @@ public class UserCache {
    public static List<User> getUsersSortedByName() throws OseeCoreException {
       List<User> users = new ArrayList<User>();
       for (String user : getUserNames()) {
-         users.add(getUserByName(user, false));
+         users.add(getUserByName(user));
       }
       return users;
    }
@@ -249,16 +250,24 @@ public class UserCache {
       return instance.sortedActiveUserNameCache;
    }
 
+   public static User getUserByName(String name) throws OseeCoreException {
+      return getUserByName(name, false);
+   }
+
+   public static User getUserByName(String name, boolean create) throws OseeCoreException {
+      return getUserByName(name, create, null);
+   }
+
    /**
     * @param name
     * @param create if true, will create a temp user artifact; should only be used for dev purposes
     * @return user
     */
-   public static User getUserByName(String name, boolean create) throws OseeCoreException {
+   public static User getUserByName(String name, boolean create, SkynetTransaction transaction) throws OseeCoreException {
       instance.loadUsersCache();
       User user = instance.nameToUserCache.get(name);
       if (user == null && create) {
-         persistUser(createUser(name, "", name, true));
+         persistUser(createUser(name, "", name, true), transaction);
          user = instance.nameToUserCache.get(name);
          if (user == null) throw new UserNotInDatabase(
                "Error creating and caching user \"" + name + "\" was not found.");

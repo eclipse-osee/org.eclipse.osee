@@ -791,11 +791,11 @@ public class RelationManager {
 
          Artifact aArtifact = link.getArtifact(RelationSide.SIDE_A);
          if (!aArtifact.isInDb()) {
-            aArtifact.persistAttributes();
+            aArtifact.persistAttributes(transaction);
          }
          Artifact bArtifact = link.getArtifact(RelationSide.SIDE_B);
          if (!bArtifact.isInDb()) {
-            bArtifact.persistAttributes();
+            bArtifact.persistAttributes(transaction);
          }
 
          int relationId = SequenceManager.getNextRelationId();

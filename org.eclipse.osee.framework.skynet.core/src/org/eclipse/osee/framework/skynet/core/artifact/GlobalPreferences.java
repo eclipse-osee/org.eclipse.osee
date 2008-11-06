@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -40,10 +41,10 @@ public class GlobalPreferences extends Artifact {
       return instance;
    }
 
-   public static void createGlobalPreferencesArtifact() throws OseeCoreException {
+   public static void createGlobalPreferencesArtifact(SkynetTransaction transaction) throws OseeCoreException {
       Artifact art =
-            ArtifactTypeManager.addArtifact(GlobalPreferences.ARTIFACT_NAME,
-                  BranchManager.getCommonBranch(), GlobalPreferences.ARTIFACT_NAME);
-      art.persistAttributes();
+            ArtifactTypeManager.addArtifact(GlobalPreferences.ARTIFACT_NAME, BranchManager.getCommonBranch(),
+                  GlobalPreferences.ARTIFACT_NAME);
+      art.persistAttributes(transaction);
    }
 }

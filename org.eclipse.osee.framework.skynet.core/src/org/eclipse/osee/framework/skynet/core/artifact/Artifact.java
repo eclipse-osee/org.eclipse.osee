@@ -976,8 +976,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public final void persistAttributesAndRelations(SkynetTransaction transaction) throws OseeCoreException {
-      persistAttributes(transaction);
-      persistRelations(transaction);
+      if (transaction == null) {
+         persistAttributesAndRelations();
+      } else {
+         persistAttributes(transaction);
+         persistRelations(transaction);
+      }
    }
 
    /**
@@ -1058,7 +1062,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public void delete(SkynetTransaction transaction) throws OseeCoreException {
       ArtifactPersistenceManager.deleteArtifact(transaction, false, this);
    }
-   
+
    /**
     * Remove artifact from a specific branch in the database
     * 

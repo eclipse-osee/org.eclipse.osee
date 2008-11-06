@@ -70,7 +70,6 @@ public class LoadAIsAndTeamsAction {
    private final boolean allowUserCreation;
 
    private LoadAIsAndTeamsAction(boolean prompt, String bundleId, boolean allowUserCreation) {
-      //      super("Load ATS Config");
       this.idToActionItem = new HashMap<String, ActionableItemArtifact>();
       this.prompt = prompt;
       this.bundleId = bundleId;
@@ -151,7 +150,7 @@ public class LoadAIsAndTeamsAction {
          addTeam(atsHeading, workPage, transaction);
 
          atsHeading.persistAttributesAndRelations(transaction);
-
+         transaction.execute();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -193,11 +192,11 @@ public class LoadAIsAndTeamsAction {
                   teamDefinitionOptions.add(TeamDefinitionOptions.RequireTargetedVersion);
                else if (line.startsWith(LEAD)) {
                   String name = line.replaceFirst(LEAD, "");
-                  User u = UserCache.getUserByName(name, allowUserCreation);
+                  User u = UserCache.getUserByName(name, allowUserCreation, transaction);
                   leads.add(u);
                } else if (line.startsWith(MEMBER)) {
                   String name = line.replaceFirst(MEMBER, "");
-                  User u = UserCache.getUserByName(name, allowUserCreation);
+                  User u = UserCache.getUserByName(name, allowUserCreation, transaction);
                   members.add(u);
                } else
                   throw new IllegalArgumentException(
