@@ -59,9 +59,9 @@ final class ClientUser {
             String userId = ClientSessionManager.getSession().getUserId();
             try {
                if (userId.equals(SystemUser.BootStrap.getUserID())) {
-                  currentUser = BootStrapUser.getInstance();
+                  setCurrentUser(BootStrapUser.getInstance());
                } else {
-                  currentUser = UserCache.getUserByUserId(userId);
+                  setCurrentUser(UserCache.getUserByUserId(userId));
                }
             } catch (UserNotInDatabase ex) {
                if (currentUser == null) {
@@ -88,10 +88,13 @@ final class ClientUser {
                return credential;
             }
          });
+      }
+   }
 
-         if (ClientSessionManager.isSessionValid()) {
-            notifyListeners();
-         }
+   private void setCurrentUser(User newUser) {
+      this.currentUser = newUser;
+      if (ClientSessionManager.isSessionValid()) {
+         notifyListeners();
       }
    }
 
@@ -99,10 +102,7 @@ final class ClientUser {
       if (!notifiedAsGuest) {
          notifiedAsGuest = true;
          ClientSessionManager.authenticateAsGuest();
-         currentUser = UserCache.getUser(SystemUser.Guest);
-         if (ClientSessionManager.isSessionValid()) {
-            notifyListeners();
-         }
+         setCurrentUser(UserCache.getUser(SystemUser.Guest));
          AWorkbench.popup(
                "OSEE Guest Login",
                "You are logged into OSEE as \"Guest\".\n\nIf you do not expect to be logged in as Guest, please report this immediately.");
