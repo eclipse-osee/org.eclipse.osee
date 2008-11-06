@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.search.engine.internal;
 
 import java.io.InputStream;
 import java.sql.Connection;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
@@ -29,7 +29,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 final class InputStreamTagProcessor extends InputToTagQueueTx {
    private final InputStream inputStream;
 
-   InputStreamTagProcessor(ISearchEngineTagger tagger, ITagListener listener, InputStream inputStream, boolean isCacheAll, int cacheLimit) throws OseeStateException {
+   InputStreamTagProcessor(ISearchEngineTagger tagger, ITagListener listener, InputStream inputStream, boolean isCacheAll, int cacheLimit) throws OseeCoreException {
       super(tagger, listener, isCacheAll, cacheLimit);
       this.inputStream = inputStream;
    }

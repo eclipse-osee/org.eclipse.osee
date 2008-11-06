@@ -267,7 +267,8 @@ final class ImportController {
       /**
        * @throws OseeStateException
        */
-      public ImportBranchesTx() throws OseeStateException {
+      public ImportBranchesTx() throws OseeCoreException {
+         super();
       }
 
       /* (non-Javadoc)
@@ -313,7 +314,8 @@ final class ImportController {
       /**
        * @throws OseeStateException
        */
-      public CommitImportSavePointsTx() throws OseeStateException {
+      public CommitImportSavePointsTx() throws OseeCoreException {
+         super();
       }
 
       /* (non-Javadoc)

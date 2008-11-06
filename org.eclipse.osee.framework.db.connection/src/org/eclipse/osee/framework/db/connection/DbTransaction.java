@@ -14,7 +14,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,9 +29,9 @@ public abstract class DbTransaction {
    /**
     * Transaction Constructor
     * 
-    * @throws OseeStateException
+    * @throws OseeCoreException TODO
     */
-   public DbTransaction() throws OseeStateException {
+   public DbTransaction() throws OseeCoreException {
       OseeDbConnection.reportTxCreation(this);
    }
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.search.engine;
 
 import java.io.InputStream;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 
 /**
@@ -24,7 +25,7 @@ public interface ISearchEngineTagger {
     * @param branchId of branch to tag
     * @throws OseeStateException TODO
     */
-   public void tagByBranchId(int branchId) throws OseeStateException;
+   public void tagByBranchId(int branchId) throws OseeCoreException;
 
    /**
     * Create tags for a particular branch. Notifies listener of tagging events.
@@ -33,7 +34,7 @@ public interface ISearchEngineTagger {
     * @param branchId of branch to tag
     * @throws OseeStateException TODO
     */
-   public void tagByBranchId(ITagListener listener, int queryId) throws OseeStateException;
+   public void tagByBranchId(ITagListener listener, int queryId) throws OseeCoreException;
 
    /**
     * Create tags for queue query id.

@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
-import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
+import org.eclipse.osee.framework.search.engine.internal.Activator;
 import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
 
 /**
@@ -48,16 +48,15 @@ public abstract class BaseAttributeTaggerProvider implements IAttributeTaggerPro
    }
 
    private InputStream getExtendedDataAsStream(AttributeData attributeData) throws Exception {
-	  InputStream toReturn = null;
-	  if (attributeData.isUriValid()) {
+      InputStream toReturn = null;
+      if (attributeData.isUriValid()) {
          Options options = new Options();
          options.put(StandardOptions.DecompressOnAquire.name(), true);
-         IResourceLocator locator =
-            Activator.getInstance().getResourceLocatorManager().getResourceLocator(attributeData.getUri());
-         IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+         IResourceLocator locator = Activator.getResourceLocatorManager().getResourceLocator(attributeData.getUri());
+         IResource resource = Activator.getResourceManager().acquire(locator, options);
          toReturn = resource.getContent();
-	  }
-	  return toReturn;
+      }
+      return toReturn;
    }
 
    private String getExtendedData(AttributeData attributeData) {

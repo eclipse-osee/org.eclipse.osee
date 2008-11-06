@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.search.engine.Activator;
+import org.eclipse.osee.framework.search.engine.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -44,8 +44,7 @@ public class WordsUtil {
       Arrays.sort(PUNCTUATION);
       dictionary = new Properties();
       try {
-         URL url =
-               Activator.getInstance().getContext().getBundle().getResource("/support/pluralToSingularExceptions.xml");
+         URL url = Activator.getResource("/support/pluralToSingularExceptions.xml");
          dictionary.loadFromXML(url.openStream());
       } catch (Exception ex) {
          OseeLog.log(TagProcessor.class, Level.SEVERE, "Unable to process plural to singular exceptions file.", ex);

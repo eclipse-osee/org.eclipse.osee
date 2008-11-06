@@ -196,7 +196,9 @@ public class HttpAttributeTagger {
          for (ArtifactTransactionModifiedEvent event : txData.getXModifiedEvents()) {
             if (event instanceof ArtifactModifiedEvent) {
                for (SkynetAttributeChange change : ((ArtifactModifiedEvent) event).getAttributeChanges()) {
-                  taggingInfo.add(change.getGammaId());
+                  if (AttributeTypeManager.getType(change.getTypeId()).isTaggable()) {
+                     taggingInfo.add(change.getGammaId());
+                  }
                }
             }
          }

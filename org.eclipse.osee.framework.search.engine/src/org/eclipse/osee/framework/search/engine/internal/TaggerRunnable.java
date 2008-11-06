@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
@@ -73,8 +72,7 @@ class TaggerRunnable implements Runnable {
       this.waitTime = System.currentTimeMillis() - this.waitStart;
       long processStart = System.currentTimeMillis();
       try {
-         AttributeToTagTx attributeToTagTx = new AttributeToTagTx();
-         attributeToTagTx.execute();
+         new AttributeToTagTx().execute();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - tagQueueQueryId [%d]",
                getTagQueueQueryId()), ex);
@@ -122,7 +120,7 @@ class TaggerRunnable implements Runnable {
       /**
        * @throws OseeStateException
        */
-      public AttributeToTagTx() throws OseeStateException {
+      public AttributeToTagTx() throws OseeCoreException {
       }
 
       private final Deque<SearchTag> searchTags = new LinkedList<SearchTag>();
@@ -141,7 +139,7 @@ class TaggerRunnable implements Runnable {
                this.currentTag = new SearchTag(attributeData.getGammaId());
                this.searchTags.add(this.currentTag);
                try {
-                  Activator.getInstance().getTaggerManager().tagIt(attributeData, this);
+                  Activator.getTaggerManager().tagIt(attributeData, this);
                   checkSizeStoreIfNeeded(connection);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", this.currentTag), ex);

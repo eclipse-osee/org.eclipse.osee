@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -59,7 +58,7 @@ public class PurgeDbTransaction extends DbTransaction {
    /**
     * @param artifactsToPurge
     */
-   public PurgeDbTransaction(Collection<? extends Artifact> artifactsToPurge) throws OseeStateException {
+   public PurgeDbTransaction(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
       this.artifactsToPurge = artifactsToPurge;
    }
 

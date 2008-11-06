@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
  */
 public class SkynetAttributeChange implements SkynetChange {
    private static final long serialVersionUID = 7269483275150734396L;
-   private final String name;
+   private final int typeId;
    private final boolean deleted;
    private final int attributeId;
    private final int gammaId;
@@ -29,12 +29,12 @@ public class SkynetAttributeChange implements SkynetChange {
    }
 
    /**
-    * @param name
+    * @param typeId
     * @param value
     */
-   public SkynetAttributeChange(String name, Object[] value, boolean deleted, int attributeId, int gammaId) {
+   public SkynetAttributeChange(int typeId, Object[] value, boolean deleted, int attributeId, int gammaId) {
       super();
-      this.name = name;
+      this.typeId = typeId;
       this.value = value;
       this.deleted = deleted;
       this.attributeId = attributeId;
@@ -43,14 +43,14 @@ public class SkynetAttributeChange implements SkynetChange {
 
    @Override
    public String toString() {
-      return name + "(" + attributeId + ")" + " => " + value;
+      return typeId + "(" + attributeId + ")" + " => " + value;
    }
 
    /**
-    * @return Returns the name.
+    * @return Returns the typeId.
     */
-   public String getName() {
-      return name;
+   public int getTypeId() {
+      return typeId;
    }
 
    /**

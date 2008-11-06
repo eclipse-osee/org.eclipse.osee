@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class ObjectPair<O, T> {
    public final O object1;
    public final T object2;

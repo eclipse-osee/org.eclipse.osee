@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -37,7 +36,7 @@ public abstract class InputToTagQueueTx extends DbTransaction {
    private TagQueueJoinQuery currentJoinQuery;
    private boolean isOkToDispatch;
 
-   InputToTagQueueTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) throws OseeStateException {
+   InputToTagQueueTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) throws OseeCoreException {
       this.tagger = tagger;
       this.listener = listener;
       this.cacheLimit = cacheLimit;

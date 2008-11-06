@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Search Engine Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.search.engine
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.search.engine.Activator
+Bundle-Activator: org.eclipse.osee.framework.search.engine.internal.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.data,

@@ -13,12 +13,10 @@ package org.eclipse.osee.framework.db.connection;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.internal.OseeConnectionPool;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -56,20 +54,6 @@ public class OseeDbConnection {
    }
 
    /**
-    * @return whether a successful connection has been had to the database
-    */
-   public static boolean isConnectionValid() {
-      try {
-         OseeConnection connection = getConnection();
-         connection.close();
-      } catch (OseeDataStoreException ex) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
-         return false;
-      }
-      return true;
-   }
-
-   /**
     * @param dbDriver
     * @param dbUrl
     * @param dbConnectionProperties
@@ -78,41 +62,43 @@ public class OseeDbConnection {
       OseeDbConnection.databaseInfo = databaseInfo;
    }
 
-   private static final HashMap<Thread, DbTransaction> currentTxs = new HashMap<Thread, DbTransaction>();
-   private static final HashMap<Thread, DbTransaction> txCreateds = new HashMap<Thread, DbTransaction>();
+   private static final HashMap<Thread, ObjectPair<DbTransaction, Exception>> currentTxs =
+         new HashMap<Thread, ObjectPair<DbTransaction, Exception>>();
+   private static final HashMap<Thread, ObjectPair<DbTransaction, Exception>> txCreateds =
+         new HashMap<Thread, ObjectPair<DbTransaction, Exception>>();
 
-   public static void reportTxStart(DbTransaction transaction) throws OseeStateException {
-      DbTransaction currentTx = currentTxs.get(Thread.currentThread());
-      if (currentTx != null) {
-         throw new OseeStateException(String.format("Attempted to start executing %s but %s not finished",
-               transaction.getClass().getName(), currentTx.getClass().getName()));
+   public static void reportTxStart(DbTransaction transaction) throws OseeWrappedException {
+      ObjectPair<DbTransaction, Exception> currentPair = currentTxs.get(Thread.currentThread());
+      if (currentPair != null) {
+         throw new OseeWrappedException(currentPair.object2);
       }
-      currentTxs.put(Thread.currentThread(), transaction);
+      currentTxs.put(Thread.currentThread(), new ObjectPair<DbTransaction, Exception>(transaction, new Exception()));
    }
 
-   public static void reportTxEnd(DbTransaction transaction) throws OseeStateException {
-      DbTransaction txCreated = txCreateds.get(Thread.currentThread());
+   public static void reportTxEnd(DbTransaction transaction) throws OseeWrappedException {
+      ObjectPair<DbTransaction, Exception> currentPair = txCreateds.get(Thread.currentThread());
+      DbTransaction txCreated = currentPair.object1;
       if (txCreated == transaction) {
          txCreateds.put(Thread.currentThread(), null);
       } else {
-         throw new OseeStateException(String.format("Attempted to finish %s but found %s instead",
-               transaction.getClass().getName(), txCreated == null ? "null" : txCreated.getClass().getName()));
+         throw new OseeWrappedException(currentPair.object2);
       }
-      DbTransaction currentTx = currentTxs.get(Thread.currentThread());
+
+      currentPair = currentTxs.get(Thread.currentThread());
+      DbTransaction currentTx = currentPair.object1;
       if (currentTx == transaction) {
          currentTxs.put(Thread.currentThread(), null);
       } else {
-         throw new OseeStateException(String.format("Attempted to finish %s but found %s instead",
-               transaction.getClass().getName(), currentTx.getClass().getName()));
+         throw new OseeWrappedException(currentPair.object2);
       }
    }
 
-   public static void reportTxCreation(DbTransaction transaction) throws OseeStateException {
-      DbTransaction txCreated = txCreateds.get(Thread.currentThread());
-      if (txCreated != null) {
-         OseeLog.log(InternalActivator.class, Level.WARNING, String.format("Created %s but %s not finished",
-               transaction.getClass().getName(), txCreated.getClass().getName()));
+   public static void reportTxCreation(DbTransaction transaction) throws OseeWrappedException {
+      ObjectPair<DbTransaction, Exception> currentPair = txCreateds.get(Thread.currentThread());
+      if (currentPair != null) {
+         throw new OseeWrappedException(currentPair.object2);
       }
-      txCreateds.put(Thread.currentThread(), transaction);
+
+      txCreateds.put(Thread.currentThread(), new ObjectPair<DbTransaction, Exception>(transaction, new Exception()));
    }
 }

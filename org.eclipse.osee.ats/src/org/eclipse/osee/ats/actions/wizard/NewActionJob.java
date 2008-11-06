@@ -70,22 +70,15 @@ public class NewActionJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       try {
          SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-         
-//         AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchManager.getAtsBranch()) {
-         
-//            @Override
-//            protected void handleTxWork() throws OseeCoreException {
-               if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
-               actionArt =
-                     createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,
-                           needByDate, actionableItems, transaction);
+         if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
+         actionArt =
+               createAction(monitor, title, desc, changeType, priority, userComms, validationRequired, needByDate,
+                     actionableItems, transaction);
 
-               if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt, transaction);
+         if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt, transaction);
 
-               monitor.subTask("Persisting");
-//            }
-//         };
-               transaction.execute();
+         monitor.subTask("Persisting");
+         transaction.execute();
 
          // Because this is a job, it will automatically kill any popups that are created during.
          // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
@@ -128,8 +121,7 @@ public class NewActionJob extends Job {
 
       if (monitor != null) monitor.subTask("Creating Action");
       ActionArtifact actionArt =
-            (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME,
-                  BranchManager.getAtsBranch());
+            (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME, BranchManager.getAtsBranch());
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
             validationRequired, needByDate);
 

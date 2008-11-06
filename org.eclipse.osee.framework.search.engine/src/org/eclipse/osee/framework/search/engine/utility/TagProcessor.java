@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.search.engine.Activator;
+import org.eclipse.osee.framework.search.engine.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -30,7 +30,7 @@ public class TagProcessor {
       wordsToSkip = new HashSet<String>();
       Scanner scanner = null;
       try {
-         URL url = Activator.getInstance().getContext().getBundle().getResource("/support/wordsToSkip.txt");
+         URL url = Activator.getResource("/support/wordsToSkip.txt");
          scanner = new Scanner(url.openStream(), "UTF-8");
          while (scanner.hasNext()) {
             wordsToSkip.add(scanner.next());

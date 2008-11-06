@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -129,7 +128,7 @@ public class DeleteTransactionJob extends Job {
    private final class DeleteTransactionTx extends DbTransaction {
       private final IProgressMonitor monitor;
 
-      public DeleteTransactionTx(IProgressMonitor monitor) throws OseeStateException {
+      public DeleteTransactionTx(IProgressMonitor monitor) throws OseeCoreException {
          this.monitor = monitor;
       }
 

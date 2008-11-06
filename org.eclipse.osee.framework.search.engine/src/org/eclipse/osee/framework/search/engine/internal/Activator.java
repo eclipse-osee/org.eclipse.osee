@@ -8,10 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine;
+package org.eclipse.osee.framework.search.engine.internal;
 
+import java.net.URL;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -30,7 +32,7 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
     */
    public void start(BundleContext context) throws Exception {
-      Activator.instance = this;
+      instance = this;
       this.context = context;
 
       resourceLocatorManagerTracker = new ServiceTracker(context, IResourceLocatorManager.class.getName(), null);
@@ -62,23 +64,19 @@ public class Activator implements BundleActivator {
       context = null;
    }
 
-   public IResourceManager getResourceManager() {
-      return (IResourceManager) resourceManagementTracker.getService();
+   public static IResourceManager getResourceManager() {
+      return (IResourceManager) instance.resourceManagementTracker.getService();
    }
 
-   public IResourceLocatorManager getResourceLocatorManager() {
-      return (IResourceLocatorManager) resourceLocatorManagerTracker.getService();
+   public static IResourceLocatorManager getResourceLocatorManager() {
+      return (IResourceLocatorManager) instance.resourceLocatorManagerTracker.getService();
    }
 
-   public IAttributeTaggerProviderManager getTaggerManager() {
-      return (IAttributeTaggerProviderManager) attributeTaggerProviderTracker.getService();
+   public static IAttributeTaggerProviderManager getTaggerManager() {
+      return (IAttributeTaggerProviderManager) instance.attributeTaggerProviderTracker.getService();
    }
 
-   public static Activator getInstance() {
-      return instance;
-   }
-
-   public BundleContext getContext() {
-      return context;
+   public static URL getResource(String path) {
+      return instance.context.getBundle().getResource(path);
    }
 }

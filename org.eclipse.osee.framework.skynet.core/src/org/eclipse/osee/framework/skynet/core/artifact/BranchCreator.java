@@ -46,8 +46,8 @@ import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -123,8 +123,7 @@ public class BranchCreator {
    private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Connection connection, Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
       User userToBlame = UserCache.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
-      int userId =
-            (userToBlame == null) ? UserCache.getUser(SystemUser.NoOne).getArtId() : userToBlame.getArtId();
+      int userId = (userToBlame == null) ? UserCache.getUser(SystemUser.NoOne).getArtId() : userToBlame.getArtId();
       String comment =
             NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -417,7 +416,7 @@ public class BranchCreator {
        * @param artIds
        * @throws OseeStateException
        */
-      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws OseeStateException {
+      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws OseeCoreException {
          this(sourceBranch, destBranch, artIds, null);
       }
 
@@ -427,7 +426,7 @@ public class BranchCreator {
        * @param artIds
        * @throws OseeStateException
        */
-      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds, Branch mergeBranch) throws OseeStateException {
+      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds, Branch mergeBranch) throws OseeCoreException {
          this.sourceBranch = sourceBranch;
          this.destBranch = destBranch;
          this.artIds = artIds;

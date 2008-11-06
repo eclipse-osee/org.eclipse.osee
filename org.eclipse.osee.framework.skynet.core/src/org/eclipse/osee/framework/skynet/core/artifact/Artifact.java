@@ -45,8 +45,8 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
@@ -1340,7 +1340,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
-            dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(),
+            dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getAttrTypeId(),
                   attribute.getAttributeDataProvider().getData(), attribute.isDeleted(), attribute.getAttrId(),
                   attribute.getGammaId()));
          }

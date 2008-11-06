@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.search.engine.internal;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.ArtifactJoinQuery;
-import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.Options;
@@ -38,7 +37,7 @@ public class SearchEngine implements ISearchEngine {
    public String search(String searchString, int branchId, Options options) throws Exception {
       long startTime = System.currentTimeMillis();
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
-      IAttributeTaggerProviderManager manager = Activator.getInstance().getTaggerManager();
+      IAttributeTaggerProviderManager manager = Activator.getTaggerManager();
       AttributeSearch attributeSearch = new AttributeSearch(searchString, branchId, options);
       Collection<AttributeData> tagMatches = attributeSearch.getMatchingAttributes();
       long timeAfterPass1 = System.currentTimeMillis() - startTime;

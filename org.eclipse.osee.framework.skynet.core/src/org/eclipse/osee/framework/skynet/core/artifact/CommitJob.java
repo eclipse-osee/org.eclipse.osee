@@ -24,11 +24,10 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
@@ -151,7 +150,7 @@ class CommitJob extends Job {
       private int fromBranchId = -1;
       private List<Object[]> relLinks = new ArrayList<Object[]>();
 
-      private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch, ConflictManagerExternal conflictManager) throws OseeStateException {
+      private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch, ConflictManagerExternal conflictManager) throws OseeCoreException {
          this.toBranch = toBranch;
          this.fromBranch = fromBranch;
          this.archiveBranch = archiveBranch;

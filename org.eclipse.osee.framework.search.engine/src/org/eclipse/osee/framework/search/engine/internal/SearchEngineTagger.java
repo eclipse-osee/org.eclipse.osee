@@ -84,7 +84,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
     * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByBranchId(org.eclipse.osee.framework.search.engine.ITagListener, int)
     */
    @Override
-   public void tagByBranchId(ITagListener listener, int branchId) throws OseeStateException {
+   public void tagByBranchId(ITagListener listener, int branchId) throws OseeCoreException {
       this.executor.submit(new BranchTaggerRunnable(this, listener, branchId, false, CACHE_LIMIT));
    }
 
@@ -92,7 +92,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
     * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByBranchId(int)
     */
    @Override
-   public void tagByBranchId(int branchId) throws OseeStateException {
+   public void tagByBranchId(int branchId) throws OseeCoreException {
       tagByBranchId(null, branchId);
    }
 
@@ -200,7 +200,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       private final int queryId;
       private int updated;
 
-      public DeleteTagsTx(int queryId) throws OseeStateException {
+      public DeleteTagsTx(int queryId) throws OseeCoreException {
          super();
          this.queryId = queryId;
          this.updated = -1;
