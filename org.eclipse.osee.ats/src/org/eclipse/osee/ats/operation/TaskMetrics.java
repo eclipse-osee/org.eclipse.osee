@@ -11,12 +11,11 @@
 package org.eclipse.osee.ats.operation;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
@@ -32,13 +31,10 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -69,15 +65,13 @@ public class TaskMetrics extends AbstractBlam {
 
          ArtifactType descriptor = variableMap.getArtifactType("Artifact Type");
 
-         FromArtifactsSearch teamWorkflowSearch =
-               new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), DepricatedOperator.EQUAL));
-         LinkedList<ISearchPrimitive> relatedCriteria = new LinkedList<ISearchPrimitive>();
-         relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, AtsRelation.SmaToTask_Task));
-
-         Collection<Artifact> artifacts =
-               ArtifactPersistenceManager.getArtifacts(relatedCriteria, true, AtsPlugin.getAtsBranch());
-         for (Artifact artifact : artifacts) {
-            tallyState((TaskArtifact) artifact);
+         List<Artifact> artifacts =
+               ArtifactQuery.getArtifactsFromType(descriptor.getName(), BranchManager.getAtsBranch());
+         Set<Artifact> tasks = RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.SmaToTask_Task);
+         for (Artifact artifact : tasks) {
+            if (artifact instanceof TaskArtifact) {
+               tallyState((TaskArtifact) artifact);
+            }
          }
 
          writeSummary();
@@ -132,6 +126,7 @@ public class TaskMetrics extends AbstractBlam {
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" keyedBranch=\"common\" defaultValue=\"Lba B3 Test Team Workflow\" /></xWidgets>";
    }

@@ -11,34 +11,26 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
  */
-public class CriteriaSearchItem extends WorldSearchItem {
+public class ArtifactTypeSearchItem extends WorldSearchItem {
 
-   private final List<ISearchPrimitive> criteria;
-   private final boolean all;
+   private final String artifactTypeName;
 
-   public CriteriaSearchItem(String name, List<ISearchPrimitive> criteria, boolean all) {
+   public ArtifactTypeSearchItem(String name, String artifactTypeName) {
       super(name);
-      this.criteria = criteria;
-      this.all = all;
+      this.artifactTypeName = artifactTypeName;
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      if (criteria == null) throw new IllegalArgumentException("Inavlid search \"" + getName() + "\"");
-      Collection<Artifact> artifacts =
-            ArtifactPersistenceManager.getArtifacts(criteria, all, BranchManager.getAtsBranch());
-      if (cancelled) return EMPTY_SET;
-      return artifacts;
+      if (artifactTypeName == null) throw new IllegalArgumentException("Inavlid search \"" + getName() + "\"");
+      return ArtifactQuery.getArtifactsFromType(artifactTypeName, AtsPlugin.getAtsBranch());
    }
-
 }

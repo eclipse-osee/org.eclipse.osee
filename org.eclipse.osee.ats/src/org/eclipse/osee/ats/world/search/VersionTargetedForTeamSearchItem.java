@@ -35,12 +35,13 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    private final TeamDefinitionArtifact teamDef;
    private TeamDefinitionArtifact selectedTeamDef;
 
-   public VersionTargetedForTeamSearchItem(TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction) {
-      this(null, teamDef, versionArt, returnAction);
+   public VersionTargetedForTeamSearchItem(TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
+      this(null, teamDef, versionArt, returnAction, loadView);
    }
 
-   public VersionTargetedForTeamSearchItem(String name, TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction) {
-      super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version");
+   public VersionTargetedForTeamSearchItem(String name, TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
+      super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version - " + loadView,
+            loadView);
       this.teamDef = teamDef;
       this.versionArt = versionArt;
       this.returnAction = returnAction;
@@ -78,7 +79,7 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
       if (searchType == SearchType.ReSearch && selectedVersionArt != null) return;
       if (versionArt != null) return;
       try {
-         TeamDefinitionArtifact selectedTeamDef = teamDef;
+         selectedTeamDef = teamDef;
          if (versionArt == null && selectedTeamDef == null) {
             TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
             ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));

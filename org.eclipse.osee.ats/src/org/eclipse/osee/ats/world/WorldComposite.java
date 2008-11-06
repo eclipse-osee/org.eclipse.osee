@@ -463,25 +463,18 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
 
          @Override
          public void run() {
-            WorldEditorInput worldEditorInput = null;
-            if (arts != null) {
-               worldEditorInput =
-                     new WorldEditorInput(loadName, arts, worldXViewer.getCustomizeMgr().generateCustDataFromTable(),
-                           tableLoadOptions);
-            } else if (searchItem != null) {
-               worldEditorInput =
-                     new WorldEditorInput(searchItem, SearchType.Search,
-                           worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions);
-            } else {
-               AWorkbench.popup("ERROR", "Nothing loaded");
-            }
-            if (worldEditorInput != null) {
-               IWorkbenchPage page = AWorkbench.getActivePage();
-               try {
-                  page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
-               } catch (PartInitException ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+            try {
+               if (arts != null) {
+                  WorldEditor.open(loadName, arts, worldXViewer.getCustomizeMgr().generateCustDataFromTable(),
+                        tableLoadOptions);
+               } else if (searchItem != null) {
+                  WorldEditor.open(searchItem, worldXViewer.getCustomizeMgr().generateCustDataFromTable(),
+                        tableLoadOptions);
+               } else {
+                  AWorkbench.popup("ERROR", "Nothing loaded");
                }
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };

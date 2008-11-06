@@ -240,7 +240,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return true;
    }
 
-   public static void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException {
+   public static void open(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) throws OseeCoreException {
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
       options.addAll(Arrays.asList(tableLoadOptions));
       searchItem.setCancelled(false);
@@ -260,7 +260,13 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       job.setUser(false);
       job.setPriority(Job.LONG);
       job.schedule();
-      if (options.contains(TableLoadOption.ForcePend)) job.join();
+      if (options.contains(TableLoadOption.ForcePend)) {
+         try {
+            job.join();
+         } catch (InterruptedException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+      }
    }
 
    private static class LoadTableJob extends Job {

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -188,7 +189,7 @@ public class NavigateView extends ViewPart implements IActionable {
     * 
     * @param item
     */
-   public void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
+   public void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
       OseeLog.log(AtsPlugin.class, Level.INFO,
             "===> Simulating NavigateView Double-Click for \"" + item.getName() + "\"...");
       xNavComp.handleDoubleClick(item, tableLoadOptions);

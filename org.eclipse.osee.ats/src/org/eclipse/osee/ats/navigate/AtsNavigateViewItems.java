@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.navigate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -24,10 +23,8 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
@@ -39,8 +36,9 @@ import org.eclipse.osee.ats.report.ExtendedStatusReportItem;
 import org.eclipse.osee.ats.util.DoesNotWorkItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtIdSearchItem;
+import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
+import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
 import org.eclipse.osee.ats.world.search.AtsAttributeSearchItem;
-import org.eclipse.osee.ats.world.search.CriteriaSearchItem;
 import org.eclipse.osee.ats.world.search.EditTasksByTeamVersionSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
@@ -65,11 +63,8 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
@@ -176,8 +171,11 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
       XNavigateItem releaseItems = new XNavigateItem(null, "Versions");
       new MassEditTeamVersionItem("Edit Versions", releaseItems, (TeamDefinitionArtifact) null);
-      new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false));
-      new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null));
+      new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldView));
+      new SearchNavigateItem(releaseItems,
+            new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor));
+      new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldView));
+      new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
       new ReleaseVersionItem(releaseItems, null);
       new CreateNewVersionItem(releaseItems, null);
       new GenerateVersionReportItem(releaseItems);
@@ -247,26 +245,13 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new UpdateAssigneesRelations(adminItems);
          new DisplayCurrentOseeEventListeners(adminItems);
 
-         LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
-         new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Actions", criteria, true));
-
-         criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(DecisionReviewArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
-         new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Decision Review", criteria, true));
-
-         criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(PeerToPeerReviewArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
-         new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - PeerToPeer Review", criteria, true));
-
-         criteria = new LinkedList<ISearchPrimitive>();
-         for (String teamArtifactName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-            criteria.add(new ArtifactTypeSearch(teamArtifactName, DepricatedOperator.EQUAL));
-         new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Teams", criteria, false));
-
-         criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
-         new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Tasks", criteria, true));
+         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", "Actions"));
+         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
+         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review",
+               "PeerToPeer Review"));
+         new SearchNavigateItem(adminItems, new ArtifactTypesSearchItem("Show all Team Workflows",
+               TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()));
+         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
 
          new DoesNotWorkItem(adminItems);
 

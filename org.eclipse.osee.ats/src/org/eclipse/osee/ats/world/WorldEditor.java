@@ -16,15 +16,23 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
+import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 
 /**
  * @author Donald G. Dunne
@@ -42,6 +50,31 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
     */
    @Override
    public void doSave(IProgressMonitor monitor) {
+   }
+
+   public static void open(String name, Collection<? extends Artifact> arts, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
+      WorldEditorInput worldEditorInput = new WorldEditorInput(name, arts, customizeData, tableLoadOptions);
+      if (worldEditorInput != null) {
+         IWorkbenchPage page = AWorkbench.getActivePage();
+         try {
+            page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
+         } catch (PartInitException ex) {
+            OSEELog.logException(AtsPlugin.class, ex, true);
+         }
+      }
+   }
+
+   public static void open(WorldSearchItem searchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) throws OseeCoreException {
+      WorldEditorInput worldEditorInput =
+            new WorldEditorInput(searchItem, SearchType.Search, customizeData, tableLoadOptions);
+      if (worldEditorInput != null) {
+         IWorkbenchPage page = AWorkbench.getActivePage();
+         try {
+            page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
+         } catch (PartInitException ex) {
+            OSEELog.logException(AtsPlugin.class, ex, true);
+         }
+      }
    }
 
    @Override
@@ -137,4 +170,5 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       }
       return null;
    }
+
 }

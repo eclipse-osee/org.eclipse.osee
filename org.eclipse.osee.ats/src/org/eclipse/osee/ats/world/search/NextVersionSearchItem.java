@@ -37,12 +37,12 @@ public class NextVersionSearchItem extends WorldSearchItem {
    /**
     * @param name
     */
-   public NextVersionSearchItem(TeamDefinitionArtifact teamDefHoldingVersions) {
-      this(null, teamDefHoldingVersions);
+   public NextVersionSearchItem(TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
+      this(null, teamDefHoldingVersions, loadView);
    }
 
-   public NextVersionSearchItem(String name, TeamDefinitionArtifact teamDefHoldingVersions) {
-      super(name != null ? name : "Workflows Targeted-For Next Version");
+   public NextVersionSearchItem(String name, TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
+      super(name != null ? name : "Workflows Targeted-For Next Version - " + loadView, loadView);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 

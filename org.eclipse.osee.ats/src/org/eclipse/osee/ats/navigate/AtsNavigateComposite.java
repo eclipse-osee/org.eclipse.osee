@@ -14,11 +14,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.TaskEditor;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
@@ -47,7 +48,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
    }
 
    @Override
-   protected void handleDoubleClick() {
+   protected void handleDoubleClick() throws OseeCoreException {
       IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
       if (!sel.iterator().hasNext()) return;
       XNavigateItem item = (XNavigateItem) sel.iterator().next();
@@ -55,12 +56,14 @@ public class AtsNavigateComposite extends XNavigateComposite {
    }
 
    @Override
-   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
+   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (item instanceof SearchNavigateItem) {
          WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWorldSearchItem();
-         if (worldSearchItem.getLoadView() == LoadView.WorldView)
+         if (worldSearchItem.getLoadView() == LoadView.WorldEditor)
+            WorldEditor.open(worldSearchItem, null, tableLoadOptions);
+         else if (worldSearchItem.getLoadView() == LoadView.WorldView)
             openWorld(worldSearchItem, tableLoadOptions);
-         else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) openTaskEditor(worldSearchItem,
+         else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) TaskEditor.open(worldSearchItem,
                tableLoadOptions);
       } else
          super.handleDoubleClick(item, tableLoadOptions);
@@ -74,14 +77,6 @@ public class AtsNavigateComposite extends XNavigateComposite {
       } catch (Exception e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
                "Couldn't Launch Search View " + e1.getMessage());
-      }
-   }
-
-   public static void openTaskEditor(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) {
-      try {
-         TaskEditor.loadTable(searchItem, tableLoadOptions);
-      } catch (Exception e1) {
-         OSEELog.logException(AtsPlugin.class, null, true);
       }
    }
 

@@ -84,7 +84,7 @@ public class WorldView extends ViewPart implements IPartListener, IAtsMetricsPro
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
       BulkLoadAtsCache.run(false);
 
-      tabFolder = new TabFolder(parent, SWT.BORDER | SWT.BOTTOM);
+      tabFolder = new TabFolder(parent, SWT.BOTTOM);
       tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
       tabFolder.setLayout(ALayout.getZeroMarginLayout(1, true));
 
@@ -97,6 +97,8 @@ public class WorldView extends ViewPart implements IPartListener, IAtsMetricsPro
       AtsMetricsComposite atsMetricsComposite = new AtsMetricsComposite(this, tabFolder, SWT.NONE);
       tab2.setControl(atsMetricsComposite);
       tab2.setText("Metrics");
+
+      tabFolder.setSelection(tab);
 
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS World");
       AtsPlugin.getInstance().setHelp(worldComposite.getControl(), HELP_CONTEXT_ID);

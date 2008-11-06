@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.world.search.EditTasksByTeamVersionSearchItem;
 import org.eclipse.osee.ats.world.search.MyTaskSearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -67,7 +68,7 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getTaskTitles(true).size());
    }
 
-   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) {
+   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) throws OseeCoreException {
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       TaskEditor taskEditor = getTaskEditor();
       assertTrue(taskEditor != null);

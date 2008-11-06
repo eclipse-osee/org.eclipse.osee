@@ -13,6 +13,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.navigate.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.navigate.NavigateView;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -46,7 +47,7 @@ public class AtsNavigateItemsToMassEditorTest extends TestCase {
       handleGeneralDoubleClickAndTestResults(item, VersionArtifact.class, 3);
    }
 
-   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) {
+   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) throws OseeCoreException {
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       MassArtifactEditor massEditor = getMassArtifactEditor();
       assertTrue(massEditor != null);

@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphLine;
 import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphLineSegment;
@@ -27,12 +28,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 
 /**
  * @author Donald G. Dunne
@@ -45,6 +45,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    private final Color BACKGROUND_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
    private final Color FOREGROUND_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
    private final Composite mainComp;
+   private boolean refreshedOnce = true;
 
    /**
     * @param parent
@@ -73,18 +74,14 @@ public class AtsMetricsComposite extends ScrolledComposite {
 
    private void creatToolBar(Composite composite) {
       toolBarComposite = new Composite(composite, SWT.NONE);
-      toolBarComposite.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, false, false, 1, 1));
-      toolBarComposite.setLayout(new GridLayout(1, false));
+      toolBarComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false, 1, 1));
+      toolBarComposite.setLayout(new GridLayout(2, false));
       adapt(toolBarComposite);
 
-      ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
-      toolBar.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1));
-
-      ToolItem refreshAction = new ToolItem(toolBar, SWT.PUSH | SWT.BORDER);
-      refreshAction.setText("Display/Refresh Metrics");
-      refreshAction.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
-      refreshAction.setToolTipText("Recalculate and Update Metrics");
-      refreshAction.addSelectionListener(new SelectionAdapter() {
+      Button refresh = new Button(toolBarComposite, SWT.PUSH);
+      refresh.setText("Display/Refresh Metrics");
+      refresh.setToolTipText("Recalculate and Update Metrics");
+      refresh.addSelectionListener(new SelectionAdapter() {
          /* (non-Javadoc)
           * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
           */
@@ -97,10 +94,18 @@ public class AtsMetricsComposite extends ScrolledComposite {
             }
          }
       });
+      adapt(refresh);
+
+      if (!refreshedOnce) {
+         Label label = new Label(toolBarComposite, SWT.NONE);
+         label.setText("        Last Updated: " + XDate.getDateNow(XDate.MMDDYYHHMM));
+         adapt(label);
+      }
 
    }
 
    public void handleUpdateMetrics() throws OseeCoreException {
+      refreshedOnce = false;
       if (metricsComposite != null) {
          metricsComposite.dispose();
       }
@@ -144,11 +149,24 @@ public class AtsMetricsComposite extends ScrolledComposite {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
 
       List<XBarGraphLineSegment> segments = new ArrayList<XBarGraphLineSegment>();
-      segments.add(new XBarGraphLineSegment("Actions", SWT.COLOR_YELLOW, sMet.getNumActions()));
-      segments.add(new XBarGraphLineSegment("Workflows", SWT.COLOR_GREEN, sMet.getNumTeamWfs()));
-      segments.add(new XBarGraphLineSegment("Tasks", SWT.COLOR_CYAN, sMet.getNumTasks()));
-      segments.add(new XBarGraphLineSegment("Reviews", SWT.COLOR_MAGENTA, sMet.getNumReviews()));
-      lines.add(new XBarGraphLine("Items", segments));
+      int totalObjects = sMet.getNumActions() + sMet.getNumTeamWfs() + sMet.getNumTasks() + sMet.getNumReviews();
+      if (sMet.getNumActions() > 0) {
+         double percent = new Double(sMet.getNumActions()) / totalObjects * 100;
+         segments.add(new XBarGraphLineSegment("Actions", SWT.COLOR_DARK_YELLOW, Math.round(percent)));
+      }
+      if (sMet.getNumTeamWfs() > 0) {
+         double percent = new Double(sMet.getNumTeamWfs()) / totalObjects * 100;
+         segments.add(new XBarGraphLineSegment("Workflows", SWT.COLOR_GREEN, Math.round(percent)));
+      }
+      if (sMet.getNumTasks() > 0) {
+         double percent = new Double(sMet.getNumTasks()) / totalObjects * 100;
+         segments.add(new XBarGraphLineSegment("Tasks", SWT.COLOR_CYAN, Math.round(percent)));
+      }
+      if (sMet.getNumReviews() > 0) {
+         double percent = new Double(sMet.getNumReviews()) / totalObjects * 100;
+         segments.add(new XBarGraphLineSegment("Reviews", SWT.COLOR_MAGENTA, Math.round(percent)));
+      }
+      lines.add(new XBarGraphLine(sMet.toStringObjectBreakout(), segments));
 
       lines.add(XBarGraphLine.getPercentLine(
             "By Team Percents (" + sMet.getCummulativeTeamPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
@@ -162,6 +180,26 @@ public class AtsMetricsComposite extends ScrolledComposite {
       lines.add(XBarGraphLine.getPercentLine(
             "By Task (" + sMet.getCompletedTaskWorkflows().size() + "/" + sMet.getNumTasks() + ")",
             (int) sMet.getPercentCompleteByTaskWorkflow()));
+
+      if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
+         double hoursTillRelease = sMet.getHoursTillRel();
+         double hoursRemaining = sMet.getHrsRemain();
+         int percent = 0;
+         if (hoursTillRelease != 0) {
+            percent = (int) (hoursRemaining / hoursTillRelease);
+         }
+         if (percent == 0 || hoursRemaining > hoursTillRelease) {
+            lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
+                  XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
+                        "%5.2f hours exceeds remaining release hours %5.2f", hoursRemaining, hoursTillRelease)));
+         } else {
+            lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
+                  XBarGraphLine.DEFAULT_GREEN_BACKGROUND, SWT.COLOR_WHITE, SWT.COLOR_WHITE, percent, String.format(
+                        "%5.2f remaining work hours", hoursRemaining), String.format("%5.2f release remaining hours",
+                        hoursRemaining)));
+         }
+      }
+
       XBarGraphTable table = new XBarGraphTable("Total Percent Complete", "", "Percent Complete", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
@@ -195,7 +233,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
       Double versionHoursRemain = null;
       if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
-         versionHoursRemain = sMet.getHrsRemain();
+         versionHoursRemain = sMet.getHoursTillRel();
       }
       for (User user : sMet.getAssigneesAssignedOrCompleted()) {
          try {

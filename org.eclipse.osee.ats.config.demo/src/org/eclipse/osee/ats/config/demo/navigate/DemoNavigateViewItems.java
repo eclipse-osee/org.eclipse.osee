@@ -11,14 +11,9 @@
 package org.eclipse.osee.ats.config.demo.navigate;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
@@ -30,15 +25,14 @@ import org.eclipse.osee.ats.navigate.CreateNewVersionItem;
 import org.eclipse.osee.ats.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.navigate.ReleaseVersionItem;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.world.search.CriteriaSearchItem;
+import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
+import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UnReleasedTeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
+import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateUrlItem;
@@ -63,14 +57,14 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       try {
          if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) return items;
       } catch (Exception ex) {
-         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.WARNING,  "Demo Teams Not Cofigured", ex);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
          return items;
       }
       // If Demo Teams not configured, ignore these navigate items
       try {
          if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) return items;
       } catch (Exception ex) {
-         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.WARNING,  "Demo Teams Not Cofigured", ex);
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
          return items;
       }
       XNavigateItem jhuItem = new XNavigateItem(null, "John Hopkins Univ (JHU)");
@@ -99,8 +93,9 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                else if (team.name().contains("CIS")) new XNavigateUrlItem(teamItems, "Open CIS Website",
                      "http://www.cisst.org/cisst/cis/", false);
 
-               new SearchNavigateItem(teamItems, new NextVersionSearchItem(teamDef));
-               new SearchNavigateItem(teamItems, new VersionTargetedForTeamSearchItem(teamDef, null, false));
+               new SearchNavigateItem(teamItems, new NextVersionSearchItem(teamDef, LoadView.WorldView));
+               new SearchNavigateItem(teamItems, new VersionTargetedForTeamSearchItem(teamDef, null, false,
+                     LoadView.WorldView));
                new SearchNavigateItem(teamItems, new UnReleasedTeamWorldSearchItem("Show Un-Released Team Workflows",
                      teamDef, true, false, true));
                new ReleaseVersionItem(teamItems, teamDef);
@@ -113,27 +108,12 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       XNavigateItem adminItems = new XNavigateItem(jhuItem, "JHU Admin");
 
-      LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-      criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
-      new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All Actions", criteria, true));
-
-      criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(DecisionReviewArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
-      new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All Decision Review", criteria, true));
-
-      criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(PeerToPeerReviewArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
-      new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All PeerToPeer Review", criteria, true));
-
-      criteria = new LinkedList<ISearchPrimitive>();
-      for (String teamArtifactName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         criteria.add(new ArtifactTypeSearch(teamArtifactName, DepricatedOperator.EQUAL));
-      new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All Teams", criteria, false));
-
-      criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
-      new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All Tasks", criteria, true));
+      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", "Actions"));
+      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
+      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review", "PeerToPeer Review"));
+      new SearchNavigateItem(adminItems, new ArtifactTypesSearchItem("Show all Team Workflows",
+            TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()));
+      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
       new ValidateAtsDatabase(healthItems);

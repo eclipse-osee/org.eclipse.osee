@@ -134,6 +134,13 @@ public class SMAMetrics {
    }
 
    /**
+    * @return the hours till release
+    */
+   public double getHoursTillRel() {
+      return daysTillRel * manDayHrs;
+   }
+
+   /**
     * @param daysTillRel the daysTillRel to set
     */
    public void setDaysTillRel(int daysTillRel) {
@@ -423,13 +430,17 @@ public class SMAMetrics {
       }
    }
 
-   public String toStringLong() {
-      return String.format(
-            "Actions: %s Team Workflows: %s Reviews: %s Tasks: %s \nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
-            getNumActions(), getNumTeamWfs(), getNumReviews(), getNumTasks(), estHours, percentCompleteByTeamPercents,
-            hrsRemain, manDaysNeeded, hrsSpent, (versionArtifact != null ? String.format(
-                  "\nVersion: %s  Estimated Release Date: %s Days Left: %d ", versionArtifact.getDescriptiveName(),
-                  (estRelDate == null ? "Not Set" : XDate.getDateStr(estRelDate, XDate.MMDDYY)), daysTillRel) : ""));
+   public String toStringObjectBreakout() {
+      return String.format("Actions: %s  - Team Workflows: %s - Tasks: %s - Reviews: %s ", getNumActions(),
+            getNumTeamWfs(), getNumTasks(), getNumReviews());
    }
 
+   public String toStringLong() {
+      return String.format(
+            "%s\nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
+            toStringObjectBreakout(), estHours, percentCompleteByTeamPercents, hrsRemain, manDaysNeeded, hrsSpent,
+            (versionArtifact != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ",
+                  versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(estRelDate,
+                        XDate.MMDDYY)), daysTillRel) : ""));
+   }
 }
