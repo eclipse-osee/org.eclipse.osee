@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
@@ -40,8 +41,8 @@ public class TrustAllAuthenticationProvider implements IAuthenticationProvider {
     * @see org.eclipse.osee.framework.core.server.IAuthenticationProvider#asOseeUserId(org.eclipse.osee.framework.core.data.OseeCredential)
     */
    @Override
-   public String asOseeUserId(OseeCredential credential) throws OseeAuthenticationException {
-      return SystemUser.Guest.getUserID();
+   public IOseeUserInfo asOseeUserId(OseeCredential credential) throws OseeAuthenticationException {
+      return SystemUser.Guest;
    }
 
 }

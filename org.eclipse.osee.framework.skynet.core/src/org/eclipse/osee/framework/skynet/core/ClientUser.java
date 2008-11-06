@@ -17,13 +17,16 @@ import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
@@ -61,7 +64,14 @@ final class ClientUser {
                if (userId.equals(SystemUser.BootStrap.getUserID())) {
                   setCurrentUser(BootStrapUser.getInstance());
                } else {
-                  setCurrentUser(UserCache.getUserByUserId(userId));
+                  OseeSessionGrant sessionGrant = ClientSessionManager.getSessionGrant();
+                  if (sessionGrant.isCreationRequired()) {
+                     SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+                     UserCache.createUser(sessionGrant.getOseeUserInfo(), transaction);
+                     transaction.execute();
+                     sessionGrant.setCreationRequired(true);
+                  }
+                  setCurrentUser(UserCache.getUserByUserId(sessionGrant.getOseeUserInfo().getUserID()));
                }
             } catch (UserNotInDatabase ex) {
                if (currentUser == null) {

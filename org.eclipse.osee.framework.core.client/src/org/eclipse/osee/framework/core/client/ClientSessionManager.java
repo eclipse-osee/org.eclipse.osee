@@ -140,8 +140,8 @@ public class ClientSessionManager {
 
          oseeSession =
                new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
-                     oseeSessionGrant.getUserArtifactId(), clientInfo.getClientAddress(), clientInfo.getPort(),
-                     clientInfo.getVersion());
+                     oseeSessionGrant.getOseeUserInfo().getUserID(), clientInfo.getClientAddress(),
+                     clientInfo.getPort(), clientInfo.getVersion());
       } catch (OseeCoreException ex) {
          OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
          throw ex;

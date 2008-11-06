@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
-import org.eclipse.osee.framework.jdk.core.util.OseeUser;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -53,7 +53,7 @@ public class UserCache {
    private Map<String, User> userIdToUserCache;
    private Map<String, User> nameToUserCache;
    private ArrayList<User> activeUserCache;
-   private Map<OseeUser, User> enumeratedUserCache;
+   private Map<IOseeUser, User> enumeratedUserCache;
    private String[] sortedActiveUserNameCache;
 
    private UserCache() {
@@ -67,7 +67,7 @@ public class UserCache {
       try {
          if (!userCacheIsLoaded) {
             isLoadingUsersCache = true;
-            enumeratedUserCache = new HashMap<OseeUser, User>(30);
+            enumeratedUserCache = new HashMap<IOseeUser, User>(30);
             nameToUserCache = new HashMap<String, User>(800);
             userIdToUserCache = new HashMap<String, User>(800);
             activeUserCache = new ArrayList<User>(700);
@@ -90,7 +90,7 @@ public class UserCache {
       }
    }
 
-   private void cacheUser(User user, OseeUser userEnum) throws OseeCoreException {
+   private void cacheUser(User user, IOseeUser userEnum) throws OseeCoreException {
       // System.out.println("caching User " + user.getUserId());
       // If cacheUser is called outside of the main loadUserCache, then load cache first
       if (!isLoadingUsersCache) loadUsersCache();
@@ -136,7 +136,7 @@ public class UserCache {
       }
    }
 
-   public static User createUser(OseeUser userEnum, SkynetTransaction transaction) throws OseeCoreException {
+   public static User createUser(IOseeUser userEnum, SkynetTransaction transaction) throws OseeCoreException {
       instance.loadUsersCache();
       // Determine if user with id has already been created; boot strap issue with dbInit
       User user = instance.userIdToUserCache.get(userEnum.getUserID());
@@ -159,7 +159,7 @@ public class UserCache {
       return user;
    }
 
-   public static User getUser(OseeUser userEnum) throws OseeCoreException {
+   public static User getUser(IOseeUser userEnum) throws OseeCoreException {
       instance.loadUsersCache();
       User user = instance.enumeratedUserCache.get(userEnum);
       if (user == null) {

@@ -8,21 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server;
-
-import org.eclipse.osee.framework.core.data.IOseeUserInfo;
-import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
+package org.eclipse.osee.framework.core.data;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IAuthenticationProvider {
+public interface IOseeUserInfo extends IOseeUser {
 
-   public String getProtocol();
-
-   public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException;
-
-   public IOseeUserInfo asOseeUserId(OseeCredential credential) throws OseeAuthenticationException;
+   public boolean isCreationRequired();
 
 }

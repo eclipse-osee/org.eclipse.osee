@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.util;
+package org.eclipse.osee.framework.core.data;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface OseeUser {
+public interface IOseeUser {
    String getEmail();
 
    String getName();

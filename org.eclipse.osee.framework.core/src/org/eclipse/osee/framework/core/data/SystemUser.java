@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.util.OseeUser;
-
 /**
  * @author Ryan D. Brooks
  */
-public enum SystemUser implements OseeUser {
+public enum SystemUser implements IOseeUserInfo {
    NoOne("No One", "", "99999999", false),
    Guest("Guest", "", "99999998", false),
    BootStrap("Boot Strap", "bootstrap@osee.org", "bootstrap", true),
@@ -58,5 +56,13 @@ public enum SystemUser implements OseeUser {
     */
    public boolean isActive() {
       return active;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.data.IOseeUserInfo#isCreationRequired()
+    */
+   @Override
+   public boolean isCreationRequired() {
+      return false;
    }
 }

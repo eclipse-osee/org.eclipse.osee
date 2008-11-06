@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
@@ -65,7 +66,7 @@ public class SessionManager implements ISessionManager {
     */
    @Override
    public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException {
-      OseeSessionGrant toReturn = null;
+      OseeSessionGrant sessionGrant = null;
 
       IAuthenticationManager authenticationManager = CoreServerActivator.getAuthenticationManager();
       boolean isAuthenticated = authenticationManager.authenticate(credential);
@@ -74,17 +75,23 @@ public class SessionManager implements ISessionManager {
          SessionState sessionState = SessionState.CREATED;
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
 
-         String userId = authenticationManager.asOseeUserId(credential);
+         IOseeUserInfo oseeUserInfo = authenticationManager.asOseeUser(credential);
+
          OseeSession session =
-               new OseeSession(GUID.generateGuidStr(), userId, timestamp, credential.getClientMachineName(),
-                     credential.getClientAddress(), credential.getPort(), credential.getVersion(), timestamp,
-                     sessionState.name().toLowerCase());
+               new OseeSession(GUID.generateGuidStr(), oseeUserInfo.getUserID(), timestamp,
+                     credential.getClientMachineName(), credential.getClientAddress(), credential.getPort(),
+                     credential.getVersion(), timestamp, sessionState.name().toLowerCase());
 
          SessionData sessionData = new SessionData(sessionState, session);
          sessions.put(sessionData.getSessionId(), sessionData);
-         toReturn = internalCreateGrant(sessionData);
+
+         sessionGrant = new OseeSessionGrant(sessionData.getSessionId());
+         sessionGrant.setCreationRequired(oseeUserInfo.isCreationRequired());
+         sessionGrant.setOseeUserInfo(oseeUserInfo);
+         sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
+         sessionGrant.setSqlProperties(SqlKey.getSqlProperties());
       }
-      return toReturn;
+      return sessionGrant;
    }
 
    /* (non-Javadoc)
@@ -113,14 +120,6 @@ public class SessionManager implements ISessionManager {
       } else {
          throw new OseeInvalidSessionException(String.format("Session was invalid: [%s]", sessionId));
       }
-   }
-
-   private OseeSessionGrant internalCreateGrant(SessionData sessionData) throws OseeDataStoreException {
-      OseeSessionGrant sessionGrant = new OseeSessionGrant(sessionData.getSessionId());
-      sessionGrant.setUserArtifactId(sessionData.getSession().getUserId());
-      sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
-      sessionGrant.setSqlProperties(SqlKey.getSqlProperties());
-      return sessionGrant;
    }
 
    private final class UpdateDataStore extends TimerTask {

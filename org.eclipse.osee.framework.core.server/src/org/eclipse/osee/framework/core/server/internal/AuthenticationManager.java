@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
@@ -82,14 +83,14 @@ public class AuthenticationManager implements IAuthenticationManager {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#asOseeUserId(org.eclipse.osee.framework.core.data.OseeCredential)
+    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#asOseeUser(org.eclipse.osee.framework.core.data.OseeCredential)
     */
    @Override
-   public String asOseeUserId(OseeCredential credential) throws OseeAuthenticationException {
+   public IOseeUserInfo asOseeUser(OseeCredential credential) throws OseeAuthenticationException {
       if (isGuestLogin(credential)) {
-         return SystemUser.Guest.getUserID();
+         return SystemUser.Guest;
       } else if (isBootStrap(credential)) {
-         return SystemUser.BootStrap.getUserID();
+         return SystemUser.BootStrap;
       } else {
          IAuthenticationProvider provider = authenticationProviders.get(credential.getAuthenticationProtocol());
          if (provider != null) {
