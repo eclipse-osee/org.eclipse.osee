@@ -20,7 +20,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.data.SqlKey;
@@ -62,35 +61,27 @@ public class SessionManager implements ISessionManager {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.ISessionManager#createSession(java.lang.String, org.eclipse.osee.framework.core.data.OseeCredential)
+    * @see org.eclipse.osee.framework.core.server.ISessionManager#createSession(org.eclipse.osee.framework.core.data.OseeCredential)
     */
    @Override
-   public OseeSessionGrant createSession(String authenticationProtocol, OseeCredential credential) throws OseeCoreException {
-      boolean isAuthenticated = false;
-      boolean wasDbInitUser = false;
+   public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException {
+      String loginId = credential.getUserId();
+      boolean isAuthenticated = UserIdManager.isSafeUser(loginId);
       OseeSessionGrant toReturn = null;
 
-      wasDbInitUser = credential.getUserId().equals(OseeServerContext.DB_INIT_SESSION_ID);
-
-      if (!wasDbInitUser) {
+      if (!isAuthenticated) {
          IAuthenticationManager authenticationManager = CoreServerActivator.getAuthenticationManager();
-         isAuthenticated = authenticationManager.authenticate(authenticationProtocol, credential);
-      } else {
-         isAuthenticated = true;
+         isAuthenticated = authenticationManager.authenticate(credential);
       }
 
       if (isAuthenticated) {
-         String sessionId = wasDbInitUser != true ? GUID.generateGuidStr() : credential.getUserId();
-
          SessionState sessionState = SessionState.CREATED;
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
 
-         // TODO Find user id 
-
          OseeSession session =
-               new OseeSession(sessionId, credential.getUserId(), timestamp, credential.getClientMachineName(),
-                     credential.getClientAddress(), credential.getPort(), credential.getVersion(), timestamp,
-                     sessionState.name().toLowerCase());
+               new OseeSession(GUID.generateGuidStr(), UserIdManager.getUserIdFromLoginId(loginId), timestamp,
+                     credential.getClientMachineName(), credential.getClientAddress(), credential.getPort(),
+                     credential.getVersion(), timestamp, sessionState.name().toLowerCase());
 
          SessionData sessionData = new SessionData(sessionState, session);
          sessions.put(sessionData.getSessionId(), sessionData);

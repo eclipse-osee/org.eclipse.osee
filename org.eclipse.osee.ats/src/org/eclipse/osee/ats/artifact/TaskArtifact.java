@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -185,8 +185,8 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       // Assign current user if unassigned
       try {
          if (smaMgr.getStateMgr().getAssignees().size() == 1 && smaMgr.getStateMgr().getAssignees().contains(
-               SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
-            smaMgr.getStateMgr().setAssignee(SkynetAuthentication.getUser());
+               UserCache.getUser(SystemUser.UnAssigned))) {
+            smaMgr.getStateMgr().setAssignee(UserCache.getUser());
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -217,7 +217,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (smaMgr.getStateMgr().getPercentComplete() == 100 && !isCompleted())
          transitionToCompleted(false, transaction);
       else if (smaMgr.getStateMgr().getPercentComplete() != 100 && isCompleted()) {
-         transitionToInWork(SkynetAuthentication.getUser(), true, transaction);
+         transitionToInWork(UserCache.getUser(), true, transaction);
       }
       transaction.execute();
    }
@@ -226,7 +226,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isInWork())
          transitionToCancelled("Parent Cancelled", persist, transaction);
       else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) transitionToInWork(
-            SkynetAuthentication.getUser(), persist, transaction);
+            UserCache.getUser(), persist, transaction);
    }
 
    /*

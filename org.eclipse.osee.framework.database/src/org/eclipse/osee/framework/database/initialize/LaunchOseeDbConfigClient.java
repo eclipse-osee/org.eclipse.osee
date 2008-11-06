@@ -126,7 +126,7 @@ public class LaunchOseeDbConfigClient {
       System.out.println("Enter: [Y|N]\n");
       String line = "N";
 
-      if (!OseeProperties.getInstance().isPromptEnabled()) {
+      if (!OseeProperties.isPromptEnabled()) {
          line = "Y";
       } else {
          try {
@@ -189,7 +189,7 @@ public class LaunchOseeDbConfigClient {
          String dbName = dbInfo.getDatabaseName();
          String userName = dbInfo.getDatabaseLoginName();
 
-         boolean isPromptEnabled = OseeProperties.getInstance().isPromptEnabled();
+         boolean isPromptEnabled = OseeProperties.isPromptEnabled();
          String line = null;
          if (isPromptEnabled) {
             System.out.println("\nAre you sure you want to configure: " + dbName + ":" + userName);

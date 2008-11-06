@@ -20,11 +20,11 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -94,9 +94,9 @@ public class EmailWizardPage extends WizardPage {
       }
 
       try {
-         names.addAll(SkynetAuthentication.getUsers());
-         names.remove(SkynetAuthentication.getUser(UserEnum.UnAssigned));
-         names.remove(SkynetAuthentication.getUser(UserEnum.NoOne));
+         names.addAll(UserCache.getUsers());
+         names.remove(UserCache.getUser(SystemUser.UnAssigned));
+         names.remove(UserCache.getUser(SystemUser.NoOne));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          names.add(ex.getLocalizedMessage());
@@ -214,7 +214,7 @@ public class EmailWizardPage extends WizardPage {
       bccList.getList().setLayoutData(gd);
       bccList.getList().setMenu(getDeletePopup(bccList));
       try {
-         bccList.setInput(new Object[] {SkynetAuthentication.getUser().getEmail()});
+         bccList.setInput(new Object[] {UserCache.getUser().getEmail()});
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.cellEditor;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 
@@ -27,7 +27,7 @@ public class PersonValue extends UniversalCellEditorValue {
     */
    public PersonValue() throws OseeCoreException {
       super();
-      choices = SkynetAuthentication.getUserNames();
+      choices = UserCache.getUserNames();
    }
 
    /*

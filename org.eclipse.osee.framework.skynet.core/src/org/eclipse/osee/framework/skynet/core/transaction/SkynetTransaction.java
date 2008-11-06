@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -68,8 +68,7 @@ public final class SkynetTransaction extends DbTransaction {
          new HashMap<BaseTransactionData, BaseTransactionData>();
    private final Branch branch;
    private boolean madeChanges = false;
-   
-   
+
    /**
     * @return the branch
     */
@@ -200,7 +199,7 @@ public final class SkynetTransaction extends DbTransaction {
       xModifiedEvents.add(new RelationModifiedEvent(new Sender(sourceObject), relationModType, link, branch,
             relationType));
    }
-   
+
    public void execute() throws OseeCoreException {
       if(madeChanges){
          super.execute();
@@ -213,7 +212,7 @@ public final class SkynetTransaction extends DbTransaction {
     */
    public TransactionId getTransactionId() throws OseeDataStoreException {
       if (transactionId == null) {
-         transactionId = TransactionIdManager.createNextTransactionId(branch, SkynetAuthentication.getUser(), "");
+         transactionId = TransactionIdManager.createNextTransactionId(branch, UserCache.getUser(), "");
       }
       return transactionId;
    }

@@ -20,11 +20,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -133,7 +133,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             boolean workingBranchesFound = false;
             for (Branch branch : RevisionManager.getInstance().getOtherEdittedBranches(srchArt)) {
                Artifact assocArt = branch.getAssociatedArtifact();
-               if (assocArt != null && !assocArt.equals(SkynetAuthentication.getUser(UserEnum.NoOne))) {
+               if (assocArt != null && !assocArt.equals(UserCache.getUser(SystemUser.NoOne))) {
                   rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
                         assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
                } else {

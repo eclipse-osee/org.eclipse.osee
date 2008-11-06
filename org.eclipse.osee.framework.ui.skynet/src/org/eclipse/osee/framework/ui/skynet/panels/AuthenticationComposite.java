@@ -8,12 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin.security;
+package org.eclipse.osee.framework.ui.skynet.panels;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -23,11 +30,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -42,12 +51,11 @@ public class AuthenticationComposite extends Composite {
    private static final Image errorImage =
          PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 
-   private static final OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
-
    private enum LabelEnum {
       UserId("Enter user name"),
       Password(true, "Enter a valid password"),
       Domain("Enter a valid domain [sw, nw, etc...]"),
+      Protocol("Select authentication protocol"),
       Remember_My_Password(WARNING_MESSAGE);
 
       boolean isHidden;
@@ -71,7 +79,7 @@ public class AuthenticationComposite extends Composite {
       }
    }
 
-   private Map<LabelEnum, Text> fieldMap;
+   private Map<LabelEnum, Control> fieldMap;
    private Map<LabelEnum, String> dataMap;
    private Map<LabelEnum, Label> statusMap;
    private boolean buildSubmitButton;
@@ -81,13 +89,12 @@ public class AuthenticationComposite extends Composite {
    private Button guestButton;
    private Button userButton;
    private Composite mainComposite;
-   private SashForm sash;
    private boolean isGuestLogin;
 
    public AuthenticationComposite(Composite parent, int style, boolean buildSubmitButton) {
       super(parent, style);
       this.buildSubmitButton = buildSubmitButton;
-      fieldMap = new HashMap<LabelEnum, Text>();
+      fieldMap = new HashMap<LabelEnum, Control>();
       dataMap = new HashMap<LabelEnum, String>();
       statusMap = new HashMap<LabelEnum, Label>();
       createControl();
@@ -98,23 +105,23 @@ public class AuthenticationComposite extends Composite {
    }
 
    private void createControl() {
-      this.setLayout(new GridLayout());
+      GridLayout layout = new GridLayout();
+      layout.marginWidth = 0;
+      layout.marginHeight = 0;
+      this.setLayout(layout);
       this.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      sash = new SashForm(this, SWT.NONE);
-      sash.setLayout(new GridLayout());
-      sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      sash.setOrientation(SWT.VERTICAL);
+      createLoginSelection(this);
 
-      createLoginSelection(sash);
-
-      mainComposite = new Group(sash, SWT.NONE);
-      mainComposite.setLayout(new GridLayout());
+      mainComposite = new Group(this, SWT.NONE);
+      GridLayout layout1 = new GridLayout();
+      layout1.marginWidth = 0;
+      layout1.marginHeight = 0;
+      mainComposite.setLayout(layout1);
       mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       createFieldArea(mainComposite);
       handleLoginTypeSelection();
-      sash.setWeights(new int[] {3, 7});
    }
 
    private void createLoginSelection(Composite parent) {
@@ -153,20 +160,20 @@ public class AuthenticationComposite extends Composite {
 
    private void handleLoginTypeSelection() {
       boolean allowUserLogin = false;
-      if (guestButton != null && !guestButton.isDisposed()) {
+      if (isWidgetAccessible(guestButton)) {
          if (guestButton.getSelection()) {
             allowUserLogin = false;
          }
       }
 
-      if (userButton != null && !userButton.isDisposed()) {
+      if (isWidgetAccessible(userButton)) {
          if (userButton.getSelection()) {
             allowUserLogin = true;
          }
       }
 
       isGuestLogin = !allowUserLogin;
-      if (mainComposite != null && !mainComposite.isDisposed()) {
+      if (isWidgetAccessible(mainComposite)) {
          setEnabledHelper(mainComposite, allowUserLogin);
       }
    }
@@ -179,6 +186,7 @@ public class AuthenticationComposite extends Composite {
             control.setEnabled(setEnabled);
          }
       }
+      tempComposite.setEnabled(setEnabled);
    }
 
    private void createFieldArea(Composite parent) {
@@ -189,7 +197,7 @@ public class AuthenticationComposite extends Composite {
       for (LabelEnum labelEnum : LabelEnum.values()) {
          if (labelEnum.equals(LabelEnum.Remember_My_Password)) {
             createMementoButton(parent);
-            if (memoButton != null && !memoButton.isDisposed()) {
+            if (isWidgetAccessible(memoButton)) {
                dataMap.put(labelEnum, Boolean.toString(memoButton.getSelection()));
             }
          } else {
@@ -197,32 +205,42 @@ public class AuthenticationComposite extends Composite {
             label.setText(labelEnum.name() + ": ");
 
             int style = SWT.BORDER | SWT.SINGLE;
-            Text field = new Text(composite, (labelEnum.isHidden() ? style |= SWT.PASSWORD : style));
-            field.setData(LABEL_KEY, labelEnum);
-            field.setToolTipText(labelEnum.getToolTipText());
-            field.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+            Control control = null;
+            if (labelEnum.equals(LabelEnum.Protocol)) {
+               Combo combo = new Combo(composite, style);
+               control = combo;
+               combo.setItems(ClientSessionManager.getAuthenticationProtocols());
+               dataMap.put(labelEnum, combo.getText());
+            } else {
+               Text field = new Text(composite, (labelEnum.isHidden() ? style |= SWT.PASSWORD : style));
+               field.setData(LABEL_KEY, labelEnum);
+               control = field;
+               dataMap.put(labelEnum, field.getText());
+               field.addModifyListener(new ModifyListener() {
+
+                  public void modifyText(ModifyEvent e) {
+                     Object object = e.getSource();
+                     if (object instanceof Text) {
+                        Text field = (Text) object;
+                        LabelEnum labelKey = (LabelEnum) field.getData(LABEL_KEY);
+
+                        dataMap.put(labelKey, field.getText());
+                        updateFieldStatus(labelKey, field);
+                        updateDefaultButtonStatus();
+                     }
+                  }
+               });
+            }
+            control.setToolTipText(labelEnum.getToolTipText());
+            control.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
             Label statusLabel = new Label(composite, SWT.NONE);
             statusLabel.setImage(errorImage);
             statusLabel.setVisible(true);
 
-            field.addModifyListener(new ModifyListener() {
-
-               public void modifyText(ModifyEvent e) {
-                  Object object = e.getSource();
-                  if (object instanceof Text) {
-                     Text field = (Text) object;
-                     LabelEnum labelKey = (LabelEnum) field.getData(LABEL_KEY);
-
-                     dataMap.put(labelKey, field.getText());
-                     updateFieldStatus(labelKey, field);
-                     updateDefaultButtonStatus();
-                  }
-               }
-            });
-            fieldMap.put(labelEnum, field);
+            fieldMap.put(labelEnum, control);
             statusMap.put(labelEnum, statusLabel);
-            dataMap.put(labelEnum, field.getText());
+
          }
       }
 
@@ -243,16 +261,32 @@ public class AuthenticationComposite extends Composite {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            String user = dataMap.get(LabelEnum.UserId);
-            String password = dataMap.get(LabelEnum.Password);
-            String domain = dataMap.get(LabelEnum.Domain);
-            String saveAllowed = dataMap.get(LabelEnum.Remember_My_Password);
+            try {
+               if (isGuestLogin()) {
+                  ClientSessionManager.authenticateAsGuest();
+               } else {
+                  ClientSessionManager.authenticate(new BaseCredentialProvider() {
+                     @Override
+                     public OseeCredential getCredential() throws OseeCoreException {
+                        OseeCredential credential = super.getCredential();
+                        credential.setUserId(dataMap.get(LabelEnum.UserId));
+                        credential.setPassword(dataMap.get(LabelEnum.Password));
+                        credential.setDomain(dataMap.get(LabelEnum.Domain));
+                        credential.setAuthenticationProtocol(dataMap.get(LabelEnum.Protocol));
+                        return credential;
+                     }
+                  });
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
 
-            oseeAuthentication.setLogAsGuest(isGuestLogin());
-            oseeAuthentication.authenticate(user, password, domain,
-                  (saveAllowed != null ? Boolean.parseBoolean(saveAllowed) : false));
-
-            oseeAuthentication.setLogAsGuest(false);
+            if (ClientSessionManager.isSessionValid()) {
+               boolean isSaveAllowed = Boolean.valueOf(dataMap.get(LabelEnum.Remember_My_Password));
+               if (isSaveAllowed) {
+                  //TODO: Store Password into KeyRing dataMap.get(LabelEnum.Password)
+               }
+            }
          }
       };
 
@@ -260,7 +294,9 @@ public class AuthenticationComposite extends Composite {
 
    private void createMementoButton(Composite parent) {
       Composite tempComposite = new Composite(parent, SWT.NONE);
-      tempComposite.setLayout(new GridLayout());
+      GridLayout layout = new GridLayout();
+      layout.marginHeight = 0;
+      tempComposite.setLayout(layout);
       tempComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       memoButton = new Button(tempComposite, SWT.CHECK);
@@ -273,7 +309,6 @@ public class AuthenticationComposite extends Composite {
          public void widgetSelected(SelectionEvent e) {
             dataMap.put(LabelEnum.Remember_My_Password, Boolean.toString(memoButton.getSelection()));
          }
-
       });
    }
 
@@ -297,20 +332,35 @@ public class AuthenticationComposite extends Composite {
       setAndStoreField(LabelEnum.Remember_My_Password, Boolean.toString(isStorageAllowed));
    }
 
+   public void setProtocol(String protocol) {
+      setAndStoreField(LabelEnum.Protocol, protocol);
+   }
+
    private void setAndStoreField(LabelEnum fieldKey, String value) {
       if (fieldKey.equals(LabelEnum.Remember_My_Password)) {
-         if (memoButton != null && !memoButton.isDisposed()) {
+         if (isWidgetAccessible(memoButton)) {
             memoButton.setSelection(Boolean.valueOf(value));
          }
       } else {
-         Text textField = fieldMap.get(fieldKey);
-         if (textField != null && !textField.isDisposed()) {
-            textField.setText(value);
-            updateFieldStatus(fieldKey, textField);
+         Widget object = fieldMap.get(fieldKey);
+         if (isWidgetAccessible(object)) {
+            if (object instanceof Text) {
+               Text textField = (Text) object;
+               textField.setText(value);
+            }
+            if (object instanceof Combo) {
+               Combo combo = (Combo) object;
+               combo.setText(value);
+            }
+            updateFieldStatus(fieldKey, object);
             updateDefaultButtonStatus();
          }
       }
       dataMap.put(fieldKey, value);
+   }
+
+   private boolean isWidgetAccessible(Widget widget) {
+      return widget != null && !widget.isDisposed();
    }
 
    public String getUserName() {
@@ -338,21 +388,25 @@ public class AuthenticationComposite extends Composite {
       return (value != null ? Boolean.parseBoolean(value) : false);
    }
 
+   public String getProtocol() {
+      return dataMap.get(LabelEnum.Protocol);
+   }
+
    public boolean isValid() {
       return allValid;
    }
 
-   private void updateFieldStatus(LabelEnum labelKey, Text field) {
+   private void updateFieldStatus(LabelEnum labelKey, Widget field) {
       switch (labelKey) {
-         case UserId:
-            String temp = field.getText();
-            statusMap.get(labelKey).setVisible(!(temp != null && temp.length() > 0));
+         case Protocol:
+            String temp = ((Combo) field).getText();
+            statusMap.get(labelKey).setVisible(!Strings.isValid(temp));
             break;
          case Remember_My_Password:
             break;
          default:
-            temp = field.getText();
-            statusMap.get(labelKey).setVisible(!(temp != null && temp.length() > 0));
+            temp = ((Text) field).getText();
+            statusMap.get(labelKey).setVisible(!Strings.isValid(temp));
             break;
       }
    }
@@ -363,7 +417,7 @@ public class AuthenticationComposite extends Composite {
       if (!isGuestLogin) {
          for (LabelEnum key : LabelEnum.values()) {
             Label label = statusMap.get(key);
-            if (label != null && !label.isDisposed()) {
+            if (isWidgetAccessible(label)) {
                allValid &= !label.isVisible();
             }
          }

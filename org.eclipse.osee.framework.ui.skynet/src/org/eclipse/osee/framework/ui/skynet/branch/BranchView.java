@@ -54,7 +54,7 @@ import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionExcep
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -772,7 +772,7 @@ public class BranchView extends ViewPart implements IActionable {
       // Ask to save the user in case any changes to favorite branches have been made
       if (SkynetGuiPlugin.areOSEEServicesAvailable().isTrue()) {
          try {
-            SkynetAuthentication.getUser().persistAttributes();
+            UserCache.getUser().persistAttributes();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
@@ -820,7 +820,7 @@ public class BranchView extends ViewPart implements IActionable {
 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             if (SkynetSelections.oneBranchSelected(selection)) {
-               if ((SkynetAuthentication.getUser().isFavoriteBranch((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())))) {
+               if ((UserCache.getUser().isFavoriteBranch((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())))) {
                   markState = "Unmark";
                }
             }
@@ -839,7 +839,7 @@ public class BranchView extends ViewPart implements IActionable {
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-            User user = SkynetAuthentication.getUser();
+            User user = UserCache.getUser();
 
             user.toggleFavoriteBranch(branch);
 
@@ -859,7 +859,7 @@ public class BranchView extends ViewPart implements IActionable {
 
             boolean oneBranchSelected = SkynetSelections.oneBranchSelected(selection);
 
-            if (oneBranchSelected && SkynetAuthentication.getUser().isFavoriteBranch(
+            if (oneBranchSelected && UserCache.getUser().isFavoriteBranch(
                   (Branch) SkynetSelections.boilDownObject(selection.getFirstElement()))) {
                // make the text correct somehow somewhere so it says Mark/Unmark in context
             }
@@ -1377,7 +1377,7 @@ public class BranchView extends ViewPart implements IActionable {
                   AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
                   return null;
                }
-               if (AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(),
+               if (AccessControlManager.checkObjectPermission(UserCache.getUser(),
                      selectedBranch.getAssociatedArtifact(), PermissionEnum.READ)) {
                   if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)
                      OseeAts.openATSArtifact(selectedBranch.getAssociatedArtifact());
@@ -1386,7 +1386,7 @@ public class BranchView extends ViewPart implements IActionable {
                } else {
                   OSEELog.logSevere(
                         SkynetGuiPlugin.class,
-                        "The user " + SkynetAuthentication.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifact(),
+                        "The user " + UserCache.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifact(),
                         true);
                }
             } catch (Exception ex) {

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -68,7 +68,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
             // Validate team lead status
             if (!AtsPlugin.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(
-                  SkynetAuthentication.getUser())) {
+                  UserCache.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }

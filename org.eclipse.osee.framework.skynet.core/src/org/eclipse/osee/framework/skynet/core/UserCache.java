@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,15 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.ICredentialProvider;
-import org.eclipse.osee.framework.core.client.server.HttpServer;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
-import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.OseeUser;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,15 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
-import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
-import org.eclipse.osee.framework.ui.plugin.security.UserCredentials;
-import org.eclipse.osee.framework.ui.plugin.security.UserCredentials.UserCredentialEnum;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * <b>Skynet Authentication</b><br/> Provides mapping of the current Authenticated User Id to its User Artifact in the
@@ -52,27 +39,23 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author Roberto E. Escobar
  */
-public class SkynetAuthentication {
+public class UserCache {
    private int noOneArtifactId;
-   private final boolean createUserWhenNotInDatabase = true;
 
    public static enum UserStatusEnum {
       Active, InActive, Both
    }
-   private boolean firstTimeThrough;
+
+   private static MutableBoolean duringUserCreation = new MutableBoolean(false);
+   private static final UserCache instance = new UserCache();
+
    private Map<String, User> userIdToUserCache;
    private Map<String, User> nameToUserCache;
    private ArrayList<User> activeUserCache;
    private Map<OseeUser, User> enumeratedUserCache;
    private String[] sortedActiveUserNameCache;
-   private User currentUser;
-   private boolean duringUserCreation;
-   private boolean basicUsersCreated = true;
 
-   private static final SkynetAuthentication instance = new SkynetAuthentication();
-
-   private SkynetAuthentication() {
-      firstTimeThrough = true;
+   private UserCache() {
    }
 
    // Needed so an external call to cacheUser() can load the cache first without an infinite loop
@@ -110,17 +93,17 @@ public class SkynetAuthentication {
       // System.out.println("caching User " + user.getUserId());
       // If cacheUser is called outside of the main loadUserCache, then load cache first
       if (!isLoadingUsersCache) loadUsersCache();
-      // Check to make sure user is not in databaes more than once
+      // Check to make sure user is not in database more than once
       User currentUser = userIdToUserCache.get(user.getUserId());
       // Allows the same user artifact to be re-cached
       if (currentUser != null && currentUser.getArtId() != user.getArtId()) {
          UserInDatabaseMultipleTimes exception =
                new UserInDatabaseMultipleTimes(
                      "User of userId \"" + user.getUserId() + "\" in datastore more than once");
-         if (user.getUserId().equals(OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id))) {
+         if (user.getUserId().equals(ClientSessionManager.getSession().getId())) {
             throw exception;
          } else {
-            OseeLog.log(SkynetAuthentication.class, Level.SEVERE, exception);
+            OseeLog.log(UserCache.class, Level.SEVERE, exception);
          }
       } else {
          userIdToUserCache.put(user.getUserId(), user);
@@ -131,144 +114,24 @@ public class SkynetAuthentication {
       if (userEnum != null) enumeratedUserCache.put(userEnum, user);
    }
 
-   public boolean isAuthenticated() {
-      return OseeAuthentication.getInstance().isAuthenticated();
-   }
-
-   private void forceAuthenticationRoutine() throws OseeCoreException {
-      OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
-      if (!oseeAuthentication.isAuthenticated()) {
-         if (oseeAuthentication.isLoginAllowed()) {
-            AuthenticationDialog.openDialog();
-         } else {
-            oseeAuthentication.authenticate("", "", "", false);
-         }
-         notifyListeners();
-      }
-   }
-
-   public static void notifyListeners() {
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            try {
-               OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.UserAuthenticated,
-                     LoadedArtifacts.EmptyLoadedArtifacts());
-            } catch (Exception ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-            }
-         }
-      });
-   }
-
    /**
     * Returns the currently authenticated user
     * 
     * @return User
     */
    public static User getUser() {
-      return instance.getAuthenticatedUser();
+      return ClientUser.getInstance().getMainUser();
    }
 
-   private void ensureSessionCreated() throws OseeCoreException {
-      if (!ClientSessionManager.isSessionValid()) {
-         ClientSessionManager.authenticate(new ICredentialProvider() {
-
-            @Override
-            public OseeCredential getCredential() {
-               UserCredentials credentials = OseeAuthentication.getInstance().getCredentials();
-               OseeCredential credential = new OseeCredential();
-               credential.setUserId(credentials.getField(UserCredentialEnum.Id));
-               credential.setDomain(credentials.getField(UserCredentialEnum.Domain));
-               credential.setPassword(credentials.getField(UserCredentialEnum.Password));
-               HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
-               credential.setClientAddress(HttpServer.getLocalServerAddress(), HttpServer.getDefaultServicePort());
-               credential.setClientVersion(OseeCodeVersion.getVersion());
-               try {
-                  credential.setClientMachineName(InetAddress.getLocalHost().getHostName());
-               } catch (Exception ex) {
-                  credential.setClientMachineName(ex.getLocalizedMessage());
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-               }
-               return credential;
-            }
-
-         });
-      }
-   }
-
-   private synchronized User getAuthenticatedUser() {
-      try {
-         if (!isBasicUsersCreated()) {
-            return BootStrapUser.getInstance();
+   static void persistUser(User user) throws OseeCoreException {
+      synchronized (duringUserCreation) {
+         duringUserCreation.setValue(true);
+         try {
+            user.persistAttributesAndRelations();
+            instance.cacheUser(user, null);
+         } finally {
+            duringUserCreation.setValue(false);
          }
-         if (firstTimeThrough) {
-            forceAuthenticationRoutine();
-            firstTimeThrough = false; // firstTimeThrough must be set false after last use of its value
-         }
-         if (currentUser == null) {
-            if (!OseeAuthentication.getInstance().isAuthenticated()) {
-               popupGuestLoginNotification();
-               currentUser = getUser(UserEnum.Guest);
-            } else {
-               String userId = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id);
-               try {
-                  currentUser = getUserByUserId(userId);
-                  // Validate/Update user credentials
-                  String credentialEmail =
-                        OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Email);
-                  String name = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Name);
-                  if (!name.equals(userId) && !currentUser.getName().equals(name)) {
-                     currentUser.setDescriptiveName(name);
-                  }
-                  if (credentialEmail != null && credentialEmail.contains("@") && !credentialEmail.equals(currentUser.getSoleAttributeValue(
-                        "Email", ""))) {
-                     currentUser.setSoleAttributeFromString("Email", credentialEmail);
-                  }
-                  currentUser.persistAttributes();
-
-               } catch (UserNotInDatabase ex) {
-                  if (createUserWhenNotInDatabase) {
-                     String email =
-                           OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Email);
-                     currentUser =
-                           createUser(OseeAuthentication.getInstance().getCredentials().getField(
-                                 UserCredentialEnum.Name), email == null ? "spawnedBySkynet" : email, userId, true);
-                     persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
-                  } else {
-                     if (currentUser == null) {
-                        popupGuestLoginNotification();
-                        currentUser = getUser(UserEnum.Guest);
-                     }
-                  }
-               }
-            }
-         }
-         ensureSessionCreated();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-
-      return currentUser;
-   }
-   private static boolean notifiedAsGuest = false;
-
-   private void popupGuestLoginNotification() {
-      // Only notify once
-      if (!notifiedAsGuest) {
-         notifiedAsGuest = true;
-         AWorkbench.popup(
-               "OSEE Guest Login",
-               "You are logged into OSEE as \"Guest\".\n\nIf you do not expect to be logged in as Guest, please report this immediately.");
-      }
-   }
-
-   private static void persistUser(User user) throws OseeCoreException {
-      instance.duringUserCreation = true;
-      try {
-         user.persistAttributesAndRelations();
-         instance.cacheUser(user, null);
-      } finally {
-         instance.duringUserCreation = false;
       }
    }
 
@@ -289,7 +152,7 @@ public class SkynetAuthentication {
          instance.enumeratedUserCache.put(userEnum, user);
          user.persistAttributes();
       } else {
-         user = instance.createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
+         user = createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
          persistUser(user);
       }
       return user;
@@ -306,21 +169,23 @@ public class SkynetAuthentication {
       return instance.enumeratedUserCache.get(userEnum);
    }
 
-   private User createUser(String name, String email, String userID, boolean active) throws OseeCoreException {
-      duringUserCreation = true;
+   static User createUser(String name, String email, String userID, boolean active) throws OseeCoreException {
       User user = null;
-      try {
-         user = (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getCommonBranch(), name);
-         user.setActive(active);
-         user.setUserID(userID);
-         user.setEmail(email);
-         // this is here in case a user is created at an unexpected time
-         if (!SkynetDbInit.isDbInit()) {
-            OseeLog.log(SkynetActivator.class, Level.INFO, "Created user " + user, new Exception(
-                  "just wanted the stack trace"));
+      synchronized (duringUserCreation) {
+         duringUserCreation.setValue(true);
+         try {
+            user = (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getCommonBranch(), name);
+            user.setActive(active);
+            user.setUserID(userID);
+            user.setEmail(email);
+            // this is here in case a user is created at an unexpected time
+            if (!SkynetDbInit.isDbInit()) {
+               OseeLog.log(SkynetActivator.class, Level.INFO, "Created user " + user, new Exception(
+                     "just wanted the stack trace"));
+            }
+         } finally {
+            duringUserCreation.setValue(false);
          }
-      } finally {
-         duringUserCreation = false;
       }
       return user;
    }
@@ -393,7 +258,7 @@ public class SkynetAuthentication {
       instance.loadUsersCache();
       User user = instance.nameToUserCache.get(name);
       if (user == null && create) {
-         instance.persistUser(instance.createUser(name, "", name, true));
+         persistUser(createUser(name, "", name, true));
          user = instance.nameToUserCache.get(name);
          if (user == null) throw new UserNotInDatabase(
                "Error creating and caching user \"" + name + "\" was not found.");
@@ -413,13 +278,13 @@ public class SkynetAuthentication {
     * @return whether the Authentication manager is in the middle of creating a user
     */
    public static boolean duringUserCreation() {
-      return instance.duringUserCreation;
+      return duringUserCreation.getValue();
    }
 
    public static int getNoOneArtifactId() {
       if (instance.noOneArtifactId == 0) {
          try {
-            instance.noOneArtifactId = getUser(UserEnum.NoOne).getArtId();
+            instance.noOneArtifactId = getUser(SystemUser.NoOne).getArtId();
          } catch (Exception ex) {
             OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             instance.noOneArtifactId = -1;
@@ -427,13 +292,4 @@ public class SkynetAuthentication {
       }
       return instance.noOneArtifactId;
    }
-
-   public static boolean isBasicUsersCreated() {
-      return instance.basicUsersCreated;
-   }
-
-   public static void setBasicUsersCreated(boolean basicUsersCreated) {
-      instance.basicUsersCreated = basicUsersCreated;
-   }
-
 }

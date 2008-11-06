@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.client.server;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -22,7 +21,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -76,18 +74,6 @@ public class HttpResourceRequest implements IHttpMethod {
    private URL findResource(String urlRequested) {
       URL resource = null;
       if (Strings.isValid(urlRequested) && urlRequested.endsWith("/") != true) {
-         String uploadPath = OseeProperties.getInstance().getRemoteHttpServerUploadPath();
-         if (Strings.isValid(uploadPath)) {
-            try {
-               File file = new File(uploadPath + File.separator + urlRequested);
-               if (file != null && file.exists() && file.canRead()) {
-                  resource = file.toURI().toURL();
-               }
-            } catch (Exception ex) {
-               // Don't do anything since we will continue to look in other places
-            }
-         }
-
          if (resource == null) {
             List<IConfigurationElement> elements =
                   ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.WebPage",

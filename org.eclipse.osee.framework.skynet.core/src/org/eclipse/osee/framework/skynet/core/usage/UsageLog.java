@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 
 /**
  * @author Robert A. Fisher
@@ -36,7 +36,7 @@ public class UsageLog {
    private int userId;
 
    private UsageLog() {
-      this.usageLoggingEnabled = OseeProperties.getInstance().isUsageLoggingEnabled();
+      this.usageLoggingEnabled = OseeProperties.isUsageLoggingEnabled();
       this.log = new LinkedList<UsageEntry>();
       this.exceptionCount = 0;
 
@@ -52,7 +52,7 @@ public class UsageLog {
          instance = new UsageLog();
          instance.userId = -1;
          try {
-            instance.userId = SkynetAuthentication.getUser().getArtId();
+            instance.userId = UserCache.getUser().getArtId();
          } catch (Exception ex) {
             instance.log.add(new ExceptionEntry(ex));
          }

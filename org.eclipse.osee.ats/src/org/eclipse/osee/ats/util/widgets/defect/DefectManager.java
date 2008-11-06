@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -138,7 +138,7 @@ public class DefectManager {
          builder.append("<TD>" + item.getSeverity() + "</TD>");
          builder.append("<TD>" + item.getDisposition() + "</TD>");
          builder.append("<TD>" + item.getInjectionActivity() + "</TD>");
-         if (user.equals(SkynetAuthentication.getUser()))
+         if (user.equals(UserCache.getUser()))
             builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
          else
             builder.append("<TD>" + name + "</TD>");

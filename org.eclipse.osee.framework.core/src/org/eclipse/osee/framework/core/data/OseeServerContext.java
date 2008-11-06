@@ -26,8 +26,6 @@ public class OseeServerContext {
    public static final String SESSION_CONTEXT = asAbsoluteContext("session");
    public static final String LOOKUP_CONTEXT = asAbsoluteContext("server/lookup");
 
-   public static final String DB_INIT_SESSION_ID = "AAABHV_DBINIT_G8Bn7ufw";
-
    private static final String asAbsoluteContext(String value) {
       return BASE_CONTEXT + "/" + value;
    }

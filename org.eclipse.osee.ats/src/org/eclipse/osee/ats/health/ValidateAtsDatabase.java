@@ -30,12 +30,12 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -298,8 +298,8 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
 
    public void testStateMachineAssignees() throws OseeCoreException {
       xResultData.log(monitor, "testStateMachineAssignees");
-      User unAssignedUser = SkynetAuthentication.getUser(UserEnum.UnAssigned);
-      User noOneUser = SkynetAuthentication.getUser(UserEnum.NoOne);
+      User unAssignedUser = UserCache.getUser(SystemUser.UnAssigned);
+      User noOneUser = UserCache.getUser(SystemUser.NoOne);
       for (Artifact art : artifacts) {
          if (art instanceof StateMachineArtifact) {
             StateMachineArtifact sma = (StateMachineArtifact) art;
@@ -343,7 +343,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                   }
                } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
                   // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
-                  if (!(smaMgr.getStateMgr().getAssignees().contains(SkynetAuthentication.getUser(UserEnum.UnAssigned)) && relationAssigned.size() == 0)) {
+                  if (!(smaMgr.getStateMgr().getAssignees().contains(UserCache.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
                      xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " attribute assignees doesn't match related assignees");
                      if (fixAssignees) {
                         try {

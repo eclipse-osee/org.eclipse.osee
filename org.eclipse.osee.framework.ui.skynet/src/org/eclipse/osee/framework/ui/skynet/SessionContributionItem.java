@@ -10,42 +10,46 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
-import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
-import org.eclipse.osee.framework.ui.plugin.security.UserCredentials.UserCredentialEnum;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
+import org.eclipse.osee.framework.ui.skynet.dialogs.AuthenticationDialog;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeAuthenticationContributionItem extends OseeContributionItem implements IAccessControlEventListener {
+public class SessionContributionItem extends OseeContributionItem implements IAccessControlEventListener {
 
-   private static final String ID = "skynet.authentication";
+   private static final String ID = "session.contribution.item";
 
    private static final Image ENABLED_IMAGE = SkynetGuiPlugin.getInstance().getImage("user.gif");
    private static final Image DISABLED_IMAGE =
          new OverlayImage(ENABLED_IMAGE, SkynetGuiPlugin.getInstance().getImageDescriptor("red_slash.gif")).createImage();
 
-   private static String ENABLED_TOOLTIP = "Authenticated as: %s (%s)\nDouble-Click to Log Off.";
+   private static String ENABLED_TOOLTIP = "Authenticated as: %s (%s) - session(%s)\nDouble-Click to Log Off.";
    private static String DISABLED_TOOLTIP = "Not Authenticated.\nDouble-Click to Log On.";
 
-   final OseeAuthenticationContributionItem contributionItem;
+   final SessionContributionItem contributionItem;
 
-   public OseeAuthenticationContributionItem() {
+   public SessionContributionItem() {
       super(ID);
       init();
       contributionItem = this;
@@ -56,23 +60,37 @@ public class OseeAuthenticationContributionItem extends OseeContributionItem imp
 
          @Override
          public void run() {
-            OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
-            if (oseeAuthentication.isAuthenticated()) {
+            if (ClientSessionManager.isSessionValid()) {
                boolean result =
                      MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Log Off...",
                            "Are you sure you want to log off and exit OSEE?");
                if (result) {
-                  oseeAuthentication.logOff();
+                  try {
+                     ClientSessionManager.releaseSession();
+                  } catch (OseeDataStoreException ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  }
                   PlatformUI.getWorkbench().close();
                }
             } else {
-               if (oseeAuthentication.isLoginAllowed()) {
-                  AuthenticationDialog.openDialog();
-               } else {
-                  oseeAuthentication.authenticate("", "", "", false);
+               //               if (oseeAuthentication.isLoginAllowed()) {
+               AuthenticationDialog.openDialog();
+               //               } else {
+               //                  oseeAuthentication.authenticate("", "", "", false);
+               //               }
+               if (ClientSessionManager.isSessionValid()) {
+                  Display.getDefault().asyncExec(new Runnable() {
+                     public void run() {
+                        try {
+                           OseeEventManager.kickAccessControlArtifactsEvent(this,
+                                 AccessControlEventType.UserAuthenticated, LoadedArtifacts.EmptyLoadedArtifacts());
+                        } catch (Exception ex) {
+                           OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                        }
+                     }
+                  });
                }
             }
-            SkynetAuthentication.notifyListeners();
          }
       });
       OseeEventManager.addListener(this);
@@ -80,8 +98,8 @@ public class OseeAuthenticationContributionItem extends OseeContributionItem imp
 
    public static void addTo(IStatusLineManager manager) {
       for (IContributionItem item : manager.getItems())
-         if (item instanceof OseeAuthenticationContributionItem) return;
-      manager.add(new OseeAuthenticationContributionItem());
+         if (item instanceof SessionContributionItem) return;
+      manager.add(new SessionContributionItem());
    }
 
    @Override
@@ -95,12 +113,10 @@ public class OseeAuthenticationContributionItem extends OseeContributionItem imp
    @Override
    public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifactss) {
       if (accessControlEventType == AccessControlEventType.UserAuthenticated) {
-
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-
-               updateStatus(OseeAuthentication.getInstance().isAuthenticated());
+               updateStatus(ClientSessionManager.isSessionValid());
             }
          });
       }
@@ -135,10 +151,17 @@ public class OseeAuthenticationContributionItem extends OseeContributionItem imp
     */
    @Override
    protected String getEnabledToolTip() {
-      if (OseeAuthentication.getInstance().isAuthenticated()) {
-         User skynetName = SkynetAuthentication.getUser();
-         return String.format(ENABLED_TOOLTIP, (skynetName != null ? skynetName.getName() : skynetName),
-               OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id));
+      if (ClientSessionManager.isSessionValid()) {
+         User skynetName = UserCache.getUser();
+         String userId = "-";
+         String sessionId = "-";
+         try {
+            userId = skynetName.getUserId();
+            sessionId = ClientSessionManager.getSessionId();
+         } catch (OseeCoreException ex) {
+         }
+         return String.format(ENABLED_TOOLTIP, (skynetName != null ? skynetName.getName() : skynetName), userId,
+               sessionId);
       }
       return DISABLED_TOOLTIP;
    }

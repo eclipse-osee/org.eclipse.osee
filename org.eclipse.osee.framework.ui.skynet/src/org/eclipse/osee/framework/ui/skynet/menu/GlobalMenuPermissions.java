@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.menu;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -69,19 +69,19 @@ public class GlobalMenuPermissions {
       for (Artifact objectArtifact : artifacts) {
 
          writePermission &=
-               AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), objectArtifact,
+               AccessControlManager.checkObjectPermission(UserCache.getUser(), objectArtifact,
                      PermissionEnum.WRITE);
          readPermission &=
-               AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), objectArtifact,
+               AccessControlManager.checkObjectPermission(UserCache.getUser(), objectArtifact,
                      PermissionEnum.READ);
          fullAccess &=
-               AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), objectArtifact,
+               AccessControlManager.checkObjectPermission(UserCache.getUser(), objectArtifact,
                      PermissionEnum.FULLACCESS);
          isLocked |= AccessControlManager.hasLock(objectArtifact);
          defaultBranchReadable =
                AccessControlManager.checkObjectPermission(BranchManager.getDefaultBranch(),
                      PermissionEnum.READ);
-         accessToRemoveLock &= AccessControlManager.canUnlockObject(objectArtifact, SkynetAuthentication.getUser());
+         accessToRemoveLock &= AccessControlManager.canUnlockObject(objectArtifact, UserCache.getUser());
 
          // acquire the name of the subject that has the lock
          Artifact subject = AccessControlManager.getSubjectFromLockedObject(objectArtifact);

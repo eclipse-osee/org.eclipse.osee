@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -194,11 +194,11 @@ public class LoadAIsAndTeamsAction {
                   teamDefinitionOptions.add(TeamDefinitionOptions.RequireTargetedVersion);
                else if (line.startsWith(LEAD)) {
                   String name = line.replaceFirst(LEAD, "");
-                  User u = SkynetAuthentication.getUserByName(name, allowUserCreation);
+                  User u = UserCache.getUserByName(name, allowUserCreation);
                   leads.add(u);
                } else if (line.startsWith(MEMBER)) {
                   String name = line.replaceFirst(MEMBER, "");
-                  User u = SkynetAuthentication.getUserByName(name, allowUserCreation);
+                  User u = UserCache.getUserByName(name, allowUserCreation);
                   members.add(u);
                } else
                   throw new IllegalArgumentException(
@@ -284,7 +284,7 @@ public class LoadAIsAndTeamsAction {
                actionable = false;
             else if (line.startsWith(LEAD)) {
                String name = line.replaceFirst(LEAD, "");
-               User u = SkynetAuthentication.getUserByName(name, allowUserCreation);
+               User u = UserCache.getUserByName(name, allowUserCreation);
                leads.add(u);
             } else if (line.startsWith(STATIC_ID)) staticIds.add(line.replaceFirst(STATIC_ID, ""));
          }

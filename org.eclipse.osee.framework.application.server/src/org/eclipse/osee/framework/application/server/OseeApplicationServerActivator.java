@@ -59,15 +59,13 @@ public class OseeApplicationServerActivator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
     */
    public void start(BundleContext context) throws Exception {
-      OseeProperties oseeProperties = OseeProperties.getInstance();
-
       Map<String, Bundle> bundles = new HashMap<String, Bundle>();
       for (Bundle bundle : context.getBundles()) {
          bundles.put(bundle.getSymbolicName(), bundle);
       }
       try {
          String requiredBundles = (String) context.getBundle().getHeaders().get("Require-Bundle");
-         if (oseeProperties.isLocalApplicationServerRequired() != false) {
+         if (OseeProperties.isLocalApplicationServerRequired() != false) {
             launchApplicationServer(requiredBundles, bundles);
          } else {
             processBundles(requiredBundles, bundles, Operation.STOP);
@@ -120,7 +118,7 @@ public class OseeApplicationServerActivator implements BundleActivator {
       processBundles(requiredBundles, bundles, Operation.START);
       String message =
             String.format("Osee Application Server - port: [%s] data: [%s]", System.getProperty(
-                  "org.osgi.service.http.port", "-1"), OseeProperties.getInstance().getOseeApplicationServerData());
+                  "org.osgi.service.http.port", "-1"), OseeProperties.getOseeApplicationServerData());
       System.out.println(message);
    }
 

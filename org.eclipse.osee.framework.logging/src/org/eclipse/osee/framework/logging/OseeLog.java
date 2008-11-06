@@ -93,6 +93,10 @@ public class OseeLog {
       return getSM().isStatusOk();
    }
 
+   public static IHealthStatus getStatusByName(String sourceName) {
+      return getSM().getHealthStatusByName(sourceName);
+   }
+
    public static Collection<IHealthStatus> getStatus() {
       return getSM().getHealthStatus();
    }

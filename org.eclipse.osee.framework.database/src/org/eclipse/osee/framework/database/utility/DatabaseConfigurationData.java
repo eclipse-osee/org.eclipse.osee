@@ -67,7 +67,7 @@ public class DatabaseConfigurationData {
    }
 
    private boolean useFileSpecifiedSchemas() {
-      return OseeProperties.getInstance().useSchemasSpecifiedInDbConfigFiles();
+      return OseeProperties.useSchemasSpecifiedInDbConfigFiles();
    }
 
    private Map<String, SchemaData> useUserNameAsSchema(String userName, Map<String, SchemaData> userSchemas) {

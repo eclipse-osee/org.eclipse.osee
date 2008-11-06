@@ -69,7 +69,7 @@ public class OseeApplicationServer {
    private static void checkAndUpdateStatus() {
       isServerAlive = false;
       if (serverInfo == null) {
-         String overrideValue = OseeProperties.getInstance().getOseeApplicationServerOverride();
+         String overrideValue = OseeProperties.getOseeApplicationServerOverride();
          if (Strings.isValid(overrideValue)) {
             serverInfo = fromString(overrideValue);
          } else {

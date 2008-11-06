@@ -58,9 +58,8 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLi
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkTransactionDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
@@ -96,7 +95,7 @@ public class RemoteEventManager implements IServiceLookupListener {
       super();
       try {
          // We need to trigger authentication before attempting to get database information from client session manager.
-         SkynetAuthentication.getUser();
+         UserCache.getUser();
          ACCEPTABLE_SERVICE =
                ClientSessionManager.getDataStoreName() + ":" + ClientSessionManager.getDataStoreLoginName();
          this.listener = new EventListener();
@@ -166,8 +165,8 @@ public class RemoteEventManager implements IServiceLookupListener {
    }
 
    private void addListenerForEventService() {
-      if (!ConfigUtil.getConfigFactory().getOseeConfig().isDisableRemoteEvents()) ServiceDataStore.getEclipseInstance(
-            EclipseJiniClassloader.getInstance()).addListener(this, ISkynetEventService.class);
+      ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance()).addListener(this,
+            ISkynetEventService.class);
    }
 
    /*

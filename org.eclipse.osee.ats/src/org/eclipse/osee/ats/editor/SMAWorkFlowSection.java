@@ -33,12 +33,12 @@ import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -531,7 +531,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private void handleTransition() {
 
       try {
-         
+
          if (smaMgr.getBranchMgr().isWorkingBranch() && !atsWorkPage.isAllowTransitionWithWorkingBranch()) {
             AWorkbench.popup("ERROR",
                   "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
@@ -552,7 +552,7 @@ public class SMAWorkFlowSection extends SectionPart {
             EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
             if (cancelDialog.open() != 0) return;
             SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-            Result result = smaMgr.transitionToCancelled(cancelDialog.getEntry(), true,transaction);
+            Result result = smaMgr.transitionToCancelled(cancelDialog.getEntry(), true, transaction);
             transaction.execute();
             if (result.isFalse()) {
                result.popup();
@@ -564,9 +564,9 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          // Validate assignees
-         if (smaMgr.getStateMgr().getAssignees().contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || smaMgr.getStateMgr().getAssignees().contains(
-               SkynetAuthentication.getUser(UserEnum.Guest)) || smaMgr.getStateMgr().getAssignees().contains(
-               SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+         if (smaMgr.getStateMgr().getAssignees().contains(UserCache.getUser(SystemUser.NoOne)) || smaMgr.getStateMgr().getAssignees().contains(
+               UserCache.getUser(SystemUser.Guest)) || smaMgr.getStateMgr().getAssignees().contains(
+               UserCache.getUser(SystemUser.UnAssigned))) {
             AWorkbench.popup("ERROR",
                   "Can not transition with \"Guest\", \"UnAssigned\" or \"NoOne\" user as assignee.");
             return;

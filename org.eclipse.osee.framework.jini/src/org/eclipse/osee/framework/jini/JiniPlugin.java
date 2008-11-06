@@ -33,16 +33,8 @@ public class JiniPlugin extends Plugin {
       } catch (Exception e) {
          e.printStackTrace();
       }
-
-  // String[] lookupLocations =
-	// ConfigUtil.getConfigFactory().getOseeConfig().getServiceLookups();
-	//ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance
-	// ());// .addLookupLocators(lookupLocations);
-	//ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance
-	// ()).addLookupLocators(lookupLocations);
    }
 
-   
    /**
     * This method is called when the plug-in is stopped
     */

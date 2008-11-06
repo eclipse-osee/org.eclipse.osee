@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -120,7 +120,7 @@ public class UserRoleManager {
             for (UserRole role : getUserRoles(Role.Moderator))
                assignees.add(role.getUser());
          else
-            assignees.add(SkynetAuthentication.getUser());
+            assignees.add(UserCache.getUser());
       }
       // Set assigness based on roles
       artifact.getSmaMgr().getStateMgr().setAssignees(assignees);

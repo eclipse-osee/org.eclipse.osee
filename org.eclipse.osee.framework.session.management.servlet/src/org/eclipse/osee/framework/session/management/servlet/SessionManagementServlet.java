@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.session.management.servlet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +58,28 @@ public class SessionManagementServlet extends OseeHttpServlet {
    }
 
    /* (non-Javadoc)
+    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    */
+   @Override
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      try {
+         String[] protocols = SessionManagementServletActivator.getInstance().getAuthenticationManager().getProtocols();
+         response.setStatus(HttpServletResponse.SC_OK);
+         response.setContentType("text/plain");
+         response.setCharacterEncoding("UTF-8");
+         response.getWriter().write(Arrays.deepToString(protocols));
+      } catch (Exception ex) {
+         OseeLog.log(SessionManagementServletActivator.class, Level.SEVERE, String.format(
+               "Error processing request for protocols [%s]", request.toString()), ex);
+         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.getWriter().write(Lib.exceptionToString(ex));
+      } finally {
+         response.getWriter().flush();
+         response.getWriter().close();
+      }
+   }
+
+   /* (non-Javadoc)
     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
     */
    @Override
@@ -87,14 +110,13 @@ public class SessionManagementServlet extends OseeHttpServlet {
    private void createSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
       try {
          ISessionManager manager = SessionManagementServletActivator.getInstance().getSessionManager();
-         String authenticationProtocol = request.getParameter("authenticationProtocol");
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          Lib.inputStreamToOutputStream(request.getInputStream(), outputStream);
          byte[] bytes = outputStream.toByteArray();
          // TODO Decrypt credential info
 
          OseeCredential credential = OseeCredential.fromXml(new ByteArrayInputStream(bytes));
-         OseeSessionGrant oseeSessionGrant = manager.createSession(authenticationProtocol, credential);
+         OseeSessionGrant oseeSessionGrant = manager.createSession(credential);
 
          response.setStatus(HttpServletResponse.SC_ACCEPTED);
          ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();

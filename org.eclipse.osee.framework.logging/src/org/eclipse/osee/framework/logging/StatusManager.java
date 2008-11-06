@@ -87,4 +87,12 @@ class StatusManager {
       }
       return message.toString();
    }
+
+   /**
+    * @param sourceName
+    * @return health status
+    */
+   public IHealthStatus getHealthStatusByName(String sourceName) {
+      return services.get(sourceName);
+   }
 }

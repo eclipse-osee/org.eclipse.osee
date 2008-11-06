@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListneer;
@@ -104,7 +104,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       if (broadcastEventType == BroadcastEventType.Force_Shutdown) {
          if (message == null || message.length() == 0) return;
          try {
-            User user = SkynetAuthentication.getUser();
+            User user = UserCache.getUser();
             if (user != null) {
                String userId = user.getUserId();
                for (String temp : userIds) {

@@ -8,24 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core;
+package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.util.OseeUser;
-import org.eclipse.osee.framework.ui.plugin.security.GuestAuthentication;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum UserEnum implements OseeUser {
+public enum SystemUser implements OseeUser {
    NoOne("No One", "", "99999999", false),
-   Guest(GuestAuthentication.DEFAULT_USER_NAME, "", GuestAuthentication.DEFAULT_USER_ID, false),
+   Guest("Guest", "", "99999998", false),
+   BootStrap("Boot Strap", "bootstrap@osee.org", "bootstrap", true),
    UnAssigned("UnAssigned", "", "99999997", true);
    private final String name;
    private final String email;
    private final String userID;
    private final boolean active;
 
-   UserEnum(String name, String email, String userId, boolean active) {
+   SystemUser(String name, String email, String userId, boolean active) {
       this.name = name;
       this.email = email;
       this.userID = userId;

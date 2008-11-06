@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -88,7 +88,7 @@ public class PolicyDialog extends Dialog {
       cmbUsers.setText("-Select Person-");
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
-      subjectList.addAll(SkynetAuthentication.getUsers());
+      subjectList.addAll(UserCache.getUsers());
       subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchManager.getCommonBranch()));
 
       Collections.sort(subjectList);

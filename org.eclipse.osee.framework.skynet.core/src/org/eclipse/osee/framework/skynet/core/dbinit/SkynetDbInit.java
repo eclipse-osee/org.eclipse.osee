@@ -13,10 +13,8 @@ package org.eclipse.osee.framework.skynet.core.dbinit;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.PERMISSION_TABLE;
 import java.io.File;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,16 +23,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.core.client.ICredentialProvider;
-import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
-import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeDatabaseId;
 import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.database.IDbInitializationRule;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.data.SchemaData;
@@ -45,11 +42,9 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -60,7 +55,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.osgi.framework.Bundle;
 
@@ -74,7 +68,7 @@ public class SkynetDbInit implements IDbInitializationTask {
 
    public void run(OseeConnection connection) throws OseeCoreException {
       setIsInDbInit(true);
-      SkynetAuthentication.setBasicUsersCreated(false);
+      //      UserCache.setBasicUsersCreated(false);
       DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(connection, getSchemaFiles());
       Map<String, SchemaData> userSpecifiedConfig = databaseConfigurationData.getUserSpecifiedSchemas();
       DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(connection, userSpecifiedConfig.keySet());
@@ -127,22 +121,12 @@ public class SkynetDbInit implements IDbInitializationTask {
          throw new OseeDataStoreException(ex1);
       }
 
-      ClientSessionManager.authenticate(new ICredentialProvider() {
+      ClientSessionManager.authenticate(new BaseCredentialProvider() {
 
          @Override
          public OseeCredential getCredential() throws OseeCoreException {
             OseeCredential credential = new OseeCredential();
-            credential.setUserId(OseeServerContext.DB_INIT_SESSION_ID);
-            credential.setDomain("DBINIT");
-            credential.setPassword(OseeServerContext.DB_INIT_SESSION_ID);
-            HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
-            credential.setClientAddress(HttpServer.getLocalServerAddress(), HttpServer.getDefaultServicePort());
-            credential.setClientVersion(OseeCodeVersion.getVersion());
-            try {
-               credential.setClientMachineName(InetAddress.getLocalHost().getHostName());
-            } catch (Exception ex) {
-               throw new OseeWrappedException(ex);
-            }
+            credential.setUserId(SystemUser.BootStrap.getName());
             return credential;
          }
 
@@ -155,7 +139,7 @@ public class SkynetDbInit implements IDbInitializationTask {
          Socket socket = new Socket(serverUrl.getHost(), serverUrl.getPort());
          if (socket.getInetAddress().isLoopbackAddress()) {
             OseeLog.log(CoreClientActivator.class, Level.INFO, "Deleting binary data from application server...");
-            String binaryDataPath = OseeProperties.getInstance().getOseeApplicationServerData();
+            String binaryDataPath = OseeProperties.getOseeApplicationServerData();
             Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
             Lib.deleteDir(new File(binaryDataPath + File.separator + "snapshot"));
          } else {

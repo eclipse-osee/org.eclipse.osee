@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.config.demo.util;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 
 /**
@@ -16,7 +16,7 @@ public enum DemoUsers {
    Joe_Smith, Kay_Jones, Jason_Michael, Alex_Kay;
 
    public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {
-      return SkynetAuthentication.getUserByName(demoUser.name().replaceAll("_", " "), false);
+      return UserCache.getUserByName(demoUser.name().replaceAll("_", " "), false);
    }
 
 }

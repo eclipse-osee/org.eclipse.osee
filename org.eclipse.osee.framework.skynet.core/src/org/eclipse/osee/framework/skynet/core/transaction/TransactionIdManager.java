@@ -27,8 +27,9 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.BootStrapUser;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
@@ -91,12 +92,11 @@ public class TransactionIdManager {
          comment = "";
       }
       int authorArtId = -1;
-      if (userToBlame == null || !userToBlame.isInDb()) {
-         if (SkynetAuthentication.isBasicUsersCreated()) {
-            authorArtId = SkynetAuthentication.getNoOneArtifactId();
-         }
-      } else {
+
+      if (userToBlame != null || BootStrapUser.getInstance().equals(userToBlame)) {
          authorArtId = userToBlame.getArtId();
+      } else {
+         authorArtId = UserCache.getNoOneArtifactId();
       }
 
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
@@ -146,8 +146,8 @@ public class TransactionIdManager {
 
       try {
          chStmt.runPreparedQuery(
-                     "SELECT max(transaction_id) as prior_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("time") + " < ?",
-                     branch.getBranchId(), time);
+               "SELECT max(transaction_id) as prior_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("time") + " < ?",
+               branch.getBranchId(), time);
 
          if (chStmt.next()) {
             int priorId = chStmt.getInt("prior_id");
@@ -174,8 +174,8 @@ public class TransactionIdManager {
 
       try {
          chStmt.runPreparedQuery(
-                     "SELECT max(transaction_id) as prior_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " < ?",
-                     transactionId.getBranch().getBranchId(), transactionId.getTransactionNumber());
+               "SELECT max(transaction_id) as prior_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " < ?",
+               transactionId.getBranch().getBranchId(), transactionId.getTransactionNumber());
 
          if (chStmt.next()) {
             int priorId = chStmt.getInt("prior_id");
@@ -220,7 +220,7 @@ public class TransactionIdManager {
       try {
          if (startTransactionId.getTransactionNumber() == endTransactionId.getTransactionNumber()) {
             chStmt.runPreparedQuery(SELECT_TX_GAMMAS, startTransactionId.getBranchId(),
-                        startTransactionId.getTransactionNumber());
+                  startTransactionId.getTransactionNumber());
          } else {
             chStmt.runPreparedQuery(SELECT_TX_GAMMAS_RANGE, startTransactionId.getBranchId(),
                   startTransactionId.getTransactionNumber(), endTransactionId.getTransactionNumber());

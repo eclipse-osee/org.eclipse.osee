@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -116,7 +116,7 @@ public class XMembersCombo extends XWidget {
       dataCombo.add(DEFAULT_SELECTION);
       dataCombo.setData(DEFAULT_SELECTION, null);
       try {
-         for (User user : SkynetAuthentication.getUsersSortedByName()) {
+         for (User user : UserCache.getUsersSortedByName()) {
             dataCombo.add(user.getName());
             dataCombo.setData(user.getName(), user);
          }
@@ -214,7 +214,7 @@ public class XMembersCombo extends XWidget {
          String userId = matcher.group(1);
          User user = null;
          try {
-            user = SkynetAuthentication.getUserByUserId(userId);
+            user = UserCache.getUserByUserId(userId);
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }

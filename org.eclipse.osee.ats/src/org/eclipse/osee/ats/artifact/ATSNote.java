@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
@@ -65,7 +65,7 @@ public class ATSNote {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
-               User user = SkynetAuthentication.getUserByUserId(element.getAttribute("userId"));
+               User user = UserCache.getUserByUserId(element.getAttribute("userId"));
                NoteItem item =
                      new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
                            element.getAttribute("date"), user, element.getAttribute("msg"));
@@ -136,7 +136,7 @@ public class ATSNote {
          builder.append("<TD>" + note.getType() + "</TD>");
          builder.append("<TD>" + (note.getState().equals("") ? "," : note.getState()) + "</TD>");
          builder.append("<TD>" + (note.getMsg().equals("") ? "," : note.getMsg()) + "</TD>");
-         if (user.equals(SkynetAuthentication.getUser()))
+         if (user.equals(UserCache.getUser()))
             builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
          else
             builder.append("<TD>" + name + "</TD>");

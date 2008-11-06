@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -46,7 +46,7 @@ public class UserListDialog extends ListDialog {
             return "Unknown Object";
          }
       });
-      setInput(SkynetAuthentication.getUsers());
+      setInput(UserCache.getUsers());
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 

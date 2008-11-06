@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -249,7 +249,7 @@ public class AccessControlManager {
     * @return true if the subject has permission.
     */
    public boolean checkSubjectPermission(PermissionEnum permission) {
-      return checkObjectPermission(SkynetAuthentication.getUser(), permission);
+      return checkObjectPermission(UserCache.getUser(), permission);
    }
 
    /**
@@ -293,12 +293,12 @@ public class AccessControlManager {
     * @return true if the subject has permission for an object else false.
     */
    public static boolean checkObjectPermission(Object object, PermissionEnum permission) {
-      return SkynetAuthentication.duringUserCreation() || checkObjectPermission(SkynetAuthentication.getUser(), object,
+      return UserCache.duringUserCreation() || checkObjectPermission(UserCache.getUser(), object,
             permission);
    }
 
    public boolean checkCurrentUserObjectPermission(Object object, PermissionEnum permission) {
-      return checkObjectPermission(SkynetAuthentication.getUser(), object, permission);
+      return checkObjectPermission(UserCache.getUser(), object, permission);
    }
 
    public PermissionEnum getObjectPermission(Artifact subject, Object object) {
@@ -747,7 +747,7 @@ public class AccessControlManager {
          Integer subjectArtId = instance.lockedObjectToSubject.get(((Artifact) object).getArtId());
 
          if (subjectArtId != null) {
-            subject = SkynetAuthentication.getUserByArtId(subjectArtId);
+            subject = UserCache.getUserByArtId(subjectArtId);
          }
       }
       return subject;

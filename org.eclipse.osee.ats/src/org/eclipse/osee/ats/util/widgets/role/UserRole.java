@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 
 /**
@@ -46,7 +46,7 @@ public class UserRole {
    };
 
    public UserRole() {
-      this(Role.Reviewer, SkynetAuthentication.getUser(), null, false);
+      this(Role.Reviewer, UserCache.getUser(), null, false);
    }
 
    public UserRole(Role role, User user) {
@@ -81,7 +81,7 @@ public class UserRole {
    public void fromXml(String xml) {
       try {
          this.role = Role.valueOf(AXml.getTagData(xml, "role"));
-         this.user = SkynetAuthentication.getUserByUserId(AXml.getTagData(xml, "userId"));
+         this.user = UserCache.getUserByUserId(AXml.getTagData(xml, "userId"));
          this.hoursSpent =
                AXml.getTagData(xml, "hoursSpent").equals("") ? null : Double.valueOf(AXml.getTagData(xml, "hoursSpent")).doubleValue();
          String completedStr = AXml.getTagData(xml, "completed");

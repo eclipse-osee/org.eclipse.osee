@@ -8,13 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin.security;
+package org.eclipse.osee.framework.ui.skynet.dialogs;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationException.AuthenticationErrorCode;
+import org.eclipse.osee.framework.logging.IHealthStatus;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
-import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication.AuthenticationStatus;
-import org.eclipse.osee.framework.ui.plugin.security.UserCredentials.UserCredentialEnum;
+import org.eclipse.osee.framework.ui.skynet.panels.AuthenticationComposite;
 import org.eclipse.osee.framework.ui.swt.OseeMessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -102,12 +107,20 @@ public class AuthenticationDialog extends OseeMessageDialog {
       authenticationComposite.setGuestLogin(isGuestLogin);
    }
 
+   private void setProtocol(String protocol) {
+      authenticationComposite.setProtocol(protocol);
+   }
+
    private String getUserName() {
       return authenticationComposite.getUserName();
    }
 
    private String getDomain() {
       return authenticationComposite.getDomain();
+   }
+
+   private String getProtocol() {
+      return authenticationComposite.getProtocol();
    }
 
    private boolean isStorageAllowed() {
@@ -121,8 +134,11 @@ public class AuthenticationDialog extends OseeMessageDialog {
    public static void openDialog() {
       Display.getDefault().syncExec(new Runnable() {
 
-         private String getErrorMessage(AuthenticationStatus status) {
+         private String getErrorMessage(AuthenticationErrorCode status) {
             String toReturn = "";
+            if (status == null) {
+               status = AuthenticationErrorCode.Unknown;
+            }
             switch (status) {
                case UserNotFound:
                   toReturn = "User Id not found.\n" + "Enter your user id.";
@@ -135,6 +151,7 @@ public class AuthenticationDialog extends OseeMessageDialog {
                   toReturn = "Please enter a valid user id and password.";
                   break;
                default:
+                  toReturn = "Unknown authentication error";
                   break;
             }
             return toReturn;
@@ -146,12 +163,11 @@ public class AuthenticationDialog extends OseeMessageDialog {
             String user = "";
             String domain = "";
             String message = "";
+            String protocol = "";
             boolean isStorageAllowed = false;
             boolean isGuestLogin = false;
             boolean shutdown = false;
             Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-
-            OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
 
             for (int numberOfTries = 0; numberOfTries < MAX_RETRIES; numberOfTries++) {
                AuthenticationDialog dialog = new AuthenticationDialog(shell);
@@ -159,12 +175,14 @@ public class AuthenticationDialog extends OseeMessageDialog {
                   dialog.setUserName(user);
                   dialog.setPassword("");
                   dialog.setDomain(domain);
+                  dialog.setProtocol(protocol);
                   dialog.setStorageAllowed(isStorageAllowed);
                   dialog.setGuestLogin(isGuestLogin);
                }
                int result = dialog.open();
 
                user = dialog.getUserName();
+               protocol = dialog.getProtocol();
                domain = dialog.getDomain();
                isStorageAllowed = dialog.isStorageAllowed();
                isGuestLogin = dialog.isGuestLogin();
@@ -172,7 +190,7 @@ public class AuthenticationDialog extends OseeMessageDialog {
                if (result == Window.CANCEL) {
                   // TODO This was added because ATS requires a user to be logged in
                   // Non-Authentication is not an option --
-                  if (numberOfTries >= MAX_RETRIES - 1) {
+                  if (numberOfTries > MAX_RETRIES) {
                      message = "Maximum number of Retries reached.\n" + endMsg;
                      shutdown = true;
                   } else {
@@ -187,23 +205,26 @@ public class AuthenticationDialog extends OseeMessageDialog {
                // }
                else {
                   if (dialog.isValid()) {
-                     AuthenticationStatus status = oseeAuthentication.getAuthenticationStatus();
-                     switch (status) {
-                        case Success:
-                           numberOfTries = MAX_RETRIES;
-                           MessageDialog.openInformation(shell, "Authenticated",
-                                 "Logged in as: " + oseeAuthentication.getCredentials().getField(
-                                       UserCredentialEnum.Name));
-                           break;
-                        default:
-                           if (numberOfTries >= MAX_RETRIES - 1) {
-                              message = "Maximum number of Retries reached.\n" + endMsg;
-                              shutdown = true;
+                     if (ClientSessionManager.isSessionValid()) {
+                        numberOfTries = MAX_RETRIES;
+                        MessageDialog.openInformation(shell, "Authenticated", "Logged in as: " + UserCache.getUser());
+                     } else {
+                        if (numberOfTries >= MAX_RETRIES - 1) {
+                           message = "Maximum number of Retries reached.\n" + endMsg;
+                           shutdown = true;
+                        } else {
+                           IHealthStatus status = OseeLog.getStatusByName(ClientSessionManager.STATUS_ID);
+                           if (status != null && status.getException() != null) {
+                              Throwable ex = status.getException();
+                              if (ex instanceof OseeAuthenticationException) {
+                                 message = getErrorMessage(((OseeAuthenticationException) ex).getCode());
+                              }
+                              message = ex.getLocalizedMessage();
                            } else {
-                              message = getErrorMessage(status);
+                              message = "Authentication error";
                            }
-                           MessageDialog.openError(shell, dialogTitle, message);
-                           break;
+                        }
+                        MessageDialog.openError(shell, dialogTitle, message);
                      }
                   }
                }

@@ -118,7 +118,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             toReturn = (Branch) branchSelectCombo.getData(branchName);
             if (toReturn == null) {
                try {
-                  toReturn = BranchManager.getBranch(branchName);
+                  toReturn = BranchManager.getKeyedBranch(branchName);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }

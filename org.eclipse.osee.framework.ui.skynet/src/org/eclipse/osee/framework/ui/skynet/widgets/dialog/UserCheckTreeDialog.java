@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.widgets.Composite;
@@ -41,7 +41,7 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
    }
 
    public UserCheckTreeDialog(Shell parent) throws OseeCoreException {
-      this(parent, SkynetAuthentication.getUsers());
+      this(parent, UserCache.getUsers());
    }
 
    public void setInitialSelections(Collection<User> initialSel) {
@@ -68,10 +68,10 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
          public int compare(Viewer viewer, Object e1, Object e2) {
             User user1 = ((User) e1);
             User user2 = ((User) e2);
-            if (SkynetAuthentication.getUser().equals(user1)) {
+            if (UserCache.getUser().equals(user1)) {
                return -1;
             }
-            if (SkynetAuthentication.getUser().equals(user2)) {
+            if (UserCache.getUser().equals(user2)) {
                return 1;
             }
             if (initialSel != null) {

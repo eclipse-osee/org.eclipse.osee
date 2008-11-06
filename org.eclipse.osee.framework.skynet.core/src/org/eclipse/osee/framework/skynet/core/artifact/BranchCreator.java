@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -45,9 +46,8 @@ import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -121,10 +121,10 @@ public class BranchCreator {
    }
 
    private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Connection connection, Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
-      User userToBlame = SkynetAuthentication.getUser();
+      User userToBlame = UserCache.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId =
-            (userToBlame == null) ? SkynetAuthentication.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
+            (userToBlame == null) ? UserCache.getUser(SystemUser.NoOne).getArtId() : userToBlame.getArtId();
       String comment =
             NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -359,7 +359,7 @@ public class BranchCreator {
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
-         associatedArtifact = SkynetAuthentication.getUser(UserEnum.NoOne);
+         associatedArtifact = UserCache.getUser(SystemUser.NoOne);
       }
 
       if (associatedArtifact != null) {
@@ -448,7 +448,7 @@ public class BranchCreator {
          Pair<Branch, Integer> branchWithTransactionNumber;
          if (createBranch) {
             branchWithTransactionNumber =
-                  createMergeBranchWithBaselineTransactionNumber(connection, SkynetAuthentication.getUser(),
+                  createMergeBranchWithBaselineTransactionNumber(connection, UserCache.getUser(),
                         TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
                         "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
                         "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),

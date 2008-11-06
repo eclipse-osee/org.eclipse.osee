@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -105,7 +105,7 @@ public class ArtifactPreviewMenu {
 
                   if (artifact != null) {
                      permitted &=
-                           AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact,
+                           AccessControlManager.checkObjectPermission(UserCache.getUser(), artifact,
                                  PermissionEnum.READ);
 
                      //whole word artifacts can only be viewed as a single document

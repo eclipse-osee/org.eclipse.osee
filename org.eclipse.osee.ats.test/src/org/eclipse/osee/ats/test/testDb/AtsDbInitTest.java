@@ -25,7 +25,7 @@ public class AtsDbInitTest extends TestCase {
 
    public void testDemoDbInit() throws Exception {
       System.out.println("Begin Database Initialization...");
-      OseeProperties.getInstance().setDBConfigInitChoice("ATS - Developer");
+      OseeProperties.setDBConfigInitChoice("ATS - Developer");
       System.setProperty(OseeProperties.OSEE_NO_PROMPT, "true");
       LaunchOseeDbConfigClient.main(null);
       System.out.println("Database Initialization Complete.");

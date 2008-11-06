@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesProvider;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesPr
 public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesProvider {
 
    public Collection<Branch> getDefaultInitialBranches() {
-      User user = SkynetAuthentication.getUser();
+      User user = UserCache.getUser();
       try {
          Collection<TeamDefinitionArtifact> teams =
                user.getRelatedArtifacts(AtsRelation.TeamMember_Team, TeamDefinitionArtifact.class);

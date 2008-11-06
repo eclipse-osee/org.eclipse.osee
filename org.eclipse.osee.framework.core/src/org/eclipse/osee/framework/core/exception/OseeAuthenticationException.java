@@ -19,12 +19,19 @@ public class OseeAuthenticationException extends OseeCoreException {
 
    private static final long serialVersionUID = 1890728724625261131L;
 
+   public static enum AuthenticationErrorCode {
+      Success, UserNotFound, InvalidPassword, NoResponse, Unknown;
+   }
+
+   private final AuthenticationErrorCode errorCode;
+
    /**
     * @param message
     * @param cause
     */
    public OseeAuthenticationException(String message, Throwable cause) {
       super(message, cause);
+      this.errorCode = null;
    }
 
    /**
@@ -32,6 +39,7 @@ public class OseeAuthenticationException extends OseeCoreException {
     */
    public OseeAuthenticationException(String message) {
       super(message);
+      this.errorCode = null;
    }
 
    /**
@@ -39,6 +47,10 @@ public class OseeAuthenticationException extends OseeCoreException {
     */
    public OseeAuthenticationException(Throwable cause) {
       super(cause);
+      this.errorCode = null;
    }
 
+   public AuthenticationErrorCode getCode() {
+      return errorCode;
+   }
 }

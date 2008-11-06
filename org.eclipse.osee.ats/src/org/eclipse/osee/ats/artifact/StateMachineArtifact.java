@@ -31,12 +31,12 @@ import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -117,7 +117,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       try {
          preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
          if (smaMgr.getOriginator() == null)
-            preSaveOriginator = SkynetAuthentication.getUser();
+            preSaveOriginator = UserCache.getUser();
          else
             preSaveOriginator = smaMgr.getOriginator();
       } catch (Exception ex) {
@@ -137,7 +137,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     */
    public void updateAssigneeRelations() throws OseeCoreException {
       Collection<User> assignees = getSmaMgr().getStateMgr().getAssignees();
-      assignees.remove(SkynetAuthentication.getUser(UserEnum.UnAssigned));
+      assignees.remove(UserCache.getUser(SystemUser.UnAssigned));
       setRelations(CoreRelationEnumeration.Users_User, assignees);
    }
 
@@ -324,8 +324,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       boolean subscribed = false;
       boolean favorite = false;
       try {
-         subscribed = isSubscribed(SkynetAuthentication.getUser());
-         favorite = isFavorite(SkynetAuthentication.getUser());
+         subscribed = isSubscribed(UserCache.getUser());
+         favorite = isFavorite(UserCache.getUser());
       } catch (OseeCoreException ex) {
          // Do nothing
       }
@@ -458,7 +458,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public boolean amISubscribed() {
       try {
-         return isSubscribed(SkynetAuthentication.getUser());
+         return isSubscribed(UserCache.getUser());
       } catch (OseeCoreException ex) {
          return false;
       }
@@ -466,7 +466,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public boolean amIFavorite() {
       try {
-         return isFavorite(SkynetAuthentication.getUser());
+         return isFavorite(UserCache.getUser());
       } catch (OseeCoreException ex) {
          return false;
       }

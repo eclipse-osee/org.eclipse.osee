@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -105,7 +105,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
          users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
       else {
          if (AtsPlugin.isAtsAdmin()) {
-            users.add(SkynetAuthentication.getUser());
+            users.add(UserCache.getUser());
          }
       }
       return users;

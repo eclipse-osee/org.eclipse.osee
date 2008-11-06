@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
+import org.eclipse.osee.framework.core.data.SystemUser;
+
 /**
  * @author Ryan D. Brooks
  */
@@ -48,7 +50,7 @@ public class BootStrapUser extends User {
     */
    @Override
    public String getEmail() {
-      return "bootstrap@osee.org";
+      return SystemUser.BootStrap.getEmail();
    }
 
    /*
@@ -58,7 +60,7 @@ public class BootStrapUser extends User {
     */
    @Override
    public String getName() {
-      return "Boot Strap";
+      return SystemUser.BootStrap.getName();
    }
 
    /*
@@ -78,7 +80,7 @@ public class BootStrapUser extends User {
     */
    @Override
    public String getUserId() {
-      return "bootstrap";
+      return SystemUser.BootStrap.getUserID();
    }
 
    /*
@@ -88,7 +90,7 @@ public class BootStrapUser extends User {
     */
    @Override
    public Boolean isActive() {
-      return true;
+      return SystemUser.BootStrap.isActive();
    }
 
    /*

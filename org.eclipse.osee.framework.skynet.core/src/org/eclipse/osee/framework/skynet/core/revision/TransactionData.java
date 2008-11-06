@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -46,7 +46,7 @@ public class TransactionData {
       this.branch = branch;
 
       try {
-         User user = SkynetAuthentication.getUserByArtId(authorId);
+         User user = UserCache.getUserByArtId(authorId);
          name = user.getDescriptiveName();
       } catch (UserNotInDatabase ex) {
          name = "Could not resolve artId: " + authorId;

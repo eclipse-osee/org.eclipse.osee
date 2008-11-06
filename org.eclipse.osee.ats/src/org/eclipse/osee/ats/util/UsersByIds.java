@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 
 /**
@@ -38,7 +38,7 @@ public class UsersByIds {
          String userId = m.group(1);
          if (userId == null || userId.equals("")) throw new IllegalArgumentException("Blank userId specified.");
          try {
-            User u = SkynetAuthentication.getUserByUserId(m.group(1));
+            User u = UserCache.getUserByUserId(m.group(1));
             users.add(u);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

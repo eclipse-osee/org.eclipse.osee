@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.test.testDb;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 
 /**
  * @author Donald G. Dunne
@@ -21,7 +21,7 @@ public class DemoTestUtil {
       // Confirm test setup with demo data
       TestCase.assertTrue(DemoDbUtil.isDbPopulatedWithDemoData().isTrue());
       // Confirm user is Joe Smith
-      TestCase.assertTrue(SkynetAuthentication.getUser().getUserId().equals("Joe Smith"));
+      TestCase.assertTrue(UserCache.getUser().getUserId().equals("Joe Smith"));
    }
 
 }

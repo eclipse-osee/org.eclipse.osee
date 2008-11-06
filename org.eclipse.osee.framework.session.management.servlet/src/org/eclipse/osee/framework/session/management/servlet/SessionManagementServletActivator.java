@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.session.management.servlet;
 
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.osgi.framework.BundleActivator;
@@ -22,6 +23,7 @@ public class SessionManagementServletActivator implements BundleActivator {
    private static SessionManagementServletActivator instance;
    private OseeHttpServiceTracker httpServiceTracker;
    private ServiceTracker serviceTracker;
+   private ServiceTracker authenticationServiceTracker;
 
    /*
     * (non-Javadoc)
@@ -33,9 +35,11 @@ public class SessionManagementServletActivator implements BundleActivator {
       serviceTracker = new ServiceTracker(context, ISessionManager.class.getName(), null);
       serviceTracker.open();
 
+      authenticationServiceTracker = new ServiceTracker(context, IAuthenticationManager.class.getName(), null);
+      authenticationServiceTracker.open();
+
       httpServiceTracker =
-            new OseeHttpServiceTracker(context, OseeServerContext.SESSION_CONTEXT,
-                  SessionManagementServlet.class);
+            new OseeHttpServiceTracker(context, OseeServerContext.SESSION_CONTEXT, SessionManagementServlet.class);
       httpServiceTracker.open();
    }
 
@@ -44,11 +48,20 @@ public class SessionManagementServletActivator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      httpServiceTracker.close();
-      httpServiceTracker = null;
+      if (httpServiceTracker != null) {
+         httpServiceTracker.close();
+         httpServiceTracker = null;
+      }
 
-      serviceTracker.close();
-      serviceTracker = null;
+      if (serviceTracker != null) {
+         serviceTracker.close();
+         serviceTracker = null;
+      }
+
+      if (authenticationServiceTracker != null) {
+         authenticationServiceTracker.close();
+         authenticationServiceTracker = null;
+      }
 
       instance = null;
    }
@@ -59,6 +72,10 @@ public class SessionManagementServletActivator implements BundleActivator {
 
    public ISessionManager getSessionManager() {
       return (ISessionManager) serviceTracker.getService();
+   }
+
+   public IAuthenticationManager getAuthenticationManager() {
+      return (IAuthenticationManager) authenticationServiceTracker.getService();
    }
 
 }

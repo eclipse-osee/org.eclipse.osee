@@ -33,7 +33,7 @@ public class AttributeProvider implements IResourceProvider {
    private static String BASE_PATH = null;
 
    public AttributeProvider() {
-      BASE_PATH = OseeProperties.getInstance().getOseeApplicationServerData();
+      BASE_PATH = OseeProperties.getOseeApplicationServerData();
    }
 
    /* (non-Javadoc)

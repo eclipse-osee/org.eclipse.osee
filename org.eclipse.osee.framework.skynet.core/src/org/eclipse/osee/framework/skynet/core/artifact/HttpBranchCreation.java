@@ -19,12 +19,12 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -119,7 +119,7 @@ public class HttpBranchCreation {
    private static String getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException {
       int associatedArtifactId = -1;
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
-         associatedArtifact = SkynetAuthentication.getUser(UserEnum.NoOne);
+         associatedArtifact = UserCache.getUser(SystemUser.NoOne);
       }
       if (associatedArtifact != null) {
          associatedArtifactId = associatedArtifact.getArtId();
@@ -131,7 +131,7 @@ public class HttpBranchCreation {
       if (SkynetDbInit.isDbInit()) {
          return "-1";
       }
-      User userToBlame = SkynetAuthentication.getUser();
-      return Integer.toString((userToBlame == null) ? SkynetAuthentication.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId());
+      User userToBlame = UserCache.getUser();
+      return Integer.toString((userToBlame == null) ? UserCache.getUser(SystemUser.NoOne).getArtId() : userToBlame.getArtId());
    }
 }

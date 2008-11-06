@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -67,7 +67,7 @@ public class NewDecisionReviewJob extends Job {
             "Should we do this?  Yes will require followup, No will not",
             againstCurrentState ? teamParent.getSmaMgr().getStateMgr().getCurrentStateName() : null,
             "Enter description of the decision, if any",
-            "Yes;Followup;<" + SkynetAuthentication.getUser().getUserId() + ">\n" + "No;Completed;", null);
+            "Yes;Followup;<" + UserCache.getUser().getUserId() + ">\n" + "No;Completed;", null);
    }
 
    public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, String options, Collection<User> assignees) throws OseeCoreException {

@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -43,7 +43,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
    public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory) {
       this.skynetXViewerFactory = skynetXViewerFactory;
-      this.userArtifactDefaults = new SkynetUserArtifactCustomizeDefaults(SkynetAuthentication.getUser());
+      this.userArtifactDefaults = new SkynetUserArtifactCustomizeDefaults(UserCache.getUser());
       try {
          globalCustomizationsArtifact = XViewerCustomizationArtifact.getAtsCustArtifact();
       } catch (Throwable ex) {
@@ -80,14 +80,14 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
    public void saveCustomization(CustomizeData custData) throws OseeCoreException {
       if (custData.isPersonal())
-         saveCustomization(custData, SkynetAuthentication.getUser());
+         saveCustomization(custData, UserCache.getUser());
       else
          saveCustomization(custData, globalCustomizationsArtifact);
    }
 
    public void loadCustomizationData() throws OseeCoreException {
       custDatas.clear();
-      User user = SkynetAuthentication.getUser();
+      User user = UserCache.getUser();
       if (user != null) custDatas.addAll(getArtifactCustomizations(user));
       for (CustomizeData custData : custDatas)
          custData.setPersonal(true);
@@ -115,7 +115,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    public void deleteCustomization(CustomizeData custData) throws OseeCoreException {
       Artifact deleteArt = null;
       if (custData.isPersonal())
-         deleteArt = SkynetAuthentication.getUser();
+         deleteArt = UserCache.getUser();
       else
          deleteArt = getGlobalCustomizationsArtifact();
       deleteCustomization(custData, deleteArt);

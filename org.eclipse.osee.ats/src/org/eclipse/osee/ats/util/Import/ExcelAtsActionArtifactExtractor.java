@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -179,7 +179,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          // Else if assignees, confirm that they are valid
          if (aData.assigneeStrs.size() > 0) {
             for (String assignee : aData.assigneeStrs) {
-               User user = SkynetAuthentication.getUserByName(assignee, false);
+               User user = UserCache.getUserByName(assignee, false);
                if (user == null)
                   rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                else

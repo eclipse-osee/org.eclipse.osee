@@ -17,7 +17,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
@@ -44,7 +46,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public class ClientSessionManager {
-
+   public static final String STATUS_ID = "Session Manager";
    private static OseeSessionGrant oseeSessionGrant = null;
    private static OseeClientSession oseeSession = null;
    private static OseeClientInfo clientInfo;
@@ -104,6 +106,31 @@ public class ClientSessionManager {
       throw new OseeArgumentException(String.format("Invalid sql key [%s]", key));
    }
 
+   public static String[] getAuthenticationProtocols() {
+      List<String> toReturn = new ArrayList<String>();
+      try {
+         Map<String, String> parameters = new HashMap<String, String>();
+         String url =
+               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
+         if (result.getCode() == HttpURLConnection.HTTP_OK) {
+            String protocols = outputStream.toString("UTF-8");
+            if (Strings.isValid(protocols)) {
+               String[] results = protocols.split("[\\[\\]\\s,]+");
+               for (String entry : results) {
+                  if (Strings.isValid(entry)) {
+                     toReturn.add(entry);
+                  }
+               }
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+      }
+      return toReturn.toArray(new String[toReturn.size()]);
+   }
+
    public synchronized static OseeClientSession authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
       try {
          OseeCredential credential = credentialProvider.getCredential();
@@ -116,11 +143,15 @@ public class ClientSessionManager {
                      oseeSessionGrant.getUserArtifactId(), clientInfo.getClientAddress(), clientInfo.getPort(),
                      clientInfo.getVersion());
       } catch (OseeCoreException ex) {
-         OseeLog.reportStatus(new BaseStatus("Session Manager", Level.SEVERE, ex));
+         OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
          throw ex;
       }
-      OseeLog.reportStatus(new BaseStatus("Session Manager", Level.INFO, "%s", oseeSession));
+      OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s", oseeSession));
       return oseeSession;
+   }
+
+   public static OseeClientSession authenticateAsGuest() throws OseeCoreException {
+      return authenticate(new GuestCredentialProvider());
    }
 
    public static void releaseSession() throws OseeDataStoreException {
@@ -147,7 +178,6 @@ public class ClientSessionManager {
       OseeSessionGrant session = null;
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("operation", "create");
-      parameters.put("authenticationProtocol", "TrustAll");
       try {
          String url =
                HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);

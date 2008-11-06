@@ -33,10 +33,16 @@ public interface IAuthenticationManager {
    public void removeAuthenticationProvider(IAuthenticationProvider authenticationProvider);
 
    /**
-    * @param authenticationProtocol
     * @param credential
     * @return <b>true</b> if authentication success
     * @throws OseeAuthenticationException
     */
-   public boolean authenticate(String authenticationProtocol, OseeCredential credential) throws OseeAuthenticationException;
+   public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException;
+
+   /**
+    * Gets an array of available authentication protocols
+    * 
+    * @return authentication protocols
+    */
+   public String[] getProtocols();
 }

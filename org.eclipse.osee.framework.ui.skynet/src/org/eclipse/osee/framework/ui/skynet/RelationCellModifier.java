@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.swt.widgets.Item;
@@ -42,7 +42,7 @@ public class RelationCellModifier implements ICellModifier {
     */
    public boolean canModify(Object element, String property) {
       try {
-         SkynetGuiPlugin.securityManager.checkPermission(SkynetAuthentication.getUser(), pList);
+         SkynetGuiPlugin.securityManager.checkPermission(UserCache.getUser(), pList);
       } catch (SecurityException ex) {
          ex.printStackTrace();
          return false;

@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
 import org.eclipse.osee.framework.ui.skynet.dbinit.AddCommonBranch;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustomizationArtifact;
@@ -29,10 +29,9 @@ public class AddCommonBranchForAtsDemo extends AddCommonBranch {
       super.run(connection);
 
       // Create Default Users
-      for (UserEnum userEnum : UserEnum.values()) {
-         SkynetAuthentication.createUser(userEnum);
+      for (SystemUser userEnum : SystemUser.values()) {
+         UserCache.createUser(userEnum);
       }
-      SkynetAuthentication.setBasicUsersCreated(true);
       // Create Global Preferences artifact that lives on common branch
       GlobalPreferences.createGlobalPreferencesArtifact();
 

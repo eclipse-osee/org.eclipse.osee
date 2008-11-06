@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -47,7 +47,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          return defectItem.isClosed() ? SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage(
                "chkbox_disabled.gif");
       } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
-         if (defectItem.getUser().equals(SkynetAuthentication.getUser()))
+         if (defectItem.getUser().equals(UserCache.getUser()))
             return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
          else
             return SkynetGuiPlugin.getInstance().getImage("user_sm.gif");

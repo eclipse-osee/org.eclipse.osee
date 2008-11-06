@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -35,7 +35,7 @@ public class DefectItem {
    private String description = "";
    private String location = "";
    private String resolution = "";
-   private User user = SkynetAuthentication.getUser();
+   private User user = UserCache.getUser();
    private String guid = GUID.generateGuidStr();
    private Severity severity = Severity.None;
    private Disposition disposition = Disposition.None;
@@ -158,7 +158,7 @@ public class DefectItem {
       date.setTime(new Long(AXml.getTagData(xml, "date")));
       this.date = date;
       try {
-         this.user = SkynetAuthentication.getUserByUserId(AXml.getTagData(xml, "user"));
+         this.user = UserCache.getUserByUserId(AXml.getTagData(xml, "user"));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

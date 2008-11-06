@@ -79,19 +79,5 @@
             file="support/Demo_Program_Skynet_Types.xml">
       </ExcelFile>
    </extension>
-   <extension
-         id="DemoAuthentication"
-         name="DemoAuthentication"
-         point="org.eclipse.osee.framework.ui.plugin.AuthenticationProvider">
-      <AuthenticationClass
-            classname="org.eclipse.osee.ats.config.demo.util.DemoAuthentication">
-      </AuthenticationClass>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.plugin.core.OseeConfigFile">
-      <OseeConfig
-            file="support/osee.demo.client.config.xml">
-      </OseeConfig>
-   </extension>
 
 </plugin>

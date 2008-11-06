@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -320,7 +320,7 @@ public class BranchListComposite implements IBranchEventListener {
          Object backing2 = ((JobbedNode) o2).getBackingData();
 
          if (favoritesFirst && backing1 instanceof Branch && backing2 instanceof Branch) {
-            User user = SkynetAuthentication.getUser();
+            User user = UserCache.getUser();
             boolean fav1 = user.isFavoriteBranch((Branch) backing1);
             boolean fav2 = user.isFavoriteBranch((Branch) backing2);
 

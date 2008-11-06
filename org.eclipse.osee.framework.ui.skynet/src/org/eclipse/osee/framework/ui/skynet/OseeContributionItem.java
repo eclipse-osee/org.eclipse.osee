@@ -60,7 +60,7 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
       DefaultBranchContributionItem.addTo(manager);
       if (OseeAts.isAtsAdmin()) AdminContributionItem.addTo(manager);
       OseeServicesStatusContributionItem.addTo(manager);
-      OseeAuthenticationContributionItem.addTo(manager);
+      SessionContributionItem.addTo(manager);
    }
 
    public static void addTo(AbstractArtifactSearchViewPage view, boolean update) {

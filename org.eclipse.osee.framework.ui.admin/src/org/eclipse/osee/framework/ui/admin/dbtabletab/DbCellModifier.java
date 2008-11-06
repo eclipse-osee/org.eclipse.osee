@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -68,9 +68,9 @@ public class DbCellModifier implements ICellModifier {
          return stringValue;
       } else if (dbItem.isBems(property)) {
          try {
-            enumeratedValue.setChocies(SkynetAuthentication.getUserNames());
+            enumeratedValue.setChocies(UserCache.getUserNames());
             User u = null;
-            u = SkynetAuthentication.getUserByUserId((String) obj);
+            u = UserCache.getUserByUserId((String) obj);
             if (u != null) enumeratedValue.setValue(u.getName());
          } catch (Exception ex) {
             OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
@@ -107,7 +107,7 @@ public class DbCellModifier implements ICellModifier {
       } else if (dbItem.isBems(property)) {
          try {
             String newName = (String) value;
-            User newUser = SkynetAuthentication.getUserByName(newName, false);
+            User newUser = UserCache.getUserByName(newName, false);
             String oldBems = (String) wasObj;
             if (!newUser.getUserId().equals(oldBems)) {
                dbModel.setColumn(columnIndex, newUser.getUserId());

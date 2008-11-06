@@ -8,21 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server;
+package org.eclipse.osee.framework.core.client;
 
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ISessionManager {
+public class GuestCredentialProvider extends BaseCredentialProvider {
 
-   public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException;
-
-   public void releaseSession(String sessionId);
-
-   public void updateSessionActivity(String sessionId, String interactionName) throws OseeInvalidSessionException;
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.client.BaseCredentialProvider#getCredential()
+    */
+   @Override
+   public OseeCredential getCredential() throws OseeCoreException {
+      OseeCredential credential = super.getCredential();
+      credential.setUserId(SystemUser.Guest.getName());
+      return credential;
+   }
 }

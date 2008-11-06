@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.server.internal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidAuthenticationProtocolException;
@@ -30,6 +31,9 @@ public class AuthenticationManager implements IAuthenticationManager {
       this.authenticationProviders = Collections.synchronizedMap(new HashMap<String, IAuthenticationProvider>());
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#addAuthenticationProvider(org.eclipse.osee.framework.core.server.IAuthenticationProvider)
+    */
    @Override
    public void addAuthenticationProvider(IAuthenticationProvider authenticationProvider) {
       synchronized (authenticationProviders) {
@@ -40,6 +44,22 @@ public class AuthenticationManager implements IAuthenticationManager {
       }
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#authenticate(org.eclipse.osee.framework.core.data.OseeCredential)
+    */
+   @Override
+   public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException {
+      IAuthenticationProvider provider = authenticationProviders.get(credential.getAuthenticationProtocol());
+      if (provider != null) {
+         return provider.authenticate(credential);
+      }
+      throw new OseeInvalidAuthenticationProtocolException(String.format("Invalid protocol [%s]",
+            credential.getAuthenticationProtocol()));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#removeAuthenticationProvider(org.eclipse.osee.framework.core.server.IAuthenticationProvider)
+    */
    @Override
    public void removeAuthenticationProvider(IAuthenticationProvider authenticationProvider) {
       synchronized (authenticationProviders) {
@@ -47,17 +67,13 @@ public class AuthenticationManager implements IAuthenticationManager {
       }
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#getProtocols()
+    */
    @Override
-   public boolean authenticate(String authenticationProtocol, OseeCredential credential) throws OseeAuthenticationException {
-      IAuthenticationProvider provider = getAuthenticationProvider(authenticationProtocol);
-      if (provider != null) {
-         return provider.authenticate(credential);
-      }
-      throw new OseeInvalidAuthenticationProtocolException(String.format("Invalid protocol [%s]",
-            authenticationProtocol));
+   public String[] getProtocols() {
+      Set<String> keys = authenticationProviders.keySet();
+      return keys.toArray(new String[keys.size()]);
    }
 
-   private IAuthenticationProvider getAuthenticationProvider(String protocol) {
-      return authenticationProviders.get(protocol);
-   }
 }

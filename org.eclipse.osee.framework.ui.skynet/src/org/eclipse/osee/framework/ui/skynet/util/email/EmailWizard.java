@@ -16,7 +16,7 @@ import javax.mail.Message;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 
@@ -57,8 +57,8 @@ public class EmailWizard extends Wizard {
    public boolean performFinish() {
       try {
          OseeEmail emailMessage =
-               new OseeEmail(Arrays.asList(wizardPage.getToAddresses()), SkynetAuthentication.getUser().getEmail(),
-                     SkynetAuthentication.getUser().getEmail(), subject, "", BodyType.Html);
+               new OseeEmail(Arrays.asList(wizardPage.getToAddresses()), UserCache.getUser().getEmail(),
+                     UserCache.getUser().getEmail(), subject, "", BodyType.Html);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
          String otherText = wizardPage.getText();

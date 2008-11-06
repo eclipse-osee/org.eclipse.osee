@@ -45,12 +45,12 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserEnum;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -179,7 +179,7 @@ public class SMAManager {
    }
 
    public void setOriginator(User user) throws OseeCoreException {
-      atsLog.addLog(LogType.Originated, "", "Changed by " + SkynetAuthentication.getUser().getName(), user);
+      atsLog.addLog(LogType.Originated, "", "Changed by " + UserCache.getUser().getName(), user);
    }
 
    /**
@@ -287,7 +287,7 @@ public class SMAManager {
       }
       // As a convenience, remove the UnAssigned user if another user is selected
       if (users.size() > 1) {
-         users.remove(SkynetAuthentication.getUser(UserEnum.UnAssigned));
+         users.remove(UserCache.getUser(SystemUser.UnAssigned));
       }
       for (StateMachineArtifact sma : smas) {
          sma.getSmaMgr().getStateMgr().setAssignees(users);
@@ -364,12 +364,12 @@ public class SMAManager {
          teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, newVersion);
       }
       if (persist) {
-    	  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-    	  for (TeamWorkFlowArtifact teamArt : smas) {
-    		  teamArt.persistRelations(transaction);
-    	  }
-    	  transaction.execute();
-      } 
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         for (TeamWorkFlowArtifact teamArt : smas) {
+            teamArt.persistRelations(transaction);
+         }
+         transaction.execute();
+      }
       return true;
    }
 
@@ -379,7 +379,7 @@ public class SMAManager {
       return false;
    }
 
-   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist ) {
+   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
 
       for (TeamWorkFlowArtifact team : teams) {
          SMAManager smaMgr = new SMAManager(team);
@@ -394,16 +394,16 @@ public class SMAManager {
             dialog.setSelected(teams.iterator().next().getChangeType());
          }
          if (dialog.open() == 0) {
-        	
-        	SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-        	 
-        	  for (TeamWorkFlowArtifact team : teams) {
-                  if (team.getChangeType() != dialog.getSelection()) {
-                     team.setChangeType(dialog.getSelection());
-                     team.saveSMA(transaction);
-                  }
+
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+
+            for (TeamWorkFlowArtifact team : teams) {
+               if (team.getChangeType() != dialog.getSelection()) {
+                  team.setChangeType(dialog.getSelection());
+                  team.saveSMA(transaction);
                }
-        	transaction.execute();
+            }
+            transaction.execute();
          }
          return true;
       } catch (Exception ex) {
@@ -433,14 +433,14 @@ public class SMAManager {
             ald.setSelected(teams.iterator().next().getPriority());
          }
          if (ald.open() == 0) {
-        	 
-        	 SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-              for (TeamWorkFlowArtifact team : teams) {
-                 if (team.getPriority() != ald.getSelection()) {
-                    team.setPriority(ald.getSelection());
-                    team.saveSMA(transaction);
-                 }
-              }
+
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            for (TeamWorkFlowArtifact team : teams) {
+               if (team.getPriority() != ald.getSelection()) {
+                  team.setPriority(ald.getSelection());
+                  team.saveSMA(transaction);
+               }
+            }
             transaction.execute();
          }
          return true;
@@ -461,7 +461,7 @@ public class SMAManager {
             if (((TaskArtifact) smas.iterator().next()).isUsingTaskResolutionOptions()) {
                options = ((TaskArtifact) smas.iterator().next()).getTaskResolutionOptionDefintions();
             }
-   }
+         }
          for (StateMachineArtifact sma : smas) {
             SMAManager smaMgr = new SMAManager(sma);
             if (smaMgr.isReleased()) {
@@ -560,7 +560,7 @@ public class SMAManager {
                null, smas, persist);
    }
 
-   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Artifact sma, boolean persist ) {
+   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Artifact sma, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(new Artifact[] {sma}), persist);
@@ -628,7 +628,7 @@ public class SMAManager {
       return false;
    }
 
-   public boolean promptChangeEstimatedReleaseDate( ) {
+   public boolean promptChangeEstimatedReleaseDate() {
       try {
          VersionArtifact verArt = getTargetedForVersion();
          if (verArt != null) {
@@ -691,23 +691,23 @@ public class SMAManager {
    }
 
    public void setTransitionAssignees(Collection<User> assignees) throws OseeCoreException {
-      if (assignees.contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || assignees.contains(SkynetAuthentication.getUser(UserEnum.Guest))) {
+      if (assignees.contains(UserCache.getUser(SystemUser.NoOne)) || assignees.contains(UserCache.getUser(SystemUser.Guest))) {
          throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
       }
-      if (assignees.size() > 1 && assignees.contains(SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+      if (assignees.size() > 1 && assignees.contains(UserCache.getUser(SystemUser.UnAssigned))) {
          throw new OseeArgumentException("Can not assign to user and UnAssigned");
       }
       transitionAssignees = assignees;
    }
 
    public boolean isAssigneeMe() {
-      return stateMgr.getAssignees().contains(SkynetAuthentication.getUser());
+      return stateMgr.getAssignees().contains(UserCache.getUser());
    }
 
    public Collection<User> getTransitionAssignees() throws OseeCoreException {
       if (transitionAssignees != null) {
-         if (transitionAssignees.size() > 0 && transitionAssignees.contains(SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
-            transitionAssignees.remove(transitionAssignees.contains(SkynetAuthentication.getUser(UserEnum.UnAssigned)));
+         if (transitionAssignees.size() > 0 && transitionAssignees.contains(UserCache.getUser(SystemUser.UnAssigned))) {
+            transitionAssignees.remove(transitionAssignees.contains(UserCache.getUser(SystemUser.UnAssigned)));
          }
          if (transitionAssignees.size() > 0) {
             return transitionAssignees;
@@ -767,7 +767,8 @@ public class SMAManager {
 
    public Result transitionToCancelled(String reason, boolean persist, SkynetTransaction transaction) {
       Result result =
-            transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason, false, transaction);
+            transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason, false,
+                  transaction);
       return result;
    }
 
@@ -782,9 +783,9 @@ public class SMAManager {
    private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck, SkynetTransaction transaction) {
       try {
          // Validate assignees
-         if (getStateMgr().getAssignees().contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || getStateMgr().getAssignees().contains(
-               SkynetAuthentication.getUser(UserEnum.Guest)) || getStateMgr().getAssignees().contains(
-               SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+         if (getStateMgr().getAssignees().contains(UserCache.getUser(SystemUser.NoOne)) || getStateMgr().getAssignees().contains(
+               UserCache.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
+               UserCache.getUser(SystemUser.UnAssigned))) {
             return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"NoOne\" user as assignee.");
          }
 

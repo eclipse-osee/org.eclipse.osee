@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -276,7 +276,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public boolean isChangeManaged() {
-      return associatedArtifactId != SkynetAuthentication.getNoOneArtifactId();
+      return associatedArtifactId != UserCache.getNoOneArtifactId();
    }
 
    public boolean isBaselineBranch() {

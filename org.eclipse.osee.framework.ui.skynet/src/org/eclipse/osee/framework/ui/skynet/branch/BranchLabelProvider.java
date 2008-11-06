@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -81,7 +81,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          try {
             checkImages();
             Branch branch = (Branch) element;
-            boolean favorite = SkynetAuthentication.getUser().isFavoriteBranch(branch);
+            boolean favorite = UserCache.getUser().isFavoriteBranch(branch);
             boolean action = branch.isChangeManaged();
             boolean isDefault = element.equals(BranchManager.getDefaultBranch());
 
@@ -160,7 +160,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             return String.valueOf(branch.getCreationDate());
          } else if (columnIndex == 3) {
             try {
-               return SkynetAuthentication.getUserByArtId(branch.getAuthorId()).getDescriptiveName();
+               return UserCache.getUserByArtId(branch.getAuthorId()).getDescriptiveName();
             } catch (Exception ex) {
                return "";
             }
