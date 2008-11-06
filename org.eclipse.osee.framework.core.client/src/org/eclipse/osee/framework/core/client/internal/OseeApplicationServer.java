@@ -79,11 +79,15 @@ public class OseeApplicationServer {
             oseeServer = String.format("http://%s:%s/", serverInfo.getServerAddress(), serverInfo.getPort());
          }
       }
-      isServerAlive = checkStatus();
-      if (isServerAlive) {
-         DateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-         OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.INFO, "%s [%s] Running Since: %s", oseeServer,
-               serverInfo.getVersion(), format.format(serverInfo.getDateStarted())));
+      DateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+      if (oseeServer == null) {
+         OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.SEVERE, "Application server address was null"));
+      } else {
+         isServerAlive = checkStatus();
+         if (isServerAlive) {
+            OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.INFO, "%s [%s] Running Since: %s", oseeServer,
+                  serverInfo.getVersion(), format.format(serverInfo.getDateStarted())));
+         }
       }
    }
 
