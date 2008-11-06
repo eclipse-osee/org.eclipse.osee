@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
 import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
@@ -86,7 +87,11 @@ public class XNavigateComposite extends Composite {
       filteredTree.getViewer().getTree().setLayoutData(gd);
       filteredTree.getViewer().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
          public void handleEvent(Event event) {
-            if (event.button == 1) handleDoubleClick();
+            if (event.button == 1) try {
+               handleDoubleClick();
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
          }
       });
       filteredTree.getViewer().getTree().addKeyListener(new KeyListener() {
@@ -94,7 +99,11 @@ public class XNavigateComposite extends Composite {
          }
 
          public void keyReleased(KeyEvent e) {
-            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) handleDoubleClick();
+            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) try {
+               handleDoubleClick();
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
          }
       });
       // Disable native tree tooltip
@@ -177,14 +186,14 @@ public class XNavigateComposite extends Composite {
       }
    };
 
-   protected void handleDoubleClick() {
+   protected void handleDoubleClick() throws OseeCoreException {
       IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
       if (!sel.iterator().hasNext()) return;
       XNavigateItem item = (XNavigateItem) sel.iterator().next();
       handleDoubleClick(item);
    }
 
-   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
+   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException{
       disposeTooltip();
 
       if (item.getChildren().size() > 0) {
