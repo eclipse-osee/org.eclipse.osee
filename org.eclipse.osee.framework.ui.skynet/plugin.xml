@@ -439,9 +439,7 @@
           name="Arbitration Server">
     </page>
  </extension>
-	<extension point="org.eclipse.ui.startup">
-		<startup class="org.eclipse.osee.framework.skynet.core.linking.HttpServerStartup"/>
-	</extension>
+
 	<extension point="org.eclipse.help.contexts">
 		<contexts file="contexts/artifactExplorerContexts.xml"/>
 		<contexts file="contexts/artifactSearchContexts.xml"/>
