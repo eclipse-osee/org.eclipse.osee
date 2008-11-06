@@ -434,12 +434,13 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    }
 
    private String getWhoAmI() {
-      String userName = UserCache.getUser().getName();
       try {
+         String userName = UserCache.getUser().getName();
          return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
                ClientSessionManager.getDataStoreLoginName());
-      } catch (OseeCoreException ex) {
-         return userName;
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return "Exception: " + ex.getLocalizedMessage();
       }
    }
 

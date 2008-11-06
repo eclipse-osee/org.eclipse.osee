@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
@@ -759,4 +760,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       return Arrays.asList(smaMgr.getSma());
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
+    */
+   @Override
+   public VersionArtifact getMetricsVersionArtifact() {
+      return null;
+   }
 }

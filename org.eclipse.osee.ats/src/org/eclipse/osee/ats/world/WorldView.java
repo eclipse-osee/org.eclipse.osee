@@ -18,7 +18,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
+import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -30,8 +32,12 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -45,10 +51,11 @@ import org.eclipse.ui.part.ViewPart;
  * @see ViewPart
  * @author Donald G. Dunne
  */
-public class WorldView extends ViewPart implements IPartListener, IActionable {
+public class WorldView extends ViewPart implements IPartListener, IAtsMetricsProvider, IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.ats.world.WorldView";
    public static final String HELP_CONTEXT_ID = "atsWorldView";
    WorldComposite worldComposite;
+   private TabFolder tabFolder;
 
    /**
     * The constructor.
@@ -77,10 +84,22 @@ public class WorldView extends ViewPart implements IPartListener, IActionable {
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
       BulkLoadAtsCache.run(false);
 
-      worldComposite = new WorldComposite(VIEW_ID, getViewSite(), parent, SWT.NONE);
+      tabFolder = new TabFolder(parent, SWT.BORDER | SWT.BOTTOM);
+      tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+      tabFolder.setLayout(ALayout.getZeroMarginLayout(1, true));
+
+      TabItem tab = new TabItem(tabFolder, SWT.NONE);
+      worldComposite = new WorldComposite(VIEW_ID, getViewSite(), tabFolder, SWT.NONE);
+      tab.setControl(worldComposite);
+      tab.setText("Actions");
+
+      TabItem tab2 = new TabItem(tabFolder, SWT.NONE);
+      AtsMetricsComposite atsMetricsComposite = new AtsMetricsComposite(this, tabFolder, SWT.NONE);
+      tab2.setControl(atsMetricsComposite);
+      tab2.setText("Metrics");
+
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS World");
       AtsPlugin.getInstance().setHelp(worldComposite.getControl(), HELP_CONTEXT_ID);
-
       OseeContributionItem.addTo(this, false);
    }
 
@@ -157,6 +176,25 @@ public class WorldView extends ViewPart implements IPartListener, IActionable {
    public void dispose() {
       if (worldComposite != null) worldComposite.disposeComposite();
       super.dispose();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsArtifacts()
+    */
+   @Override
+   public Collection<? extends Artifact> getMetricsArtifacts() {
+      return worldComposite.getLoadedArtifacts();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
+    */
+   @Override
+   public VersionArtifact getMetricsVersionArtifact() {
+      if (worldComposite.getLastSearchItem() instanceof VersionTargetedForTeamSearchItem) {
+         return ((VersionTargetedForTeamSearchItem) worldComposite.getLastSearchItem()).getSearchVersionArtifact();
+      }
+      return null;
    }
 
 }

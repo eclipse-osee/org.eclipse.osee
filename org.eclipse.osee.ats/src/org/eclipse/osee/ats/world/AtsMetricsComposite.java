@@ -5,15 +5,19 @@
  */
 package org.eclipse.osee.ats.world;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphLine;
+import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphLineSegment;
 import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphTable;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -106,7 +110,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(metricsComposite);
 
       addSpace();
-      SMAMetrics sMet = new SMAMetrics(iAtsMetricsProvider.getMetricsArtifacts(), null);
+      SMAMetrics sMet =
+            new SMAMetrics(iAtsMetricsProvider.getMetricsArtifacts(), iAtsMetricsProvider.getMetricsVersionArtifact());
       Label label = new Label(metricsComposite, SWT.NONE);
       label.setText(sMet.toStringLong());
       adapt(label);
@@ -114,6 +119,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
       createFullPercentChart(sMet, metricsComposite);
       addSpace();
       createCompletedByAssigneesChart(sMet, metricsComposite);
+      addSpace();
+      createHoursRemainingByAssigneesChart(sMet, metricsComposite);
 
       mainComp.layout();
       computeScrollSize();
@@ -134,26 +141,35 @@ public class AtsMetricsComposite extends ScrolledComposite {
    }
 
    public void createFullPercentChart(SMAMetrics sMet, Composite parent) {
-      Map<String, Integer> itemToValueMap = new HashMap<String, Integer>();
-      itemToValueMap.put(
+      List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
+
+      List<XBarGraphLineSegment> segments = new ArrayList<XBarGraphLineSegment>();
+      segments.add(new XBarGraphLineSegment("Actions", SWT.COLOR_YELLOW, sMet.getNumActions()));
+      segments.add(new XBarGraphLineSegment("Workflows", SWT.COLOR_GREEN, sMet.getNumTeamWfs()));
+      segments.add(new XBarGraphLineSegment("Tasks", SWT.COLOR_CYAN, sMet.getNumTasks()));
+      segments.add(new XBarGraphLineSegment("Reviews", SWT.COLOR_MAGENTA, sMet.getNumReviews()));
+      lines.add(new XBarGraphLine("Items", segments));
+
+      lines.add(XBarGraphLine.getPercentLine(
             "By Team Percents (" + sMet.getCummulativeTeamPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
-            (int) sMet.getPercentCompleteByTeamPercents());
-      itemToValueMap.put(
+            (int) sMet.getPercentCompleteByTeamPercents()));
+      lines.add(XBarGraphLine.getPercentLine(
             "By Team Workflow (" + sMet.getCompletedTeamWorkflows().size() + "/" + sMet.getNumTeamWfs() + ")",
-            (int) sMet.getPercentCompleteByTeamWorkflow());
-      itemToValueMap.put(
+            (int) sMet.getPercentCompleteByTeamWorkflow()));
+      lines.add(XBarGraphLine.getPercentLine(
             "By Task Percents (" + sMet.getCummulativeTaskPercentComplete() + "/" + sMet.getNumTasks() + ")",
-            (int) sMet.getPercentCompleteByTaskPercents());
-      itemToValueMap.put("By Task (" + sMet.getCompletedTaskWorkflows().size() + "/" + sMet.getNumTasks() + ")",
-            (int) sMet.getPercentCompleteByTaskWorkflow());
-      XBarGraphTable table = new XBarGraphTable("Total Percent Complete", "", "Percent Complete", itemToValueMap);
+            (int) sMet.getPercentCompleteByTaskPercents()));
+      lines.add(XBarGraphLine.getPercentLine(
+            "By Task (" + sMet.getCompletedTaskWorkflows().size() + "/" + sMet.getNumTasks() + ")",
+            (int) sMet.getPercentCompleteByTaskWorkflow()));
+      XBarGraphTable table = new XBarGraphTable("Total Percent Complete", "", "Percent Complete", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
    }
 
    public void createCompletedByAssigneesChart(SMAMetrics sMet, Composite parent) {
-      Map<String, Integer> itemToValueMap = new HashMap<String, Integer>();
+      List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
       for (User user : sMet.getAssigneesAssignedOrCompleted()) {
          int completed =
                sMet.getUserToCompletedSmas().containsKey(user) ? sMet.getUserToCompletedSmas().getValues(user).size() : 0;
@@ -167,10 +183,46 @@ public class AtsMetricsComposite extends ScrolledComposite {
             double percent = new Double(completed) / total * 100.0;
             percentComplete = (int) percent;
          }
-         itemToValueMap.put(user.getName() + " (" + completed + "/" + total + ")", percentComplete);
+         lines.add(XBarGraphLine.getPercentLine(user.getName() + " (" + completed + "/" + total + ")", percentComplete));
       }
-      XBarGraphTable table =
-            new XBarGraphTable("Completed by Assignee", "User", "Percent Complete", itemToValueMap, "%");
+      XBarGraphTable table = new XBarGraphTable("Completed by Assignee", "User", "Percent Complete", lines);
+      table.setFillHorizontally(true);
+      table.createWidgets(parent, 1);
+      adapt(table);
+   }
+
+   public void createHoursRemainingByAssigneesChart(SMAMetrics sMet, Composite parent) {
+      List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
+      Double versionHoursRemain = null;
+      if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
+         versionHoursRemain = sMet.getHrsRemain();
+      }
+      for (User user : sMet.getAssigneesAssignedOrCompleted()) {
+         try {
+            double userHoursRemain = 0;
+            for (TeamWorkFlowArtifact team : sMet.getTeamArts()) {
+               Collection<User> users = team.getSmaMgr().getStateMgr().getAssignees();
+               if (users.contains(user)) {
+                  double hours = team.getRemainHoursTotal();
+                  if (hours > 0) {
+                     userHoursRemain += hours / users.size();
+                  }
+               }
+            }
+            if (versionHoursRemain == null) {
+               lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain,
+                     String.format("5.2f", userHoursRemain)));
+            } else {
+               lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_RED_FOREGROUND,
+                     XBarGraphLine.DEFAULT_RED_BACKGROUND, (int) userHoursRemain, String.format(
+                           "%5.2f - Exceeds release remaining hours %5.2f.", userHoursRemain, versionHoursRemain)));
+            }
+         } catch (OseeCoreException ex) {
+            lines.add(new XBarGraphLine(user.getName(), 0, "Exception: " + ex.getLocalizedMessage()));
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+      }
+      XBarGraphTable table = new XBarGraphTable("Completed by Assignee", "User", "Percent Complete", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);

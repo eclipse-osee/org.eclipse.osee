@@ -5,7 +5,8 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.xbargraph;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
@@ -14,12 +15,14 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -31,20 +34,14 @@ public class XBarGraphTable extends XWidget {
 
    private final String itemHeader;
    private final String percentHeader;
-   private final Map<String, Integer> itemToValueMap;
    private Table table;
-   private final String valuePostFix;
+   private final List<XBarGraphLine> lines;
 
-   public XBarGraphTable(String label, String itemHeader, String percentHeader, Map<String, Integer> itemToValueMap) {
-      this(label, itemHeader, percentHeader, itemToValueMap, "%");
-   }
-
-   public XBarGraphTable(String label, String itemHeader, String percentHeader, Map<String, Integer> itemToValueMap, String valuePostFix) {
+   public XBarGraphTable(String label, String itemHeader, String percentHeader, List<XBarGraphLine> lines) {
       super(label);
       this.itemHeader = itemHeader;
       this.percentHeader = percentHeader;
-      this.itemToValueMap = itemToValueMap;
-      this.valuePostFix = valuePostFix;
+      this.lines = lines;
    }
 
    /* (non-Javadoc)
@@ -67,9 +64,9 @@ public class XBarGraphTable extends XWidget {
       final TableColumn column2 = new TableColumn(table, SWT.NONE);
       column2.setText(percentHeader);
       column2.setWidth(500);
-      for (String itemName : itemToValueMap.keySet()) {
+      for (XBarGraphLine line : lines) {
          TableItem item = new TableItem(table, SWT.NONE);
-         item.setText(itemName);
+         item.setText(line.name);
       }
 
       /*
@@ -78,34 +75,32 @@ public class XBarGraphTable extends XWidget {
        * as efficient as possible.
        */
       table.addListener(SWT.PaintItem, new Listener() {
-         Integer[] percents = itemToValueMap.values().toArray(new Integer[itemToValueMap.size()]);
-
          public void handleEvent(Event event) {
             if (event.index == 1) {
                GC gc = event.gc;
                TableItem item = (TableItem) event.item;
                int index = table.indexOf(item);
-               int percent = percents[index];
-               Color foreground = gc.getForeground();
-               Color background = gc.getBackground();
-               if (valuePostFix.equals("%") && percent == 100) {
-                  gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
-                  gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
-               } else {
-                  gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-                  gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
+               XBarGraphLine line = lines.get(index);
+               int cummulativeWidth = 0;
+               for (XBarGraphLineSegment seg : line.segments) {
+                  Color foreground = gc.getForeground();
+                  Color background = gc.getBackground();
+                  gc.setForeground(Display.getCurrent().getSystemColor(seg.foreground));
+                  gc.setBackground(Display.getCurrent().getSystemColor(seg.background));
+                  int width = (column2.getWidth()) * seg.value / 100;
+                  gc.fillGradientRectangle(event.x + cummulativeWidth, event.y, width, event.height, true);
+                  Rectangle rect2 = new Rectangle(event.x + cummulativeWidth, event.y, width - 1, event.height - 1);
+                  gc.drawRectangle(rect2);
+                  if (seg.name != null && !seg.name.equals("")) {
+                     gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
+                     Point size = event.gc.textExtent(seg.name);
+                     int offset = Math.max(0, (event.height - size.y) / 2);
+                     gc.drawText(seg.name, event.x + cummulativeWidth + 5, event.y + offset, true);
+                     gc.setForeground(background);
+                     gc.setBackground(foreground);
+                  }
+                  cummulativeWidth += width;
                }
-               int width = (column2.getWidth() - 1) * percent / 100;
-               gc.fillGradientRectangle(event.x, event.y, width, event.height, true);
-               Rectangle rect2 = new Rectangle(event.x, event.y, width - 1, event.height - 1);
-               gc.drawRectangle(rect2);
-               gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
-               String text = percent + valuePostFix;
-               Point size = event.gc.textExtent(text);
-               int offset = Math.max(0, (event.height - size.y) / 2);
-               gc.drawText(text, event.x + 2, event.y + offset, true);
-               gc.setForeground(background);
-               gc.setBackground(foreground);
             }
          }
       });
@@ -187,4 +182,31 @@ public class XBarGraphTable extends XWidget {
       return null;
    }
 
+   public static void main(String[] args) {
+      final Display display = new Display();
+      Shell shell = new Shell(display);
+      shell.setLayout(new GridLayout(1, false));
+      shell.setText("Show results as a bar chart in Table");
+
+      List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
+      lines.add(XBarGraphLine.getPercentLine("Fix", 34));
+      lines.add(XBarGraphLine.getPercentLine("Improvement", 100));
+      lines.add(new XBarGraphLine("Support", SWT.COLOR_GREEN, SWT.COLOR_YELLOW, SWT.COLOR_RED, SWT.COLOR_YELLOW, 33,
+            "33%", "67%"));
+      List<XBarGraphLineSegment> segments = new ArrayList<XBarGraphLineSegment>();
+      segments.add(XBarGraphLineSegment.getPercentSegment("23%", SWT.COLOR_GREEN, 23));
+      segments.add(XBarGraphLineSegment.getPercentSegment("45%", SWT.COLOR_BLUE, 45));
+      segments.add(XBarGraphLineSegment.getPercentSegment("20%", SWT.COLOR_YELLOW, 20));
+      segments.add(XBarGraphLineSegment.getPercentSegment("12%", SWT.COLOR_MAGENTA, 12));
+      lines.add(new XBarGraphLine("Other", segments));
+      XBarGraphTable table = new XBarGraphTable("By Improvement", "", "Percent", lines);
+      table.createWidgets(shell, 1);
+
+      shell.pack();
+      shell.open();
+      while (!shell.isDisposed()) {
+         if (!display.readAndDispatch()) display.sleep();
+      }
+      display.dispose();
+   }
 }

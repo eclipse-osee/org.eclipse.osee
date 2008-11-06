@@ -52,7 +52,7 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
       return "";
    }
 
-   private VersionArtifact getSearchVersionArtifact() {
+   public VersionArtifact getSearchVersionArtifact() {
       if (versionArt != null) return versionArt;
       return selectedVersionArt;
    }

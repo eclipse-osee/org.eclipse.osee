@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -123,5 +125,16 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    @Override
    public Collection<? extends Artifact> getMetricsArtifacts() {
       return worldComposite.getLoadedArtifacts();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
+    */
+   @Override
+   public VersionArtifact getMetricsVersionArtifact() {
+      if (worldComposite.getLastSearchItem() instanceof VersionTargetedForTeamSearchItem) {
+         return ((VersionTargetedForTeamSearchItem) worldComposite.getLastSearchItem()).getSearchVersionArtifact();
+      }
+      return null;
    }
 }
