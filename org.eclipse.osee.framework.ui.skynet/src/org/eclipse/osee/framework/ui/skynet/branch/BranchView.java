@@ -304,7 +304,9 @@ public class BranchView extends ViewPart implements IActionable {
    @Override
    public void dispose() {
       disposed = true;
-      branchListComposite.disposeComposite();
+      if (branchListComposite != null) {
+         branchListComposite.disposeComposite();
+      }
 
       try {
          getViewPreference().flush();
