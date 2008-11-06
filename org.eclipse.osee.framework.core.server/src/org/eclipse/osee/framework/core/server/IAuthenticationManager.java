@@ -40,6 +40,15 @@ public interface IAuthenticationManager {
    public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException;
 
    /**
+    * Resolves user credentials into an OSEE User Id
+    * 
+    * @param credential
+    * @return OSEE user id
+    * @throws OseeAuthenticationException
+    */
+   public String asOseeUserId(OseeCredential credential) throws OseeAuthenticationException;
+
+   /**
     * Gets an array of available authentication protocols
     * 
     * @return authentication protocols

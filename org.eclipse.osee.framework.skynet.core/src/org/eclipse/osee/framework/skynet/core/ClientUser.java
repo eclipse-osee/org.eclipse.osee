@@ -81,7 +81,7 @@ final class ClientUser {
          ClientSessionManager.authenticate(new BaseCredentialProvider() {
             public OseeCredential getCredential() throws OseeCoreException {
                OseeCredential credential = super.getCredential();
-               credential.setUserId("");
+               credential.setUserName(System.getProperty("user.name"));
                credential.setDomain("");
                credential.setPassword("");
                credential.setAuthenticationProtocol(OseeProperties.getAuthenticationProtocol());

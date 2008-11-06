@@ -18,7 +18,10 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
  */
 public interface IAuthenticationProvider {
 
-   public String getId();
+   public String getProtocol();
 
    public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException;
+
+   public String asOseeUserId(OseeCredential credential) throws OseeAuthenticationException;
+
 }

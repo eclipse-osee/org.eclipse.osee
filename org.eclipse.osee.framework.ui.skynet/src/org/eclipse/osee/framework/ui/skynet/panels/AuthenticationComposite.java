@@ -269,7 +269,7 @@ public class AuthenticationComposite extends Composite {
                      @Override
                      public OseeCredential getCredential() throws OseeCoreException {
                         OseeCredential credential = super.getCredential();
-                        credential.setUserId(dataMap.get(LabelEnum.UserId));
+                        credential.setUserName(dataMap.get(LabelEnum.UserId));
                         credential.setPassword(dataMap.get(LabelEnum.Password));
                         credential.setDomain(dataMap.get(LabelEnum.Domain));
                         credential.setAuthenticationProtocol(dataMap.get(LabelEnum.Protocol));

@@ -126,7 +126,7 @@ public class SkynetDbInit implements IDbInitializationTask {
          @Override
          public OseeCredential getCredential() throws OseeCoreException {
             OseeCredential credential = new OseeCredential();
-            credential.setUserId(SystemUser.BootStrap.getName());
+            credential.setUserName(SystemUser.BootStrap.getName());
             return credential;
          }
 

@@ -30,7 +30,7 @@ public abstract class BaseCredentialProvider implements ICredentialProvider {
    @Override
    public OseeCredential getCredential() throws OseeCoreException {
       OseeCredential credential = new OseeCredential();
-      credential.setUserId("");
+      credential.setUserName("");
       credential.setDomain("");
       credential.setPassword("");
       credential.setAuthenticationProtocol("");

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.server.internal;
 
 import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
 
@@ -31,8 +32,16 @@ public class TrustAllAuthenticationProvider implements IAuthenticationProvider {
     * @see org.eclipse.osee.framework.session.management.IAuthenticationProvider#getId()
     */
    @Override
-   public String getId() {
+   public String getProtocol() {
       return "TrustAll";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.IAuthenticationProvider#asOseeUserId(org.eclipse.osee.framework.core.data.OseeCredential)
+    */
+   @Override
+   public String asOseeUserId(OseeCredential credential) throws OseeAuthenticationException {
+      return SystemUser.Guest.getUserID();
    }
 
 }

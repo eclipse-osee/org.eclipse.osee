@@ -13,7 +13,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
  */
 public class OseeCredential extends OseeClientInfo {
    private static final long serialVersionUID = 4583587251351958961L;
-   private static final String USER_ID = "userId";
+   private static final String USERNAME = "userName";
    private static final String PASSWORD = "password";
    private static final String DOMAIN = "domain";
    private static final String AUTHENTICATION_PROTOCOL = "authenticationProtocol";
@@ -22,8 +22,8 @@ public class OseeCredential extends OseeClientInfo {
       super();
    }
 
-   public void setUserId(String userId) {
-      this.backingData.put(USER_ID, userId);
+   public void setUserName(String userName) {
+      this.backingData.put(USERNAME, userName);
    }
 
    public void setPassword(String password) {
@@ -34,8 +34,8 @@ public class OseeCredential extends OseeClientInfo {
       this.backingData.put(DOMAIN, domain);
    }
 
-   public String getUserId() {
-      return getString(USER_ID);
+   public String getUserName() {
+      return getString(USERNAME);
    }
 
    public String getPassword() {

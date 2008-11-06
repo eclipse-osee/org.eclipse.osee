@@ -65,23 +65,20 @@ public class SessionManager implements ISessionManager {
     */
    @Override
    public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException {
-      String loginId = credential.getUserId();
-      boolean isAuthenticated = UserIdManager.isSafeUser(loginId);
       OseeSessionGrant toReturn = null;
 
-      if (!isAuthenticated) {
-         IAuthenticationManager authenticationManager = CoreServerActivator.getAuthenticationManager();
-         isAuthenticated = authenticationManager.authenticate(credential);
-      }
+      IAuthenticationManager authenticationManager = CoreServerActivator.getAuthenticationManager();
+      boolean isAuthenticated = authenticationManager.authenticate(credential);
 
       if (isAuthenticated) {
          SessionState sessionState = SessionState.CREATED;
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
 
+         String userId = authenticationManager.asOseeUserId(credential);
          OseeSession session =
-               new OseeSession(GUID.generateGuidStr(), UserIdManager.getUserIdFromLoginId(loginId), timestamp,
-                     credential.getClientMachineName(), credential.getClientAddress(), credential.getPort(),
-                     credential.getVersion(), timestamp, sessionState.name().toLowerCase());
+               new OseeSession(GUID.generateGuidStr(), userId, timestamp, credential.getClientMachineName(),
+                     credential.getClientAddress(), credential.getPort(), credential.getVersion(), timestamp,
+                     sessionState.name().toLowerCase());
 
          SessionData sessionData = new SessionData(sessionState, session);
          sessions.put(sessionData.getSessionId(), sessionData);
@@ -125,6 +122,7 @@ public class SessionManager implements ISessionManager {
       sessionGrant.setSqlProperties(SqlKey.getSqlProperties());
       return sessionGrant;
    }
+
    private final class UpdateDataStore extends TimerTask {
       @Override
       public void run() {

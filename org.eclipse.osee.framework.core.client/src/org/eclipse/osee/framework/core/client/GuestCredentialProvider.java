@@ -25,7 +25,7 @@ public class GuestCredentialProvider extends BaseCredentialProvider {
    @Override
    public OseeCredential getCredential() throws OseeCoreException {
       OseeCredential credential = super.getCredential();
-      credential.setUserId(SystemUser.Guest.getName());
+      credential.setUserName(SystemUser.Guest.getName());
       return credential;
    }
 }
