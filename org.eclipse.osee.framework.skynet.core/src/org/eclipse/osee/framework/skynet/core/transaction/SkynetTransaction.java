@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredExcep
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -202,6 +203,9 @@ public final class SkynetTransaction extends DbTransaction {
    public void execute() throws OseeCoreException {
       if (madeChanges) {
          super.execute();
+      } else {
+         OseeDbConnection.reportTxStart(this);
+         OseeDbConnection.reportTxEnd(this);
       }
    }
 
