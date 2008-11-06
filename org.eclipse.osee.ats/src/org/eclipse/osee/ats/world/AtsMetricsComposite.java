@@ -117,11 +117,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       addSpace();
       SMAMetrics sMet =
             new SMAMetrics(iAtsMetricsProvider.getMetricsArtifacts(), iAtsMetricsProvider.getMetricsVersionArtifact());
-      Label label = new Label(metricsComposite, SWT.NONE);
-      label.setText(sMet.toStringLong());
-      adapt(label);
-      addSpace();
-      createFullPercentChart(sMet, metricsComposite);
+      createOverviewChart(sMet, metricsComposite);
       addSpace();
       createCompletedByAssigneesChart(sMet, metricsComposite);
       addSpace();
@@ -145,7 +141,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(label);
    }
 
-   public void createFullPercentChart(SMAMetrics sMet, Composite parent) {
+   public void createOverviewChart(SMAMetrics sMet, Composite parent) {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
 
       List<XBarGraphLineSegment> segments = new ArrayList<XBarGraphLineSegment>();
@@ -181,6 +177,11 @@ public class AtsMetricsComposite extends ScrolledComposite {
             "By Task (" + sMet.getCompletedTaskWorkflows().size() + "/" + sMet.getNumTasks() + ")",
             (int) sMet.getPercentCompleteByTaskWorkflow()));
 
+      lines.add(XBarGraphLine.getTextLine("Estimated Hours: ", String.format("%5.2f", sMet.getEstHours())));
+      lines.add(XBarGraphLine.getTextLine("Remaining Hours: ", String.format("%5.2f", sMet.getHrsRemain())));
+      lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f", sMet.getHrsSpent())));
+      lines.add(XBarGraphLine.getTextLine("Man Days Needed: ", String.format("%5.2f", sMet.getManDaysNeeded())));
+
       if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
          double hoursTillRelease = sMet.getHoursTillRel();
          double hoursRemaining = sMet.getHrsRemain();
@@ -200,7 +201,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
          }
       }
 
-      XBarGraphTable table = new XBarGraphTable("Total Percent Complete", "", "Percent Complete", lines);
+      XBarGraphTable table = new XBarGraphTable("Overview", "", "", lines);
+      table.setHeaderVisible(false);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
@@ -248,8 +250,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
                }
             }
             if (versionHoursRemain == null) {
-               lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain,
-                     String.format("5.2f", userHoursRemain)));
+               lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format("%5.2f",
+                     userHoursRemain)));
             } else {
                lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_RED_FOREGROUND,
                      XBarGraphLine.DEFAULT_RED_BACKGROUND, (int) userHoursRemain, String.format(
@@ -260,7 +262,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
-      XBarGraphTable table = new XBarGraphTable("Completed by Assignee", "User", "Percent Complete", lines);
+      XBarGraphTable table = new XBarGraphTable("Hours Remaining by Assignee", "User", "Hours Remaining", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
