@@ -185,7 +185,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    private StackLayout stackLayout;
 
    public ArtifactExplorer() {
-      UserCache.getUser();
    }
 
    public static void explore(Collection<Artifact> artifacts) {

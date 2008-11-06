@@ -135,12 +135,8 @@ public class BranchView extends ViewPart implements IActionable {
    private TreeViewer branchTable;
    private Text myTextBeingRenamed;
 
-   /**
-    * 
-    */
    public BranchView() {
       super();
-      UserCache.getUser();
       this.preferencesService = Platform.getPreferencesService();
 
       IEclipsePreferences instanceNode =
