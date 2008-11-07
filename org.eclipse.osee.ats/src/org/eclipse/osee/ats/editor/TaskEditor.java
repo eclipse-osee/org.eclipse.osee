@@ -11,11 +11,9 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -27,7 +25,6 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
-import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -54,7 +50,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
    private int taskPageIndex, metricsPageIndex;
    private SMATaskComposite taskComposite;
-   private Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+   private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
    private AtsMetricsComposite metricsComposite;
 
    /*
@@ -76,27 +72,8 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       onDirtied();
    }
 
-   public static void editArtifacts(final TaskEditorInput input, TableLoadOption... tableLoadOptions) {
-      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
-      options.addAll(Arrays.asList(tableLoadOptions));
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         public void run() {
-            IWorkbenchPage page = AWorkbench.getActivePage();
-            try {
-               page.openEditor(input, EDITOR_ID);
-            } catch (PartInitException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
-            }
-         }
-      }, options.contains(TableLoadOption.ForcePend));
-
-   }
-
    public ArrayList<Artifact> getLoadedArtifacts() {
-      return taskComposite.getXTask().getXViewer().getLoadedArtifacts();
+      return taskComposite.getXTask().getTaskXViewer().getLoadedArtifacts();
    }
 
    @Override
@@ -144,15 +121,13 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
       try {
          OseeContributionItem.addTo(this, true);
-
          IEditorInput editorInput = getEditorInput();
-         if (editorInput instanceof TaskEditorInput) {
-            TaskEditorInput aei = (TaskEditorInput) editorInput;
-            tasks = (aei).getTaskArts();
-         } else
+         if (!(editorInput instanceof TaskEditorInput)) {
             throw new IllegalArgumentException("Editor Input not TaskEditorInput");
-
-         setPartName(((TaskEditorInput) editorInput).getName());
+         }
+         TaskEditorInput aei = (TaskEditorInput) editorInput;
+         ITaskEditorProvider provider = aei.getItaskEditorProvider();
+         setPartName(provider.getTaskEditorLabel(SearchType.Search));
 
          // Create Tasks tab
          taskComposite = new SMATaskComposite(this, getContainer(), SWT.NONE);
@@ -164,19 +139,129 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          setPageText(metricsPageIndex, "Metrics");
 
          setActivePage(taskPageIndex);
-      } catch (Exception ex) {
+         loadTable(provider);
+
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void loadTable(ITaskEditorProvider provider) throws OseeCoreException {
+      LoadTableJob job = null;
+      job = new LoadTableJob(provider, SearchType.ReSearch, this);
+      job.setUser(false);
+      job.setPriority(Job.LONG);
+      job.schedule();
+      if (provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)) {
+         try {
+            job.join();
+         } catch (InterruptedException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
       }
    }
 
    @Override
    public void onDirtied() {
       Displays.ensureInDisplayThread(new Runnable() {
-
          public void run() {
             firePropertyChange(PROP_DIRTY);
          }
       });
+   }
+
+   public static void open(final ITaskEditorProvider provider) throws OseeCoreException {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         public void run() {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+               page.openEditor(new TaskEditorInput(provider), EDITOR_ID);
+            } catch (PartInitException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      }, provider.getTableLoadOptions().contains(TableLoadOption.ForcePend));
+   }
+
+   private static class LoadTableJob extends Job {
+
+      private final ITaskEditorProvider itaskEditorProvider;
+      private final TaskEditor taskEditor;
+      private final SearchType searchType;
+
+      public LoadTableJob(ITaskEditorProvider itaskEditorProvider, SearchType searchType, TaskEditor taskEditor) throws OseeCoreException {
+         super("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"...");
+         this.searchType = searchType;
+         this.taskEditor = taskEditor;
+         taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
+         taskEditor.taskComposite.getXTask().setTableTitle(
+               "Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"...", false);
+         this.itaskEditorProvider = itaskEditorProvider;
+      }
+
+      /*
+       * (non-Javadoc)
+       * 
+       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+       */
+      @Override
+      protected IStatus run(IProgressMonitor monitor) {
+         try {
+            final List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
+            for (Artifact artifact : itaskEditorProvider.getTaskEditorTaskArtifacts()) {
+               if (artifact instanceof TaskArtifact) {
+                  taskArts.add((TaskArtifact) artifact);
+               }
+            }
+            taskEditor.tasks.clear();
+            taskEditor.tasks.addAll(taskArts);
+            Displays.ensureInDisplayThread(new Runnable() {
+               /* (non-Javadoc)
+                * @see java.lang.Runnable#run()
+                */
+               @Override
+               public void run() {
+                  try {
+                     taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
+                     if (taskArts.size() == 0) {
+                        taskEditor.taskComposite.getXTask().setTableTitle(
+                              "No Results Found - " + itaskEditorProvider.getTaskEditorLabel(searchType), true);
+                     } else {
+                        taskEditor.taskComposite.getXTask().setTableTitle(
+                              itaskEditorProvider.getTaskEditorLabel(searchType), false);
+                     }
+                     taskEditor.taskComposite.getXTask().loadTable();
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  }
+               }
+            });
+         } catch (final Exception ex) {
+            monitor.done();
+            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks", ex);
+         }
+         monitor.done();
+         return Status.OK_STATUS;
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsArtifacts()
+    */
+   @Override
+   public Collection<? extends Artifact> getMetricsArtifacts() {
+      return tasks;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
+    */
+   @Override
+   public VersionArtifact getMetricsVersionArtifact() {
+      return null;
    }
 
    /*
@@ -240,110 +325,4 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return true;
    }
 
-   public static void open(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
-      options.addAll(Arrays.asList(tableLoadOptions));
-      searchItem.setCancelled(false);
-      Result result = AtsPlugin.areOSEEServicesAvailable();
-      if (result.isFalse()) {
-         result.popup();
-         return;
-      }
-
-      if (searchItem == null) return;
-
-      if (!options.contains(TableLoadOption.NoUI)) searchItem.performUI(SearchType.Search);
-      if (searchItem.isCancelled()) return;
-
-      LoadTableJob job = null;
-      job = new LoadTableJob(searchItem, SearchType.Search, tableLoadOptions);
-      job.setUser(false);
-      job.setPriority(Job.LONG);
-      job.schedule();
-      if (options.contains(TableLoadOption.ForcePend)) {
-         try {
-            job.join();
-         } catch (InterruptedException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
-      }
-   }
-
-   private static class LoadTableJob extends Job {
-
-      private final WorldSearchItem searchItem;
-      private boolean cancel = false;
-      private final SearchType searchType;
-      private final TableLoadOption[] tableLoadOptions;
-
-      public LoadTableJob(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) {
-         super("Loading \"" + searchItem.getSelectedName(searchType) + "\"...");
-         this.searchItem = searchItem;
-         this.searchType = searchType;
-         this.tableLoadOptions = tableLoadOptions;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
-      @Override
-      protected IStatus run(IProgressMonitor monitor) {
-         cancel = false;
-         searchItem.setCancelled(cancel);
-         final Collection<Artifact> artifacts;
-         try {
-            artifacts = searchItem.performSearchGetResults(false, searchType);
-            if (artifacts.size() == 0) {
-               if (searchItem.isCancelled()) {
-                  monitor.done();
-                  return Status.CANCEL_STATUS;
-               } else {
-                  monitor.done();
-                  Displays.ensureInDisplayThread(new Runnable() {
-                     /* (non-Javadoc)
-                      * @see java.lang.Runnable#run()
-                      */
-                     @Override
-                     public void run() {
-                        AWorkbench.popup("ERROR", "No Tasks Found for \"" + searchItem.getName() + "\"");
-                     }
-                  }, true);
-               }
-               return Status.OK_STATUS;
-            }
-            List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
-            for (Artifact artifact : artifacts)
-               if (artifact instanceof TaskArtifact) taskArts.add((TaskArtifact) artifact);
-            TaskEditorInput input =
-                  new TaskEditorInput(
-                        "Tasks for \"" + (searchItem.getSelectedName(searchType) != null ? searchItem.getSelectedName(searchType) : "") + "\"",
-                        taskArts);
-            TaskEditor.editArtifacts(input, tableLoadOptions);
-
-         } catch (final Exception ex) {
-            monitor.done();
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks", ex);
-         }
-         monitor.done();
-         return Status.OK_STATUS;
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsArtifacts()
-    */
-   @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() {
-      return tasks;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
-    */
-   @Override
-   public VersionArtifact getMetricsVersionArtifact() {
-      return null;
-   }
 }

@@ -14,6 +14,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.TaskEditor;
+import org.eclipse.osee.ats.editor.TaskEditorSearchItemProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
@@ -63,8 +64,8 @@ public class AtsNavigateComposite extends XNavigateComposite {
             WorldEditor.open(worldSearchItem, null, tableLoadOptions);
          else if (worldSearchItem.getLoadView() == LoadView.WorldView)
             openWorld(worldSearchItem, tableLoadOptions);
-         else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) TaskEditor.open(worldSearchItem,
-               tableLoadOptions);
+         else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) TaskEditor.open(new TaskEditorSearchItemProvider(
+               worldSearchItem, tableLoadOptions));
       } else
          super.handleDoubleClick(item, tableLoadOptions);
    }

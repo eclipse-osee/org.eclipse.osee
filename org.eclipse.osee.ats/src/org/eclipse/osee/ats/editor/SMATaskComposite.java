@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
-import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
+import org.eclipse.osee.ats.util.widgets.task.TaskComposite;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.swt.layout.GridData;
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 public class SMATaskComposite extends Composite {
 
    private static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
-   private final XTaskViewer xTaskViewer;
+   private final TaskComposite xTaskViewer;
 
    /**
     * @param parent
@@ -36,9 +36,7 @@ public class SMATaskComposite extends Composite {
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xTaskViewer = new XTaskViewer(iXTaskViewer);
-      xTaskViewer.createWidgets(this, 1);
-      // xTask.addXModifiedListener(xModListener);
+      xTaskViewer = new TaskComposite(iXTaskViewer, this, style);
 
       AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID);
 
@@ -65,7 +63,7 @@ public class SMATaskComposite extends Composite {
    /**
     * @return the xTask
     */
-   public XTaskViewer getXTask() {
+   public TaskComposite getXTask() {
       return xTaskViewer;
    }
 

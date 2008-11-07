@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.task;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -52,7 +51,7 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class TaskXViewer extends WorldXViewer {
 
-   private final XTaskViewer xTaskViewer;
+   private final TaskComposite xTaskViewer;
    private final IDirtiableEditor editor;
    private boolean tasksEditable = true;
    private static String viewerId = GUID.generateGuidStr();
@@ -61,7 +60,7 @@ public class TaskXViewer extends WorldXViewer {
     * @param parent
     * @param style
     */
-   public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, XTaskViewer xTaskViewer) {
+   public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, TaskComposite xTaskViewer) {
       super(parent, style, new TaskXViewerFactory());
       this.editor = editor;
       this.xTaskViewer = xTaskViewer;
@@ -125,18 +124,10 @@ public class TaskXViewer extends WorldXViewer {
 
    public TaskArtifact getSelectedTaskArtifact() {
       Collection<TaskArtifact> arts = getSelectedTaskArtifacts();
-      if (arts.size() > 0) return arts.iterator().next();
-      return null;
-   }
-
-   public Collection<TaskArtifact> getSelectedTaskArtifacts() {
-      Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
-      ArrayList<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
-      while (i.hasNext()) {
-         Object obj = i.next();
-         if (obj instanceof TaskArtifact) taskArts.add((TaskArtifact) obj);
+      if (arts.size() > 0) {
+         return arts.iterator().next();
       }
-      return taskArts;
+      return null;
    }
 
    public boolean isSelectedTaskArtifactsAreInWork() {
@@ -148,15 +139,9 @@ public class TaskXViewer extends WorldXViewer {
       return true;
    }
 
-   Action editTaskTitleAction;
-   Action editTaskAssigneesAction;
-   Action editTaskStatusAction;
-   Action editTaskResolutionAction;
-   Action editTaskEstimateAction;
-   Action editTaskRelatedStateAction;
-   Action editTaskNotesAction;
-   Action addNewTaskAction;
-   Action deleteTasksAction;
+   Action editTaskTitleAction, editTaskAssigneesAction, editTaskStatusAction, editTaskResolutionAction,
+         editTaskEstimateAction, editTaskRelatedStateAction, editTaskNotesAction;
+   Action addNewTaskAction, deleteTasksAction;
 
    @Override
    public void createMenuActions() {
@@ -413,7 +398,7 @@ public class TaskXViewer extends WorldXViewer {
             public void run() {
                try {
                   WorldContentProvider contentProvider =
-                        (WorldContentProvider) xTaskViewer.getXViewer().getContentProvider();
+                        (WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider();
                   if (contentProvider != null) {
                      contentProvider.remove(loadedArtifacts.getLoadedArtifacts());
                   }
@@ -432,7 +417,7 @@ public class TaskXViewer extends WorldXViewer {
       try {
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
          // ContentProvider ensures in display thread
-         ((WorldContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+         ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -456,9 +441,9 @@ public class TaskXViewer extends WorldXViewer {
           */
          @Override
          public void run() {
-            if (xTaskViewer.getXViewer().getContentProvider() == null) return;
-            ((WorldContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
-            xTaskViewer.getXViewer().update(transData.cacheChangedArtifacts, null);
+            if (xTaskViewer.getTaskXViewer().getContentProvider() == null) return;
+            ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
+            xTaskViewer.getTaskXViewer().update(transData.cacheChangedArtifacts, null);
 
             try {
                if (xTaskViewer.getIXTaskViewer().getParentSmaMgr() == null) {
@@ -472,7 +457,7 @@ public class TaskXViewer extends WorldXViewer {
                               AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
                               AtsPlugin.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
                   if (artifacts.size() > 0) {
-                     ((WorldContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
+                     ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).add(artifacts);
                   }
 
                   // Remove any tasks related to parent sma
@@ -481,7 +466,7 @@ public class TaskXViewer extends WorldXViewer {
                               AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
                               AtsPlugin.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
                   if (artifacts.size() > 0) {
-                     ((WorldContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
+                     ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).remove(artifacts);
                   }
                }
             } catch (Exception ex) {

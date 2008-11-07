@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -74,7 +73,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -88,19 +86,12 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class XTaskViewer extends XWidget implements IActionable {
+public class TaskComposite extends Composite implements IActionable {
 
-   private TaskXViewer xViewer;
+   private TaskXViewer taskXViewer;
    private MenuItem filterCompletedMenuItem, selectionMetricsMenuItem;
    private final IXTaskViewer iXTaskViewer;
-
-   /**
-    * @return the iXTaskViewer
-    */
-   public IXTaskViewer getIXTaskViewer() {
-      return iXTaskViewer;
-   }
-
+   private final Label warningLabel, searchNameLabel;
    private Label extraInfoLabel;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
 
@@ -108,36 +99,38 @@ public class XTaskViewer extends XWidget implements IActionable {
     * @param label
     * @throws Exception
     */
-   public XTaskViewer(IXTaskViewer iXTaskViewer) throws OseeCoreException {
-      super(iXTaskViewer.getTabName());
+   public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) throws OseeCoreException {
+      super(parent, style);
       this.iXTaskViewer = iXTaskViewer;
-   }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#createWidgets(org.eclipse.swt.widgets.Composite,
-    *      int)
-    */
-   @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+      setLayout(new GridLayout(1, false));
+      setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      Composite mainComp = new Composite(parent, SWT.BORDER);
-      mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-      mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      // Header Composite
+      Composite headerComp = new Composite(this, SWT.NONE);
+      headerComp.setLayout(ALayout.getZeroMarginLayout(3, false));
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      headerComp.setLayoutData(gd);
+
+      warningLabel = new Label(headerComp, SWT.NONE);
+      searchNameLabel = new Label(headerComp, SWT.NONE);
 
       try {
-         createTaskActionBar(mainComp);
+         createTaskActionBar(headerComp);
 
-         xViewer =
-               new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
-         xViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
-         xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+         extraInfoLabel = new Label(headerComp, SWT.NONE);
+         gd = new GridData(GridData.FILL_HORIZONTAL);
+         gd.horizontalSpan = 3;
+         extraInfoLabel.setLayoutData(gd);
 
-         xViewer.setContentProvider(new WorldContentProvider(xViewer));
-         xViewer.setLabelProvider(new WorldLabelProvider(xViewer));
-         xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+         taskXViewer =
+               new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
+         taskXViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
+         taskXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+
+         taskXViewer.setContentProvider(new WorldContentProvider(taskXViewer));
+         taskXViewer.setLabelProvider(new WorldLabelProvider(taskXViewer));
+         taskXViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                try {
                   updateExtraInfoLine();
@@ -146,7 +139,7 @@ public class XTaskViewer extends XWidget implements IActionable {
                }
             }
          });
-         xViewer.getTree().addKeyListener(new KeyListener() {
+         taskXViewer.getTree().addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent event) {
             }
 
@@ -154,7 +147,7 @@ public class XTaskViewer extends XWidget implements IActionable {
                try {
                   if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
                      if (event.keyCode == 'a') {
-                        xViewer.getTree().setSelection(xViewer.getTree().getItems());
+                        taskXViewer.getTree().setSelection(taskXViewer.getTree().getItems());
                         updateExtraInfoLine();
                      } else if (event.keyCode == 'x') {
                         if (selectionMetricsMenuItem != null) {
@@ -174,27 +167,44 @@ public class XTaskViewer extends XWidget implements IActionable {
             }
          });
 
-         if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
-
-         Tree tree = xViewer.getTree();
-         GridData gridData = new GridData(GridData.FILL_BOTH);
-         gridData.heightHint = 100;
-         tree.setLayout(ALayout.getZeroMarginLayout());
+         Tree tree = taskXViewer.getTree();
+         GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
          tree.setLayoutData(gridData);
          tree.setHeaderVisible(true);
          tree.setLinesVisible(true);
-         if (toolkit != null) toolkit.adapt(tree);
+
          setupDragAndDropSupport();
+         parent.layout();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
 
+   public void setTableTitle(final String title, final boolean warning) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (warning)
+               warningLabel.setImage(AtsPlugin.getInstance().getImage("warn.gif"));
+            else
+               warningLabel.setImage(null);
+            searchNameLabel.setText(title);
+            searchNameLabel.getParent().layout();
+         };
+      });
+   }
+
+   /**
+    * @return the iXTaskViewer
+    */
+   public IXTaskViewer getIXTaskViewer() {
+      return iXTaskViewer;
+   }
+
    public void handleFilterAction() {
       if (filterCompletedMenuItem.getSelection()) {
-         xViewer.addFilter(worldCompletedFilter);
+         taskXViewer.addFilter(worldCompletedFilter);
       } else {
-         xViewer.removeFilter(worldCompletedFilter);
+         taskXViewer.removeFilter(worldCompletedFilter);
       }
       updateExtendedStatusString();
    }
@@ -204,30 +214,19 @@ public class XTaskViewer extends XWidget implements IActionable {
       if (filterCompletedMenuItem != null && filterCompletedMenuItem.getSelection()) {
          str += "[Complete/Cancel Filter]";
       }
-      xViewer.setExtendedStatusString(str);
-      xViewer.refresh();
+      taskXViewer.setExtendedStatusString(str);
+      taskXViewer.refresh();
    }
 
-   public void createTaskActionBar(Composite parent) throws IllegalArgumentException, Exception {
+   public void createTaskActionBar(Composite parent) throws OseeCoreException {
 
       // Button composite for state transitions, etc
       Composite bComp = new Composite(parent, SWT.NONE);
       // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
       bComp.setLayout(new GridLayout(2, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      bComp.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false, 1, 1));
 
-      Composite leftComp = new Composite(bComp, SWT.NONE);
-      leftComp.setLayout(new GridLayout());
-      leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
-
-      extraInfoLabel = new Label(leftComp, SWT.NONE);
-      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-      Composite rightComp = new Composite(bComp, SWT.NONE);
-      rightComp.setLayout(new GridLayout());
-      rightComp.setLayoutData(new GridData(GridData.END));
-
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      ToolBar toolBar = new ToolBar(bComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -277,18 +276,18 @@ public class XTaskViewer extends XWidget implements IActionable {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomizeMgr().handleTableCustomization();
+            taskXViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 
       OseeAts.addButtonToEditorToolBar(this, AtsPlugin.getInstance(), toolBar, SMAEditor.EDITOR_ID, "ATS Task Tab");
-      createTaskActionBarPulldown(toolBar, rightComp);
+      createTaskActionBarPulldown(toolBar, bComp);
 
    }
 
    public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection())
-         extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getXViewer().getSelectedSMAArtifacts()));
+         extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts()));
       else
          extraInfoLabel.setText("");
       extraInfoLabel.getParent().layout();
@@ -372,8 +371,8 @@ public class XTaskViewer extends XWidget implements IActionable {
    }
 
    public void loadTable() throws OseeCoreException {
-      getXViewer().set(iXTaskViewer.getTaskArtifacts(""));
-      xViewer.refresh();
+      getTaskXViewer().set(iXTaskViewer.getTaskArtifacts(""));
+      taskXViewer.refresh();
    }
 
    public void handleImportTasksViaList() throws OseeCoreException {
@@ -434,8 +433,8 @@ public class XTaskViewer extends XWidget implements IActionable {
          try {
             taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(ed.getEntry(), false);
             iXTaskViewer.getEditor().onDirtied();
-            xViewer.add(taskArt);
-            xViewer.getTree().setFocus();
+            taskXViewer.add(taskArt);
+            taskXViewer.getTree().setFocus();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
@@ -444,7 +443,7 @@ public class XTaskViewer extends XWidget implements IActionable {
    }
 
    public ArrayList<TaskArtifact> getSelectedTaskArtifactItems() {
-      Iterator<?> i = ((IStructuredSelection) xViewer.getSelection()).iterator();
+      Iterator<?> i = ((IStructuredSelection) taskXViewer.getSelection()).iterator();
       ArrayList<TaskArtifact> items = new ArrayList<TaskArtifact>();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -453,43 +452,8 @@ public class XTaskViewer extends XWidget implements IActionable {
       return items;
    }
 
-   @Override
-   public Control getControl() {
-      return xViewer.getTree();
-   }
-
-   @Override
-   public void dispose() {
-      xViewer.dispose();
-   }
-
-   @Override
-   public void setFocus() {
-      xViewer.getTree().setFocus();
-   }
-
-   @Override
-   public void refresh() {
-      xViewer.refresh();
-   }
-
-   @Override
-   public Result isValid() {
-      return Result.TrueResult;
-   }
-
-   @Override
-   public void setXmlData(String str) {
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
    public String toHTML(String labelFont) {
-      if (getXViewer().getTree().getItemCount() == 0) return "";
+      if (getTaskXViewer().getTree().getItemCount() == 0) return "";
       StringBuffer html = new StringBuffer();
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
@@ -513,16 +477,11 @@ public class XTaskViewer extends XWidget implements IActionable {
       return html.toString();
    }
 
-   @Override
-   public String getReportData() {
-      return null;
-   }
-
    /**
     * @return Returns the xViewer.
     */
-   public TaskXViewer getXViewer() {
-      return xViewer;
+   public TaskXViewer getTaskXViewer() {
+      return taskXViewer;
    }
 
    /*
@@ -532,11 +491,11 @@ public class XTaskViewer extends XWidget implements IActionable {
     */
    @Override
    public Object getData() {
-      return xViewer.getInput();
+      return taskXViewer.getInput();
    }
 
    private void setupDragAndDropSupport() {
-      DragSource source = new DragSource(xViewer.getTree(), DND.DROP_COPY);
+      DragSource source = new DragSource(taskXViewer.getTree(), DND.DROP_COPY);
       source.setTransfer(new Transfer[] {ArtifactTransfer.getInstance()});
       source.addDragListener(new DragSourceListener() {
 
@@ -544,7 +503,7 @@ public class XTaskViewer extends XWidget implements IActionable {
          }
 
          public void dragSetData(DragSourceEvent event) {
-            Collection<TaskArtifact> arts = xViewer.getSelectedTaskArtifacts();
+            Collection<TaskArtifact> arts = taskXViewer.getSelectedTaskArtifacts();
             if (arts.size() > 0) {
                event.data = new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", SMAEditor.EDITOR_ID);
             }
@@ -554,7 +513,7 @@ public class XTaskViewer extends XWidget implements IActionable {
          }
       });
 
-      DropTarget target = new DropTarget(xViewer.getTree(), DND.DROP_COPY);
+      DropTarget target = new DropTarget(taskXViewer.getTree(), DND.DROP_COPY);
       target.setTransfer(new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(),
             ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {

@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
-import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
+import org.eclipse.osee.ats.util.widgets.task.TaskComposite;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -91,7 +91,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private final boolean isEditable, isCurrentState, isGlobalEditable;
    private ServicesArea servicesArea;
    private final XFormToolkit toolkit;
-   private XTaskViewer xTask;
+   private TaskComposite xTask;
    public static String TRANSITION_TO_STATE_COMBO = "Transition To State Combo";
    private Composite mainComp;
    private DynamicXWidgetLayout dynamicXWidgetLayout;
@@ -713,7 +713,7 @@ public class SMAWorkFlowSection extends SectionPart {
    /**
     * @return Returns the xTask.
     */
-   public XTaskViewer getXTask() {
+   public TaskComposite getXTask() {
       return xTask;
    }
 

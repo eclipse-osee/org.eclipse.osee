@@ -13,26 +13,21 @@ package org.eclipse.osee.ats.operation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.ITaskEditorProvider;
 import org.eclipse.osee.ats.editor.TaskEditor;
-import org.eclipse.osee.ats.editor.TaskEditorInput;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
+import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -48,6 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -96,10 +92,7 @@ public class EditTasks extends AbstractBlam {
                   return;
                }
 
-               TaskSearchJob taskSearchJob = new TaskSearchJob(sb.toString(), teamDef, user, verArt, includeCompleted);
-               taskSearchJob.setUser(true);
-               taskSearchJob.setPriority(Job.LONG);
-               taskSearchJob.schedule();
+               TaskEditor.open(new EditTasksProvider(sb.toString(), teamDef, user, verArt, includeCompleted));
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -109,7 +102,7 @@ public class EditTasks extends AbstractBlam {
       monitor.done();
    }
 
-   private class TaskSearchJob extends Job {
+   public class EditTasksProvider implements ITaskEditorProvider {
 
       private final String title;
       private final TeamDefinitionArtifact teamDef;
@@ -117,11 +110,7 @@ public class EditTasks extends AbstractBlam {
       private final VersionArtifact verArt;
       private final boolean includeCompleted;
 
-      /**
-       * @param name
-       */
-      public TaskSearchJob(String title, TeamDefinitionArtifact teamDef, User user, VersionArtifact verArt, boolean includeCompleted) {
-         super(title);
+      public EditTasksProvider(String title, TeamDefinitionArtifact teamDef, User user, VersionArtifact verArt, boolean includeCompleted) {
          this.title = title;
          this.teamDef = teamDef;
          this.user = user;
@@ -130,66 +119,64 @@ public class EditTasks extends AbstractBlam {
       }
 
       /* (non-Javadoc)
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+       * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTableLoadOptions()
        */
       @Override
-      protected IStatus run(IProgressMonitor monitor) {
-         try {
-            Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-            List<Artifact> workflows = new ArrayList<Artifact>();
+      public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException {
+         return Collections.emptyList();
+      }
 
-            if (verArt != null) {
-               workflows.addAll(verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
-            } else if (teamDef != null && teamDef.getTeamDefinitionHoldingVersions() != null) {
-               for (VersionArtifact versionArt : teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts()) {
-                  workflows.addAll(versionArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
-               }
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorLabel(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
+       */
+      @Override
+      public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
+         return title;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorTaskArtifacts()
+       */
+      @Override
+      public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
+         Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+         List<Artifact> workflows = new ArrayList<Artifact>();
+
+         if (verArt != null) {
+            workflows.addAll(verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
+         } else if (teamDef != null && teamDef.getTeamDefinitionHoldingVersions() != null) {
+            for (VersionArtifact versionArt : teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts()) {
+               workflows.addAll(versionArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
             }
+         }
 
-            List<Artifact> teamDefWorkflows = new ArrayList<Artifact>();
-            for (Artifact workflow : workflows) {
-               if (teamDef.equals((((TeamWorkFlowArtifact) workflow).getTeamDefinition()))) {
-                  teamDefWorkflows.add(workflow);
-               }
+         List<Artifact> teamDefWorkflows = new ArrayList<Artifact>();
+         for (Artifact workflow : workflows) {
+            if (teamDef.equals((((TeamWorkFlowArtifact) workflow).getTeamDefinition()))) {
+               teamDefWorkflows.add(workflow);
             }
+         }
 
-            // Bulk load tasks related to workflows
-            Collection<Artifact> artifacts =
-                  RelationManager.getRelatedArtifacts(teamDefWorkflows, 1, AtsRelation.SmaToTask_Task);
+         // Bulk load tasks related to workflows
+         Collection<Artifact> artifacts =
+               RelationManager.getRelatedArtifacts(teamDefWorkflows, 1, AtsRelation.SmaToTask_Task);
 
-            // Apply the remaining criteria
-            for (Artifact art : artifacts) {
-               TaskArtifact taskArt = (TaskArtifact) art;
-               // If include completed and canceled and task is such, check implementer list
-               if (includeCompleted && taskArt.getSmaMgr().isCompleted() && taskArt.getImplementers().contains(user)) {
-                  tasks.add(taskArt);
-               }
-               // If user is selected and not user is assigned, skip this task
-               if (user != null && !taskArt.getSmaMgr().getStateMgr().getAssignees().contains(user)) {
-                  continue;
-               }
-
+         // Apply the remaining criteria
+         for (Artifact art : artifacts) {
+            TaskArtifact taskArt = (TaskArtifact) art;
+            // If include completed and canceled and task is such, check implementer list
+            if (includeCompleted && taskArt.getSmaMgr().isCompleted() && taskArt.getImplementers().contains(user)) {
                tasks.add(taskArt);
             }
-
-            // notify user if no tasks were found instead of kicking off empty task editor
-            if (tasks.size() == 0) {
-               return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "No Tasks Match Search Criteria", null);
+            // If user is selected and not user is assigned, skip this task
+            if (user != null && !taskArt.getSmaMgr().getStateMgr().getAssignees().contains(user)) {
+               continue;
             }
 
-            // kickoff task editor
-            TeamWorkFlowArtifact team = tasks.iterator().next().getParentTeamWorkflow();
-            SMAManager teamSmaMgr = new SMAManager(team);
-            List<TaskResOptionDefinition> resOptions =
-                  TaskResolutionOptionRule.getTaskResolutionOptions(teamSmaMgr.getWorkPageDefinitionByName(DefaultTeamState.Implement.name()));
-            TaskEditorInput input = new TaskEditorInput(title, tasks, resOptions);
-            TaskEditor.editArtifacts(input);
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         } finally {
-            monitor.done();
+            tasks.add(taskArt);
          }
-         return Status.OK_STATUS;
+
+         return tasks;
       }
 
    }

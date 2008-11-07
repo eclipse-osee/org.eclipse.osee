@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -23,39 +23,22 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class TaskEditorInput implements IEditorInput {
 
-   private final Collection<TaskArtifact> taskArts;
-   private final String name;
+   ITaskEditorProvider itaskEditorProvider;
 
    /**
-    * @param artifact
+    * @return the itaskEditorProvider
     */
-   public TaskEditorInput(String name, Collection<TaskArtifact> taskArts, List<TaskResOptionDefinition> resOptions) {
-      this.name = name;
-      this.taskArts = taskArts;
+   public ITaskEditorProvider getItaskEditorProvider() {
+      return itaskEditorProvider;
    }
 
-   public TaskEditorInput(String name, Collection<TaskArtifact> taskArts) {
-      this.name = name;
-      this.taskArts = taskArts;
+   public TaskEditorInput(ITaskEditorProvider itaskEditorProvider) {
+      this.itaskEditorProvider = itaskEditorProvider;
    }
 
    @Override
    public boolean equals(Object obj) {
       return false;
-   }
-
-   /**
-    * @return the taskArts
-    */
-   public Collection<TaskArtifact> getTaskArts() {
-      return taskArts;
-   }
-
-   /**
-    * @return the name
-    */
-   public String getName() {
-      return name;
    }
 
    /* (non-Javadoc)
@@ -94,4 +77,16 @@ public class TaskEditorInput implements IEditorInput {
       return null;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.IEditorInput#getName()
+    */
+   @Override
+   public String getName() {
+      try {
+         return itaskEditorProvider.getTaskEditorLabel(null);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return "Exception getting name: " + ex.getLocalizedMessage();
+      }
+   }
 }

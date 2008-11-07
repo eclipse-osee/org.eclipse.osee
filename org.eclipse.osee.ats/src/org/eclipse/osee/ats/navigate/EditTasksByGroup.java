@@ -11,12 +11,15 @@
 
 package org.eclipse.osee.ats.navigate;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.editor.ITaskEditorProvider;
 import org.eclipse.osee.ats.editor.TaskEditor;
-import org.eclipse.osee.ats.editor.TaskEditorInput;
+import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -48,8 +51,41 @@ public class EditTasksByGroup extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       GroupListDialog dialog = new GroupListDialog(Display.getCurrent().getActiveShell());
       if (dialog.open() == 0) {
-         Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
          Artifact selectedGroup = (Artifact) dialog.getResult()[0];
+         TaskEditor.open(new TasksByGroupProvider(selectedGroup));
+      }
+   }
+
+   public class TasksByGroupProvider implements ITaskEditorProvider {
+
+      private final Artifact selectedGroup;
+
+      public TasksByGroupProvider(Artifact selectedGroup) {
+         this.selectedGroup = selectedGroup;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTableLoadOptions()
+       */
+      @Override
+      public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException {
+         return Collections.emptyList();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorLabel(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
+       */
+      @Override
+      public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
+         return "Tasks from group \"" + selectedGroup + "\"";
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorTaskArtifacts()
+       */
+      @Override
+      public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
+         Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
          for (Artifact art : selectedGroup.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
             if (art instanceof TaskArtifact) {
                taskArts.add((TaskArtifact) art);
@@ -58,10 +94,10 @@ public class EditTasksByGroup extends XNavigateItemAction {
             }
          }
          if (taskArts.size() == 0) {
-            AWorkbench.popup("ERROR", "No tasks associated with selected workflows.");
-            return;
+            AWorkbench.popup("ERROR", "No tasks associated with selected groups.");
          }
-         TaskEditor.editArtifacts(new TaskEditorInput("Tasks from selected workflows.", taskArts));
+         return taskArts;
       }
+
    }
 }

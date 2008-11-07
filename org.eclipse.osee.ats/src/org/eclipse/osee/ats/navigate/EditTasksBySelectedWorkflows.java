@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.TaskEditor;
-import org.eclipse.osee.ats.editor.TaskEditorInput;
+import org.eclipse.osee.ats.editor.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -71,6 +71,7 @@ public class EditTasksBySelectedWorkflows extends XNavigateItemAction {
          AWorkbench.popup("ERROR", "No tasks associated with selected workflows.");
          return;
       }
-      TaskEditor.editArtifacts(new TaskEditorInput("Tasks from selected workflows.", taskArts));
+      TaskEditor.open(new TaskEditorSimpleProvider("Tasks from selected workflows.", taskArts));
    }
+
 }

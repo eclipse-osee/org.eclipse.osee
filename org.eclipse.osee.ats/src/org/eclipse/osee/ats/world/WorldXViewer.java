@@ -37,10 +37,13 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
 import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.TaskEditor;
+import org.eclipse.osee.ats.editor.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.Favorites;
@@ -169,19 +172,13 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       OseeEventManager.addListener(this);
    }
 
-   Action editStatusAction;
-   Action editNotesAction;
-   Action editEstimateAction;
-   Action editChangeTypeAction;
-   Action editPriorityAction;
-   Action editTargetVersionAction;
-   Action editAssigneeAction;
-   Action editActionableItemsAction;
+   Action editStatusAction, editNotesAction, editEstimateAction, editChangeTypeAction, editPriorityAction,
+         editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
    Action convertActionableItemsAction;
-   Action openInAtsEditorAction, openInMassEditorAction, openSelectedInNewEditorAction;
+   Action openInArtifactEditorAction, openInAtsWorkflowEditorAction, openInMassEditorAction,
+         openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    Action favoritesAction;
    Action subscribedAction;
-   Action openInArtifactEditorAction;
    Action deletePurgeAtsObjectAction;
    Action emailAction;
    Action resetActionArtifactAction;
@@ -316,13 +313,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          }
       };
 
-      openInAtsEditorAction = new Action("Open in ATS Editor", Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            AtsLib.openAtsAction(getSelectedArtifactItems().iterator().next(), AtsOpenOption.OpenOneOrPopupSelect);
-         }
-      };
-
       openInMassEditorAction = new Action("Open in Mass Editor", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
@@ -334,7 +324,14 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          }
       };
 
-      openSelectedInNewEditorAction = new Action("Open Selected in New Editor", Action.AS_PUSH_BUTTON) {
+      openInAtsWorkflowEditorAction = new Action("Open in ATS Workflow Editor", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            AtsLib.openAtsAction(getSelectedArtifactItems().iterator().next(), AtsOpenOption.OpenOneOrPopupSelect);
+         }
+      };
+
+      openInAtsWorldEditorAction = new Action("Open in ATS World Editor", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             if (getSelectedArtifacts().size() == 0) {
@@ -351,6 +348,22 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                } catch (PartInitException ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                }
+            }
+         }
+      };
+
+      openInAtsTaskEditorAction = new Action("Open in ATS Task Editor", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            if (getSelectedTaskArtifacts().size() == 0) {
+               AWorkbench.popup("Error", "No items selected");
+               return;
+            }
+            try {
+               TaskEditor.open(new TaskEditorSimpleProvider(
+                     "ATS Tasks - " + getSelectedArtifacts().size() + " Selected", getSelectedTaskArtifacts()));
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };
@@ -560,12 +573,14 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
       // OPEN MENU BLOCK
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
-      mm.insertBefore(MENU_GROUP_PRE, openInAtsEditorAction);
-      openInAtsEditorAction.setEnabled(getSelectedArtifacts() != null);
+      mm.insertBefore(MENU_GROUP_PRE, openInAtsWorkflowEditorAction);
+      openInAtsWorkflowEditorAction.setEnabled(getSelectedArtifacts() != null);
       mm.insertBefore(MENU_GROUP_PRE, openInMassEditorAction);
       openInMassEditorAction.setEnabled(getSelectedArtifacts() != null);
-      mm.insertBefore(MENU_GROUP_PRE, openSelectedInNewEditorAction);
-      openSelectedInNewEditorAction.setEnabled(getSelectedArtifacts() != null);
+      mm.insertBefore(MENU_GROUP_PRE, openInAtsWorldEditorAction);
+      openInAtsWorldEditorAction.setEnabled(getSelectedArtifacts() != null);
+      mm.insertBefore(MENU_GROUP_PRE, openInAtsTaskEditorAction);
+      openInAtsTaskEditorAction.setEnabled(getSelectedTaskArtifacts() != null);
       if (AtsPlugin.isAtsAdmin()) {
          mm.insertBefore(MENU_GROUP_PRE, openInArtifactEditorAction);
          openInArtifactEditorAction.setEnabled(getSelectedArtifacts() != null);
@@ -641,6 +656,19 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) for (TreeItem item : items)
          arts.add((Artifact) item.getData());
+      return arts;
+   }
+
+   public ArrayList<TaskArtifact> getSelectedTaskArtifacts() {
+      ArrayList<TaskArtifact> arts = new ArrayList<TaskArtifact>();
+      TreeItem items[] = getTree().getSelection();
+      if (items.length > 0) {
+         for (TreeItem item : items) {
+            if (item.getData() instanceof TaskArtifact) {
+               arts.add((TaskArtifact) item.getData());
+            }
+         }
+      }
       return arts;
    }
 
