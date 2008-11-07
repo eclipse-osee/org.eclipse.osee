@@ -3,6 +3,7 @@ package org.eclipse.osee.framework.db.connection;
 import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.db.connection.internal.parser.DbConfigParser;
@@ -15,12 +16,20 @@ public class DatabaseInfoManager {
    private DatabaseInfoManager() {
    }
 
-   public static IDatabaseInfo getDefault() {
-      return InternalActivator.getConnectionInfos().getSelectedDatabaseInfo();
+   public static IDatabaseInfo getDefault() throws OseeDataStoreException {
+      try {
+         return InternalActivator.getConnectionInfos().getSelectedDatabaseInfo();
+      } catch (InterruptedException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
-   public static IDatabaseInfo getDataStoreById(String id) {
-      return InternalActivator.getConnectionInfos().getDatabaseInfo(id);
+   public static IDatabaseInfo getDataStoreById(String id) throws OseeDataStoreException {
+      try {
+         return InternalActivator.getConnectionInfos().getDatabaseInfo(id);
+      } catch (InterruptedException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
    public static IDatabaseInfo[] readFromXml(InputStream inputStream) throws OseeCoreException {

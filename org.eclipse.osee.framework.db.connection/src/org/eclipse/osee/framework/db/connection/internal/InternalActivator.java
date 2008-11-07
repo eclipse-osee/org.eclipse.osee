@@ -21,34 +21,24 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class InternalActivator implements BundleActivator {
 
+   private static final long TIMEOUT = 20000;
+
    private static InternalActivator instance = null;
 
    private ServiceTracker applicationDbManagerTracker;
    private ServiceTracker dbConnectionProviderTracker;
    private ServiceTracker dbConnectionInfoTracker;
 
-   public static IDbConnectionFactory getConnectionFactory() {
-      try {
-         return (IDbConnectionFactory) instance.dbConnectionProviderTracker.waitForService(20000);
-      } catch (InterruptedException ex) {
-         return null;
-      }
+   public static IDbConnectionFactory getConnectionFactory() throws InterruptedException {
+      return (IDbConnectionFactory) instance.dbConnectionProviderTracker.waitForService(TIMEOUT);
    }
 
-   public static IDbConnectionInformation getConnectionInfos() {
-      try {
-         return (IDbConnectionInformation) instance.dbConnectionInfoTracker.waitForService(20000);
-      } catch (InterruptedException ex) {
-         return null;
-      }
+   public static IDbConnectionInformation getConnectionInfos() throws InterruptedException {
+      return (IDbConnectionInformation) instance.dbConnectionInfoTracker.waitForService(TIMEOUT);
    }
 
-   public static IApplicationDatabaseManager getApplicationDatabaseManager() {
-      try {
-         return (IApplicationDatabaseManager) instance.applicationDbManagerTracker.waitForService(20000);
-      } catch (InterruptedException ex) {
-         return null;
-      }
+   public static IApplicationDatabaseManager getApplicationDatabaseManager() throws InterruptedException {
+      return (IApplicationDatabaseManager) instance.applicationDbManagerTracker.waitForService(TIMEOUT);
    }
 
    public static IApplicationDatabaseInfoProvider getApplicationDatabaseProvider() throws OseeCoreException, InterruptedException {
