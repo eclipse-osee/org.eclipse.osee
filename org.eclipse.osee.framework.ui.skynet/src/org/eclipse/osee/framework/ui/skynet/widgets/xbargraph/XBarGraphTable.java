@@ -36,6 +36,8 @@ public class XBarGraphTable extends XWidget {
    private final String percentHeader;
    private Table table;
    private final List<XBarGraphLine> lines;
+   private boolean isHeaderVisible = true;
+   private boolean isLinesVisible = true;
 
    public XBarGraphTable(String label, String itemHeader, String percentHeader, List<XBarGraphLine> lines) {
       super(label);
@@ -53,8 +55,8 @@ public class XBarGraphTable extends XWidget {
       labelWidget.setText(label + ": ");
 
       table = new Table(parent, SWT.BORDER);
-      table.setHeaderVisible(true);
-      table.setLinesVisible(true);
+      table.setHeaderVisible(isHeaderVisible);
+      table.setLinesVisible(isLinesVisible);
       if (isFillHorizontally()) {
          table.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       }
@@ -87,7 +89,7 @@ public class XBarGraphTable extends XWidget {
                   Color background = gc.getBackground();
                   gc.setForeground(Display.getCurrent().getSystemColor(seg.foreground));
                   gc.setBackground(Display.getCurrent().getSystemColor(seg.background));
-                  int width = (column2.getWidth()) * seg.value / 100;
+                  int width = (column2.getWidth()) * (int) seg.value / 100;
                   gc.fillGradientRectangle(event.x + cummulativeWidth, event.y, width, event.height, true);
                   Rectangle rect2 = new Rectangle(event.x + cummulativeWidth, event.y, width - 1, event.height - 1);
                   gc.drawRectangle(rect2);
@@ -208,5 +210,33 @@ public class XBarGraphTable extends XWidget {
          if (!display.readAndDispatch()) display.sleep();
       }
       display.dispose();
+   }
+
+   /**
+    * @return the isHeaderVisible
+    */
+   public boolean isHeaderVisible() {
+      return isHeaderVisible;
+   }
+
+   /**
+    * @param isHeaderVisible the isHeaderVisible to set
+    */
+   public void setHeaderVisible(boolean isHeaderVisible) {
+      this.isHeaderVisible = isHeaderVisible;
+   }
+
+   /**
+    * @return the isLinesVisible
+    */
+   public boolean isLinesVisible() {
+      return isLinesVisible;
+   }
+
+   /**
+    * @param isLinesVisible the isLinesVisible to set
+    */
+   public void setLinesVisible(boolean isLinesVisible) {
+      this.isLinesVisible = isLinesVisible;
    }
 }

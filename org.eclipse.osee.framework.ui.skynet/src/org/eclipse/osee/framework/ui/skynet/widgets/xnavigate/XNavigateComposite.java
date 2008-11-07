@@ -87,8 +87,8 @@ public class XNavigateComposite extends Composite {
       filteredTree.getViewer().getTree().setLayoutData(gd);
       filteredTree.getViewer().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
          public void handleEvent(Event event) {
-            if (event.button == 1) try {
-               handleDoubleClick();
+            try {
+               if (event.button == 1) handleDoubleClick();
             } catch (OseeCoreException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
@@ -99,10 +99,12 @@ public class XNavigateComposite extends Composite {
          }
 
          public void keyReleased(KeyEvent e) {
-            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) try {
-               handleDoubleClick();
-            } catch (OseeCoreException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+               try {
+                  handleDoubleClick();
+               } catch (OseeCoreException ex) {
+                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               }
             }
          }
       });
@@ -193,7 +195,7 @@ public class XNavigateComposite extends Composite {
       handleDoubleClick(item);
    }
 
-   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException{
+   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
       disposeTooltip();
 
       if (item.getChildren().size() > 0) {

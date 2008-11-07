@@ -18,28 +18,28 @@ public class XBarGraphLineSegment {
    String name;
    int foreground;
    int background;
-   int value;
+   long value;
 
-   public XBarGraphLineSegment(String name, int value) {
+   public XBarGraphLineSegment(String name, long value) {
       this(name, DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value);
    }
 
-   public XBarGraphLineSegment(String name, int color, int value) {
+   public XBarGraphLineSegment(String name, int color, long value) {
       this(name, color, color, value);
    }
 
-   public XBarGraphLineSegment(String name, int foreground, int background, int value) {
+   public XBarGraphLineSegment(String name, int foreground, int background, long value) {
       this.name = name;
       this.foreground = foreground;
       this.background = background;
       this.value = value;
    }
 
-   public static XBarGraphLineSegment getPercentSegment(String name, int value) {
+   public static XBarGraphLineSegment getPercentSegment(String name, long value) {
       return new XBarGraphLineSegment(value + "%", DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value);
    }
 
-   public static XBarGraphLineSegment getPercentSegment(String name, int color, int value) {
+   public static XBarGraphLineSegment getPercentSegment(String name, int color, long value) {
       return new XBarGraphLineSegment(value + "%", color, color, value);
    }
 

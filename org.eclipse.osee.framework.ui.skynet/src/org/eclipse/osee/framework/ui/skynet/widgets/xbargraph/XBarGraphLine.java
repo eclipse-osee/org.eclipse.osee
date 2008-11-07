@@ -33,11 +33,11 @@ public class XBarGraphLine {
       this.segments = segments;
    }
 
-   public XBarGraphLine(String name, int foreground, int background, int value) {
+   public XBarGraphLine(String name, int foreground, int background, long value) {
       this(name, foreground, background, value, String.valueOf(value));
    }
 
-   public XBarGraphLine(String name, int foreground, int background, int value, String valueStr) {
+   public XBarGraphLine(String name, int foreground, int background, long value, String valueStr) {
       this.name = name;
       segments.add(new XBarGraphLineSegment(valueStr, foreground, background, value));
    }
@@ -54,6 +54,10 @@ public class XBarGraphLine {
 
    public static XBarGraphLine getPercentLine(String name, int value) {
       return new XBarGraphLine(name, DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value, value + "%");
+   }
+
+   public static XBarGraphLine getTextLine(String name, String value) {
+      return new XBarGraphLine(name, SWT.COLOR_WHITE, SWT.COLOR_WHITE, 0, value);
    }
 
 }
