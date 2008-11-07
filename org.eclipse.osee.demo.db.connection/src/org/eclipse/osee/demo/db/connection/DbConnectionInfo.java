@@ -8,12 +8,12 @@ package org.eclipse.osee.demo.db.connection;
 import java.net.URL;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
-import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer;
+import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
 
 /**
  * @author Andrew M Finkbeiner
  */
-public class DbConnectionInfo implements IDbConnectionInformationContributer {
+public class DbConnectionInfo implements IDbConnectionInformationContributor {
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer#getDbInformation()
