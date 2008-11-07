@@ -48,4 +48,17 @@ public interface IXTaskViewer {
 
    public String toString();
 
+   /**
+    * Returning true will allow implementer class to handle the refresh button press which whill result in
+    * handlRefreshAction() being called
+    * 
+    * @return if implementer will handle refresh calls
+    */
+   public boolean isRefreshActionHandled() throws OseeCoreException;
+
+   /**
+    * Called if isRefreshActionHandled() returns true
+    */
+   public void handleRefreshAction() throws OseeCoreException;
+
 }

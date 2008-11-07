@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 public class SMATaskComposite extends Composite {
 
    private static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
-   private final TaskComposite xTaskViewer;
+   private final TaskComposite taskComposite;
 
    /**
     * @param parent
@@ -37,35 +37,35 @@ public class SMATaskComposite extends Composite {
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xTaskViewer = new TaskComposite(iXTaskViewer, this, style);
+      taskComposite = new TaskComposite(iXTaskViewer, this, style);
 
       AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID);
 
-      xTaskViewer.loadTable();
+      taskComposite.loadTable();
    }
 
    @Override
    public String toString() {
       try {
-         return "SMATaskComposite for SMA \"" + xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma() + "\"";
+         return "SMATaskComposite for SMA \"" + taskComposite.getIXTaskViewer().getParentSmaMgr().getSma() + "\"";
       } catch (Exception ex) {
          return "SMATaskComposite " + ex.getLocalizedMessage();
       }
    }
 
    public void disposeTaskComposite() {
-      xTaskViewer.dispose();
+      taskComposite.dispose();
    }
 
    public String getHtml() {
-      return xTaskViewer.toHTML(AHTML.LABEL_FONT);
+      return taskComposite.toHTML(AHTML.LABEL_FONT);
    }
 
    /**
     * @return the xTask
     */
-   public TaskComposite getXTask() {
-      return xTaskViewer;
+   public TaskComposite getTaskComposite() {
+      return taskComposite;
    }
 
 }

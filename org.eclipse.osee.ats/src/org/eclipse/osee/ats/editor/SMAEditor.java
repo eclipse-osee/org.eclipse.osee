@@ -767,4 +767,19 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    public VersionArtifact getMetricsVersionArtifact() {
       return null;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#handleRefreshAction()
+    */
+   @Override
+   public void handleRefreshAction() throws OseeCoreException {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isRefreshActionHandled()
+    */
+   @Override
+   public boolean isRefreshActionHandled() throws OseeCoreException {
+      return false;
+   }
 }

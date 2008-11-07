@@ -270,7 +270,11 @@ public class TaskComposite extends Composite implements IActionable {
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
-               loadTable();
+               if (iXTaskViewer.isRefreshActionHandled()) {
+                  iXTaskViewer.handleRefreshAction();
+               } else {
+                  loadTable();
+               }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }

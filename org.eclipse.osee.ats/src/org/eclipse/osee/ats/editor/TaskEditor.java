@@ -73,7 +73,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {
-      return taskComposite.getXTask().getTaskXViewer().getLoadedArtifacts();
+      return taskComposite.getTaskComposite().getTaskXViewer().getLoadedArtifacts();
    }
 
    @Override
@@ -125,9 +125,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          if (!(editorInput instanceof TaskEditorInput)) {
             throw new IllegalArgumentException("Editor Input not TaskEditorInput");
          }
-         TaskEditorInput aei = (TaskEditorInput) editorInput;
-         ITaskEditorProvider provider = aei.getItaskEditorProvider();
-         setPartName(provider.getTaskEditorLabel(SearchType.Search));
 
          // Create Tasks tab
          taskComposite = new SMATaskComposite(this, getContainer(), SWT.NONE);
@@ -139,14 +136,18 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          setPageText(metricsPageIndex, "Metrics");
 
          setActivePage(taskPageIndex);
-         loadTable(provider);
+         loadTable();
 
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   private void loadTable(ITaskEditorProvider provider) throws OseeCoreException {
+   private void loadTable() throws OseeCoreException {
+      TaskEditorInput aei = (TaskEditorInput) getEditorInput();
+      ITaskEditorProvider provider = aei.getItaskEditorProvider();
+      setPartName(provider.getTaskEditorLabel(SearchType.Search));
+
       LoadTableJob job = null;
       job = new LoadTableJob(provider, SearchType.ReSearch, this);
       job.setUser(false);
@@ -197,7 +198,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          this.searchType = searchType;
          this.taskEditor = taskEditor;
          taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
-         taskEditor.taskComposite.getXTask().setTableTitle(
+         taskEditor.taskComposite.getTaskComposite().setTableTitle(
                "Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"...", false);
          this.itaskEditorProvider = itaskEditorProvider;
       }
@@ -227,13 +228,13 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                   try {
                      taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
                      if (taskArts.size() == 0) {
-                        taskEditor.taskComposite.getXTask().setTableTitle(
+                        taskEditor.taskComposite.getTaskComposite().setTableTitle(
                               "No Results Found - " + itaskEditorProvider.getTaskEditorLabel(searchType), true);
                      } else {
-                        taskEditor.taskComposite.getXTask().setTableTitle(
+                        taskEditor.taskComposite.getTaskComposite().setTableTitle(
                               itaskEditorProvider.getTaskEditorLabel(searchType), false);
                      }
-                     taskEditor.taskComposite.getXTask().loadTable();
+                     taskEditor.taskComposite.getTaskComposite().loadTable();
                   } catch (OseeCoreException ex) {
                      OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                   }
@@ -323,6 +324,22 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     */
    public boolean isTasksEditable() throws OseeCoreException {
       return true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isRefreshHandled()
+    */
+   @Override
+   public boolean isRefreshActionHandled() throws OseeCoreException {
+      return true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#refresh()
+    */
+   @Override
+   public void handleRefreshAction() throws OseeCoreException {
+      loadTable();
    }
 
 }
