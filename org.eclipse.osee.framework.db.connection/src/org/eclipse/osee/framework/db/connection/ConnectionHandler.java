@@ -166,8 +166,7 @@ public final class ConnectionHandler {
             }
          }
          details.append("]\n");
-         OseeLog.log(InternalActivator.class, Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n", ex);
-         throw new OseeDataStoreException(ex);
+         throw new OseeDataStoreException("sql update failed: \n" + query + "\n" + details, ex);
       } finally {
          close(preparedStatement);
       }
