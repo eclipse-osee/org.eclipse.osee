@@ -7,10 +7,13 @@ package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -113,6 +116,21 @@ public class FrameworkTransactionData {
          }
       }
       return artifacts;
+   }
+
+   public Collection<Integer> getArtifactsOfType(ArtifactType artifactType, ArtifactModType... artifactModType) throws OseeCoreException {
+      Collection<ArtifactModType> artifactModTypes =
+            org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(artifactModType);
+      if (artifactType == null) return Collections.emptyList();
+      Set<Integer> artIds = new HashSet<Integer>();
+      for (ArtifactTransactionModifiedEvent modEvent : xModifiedEvents) {
+         if (modEvent instanceof ArtifactModifiedEvent) {
+            if (artifactModTypes.contains(artifactModType) && (((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactTypeId() == artifactType.getArtTypeId())) {
+               artIds.add(((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactId());
+            }
+         }
+      }
+      return artIds;
    }
 
    /**
