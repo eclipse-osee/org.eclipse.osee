@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="jdbcodbc.connection.driver.provider">
+	<implementation class="org.eclipse.osee.framework.jdbcodbc.JdbcOdbcConnection"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.db.connection.IConnection"/>
+	</service>	
+</component>

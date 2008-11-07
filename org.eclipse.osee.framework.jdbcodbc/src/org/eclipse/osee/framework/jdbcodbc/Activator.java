@@ -10,25 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdbcodbc;
 
-import org.eclipse.osee.framework.db.connection.IConnection;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Roberto E. Escobar
  */
 public class Activator implements BundleActivator {
 
-   private ServiceRegistration dbConnectionService;
-
    /*
     * (non-Javadoc)
     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
     */
    public void start(BundleContext context) throws Exception {
-      dbConnectionService =
-            context.registerService(IConnection.class.getName(), new JdbcOdbcConnection(), null);
    }
 
    /*
@@ -36,7 +30,6 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      dbConnectionService.unregister();
    }
 
 }
