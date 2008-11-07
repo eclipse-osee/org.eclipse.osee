@@ -1,6 +1,6 @@
 package org.eclipse.osee.demo.db.connection;
 
-import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer;
+import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -18,8 +18,9 @@ public class Activator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       me = this;
       this.context = context;
+
       registration =
-            this.context.registerService(IDbConnectionInformationContributer.class.getName(), new DbConnectionInfo(),
+            this.context.registerService(IDbConnectionInformationContributor.class.getName(), new DbConnectionInfo(),
                   null);
    }
 
