@@ -13,10 +13,14 @@ package org.eclipse.osee.framework.db.connection;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.db.connection.internal.OseeConnectionPool;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -25,9 +29,11 @@ public class OseeDbConnection {
 
    private static final Map<String, OseeConnectionPool> dbInfoToPools = new HashMap<String, OseeConnectionPool>();
 
-   private static IDatabaseInfo databaseInfo = null;
-
-   public static boolean hasOpenConnection() {
+   public static boolean hasOpenConnection() throws OseeDataStoreException {
+      IDatabaseInfo databaseInfo = getDatabaseInfoProvider();
+      if (databaseInfo == null) {
+         throw new OseeDataStoreException("Unable to get connection - database info was null.");
+      }
       OseeConnectionPool pool = dbInfoToPools.get(databaseInfo.getId());
       if (pool == null) {
          return false;
@@ -36,7 +42,7 @@ public class OseeDbConnection {
    }
 
    public static OseeConnection getConnection() throws OseeDataStoreException {
-      return getConnection(databaseInfo);
+      return getConnection(getDatabaseInfoProvider());
    }
 
    public static OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeDataStoreException {
@@ -54,12 +60,25 @@ public class OseeDbConnection {
    }
 
    /**
-    * @param dbDriver
-    * @param dbUrl
-    * @param dbConnectionProperties
+    * @return whether a successful connection has been had to the database
     */
-   public static void setDatabaseInfo(IDatabaseInfo databaseInfo) {
-      OseeDbConnection.databaseInfo = databaseInfo;
+   public static boolean isConnectionValid() {
+      try {
+         OseeConnection connection = getConnection();
+         connection.close();
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
+         return false;
+      }
+      return true;
+   }
+
+   private static IDatabaseInfo getDatabaseInfoProvider() throws OseeDataStoreException {
+      try {
+         return InternalActivator.getApplicationDatabaseProvider().getDatabaseInfo();
+      } catch (OseeCoreException ex) {
+         throw new OseeDataStoreException(ex.getLocalizedMessage());
+      }
    }
 
    private static final HashMap<Thread, ObjectPair<DbTransaction, Exception>> currentTxs =

@@ -37,8 +37,8 @@ public class OseeClientSession implements Serializable {
 
    @Override
    public String toString() {
-      return String.format("session:[%s] userId:[%s] version:[%s] ip:[%s] port:[%s] machineName:[%s]", id, userId,
-            clientVersion, machineIp, port, machineName);
+      return String.format("Session:[%s] User Id:[%s] Version:[%s] Machine Name:[%s] Ip:[%s] Port:[%s]", id, userId,
+            clientVersion, machineName, machineIp, port);
    }
 
    public int getPort() {

@@ -22,9 +22,6 @@ import java.util.concurrent.ThreadFactory;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
-import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -46,13 +43,13 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.applicationServerInfo = createOseeServerInfo();
       this.isRegistered = false;
       applicationServerInfo.setAcceptingRequests(true);
-      
-      new Thread(new Runnable(){
+
+      new Thread(new Runnable() {
          @Override
          public void run() {
-            try{
+            try {
                executeLookupRegistration();
-            } catch (Exception ex){
+            } catch (Exception ex) {
                ex.printStackTrace();
             }
          }
@@ -72,15 +69,11 @@ public class ApplicationServerManager implements IApplicationServerManager {
 
    public boolean executeLookupRegistration() {
       this.isRegistered = false;
-      IDatabaseInfo info = DatabaseInfoManager.getDefault();
-      if (info != null) {
-         OseeDbConnection.setDatabaseInfo(info);
-         ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
-         boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
-         applicationServerInfo.setAcceptingRequests(status);
-         updateServletRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
-         this.isRegistered = status;
-      }
+      ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
+      boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
+      applicationServerInfo.setAcceptingRequests(status);
+      updateServletRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
+      this.isRegistered = status;
       return isRegistered;
    }
 

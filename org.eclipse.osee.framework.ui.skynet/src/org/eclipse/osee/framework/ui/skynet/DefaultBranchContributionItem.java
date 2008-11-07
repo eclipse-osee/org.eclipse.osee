@@ -36,7 +36,7 @@ public class DefaultBranchContributionItem extends OseeContributionItem implemen
          "The default branch that Skynet is working from.\nDouble-click to change.";
    private static final String DISABLED_TOOLTIP = ENABLED_TOOLTIP;
 
-   public DefaultBranchContributionItem() {
+   private DefaultBranchContributionItem() {
       super(ID, 25);
       init();
    }
@@ -62,9 +62,16 @@ public class DefaultBranchContributionItem extends OseeContributionItem implemen
    }
 
    public static void addTo(IStatusLineManager manager) {
-      for (IContributionItem item : manager.getItems())
-         if (item instanceof DefaultBranchContributionItem) return;
-      manager.add(new DefaultBranchContributionItem());
+      boolean wasFound = false;
+      for (IContributionItem item : manager.getItems()) {
+         if (item instanceof DefaultBranchContributionItem) {
+            wasFound = true;
+            break;
+         }
+      }
+      if (!wasFound) {
+         manager.add(new DefaultBranchContributionItem());
+      }
    }
 
    public static void addTo(ViewPart view, boolean update) {
@@ -105,6 +112,7 @@ public class DefaultBranchContributionItem extends OseeContributionItem implemen
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
+      super.dispose();
    }
 
    /* (non-Javadoc)

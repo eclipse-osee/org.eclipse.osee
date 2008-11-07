@@ -52,7 +52,11 @@ public class SkynetUsageHandler extends Handler {
 
    @Override
    public void publish(LogRecord record) {
-      if (!OseeDbConnection.hasOpenConnection()) return;
+      try {
+         if (!OseeDbConnection.hasOpenConnection()) return;
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      }
       if (record.getLevel().intValue() == Level.SEVERE.intValue() && record.getThrown() instanceof Exception) {
          UsageLog.getInstance().addEntry(new ExceptionEntry((Exception) record.getThrown()));
       }

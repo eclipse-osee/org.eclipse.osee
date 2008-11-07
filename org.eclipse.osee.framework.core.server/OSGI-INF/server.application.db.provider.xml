@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="server.application.db.provider">
+	<implementation class="org.eclipse.osee.framework.core.server.internal.ServerDatabaseProvider"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider"/>
+	</service>	
+</component>

@@ -31,10 +31,11 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
    private static String errorMessage;
    private static String okMessage;
 
-   public OseeServicesStatusContributionItem() {
+   private OseeServicesStatusContributionItem() {
       super(ID);
       errorMessage = null;
       okMessage = null;
+      updateStatus(true);
       OseeLog.register(this);
    }
 
@@ -48,9 +49,16 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
    }
 
    public static void addTo(IStatusLineManager manager) {
-      for (IContributionItem item : manager.getItems())
-         if (item instanceof OseeServicesStatusContributionItem) return;
-      manager.add(new OseeServicesStatusContributionItem());
+      boolean wasFound = false;
+      for (IContributionItem item : manager.getItems()) {
+         if (item instanceof OseeServicesStatusContributionItem) {
+            wasFound = true;
+            break;
+         }
+      }
+      if (!wasFound) {
+         manager.add(new OseeServicesStatusContributionItem());
+      }
    }
 
    /* (non-Javadoc)

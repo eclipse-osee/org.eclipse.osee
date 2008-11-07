@@ -13,15 +13,11 @@ package org.eclipse.osee.framework.skynet.core;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
@@ -57,21 +53,20 @@ final class ClientUser {
 
    private void populateCurrentUser() {
       try {
-         ensureSessionCreated();
+         ClientSessionManager.ensureSessionCreated();
          if (ClientSessionManager.isSessionValid()) {
             String userId = ClientSessionManager.getSession().getUserId();
             try {
                if (userId.equals(SystemUser.BootStrap.getUserID())) {
                   setCurrentUser(BootStrapUser.getInstance());
                } else {
-                  OseeSessionGrant sessionGrant = ClientSessionManager.getSessionGrant();
-                  if (sessionGrant.isCreationRequired()) {
+                  if (ClientSessionManager.isUserCreationRequired()) {
                      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
-                     UserCache.createUser(sessionGrant.getOseeUserInfo(), transaction);
+                     UserCache.createUser(ClientSessionManager.getCurrentUserInfo(), transaction);
                      transaction.execute();
-                     sessionGrant.setCreationRequired(true);
+                     ClientSessionManager.clearUserCreationRequired();
                   }
-                  setCurrentUser(UserCache.getUserByUserId(sessionGrant.getOseeUserInfo().getUserID()));
+                  setCurrentUser(UserCache.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
                }
             } catch (UserNotInDatabase ex) {
                if (currentUser == null) {
@@ -83,21 +78,6 @@ final class ClientUser {
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-   }
-
-   private void ensureSessionCreated() throws OseeCoreException {
-      if (!ClientSessionManager.isSessionValid()) {
-         ClientSessionManager.authenticate(new BaseCredentialProvider() {
-            public OseeCredential getCredential() throws OseeCoreException {
-               OseeCredential credential = super.getCredential();
-               credential.setUserName(System.getProperty("user.name"));
-               credential.setDomain("");
-               credential.setPassword("");
-               credential.setAuthenticationProtocol(OseeProperties.getAuthenticationProtocol());
-               return credential;
-            }
-         });
       }
    }
 

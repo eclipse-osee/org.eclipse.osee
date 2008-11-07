@@ -213,7 +213,7 @@ public class AuthenticationDialog extends OseeMessageDialog {
                            message = "Maximum number of Retries reached.\n" + endMsg;
                            shutdown = true;
                         } else {
-                           IHealthStatus status = OseeLog.getStatusByName(ClientSessionManager.STATUS_ID);
+                           IHealthStatus status = OseeLog.getStatusByName(ClientSessionManager.getStatusId());
                            if (status != null && status.getException() != null) {
                               Throwable ex = status.getException();
                               if (ex instanceof OseeAuthenticationException) {

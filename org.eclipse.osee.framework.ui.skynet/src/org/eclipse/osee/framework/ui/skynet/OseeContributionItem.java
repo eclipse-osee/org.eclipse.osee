@@ -24,11 +24,11 @@ import org.eclipse.ui.texteditor.StatusLineContributionItem;
  */
 public abstract class OseeContributionItem extends StatusLineContributionItem {
 
-   public OseeContributionItem(String id) {
+   protected OseeContributionItem(String id) {
       this(id, 4);
    }
 
-   public OseeContributionItem(String id, int width) {
+   protected OseeContributionItem(String id, int width) {
       super(id, true, width);
    }
 
@@ -58,7 +58,9 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
 
    public static void addTo(IStatusLineManager manager) {
       DefaultBranchContributionItem.addTo(manager);
-      if (OseeAts.isAtsAdmin()) AdminContributionItem.addTo(manager);
+      if (OseeAts.isAtsAdmin()) {
+         AdminContributionItem.addTo(manager);
+      }
       OseeServicesStatusContributionItem.addTo(manager);
       SessionContributionItem.addTo(manager);
    }
@@ -66,18 +68,24 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
    public static void addTo(AbstractArtifactSearchViewPage view, boolean update) {
       addTo(view.getSite().getActionBars().getStatusLineManager());
 
-      if (update) view.getSite().getActionBars().updateActionBars();
+      if (update) {
+         view.getSite().getActionBars().updateActionBars();
+      }
    }
 
    public static void addTo(ViewPart view, boolean update) {
       addTo(view.getViewSite().getActionBars().getStatusLineManager());
 
-      if (update) view.getViewSite().getActionBars().updateActionBars();
+      if (update) {
+         view.getViewSite().getActionBars().updateActionBars();
+      }
    }
 
    public static void addTo(MultiPageEditorPart editorPart, boolean update) {
       addTo(editorPart.getEditorSite().getActionBars().getStatusLineManager());
-      if (update) editorPart.getEditorSite().getActionBars().updateActionBars();
+      if (update) {
+         editorPart.getEditorSite().getActionBars().updateActionBars();
+      }
    }
 
 }

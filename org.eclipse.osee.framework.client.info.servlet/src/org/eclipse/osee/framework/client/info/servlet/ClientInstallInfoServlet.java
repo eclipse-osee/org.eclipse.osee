@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -59,6 +58,14 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
 
    private enum CommandType {
       exec_path;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.OseeHttpServlet#checkAccessControl(javax.servlet.http.HttpServletRequest)
+    */
+   @Override
+   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+      // Allow access to all
    }
 
    /* (non-Javadoc)

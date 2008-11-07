@@ -15,6 +15,6 @@ package org.eclipse.osee.framework.db.connection;
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface IDbConnectionInformationContributer {
+public interface IDbConnectionInformationContributor {
    IDatabaseInfo[] getDbInformation() throws Exception;
 }

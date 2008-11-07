@@ -36,7 +36,7 @@ public class DbConnectionFactory implements IDbConnectionFactory, IBind {
     */
    @Override
    public IConnection get(String driver) throws OseeCoreException {
-      IConnection selectedDriver = getIneternal(driver);
+      IConnection selectedDriver = getInternal(driver);
       if (selectedDriver == null) {
          long endTime = System.currentTimeMillis() + (1000 * 20);
          long timeLeft = 1000 * 20;
@@ -46,19 +46,19 @@ public class DbConnectionFactory implements IDbConnectionFactory, IBind {
                   myWait.wait(timeLeft);
                } catch (InterruptedException ex) {
                }
-               selectedDriver = getIneternal(driver);
+               selectedDriver = getInternal(driver);
             }
             timeLeft = endTime - System.currentTimeMillis();
          }
       }
       if (selectedDriver == null) {
-         throw new OseeStateException(String.format("Unable to find matching driver provider for [%s].", driver,
-               driver));
+         throw new OseeStateException(
+               String.format("Unable to find matching driver provider for [%s].", driver, driver));
       }
       return selectedDriver;
    }
 
-   private IConnection getIneternal(String driver) {
+   private IConnection getInternal(String driver) {
       for (IConnection connection : connectionProviders) {
          if (connection.getDriver().equals(driver)) {
             return connection;

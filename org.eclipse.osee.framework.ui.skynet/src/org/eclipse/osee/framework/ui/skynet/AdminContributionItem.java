@@ -27,7 +27,7 @@ public class AdminContributionItem extends OseeContributionItem {
    private static String ENABLED_TOOLTIP = "AtsAdmin";
    private static String DISABLED_TOOLTIP = "";
 
-   public AdminContributionItem() {
+   private AdminContributionItem() {
       super(ID);
       init();
    }
@@ -37,9 +37,16 @@ public class AdminContributionItem extends OseeContributionItem {
    }
 
    public static void addTo(IStatusLineManager manager) {
-      for (IContributionItem item : manager.getItems())
-         if (item instanceof AdminContributionItem) return;
-      manager.add(new AdminContributionItem());
+      boolean wasFound = false;
+      for (IContributionItem item : manager.getItems()) {
+         if (item instanceof AdminContributionItem) {
+            wasFound = true;
+            break;
+         }
+      }
+      if (!wasFound) {
+         manager.add(new AdminContributionItem());
+      }
    }
 
    /* (non-Javadoc)

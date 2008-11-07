@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.IDbConnectionInformation;
-import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer;
+import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -81,7 +81,7 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
     */
    @Override
    public void bind(Object obj) {
-      IDbConnectionInformationContributer contributer = (IDbConnectionInformationContributer) obj;
+      IDbConnectionInformationContributor contributer = (IDbConnectionInformationContributor) obj;
       try {
          for (IDatabaseInfo info : contributer.getDbInformation()) {
             dbInfo.put(info.getId(), info);
@@ -99,7 +99,7 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
     */
    @Override
    public void unbind(Object obj) {
-      IDbConnectionInformationContributer contributer = (IDbConnectionInformationContributer) obj;
+      IDbConnectionInformationContributor contributer = (IDbConnectionInformationContributor) obj;
       try {
          for (IDatabaseInfo info : contributer.getDbInformation()) {
             dbInfo.remove(info.getDatabaseName());

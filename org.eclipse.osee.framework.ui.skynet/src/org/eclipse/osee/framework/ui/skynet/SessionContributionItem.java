@@ -17,7 +17,6 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserCache;
@@ -47,12 +46,11 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
    private static String ENABLED_TOOLTIP = "Authenticated as: %s (%s) - session(%s)\nDouble-Click to Log Off.";
    private static String DISABLED_TOOLTIP = "Not Authenticated.\nDouble-Click to Log On.";
 
-   final SessionContributionItem contributionItem;
-
-   public SessionContributionItem() {
+   private SessionContributionItem() {
       super(ID);
       init();
-      contributionItem = this;
+      updateStatus(true);
+      OseeEventManager.addListener(this);
    }
 
    private void init() {
@@ -67,7 +65,7 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
                if (result) {
                   try {
                      ClientSessionManager.releaseSession();
-                  } catch (OseeDataStoreException ex) {
+                  } catch (OseeCoreException ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
                   PlatformUI.getWorkbench().close();
@@ -93,18 +91,26 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
             }
          }
       });
-      OseeEventManager.addListener(this);
+
    }
 
    public static void addTo(IStatusLineManager manager) {
-      for (IContributionItem item : manager.getItems())
-         if (item instanceof SessionContributionItem) return;
-      manager.add(new SessionContributionItem());
+      boolean wasFound = false;
+      for (IContributionItem item : manager.getItems()) {
+         if (item instanceof SessionContributionItem) {
+            wasFound = true;
+            break;
+         }
+      }
+      if (!wasFound) {
+         manager.add(new SessionContributionItem());
+      }
    }
 
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
+      super.dispose();
    }
 
    /* (non-Javadoc)

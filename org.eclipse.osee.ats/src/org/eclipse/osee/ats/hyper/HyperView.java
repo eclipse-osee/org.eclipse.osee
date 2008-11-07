@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -228,8 +229,12 @@ public class HyperView extends ViewPart implements IPartListener {
    public void createPartControl(Composite parent) {
       debug.report("createPartControl");
 
-      if (OseeDbConnection.hasOpenConnection()) {
-         OseeContributionItem.addTo(this, true);
+      try {
+         if (OseeDbConnection.hasOpenConnection()) {
+            OseeContributionItem.addTo(this, true);
+         }
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
       canvas = new FigureCanvas(parent);

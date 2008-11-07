@@ -10,13 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.internal;
 
+import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
+import org.eclipse.osee.framework.db.connection.IApplicationDatabaseManager;
 import org.eclipse.osee.framework.db.connection.IConnection;
 import org.eclipse.osee.framework.db.connection.IDbConnectionFactory;
 import org.eclipse.osee.framework.db.connection.IDbConnectionInformation;
-import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer;
+import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Roberto E. Escobar
@@ -24,23 +28,30 @@ import org.osgi.framework.ServiceRegistration;
 public class InternalActivator implements BundleActivator {
 
    private static InternalActivator instance = null;
-   private DbConnectionProviderTracker dbConnectionProviderTracker;
-   private DbConnectionInfoTracker dbConnectionInfoTracker;
+
    private ServiceRegistration dbConnectionFactoryRegistration;
    private ServiceRegistration dbConnectionInfoProviderRegistration;
    private BindTracker connectionTracker;
    private BindTracker infoProviderTracker;
 
-   private static InternalActivator getInstance() {
-      return instance;
-   }
+   private ServiceTracker applicationDbManagerTracker;
+   private ServiceTracker dbConnectionProviderTracker;
+   private ServiceTracker dbConnectionInfoTracker;
 
    public static IDbConnectionFactory getConnectionFactory() {
-      return getInstance().dbConnectionProviderTracker.getFactory();
+      return (IDbConnectionFactory) instance.dbConnectionProviderTracker.getService();
    }
 
    public static IDbConnectionInformation getConnectionInfos() {
-      return getInstance().dbConnectionInfoTracker.get();
+      return (IDbConnectionInformation) instance.dbConnectionInfoTracker.getService();
+   }
+
+   public static IApplicationDatabaseManager getApplicationDatabaseManager() {
+      return (IApplicationDatabaseManager) instance.applicationDbManagerTracker.getService();
+   }
+
+   public static IApplicationDatabaseInfoProvider getApplicationDatabaseProvider() throws OseeCoreException {
+      return getApplicationDatabaseManager().getProvider();
    }
 
    /*
@@ -58,15 +69,19 @@ public class InternalActivator implements BundleActivator {
 
       DbConnectionInformationImpl dbConnectionInfo = new DbConnectionInformationImpl();
       infoProviderTracker =
-            new BindTracker(context, IDbConnectionInformationContributer.class.getName(), dbConnectionInfo);
+            new BindTracker(context, IDbConnectionInformationContributor.class.getName(), dbConnectionInfo);
       infoProviderTracker.open();
       dbConnectionInfoProviderRegistration =
             context.registerService(IDbConnectionInformation.class.getName(), dbConnectionInfo, null);
 
-      dbConnectionProviderTracker = new DbConnectionProviderTracker(context);
+      dbConnectionProviderTracker = new ServiceTracker(context, IDbConnectionFactory.class.getName(), null);
       dbConnectionProviderTracker.open();
-      dbConnectionInfoTracker = new DbConnectionInfoTracker(context);
+
+      dbConnectionInfoTracker = new ServiceTracker(context, IDbConnectionInformation.class.getName(), null);
       dbConnectionInfoTracker.open();
+
+      applicationDbManagerTracker = new ServiceTracker(context, IApplicationDatabaseManager.class.getName(), null);
+      applicationDbManagerTracker.open();
    }
 
    /*
@@ -81,5 +96,6 @@ public class InternalActivator implements BundleActivator {
       infoProviderTracker.close();
       dbConnectionFactoryRegistration.unregister();
       dbConnectionInfoProviderRegistration.unregister();
+      applicationDbManagerTracker.close();
    }
 }

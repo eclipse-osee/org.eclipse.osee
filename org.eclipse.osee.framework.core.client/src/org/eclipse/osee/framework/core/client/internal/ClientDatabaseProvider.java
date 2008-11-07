@@ -1,0 +1,52 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.core.client.internal;
+
+import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
+import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.BaseStatus;
+import org.eclipse.osee.framework.logging.OseeLog;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class ClientDatabaseProvider implements IApplicationDatabaseInfoProvider {
+
+   private static final String NAME = "Client Data Source";
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider#getDatabaseInfo()
+    */
+   @Override
+   public IDatabaseInfo getDatabaseInfo() throws OseeCoreException {
+      IDatabaseInfo databaseInfo = null;
+      try {
+         databaseInfo = InternalClientSessionManager.getInstance().getDatabaseInfo();
+         OseeLog.reportStatus(new BaseStatus(NAME, Level.INFO, "%s [%s as %s]", databaseInfo.getDriver(),
+               databaseInfo.getDatabaseName(), databaseInfo.getDatabaseLoginName()));
+      } catch (OseeCoreException ex) {
+         OseeLog.reportStatus(new BaseStatus(NAME, Level.SEVERE, ex, "Error obtaining database connection."));
+         throw ex;
+      }
+      return databaseInfo;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider#getPriority()
+    */
+   @Override
+   public int getPriority() {
+      return -1;
+   }
+
+}
