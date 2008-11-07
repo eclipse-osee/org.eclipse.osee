@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -119,6 +120,13 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
 
       warningLabel = new Label(headerComp, SWT.NONE);
       searchNameLabel = new Label(headerComp, SWT.NONE);
+
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
+         toolBarComposite = null;
+         extraInfoLabel = null;
+         worldXViewer = null;
+         return;
+      }
 
       if (viewSite == null) {
          toolBarComposite = new Composite(headerComp, SWT.NONE);

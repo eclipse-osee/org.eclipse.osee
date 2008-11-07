@@ -33,6 +33,7 @@ public class SMATaskComposite extends Composite {
     */
    public SMATaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) throws OseeCoreException {
       super(parent, style);
+
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 

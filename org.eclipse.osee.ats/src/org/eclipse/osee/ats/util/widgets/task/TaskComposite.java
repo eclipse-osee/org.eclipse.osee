@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
@@ -50,6 +51,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -102,6 +104,7 @@ public class TaskComposite extends Composite implements IActionable {
    public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) throws OseeCoreException {
       super(parent, style);
       this.iXTaskViewer = iXTaskViewer;
+      BulkLoadAtsCache.run(false);
 
       setLayout(new GridLayout(1, false));
       setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -114,6 +117,10 @@ public class TaskComposite extends Composite implements IActionable {
 
       warningLabel = new Label(headerComp, SWT.NONE);
       searchNameLabel = new Label(headerComp, SWT.NONE);
+
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
+         return;
+      }
 
       try {
          createTaskActionBar(headerComp);

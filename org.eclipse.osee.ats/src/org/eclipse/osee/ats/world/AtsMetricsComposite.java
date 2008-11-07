@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphLine;
@@ -62,6 +63,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
       mainComp.setLayout(new GridLayout());
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       adapt(mainComp);
+
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(mainComp)) {
+         return;
+      }
 
       adapt(this);
       creatToolBar(mainComp);
