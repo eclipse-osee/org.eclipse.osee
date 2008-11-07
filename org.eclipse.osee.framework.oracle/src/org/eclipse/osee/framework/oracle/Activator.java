@@ -10,21 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.oracle;
 
-import org.eclipse.osee.framework.db.connection.IConnection;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
-
-   private ServiceRegistration registration;
 
    /*
     * (non-Javadoc)
     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
     */
    public void start(BundleContext context) throws Exception {
-      registration = context.registerService(IConnection.class.getName(), new OracleConnection(), null);
    }
 
    /*
@@ -32,7 +27,6 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      registration.unregister();
    }
 
 }

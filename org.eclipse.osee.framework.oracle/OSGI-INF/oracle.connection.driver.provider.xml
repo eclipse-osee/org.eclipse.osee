@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="oracle.connection.driver.provider">
+	<implementation class="org.eclipse.osee.framework.oracle.OracleConnection"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.db.connection.IConnection"/>
+	</service>	
+</component>
