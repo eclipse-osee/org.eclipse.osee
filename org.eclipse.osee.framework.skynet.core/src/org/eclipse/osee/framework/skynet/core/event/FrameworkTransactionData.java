@@ -118,7 +118,7 @@ public class FrameworkTransactionData {
       return artifacts;
    }
 
-   public Collection<Integer> getArtifactsOfType(ArtifactType artifactType, ArtifactModType... artifactModType) throws OseeCoreException {
+   public Collection<Integer> getArtifactIdsOfArtifactType(ArtifactType artifactType, ArtifactModType... artifactModType) throws OseeCoreException {
       Collection<ArtifactModType> artifactModTypes =
             org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(artifactModType);
       if (artifactType == null) return Collections.emptyList();
