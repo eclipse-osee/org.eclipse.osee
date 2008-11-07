@@ -87,6 +87,10 @@ public class ApplicationServerManager implements IApplicationServerManager {
       ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
       boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
       this.isRegistered = status;
+      if (this.isRegistered) {
+         OseeLog.log(CoreServerActivator.class, Level.INFO, String.format("Application Server: [%s] registered.",
+               getApplicationServerInfo().getServerId()));
+      }
       return isRegistered;
    }
 

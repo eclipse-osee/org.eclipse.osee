@@ -162,7 +162,7 @@ public class SessionManager implements ISessionManager {
                   CoreServerActivator.getApplicationServerManager().getApplicationServerInfo().getServerId();
             SessionDataStore.loadSessions(serverId, sessionCache);
          } catch (OseeDataStoreException ex) {
-            OseeLog.log(CoreServerActivator.class, Level.SEVERE, "Error loading sessions.", ex);
+            OseeLog.log(CoreServerActivator.class, Level.WARNING, "Error loading sessions.", ex);
          }
       }
 
