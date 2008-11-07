@@ -166,7 +166,7 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
             sessionId = ClientSessionManager.getSessionId();
          } catch (OseeCoreException ex) {
          }
-         return String.format(ENABLED_TOOLTIP, (skynetName != null ? skynetName.getName() : skynetName), userId,
+         return String.format(ENABLED_TOOLTIP, (skynetName != null ? skynetName.getName() : "Unknown"), userId,
                sessionId);
       }
       return DISABLED_TOOLTIP;
