@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.operation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,11 +26,11 @@ import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.ITaskEditorProvider;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -44,8 +43,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -68,9 +65,9 @@ public class EditTasks extends AbstractBlam {
             try {
                boolean selected = false;
                StringBuffer sb = new StringBuffer();
-               TeamDefinitionArtifact teamDef = getSelectedTeamDefinition();
-               if (teamDef != null) {
-                  sb.append("Team: " + teamDef + " - ");
+               Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
+               if (teamDefs.size() > 0) {
+                  sb.append("Team(s): " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs) + " - ");
                   selected = true;
                }
                VersionArtifact verArt = getSelectedVersionArtifact();
@@ -92,7 +89,7 @@ public class EditTasks extends AbstractBlam {
                   return;
                }
 
-               TaskEditor.open(new EditTasksProvider(sb.toString(), teamDef, user, verArt, includeCompleted));
+               TaskEditor.open(new EditTasksProvider(sb.toString(), teamDefs, user, verArt, includeCompleted));
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -105,14 +102,14 @@ public class EditTasks extends AbstractBlam {
    public class EditTasksProvider implements ITaskEditorProvider {
 
       private final String title;
-      private final TeamDefinitionArtifact teamDef;
       private final User user;
       private final VersionArtifact verArt;
       private final boolean includeCompleted;
+      private final Collection<TeamDefinitionArtifact> teamDefs;
 
-      public EditTasksProvider(String title, TeamDefinitionArtifact teamDef, User user, VersionArtifact verArt, boolean includeCompleted) {
+      public EditTasksProvider(String title, Collection<TeamDefinitionArtifact> teamDefs, User user, VersionArtifact verArt, boolean includeCompleted) {
          this.title = title;
-         this.teamDef = teamDef;
+         this.teamDefs = teamDefs;
          this.user = user;
          this.verArt = verArt;
          this.includeCompleted = includeCompleted;
@@ -144,15 +141,17 @@ public class EditTasks extends AbstractBlam {
 
          if (verArt != null) {
             workflows.addAll(verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
-         } else if (teamDef != null && teamDef.getTeamDefinitionHoldingVersions() != null) {
-            for (VersionArtifact versionArt : teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts()) {
-               workflows.addAll(versionArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
+         } else if (teamDefs.size() > 0 && teamDefs.iterator().next().getTeamDefinitionHoldingVersions() != null) {
+            for (TeamDefinitionArtifact teamDef : teamDefs) {
+               for (VersionArtifact versionArt : teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts()) {
+                  workflows.addAll(versionArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
+               }
             }
          }
 
          List<Artifact> teamDefWorkflows = new ArrayList<Artifact>();
          for (Artifact workflow : workflows) {
-            if (teamDef.equals((((TeamWorkFlowArtifact) workflow).getTeamDefinition()))) {
+            if (teamDefs.contains((((TeamWorkFlowArtifact) workflow).getTeamDefinition()))) {
                teamDefWorkflows.add(workflow);
             }
          }
@@ -184,9 +183,9 @@ public class EditTasks extends AbstractBlam {
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
       String versionStr = versionCombo.get();
       if (versionStr == null || versionStr.equals("")) return null;
-      TeamDefinitionArtifact teamDef = getSelectedTeamDefinition();
-      if (teamDef != null) {
-         TeamDefinitionArtifact teamDefHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();
+      Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
+      if (teamDefs.size() > 0) {
+         TeamDefinitionArtifact teamDefHoldingVersions = teamDefs.iterator().next().getTeamDefinitionHoldingVersions();
          if (teamDefHoldingVersions == null) return null;
          for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both)) {
             if (versionArtifact.getDescriptiveName().equals(versionStr)) {
@@ -205,7 +204,7 @@ public class EditTasks extends AbstractBlam {
       String widgetXml =
             "<xWidgets>" +
             //
-            "<XWidget xwidgetType=\"XCombo()\" displayName=\"Team\" horizontalLabel=\"true\"/>" +
+            "<XWidget xwidgetType=\"XHyperlabelTeamDefinitionSelection\" displayName=\"Team(s)\" horizontalLabel=\"true\"/>" +
             //
             "<XWidget xwidgetType=\"XCombo()\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
             //
@@ -216,7 +215,7 @@ public class EditTasks extends AbstractBlam {
       return widgetXml;
    }
 
-   private XCombo teamCombo = null;
+   private XHyperlabelTeamDefinitionSelection teamCombo = null;
    private XCombo versionCombo = null;
 
    /* (non-Javadoc)
@@ -225,24 +224,20 @@ public class EditTasks extends AbstractBlam {
    @Override
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
-      if (widget.getLabel().equals("Team")) {
-         teamCombo = (XCombo) widget;
-         teamCombo.setDataStrings(getTeams());
-         teamCombo.getComboBox().setVisibleItemCount(25);
-         teamCombo.addModifyListener(new ModifyListener() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-             */
+      if (widget.getLabel().equals("Team(s)")) {
+         teamCombo = (XHyperlabelTeamDefinitionSelection) widget;
+         teamCombo.addXModifiedListener(new XModifiedListener() {
             @Override
-            public void modifyText(ModifyEvent e) {
+            public void widgetModified(XWidget widget) {
                if (versionCombo != null) {
                   try {
-                     TeamDefinitionArtifact teamDefArt = getSelectedTeamDefinition();
-                     if (teamDefArt == null) {
+                     Collection<TeamDefinitionArtifact> teamDefArts = getSelectedTeamDefinitions();
+                     if (teamDefArts.size() == 0) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     TeamDefinitionArtifact teamDefHoldingVersions = teamDefArt.getTeamDefinitionHoldingVersions();
+                     TeamDefinitionArtifact teamDefHoldingVersions =
+                           teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
                      if (teamDefHoldingVersions == null) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -268,24 +263,8 @@ public class EditTasks extends AbstractBlam {
       }
    }
 
-   private TeamDefinitionArtifact getSelectedTeamDefinition() throws OseeCoreException {
-      String selectedTeam = teamCombo.getComboBox().getText();
-      Set<TeamDefinitionArtifact> teams = TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(selectedTeam));
-      if (teams.size() > 0) {
-         return teams.iterator().next();
-      }
-      return null;
+   private Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
+      return teamCombo.getSelectedTeamDefintions();
    }
 
-   private String[] getTeams() {
-      try {
-         Collection<String> names = Artifacts.artNames(TeamDefinitionArtifact.getTeamDefinitions(Active.Both));
-         String[] namesSorted = names.toArray(new String[names.size()]);
-         Arrays.sort(namesSorted);
-         return namesSorted;
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-         return Arrays.asList("unabled to acquire teams" + ex.getLocalizedMessage()).toArray(new String[1]);
-      }
-   }
 }
