@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="lba.authentication.provider">
+	<implementation class="org.eclipse.osee.demo.db.connection.DemoAuthenticationProvider"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.core.server.IAuthenticationProvider"/>
+	</service>	
+</component>

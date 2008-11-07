@@ -3,8 +3,9 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.db.connection;
+package org.eclipse.osee.framework.db.connection.internal;
 
+import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**

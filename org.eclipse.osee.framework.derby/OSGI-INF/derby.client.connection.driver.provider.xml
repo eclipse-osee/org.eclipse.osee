@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="derby.client.connection.driver.provider">
+	<implementation class="org.eclipse.osee.framework.derby.DerbyClientConnection"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.db.connection.IConnection"/>
+	</service>	
+</component>

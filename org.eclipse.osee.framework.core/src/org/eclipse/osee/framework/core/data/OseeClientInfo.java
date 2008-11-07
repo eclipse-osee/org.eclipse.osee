@@ -30,7 +30,7 @@ public class OseeClientInfo extends BaseExchangeData {
 
    public void setClientAddress(String address, int port) {
       this.backingData.put(CLIENT_IP_ADDRESS, address);
-      this.backingData.put(CLIENT_PORT, Integer.toString(port));
+      this.backingData.put(CLIENT_PORT, port);
    }
 
    public void setClientVersion(String version) {

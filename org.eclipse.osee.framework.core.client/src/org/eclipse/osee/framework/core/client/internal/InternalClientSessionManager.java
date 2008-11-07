@@ -103,19 +103,21 @@ public class InternalClientSessionManager {
    }
 
    public synchronized OseeClientSession authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
-      try {
-         OseeCredential credential = credentialProvider.getCredential();
-         clearData();
-         oseeSessionGrant = internalAcquireSession(credential);
-         oseeSession =
-               new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
-                     oseeSessionGrant.getOseeUserInfo().getUserID(), clientInfo.getClientAddress(),
-                     clientInfo.getPort(), clientInfo.getVersion());
-      } catch (OseeCoreException ex) {
-         OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
-         throw ex;
+      if (!isSessionValid()) {
+         try {
+            OseeCredential credential = credentialProvider.getCredential();
+            clearData();
+            oseeSessionGrant = internalAcquireSession(credential);
+            oseeSession =
+                  new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
+                        oseeSessionGrant.getOseeUserInfo().getUserID(), clientInfo.getClientAddress(),
+                        clientInfo.getPort(), clientInfo.getVersion());
+         } catch (OseeCoreException ex) {
+            OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
+            throw ex;
+         }
+         OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s", oseeSession));
       }
-      OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s", oseeSession));
       return oseeSession;
    }
 

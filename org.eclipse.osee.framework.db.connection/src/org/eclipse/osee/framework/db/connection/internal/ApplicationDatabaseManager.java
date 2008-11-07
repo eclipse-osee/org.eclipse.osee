@@ -8,7 +8,6 @@ package org.eclipse.osee.framework.db.connection.internal;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
-import org.eclipse.osee.framework.db.connection.IApplicationDatabaseManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;

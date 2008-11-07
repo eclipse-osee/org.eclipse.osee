@@ -71,8 +71,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.isRegistered = false;
       ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
       boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
-      applicationServerInfo.setAcceptingRequests(status);
-      updateServletRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
       this.isRegistered = status;
       return isRegistered;
    }

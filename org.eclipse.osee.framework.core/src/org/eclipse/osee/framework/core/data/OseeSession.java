@@ -34,8 +34,8 @@ public class OseeSession extends OseeClientInfo {
       super(clientVersion, machineName, machineIp, port);
       this.backingData.put(SESSION_ID, sessionId);
       this.backingData.put(USER_ID, userId);
-      this.backingData.put(CREATED_ON, Long.toString(createdOn.getTime()));
-      this.backingData.put(LAST_INTERACTION_DATE, Long.toString(lastInteractionDate.getTime()));
+      this.backingData.put(CREATED_ON, createdOn.getTime());
+      this.backingData.put(LAST_INTERACTION_DATE, lastInteractionDate.getTime());
       this.backingData.put(LAST_INTERACTION, lastInteractionName);
    }
 
@@ -57,7 +57,7 @@ public class OseeSession extends OseeClientInfo {
     * @return the session creation date
     */
    public Timestamp getCreation() {
-      return new Timestamp(Long.valueOf(getString(CREATED_ON)));
+      return new Timestamp(backingData.getLong(CREATED_ON));
    }
 
    /**
@@ -71,7 +71,7 @@ public class OseeSession extends OseeClientInfo {
     * @return the last communication timestamp
     */
    public Timestamp getLastInteractionDate() {
-      return new Timestamp(Long.valueOf(getString(LAST_INTERACTION_DATE)));
+      return new Timestamp(backingData.getLong(LAST_INTERACTION_DATE));
    }
 
    /**
@@ -89,7 +89,7 @@ public class OseeSession extends OseeClientInfo {
     * @param timestamp
     */
    public void setLastInteractionDate(Timestamp timestamp) {
-      this.backingData.put(LAST_INTERACTION_DATE, Long.toString(timestamp.getTime()));
+      this.backingData.put(LAST_INTERACTION_DATE, timestamp.getTime());
    }
 
    /**

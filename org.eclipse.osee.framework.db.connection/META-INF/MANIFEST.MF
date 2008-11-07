@@ -22,5 +22,7 @@ Export-Package: org.eclipse.osee.framework.db.connection;
  org.eclipse.osee.framework.db.connection.info;uses:="org.eclipse.osee.framework.jdk.core.type,org.w3c.dom"
 Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.equinox.ds;bundle-version="1.0.0"
-Service-Component: OSGI-INF/application.db.provider.consumer.xml
+Service-Component: OSGI-INF/db.connection.consumer.xml,
+ OSGI-INF/db.connection.contributor.consumer.xml,
+ OSGI-INF/application.db.provider.consumer.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

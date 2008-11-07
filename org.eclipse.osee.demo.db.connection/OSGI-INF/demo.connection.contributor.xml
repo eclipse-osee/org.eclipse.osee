@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="demo.connection.contributor">
+	<implementation class="org.eclipse.osee.demo.db.connection.DemoDbConnectionInfo"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor"/>
+	</service>	
+</component>

@@ -10,28 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.derby;
 
-import org.eclipse.osee.framework.db.connection.IConnection;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Roberto E. Escobar
  */
 public class Activator implements BundleActivator {
 
-   private ServiceRegistration derbyClientConnectionService;
-   private ServiceRegistration embeddedDerbyConnectionService;
-
    /*
     * (non-Javadoc)
     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
     */
    public void start(BundleContext context) throws Exception {
-      derbyClientConnectionService =
-            context.registerService(IConnection.class.getName(), new DerbyClientConnection(), null);
-      embeddedDerbyConnectionService =
-            context.registerService(IConnection.class.getName(), new EmbeddedDerbyConnection(), null);
    }
 
    /*
@@ -39,8 +30,6 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      derbyClientConnectionService.unregister();
-      embeddedDerbyConnectionService.unregister();
    }
 
 }

@@ -14,14 +14,13 @@ package org.eclipse.osee.framework.db.connection.internal;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.db.connection.IConnection;
-import org.eclipse.osee.framework.db.connection.IDbConnectionFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class DbConnectionFactory implements IDbConnectionFactory, IBind {
+public class DbConnectionFactory implements IDbConnectionFactory {
 
    private List<IConnection> connectionProviders;
    private Object myWait;
@@ -71,8 +70,8 @@ public class DbConnectionFactory implements IDbConnectionFactory, IBind {
     * @see org.eclipse.osee.framework.db.connection.IBind#bind(java.lang.Object)
     */
    @Override
-   public void bind(Object connection) {
-      connectionProviders.add((IConnection) connection);
+   public void bind(IConnection obj) {
+      connectionProviders.add((IConnection) obj);
       synchronized (myWait) {
          myWait.notifyAll();
       }
@@ -82,8 +81,8 @@ public class DbConnectionFactory implements IDbConnectionFactory, IBind {
     * @see org.eclipse.osee.framework.db.connection.IBind#unbind(java.lang.Object)
     */
    @Override
-   public void unbind(Object connection) {
-      connectionProviders.remove((IConnection) connection);
+   public void unbind(IConnection obj) {
+      connectionProviders.remove((IConnection) obj);
    }
 
 }

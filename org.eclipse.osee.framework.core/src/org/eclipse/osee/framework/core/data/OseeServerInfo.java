@@ -32,10 +32,10 @@ public class OseeServerInfo extends BaseExchangeData {
    public OseeServerInfo(String serverAddress, int port, String version, Timestamp dateStarted, boolean isAcceptingRequests) {
       this();
       this.backingData.put(SERVER_ADDRESS, serverAddress);
-      this.backingData.put(PORT, Integer.toString(port));
+      this.backingData.put(PORT, port);
       this.backingData.put(VERSION, version);
-      this.backingData.put(DATE_CREATED, Long.toString(dateStarted.getTime()));
-      this.backingData.put(IS_ACCEPTING_REQUESTS, Boolean.toString(isAcceptingRequests));
+      this.backingData.put(DATE_CREATED, dateStarted.getTime());
+      this.backingData.put(IS_ACCEPTING_REQUESTS, isAcceptingRequests);
    }
 
    /**
@@ -49,7 +49,7 @@ public class OseeServerInfo extends BaseExchangeData {
     * @return the port
     */
    public int getPort() {
-      return Integer.valueOf(getString(PORT));
+      return backingData.getInt(PORT);
    }
 
    /**
@@ -63,21 +63,21 @@ public class OseeServerInfo extends BaseExchangeData {
     * @return whether requests are accepted
     */
    public boolean isAcceptingRequests() {
-      return Boolean.valueOf(getString(IS_ACCEPTING_REQUESTS));
+      return backingData.getBoolean(IS_ACCEPTING_REQUESTS);
    }
 
    /**
     * @return when server was launched
     */
    public Timestamp getDateStarted() {
-      return new Timestamp(Long.valueOf(getString(DATE_CREATED)));
+      return new Timestamp(backingData.getLong(DATE_CREATED));
    }
 
    /**
     * @param whether server is accepting requests
     */
    public void setAcceptingRequests(boolean value) {
-      backingData.put(IS_ACCEPTING_REQUESTS, Boolean.toString(value));
+      backingData.put(IS_ACCEPTING_REQUESTS, value);
    }
 
    /**

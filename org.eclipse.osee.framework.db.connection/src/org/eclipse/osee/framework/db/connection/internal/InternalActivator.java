@@ -11,15 +11,9 @@
 package org.eclipse.osee.framework.db.connection.internal;
 
 import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
-import org.eclipse.osee.framework.db.connection.IApplicationDatabaseManager;
-import org.eclipse.osee.framework.db.connection.IConnection;
-import org.eclipse.osee.framework.db.connection.IDbConnectionFactory;
-import org.eclipse.osee.framework.db.connection.IDbConnectionInformation;
-import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -29,28 +23,35 @@ public class InternalActivator implements BundleActivator {
 
    private static InternalActivator instance = null;
 
-   private ServiceRegistration dbConnectionFactoryRegistration;
-   private ServiceRegistration dbConnectionInfoProviderRegistration;
-   private BindTracker connectionTracker;
-   private BindTracker infoProviderTracker;
-
    private ServiceTracker applicationDbManagerTracker;
    private ServiceTracker dbConnectionProviderTracker;
    private ServiceTracker dbConnectionInfoTracker;
 
    public static IDbConnectionFactory getConnectionFactory() {
-      return (IDbConnectionFactory) instance.dbConnectionProviderTracker.getService();
+      try {
+         return (IDbConnectionFactory) instance.dbConnectionProviderTracker.waitForService(20000);
+      } catch (InterruptedException ex) {
+         return null;
+      }
    }
 
    public static IDbConnectionInformation getConnectionInfos() {
-      return (IDbConnectionInformation) instance.dbConnectionInfoTracker.getService();
+      try {
+         return (IDbConnectionInformation) instance.dbConnectionInfoTracker.waitForService(20000);
+      } catch (InterruptedException ex) {
+         return null;
+      }
    }
 
    public static IApplicationDatabaseManager getApplicationDatabaseManager() {
-      return (IApplicationDatabaseManager) instance.applicationDbManagerTracker.getService();
+      try {
+         return (IApplicationDatabaseManager) instance.applicationDbManagerTracker.waitForService(20000);
+      } catch (InterruptedException ex) {
+         return null;
+      }
    }
 
-   public static IApplicationDatabaseInfoProvider getApplicationDatabaseProvider() throws OseeCoreException {
+   public static IApplicationDatabaseInfoProvider getApplicationDatabaseProvider() throws OseeCoreException, InterruptedException {
       return getApplicationDatabaseManager().getProvider();
    }
 
@@ -60,19 +61,6 @@ public class InternalActivator implements BundleActivator {
     */
    public void start(BundleContext context) throws Exception {
       instance = this;
-
-      DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
-      connectionTracker = new BindTracker(context, IConnection.class.getName(), dbConnectionFactory);
-      connectionTracker.open();
-      dbConnectionFactoryRegistration =
-            context.registerService(IDbConnectionFactory.class.getName(), dbConnectionFactory, null);
-
-      DbConnectionInformationImpl dbConnectionInfo = new DbConnectionInformationImpl();
-      infoProviderTracker =
-            new BindTracker(context, IDbConnectionInformationContributor.class.getName(), dbConnectionInfo);
-      infoProviderTracker.open();
-      dbConnectionInfoProviderRegistration =
-            context.registerService(IDbConnectionInformation.class.getName(), dbConnectionInfo, null);
 
       dbConnectionProviderTracker = new ServiceTracker(context, IDbConnectionFactory.class.getName(), null);
       dbConnectionProviderTracker.open();
@@ -92,10 +80,6 @@ public class InternalActivator implements BundleActivator {
       instance = null;
       dbConnectionProviderTracker.close();
       dbConnectionInfoTracker.close();
-      connectionTracker.close();
-      infoProviderTracker.close();
-      dbConnectionFactoryRegistration.unregister();
-      dbConnectionInfoProviderRegistration.unregister();
       applicationDbManagerTracker.close();
    }
 }

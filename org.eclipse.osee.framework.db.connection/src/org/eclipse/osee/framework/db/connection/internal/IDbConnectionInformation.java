@@ -11,11 +11,19 @@
 
 package org.eclipse.osee.framework.db.connection.internal;
 
+import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
+import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
+
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface IBind {
-   void bind(Object obj);
+public interface IDbConnectionInformation {
 
-   void unbind(Object obj);
+   public IDatabaseInfo getDatabaseInfo(String servicesId);
+
+   public IDatabaseInfo getSelectedDatabaseInfo();
+
+   void bind(IDbConnectionInformationContributor contributor);
+
+   void unbind(IDbConnectionInformationContributor contributor);
 }

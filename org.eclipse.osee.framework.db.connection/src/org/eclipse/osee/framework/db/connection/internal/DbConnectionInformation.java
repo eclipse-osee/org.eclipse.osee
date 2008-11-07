@@ -16,20 +16,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
-import org.eclipse.osee.framework.db.connection.IDbConnectionInformation;
 import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class DbConnectionInformationImpl implements IDbConnectionInformation, IBind {
+public class DbConnectionInformation implements IDbConnectionInformation {
 
    private Map<String, IDatabaseInfo> dbInfo;
    private IDatabaseInfo selectedDbInfo;
    private Object myWait;
 
-   public DbConnectionInformationImpl() {
+   public DbConnectionInformation() {
       dbInfo = new HashMap<String, IDatabaseInfo>();
       myWait = new Object();
    }
@@ -52,11 +51,11 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
          if (dbConnectionId != null && dbConnectionId.length() > 0) {
             selectedDbInfo = getDatabaseInfo(dbConnectionId);
             if (selectedDbInfo == null) {
-               long endTime = System.currentTimeMillis() + (1000*20);
-               long timeLeft = 1000*20;
-               while(timeLeft > 0 && selectedDbInfo == null){
+               long endTime = System.currentTimeMillis() + (1000 * 20);
+               long timeLeft = 1000 * 20;
+               while (timeLeft > 0 && selectedDbInfo == null) {
                   synchronized (myWait) {
-                     try{
+                     try {
                         myWait.wait(timeLeft);
                      } catch (InterruptedException ex) {
                      }
@@ -66,7 +65,7 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
                }
                if (selectedDbInfo == null) {
                   throw new IllegalStateException(String.format("DB connection information was not found. [%s]",
-                     dbConnectionId));
+                        dbConnectionId));
                }
             }
          } else {
@@ -80,33 +79,32 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
     * @see org.eclipse.osee.framework.db.connection.IBind#bind(java.lang.Object)
     */
    @Override
-   public void bind(Object obj) {
-      IDbConnectionInformationContributor contributer = (IDbConnectionInformationContributor) obj;
+   public void bind(IDbConnectionInformationContributor obj) {
+      IDbConnectionInformationContributor contributor = (IDbConnectionInformationContributor) obj;
       try {
-         for (IDatabaseInfo info : contributer.getDbInformation()) {
+         for (IDatabaseInfo info : contributor.getDbInformation()) {
             dbInfo.put(info.getId(), info);
          }
       } catch (Exception ex) {
          OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
       }
       synchronized (myWait) {
-         myWait.notifyAll();   
-      }      
+         myWait.notifyAll();
+      }
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.db.connection.IBind#unbind(java.lang.Object)
     */
    @Override
-   public void unbind(Object obj) {
-      IDbConnectionInformationContributor contributer = (IDbConnectionInformationContributor) obj;
+   public void unbind(IDbConnectionInformationContributor obj) {
+      IDbConnectionInformationContributor contributor = (IDbConnectionInformationContributor) obj;
       try {
-         for (IDatabaseInfo info : contributer.getDbInformation()) {
+         for (IDatabaseInfo info : contributor.getDbInformation()) {
             dbInfo.remove(info.getDatabaseName());
          }
       } catch (Exception ex) {
          OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
       }
    }
-
 }

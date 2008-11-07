@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="db.connection.consumer">
+	<implementation class="org.eclipse.osee.framework.db.connection.internal.DbConnectionFactory"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.db.connection.internal.IDbConnectionFactory"/>
+	</service>
+	<reference name="db.connection.provider"
+		interface="org.eclipse.osee.framework.db.connection.IConnection"
+		bind="bind"
+		unbind="unbind"
+		cardinality="0..n"
+		policy="dynamic"/>
+</component>

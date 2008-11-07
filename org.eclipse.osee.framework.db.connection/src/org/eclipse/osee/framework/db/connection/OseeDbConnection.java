@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.db.connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
@@ -76,8 +75,8 @@ public class OseeDbConnection {
    private static IDatabaseInfo getDatabaseInfoProvider() throws OseeDataStoreException {
       try {
          return InternalActivator.getApplicationDatabaseProvider().getDatabaseInfo();
-      } catch (OseeCoreException ex) {
-         throw new OseeDataStoreException(ex.getLocalizedMessage());
+      } catch (Exception ex) {
+         throw new OseeDataStoreException(ex);
       }
    }
 

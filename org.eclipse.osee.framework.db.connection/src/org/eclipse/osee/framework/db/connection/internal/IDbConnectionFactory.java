@@ -9,8 +9,9 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.db.connection;
+package org.eclipse.osee.framework.db.connection.internal;
 
+import org.eclipse.osee.framework.db.connection.IConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
@@ -18,4 +19,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
  */
 public interface IDbConnectionFactory {
    IConnection get(String driver) throws OseeCoreException;
+
+   void bind(IConnection connection);
+
+   void unbind(IConnection connection);
 }
