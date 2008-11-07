@@ -72,6 +72,7 @@ public class SessionManagementServlet extends OseeHttpServlet {
          OseeLog.log(SessionManagementServletActivator.class, Level.SEVERE, String.format(
                "Error processing request for protocols [%s]", request.toString()), ex);
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));
       } finally {
          response.getWriter().flush();
@@ -123,7 +124,7 @@ public class SessionManagementServlet extends OseeHttpServlet {
          oseeSessionGrant.write(byteOutputStream);
 
          // TODO after encrypted these will need to change
-         response.setContentType("text/xml");
+         response.setContentType("application/xml");
          response.setCharacterEncoding("UTF-8");
          response.setContentLength(byteOutputStream.size());
          Lib.inputStreamToOutputStream(new ByteArrayInputStream(byteOutputStream.toByteArray()),
@@ -146,6 +147,7 @@ public class SessionManagementServlet extends OseeHttpServlet {
          String sessionId = request.getParameter("sessionId");
          manager.releaseSession(sessionId);
          response.setStatus(HttpServletResponse.SC_ACCEPTED);
+         response.setContentType("text/plain");
          response.getWriter().write(String.format("Session [%s] released.", sessionId));
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);

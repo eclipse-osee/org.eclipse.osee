@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
+import org.eclipse.osee.framework.core.server.internal.SessionData.SessionState;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -43,22 +44,17 @@ public class SessionManager implements ISessionManager {
 
    private static final long DATASTORE_UPDATE = 1000 * 5;
 
-   private static enum SessionState {
-      CREATED, UPDATED, DELETED, CURRENT;
-   }
-
-   private final Map<String, SessionData> sessions;
+   private final Map<String, SessionData> sessionCache;
    private final Timer updateTimer;
 
    public SessionManager() {
-      this.sessions = Collections.synchronizedMap(new HashMap<String, SessionData>());
-
+      this.sessionCache = Collections.synchronizedMap(new HashMap<String, SessionData>());
       this.updateTimer = new Timer("Persist Session Data Timer");
       updateTimer.scheduleAtFixedRate(new UpdateDataStore(), 2000, DATASTORE_UPDATE);
    }
 
    public SessionData getSessionById(String sessionId) {
-      return sessions.get(sessionId);
+      return sessionCache.get(sessionId);
    }
 
    /* (non-Javadoc)
@@ -83,7 +79,7 @@ public class SessionManager implements ISessionManager {
                      credential.getVersion(), timestamp, sessionState.name().toLowerCase());
 
          SessionData sessionData = new SessionData(sessionState, session);
-         sessions.put(sessionData.getSessionId(), sessionData);
+         sessionCache.put(sessionData.getSessionId(), sessionData);
 
          sessionGrant = new OseeSessionGrant(sessionData.getSessionId());
          sessionGrant.setCreationRequired(oseeUserInfo.isCreationRequired());
@@ -123,13 +119,21 @@ public class SessionManager implements ISessionManager {
    }
 
    private final class UpdateDataStore extends TimerTask {
+
+      private boolean firstTimeThrough = true;
+
       @Override
       public void run() {
+         if (firstTimeThrough) {
+            recoverSessions();
+            firstTimeThrough = false;
+         }
+
          List<String> deleteIds = new ArrayList<String>();
          List<OseeSession> createData = new ArrayList<OseeSession>();
          List<OseeSession> updateData = new ArrayList<OseeSession>();
-         for (String sessionId : sessions.keySet()) {
-            SessionData sessionData = sessions.get(sessionId);
+         for (String sessionId : sessionCache.keySet()) {
+            SessionData sessionData = sessionCache.get(sessionId);
             if (sessionData != null) {
                switch (sessionData.getSessionState()) {
                   case CREATED:
@@ -152,6 +156,16 @@ public class SessionManager implements ISessionManager {
 
       }
 
+      private void recoverSessions() {
+         try {
+            String serverId =
+                  CoreServerActivator.getApplicationServerManager().getApplicationServerInfo().getServerId();
+            SessionDataStore.loadSessions(serverId, sessionCache);
+         } catch (OseeDataStoreException ex) {
+            OseeLog.log(CoreServerActivator.class, Level.SEVERE, "Error loading sessions.", ex);
+         }
+      }
+
       private void updateItems(List<OseeSession> sessionsList) {
          createUpdateHelper(sessionsList, false);
       }
@@ -163,16 +177,18 @@ public class SessionManager implements ISessionManager {
       private void createUpdateHelper(List<OseeSession> sessionsList, boolean isCreate) {
          try {
             if (!sessionsList.isEmpty()) {
+               String serverId =
+                     CoreServerActivator.getApplicationServerManager().getApplicationServerInfo().getServerId();
                OseeSession[] sessionsArray = sessionsList.toArray(new OseeSession[sessionsList.size()]);
                SessionState stateToSet = isCreate ? SessionState.CREATED : SessionState.UPDATED;
                if (isCreate) {
-                  SessionDataStore.createSessions(sessionsArray);
+                  SessionDataStore.createSessions(serverId, sessionsArray);
                } else {
-                  SessionDataStore.updateSessions(sessionsArray);
+                  SessionDataStore.updateSessions(serverId, sessionsArray);
                }
                for (OseeSession session : sessionsArray) {
-                  SessionData sessionData = sessions.get(session.getSessionId());
-                  if (sessionData.sessionState == stateToSet) {
+                  SessionData sessionData = sessionCache.get(session.getSessionId());
+                  if (sessionData.getSessionState() == stateToSet) {
                      sessionData.setSessionState(SessionState.CURRENT);
                   }
                }
@@ -188,40 +204,12 @@ public class SessionManager implements ISessionManager {
             if (!sessionIds.isEmpty()) {
                SessionDataStore.deleteSession(sessionIds.toArray(new String[sessionIds.size()]));
                for (String ids : sessionIds) {
-                  sessions.remove(ids);
+                  sessionCache.remove(ids);
                }
             }
          } catch (OseeDataStoreException ex) {
             OseeLog.log(CoreServerActivator.class, Level.SEVERE, "Error deleting sessions", ex);
          }
       }
-   }
-
-   private final class SessionData {
-      private SessionState sessionState;
-      private OseeSession session;
-
-      public SessionData(SessionState sessionState, OseeSession session) {
-         super();
-         this.sessionState = sessionState;
-         this.session = session;
-      }
-
-      public SessionState getSessionState() {
-         return sessionState;
-      }
-
-      public String getSessionId() {
-         return this.session.getSessionId();
-      }
-
-      public void setSessionState(SessionState sessionState) {
-         this.sessionState = sessionState;
-      }
-
-      public OseeSession getSession() {
-         return session;
-      }
-
    }
 }

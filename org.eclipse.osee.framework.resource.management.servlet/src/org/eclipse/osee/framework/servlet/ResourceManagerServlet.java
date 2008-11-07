@@ -82,9 +82,11 @@ public class ResourceManagerServlet extends OseeHttpServlet {
          }
       } catch (MalformedLocatorException ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
          handleError(response, String.format("Unable to locate resource: [%s]", request.getRequestURI()), ex);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         response.setContentType("text/plain");
          handleError(response, String.format("Unable to acquire resource: [%s]", request.getRequestURI()), ex);
       } finally {
          if (inputStream != null) {
@@ -115,14 +117,17 @@ public class ResourceManagerServlet extends OseeHttpServlet {
          response.getWriter().write(actualLocator.toString());
       } catch (MalformedLocatorException ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
          handleError(response, String.format("Unable to locate resource: [%s] - %s", request.getRequestURI(),
                ex.getLocalizedMessage()), ex);
       } catch (EmptyResourceException ex) {
          response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+         response.setContentType("text/plain");
          handleError(response, String.format("Unable to store empty resource: [%s] - %s", request.getRequestURI(),
                ex.getLocalizedMessage()), ex);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         response.setContentType("text/plain");
          handleError(response, String.format("Error saving resource: [%s]", ex.getLocalizedMessage()), ex);
       }
    }
@@ -148,9 +153,11 @@ public class ResourceManagerServlet extends OseeHttpServlet {
          response.flushBuffer();
       } catch (MalformedLocatorException ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
          handleError(response, String.format("Unable to locate resource: [%s]", request.getRequestURI()), ex);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         response.setContentType("text/plain");
          handleError(response, String.format("Unable to delete resource: [%s]", request.getRequestURI()), ex);
       }
    }

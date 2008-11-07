@@ -23,19 +23,28 @@ public class OseeServerInfo extends BaseExchangeData {
    private static final String PORT = "port";
    private static final String VERSION = "version";
    private static final String DATE_CREATED = "creationDate";
-   protected static final String IS_ACCEPTING_REQUESTS = "isAcceptingRequests";
+   private static final String SERVER_ID = "serverId";
+   private static final String IS_ACCEPTING_REQUESTS = "isAcceptingRequests";
 
    private OseeServerInfo() {
       super();
    }
 
-   public OseeServerInfo(String serverAddress, int port, String version, Timestamp dateStarted, boolean isAcceptingRequests) {
+   public OseeServerInfo(String serverId, String serverAddress, int port, String version, Timestamp dateStarted, boolean isAcceptingRequests) {
       this();
+      this.backingData.put(SERVER_ID, serverId);
       this.backingData.put(SERVER_ADDRESS, serverAddress);
       this.backingData.put(PORT, port);
       this.backingData.put(VERSION, version);
       this.backingData.put(DATE_CREATED, dateStarted.getTime());
       this.backingData.put(IS_ACCEPTING_REQUESTS, isAcceptingRequests);
+   }
+
+   /**
+    * @return the serverId
+    */
+   public String getServerId() {
+      return getString(SERVER_ID);
    }
 
    /**

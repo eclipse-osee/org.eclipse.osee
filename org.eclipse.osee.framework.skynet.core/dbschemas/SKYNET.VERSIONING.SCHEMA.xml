@@ -633,10 +633,12 @@
 		<Column id="PORT" defaultValue="not null" type="INTEGER" />
 		<Column id="ACCEPTS_REQUESTS" defaultValue="not null" type="INTEGER" />
 		<Column id="START_TIME" defaultValue="not null" type="TIMESTAMP" />
+		<Column id="SERVER_ID" defaultValue="not null" type="VARCHAR" limits="40" />
 		<Constraint schema="OSEE" id="OSEE_SERVER_LOOKUP_PK" type="PRIMARY KEY" appliesTo="SERVER_ADDRESS, PORT" />
 	</Table>
 	
 	<Table name="OSEE_SESSION" schema="OSEE" tablespace="osee_data">
+		<Column id="MANAGED_BY_SERVER_ID" defaultValue="not null" type="VARCHAR" limits="40" />
 		<Column id="SESSION_ID" defaultValue="not null" type="VARCHAR" limits="28" />
 		<Column id="USER_ID" defaultValue="not null" type="VARCHAR" limits="100"/>
 		<Column id="CLIENT_MACHINE_NAME" defaultValue="not null" type="VARCHAR" limits="100"/>

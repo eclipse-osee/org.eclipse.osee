@@ -77,6 +77,7 @@ public class ArtifactFileServlet extends OseeHttpServlet {
 
          if (!wasProcessed) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setContentType("text/plain");
             response.getWriter().write(String.format("Unable to find resource: [%s]", request.getQueryString()));
          }
       } catch (NumberFormatException ex) {
@@ -95,6 +96,7 @@ public class ArtifactFileServlet extends OseeHttpServlet {
 
    private void handleError(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
       response.setStatus(status);
+      response.setContentType("text/plain");
       OseeLog.log(Activator.class, Level.SEVERE, message, ex);
       response.getWriter().write(Lib.exceptionToString(ex));
    }

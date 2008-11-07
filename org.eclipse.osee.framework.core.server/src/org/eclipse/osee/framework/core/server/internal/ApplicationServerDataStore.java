@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class ApplicationServerDataStore {
 
    private static final String INSERT_LOOKUP_TABLE =
-         "INSERT INTO osee_server_lookup (version_id, server_address, port, start_time, accepts_requests) VALUES (?,?,?,?,?)";
+         "INSERT INTO osee_server_lookup (server_id, version_id, server_address, port, start_time, accepts_requests) VALUES (?,?,?,?,?,?)";
 
    private static final String UPDATE_LOOKUP_TABLE =
          "UPDATE osee_server_lookup SET accepts_requests = ? WHERE server_address = ? AND port = ?";
@@ -45,16 +45,16 @@ public class ApplicationServerDataStore {
          status = true;
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to deregister server from lookup table.", ex);
-         }
+      }
       return status;
    }
 
    static boolean registerWithDb(OseeServerInfo applicationServerInfo) {
       boolean status = false;
       try {
-         ConnectionHandler.runPreparedUpdate(INSERT_LOOKUP_TABLE, applicationServerInfo.getVersion(),
-               applicationServerInfo.getServerAddress(), applicationServerInfo.getPort(),
-               applicationServerInfo.getDateStarted(), 1);
+         ConnectionHandler.runPreparedUpdate(INSERT_LOOKUP_TABLE, applicationServerInfo.getServerId(),
+               applicationServerInfo.getVersion(), applicationServerInfo.getServerAddress(),
+               applicationServerInfo.getPort(), applicationServerInfo.getDateStarted(), 1);
          status = true;
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to register server into lookup table.", ex);
@@ -73,10 +73,10 @@ public class ApplicationServerDataStore {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          String query = String.format(SELECT_FROM_LOOKUP_TABLE, version.contains("%") ? " LIKE ?" : " = ?");
-        chStmt.runPreparedQuery(query, version);
+         chStmt.runPreparedQuery(query, version);
          while (chStmt.next()) {
-            toReturn.add(new OseeServerInfo(chStmt.getString("server_address"), chStmt.getInt("port"),
-                  chStmt.getString("version_id"), chStmt.getTimestamp("start_time"),
+            toReturn.add(new OseeServerInfo(chStmt.getString("server_id"), chStmt.getString("server_address"),
+                  chStmt.getInt("port"), chStmt.getString("version_id"), chStmt.getTimestamp("start_time"),
                   chStmt.getInt("accepts_requests") != 0 ? true : false));
          }
 

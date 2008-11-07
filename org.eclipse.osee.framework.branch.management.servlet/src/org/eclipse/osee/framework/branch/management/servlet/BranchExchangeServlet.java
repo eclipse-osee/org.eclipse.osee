@@ -50,6 +50,7 @@ public class BranchExchangeServlet extends OseeHttpServlet {
          }
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         response.setContentType("text/plain");
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing [%s]", req.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }

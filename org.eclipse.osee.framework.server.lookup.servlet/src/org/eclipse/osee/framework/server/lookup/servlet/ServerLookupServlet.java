@@ -66,9 +66,9 @@ public class ServerLookupServlet extends OseeHttpServlet {
          } else {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             info.write(stream);
-
             response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("txt/xml");
+            response.setContentType("application/xml");
+            response.setCharacterEncoding("UTF-8");
             response.setContentLength(stream.size());
             Lib.inputStreamToOutputStream(new ByteArrayInputStream(stream.toByteArray()), response.getOutputStream());
             response.getOutputStream().flush();

@@ -34,7 +34,7 @@ public class TrustAllAuthenticationProvider implements IAuthenticationProvider {
     */
    @Override
    public String getProtocol() {
-      return "TrustAll";
+      return "trustAll";
    }
 
    /* (non-Javadoc)

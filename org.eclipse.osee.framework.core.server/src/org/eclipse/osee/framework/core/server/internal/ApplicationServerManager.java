@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+import java.io.ByteArrayInputStream;
 import java.lang.Thread.State;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -19,12 +20,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
+import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -63,8 +68,18 @@ public class ApplicationServerManager implements IApplicationServerManager {
       } catch (UnknownHostException ex) {
       }
       int port = Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
-      return new OseeServerInfo(serverAddress, port, OseeCodeVersion.getVersion(), GlobalTime.GreenwichMeanTimestamp(),
-            false);
+
+      String checkSum = "-1";
+      try {
+         String address = String.format("%s:%s", serverAddress, port);
+         ByteArrayInputStream inputStream = new ByteArrayInputStream(address.getBytes("UTF-8"));
+         checkSum = ChecksumUtil.createChecksumAsString(inputStream, ChecksumUtil.MD5);
+      } catch (Exception ex) {
+         OseeLog.log(CoreServerActivator.class, Level.SEVERE, "Error generating application server id", ex);
+      }
+
+      return new OseeServerInfo(checkSum, serverAddress, port, OseeCodeVersion.getVersion(),
+            GlobalTime.GreenwichMeanTimestamp(), false);
    }
 
    public boolean executeLookupRegistration() {
@@ -184,5 +199,4 @@ public class ApplicationServerManager implements IApplicationServerManager {
       }
       return totalProcesses;
    }
-
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.server;
 
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
+import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
@@ -32,5 +33,7 @@ public interface IApplicationServerManager {
    public void setServletRequestsAllowed(boolean value) throws OseeCoreException;
 
    public boolean executeLookupRegistration();
+
+   public OseeServerInfo getApplicationServerInfo();
 
 }

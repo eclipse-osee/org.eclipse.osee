@@ -46,6 +46,7 @@ public class SearchEngineServlet extends OseeHttpServlet {
          }
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
          OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Failed to respond to a search engine servlet request [%s]", request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));

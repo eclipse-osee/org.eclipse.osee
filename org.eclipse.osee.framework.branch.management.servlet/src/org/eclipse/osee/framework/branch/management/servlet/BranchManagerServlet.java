@@ -60,6 +60,7 @@ public class BranchManagerServlet extends OseeHttpServlet {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Failed to respond to a branch servlet request [%s]",
                req.toString()), ex);
+         resp.setContentType("text/plain");
          resp.getWriter().write(Lib.exceptionToString(ex));
       }
       resp.getWriter().flush();

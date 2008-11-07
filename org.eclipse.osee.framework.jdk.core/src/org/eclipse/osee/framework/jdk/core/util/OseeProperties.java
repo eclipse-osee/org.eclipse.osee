@@ -83,7 +83,7 @@ public class OseeProperties {
     * @return client/server authentication protocol.
     */
    public static String getAuthenticationProtocol() {
-      return System.getProperty(OSEE_AUTHENTICATION_PROTOCOL, "TrustAll");
+      return System.getProperty(OSEE_AUTHENTICATION_PROTOCOL, "trustAll");
    }
 
    /**

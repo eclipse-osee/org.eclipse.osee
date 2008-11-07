@@ -55,6 +55,7 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
          response.getWriter().write(message.toString());
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
@@ -88,6 +89,7 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
          response.setStatus(HttpServletResponse.SC_CREATED);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
@@ -117,6 +119,7 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
          }
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));

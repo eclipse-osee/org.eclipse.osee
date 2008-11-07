@@ -88,6 +88,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
                   if (key.startsWith("osee.install.")) {
                      List<ClientInstallInfo> infos = getInfoEntry(key);
                      response.setStatus(HttpServletResponse.SC_OK);
+                     response.setContentType("text/html");
                      if (infos.size() == 0) {
                         response.getWriter().write("<html><body>No installations found</body></html>");
                      } else {
@@ -96,6 +97,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
                      }
                   } else {
                      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                     response.setContentType("text/plain");
                      response.getWriter().write("key parameter was invalid. must start with: osee.install.");
                   }
                   break;
@@ -105,6 +107,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
             }
          } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
             response.getWriter().write(
                   String.format("cmd parameter was invalid. use any of the following: %s",
                         Arrays.deepToString(CommandType.values())));
@@ -112,6 +115,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Failed to process client install info request [%s]",
                request.toString()), ex);
+         response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));
       }
       response.getWriter().flush();
