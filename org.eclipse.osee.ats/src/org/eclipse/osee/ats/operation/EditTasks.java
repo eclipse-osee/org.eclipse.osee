@@ -57,7 +57,7 @@ public class EditTasks extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      monitor.beginTask("Edit Tasks", IProgressMonitor.UNKNOWN);
+      monitor.beginTask("Search / Edit Tasks", IProgressMonitor.UNKNOWN);
 
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
