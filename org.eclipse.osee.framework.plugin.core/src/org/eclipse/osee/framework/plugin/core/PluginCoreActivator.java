@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.plugin.core;
 
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osgi.framework.internal.core.AbstractBundle;
 import org.osgi.framework.Bundle;
@@ -64,6 +65,12 @@ public class PluginCoreActivator extends OseeActivator {
       packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
       packageAdminTracker.open();
 
+      try{
+         Platform.getBundle("org.eclipse.equinox.ds").start();
+      } catch (Exception ex){
+         OseeLog.log(PluginCoreActivator.class, Level.SEVERE, "Unable to load: org.eclipse.equinox.ds", ex);
+      }
+      
       for (Bundle bundle : context.getBundles()) {
          checkForEarlyStartup(bundle);
       }
