@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionExcep
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -543,24 +542,19 @@ public class BranchView extends ViewPart implements IActionable {
       }
 
       @Override
-      public boolean isEnabled() {
-         try {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            if (!selection.isEmpty()) {
-               Object obj = ((JobbedNode) selection.getFirstElement()).getBackingData();
-               if (obj instanceof Branch) {
-                  Branch selectedBranch = (Branch) obj;
-                  if (selectedBranch != null && !ConflictManagerInternal.getInstance().getDestinationBranchesMerged(
-                        selectedBranch.getBranchId()).isEmpty()) {
-                     return true;
-                  }
-                  return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch());
+      public boolean isEnabledWithException() throws OseeCoreException {
+         IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+         if (!selection.isEmpty()) {
+            Object obj = ((JobbedNode) selection.getFirstElement()).getBackingData();
+            if (obj instanceof Branch) {
+               Branch selectedBranch = (Branch) obj;
+               if (selectedBranch != null && !ConflictManagerInternal.getInstance().getDestinationBranchesMerged(
+                     selectedBranch.getBranchId()).isEmpty()) {
+                  return true;
                }
-               return false;
+               return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch());
             }
             return false;
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return false;
       }
@@ -594,7 +588,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             return true;
          }
       });
@@ -636,7 +630,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             boolean toReturn = false;
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             if (!selection.isEmpty()) {
@@ -699,7 +693,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             if (!selection.isEmpty()) {
                return SkynetSelections.oneBranchSelected(selection) && (AccessControlManager.checkObjectPermission(
@@ -758,7 +752,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             return SkynetSelections.oneTransactionSelected(selection) && OseeProperties.isDeveloper();
          }
@@ -798,7 +792,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             return SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchManager.getDefaultBranch();
          }
@@ -818,8 +812,12 @@ public class BranchView extends ViewPart implements IActionable {
 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             if (SkynetSelections.oneBranchSelected(selection)) {
-               if ((UserManager.getUser().isFavoriteBranch((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())))) {
-                  markState = "Unmark";
+               try {
+                  if ((UserManager.getUser().isFavoriteBranch((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())))) {
+                     markState = "Unmark";
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
             return new IContributionItem[] {Commands.getLocalCommandContribution(getSite(), "markAsFavoriteCommand",
@@ -837,22 +835,24 @@ public class BranchView extends ViewPart implements IActionable {
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-            User user = UserManager.getUser();
+            try {
+               UserManager.getUser().toggleFavoriteBranch(branch);
 
-            user.toggleFavoriteBranch(branch);
-
-            if (branchListComposite.isFavoritesFirst())
-               branchTable.refresh();
-            else
-               branchTable.update(selection.getFirstElement(), null);
+               if (branchListComposite.isFavoritesFirst()) {
+                  branchTable.refresh();
+               } else {
+                  branchTable.update(selection.getFirstElement(), null);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
 
             // Saving of this change is done in saveState()
-
             return null;
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
             boolean oneBranchSelected = SkynetSelections.oneBranchSelected(selection);
@@ -941,7 +941,7 @@ public class BranchView extends ViewPart implements IActionable {
       }
 
       @Override
-      public boolean isEnabled() {
+      public boolean isEnabledWithException() throws OseeCoreException {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
          boolean validBranchSelected = SkynetSelections.oneDescendantBranchSelected(selection) && useParentBranch;
 
@@ -1029,9 +1029,8 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-
             return !selection.isEmpty();
          }
       });
@@ -1104,7 +1103,7 @@ public class BranchView extends ViewPart implements IActionable {
       }
 
       @Override
-      public boolean isEnabled() {
+      public boolean isEnabledWithException() throws OseeCoreException {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
          return OseeProperties.isDeveloper() && SkynetSelections.transactionsSelected(selection);
       }
@@ -1165,7 +1164,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchManager.getDefaultBranch();
          }
@@ -1238,7 +1237,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchManager.getDefaultBranch();
          }
@@ -1296,7 +1295,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             return SkynetSelections.oneBranchSelected(selection);
          }
@@ -1345,7 +1344,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             if (!OseeProperties.isDeveloper()) return false;
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             return SkynetSelections.oneBranchSelected(selection);
@@ -1375,8 +1374,8 @@ public class BranchView extends ViewPart implements IActionable {
                   AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
                   return null;
                }
-               if (AccessControlManager.checkObjectPermission(UserManager.getUser(),
-                     selectedBranch.getAssociatedArtifact(), PermissionEnum.READ)) {
+               if (AccessControlManager.checkObjectPermission(selectedBranch.getAssociatedArtifact(),
+                     PermissionEnum.READ)) {
                   if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)
                      OseeAts.openATSArtifact(selectedBranch.getAssociatedArtifact());
                   else
@@ -1394,7 +1393,7 @@ public class BranchView extends ViewPart implements IActionable {
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             return SkynetSelections.oneBranchSelected(selection);
          }

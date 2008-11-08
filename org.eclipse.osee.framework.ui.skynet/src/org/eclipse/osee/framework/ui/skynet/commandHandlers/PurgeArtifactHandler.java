@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.sql.Connection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.PlatformUI;
@@ -39,15 +39,8 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Jeff C. Phillips
  */
-public class PurgeArtifactHandler extends AbstractHandler {
+public class PurgeArtifactHandler extends CommandHandler {
    private List<Artifact> artifacts;
-
-   /**
-    * 
-    */
-   public PurgeArtifactHandler() {
-      super();
-   }
 
    /*
     * (non-Javadoc)
@@ -93,7 +86,7 @@ public class PurgeArtifactHandler extends AbstractHandler {
    }
 
    @Override
-   public boolean isEnabled() {
+   public boolean isEnabledWithException() throws OseeCoreException {
       if (PlatformUI.getWorkbench().isClosing()) {
          return false;
       }

@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -41,9 +39,8 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Ryan D. Brooks
  */
 public class RendererManager {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RendererManager.class);
-   private final HashMap<String, IRenderer> renderers = new HashMap<String, IRenderer>(40);
    private static final RendererManager instance = new RendererManager();
+   private final HashMap<String, IRenderer> renderers = new HashMap<String, IRenderer>(40);
 
    private RendererManager() {
       registerRendersFromExtensionPoints();
@@ -145,7 +142,8 @@ public class RendererManager {
          }
       };
 
-      Jobs.run("Preview " + artifact.getDescriptiveName(), runnable, logger, SkynetGuiPlugin.PLUGIN_ID, false);
+      Jobs.run("Preview " + artifact.getDescriptiveName(), runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID,
+            false);
    }
 
    public static void previewInJob(final List<Artifact> artifacts) throws OseeCoreException {
@@ -167,7 +165,8 @@ public class RendererManager {
             }
          };
 
-         Jobs.run("Preview " + artifacts.size() + " artifacts", runnable, logger, SkynetGuiPlugin.PLUGIN_ID, false);
+         Jobs.run("Preview " + artifacts.size() + " artifacts", runnable, SkynetGuiPlugin.class,
+               SkynetGuiPlugin.PLUGIN_ID, false);
       }
    }
 
@@ -212,7 +211,8 @@ public class RendererManager {
                }
             };
 
-            Jobs.run("Edit " + artifacts.size() + " artifacts", runnable, logger, SkynetGuiPlugin.PLUGIN_ID);
+            Jobs.run("Edit " + artifacts.size() + " artifacts", runnable, SkynetGuiPlugin.class,
+                  SkynetGuiPlugin.PLUGIN_ID);
          }
       }
    }
@@ -228,7 +228,7 @@ public class RendererManager {
          }
       };
 
-      Jobs.run("Edit " + artifact.getDescriptiveName(), runnable, logger, SkynetGuiPlugin.PLUGIN_ID);
+      Jobs.run("Edit " + artifact.getDescriptiveName(), runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, String fileName, boolean show) throws OseeStateException, OseeCoreException {
@@ -259,7 +259,7 @@ public class RendererManager {
 
       String jobName =
             "Compare " + (baseVersion == null ? " new " : baseVersion.getDescriptiveName()) + " to " + (newerVersion == null ? " delete " : newerVersion.getDescriptiveName());
-      Jobs.run(jobName, runnable, logger, SkynetGuiPlugin.PLUGIN_ID);
+      Jobs.run(jobName, runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
 
    }
 
@@ -295,7 +295,7 @@ public class RendererManager {
                   PresentationType.DIFF);
          }
       };
-      Jobs.run("Combined Diff", runnable, logger, SkynetGuiPlugin.PLUGIN_ID);
+      Jobs.run("Combined Diff", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
    }
 
    public static void previewInComposite(final BrowserComposite previewComposite, final Artifact artifact) {
@@ -312,11 +312,11 @@ public class RendererManager {
                   previewComposite.setUrl(url);
                }
             });
-
          }
       };
 
-      Jobs.run("Preview " + artifact.getDescriptiveName(), runnable, logger, SkynetGuiPlugin.PLUGIN_ID, false);
+      Jobs.run("Preview " + artifact.getDescriptiveName(), runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID,
+            false);
    }
 
    public static String renderToHtml(Artifact artifact) throws OseeCoreException {

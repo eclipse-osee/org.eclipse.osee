@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -57,14 +58,18 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
       if (artifact == null) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "The artifact associated with the double-click was null");
       } else {
-         if (AccessControlManager.checkObjectPermission(UserManager.getUser(), artifact, PermissionEnum.READ)) {
-            if (artifact instanceof IATSArtifact)
-               OseeAts.openATSArtifact(artifact);
-            else
-               ArtifactEditor.editArtifact(artifact);
-         } else {
-            OSEELog.logSevere(SkynetGuiPlugin.class,
-                  "The user " + UserManager.getUser() + " does not have read access to " + artifact, true);
+         try {
+            if (AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+               if (artifact instanceof IATSArtifact)
+                  OseeAts.openATSArtifact(artifact);
+               else
+                  ArtifactEditor.editArtifact(artifact);
+            } else {
+               OSEELog.logSevere(SkynetGuiPlugin.class,
+                     "The user " + UserManager.getUser() + " does not have read access to " + artifact, true);
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }

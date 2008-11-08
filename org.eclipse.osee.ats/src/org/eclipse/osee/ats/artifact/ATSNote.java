@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -136,7 +136,7 @@ public class ATSNote {
          builder.append("<TD>" + note.getType() + "</TD>");
          builder.append("<TD>" + (note.getState().equals("") ? "," : note.getState()) + "</TD>");
          builder.append("<TD>" + (note.getMsg().equals("") ? "," : note.getMsg()) + "</TD>");
-         if (user.equals(UserManager.getUser()))
+         if (user.isMe())
             builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
          else
             builder.append("<TD>" + name + "</TD>");

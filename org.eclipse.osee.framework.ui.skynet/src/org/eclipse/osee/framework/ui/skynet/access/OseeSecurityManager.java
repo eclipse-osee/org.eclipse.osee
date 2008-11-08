@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.access;
 
 import java.util.ArrayList;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.NoPoliciesException;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 import org.eclipse.swt.widgets.MenuItem;
@@ -102,6 +104,10 @@ public class OseeSecurityManager extends SecurityManager {
       return;
 
       //      checkPermission(person, permission, -1);
+   }
+
+   public void checkPermission(PermissionList permission) throws SecurityException, NoPoliciesException, OseeCoreException {
+      checkPermission(UserManager.getUser(), permission);
    }
 
    /**

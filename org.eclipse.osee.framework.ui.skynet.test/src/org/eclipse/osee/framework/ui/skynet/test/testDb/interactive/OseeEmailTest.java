@@ -34,6 +34,7 @@ public class OseeEmailTest extends TestCase {
    protected void setUp() throws Exception {
       if (cancelled) return;
       if (emailAddress == null) {
+         ArtifactEditor.editArtifact(UserManager.getUser());
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()
@@ -41,7 +42,6 @@ public class OseeEmailTest extends TestCase {
             @Override
             public void run() {
                // Classloading of OSEE framework may cause emailing to fail.  Load Artifact Editor first.
-               ArtifactEditor.editArtifact(UserManager.getUser());
 
                EntryDialog entryDialog = new EntryDialog("Osee Email Test", "Enter email address to use.");
                if (entryDialog.open() == 0) {

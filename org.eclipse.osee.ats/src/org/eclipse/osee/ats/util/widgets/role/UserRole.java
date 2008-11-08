@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /**
  * @author Donald G. Dunne
@@ -45,7 +45,7 @@ public class UserRole {
       }
    };
 
-   public UserRole() {
+   public UserRole() throws OseeCoreException {
       this(Role.Reviewer, UserManager.getUser(), null, false);
    }
 

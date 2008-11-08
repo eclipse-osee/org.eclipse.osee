@@ -180,7 +180,13 @@ public class PolicyDialog extends Dialog {
 
    private void checkEnabled() {
       // get information from db
-      boolean accessEnabled = AccessControlManager.checkObjectPermission(object, PermissionEnum.WRITE);
+      boolean accessEnabled;
+      try {
+         accessEnabled = AccessControlManager.checkObjectPermission(object, PermissionEnum.WRITE);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         accessEnabled = false;
+      }
 
       accessLabel.setText(accessEnabled ? "" : "You do not have permissions to modify access.");
       radEnabled.setSelection(true);

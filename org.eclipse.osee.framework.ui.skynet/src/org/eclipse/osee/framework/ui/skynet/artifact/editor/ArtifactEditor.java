@@ -53,8 +53,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
-import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
@@ -78,7 +78,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
@@ -119,15 +118,13 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          public void run() {
             try {
                for (Artifact artifact : artifacts) {
-                  if (!AccessControlManager.checkObjectPermission(UserManager.getUser(), artifact,
-                        PermissionEnum.READ)) {
+                  if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
                      OSEELog.logSevere(SkynetGuiPlugin.class,
-                           "The user " + UserManager.getUser() + " does not have read access to " + artifact,
-                           true);
+                           "The user " + UserManager.getUser() + " does not have read access to " + artifact, true);
                   } else
                      AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
                }
-            } catch (PartInitException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }
@@ -138,15 +135,13 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               if (!AccessControlManager.checkObjectPermission(UserManager.getUser(), artifact,
-                     PermissionEnum.READ)) {
+               if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
                   OSEELog.logSevere(SkynetGuiPlugin.class,
-                        "The user " + UserManager.getUser() + " does not have read access to " + artifact,
-                        true);
+                        "The user " + UserManager.getUser() + " does not have read access to " + artifact, true);
                } else if (artifact != null) {
                   AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
                }
-            } catch (PartInitException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }

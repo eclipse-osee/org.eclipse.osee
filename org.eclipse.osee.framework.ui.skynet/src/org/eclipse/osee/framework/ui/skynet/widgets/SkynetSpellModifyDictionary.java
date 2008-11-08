@@ -13,9 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -40,7 +41,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
    public boolean addToGlobalDictionary(String word) {
       try {
          return updateArtifact("Global", word, GlobalPreferences.get());
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       return false;
@@ -52,7 +53,12 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XTextSpellModifyDictionary#addToLocalDictionary(java.lang.String)
     */
    public boolean addToLocalDictionary(String word) {
-      return updateArtifact("Local", word, UserManager.getUser());
+      try {
+         return updateArtifact("Local", word, UserManager.getUser());
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         return false;
+      }
    }
 
    private boolean updateArtifact(String type, String word, Artifact art) {

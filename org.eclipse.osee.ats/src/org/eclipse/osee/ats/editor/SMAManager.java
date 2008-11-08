@@ -170,7 +170,7 @@ public class SMAManager {
       return getWorkFlowDefinition().isReturnPage(getWorkPageDefinition(), workPageDefinition);
    }
 
-   public boolean isAccessControlWrite() {
+   public boolean isAccessControlWrite() throws OseeCoreException {
       return AccessControlManager.getInstance().checkCurrentUserObjectPermission(sma, PermissionEnum.WRITE);
    }
 
@@ -556,8 +556,8 @@ public class SMAManager {
    }
 
    public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
-         return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               null, smas, persist);
+      return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(), null,
+            smas, persist);
    }
 
    public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Artifact sma, boolean persist) {
@@ -700,7 +700,7 @@ public class SMAManager {
       transitionAssignees = assignees;
    }
 
-   public boolean isAssigneeMe() {
+   public boolean isAssigneeMe() throws OseeCoreException {
       return stateMgr.getAssignees().contains(UserManager.getUser());
    }
 

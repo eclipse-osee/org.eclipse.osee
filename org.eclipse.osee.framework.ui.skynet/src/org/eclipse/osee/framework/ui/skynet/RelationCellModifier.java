@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -43,8 +45,8 @@ public class RelationCellModifier implements ICellModifier {
    public boolean canModify(Object element, String property) {
       try {
          SkynetGuiPlugin.securityManager.checkPermission(UserManager.getUser(), pList);
-      } catch (SecurityException ex) {
-         ex.printStackTrace();
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return false;
       }
       return element instanceof RelationLink;

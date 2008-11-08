@@ -11,12 +11,12 @@
 package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Ryan D. Brooks
@@ -48,17 +48,17 @@ public final class Jobs {
       return job;
    }
 
-   public static void run(String name, IExceptionableRunnable runnable, Logger logger, String pluginId) {
-      run(name, runnable, logger, pluginId, true);
+   public static void run(String name, IExceptionableRunnable runnable, Class<?> clazz, String pluginId) {
+      run(name, runnable, clazz, pluginId, true);
    }
 
-   public static void run(String name, IExceptionableRunnable runnable, Logger logger, String pluginId, boolean user) {
-      startJob(new CatchAndReleaseJob(name, runnable, logger, pluginId), user);
+   public static void run(String name, IExceptionableRunnable runnable, Class<?> clazz, String pluginId, boolean user) {
+      startJob(new CatchAndReleaseJob(name, runnable, clazz, pluginId), user);
    }
 
    public static class CatchAndReleaseJob extends Job {
       private final IExceptionableRunnable runnable;
-      private final Logger logger;
+      private final Class<?> clazz;
       private final String pluginId;
 
       /**
@@ -67,24 +67,22 @@ public final class Jobs {
        * @param logger
        * @param pluginId
        */
-      public CatchAndReleaseJob(String name, IExceptionableRunnable runnable, Logger logger, String pluginId) {
+      public CatchAndReleaseJob(String name, IExceptionableRunnable runnable, Class<?> clazz, String pluginId) {
          super(name);
          this.runnable = runnable;
-         this.logger = logger;
+         this.clazz = clazz;
          this.pluginId = pluginId;
       }
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-
          try {
             runnable.run(monitor);
          } catch (Exception ex) {
             String message = ex.getLocalizedMessage() == null ? ex.toString() : ex.getLocalizedMessage();
-            logger.log(Level.SEVERE, message, ex);
+            OseeLog.log(clazz, Level.SEVERE, ex);
             return new Status(Status.ERROR, pluginId, Status.OK, message, ex);
          }
-
          return Status.OK_STATUS;
       }
    }

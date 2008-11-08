@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -394,7 +393,7 @@ public class AtsBranchManager {
          }
       };
 
-      Jobs.run("Create Branch", runnable, ConfigUtil.getConfigFactory().getLogger(AtsPlugin.class), AtsPlugin.PLUGIN_ID);
+      Jobs.run("Create Branch", runnable, AtsPlugin.class, AtsPlugin.PLUGIN_ID);
    }
 
    public void updateBranchAccessControl() throws OseeCoreException {

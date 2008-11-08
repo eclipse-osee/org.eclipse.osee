@@ -68,7 +68,7 @@ public class User extends Artifact implements Serializable {
       }
    }
 
-   public boolean isMe() throws OseeCoreException {
+   public boolean isMe() {
       try {
          return (getUserId().equals(UserManager.getUser().getUserId()));
       } catch (Exception ex) {
@@ -121,33 +121,29 @@ public class User extends Artifact implements Serializable {
 
    /**
     * @param favoriteBranch
+    * @throws OseeCoreException
     */
-   public void toggleFavoriteBranch(Branch favoriteBranch) {
+   public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
+      Collection<Branch> branches = BranchManager.getNormalBranches();
+      HashSet<Integer> branchIds = new HashSet<Integer>();
+      for (Branch branch : branches)
+         branchIds.add(branch.getBranchId());
 
-      try {
-         Collection<Branch> branches = BranchManager.getNormalBranches();
-         HashSet<Integer> branchIds = new HashSet<Integer>();
-         for (Branch branch : branches)
-            branchIds.add(branch.getBranchId());
-
-         boolean found = false;
-         Collection<Attribute<Integer>> attributes = getAttributes(favoriteBranchAttributeName);
-         for (Attribute<Integer> attribute : attributes) {
-            // Remove attributes that are no longer valid
-            if (!branchIds.contains(attribute.getValue())) {
-               attribute.delete();
-            } else if (favoriteBranch.getBranchId() == attribute.getValue()) {
-               attribute.delete();
-               found = true;
-               break;
-            }
+      boolean found = false;
+      Collection<Attribute<Integer>> attributes = getAttributes(favoriteBranchAttributeName);
+      for (Attribute<Integer> attribute : attributes) {
+         // Remove attributes that are no longer valid
+         if (!branchIds.contains(attribute.getValue())) {
+            attribute.delete();
+         } else if (favoriteBranch.getBranchId() == attribute.getValue()) {
+            attribute.delete();
+            found = true;
+            break;
          }
+      }
 
-         if (!found) {
-            addAttribute(favoriteBranchAttributeName, favoriteBranch.getBranchId());
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      if (!found) {
+         addAttribute(favoriteBranchAttributeName, favoriteBranch.getBranchId());
       }
    }
 

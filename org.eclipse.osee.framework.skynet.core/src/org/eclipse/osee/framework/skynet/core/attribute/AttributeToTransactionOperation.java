@@ -117,7 +117,7 @@ public class AttributeToTransactionOperation {
     * @throws OseeDataStoreException
     * @throws OseeAuthenticationRequiredException
     */
-   private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws OseeCoreException {
       if (!attribute.isInDatastore()) return;
 
       int attrGammaId;

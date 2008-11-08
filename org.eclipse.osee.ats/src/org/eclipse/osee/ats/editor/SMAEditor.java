@@ -120,30 +120,32 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    @Override
    public void doSave(IProgressMonitor monitor) {
-      if (smaMgr.isHistoricalVersion()) {
-         AWorkbench.popup(
-               "Historical Error",
-               "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeName() + ":\n\n" + smaMgr.getSma());
-      } else if (!smaMgr.isAccessControlWrite()) {
-         AWorkbench.popup("Authentication Error",
-               "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
-      } else {
-         try {
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
-            if (getActivePage() == attributesPageIndex) {
-               smaMgr.getSma().persistAttributes(transaction);
-            }
-            // Save widget data to artifact
-            workFlowTab.saveXWidgetToArtifact();
-            smaMgr.getSma().saveSMA(transaction);
-            transaction.execute();
-            workFlowTab.refresh();
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
-         onDirtied();
-      }
       try {
+         if (smaMgr.isHistoricalVersion()) {
+            AWorkbench.popup(
+                  "Historical Error",
+                  "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeName() + ":\n\n" + smaMgr.getSma());
+         } else if (!smaMgr.isAccessControlWrite()) {
+            AWorkbench.popup(
+                  "Authentication Error",
+                  "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
+         } else {
+            try {
+               SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+               if (getActivePage() == attributesPageIndex) {
+                  smaMgr.getSma().persistAttributes(transaction);
+               }
+               // Save widget data to artifact
+               workFlowTab.saveXWidgetToArtifact();
+               smaMgr.getSma().saveSMA(transaction);
+               transaction.execute();
+               workFlowTab.refresh();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+            onDirtied();
+         }
+
          OseeNotificationManager.sendNotifications();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -619,8 +621,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    /**
     * @return the isAccessControlWrite
+    * @throws OseeCoreException
     */
-   public boolean isAccessControlWrite() {
+   public boolean isAccessControlWrite() throws OseeCoreException {
       return AccessControlManager.getInstance().checkCurrentUserObjectPermission(smaMgr.getSma(), PermissionEnum.WRITE);
    }
 

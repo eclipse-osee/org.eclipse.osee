@@ -247,8 +247,9 @@ public class AccessControlManager {
     * 
     * @param permission
     * @return true if the subject has permission.
+    * @throws OseeCoreException
     */
-   public boolean checkSubjectPermission(PermissionEnum permission) {
+   public boolean checkSubjectPermission(PermissionEnum permission) throws OseeCoreException {
       return checkObjectPermission(UserManager.getUser(), permission);
    }
 
@@ -272,7 +273,7 @@ public class AccessControlManager {
       return isValid;
    }
 
-   public boolean checkObjectListPermission(List<?> objectList, PermissionEnum permission) {
+   public boolean checkObjectListPermission(List<?> objectList, PermissionEnum permission) throws OseeCoreException {
       boolean isValid = true;
 
       if (objectList.isEmpty()) {
@@ -291,13 +292,14 @@ public class AccessControlManager {
     * @param object
     * @param permission
     * @return true if the subject has permission for an object else false.
+    * @throws OseeCoreException
     */
-   public static boolean checkObjectPermission(Object object, PermissionEnum permission) {
+   public static boolean checkObjectPermission(Object object, PermissionEnum permission) throws OseeCoreException {
       return checkObjectPermission(UserManager.getUser(), object, permission);
    }
 
-   public boolean checkCurrentUserObjectPermission(Object object, PermissionEnum permission) {
-      return checkObjectPermission(UserManager.getUser(), object, permission);
+   public boolean checkCurrentUserObjectPermission(Object object, PermissionEnum permission) throws OseeCoreException {
+      return checkObjectPermission(object, permission);
    }
 
    public PermissionEnum getObjectPermission(Artifact subject, Object object) {

@@ -14,9 +14,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesProvider;
 
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesPr
  */
 public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesProvider {
 
-   public Collection<Branch> getDefaultInitialBranches() {
+   public Collection<Branch> getDefaultInitialBranches() throws OseeCoreException {
       User user = UserManager.getUser();
       try {
          Collection<TeamDefinitionArtifact> teams =
@@ -42,7 +43,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
          return branches;
       } catch (Exception ex) {
-         OseeLog.log(TeamBasedDefaultBranchProvider.class, Level.WARNING,  ex);
+         OseeLog.log(TeamBasedDefaultBranchProvider.class, Level.WARNING, ex);
       }
 
       return null;

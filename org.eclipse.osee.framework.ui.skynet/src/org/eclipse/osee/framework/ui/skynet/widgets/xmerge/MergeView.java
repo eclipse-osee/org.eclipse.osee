@@ -348,7 +348,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             if (conflicts == null || conflicts.length == 0) return false;
             return conflicts[0].getDestBranch() != BranchManager.getDefaultBranch();
          }
@@ -394,7 +394,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
@@ -437,7 +437,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
@@ -487,7 +487,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             if (conflicts == null || conflicts.length == 0 || conflicts[0].getSourceBranch() == null) return false;
             return conflicts[0].getSourceBranch() != BranchManager.getDefaultBranch();
          }
@@ -616,7 +616,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       }
 
       @Override
-      public boolean isEnabled() {
+      public boolean isEnabledWithException() throws OseeCoreException {
          artifacts = new LinkedList<Artifact>();
          List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
          for (Conflict conflict : conflicts) {
@@ -729,7 +729,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       }
 
       @Override
-      public boolean isEnabled() {
+      public boolean isEnabledWithException() throws OseeCoreException {
          artifacts = new LinkedList<Artifact>();
          List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
          if (conflicts.size() != 1) return false;

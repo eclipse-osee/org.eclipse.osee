@@ -60,8 +60,9 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
     * Returns the currently authenticated user
     * 
     * @return User
+    * @throws OseeCoreException
     */
-   public static User getUser() {
+   public static User getUser() throws OseeCoreException {
       if (instance.duringMainUserCreation) {
          return BootStrapUser.getInstance();
       }

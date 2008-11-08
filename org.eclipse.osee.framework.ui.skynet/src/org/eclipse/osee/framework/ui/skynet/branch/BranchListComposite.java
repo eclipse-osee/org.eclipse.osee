@@ -14,8 +14,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -320,11 +320,17 @@ public class BranchListComposite implements IBranchEventListener {
          Object backing2 = ((JobbedNode) o2).getBackingData();
 
          if (favoritesFirst && backing1 instanceof Branch && backing2 instanceof Branch) {
-            User user = UserManager.getUser();
-            boolean fav1 = user.isFavoriteBranch((Branch) backing1);
-            boolean fav2 = user.isFavoriteBranch((Branch) backing2);
+            try {
+               User user = UserManager.getUser();
+               boolean fav1 = user.isFavoriteBranch((Branch) backing1);
+               boolean fav2 = user.isFavoriteBranch((Branch) backing2);
 
-            if (fav1 ^ fav2) return fav1 ? -1 : 1;
+               if (fav1 ^ fav2) {
+                  return fav1 ? -1 : 1;
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          } else if (backing1 instanceof Branch && !(backing2 instanceof Branch)) {
             return -1;
          } else if (!(backing1 instanceof Branch) && backing2 instanceof Branch) {

@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,9 +40,7 @@ public class AtsAdmin {
                      ArtifactQuery.getArtifactFromTypeAndName("Artifact", "AtsAdmin", AtsPlugin.getAtsBranch());
             }
             if (atsAdminArtifact != null) {
-               atsAdmin =
-                     AccessControlManager.checkObjectPermission(UserManager.getUser(), atsAdminArtifact,
-                           PermissionEnum.FULLACCESS);
+               atsAdmin = AccessControlManager.checkObjectPermission(atsAdminArtifact, PermissionEnum.FULLACCESS);
             }
          }
          OseeProperties.setDeveloper(atsAdmin);

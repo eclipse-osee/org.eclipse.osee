@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 import org.eclipse.osee.framework.ui.admin.AdminView;
 
@@ -29,16 +32,11 @@ public abstract class DbItem {
    public abstract PermissionList getPermission();
 
    public boolean isWriteAccess() {
-
-      if (AdminView.person != null) {
-         try {
-            AdminView.sm.checkPermission(AdminView.person, getPermission());
-            return true;
-         } catch (SecurityException ex) {
-            System.out.println(ex.getMessage());
-            return false;
-         }
-      } else {
+      try {
+         AdminView.sm.checkPermission(getPermission());
+         return true;
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return false;
       }
    }

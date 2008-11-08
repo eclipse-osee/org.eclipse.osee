@@ -15,13 +15,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.swt.graphics.Image;
@@ -35,7 +33,7 @@ public class DefectItem {
    private String description = "";
    private String location = "";
    private String resolution = "";
-   private User user = UserManager.getUser();
+   private User user;
    private String guid = GUID.generateGuidStr();
    private Severity severity = Severity.None;
    private Disposition disposition = Disposition.None;
@@ -61,11 +59,12 @@ public class DefectItem {
       }
    };
 
-   public DefectItem() {
+   public DefectItem() throws OseeCoreException {
+      user = UserManager.getUser();
    }
 
    public DefectItem(User user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) {
-      if (user != null) this.user = user;
+      this.user = user;
       if (severity != null) this.severity = severity;
       if (disposition != null) this.disposition = disposition;
       if (injectionActivity != null) this.injectionActivity = injectionActivity;
@@ -75,7 +74,7 @@ public class DefectItem {
       if (date != null) this.date = date;
    }
 
-   public DefectItem(String xml) {
+   public DefectItem(String xml) throws OseeCoreException {
       fromXml(xml);
    }
 
@@ -150,18 +149,14 @@ public class DefectItem {
       "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><guid>" + guid + "</guid>";
    }
 
-   public void fromXml(String xml) {
+   private void fromXml(String xml) throws OseeCoreException {
       this.severity = Severity.valueOf(AXml.getTagData(xml, "severity"));
       this.disposition = Disposition.valueOf(AXml.getTagData(xml, "disposition"));
       this.injectionActivity = InjectionActivity.valueOf(AXml.getTagData(xml, "injectionActivity"));
       Date date = new Date();
       date.setTime(new Long(AXml.getTagData(xml, "date")));
       this.date = date;
-      try {
-         this.user = UserManager.getUserByUserId(AXml.getTagData(xml, "user"));
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
+      this.user = UserManager.getUserByUserId(AXml.getTagData(xml, "user"));
       this.description = AXml.getTagData(xml, "description");
       this.location = AXml.getTagData(xml, "location");
       this.resolution = AXml.getTagData(xml, "resolution");

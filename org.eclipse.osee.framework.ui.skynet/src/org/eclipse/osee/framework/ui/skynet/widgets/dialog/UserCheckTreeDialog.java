@@ -18,8 +18,8 @@ import java.util.Set;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -68,24 +68,28 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
          public int compare(Viewer viewer, Object e1, Object e2) {
             User user1 = ((User) e1);
             User user2 = ((User) e2);
-            if (UserManager.getUser().equals(user1)) {
-               return -1;
-            }
-            if (UserManager.getUser().equals(user2)) {
-               return 1;
-            }
-            if (initialSel != null) {
-               if (initialSel.contains(user1) && initialSel.contains(user2)) {
-                  return getComparator().compare(user1.getName(), user2.getName());
-               }
-               if (initialSel.contains(user1)) {
+            try {
+               if (UserManager.getUser().equals(user1)) {
                   return -1;
                }
-               if (initialSel.contains(user2)) {
+               if (UserManager.getUser().equals(user2)) {
                   return 1;
                }
+               if (initialSel != null) {
+                  if (initialSel.contains(user1) && initialSel.contains(user2)) {
+                     return getComparator().compare(user1.getName(), user2.getName());
+                  }
+                  if (initialSel.contains(user1)) {
+                     return -1;
+                  }
+                  if (initialSel.contains(user2)) {
+                     return 1;
+                  }
+               }
+               return getComparator().compare(user1.getName(), user2.getName());
+            } catch (OseeCoreException ex) {
+               return -1;
             }
-            return getComparator().compare(user1.getName(), user2.getName());
          }
       });
       return c;

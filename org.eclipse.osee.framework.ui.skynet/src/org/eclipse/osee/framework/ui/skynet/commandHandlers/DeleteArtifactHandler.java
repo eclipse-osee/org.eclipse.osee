@@ -11,19 +11,20 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Display;
@@ -32,16 +33,8 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Jeff C. Phillips
  */
-public class DeleteArtifactHandler extends AbstractHandler {
-   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
+public class DeleteArtifactHandler extends CommandHandler {
    private List<Artifact> artifacts;
-
-   /**
-    * 
-    */
-   public DeleteArtifactHandler() {
-      super();
-   }
 
    /*
     * (non-Javadoc)
@@ -70,7 +63,7 @@ public class DeleteArtifactHandler extends AbstractHandler {
    }
 
    @Override
-   public boolean isEnabled() {
+   public boolean isEnabledWithException() throws OseeCoreException {
       if (PlatformUI.getWorkbench().isClosing()) {
          return false;
       }
@@ -82,7 +75,7 @@ public class DeleteArtifactHandler extends AbstractHandler {
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-         isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
+         isEnabled = AccessControlManager.getInstance().checkObjectListPermission(artifacts, PermissionEnum.WRITE);
       }
       return isEnabled;
    }

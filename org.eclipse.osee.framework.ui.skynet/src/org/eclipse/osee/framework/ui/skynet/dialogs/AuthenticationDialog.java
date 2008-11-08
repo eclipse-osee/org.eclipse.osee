@@ -15,6 +15,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException.AuthenticationErrorCode;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -207,7 +208,13 @@ public class AuthenticationDialog extends OseeMessageDialog {
                   if (dialog.isValid()) {
                      if (ClientSessionManager.isSessionValid()) {
                         numberOfTries = MAX_RETRIES;
-                        MessageDialog.openInformation(shell, "Authenticated", "Logged in as: " + UserManager.getUser());
+                        String userText;
+                        try {
+                           userText = UserManager.getUser().toString();
+                        } catch (OseeCoreException ex) {
+                           userText = ex.getLocalizedMessage();
+                        }
+                        MessageDialog.openInformation(shell, "Authenticated", "Logged in as: " + userText);
                      } else {
                         if (numberOfTries >= MAX_RETRIES - 1) {
                            message = "Maximum number of Retries reached.\n" + endMsg;

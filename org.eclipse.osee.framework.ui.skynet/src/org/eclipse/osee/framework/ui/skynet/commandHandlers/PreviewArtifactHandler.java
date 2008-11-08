@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -34,7 +34,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Jeff C. Phillips
  */
-public abstract class PreviewArtifactHandler extends AbstractHandler {
+public abstract class PreviewArtifactHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
    /*
@@ -57,7 +57,7 @@ public abstract class PreviewArtifactHandler extends AbstractHandler {
    protected abstract VariableMap getPreviewOptions() throws OseeArgumentException;
 
    @Override
-   public boolean isEnabled() {
+   public boolean isEnabledWithException() throws OseeCoreException {
 
       if (PlatformUI.getWorkbench().isClosing()) {
          return false;

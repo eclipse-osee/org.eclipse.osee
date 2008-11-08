@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.ui.PlatformUI;
@@ -30,8 +30,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Jeff C. Phillips
  */
-public class EditArtifactHandler extends AbstractHandler {
-   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
+public class EditArtifactHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
    /*
@@ -54,7 +53,7 @@ public class EditArtifactHandler extends AbstractHandler {
    }
 
    @Override
-   public boolean isEnabled() {
+   public boolean isEnabledWithException() throws OseeCoreException {
       if (PlatformUI.getWorkbench().isClosing()) {
          return false;
       }
@@ -66,7 +65,7 @@ public class EditArtifactHandler extends AbstractHandler {
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-         isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
+         isEnabled = AccessControlManager.getInstance().checkObjectListPermission(artifacts, PermissionEnum.WRITE);
       }
       return isEnabled;
    }

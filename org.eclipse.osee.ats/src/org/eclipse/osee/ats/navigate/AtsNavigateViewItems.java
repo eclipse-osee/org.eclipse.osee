@@ -62,6 +62,7 @@ import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -90,7 +91,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       return navigateItems;
    }
 
-   public WorldSearchItem getMyWorldSearchItem() {
+   public WorldSearchItem getMyWorldSearchItem() throws OseeCoreException {
       return new MyWorldSearchItem("My World", UserManager.getUser());
    }
 
@@ -98,10 +99,18 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
    public List<XNavigateItem> getSearchNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      if (AtsPlugin.areOSEEServicesAvailable().isFalse()) return items;
-
+      if (AtsPlugin.areOSEEServicesAvailable().isFalse()) {
+         return items;
+      }
       items.add(new XNavigateItemAction(null, new NewAction()));
-      User user = UserManager.getUser();
+
+      User user;
+      try {
+         user = UserManager.getUser();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return items;
+      }
 
       items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
       items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));

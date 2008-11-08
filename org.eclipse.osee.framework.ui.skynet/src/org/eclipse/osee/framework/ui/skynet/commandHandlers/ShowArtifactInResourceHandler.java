@@ -11,16 +11,17 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -30,16 +31,12 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Jeff C. Phillips
  */
-public class ShowArtifactInResourceHandler extends AbstractHandler {
+public class ShowArtifactInResourceHandler extends CommandHandler {
    private List<Artifact> artifacts;
-
-   public ShowArtifactInResourceHandler() {
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
     */
-
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       for (Artifact artifact : artifacts) {
@@ -57,7 +54,7 @@ public class ShowArtifactInResourceHandler extends AbstractHandler {
    }
 
    @Override
-   public boolean isEnabled() {
+   public boolean isEnabledWithException() throws OseeCoreException {
       if (PlatformUI.getWorkbench().isClosing()) {
          return false;
       }

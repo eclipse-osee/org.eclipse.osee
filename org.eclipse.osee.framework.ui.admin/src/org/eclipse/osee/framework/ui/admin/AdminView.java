@@ -19,8 +19,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
@@ -55,7 +53,6 @@ public class AdminView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.admin.AdminView";
    public static OseeSecurityManager sm;
    private static Action saveAction;
-   public static User person = null;
    private TabFolder tabFolder;
    private final ArrayList<DbItem> dbItems;
    private final Cursor handCursor;
@@ -65,9 +62,6 @@ public class AdminView extends ViewPart implements IActionable {
     */
    public AdminView() {
       sm = OseeSecurityManager.getInstance();
-
-      person = UserManager.getUser();
-
       dbItems = new ArrayList<DbItem>();
       dbItems.add(new SiteGssflRpcr());
       handCursor = new Cursor(null, SWT.CURSOR_HAND);

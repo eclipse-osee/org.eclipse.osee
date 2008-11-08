@@ -18,7 +18,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
@@ -58,36 +57,37 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
 
          @Override
          public void run() {
-            if (ClientSessionManager.isSessionValid()) {
-               boolean result =
-                     MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Log Off...",
-                           "Are you sure you want to log off and exit OSEE?");
-               if (result) {
-                  try {
-                     ClientSessionManager.releaseSession();
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                  }
-                  PlatformUI.getWorkbench().close();
-               }
-            } else {
-               //               if (oseeAuthentication.isLoginAllowed()) {
-               AuthenticationDialog.openDialog();
-               //               } else {
-               //                  oseeAuthentication.authenticate("", "", "", false);
-               //               }
+            try {
                if (ClientSessionManager.isSessionValid()) {
-                  Display.getDefault().asyncExec(new Runnable() {
-                     public void run() {
-                        try {
-                           OseeEventManager.kickAccessControlArtifactsEvent(this,
-                                 AccessControlEventType.UserAuthenticated, LoadedArtifacts.EmptyLoadedArtifacts());
-                        } catch (Exception ex) {
-                           OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  boolean result =
+                        MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                              "Log Off...", "Are you sure you want to log off and exit OSEE?");
+                  if (result) {
+                     ClientSessionManager.releaseSession();
+
+                     PlatformUI.getWorkbench().close();
+                  }
+               } else {
+                  //               if (oseeAuthentication.isLoginAllowed()) {
+                  AuthenticationDialog.openDialog();
+                  //               } else {
+                  //                  oseeAuthentication.authenticate("", "", "", false);
+                  //               }
+                  if (ClientSessionManager.isSessionValid()) {
+                     Display.getDefault().asyncExec(new Runnable() {
+                        public void run() {
+                           try {
+                              OseeEventManager.kickAccessControlArtifactsEvent(this,
+                                    AccessControlEventType.UserAuthenticated, LoadedArtifacts.EmptyLoadedArtifacts());
+                           } catch (Exception ex) {
+                              OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                           }
                         }
-                     }
-                  });
+                     });
+                  }
                }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -158,16 +158,17 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
    @Override
    protected String getEnabledToolTip() {
       if (ClientSessionManager.isSessionValid()) {
-         User skynetName = UserManager.getUser();
+         String skynetName = "Unknown";
          String userId = "-";
          String sessionId = "-";
          try {
-            userId = skynetName.getUserId();
+            skynetName = UserManager.getUser().getName();
+            userId = UserManager.getUser().getUserId();
             sessionId = ClientSessionManager.getSessionId();
          } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-         return String.format(ENABLED_TOOLTIP, (skynetName != null ? skynetName.getName() : "Unknown"), userId,
-               sessionId);
+         return String.format(ENABLED_TOOLTIP, skynetName, userId, sessionId);
       }
       return DISABLED_TOOLTIP;
    }

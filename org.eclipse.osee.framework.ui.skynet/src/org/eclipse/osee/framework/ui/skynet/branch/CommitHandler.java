@@ -96,7 +96,7 @@ public class CommitHandler extends AbstractSelectionEnabledHandler {
    }
 
    @Override
-   public boolean isEnabled() {
+   public boolean isEnabledWithException() throws OseeCoreException {
       IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
       boolean validBranchSelected = SkynetSelections.oneDescendantBranchSelected(selection) && useParentBranch;
 

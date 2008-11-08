@@ -883,7 +883,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean isReadOnly() {
-      return deleted || isHistorical() || !AccessControlManager.checkObjectPermission(this, PermissionEnum.WRITE);
+      try {
+         return deleted || isHistorical() || !AccessControlManager.checkObjectPermission(this, PermissionEnum.WRITE);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         return false;
+      }
    }
 
    private boolean anAttributeIsDirty() {

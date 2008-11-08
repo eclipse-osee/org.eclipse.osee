@@ -112,7 +112,7 @@ public final class SkynetTransaction extends DbTransaction {
       addArtifactModifiedEvent("persistArtifact()", artifactModType, artifact);
    }
 
-   private void processTransactionForArtifact(Artifact artifact, ModificationType modType, int artGamma) throws OseeDataStoreException {
+   private void processTransactionForArtifact(Artifact artifact, ModificationType modType, int artGamma) throws OseeCoreException {
       addTransactionDataItem(new ArtifactTransactionData(artifact, artGamma, getTransactionId(), modType));
    }
 
@@ -188,7 +188,7 @@ public final class SkynetTransaction extends DbTransaction {
       }
    }
 
-   public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeCoreException {
       madeChanges = true;
       xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(sourceObject), artifactModType, artifact,
             getTransactionId().getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
@@ -213,7 +213,7 @@ public final class SkynetTransaction extends DbTransaction {
     * @return Returns the transactionId.
     * @throws OseeDataStoreException
     */
-   public TransactionId getTransactionId() throws OseeDataStoreException {
+   public TransactionId getTransactionId() throws OseeCoreException {
       if (transactionId == null) {
          transactionId = TransactionIdManager.createNextTransactionId(branch, UserManager.getUser(), "");
       }

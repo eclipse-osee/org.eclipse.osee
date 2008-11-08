@@ -19,7 +19,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,11 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 public class ArtifactContentProvider implements ITreeContentProvider, ArtifactChangeListener {
    private static Object[] EMPTY_ARRAY = new Object[0];
    protected TreeViewer viewer;
-   private final ArtifactExplorer artifactExplorer;
-
-   public ArtifactContentProvider(ArtifactExplorer artifactExplorer) {
-      this.artifactExplorer = artifactExplorer;
-   }
 
    /*
     * @see IContentProvider#dispose()
@@ -77,8 +71,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
          Artifact parentItem = (Artifact) parentElement;
 
          try {
-            if (AccessControlManager.checkObjectPermission(UserManager.getUser(), parentItem,
-                  PermissionEnum.READ)) {
+            if (AccessControlManager.checkObjectPermission(parentItem, PermissionEnum.READ)) {
                Collection<Artifact> children = parentItem.getChildren();
                if (children != null) {
                   return children.toArray();
@@ -122,19 +115,17 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
        */
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
-
-         if (AccessControlManager.checkObjectPermission(UserManager.getUser(), artifact, PermissionEnum.READ)) {
-            if (artifact.isDeleted()) return false;
-
-            try {
+         try {
+            if (AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+               if (artifact.isDeleted()) return false;
                return artifact.getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD) > 0;
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               // Assume it has children if an error happens
-               return true;
+            } else {
+               return false;
             }
-         } else {
-            return false;
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            // Assume it has children if an error happens
+            return true;
          }
       } else {
          return getChildren(element).length > 0;

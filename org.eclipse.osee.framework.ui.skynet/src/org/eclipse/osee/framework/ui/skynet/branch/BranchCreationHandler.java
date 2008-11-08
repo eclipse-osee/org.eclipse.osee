@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +21,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -48,8 +46,6 @@ import org.eclipse.swt.widgets.Display;
  * @author Robert A. Fisher
  */
 public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchCreationHandler.class);
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private TreeViewer branchTable;
    private boolean selective;
 
@@ -71,7 +67,7 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
       try {
          if (backingData instanceof Branch) {
             Branch branch = (Branch) backingData;
-            parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
+            parentTransactionId = TransactionIdManager.getInstance().getEditableTransactionId(branch);
          } else if (backingData instanceof TransactionData) {
 
             parentTransactionId = ((TransactionData) backingData).getTransactionId();
@@ -106,31 +102,27 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
 
                   // Preserve software reqts
                   String[] preserveTypes = new String[] {Requirements.SOFTWARE_REQUIREMENT};
-                  BranchManager.createBranchWithFiltering(parentTransactionId, null, dialog.getEntry(),
-                        null, compressTypes.toArray(new String[compressTypes.size()]), preserveTypes);
+                  BranchManager.createBranchWithFiltering(parentTransactionId, null, dialog.getEntry(), null,
+                        compressTypes.toArray(new String[compressTypes.size()]), preserveTypes);
                } else {
                   BranchManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
                }
             }
          };
 
-         Jobs.run("Create Branch", runnable, logger, SkynetGuiPlugin.PLUGIN_ID);
+         Jobs.run("Create Branch", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
       }
 
       return null;
    }
 
    @Override
-   public boolean isEnabled() {
+   public boolean isEnabledWithException() throws OseeCoreException {
       IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
-      try {
-         return (!selective || OseeProperties.isDeveloper()) && ((SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
-               SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(selection) && AccessControlManager.checkObjectPermission(
-               ((TransactionData) SkynetSelections.boilDownObject(selection.getFirstElement())).getTransactionId().getBranch(),
-               PermissionEnum.READ)));
-      } catch (OseeCoreException ex) {
-         return false;
-      }
+      return (!selective || OseeProperties.isDeveloper()) && ((SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
+            SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(selection) && AccessControlManager.checkObjectPermission(
+            ((TransactionData) SkynetSelections.boilDownObject(selection.getFirstElement())).getTransactionId().getBranch(),
+            PermissionEnum.READ)));
    }
 }

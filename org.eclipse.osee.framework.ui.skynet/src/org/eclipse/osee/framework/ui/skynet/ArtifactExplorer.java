@@ -261,7 +261,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       treeViewer = new TreeViewer(stackComposite);
       myTree = treeViewer.getTree();
       Tree tree = treeViewer.getTree();
-      treeViewer.setContentProvider(new ArtifactContentProvider(this));
+      treeViewer.setContentProvider(new ArtifactContentProvider());
       treeViewer.setLabelProvider(new ArtifactLabelProvider(this));
       treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
       treeViewer.getControl().setLayoutData(gridData);
@@ -1382,8 +1382,14 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          Object myTreeItemObject = myTreeItems[0].getData();
          if (myTreeItemObject instanceof Artifact) {
             Artifact mySelectedArtifact = (Artifact) myTreeItemObject;
-            boolean writePermission =
-                  AccessControlManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
+            boolean writePermission;
+            try {
+               writePermission = AccessControlManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               writePermission = false;
+            }
+
             renameArtifactMenuItem.setEnabled(writePermission);
          }
       }

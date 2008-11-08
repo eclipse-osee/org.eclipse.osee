@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.util;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.HandlerEvent;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.events.MenuEvent;
@@ -21,7 +20,7 @@ import org.eclipse.swt.events.MenuListener;
  * 
  * @author Robert A. Fisher
  */
-public abstract class AbstractSelectionEnabledHandler extends AbstractHandler implements MenuListener {
+public abstract class AbstractSelectionEnabledHandler extends CommandHandler implements MenuListener {
    private final HandlerEvent enabledChangedEvent = new HandlerEvent(this, true, false);
 
    public AbstractSelectionEnabledHandler(MenuManager menuManager) {

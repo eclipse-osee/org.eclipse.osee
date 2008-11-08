@@ -247,7 +247,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             return true;
          }
       });
@@ -281,7 +281,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             boolean isEnabled = true;
             List<Artifact> artifacts = getSelectedArtifacts(viewer);
             isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
@@ -340,7 +340,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             boolean isEnabled = true;
             List<Artifact> artifacts = getSelectedArtifacts(viewer);
             isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
@@ -375,7 +375,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             boolean isEnabled = true;
             List<Artifact> artifacts = getSelectedArtifacts(viewer);
             isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
@@ -414,7 +414,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             return true;
          }
       });
@@ -510,7 +510,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             return true;
          }
       });
@@ -581,7 +581,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             return true;
          }
       });
@@ -609,7 +609,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             return true;
          }
       });
@@ -635,7 +635,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer), PermissionEnum.WRITE);
          }
       });
@@ -665,7 +665,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             return true;
          }
       });
@@ -728,7 +728,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          }
 
          @Override
-         public boolean isEnabled() {
+         public boolean isEnabledWithException() throws OseeCoreException {
             return OseeProperties.isDeveloper() && accessControlManager.checkObjectListPermission(
                   getSelectedArtifacts(viewer), PermissionEnum.WRITE);
          }

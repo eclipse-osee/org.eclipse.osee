@@ -266,8 +266,9 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       }
       if (element instanceof Branch) {
          Branch branch = (Branch) element;
-         boolean readable = AccessControlManager.checkObjectPermission(branch, PermissionEnum.READ);
+
          try {
+            boolean readable = AccessControlManager.checkObjectPermission(branch, PermissionEnum.READ);
             return readable && (showTransactions || (!branch.getChildBranches().isEmpty() && showChildBranchesUnderParents));
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

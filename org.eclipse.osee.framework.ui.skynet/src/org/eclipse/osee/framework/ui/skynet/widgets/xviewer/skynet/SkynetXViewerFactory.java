@@ -60,7 +60,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
             }
             return xViewerCustomizations;
          }
-      } catch (IllegalStateException ex) {
+      } catch (Throwable ex) {
          OseeLog.log(SkynetXViewerFactory.class, Level.SEVERE,
                "Failed to retrieve XViewer customizations from the persistence layer.", ex);
       }

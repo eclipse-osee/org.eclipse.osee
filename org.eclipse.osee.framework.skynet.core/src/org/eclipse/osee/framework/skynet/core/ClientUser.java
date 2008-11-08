@@ -40,40 +40,36 @@ final class ClientUser {
       this.notifiedAsGuest = false;
    }
 
-   static synchronized User getMainUser() {
+   static synchronized User getMainUser() throws OseeCoreException {
       if (instance.currentUser == null) {
          instance.populateCurrentUser();
       }
       return instance.currentUser;
    }
 
-   private void populateCurrentUser() {
-      try {
-         ClientSessionManager.ensureSessionCreated();
-         if (ClientSessionManager.isSessionValid()) {
-            String userId = ClientSessionManager.getSession().getUserId();
-            try {
-               if (userId.equals(SystemUser.BootStrap.getUserID())) {
-                  setCurrentUser(BootStrapUser.getInstance());
-               } else {
-                  if (ClientSessionManager.isUserCreationRequired()) {
-                     SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
-                     UserManager.createMainUser(ClientSessionManager.getCurrentUserInfo(), transaction);
-                     transaction.execute();
-                     ClientSessionManager.clearUserCreationRequired();
-                  }
-                  setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
+   private void populateCurrentUser() throws OseeCoreException {
+      ClientSessionManager.ensureSessionCreated();
+      if (ClientSessionManager.isSessionValid()) {
+         String userId = ClientSessionManager.getSession().getUserId();
+         try {
+            if (userId.equals(SystemUser.BootStrap.getUserID())) {
+               setCurrentUser(BootStrapUser.getInstance());
+            } else {
+               if (ClientSessionManager.isUserCreationRequired()) {
+                  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+                  UserManager.createMainUser(ClientSessionManager.getCurrentUserInfo(), transaction);
+                  transaction.execute();
+                  ClientSessionManager.clearUserCreationRequired();
                }
-            } catch (UserNotInDatabase ex) {
-               if (currentUser == null) {
-                  executeGuestLogin();
-               }
+               setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
             }
-         } else {
-            executeGuestLogin();
+         } catch (UserNotInDatabase ex) {
+            if (currentUser == null) {
+               executeGuestLogin();
+            }
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      } else {
+         executeGuestLogin();
       }
    }
 

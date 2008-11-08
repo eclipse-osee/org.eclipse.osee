@@ -94,8 +94,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
             try {
                Set<Artifact> accessibleArts = new HashSet<Artifact>();
                for (Artifact artifact : artifacts) {
-                  if (!AccessControlManager.checkObjectPermission(UserManager.getUser(), artifact,
-                        PermissionEnum.READ)) {
+                  if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
                            "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                      accessControlFilteredResults = true;
@@ -111,7 +110,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                         EDITOR_ID);
                if (accessControlFilteredResults) AWorkbench.popup("ERROR",
                      "Some Artifacts not loaded due to access control limitations.");
-            } catch (PartInitException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }

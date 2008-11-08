@@ -13,16 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 
@@ -41,14 +38,10 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    private static String CUSTOMIZATION_ATTRIBUTE_NAME = "XViewer Customization";
    private final SkynetXViewerFactory skynetXViewerFactory;
 
-   public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory) {
+   public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory) throws OseeCoreException {
       this.skynetXViewerFactory = skynetXViewerFactory;
       this.userArtifactDefaults = new SkynetUserArtifactCustomizeDefaults(UserManager.getUser());
-      try {
-         globalCustomizationsArtifact = XViewerCustomizationArtifact.getAtsCustArtifact();
-      } catch (Throwable ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Unable to get the ATS Custom Artifact", ex);
-      }
+      globalCustomizationsArtifact = XViewerCustomizationArtifact.getAtsCustArtifact();
    }
 
    /*
