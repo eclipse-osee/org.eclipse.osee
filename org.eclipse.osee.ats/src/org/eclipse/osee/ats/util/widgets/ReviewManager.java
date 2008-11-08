@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -96,7 +96,7 @@ public class ReviewManager {
    }
 
    public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
-      return createNewPeerToPeerReview(reviewTitle, againstState, UserCache.getUser(), new Date(), transaction);
+      return createNewPeerToPeerReview(reviewTitle, againstState, UserManager.getUser(), new Date(), transaction);
    }
 
    public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, User origUser, Date origDate, SkynetTransaction transaction) throws OseeCoreException {
@@ -184,7 +184,7 @@ public class ReviewManager {
       if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
 
       // Else, return current user; should never hit this
-      return Arrays.asList(UserCache.getUser());
+      return Arrays.asList(UserManager.getUser());
    }
 
    public Collection<ReviewSMArtifact> getReviews() throws OseeCoreException {

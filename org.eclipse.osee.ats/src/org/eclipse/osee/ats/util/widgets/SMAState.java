@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 
 public class SMAState {
    private String name;
@@ -80,10 +80,10 @@ public class SMAState {
     * @throws OseeCoreException
     */
    public void setAssignees(Collection<User> assignees) throws OseeCoreException {
-      if (assignees.contains(UserCache.getUser(SystemUser.NoOne)) || assignees.contains(UserCache.getUser(SystemUser.Guest))) {
+      if (assignees.contains(UserManager.getUser(SystemUser.NoOne)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
          throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
       }
-      if (assignees.size() > 1 && assignees.contains(UserCache.getUser(SystemUser.UnAssigned))) {
+      if (assignees.size() > 1 && assignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
          throw new OseeArgumentException("Can not assign to user and UnAssigned");
       }
       if (assignees.size() > 0 && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) throw new IllegalStateException(
@@ -107,7 +107,7 @@ public class SMAState {
       if (assignee != null && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) {
          throw new OseeStateException("Can't assign completed/cancelled states.");
       }
-      if (assignee == UserCache.getUser(SystemUser.NoOne) || assignee == UserCache.getUser(SystemUser.Guest)) {
+      if (assignee == UserManager.getUser(SystemUser.NoOne) || assignee == UserManager.getUser(SystemUser.Guest)) {
          throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
       }
       this.assignees.clear();
@@ -118,7 +118,7 @@ public class SMAState {
     * @param assignee
     */
    public void addAssignee(User assignee) throws OseeCoreException {
-      if (assignee == UserCache.getUser(SystemUser.NoOne) || assignee == UserCache.getUser(SystemUser.Guest)) {
+      if (assignee == UserManager.getUser(SystemUser.NoOne) || assignee == UserManager.getUser(SystemUser.Guest)) {
          throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
       }
       if (assignee != null) this.assignees.add(assignee);

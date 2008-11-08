@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -131,25 +131,25 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          WorkPageDefinition workPageDefinition = smaMgr.getWorkPageDefinition();
 
          // Add user if allowing privileged edit to all users
-         if (!users.contains(UserCache.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()) || getTeamDefinition().hasWorkRule(
+         if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()) || getTeamDefinition().hasWorkRule(
                RuleWorkItemId.atsAllowPriviledgedEditToAll.name()))) {
-            users.add(UserCache.getUser());
+            users.add(UserManager.getUser());
          }
 
          // Add user if user is team member and rule exists
-         if (!users.contains(UserCache.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()) || getTeamDefinition().hasWorkRule(
+         if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()) || getTeamDefinition().hasWorkRule(
                RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()))) {
-            if (getTeamDefinition().getMembers().contains(UserCache.getUser())) {
-               users.add(UserCache.getUser());
+            if (getTeamDefinition().getMembers().contains(UserManager.getUser())) {
+               users.add(UserManager.getUser());
             }
          }
 
          // Add user if team member is originator and rule exists
-         if (!users.contains(UserCache.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()) || getTeamDefinition().hasWorkRule(
+         if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()) || getTeamDefinition().hasWorkRule(
                RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()))) {
-            if (smaMgr.getOriginator().equals(UserCache.getUser()) && getTeamDefinition().getMembers().contains(
-                  UserCache.getUser())) {
-               users.add(UserCache.getUser());
+            if (smaMgr.getOriginator().equals(UserManager.getUser()) && getTeamDefinition().getMembers().contains(
+                  UserManager.getUser())) {
+               users.add(UserManager.getUser());
             }
          }
 

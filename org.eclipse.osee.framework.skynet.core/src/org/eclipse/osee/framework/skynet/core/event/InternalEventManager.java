@@ -15,7 +15,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -62,7 +63,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
  */
 public class InternalEventManager {
 
-   private static final List<IEventListner> listeners = new CopyOnWriteArrayList<IEventListner>();
+   private static final Set<IEventListner> listeners = new CopyOnWriteArraySet<IEventListner>();
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static boolean disableEvents = false;
    private static ExecutorService executorService = Executors.newFixedThreadPool(4);

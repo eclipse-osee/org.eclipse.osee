@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -158,7 +158,7 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
    @Override
    protected String getEnabledToolTip() {
       if (ClientSessionManager.isSessionValid()) {
-         User skynetName = UserCache.getUser();
+         User skynetName = UserManager.getUser();
          String userId = "-";
          String sessionId = "-";
          try {

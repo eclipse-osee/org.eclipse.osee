@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.windows.OutlookCalendarEvent;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
@@ -41,7 +41,7 @@ public class OseeEmailTest extends TestCase {
             @Override
             public void run() {
                // Classloading of OSEE framework may cause emailing to fail.  Load Artifact Editor first.
-               ArtifactEditor.editArtifact(UserCache.getUser());
+               ArtifactEditor.editArtifact(UserManager.getUser());
 
                EntryDialog entryDialog = new EntryDialog("Osee Email Test", "Enter email address to use.");
                if (entryDialog.open() == 0) {

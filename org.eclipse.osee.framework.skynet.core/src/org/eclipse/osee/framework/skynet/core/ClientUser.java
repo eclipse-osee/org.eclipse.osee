@@ -40,15 +40,11 @@ final class ClientUser {
       this.notifiedAsGuest = false;
    }
 
-   static ClientUser getInstance() {
-      return instance;
-   }
-
-   synchronized User getMainUser() {
-      if (currentUser == null) {
-         populateCurrentUser();
+   static synchronized User getMainUser() {
+      if (instance.currentUser == null) {
+         instance.populateCurrentUser();
       }
-      return currentUser;
+      return instance.currentUser;
    }
 
    private void populateCurrentUser() {
@@ -62,11 +58,11 @@ final class ClientUser {
                } else {
                   if (ClientSessionManager.isUserCreationRequired()) {
                      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
-                     UserCache.createUser(ClientSessionManager.getCurrentUserInfo(), transaction);
+                     UserManager.createUser(ClientSessionManager.getCurrentUserInfo(), transaction);
                      transaction.execute();
                      ClientSessionManager.clearUserCreationRequired();
                   }
-                  setCurrentUser(UserCache.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
+                  setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
                }
             } catch (UserNotInDatabase ex) {
                if (currentUser == null) {
@@ -92,7 +88,7 @@ final class ClientUser {
       if (!notifiedAsGuest) {
          notifiedAsGuest = true;
          ClientSessionManager.authenticateAsGuest();
-         setCurrentUser(UserCache.getUser(SystemUser.Guest));
+         setCurrentUser(UserManager.getUser(SystemUser.Guest));
          AWorkbench.popup(
                "OSEE Guest Login",
                "You are logged into OSEE as \"Guest\".\n\nIf you do not expect to be logged in as Guest, please report this immediately.");

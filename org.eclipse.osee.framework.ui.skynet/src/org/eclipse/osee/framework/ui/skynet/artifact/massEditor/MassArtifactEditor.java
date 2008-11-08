@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -94,10 +94,10 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
             try {
                Set<Artifact> accessibleArts = new HashSet<Artifact>();
                for (Artifact artifact : artifacts) {
-                  if (!AccessControlManager.checkObjectPermission(UserCache.getUser(), artifact,
+                  if (!AccessControlManager.checkObjectPermission(UserManager.getUser(), artifact,
                         PermissionEnum.READ)) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-                           "The user " + UserCache.getUser() + " does not have read access to " + artifact);
+                           "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                      accessControlFilteredResults = true;
                   } else
                      accessibleArts.add(artifact);

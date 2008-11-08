@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -49,7 +49,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
          Matcher m =
                Pattern.compile("<userId>(.*?)</userId>").matcher(artifact.getSoleAttributeValue(attributeTypeName, ""));
          while (m.find()) {
-            users.add(UserCache.getUserByUserId(m.group(1)));
+            users.add(UserManager.getUserByUserId(m.group(1)));
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

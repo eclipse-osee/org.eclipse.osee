@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -564,9 +564,9 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          // Validate assignees
-         if (smaMgr.getStateMgr().getAssignees().contains(UserCache.getUser(SystemUser.NoOne)) || smaMgr.getStateMgr().getAssignees().contains(
-               UserCache.getUser(SystemUser.Guest)) || smaMgr.getStateMgr().getAssignees().contains(
-               UserCache.getUser(SystemUser.UnAssigned))) {
+         if (smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.NoOne)) || smaMgr.getStateMgr().getAssignees().contains(
+               UserManager.getUser(SystemUser.Guest)) || smaMgr.getStateMgr().getAssignees().contains(
+               UserManager.getUser(SystemUser.UnAssigned))) {
             AWorkbench.popup("ERROR",
                   "Can not transition with \"Guest\", \"UnAssigned\" or \"NoOne\" user as assignee.");
             return;

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredExcep
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListneer;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -67,7 +67,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       super.start(context);
       packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
       packageAdminTracker.open();
-      UserCache.getUser();
+      UserManager.getUser();
       OseeEventManager.addListener(this);
    }
 
@@ -105,7 +105,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       if (broadcastEventType == BroadcastEventType.Force_Shutdown) {
          if (message == null || message.length() == 0) return;
          try {
-            User user = UserCache.getUser();
+            User user = UserManager.getUser();
             if (user != null) {
                String userId = user.getUserId();
                for (String temp : userIds) {

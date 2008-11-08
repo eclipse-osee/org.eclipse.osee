@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -75,12 +75,12 @@ public class PrivilegedEditService extends WorkPageService {
                      }
                   } else {
                      Set<User> users = smaMgr.getPrivilegedUsers();
-                     if (AtsPlugin.isAtsAdmin()) users.add(UserCache.getUser());
+                     if (AtsPlugin.isAtsAdmin()) users.add(UserManager.getUser());
                      StringBuffer sb = new StringBuffer();
                      for (User user : users)
                         sb.append(user.getName() + "\n");
                      String buttons[];
-                     boolean iAmPrivileged = users.contains(UserCache.getUser());
+                     boolean iAmPrivileged = users.contains(UserManager.getUser());
                      if (iAmPrivileged)
                         buttons = new String[] {"Override and Edit", "Cancel"};
                      else

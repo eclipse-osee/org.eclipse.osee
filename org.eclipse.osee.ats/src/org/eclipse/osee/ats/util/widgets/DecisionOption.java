@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -135,7 +135,7 @@ public class DecisionOption {
          m = Pattern.compile("<(.*?)>").matcher(m.group(2));
          while (m.find()) {
             try {
-               assignees.add(UserCache.getUserByUserId(m.group(3)));
+               assignees.add(UserManager.getUserByUserId(m.group(3)));
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }

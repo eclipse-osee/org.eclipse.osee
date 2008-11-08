@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -63,7 +63,7 @@ public class CreateNewUser extends AbstractBlam {
          return;
       }
       try {
-         User existingUser = UserCache.getUserByUserId(userId);
+         User existingUser = UserManager.getUserByUserId(userId);
          if (existingUser != null) {
             AWorkbench.popup("ERROR", "User with userId \"" + userId + "\" already exists.");
             monitor.done();
@@ -131,7 +131,7 @@ public class CreateNewUser extends AbstractBlam {
       // Add groups to belong to
       try {
          groupArts =
-               EmailGroupsAndUserGroups.getEmailGroupsAndUserGroups(UserCache.getUser(), GroupType.Both);
+               EmailGroupsAndUserGroups.getEmailGroupsAndUserGroups(UserManager.getUser(), GroupType.Both);
          String groupStr = "";
          for (Artifact art : groupArts) {
             groupStr += art.getDescriptiveName() + ",";

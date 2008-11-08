@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
@@ -120,7 +120,7 @@ public class HostInfoPage extends DynamicWizardPage {
       userName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       String name;
       try {
-         name = UserCache.getUser().getName();
+         name = UserManager.getUser().getName();
       } catch (Exception ex) {
          name = System.getProperty("user.name");
       }

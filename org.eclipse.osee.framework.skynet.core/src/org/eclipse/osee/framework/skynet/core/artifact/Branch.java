@@ -16,7 +16,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
@@ -26,7 +28,9 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -276,7 +280,12 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public boolean isChangeManaged() {
-      return associatedArtifactId != UserCache.getNoOneArtifactId();
+      try {
+         return associatedArtifactId != UserManager.getUser(SystemUser.NoOne).getArtId();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         return true;
+      }
    }
 
    public boolean isBaselineBranch() {

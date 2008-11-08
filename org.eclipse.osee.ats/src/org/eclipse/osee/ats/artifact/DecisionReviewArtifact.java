@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -78,7 +78,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
          users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
       else {
          if (AtsPlugin.isAtsAdmin()) {
-            users.add(UserCache.getUser());
+            users.add(UserManager.getUser());
          }
       }
       return users;

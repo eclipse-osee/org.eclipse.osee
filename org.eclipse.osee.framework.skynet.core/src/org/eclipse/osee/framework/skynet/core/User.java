@@ -70,7 +70,7 @@ public class User extends Artifact implements Serializable {
 
    public boolean isMe() throws OseeCoreException {
       try {
-         return (getUserId().equals(UserCache.getUser().getUserId()));
+         return (getUserId().equals(UserManager.getUser().getUserId()));
       } catch (Exception ex) {
          return false;
       }

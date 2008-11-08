@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -856,9 +856,9 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                try {
                   Artifact object = (Artifact) iterator.next();
                   if ((new GlobalMenuPermissions(object)).isLocked()) {
-                     AccessControlManager.getInstance().unLockObject(object, UserCache.getUser());
+                     AccessControlManager.getInstance().unLockObject(object, UserManager.getUser());
                   } else {
-                     AccessControlManager.getInstance().lockObject(object, UserCache.getUser());
+                     AccessControlManager.getInstance().lockObject(object, UserManager.getUser());
                   }
                } catch (Exception ex) {
                   OSEELog.logException(SkynetGuiPlugin.class, ex, true);

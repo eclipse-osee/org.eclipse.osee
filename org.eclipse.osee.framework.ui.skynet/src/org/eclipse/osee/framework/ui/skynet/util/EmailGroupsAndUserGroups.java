@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -80,7 +80,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserCache.getUser(), groupType);
+      Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser(), groupType);
       UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);
       dialog.setTitle("Select Groups to Email");
       if (dialog.open() == 0) {

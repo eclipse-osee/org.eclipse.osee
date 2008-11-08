@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
@@ -247,7 +247,7 @@ public class StateManager {
          smaState = getSMAState(stateName, false);
       } else {
          if (assignees == null) {
-            smaState = new SMAState(stateName, UserCache.getUser());
+            smaState = new SMAState(stateName, UserManager.getUser());
          } else {
             smaState = new SMAState(stateName, assignees);
          }

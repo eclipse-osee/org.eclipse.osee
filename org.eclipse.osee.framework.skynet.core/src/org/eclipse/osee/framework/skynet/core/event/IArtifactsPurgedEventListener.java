@@ -5,12 +5,13 @@
  */
 package org.eclipse.osee.framework.skynet.core.event;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IArtifactsPurgedEventListener extends IEventListner {
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts);
+   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException;
 
 }

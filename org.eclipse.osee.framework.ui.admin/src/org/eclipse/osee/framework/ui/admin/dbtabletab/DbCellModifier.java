@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
@@ -43,7 +43,6 @@ public class DbCellModifier implements ICellModifier {
       super();
       this.dbTableViewer = dbTableViewer;
       this.dbItem = dbItem;
-      // this.dateValue = new DateValue();
       this.enumeratedValue = new EnumeratedValue();
       this.stringValue = new StringValue();
    }
@@ -68,9 +67,9 @@ public class DbCellModifier implements ICellModifier {
          return stringValue;
       } else if (dbItem.isBems(property)) {
          try {
-            enumeratedValue.setChocies(UserCache.getUserNames());
+            enumeratedValue.setChocies(UserManager.getUserNames());
             User u = null;
-            u = UserCache.getUserByUserId((String) obj);
+            u = UserManager.getUserByUserId((String) obj);
             if (u != null) enumeratedValue.setValue(u.getName());
          } catch (Exception ex) {
             OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
@@ -107,7 +106,7 @@ public class DbCellModifier implements ICellModifier {
       } else if (dbItem.isBems(property)) {
          try {
             String newName = (String) value;
-            User newUser = UserCache.getUserByName(newName);
+            User newUser = UserManager.getUserByName(newName);
             String oldBems = (String) wasObj;
             if (!newUser.getUserId().equals(oldBems)) {
                dbModel.setColumn(columnIndex, newUser.getUserId());

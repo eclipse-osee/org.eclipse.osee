@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
@@ -165,7 +165,7 @@ class CommitJob extends Job {
       protected void handleTxWork(Connection connection) throws OseeCoreException {
          monitor.beginTask("Acquire from branch transactions", 100);
 
-         User userToBlame = UserCache.getUser();
+         User userToBlame = UserManager.getUser();
 
          long time = System.currentTimeMillis();
          long totalTime = time;

@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -179,7 +179,7 @@ public class SMAManager {
    }
 
    public void setOriginator(User user) throws OseeCoreException {
-      atsLog.addLog(LogType.Originated, "", "Changed by " + UserCache.getUser().getName(), user);
+      atsLog.addLog(LogType.Originated, "", "Changed by " + UserManager.getUser().getName(), user);
    }
 
    /**
@@ -287,7 +287,7 @@ public class SMAManager {
       }
       // As a convenience, remove the UnAssigned user if another user is selected
       if (users.size() > 1) {
-         users.remove(UserCache.getUser(SystemUser.UnAssigned));
+         users.remove(UserManager.getUser(SystemUser.UnAssigned));
       }
       for (StateMachineArtifact sma : smas) {
          sma.getSmaMgr().getStateMgr().setAssignees(users);
@@ -691,23 +691,23 @@ public class SMAManager {
    }
 
    public void setTransitionAssignees(Collection<User> assignees) throws OseeCoreException {
-      if (assignees.contains(UserCache.getUser(SystemUser.NoOne)) || assignees.contains(UserCache.getUser(SystemUser.Guest))) {
+      if (assignees.contains(UserManager.getUser(SystemUser.NoOne)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
          throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
       }
-      if (assignees.size() > 1 && assignees.contains(UserCache.getUser(SystemUser.UnAssigned))) {
+      if (assignees.size() > 1 && assignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
          throw new OseeArgumentException("Can not assign to user and UnAssigned");
       }
       transitionAssignees = assignees;
    }
 
    public boolean isAssigneeMe() {
-      return stateMgr.getAssignees().contains(UserCache.getUser());
+      return stateMgr.getAssignees().contains(UserManager.getUser());
    }
 
    public Collection<User> getTransitionAssignees() throws OseeCoreException {
       if (transitionAssignees != null) {
-         if (transitionAssignees.size() > 0 && transitionAssignees.contains(UserCache.getUser(SystemUser.UnAssigned))) {
-            transitionAssignees.remove(transitionAssignees.contains(UserCache.getUser(SystemUser.UnAssigned)));
+         if (transitionAssignees.size() > 0 && transitionAssignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
+            transitionAssignees.remove(transitionAssignees.contains(UserManager.getUser(SystemUser.UnAssigned)));
          }
          if (transitionAssignees.size() > 0) {
             return transitionAssignees;
@@ -783,9 +783,9 @@ public class SMAManager {
    private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck, SkynetTransaction transaction) {
       try {
          // Validate assignees
-         if (getStateMgr().getAssignees().contains(UserCache.getUser(SystemUser.NoOne)) || getStateMgr().getAssignees().contains(
-               UserCache.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
-               UserCache.getUser(SystemUser.UnAssigned))) {
+         if (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.NoOne)) || getStateMgr().getAssignees().contains(
+               UserManager.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
+               UserManager.getUser(SystemUser.UnAssigned))) {
             return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"NoOne\" user as assignee.");
          }
 

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -125,7 +125,7 @@ public class SkyWalkerView extends ViewPart {
                   // objects
                   // which is necessary for a node size change
                   Artifact art = (Artifact) viewer.getInput();
-                  explore(UserCache.getUser(SystemUser.UnAssigned));
+                  explore(UserManager.getUser(SystemUser.UnAssigned));
                   if (art != null) explore(art);
                } catch (Exception ex) {
                   // DO Nothing

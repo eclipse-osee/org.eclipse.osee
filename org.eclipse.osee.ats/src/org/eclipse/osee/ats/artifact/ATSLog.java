@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -221,7 +221,7 @@ public class ATSLog {
     * @throws MultipleAttributesExist
     */
    public void addLog(LogType type, String state, String msg) throws OseeCoreException {
-      addLog(type, state, msg, new Date(), UserCache.getUser());
+      addLog(type, state, msg, new Date(), UserManager.getUser());
    }
 
    /**
@@ -276,7 +276,7 @@ public class ATSLog {
          builder.append("<TD>" + item.getType() + "</TD>");
          builder.append("<TD>" + (item.getState().equals("") ? "." : item.getState()) + "</TD>");
          builder.append("<TD>" + (item.getMsg().equals("") ? "." : item.getMsg()) + "</TD>");
-         if (user.equals(UserCache.getUser()))
+         if (user.equals(UserManager.getUser()))
             builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
          else
             builder.append("<TD>" + name + "</TD>");

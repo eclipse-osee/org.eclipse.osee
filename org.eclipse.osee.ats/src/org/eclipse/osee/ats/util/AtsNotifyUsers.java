@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
@@ -59,7 +59,7 @@ public class AtsNotifyUsers {
       SMAManager smaMgr = sma.getSmaMgr();
       if (types.contains(NotifyType.Originator)) {
          User originator = smaMgr.getOriginator();
-         if (!UserCache.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
+         if (!UserManager.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                Arrays.asList(originator),
                getIdString(sma),
                NotifyType.Originator.name(),
@@ -67,7 +67,7 @@ public class AtsNotifyUsers {
       }
       if (types.contains(NotifyType.Assigned)) {
          Collection<User> assignees = notifyUsers != null ? notifyUsers : smaMgr.getStateMgr().getAssignees();
-         assignees.remove(UserCache.getUser());
+         assignees.remove(UserManager.getUser());
          if (testing || assignees.size() > 0) {
             OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                   assignees,
@@ -89,7 +89,7 @@ public class AtsNotifyUsers {
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed)) {
          if (((sma instanceof TeamWorkFlowArtifact) || (sma instanceof ReviewSMArtifact)) && (smaMgr.isCompleted() || smaMgr.isCancelled())) {
             User originator = smaMgr.getOriginator();
-            if (!UserCache.getUser().equals(originator)) {
+            if (!UserManager.getUser().equals(originator)) {
                if (smaMgr.isCompleted()) {
                   OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                         Arrays.asList(originator),

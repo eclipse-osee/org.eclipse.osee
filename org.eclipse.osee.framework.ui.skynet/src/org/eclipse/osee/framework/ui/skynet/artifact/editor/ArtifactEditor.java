@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -119,10 +119,10 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          public void run() {
             try {
                for (Artifact artifact : artifacts) {
-                  if (!AccessControlManager.checkObjectPermission(UserCache.getUser(), artifact,
+                  if (!AccessControlManager.checkObjectPermission(UserManager.getUser(), artifact,
                         PermissionEnum.READ)) {
                      OSEELog.logSevere(SkynetGuiPlugin.class,
-                           "The user " + UserCache.getUser() + " does not have read access to " + artifact,
+                           "The user " + UserManager.getUser() + " does not have read access to " + artifact,
                            true);
                   } else
                      AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
@@ -138,10 +138,10 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               if (!AccessControlManager.checkObjectPermission(UserCache.getUser(), artifact,
+               if (!AccessControlManager.checkObjectPermission(UserManager.getUser(), artifact,
                      PermissionEnum.READ)) {
                   OSEELog.logSevere(SkynetGuiPlugin.class,
-                        "The user " + UserCache.getUser() + " does not have read access to " + artifact,
+                        "The user " + UserManager.getUser() + " does not have read access to " + artifact,
                         true);
                } else if (artifact != null) {
                   AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);

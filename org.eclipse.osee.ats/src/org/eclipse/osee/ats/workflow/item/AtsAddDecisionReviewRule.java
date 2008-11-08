@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -110,7 +110,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
          if (decisionParameter == DecisionParameter.title) {
             return "Decide on \"" + smaMgr.getSma().getDescriptiveName() + "\"";
          } else if (decisionParameter == DecisionParameter.options) {
-            return "Yes;Followup;<" + UserCache.getUser().getUserId() + ">\n" + "No;Completed;";
+            return "Yes;Followup;<" + UserManager.getUser().getUserId() + ">\n" + "No;Completed;";
          } else if (decisionParameter == DecisionParameter.description) {
             return null;
          } else if (decisionParameter == DecisionParameter.forState) {
@@ -123,11 +123,11 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
    public static Collection<User> getAssigneesOrDefault(SMAManager smaMgr, WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
       String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.assignees);
       if (value == null || value.equals("")) {
-         return Arrays.asList(new User[] {UserCache.getUser()});
+         return Arrays.asList(new User[] {UserManager.getUser()});
       }
       Collection<User> users = UsersByIds.getUsers(value);
       if (users.size() == 0) {
-         users.add(UserCache.getUser());
+         users.add(UserManager.getUser());
       }
       return users;
    }

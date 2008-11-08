@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -73,7 +73,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
       }
       PeerToPeerReviewArtifact peerArt =
             ReviewManager.createNewPeerToPeerReview(smaMgr.getSma(), title, getValueOrDefault(smaMgr,
-                  atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState), UserCache.getUser(), new Date(), transaction);
+                  atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState), UserManager.getUser(), new Date(), transaction);
       String desc = getValueOrDefault(smaMgr, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
       if (desc != null && !desc.equals("")) {
          peerArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);

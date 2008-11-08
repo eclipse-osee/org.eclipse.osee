@@ -33,12 +33,14 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact.TeamDefinitionOption
 import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
+import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -156,6 +158,18 @@ public class LoadAIsAndTeamsAction {
       }
    }
 
+   private User getUserByName(String name, boolean create, SkynetTransaction transaction) throws OseeCoreException {
+      try {
+         return UserManager.getUserByName(name);
+      } catch (UserNotInDatabase ex) {
+         if (create) {
+            return UserManager.createUser(new OseeUser(name, name, "", true), transaction);
+         } else {
+            throw ex;
+         }
+      }
+   }
+
    private TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page, SkynetTransaction transaction) throws OseeCoreException {
       // System.out.println("Adding Team " + page.getName());
       TeamDefinitionArtifact teamDefArt = null;
@@ -192,11 +206,11 @@ public class LoadAIsAndTeamsAction {
                   teamDefinitionOptions.add(TeamDefinitionOptions.RequireTargetedVersion);
                else if (line.startsWith(LEAD)) {
                   String name = line.replaceFirst(LEAD, "");
-                  User u = UserCache.getUserByName(name, allowUserCreation, transaction);
+                  User u = getUserByName(name, allowUserCreation, transaction);
                   leads.add(u);
                } else if (line.startsWith(MEMBER)) {
                   String name = line.replaceFirst(MEMBER, "");
-                  User u = UserCache.getUserByName(name, allowUserCreation, transaction);
+                  User u = getUserByName(name, allowUserCreation, transaction);
                   members.add(u);
                } else
                   throw new IllegalArgumentException(
@@ -282,7 +296,7 @@ public class LoadAIsAndTeamsAction {
                actionable = false;
             else if (line.startsWith(LEAD)) {
                String name = line.replaceFirst(LEAD, "");
-               User u = UserCache.getUserByName(name, allowUserCreation);
+               User u = getUserByName(name, allowUserCreation, transaction);
                leads.add(u);
             } else if (line.startsWith(STATIC_ID)) staticIds.add(line.replaceFirst(STATIC_ID, ""));
          }

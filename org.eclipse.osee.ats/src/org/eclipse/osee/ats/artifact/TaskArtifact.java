@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -185,8 +185,8 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       // Assign current user if unassigned
       try {
          if (smaMgr.getStateMgr().getAssignees().size() == 1 && smaMgr.getStateMgr().getAssignees().contains(
-               UserCache.getUser(SystemUser.UnAssigned))) {
-            smaMgr.getStateMgr().setAssignee(UserCache.getUser());
+               UserManager.getUser(SystemUser.UnAssigned))) {
+            smaMgr.getStateMgr().setAssignee(UserManager.getUser());
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -217,7 +217,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (smaMgr.getStateMgr().getPercentComplete() == 100 && !isCompleted())
          transitionToCompleted(false, transaction);
       else if (smaMgr.getStateMgr().getPercentComplete() != 100 && isCompleted()) {
-         transitionToInWork(UserCache.getUser(), true, transaction);
+         transitionToInWork(UserManager.getUser(), true, transaction);
       }
       transaction.execute();
    }
@@ -226,7 +226,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isInWork())
          transitionToCancelled("Parent Cancelled", persist, transaction);
       else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) transitionToInWork(
-            UserCache.getUser(), persist, transaction);
+            UserManager.getUser(), persist, transaction);
    }
 
    /*

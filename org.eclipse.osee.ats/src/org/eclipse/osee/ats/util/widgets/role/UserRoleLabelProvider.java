@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
@@ -36,7 +36,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
       UserRole roleItem = (UserRole) element;
       if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
-         if (roleItem.getUser().equals(UserCache.getUser()))
+         if (roleItem.getUser().equals(UserManager.getUser()))
             return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
          else
             return SkynetGuiPlugin.getInstance().getImage("user_sm.gif");

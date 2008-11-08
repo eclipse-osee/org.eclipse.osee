@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
@@ -443,7 +443,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
 
    private String getWhoAmI() {
       try {
-         String userName = UserCache.getUser().getName();
+         String userName = UserManager.getUser().getName();
          return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
                ClientSessionManager.getDataStoreLoginName());
       } catch (Exception ex) {

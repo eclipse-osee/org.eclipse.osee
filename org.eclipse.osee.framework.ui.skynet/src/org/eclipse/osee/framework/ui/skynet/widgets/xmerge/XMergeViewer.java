@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -193,7 +193,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                if (branchAssociatedArtifact instanceof IATSArtifact) {
                   OseeAts.openATSArtifact(branchAssociatedArtifact);
                   return;
-               } else if (!branchAssociatedArtifact.equals(UserCache.getUser(SystemUser.NoOne))) {
+               } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.NoOne))) {
                   ArtifactEditor.editArtifact(branchAssociatedArtifact);
                   return;
                }

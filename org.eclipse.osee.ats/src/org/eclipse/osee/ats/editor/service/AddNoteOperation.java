@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -75,7 +75,7 @@ public class AddNoteOperation extends WorkPageService {
             if (!selected.startsWith(smaMgr.getSma().getDescriptiveName() + " - ")) state = selected;
             smaMgr.getNotes().addNote(
                   NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName()), state,
-                  noteWizard.mainPage.noteText.get(), UserCache.getUser());
+                  noteWizard.mainPage.noteText.get(), UserManager.getUser());
             smaMgr.getEditor().onDirtied();
          }
       } catch (Exception ex) {

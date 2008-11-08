@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
@@ -42,13 +42,13 @@ public class Favorites {
             if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
-            if (result) ((IFavoriteableArtifact) sma).removeFavorite(UserCache.getUser());
+            if (result) ((IFavoriteableArtifact) sma).removeFavorite(UserManager.getUser());
          } else {
             boolean result = true;
             if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Favorite", "Are you sure you wish add this as a Favorite?");
-            if (result) ((IFavoriteableArtifact) sma).addFavorite(UserCache.getUser());
+            if (result) ((IFavoriteableArtifact) sma).addFavorite(UserManager.getUser());
          }
       } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

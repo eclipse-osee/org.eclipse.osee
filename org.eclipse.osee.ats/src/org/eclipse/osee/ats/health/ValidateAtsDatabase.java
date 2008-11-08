@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -298,8 +298,8 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
 
    public void testStateMachineAssignees() throws OseeCoreException {
       xResultData.log(monitor, "testStateMachineAssignees");
-      User unAssignedUser = UserCache.getUser(SystemUser.UnAssigned);
-      User noOneUser = UserCache.getUser(SystemUser.NoOne);
+      User unAssignedUser = UserManager.getUser(SystemUser.UnAssigned);
+      User noOneUser = UserManager.getUser(SystemUser.NoOne);
       for (Artifact art : artifacts) {
          if (art instanceof StateMachineArtifact) {
             StateMachineArtifact sma = (StateMachineArtifact) art;
@@ -343,7 +343,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                   }
                } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
                   // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
-                  if (!(smaMgr.getStateMgr().getAssignees().contains(UserCache.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
+                  if (!(smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
                      xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " attribute assignees doesn't match related assignees");
                      if (fixAssignees) {
                         try {

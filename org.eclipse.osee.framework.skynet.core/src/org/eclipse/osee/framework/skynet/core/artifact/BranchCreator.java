@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -121,9 +121,9 @@ public class BranchCreator {
    }
 
    private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Connection connection, Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
-      User userToBlame = UserCache.getUser();
+      User userToBlame = UserManager.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
-      int userId = (userToBlame == null) ? UserCache.getUser(SystemUser.NoOne).getArtId() : userToBlame.getArtId();
+      int userId = (userToBlame == null) ? UserManager.getUser(SystemUser.NoOne).getArtId() : userToBlame.getArtId();
       String comment =
             NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -358,7 +358,7 @@ public class BranchCreator {
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
-         associatedArtifact = UserCache.getUser(SystemUser.NoOne);
+         associatedArtifact = UserManager.getUser(SystemUser.NoOne);
       }
 
       if (associatedArtifact != null) {
@@ -447,7 +447,7 @@ public class BranchCreator {
          Pair<Branch, Integer> branchWithTransactionNumber;
          if (createBranch) {
             branchWithTransactionNumber =
-                  createMergeBranchWithBaselineTransactionNumber(connection, UserCache.getUser(),
+                  createMergeBranchWithBaselineTransactionNumber(connection, UserManager.getUser(),
                         TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
                         "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
                         "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),

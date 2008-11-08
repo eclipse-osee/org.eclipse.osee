@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
@@ -62,7 +62,7 @@ public class OseeNotifyUsersJob extends Job {
          if (testing) {
             resultData.log("Testing Results Report for Osee Notification; Email to current user.<br>");
             users.clear();
-            users.addAll(Arrays.asList(UserCache.getUser()));
+            users.addAll(Arrays.asList(UserManager.getUser()));
          }
          for (User user : users) {
             List<OseeNotificationEvent> notifyEvents = new ArrayList<OseeNotificationEvent>();
@@ -94,7 +94,7 @@ public class OseeNotifyUsersJob extends Job {
    }
 
    private void notifyUser(User user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws MessagingException, OseeCoreException {
-      if (user == UserCache.getUser(SystemUser.NoOne) || user == UserCache.getUser(SystemUser.UnAssigned) || user == UserCache.getUser(SystemUser.Guest)) {
+      if (user == UserManager.getUser(SystemUser.NoOne) || user == UserManager.getUser(SystemUser.UnAssigned) || user == UserManager.getUser(SystemUser.Guest)) {
          // do nothing
          return;
       }
@@ -104,8 +104,8 @@ public class OseeNotifyUsersJob extends Job {
          return;
       } else {
          OseeEmail emailMessage =
-               new OseeEmail(Arrays.asList(user.getEmail()), UserCache.getUser().getEmail(),
-                     UserCache.getUser().getEmail(), getNotificationEmailSubject(notificationEvents), html,
+               new OseeEmail(Arrays.asList(user.getEmail()), UserManager.getUser().getEmail(),
+                     UserManager.getUser().getEmail(), getNotificationEmailSubject(notificationEvents), html,
                      BodyType.Html);
          emailMessage.send();
       }

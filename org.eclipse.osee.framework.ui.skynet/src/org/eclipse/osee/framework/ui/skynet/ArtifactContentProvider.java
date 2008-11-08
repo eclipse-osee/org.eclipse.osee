@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -77,7 +77,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
          Artifact parentItem = (Artifact) parentElement;
 
          try {
-            if (AccessControlManager.checkObjectPermission(UserCache.getUser(), parentItem,
+            if (AccessControlManager.checkObjectPermission(UserManager.getUser(), parentItem,
                   PermissionEnum.READ)) {
                Collection<Artifact> children = parentItem.getChildren();
                if (children != null) {
@@ -123,7 +123,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
 
-         if (AccessControlManager.checkObjectPermission(UserCache.getUser(), artifact, PermissionEnum.READ)) {
+         if (AccessControlManager.checkObjectPermission(UserManager.getUser(), artifact, PermissionEnum.READ)) {
             if (artifact.isDeleted()) return false;
 
             try {

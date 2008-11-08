@@ -64,7 +64,7 @@ import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
@@ -91,7 +91,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
    }
 
    public WorldSearchItem getMyWorldSearchItem() {
-      return new MyWorldSearchItem("My World", UserCache.getUser());
+      return new MyWorldSearchItem("My World", UserManager.getUser());
    }
 
    @Override
@@ -101,7 +101,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       if (AtsPlugin.areOSEEServicesAvailable().isFalse()) return items;
 
       items.add(new XNavigateItemAction(null, new NewAction()));
-      User user = UserCache.getUser();
+      User user = UserManager.getUser();
 
       items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
       items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));

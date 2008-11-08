@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.server;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeUserInfo;
+import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -46,19 +47,12 @@ public class UserDataStore {
       return new OseeUserInfo(isCreationRequired, userName, userId, userEmail, isActive);
    }
 
-   private final static class OseeUserInfo implements IOseeUserInfo {
+   private final static class OseeUserInfo extends OseeUser implements IOseeUserInfo {
       private final boolean isCreationRequired;
-      private final String userName;
-      private final String userId;
-      private final String userEmail;
-      private final boolean isActive;
 
       private OseeUserInfo(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
+         super(userName, userId, userEmail, isActive);
          this.isCreationRequired = isCreationRequired;
-         this.userName = userName;
-         this.userId = userId;
-         this.userEmail = userEmail;
-         this.isActive = isActive;
       }
 
       /* (non-Javadoc)
@@ -68,38 +62,5 @@ public class UserDataStore {
       public boolean isCreationRequired() {
          return isCreationRequired;
       }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.data.IOseeUser#getEmail()
-       */
-      @Override
-      public String getEmail() {
-         return userEmail;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.data.IOseeUser#getName()
-       */
-      @Override
-      public String getName() {
-         return userName;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.data.IOseeUser#getUserID()
-       */
-      @Override
-      public String getUserID() {
-         return userId;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.data.IOseeUser#isActive()
-       */
-      @Override
-      public boolean isActive() {
-         return isActive;
-      }
-
    }
 }

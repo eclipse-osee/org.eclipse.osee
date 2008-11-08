@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.xml.sax.InputSource;
@@ -108,9 +108,9 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                String userName = row[i];
                User u = null;
                if (userName == null || userName.equals(""))
-                  u = UserCache.getUser();
+                  u = UserManager.getUser();
                else
-                  u = UserCache.getUserByName(userName);
+                  u = UserManager.getUserByName(userName);
                if (u == null) OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
                      "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
                taskArt.getSmaMgr().getLog().setOriginator(u);
@@ -121,9 +121,9 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   userName = userName.replaceAll("\\+$", "");
                   User user = null;
                   if (userName == null || userName.equals(""))
-                     user = UserCache.getUser();
+                     user = UserManager.getUser();
                   else
-                     user = UserCache.getUserByName(userName);
+                     user = UserManager.getUserByName(userName);
                   if (user == null) throw new IllegalArgumentException(String.format(
                         "Invalid Assignee \"%s\" for row %d", userName, rowNum));
                   assignees.add(user);

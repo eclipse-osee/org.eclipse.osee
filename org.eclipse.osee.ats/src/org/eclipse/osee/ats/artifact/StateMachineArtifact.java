@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -113,7 +113,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       try {
          preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
          if (smaMgr.getOriginator() == null)
-            preSaveOriginator = UserCache.getUser();
+            preSaveOriginator = UserManager.getUser();
          else
             preSaveOriginator = smaMgr.getOriginator();
       } catch (Exception ex) {
@@ -133,7 +133,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     */
    public void updateAssigneeRelations() throws OseeCoreException {
       Collection<User> assignees = getSmaMgr().getStateMgr().getAssignees();
-      assignees.remove(UserCache.getUser(SystemUser.UnAssigned));
+      assignees.remove(UserManager.getUser(SystemUser.UnAssigned));
       setRelations(CoreRelationEnumeration.Users_User, assignees);
    }
 
@@ -320,8 +320,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       boolean subscribed = false;
       boolean favorite = false;
       try {
-         subscribed = isSubscribed(UserCache.getUser());
-         favorite = isFavorite(UserCache.getUser());
+         subscribed = isSubscribed(UserManager.getUser());
+         favorite = isFavorite(UserManager.getUser());
       } catch (OseeCoreException ex) {
          // Do nothing
       }
@@ -454,7 +454,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public boolean amISubscribed() {
       try {
-         return isSubscribed(UserCache.getUser());
+         return isSubscribed(UserManager.getUser());
       } catch (OseeCoreException ex) {
          return false;
       }
@@ -462,7 +462,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public boolean amIFavorite() {
       try {
-         return isFavorite(UserCache.getUser());
+         return isFavorite(UserManager.getUser());
       } catch (OseeCoreException ex) {
          return false;
       }

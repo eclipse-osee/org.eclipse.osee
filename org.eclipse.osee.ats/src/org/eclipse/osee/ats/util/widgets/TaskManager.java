@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -69,7 +69,7 @@ public class TaskManager {
    }
 
    public TaskArtifact createNewTask(String title, boolean persist) throws OseeCoreException {
-      return createNewTask(Arrays.asList(UserCache.getUser()), title, persist);
+      return createNewTask(Arrays.asList(UserManager.getUser()), title, persist);
    }
 
    public TaskArtifact createNewTask(User assignee, String title, boolean persist) throws OseeCoreException {

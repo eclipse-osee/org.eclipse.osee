@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -192,7 +192,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Branch childBranch =
             BranchManager.createWorkingBranch(
                   TransactionIdManager.getInstance().getEditableTransactionId(parentBranch), childBranchName,
-                  childBranchName, UserCache.getUser(SystemUser.NoOne));
+                  childBranchName, UserManager.getUser(SystemUser.NoOne));
       return childBranch;
    }
 

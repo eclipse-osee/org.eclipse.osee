@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
@@ -52,7 +52,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XTextSpellModifyDictionary#addToLocalDictionary(java.lang.String)
     */
    public boolean addToLocalDictionary(String word) {
-      return updateArtifact("Local", word, UserCache.getUser());
+      return updateArtifact("Local", word, UserManager.getUser());
    }
 
    private boolean updateArtifact(String type, String word, Artifact art) {
@@ -91,7 +91,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       if (!force && dictionary != null) return;
       try {
          dictionary = new HashSet<String>();
-         User user = UserCache.getUser();
+         User user = UserManager.getUser();
          if (user != null) {
             String value = user.getSoleAttributeValue(ATTRIBUTE_NAME, "");
             if (value != null) {

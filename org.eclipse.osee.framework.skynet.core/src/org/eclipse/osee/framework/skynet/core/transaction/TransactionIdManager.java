@@ -27,9 +27,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.skynet.core.BootStrapUser;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
@@ -92,11 +90,8 @@ public class TransactionIdManager {
          comment = "";
       }
       int authorArtId = -1;
-
-      if (userToBlame != null || BootStrapUser.getInstance().equals(userToBlame)) {
+      if (userToBlame != null) {
          authorArtId = userToBlame.getArtId();
-      } else {
-         authorArtId = UserCache.getNoOneArtifactId();
       }
 
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();

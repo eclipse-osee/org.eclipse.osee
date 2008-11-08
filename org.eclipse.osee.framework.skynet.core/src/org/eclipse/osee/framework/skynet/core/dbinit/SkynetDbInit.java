@@ -68,7 +68,7 @@ public class SkynetDbInit implements IDbInitializationTask {
 
    public void run(OseeConnection connection) throws OseeCoreException {
       setIsInDbInit(true);
-      //      UserCache.setBasicUsersCreated(false);
+      //      UserManager.setBasicUsersCreated(false);
       DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(connection, getSchemaFiles());
       Map<String, SchemaData> userSpecifiedConfig = databaseConfigurationData.getUserSpecifiedSchemas();
       DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(connection, userSpecifiedConfig.keySet());

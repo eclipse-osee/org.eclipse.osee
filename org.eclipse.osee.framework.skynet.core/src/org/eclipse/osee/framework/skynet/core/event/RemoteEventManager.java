@@ -59,7 +59,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRenameBran
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkTransactionDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
@@ -96,7 +96,7 @@ public class RemoteEventManager implements IServiceLookupListener {
       super();
       try {
          // We need to trigger authentication before attempting to get database information from client session manager.
-         UserCache.getUser();
+         UserManager.getUser();
          ACCEPTABLE_SERVICE =
                ClientSessionManager.getDataStoreName() + ":" + ClientSessionManager.getDataStoreLoginName();
          this.listener = new EventListener();

@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -215,7 +215,7 @@ public final class SkynetTransaction extends DbTransaction {
     */
    public TransactionId getTransactionId() throws OseeDataStoreException {
       if (transactionId == null) {
-         transactionId = TransactionIdManager.createNextTransactionId(branch, UserCache.getUser(), "");
+         transactionId = TransactionIdManager.createNextTransactionId(branch, UserManager.getUser(), "");
       }
       return transactionId;
    }

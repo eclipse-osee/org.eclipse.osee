@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -66,7 +66,7 @@ public class AdminView extends ViewPart implements IActionable {
    public AdminView() {
       sm = OseeSecurityManager.getInstance();
 
-      person = UserCache.getUser();
+      person = UserManager.getUser();
 
       dbItems = new ArrayList<DbItem>();
       dbItems.add(new SiteGssflRpcr());

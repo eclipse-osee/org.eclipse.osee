@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserCache;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
@@ -37,7 +37,7 @@ public class XMembersList extends XListViewer {
       super(displayLabel, xmlRoot, xmlSubRoot);
       super.setLabelProvider(new ArtifactLabelProvider());
       super.setContentProvider(new ArrayContentProvider());
-      super.setInputArtifacts(UserCache.getUsers());
+      super.setInputArtifacts(UserManager.getUsers());
       super.setSorter(new ArtifactViewerSorter());
    }
 
