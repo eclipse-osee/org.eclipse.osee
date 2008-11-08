@@ -89,10 +89,7 @@ public class TransactionIdManager {
       if (comment == null) {
          comment = "";
       }
-      int authorArtId = -1;
-      if (userToBlame != null) {
-         authorArtId = userToBlame.getArtId();
-      }
+      int authorArtId = userToBlame.getArtId();
 
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
       ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_DETAIL, transactionNumber, comment, transactionTime,

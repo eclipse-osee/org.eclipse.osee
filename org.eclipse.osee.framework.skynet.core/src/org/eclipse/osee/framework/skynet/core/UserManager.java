@@ -51,7 +51,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
    private static final UserManager instance = new UserManager();
    private final Map<String, User> userIdToUserCache = Collections.synchronizedMap(new TreeMap<String, User>());
    private boolean userCacheIsLoaded = false;
-   private boolean duringUserCreation = false;
+   private boolean duringMainUserCreation = false;
 
    private UserManager() {
    }
@@ -62,6 +62,9 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
     * @return User
     */
    public static User getUser() {
+      if (instance.duringMainUserCreation) {
+         return BootStrapUser.getInstance();
+      }
       return ClientUser.getMainUser();
    }
 
@@ -180,8 +183,15 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
    /**
     * @return whether the Authentication manager is in the middle of creating a user
     */
-   public static boolean duringUserCreation() {
-      return instance.duringUserCreation;
+   public static boolean duringMainUserCreation() {
+      return instance.duringMainUserCreation;
+   }
+
+   public static synchronized User createMainUser(IOseeUser userEnum, SkynetTransaction transaction) throws OseeCoreException {
+      instance.duringMainUserCreation = true;
+      User user = createUser(userEnum, transaction);
+      instance.duringMainUserCreation = false;
+      return user;
    }
 
    public static synchronized User createUser(IOseeUser userEnum, SkynetTransaction transaction) throws OseeCoreException {
@@ -209,9 +219,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
          }
       }
 
-      instance.duringUserCreation = true;
       user.persistAttributesAndRelations(transaction);
-      instance.duringUserCreation = false;
       return user;
    }
 

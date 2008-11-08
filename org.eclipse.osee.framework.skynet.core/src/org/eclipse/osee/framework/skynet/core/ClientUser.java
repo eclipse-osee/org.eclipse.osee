@@ -58,7 +58,7 @@ final class ClientUser {
                } else {
                   if (ClientSessionManager.isUserCreationRequired()) {
                      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
-                     UserManager.createUser(ClientSessionManager.getCurrentUserInfo(), transaction);
+                     UserManager.createMainUser(ClientSessionManager.getCurrentUserInfo(), transaction);
                      transaction.execute();
                      ClientSessionManager.clearUserCreationRequired();
                   }

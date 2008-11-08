@@ -936,7 +936,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public final void persistAttributes(SkynetTransaction transaction) throws OseeCoreException {
-      if (!AccessControlManager.checkObjectPermission(getBranch(), PermissionEnum.WRITE)) {
+      if (!UserManager.duringMainUserCreation() && !AccessControlManager.checkObjectPermission(getBranch(),
+            PermissionEnum.WRITE)) {
          throw new OseeArgumentException(
                "No write permissions for the branch that this artifact belongs to:" + getBranch());
       }

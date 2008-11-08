@@ -293,8 +293,7 @@ public class AccessControlManager {
     * @return true if the subject has permission for an object else false.
     */
    public static boolean checkObjectPermission(Object object, PermissionEnum permission) {
-      return UserManager.duringUserCreation() || checkObjectPermission(UserManager.getUser(), object,
-            permission);
+      return checkObjectPermission(UserManager.getUser(), object, permission);
    }
 
    public boolean checkCurrentUserObjectPermission(Object object, PermissionEnum permission) {
