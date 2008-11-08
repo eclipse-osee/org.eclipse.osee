@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.client;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -34,7 +33,6 @@ public abstract class BaseCredentialProvider implements ICredentialProvider {
       credential.setDomain("");
       credential.setPassword("");
       credential.setAuthenticationProtocol("");
-      HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
       credential.setClientAddress(HttpServer.getLocalServerAddress(), HttpServer.getDefaultServicePort());
       credential.setClientVersion(OseeCodeVersion.getVersion());
       try {

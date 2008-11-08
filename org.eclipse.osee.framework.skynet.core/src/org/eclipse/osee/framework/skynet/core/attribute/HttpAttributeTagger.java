@@ -64,10 +64,6 @@ public class HttpAttributeTagger {
       return instance;
    }
 
-   public void registerWithEventManager() {
-      OseeEventManager.addListener(eventRelay);
-   }
-
    public void deregisterFromEventManager() {
       OseeEventManager.removeListener(eventRelay);
    }

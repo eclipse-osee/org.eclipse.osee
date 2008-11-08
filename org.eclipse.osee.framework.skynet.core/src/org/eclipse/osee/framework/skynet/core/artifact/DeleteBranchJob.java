@@ -111,12 +111,12 @@ class DeleteBranchJob extends Job {
        */
       @Override
       protected void handleTxWork(Connection connection) throws OseeCoreException {
-         if (ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_CHILD_BRANCHES, branch.getBranchId()) > 0) {
+         if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, COUNT_CHILD_BRANCHES, branch.getBranchId()) > 0) {
             throw new OseeCoreException("Can not delete a branch that has children");
          }
 
          monitor.beginTask("Delete Branch: " + branch, 10);
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
          try {
             chStmt.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, branch.getBranchId(), branch.getBranchId(),
                   branch.getBranchId());

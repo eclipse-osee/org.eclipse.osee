@@ -18,7 +18,7 @@ public class LocalAliasTable extends Table {
 
    public LocalAliasTable(Table aliasedTable, String aliasName) {
       super(aliasName);
-      this.declarationName = String.format("%s as %s", aliasedTable.name, aliasName);
+      this.declarationName = String.format("%s %s", aliasedTable.name, aliasName);
    }
 
    @Override

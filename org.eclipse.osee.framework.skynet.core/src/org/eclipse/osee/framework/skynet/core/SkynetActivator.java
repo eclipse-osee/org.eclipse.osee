@@ -44,7 +44,7 @@ public class SkynetActivator extends OseeUiActivator {
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
-      HttpAttributeTagger.getInstance().registerWithEventManager();
+      HttpAttributeTagger.getInstance();
    }
 
    @Override
