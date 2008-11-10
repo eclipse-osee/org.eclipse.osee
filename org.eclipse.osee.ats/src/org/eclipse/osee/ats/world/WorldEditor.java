@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -30,6 +31,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -119,10 +122,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
 
          setPartName(editorInput.getName());
 
-         // Create Main tab
-         worldComposite = new WorldComposite(EDITOR_ID, null, getContainer(), SWT.NONE);
-         mainPageIndex = addPage(worldComposite);
-         setPageText(mainPageIndex, "Actions");
+         createMainTab();
 
          metricsComposite = new AtsMetricsComposite(this, getContainer(), SWT.NONE);
          metricsPageIndex = addPage(metricsComposite);
@@ -150,6 +150,16 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   private void createMainTab() throws OseeCoreException {
+      // Create Tasks tab
+      Composite comp = AtsLib.createCommonPageComposite(getContainer());
+      ToolBar toolBar = AtsLib.createCommonToolBar(comp);
+
+      worldComposite = new WorldComposite(EDITOR_ID, null, comp, SWT.NONE, toolBar);
+      mainPageIndex = addPage(comp);
+      setPageText(mainPageIndex, "Actions");
    }
 
    /* (non-Javadoc)

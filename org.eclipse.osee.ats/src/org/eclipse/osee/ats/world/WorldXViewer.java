@@ -338,7 +338,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                return;
             }
             WorldEditorInput worldEditorInput =
-                  new WorldEditorInput("ATS - " + getSelectedArtifacts().size() + " Selected", getSelectedArtifacts(),
+                  new WorldEditorInput("ATS World", getSelectedArtifacts(),
                         getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None);
             if (worldEditorInput != null) {
                IWorkbenchPage page = AWorkbench.getActivePage();

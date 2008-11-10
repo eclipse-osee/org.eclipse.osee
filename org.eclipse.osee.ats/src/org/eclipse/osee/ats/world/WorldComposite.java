@@ -88,7 +88,7 @@ import org.eclipse.ui.PartInitException;
 public class WorldComposite extends Composite implements IFrameworkTransactionEventListener {
 
    private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toWorkFlow;
-   private final Label warningLabel, searchNameLabel, extraInfoLabel;
+   private Label warningLabel, searchNameLabel, extraInfoLabel;
    private WorldSearchItem lastSearchItem;
    private final WorldXViewer worldXViewer;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
@@ -99,15 +99,16 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    private TableLoadOption[] tableLoadOptions;
    private Collection<? extends Artifact> arts;
    private String loadName;
-   private final Composite toolBarComposite;
+   private final ToolBar toolBar;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public WorldComposite(String viewEditorId, IViewSite viewSite, Composite parent, int style) {
+      this(viewEditorId, viewSite, parent, style, null);
+   }
+
+   public WorldComposite(String viewEditorId, IViewSite viewSite, Composite parent, int style, ToolBar toolBar) {
       super(parent, style);
       this.viewSite = viewSite;
+      this.toolBar = toolBar;
 
       setLayout(new GridLayout(1, false));
       setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -122,18 +123,12 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       searchNameLabel = new Label(headerComp, SWT.NONE);
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
-         toolBarComposite = null;
          extraInfoLabel = null;
          worldXViewer = null;
          return;
       }
 
-      if (viewSite == null) {
-         toolBarComposite = new Composite(headerComp, SWT.NONE);
-         toolBarComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false, 1, 1));
-         toolBarComposite.setLayout(ALayout.getZeroMarginLayout(1, false));
-      } else {
-         toolBarComposite = null;
+      if (viewSite != null) {
          String nameStr = getWhoAmI();
          if (AtsPlugin.isAtsAdmin()) nameStr += " - Admin";
          if (AtsPlugin.isAtsDisableEmail()) nameStr += " - Email Disabled";
@@ -622,16 +617,13 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          }
       } else {
 
-         ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
-         toolBar.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1));
-
          actionToToolItem(toolBar, expandAllAction);
          actionToToolItem(toolBar, newWorldEditor);
          actionToToolItem(toolBar, newWorldEditorSelected);
          actionToToolItem(toolBar, refreshAction);
          actionToToolItem(toolBar, worldXViewer.getCustomizeAction());
 
-         createToolBarPulldown(toolBar, toolBarComposite);
+         createToolBarPulldown(toolBar, toolBar.getParent());
       }
    }
 
