@@ -34,7 +34,7 @@ public class UserDataStore {
          chStmt.runPreparedQuery(LOAD_OSEE_USER, userId);
          if (chStmt.next()) {
             // Only need the userId all other fields will be loaded by the client
-            toReturn = new OseeUserInfo(true, "-", chStmt.getString("user_id"), "-", false);
+            toReturn = new OseeUserInfo(false, "-", chStmt.getString("user_id"), "-", false);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.SEVERE, String.format(
