@@ -114,9 +114,12 @@ public class TaskComposite extends Composite implements IActionable {
       headerComp.setLayout(ALayout.getZeroMarginLayout(3, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       headerComp.setLayoutData(gd);
+      headerComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
 
       warningLabel = new Label(headerComp, SWT.NONE);
+      //      warningLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
       searchNameLabel = new Label(headerComp, SWT.NONE);
+      //      searchNameLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
          return;
@@ -129,6 +132,7 @@ public class TaskComposite extends Composite implements IActionable {
          gd = new GridData(GridData.FILL_HORIZONTAL);
          gd.horizontalSpan = 3;
          extraInfoLabel.setLayoutData(gd);
+         //         extraInfoLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
          taskXViewer =
                new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
@@ -230,8 +234,11 @@ public class TaskComposite extends Composite implements IActionable {
       // Button composite for state transitions, etc
       Composite bComp = new Composite(parent, SWT.NONE);
       // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
-      bComp.setLayout(new GridLayout(2, false));
       bComp.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false, 1, 1));
+      GridLayout layout = new GridLayout(2, false);
+      layout.marginHeight = 0;
+      layout.marginWidth = 0;
+      bComp.setLayout(layout);
 
       ToolBar toolBar = new ToolBar(bComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
