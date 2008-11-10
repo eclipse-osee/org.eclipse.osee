@@ -60,7 +60,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       Collection<TeamDefinitionArtifact> teamDefs = getTeamDefinitions();
-      if (teamDefs == null || teamDefs.size() == 0) return;
+      if (teamDefs.size() == 0) return;
       Set<String> emails = new HashSet<String>();
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
@@ -82,19 +82,16 @@ public class EmailTeamsItem extends XNavigateItemAction {
 
    public Collection<TeamDefinitionArtifact> getTeamDefinitions() throws OseeCoreException {
       if (teamDef != null) {
-         return Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, true);
+         Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
+         teamDefs.add(teamDef);
+         teamDefs.addAll(Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, true));
+         return teamDefs;
       }
       TeamDefinitionTreeWithChildrenDialog ld = new TeamDefinitionTreeWithChildrenDialog(Active.Active);
       int result = ld.open();
       if (result == 0) {
-         Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-         for (Object obj : ld.getResult()) {
-            teamDefs.add((TeamDefinitionArtifact) obj);
-            teamDefs.addAll(Artifacts.getChildrenOfTypeSet((TeamDefinitionArtifact) obj, TeamDefinitionArtifact.class,
-                  true));
-         }
-         return teamDefs;
+         return ld.getResultAndRecursedTeamDefs();
       }
-      return null;
+      return java.util.Collections.emptyList();
    }
 }

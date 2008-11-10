@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -75,13 +74,13 @@ public final class Artifacts {
 
    public static void persistInTransaction(final Collection<? extends Artifact> artifacts) throws OseeCoreException {
       persistInTransaction(artifacts.toArray(new Artifact[artifacts.size()]));
-         }
+   }
 
    public static void persistInTransaction(Artifact... artifacts) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(artifacts[0].getBranch());
       for (Artifact art : artifacts) {
          art.persistAttributesAndRelations(transaction);
-   }
+      }
       transaction.execute();
    }
 
@@ -103,6 +102,19 @@ public final class Artifacts {
             if (recurse) getChildrenOfType(child, children, clazz, recurse);
          }
       }
+   }
+
+   /**
+    * @return Set of type class that includes parentArtifact and children and will recurse children if true
+    */
+   @SuppressWarnings("unchecked")
+   public static <A extends Artifact> Set<A> getChildrenAndThisOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) throws OseeCoreException {
+      Set<A> thisAndChildren = new HashSet<A>();
+      if (parentArtifact.getClass().equals(clazz)) {
+         thisAndChildren.add((A) parentArtifact);
+      }
+      getChildrenOfTypeSet(parentArtifact, clazz, recurse);
+      return thisAndChildren;
    }
 
    @SuppressWarnings("unchecked")

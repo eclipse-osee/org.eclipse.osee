@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -214,26 +213,12 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    private static void getTeamFromItemAndChildren(ActionableItemArtifact aia, Set<TeamDefinitionArtifact> aiaTeams) throws OseeCoreException {
-      if (aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team).size() > 0) aiaTeams.addAll(aia.getRelatedArtifacts(
-            AtsRelation.TeamActionableItem_Team, TeamDefinitionArtifact.class));
-      for (Artifact childArt : aia.getChildren()) {
-         if (childArt instanceof ActionableItemArtifact) getTeamFromItemAndChildren((ActionableItemArtifact) childArt,
-               aiaTeams);
+      if (aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team).size() > 0) {
+         aiaTeams.addAll(aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team, TeamDefinitionArtifact.class));
       }
-   }
-
-   public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(TeamDefinitionArtifact teamDef) throws OseeCoreException {
-      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-      getTeamFromItemAndChildren(Arrays.asList(teamDef), teamDefs);
-      return teamDefs;
-   }
-
-   private static void getTeamFromItemAndChildren(Collection<TeamDefinitionArtifact> teamDefs, Set<TeamDefinitionArtifact> returnTeamDefs) throws OseeCoreException {
-      for (TeamDefinitionArtifact teamDef : teamDefs) {
-         returnTeamDefs.add(teamDef);
-         for (Artifact childArt : teamDef.getChildren()) {
-            if (childArt instanceof TeamDefinitionArtifact) getTeamFromItemAndChildren(
-                  Arrays.asList((TeamDefinitionArtifact) childArt), returnTeamDefs);
+      for (Artifact childArt : aia.getChildren()) {
+         if (childArt instanceof ActionableItemArtifact) {
+            getTeamFromItemAndChildren((ActionableItemArtifact) childArt, aiaTeams);
          }
       }
    }

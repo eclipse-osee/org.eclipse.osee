@@ -43,7 +43,7 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
    }
 
    public String getHyperlinkLabelString() {
-      return " (modify) ";
+      return " (select) ";
    }
 
    public boolean handleSelection() {
@@ -72,7 +72,7 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
       }
 
       hyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
-      hyperLinkLabel.setToolTipText("Select to modify");
+      hyperLinkLabel.setToolTipText("Select to Modify");
       hyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
          /*
           * (non-Javadoc)
@@ -90,6 +90,7 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
       valueLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
    }
 
+   @Override
    public void createWidgets(FormToolkit toolkit, Composite parent, int horizontalSpan) {
       this.createWidgets(parent, horizontalSpan);
       toolkit.adapt(valueLabel, false, false);

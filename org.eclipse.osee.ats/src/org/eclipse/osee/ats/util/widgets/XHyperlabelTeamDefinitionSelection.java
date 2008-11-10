@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDi
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelSelection;
 
 /**
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelSelection;
  */
 public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection {
 
-   public static final String WIDGET_ID = XBranchSelectWidget.class.getSimpleName();
+   public static final String WIDGET_ID = XHyperlabelTeamDefinitionSelection.class.getSimpleName();
    Set<TeamDefinitionArtifact> selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();
 
    /**
@@ -59,7 +58,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection
          int result = dialog.open();
          if (result == 0) {
             selectedTeamDefs.clear();
-            for (Object obj : dialog.getResult()) {
+            for (Object obj : dialog.getResultAndRecursedTeamDefs()) {
                selectedTeamDefs.add((TeamDefinitionArtifact) obj);
             }
             notifyXModifiedListeners();

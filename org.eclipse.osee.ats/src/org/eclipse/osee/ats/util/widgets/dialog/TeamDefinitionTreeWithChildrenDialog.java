@@ -11,9 +11,15 @@
 
 package org.eclipse.osee.ats.util.widgets.dialog;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -48,6 +54,21 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
+   }
+
+   /**
+    * @return selected team defs and children if recurseChildren was checked
+    * @throws OseeCoreException
+    */
+   public Collection<TeamDefinitionArtifact> getResultAndRecursedTeamDefs() throws OseeCoreException {
+      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>(10);
+      for (Object obj : getResult()) {
+         teamDefs.add((TeamDefinitionArtifact) obj);
+         if (recurseChildren) {
+            teamDefs.addAll(Artifacts.getChildrenOfTypeSet((Artifact) obj, TeamDefinitionArtifact.class, true));
+         }
+      }
+      return teamDefs;
    }
 
    @Override

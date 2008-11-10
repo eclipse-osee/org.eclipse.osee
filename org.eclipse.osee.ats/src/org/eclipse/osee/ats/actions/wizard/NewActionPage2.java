@@ -54,7 +54,7 @@ public class NewActionPage2 extends WizardPage {
       ((XText) getXWidget("Description")).getStyledText().setFocus();
    }
 
-   private XModifiedListener xModListener = new XModifiedListener() {
+   private final XModifiedListener xModListener = new XModifiedListener() {
       public void widgetModified(XWidget widget) {
          getContainer().updateButtons();
       }
@@ -101,7 +101,7 @@ public class NewActionPage2 extends WizardPage {
       ((XText) getXWidget("Description")).set("See title");
       // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
       ((XList) getXWidget("ats.User Community")).setSelected("Other");
-      ((XCombo) getXWidget("ats.Priority")).set("3");
+      ((XCombo) getXWidget("ats.Priority")).set("4");
       ((XCombo) getXWidget("ats.Change Type")).set("Improvement");
    }
 
