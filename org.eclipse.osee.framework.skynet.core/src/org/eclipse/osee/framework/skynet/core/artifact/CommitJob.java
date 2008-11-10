@@ -94,13 +94,16 @@ class CommitJob extends Job {
          "UPDATE osee_txs set tx_current = CASE WHEN mod_type = 3 THEN 2 WHEN mod_type = 5 THEN 3 ELSE 1 END WHERE gamma_id = ? AND transaction_id = ?";
 
    private IProgressMonitor monitor;
-   private final CommitDbTx commitDbTx;
    private final ConflictManagerExternal conflictManager;
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Commit"));
    private static final boolean MERGE_DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
+
+   private final Branch toBranch;
+   private final Branch fromBranch;
+   private final boolean archiveBranch;
 
    public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch, boolean forceCommit) throws OseeCoreException {
       super("\nCommitting Branch: " + fromBranch.getBranchName());
@@ -119,7 +122,9 @@ class CommitJob extends Job {
          throw new ConflictDetectionException(
                "Trying to commit " + fromBranch.getBranchName() + " into " + toBranch.getBranchName() + " when " + conflictManager.getRemainingConflicts().size() + " conflicts still exist");
       }
-      commitDbTx = new CommitDbTx(fromBranch, toBranch, archiveBranch, conflictManager);
+      this.toBranch = toBranch;
+      this.fromBranch = fromBranch;
+      this.archiveBranch = archiveBranch;
    }
 
    /*
@@ -130,15 +135,12 @@ class CommitJob extends Job {
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       this.monitor = monitor;
-
-      IStatus toReturn = Status.CANCEL_STATUS;
       try {
-         commitDbTx.execute();
-         toReturn = Status.OK_STATUS;
+         new CommitDbTx(fromBranch, toBranch, archiveBranch, conflictManager).execute();
       } catch (Exception ex) {
-         toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
+         return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
       }
-      return toReturn;
+      return Status.OK_STATUS;
    }
 
    private final class CommitDbTx extends DbTransaction {

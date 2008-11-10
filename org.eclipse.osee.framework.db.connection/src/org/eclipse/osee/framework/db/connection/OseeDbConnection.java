@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.db.connection.internal.OseeConnectionPool;
@@ -93,8 +94,12 @@ public class OseeDbConnection {
       currentTxs.put(Thread.currentThread(), new ObjectPair<DbTransaction, Exception>(transaction, new Exception()));
    }
 
-   public static void reportTxEnd(DbTransaction transaction) throws OseeWrappedException {
+   public static void reportTxEnd(DbTransaction transaction) throws OseeWrappedException, OseeStateException {
       ObjectPair<DbTransaction, Exception> currentPair = txCreateds.get(Thread.currentThread());
+      if (currentPair == null) {
+         throw new OseeStateException(
+               "reportTxEnd called for thread: " + Thread.currentThread() + " but reportTxCreation had not been called.");
+      }
       DbTransaction txCreated = currentPair.object1;
       if (txCreated == transaction) {
          txCreateds.put(Thread.currentThread(), null);

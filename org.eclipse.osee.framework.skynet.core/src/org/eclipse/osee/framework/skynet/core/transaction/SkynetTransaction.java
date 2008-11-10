@@ -240,14 +240,11 @@ public final class SkynetTransaction extends DbTransaction {
       if (!artifact.isInDb()) return;
       madeChanges = true;
       processTransactionForArtifact(artifact, ModificationType.DELETED, SequenceManager.getNextGammaId());
-
-      // Kick Local Event
-      addArtifactModifiedEvent(this, ArtifactModType.Deleted, artifact);
-
       RelationManager.deleteRelationsAll(artifact, reorderRelations);
       artifact.deleteAttributes();
 
-      artifact.persistAttributesAndRelations();
+      artifact.persistAttributesAndRelations(this);
+      addArtifactModifiedEvent(this, ArtifactModType.Deleted, artifact);
    }
 
    /* (non-Javadoc)

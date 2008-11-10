@@ -434,9 +434,9 @@ public class ArtifactPersistenceManager {
          try {
             artifact.setDeleted();
             transaction.deleteArtifact(artifact, reorderRelations);
-         } catch (Exception ex) {
+         } catch (OseeCoreException ex) {
             artifact.setNotDeleted();
-            throw new OseeCoreException(ex);
+            throw ex;
          }
       }
    }
