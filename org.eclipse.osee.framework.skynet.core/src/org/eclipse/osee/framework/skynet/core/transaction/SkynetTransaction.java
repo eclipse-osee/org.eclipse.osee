@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -80,7 +81,17 @@ public final class SkynetTransaction extends DbTransaction {
       this.branch = branch;
    }
 
+   private void ensureCorrectBranch(Artifact artifact) throws OseeStateException {
+      if (!artifact.getBranch().equals(branch)) {
+         String msg =
+               String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
+                     artifact.getHumanReadableId(), artifact.getBranch(), branch);
+         throw new OseeStateException(msg);
+      }
+   }
+
    public void addArtifactToPersist(Artifact artifact) throws OseeCoreException {
+      ensureCorrectBranch(artifact);
       madeChanges = true;
       ModificationType modType;
       ArtifactModType artifactModType;
