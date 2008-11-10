@@ -36,6 +36,7 @@ public class HttpBranchCreation {
 
    public static Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("branchName", childBranchName);
       parameters.put("function", "createChildBranch");
       parameters.put("authorId", getAuthorId());
