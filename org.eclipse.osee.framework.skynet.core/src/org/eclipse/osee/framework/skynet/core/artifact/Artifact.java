@@ -868,18 +868,28 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return Returns the dirty.
     */
    public boolean isDirty() {
-      return isDirty(false);
+      return reportIsDirty().isTrue();
+   }
+
+   public Result reportIsDirty() {
+      return reportIsDirty(false);
    }
 
    /**
     * @return Returns the dirty.
     */
-   public boolean isDirty(boolean includeLinks) {
-      boolean dirtyVal = dirty || anAttributeIsDirty();
+   public Result reportIsDirty(boolean includeLinks) {
+      if (dirty) return new Result(true, "dirty flag == true");
+      Result result = reportAnAttributeIsDirty();
+      if (result.isTrue()) return result;
       if (includeLinks) {
-         dirtyVal |= RelationManager.hasDirtyLinks(this);
+         result = RelationManager.reportHasDirtyLinks(this);
       }
-      return dirtyVal;
+      return result;
+   }
+
+   public boolean isDirty(boolean includeLinks) {
+      return reportIsDirty(includeLinks).isTrue();
    }
 
    public boolean isReadOnly() {
@@ -892,12 +902,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    private boolean anAttributeIsDirty() {
+      return reportAnAttributeIsDirty().isTrue();
+   }
+
+   private Result reportAnAttributeIsDirty() {
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
-            return true;
+            return new Result(true, "Attribute: " + attribute.getNameValueDescription());
          }
       }
-      return false;
+      return Result.FalseResult;
    }
 
    public void revert() throws OseeCoreException {

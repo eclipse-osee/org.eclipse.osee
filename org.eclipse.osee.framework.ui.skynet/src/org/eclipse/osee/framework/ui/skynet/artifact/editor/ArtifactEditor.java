@@ -150,25 +150,30 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    @Override
    public boolean isDirty() {
-      if (artifact.isDeleted()) return false;
+      return reportIsDirty().isTrue();
+   }
+
+   public Result reportIsDirty() {
+      if (artifact.isDeleted()) return Result.FalseResult;
 
       try {
-         boolean dirty = !artifact.isReadOnly() && artifact.isDirty(true);
-         if (dirty) return true;
+         if (artifact.isReadOnly()) return Result.FalseResult;
+         Result result = artifact.reportIsDirty(true);
+         if (result.isTrue()) return result;
 
          //TODO The new attribute composite dirty logic is always returning true ....
          if (false) {
-            Result result = newAttributeComposite.isDirty();
+            result = newAttributeComposite.isDirty();
             System.out.println("New Attribute Composite - isDirt => " + result);
             if (result.isTrue()) {
-               return true;
+               return result;
             }
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      return false;
+      return Result.FalseResult;
    }
 
    public void onDirtied() {
@@ -348,6 +353,17 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          @Override
          public void widgetSelected(SelectionEvent event) {
             previewComposite.refresh();
+         }
+      });
+
+      ToolItem isDirty = new ToolItem(toolBar, SWT.NONE);
+      isDirty.setImage(SkynetGuiPlugin.getInstance().getImage("dirty.gif"));
+      isDirty.setToolTipText("Show what attribute or relation making editor dirty.");
+      isDirty.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            Result result = reportIsDirty();
+            AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
          }
       });
 

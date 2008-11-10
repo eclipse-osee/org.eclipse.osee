@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Ryan D. Brooks
@@ -330,6 +331,19 @@ public class RelationManager {
          }
       }
       return false;
+   }
+
+   public static Result reportHasDirtyLinks(Artifact artifact) {
+      List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
+      if (selectedRelations == null) {
+         return Result.FalseResult;
+      }
+      for (RelationLink relation : selectedRelations) {
+         if (relation.isDirty()) {
+            return new Result(true, "Relation: " + relation.toString());
+         }
+      }
+      return Result.FalseResult;
    }
 
    /**

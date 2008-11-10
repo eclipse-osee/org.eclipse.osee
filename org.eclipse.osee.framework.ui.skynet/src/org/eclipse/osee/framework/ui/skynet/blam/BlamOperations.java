@@ -34,10 +34,11 @@ public class BlamOperations {
    private static Map<String, BlamOperation> blamMap;
 
    public static BlamOperation getBlamOperation(String operationId) {
+      ensurePopulated();
       return blamMap.get(operationId);
    }
 
-   public static Collection<BlamOperation> getBlamOperationsNameSort() {
+   public static Collection<BlamOperation> ensurePopulated() {
       if (blamsSortedByName == null) {
          blamsSortedByName = new ArrayList<BlamOperation>();
          blamMap = new HashMap<String, BlamOperation>();
@@ -49,6 +50,11 @@ public class BlamOperations {
          for (String name : names)
             blamsSortedByName.add(blamMap.get(name));
       }
+      return blamsSortedByName;
+   }
+
+   public static Collection<BlamOperation> getBlamOperationsNameSort() {
+      ensurePopulated();
       return blamsSortedByName;
    }
 

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -83,8 +84,10 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                }
                try {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-                  handleCreateTasks(assignees, titles, teamArt);
-                  teamArt.persistAttributesAndRelations();
+                  SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+                  handleCreateTasks(assignees, titles, teamArt, transaction);
+                  teamArt.persistAttributesAndRelations(transaction);
+                  transaction.execute();
                } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                   return;
@@ -98,7 +101,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       });
    }
 
-   private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
       for (String title : titles) {
          TaskArtifact taskArt = teamArt.getSmaMgr().getTaskMgr().createNewTask(title, false);
          if (assignees != null && assignees.size() > 0) {
@@ -110,6 +113,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
             }
             taskArt.getSmaMgr().getStateMgr().setAssignees(users);
          }
+         taskArt.persistAttributesAndRelations(transaction);
       }
    }
 

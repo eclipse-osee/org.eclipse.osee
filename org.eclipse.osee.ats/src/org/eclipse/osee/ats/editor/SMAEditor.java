@@ -199,15 +199,13 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
          if (result.isTrue()) return result;
 
-         if (smaMgr.getSma().isDirty(true)) {
-            return new Result(true, "Another relation is dirty");
-         }
+         result = smaMgr.getSma().reportIsDirty(true);
+         return result;
 
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return new Result(true, ex.getLocalizedMessage());
       }
-      return Result.FalseResult;
    }
 
    @Override
@@ -435,6 +433,17 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          public void widgetSelected(SelectionEvent e) {
             PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), smaMgr.getSma());
             pd.open();
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("dirty.gif"));
+      item.setToolTipText("Show what attribute or relation making editor dirty.");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            Result result = smaMgr.getEditor().isDirtyResult();
+            AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
          }
       });
 
