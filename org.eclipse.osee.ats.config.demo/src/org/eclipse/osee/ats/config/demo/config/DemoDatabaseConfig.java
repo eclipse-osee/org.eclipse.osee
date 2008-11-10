@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -65,7 +66,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       populateProgramBranch(CISBuilds.CIS_Bld_1.name());
 
       // Map team definitions versions to their related branches
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW), SawBuilds.SAW_Bld_1.name(),
             SawBuilds.SAW_Bld_1.name(), transaction);
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), CISBuilds.CIS_Bld_1.name(),
@@ -133,7 +134,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             SawBuilds.SAW_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                     BranchManager.getAtsBranch(), verName);
+                     AtsPlugin.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
@@ -145,7 +146,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             CISBuilds.CIS_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                     BranchManager.getAtsBranch(), verName);
+                     AtsPlugin.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);

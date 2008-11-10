@@ -114,10 +114,6 @@ public class BranchManager {
       return KeyedBranchCache.getKeyedBranch(keyname);
    }
 
-   public static Branch getAtsBranch() throws OseeCoreException {
-      return getCommonBranch();
-   }
-
    /**
     * Excludes branches of type MERGE and SYSTEM_ROOT
     * 

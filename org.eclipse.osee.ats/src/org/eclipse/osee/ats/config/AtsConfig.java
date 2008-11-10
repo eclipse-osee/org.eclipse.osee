@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -124,7 +123,7 @@ public class AtsConfig {
       if (art.getParent() == null) {
          try {
             Artifact rootArt =
-                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getAtsBranch());
+                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
             rootArt.addChild(art);
             art.persistAttributesAndRelations(transaction);
          } catch (Exception ex) {
@@ -139,7 +138,7 @@ public class AtsConfig {
       if (art.getParent() == null) {
          try {
             Artifact rootArt =
-                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getAtsBranch());
+                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
             rootArt.addChild(art);
             art.persistAttributesAndRelations(transaction);
          } catch (Exception ex) {

@@ -1329,7 +1329,7 @@ public class BranchView extends ViewPart implements IActionable {
                if (ed.open() == 0) {
                   String artId = ed.getEntry();
                   Artifact associatedArtifact =
-                        ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), BranchManager.getAtsBranch());
+                        ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), BranchManager.getCommonBranch());
                   if (MessageDialog.openConfirm(
                         Display.getCurrent().getActiveShell(),
                         "Set Associated Artifact",

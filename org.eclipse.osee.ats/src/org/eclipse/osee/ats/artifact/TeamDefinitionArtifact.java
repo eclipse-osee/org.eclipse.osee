@@ -73,7 +73,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       TeamDefinitionArtifact tda = null;
       tda =
             (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
-                  BranchManager.getAtsBranch(), name);
+                  AtsPlugin.getAtsBranch(), name);
       tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
@@ -176,7 +176,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public static TeamDefinitionArtifact getTopTeamDefinition() throws OseeCoreException {
       return (TeamDefinitionArtifact) StaticIdQuery.getSingletonArtifactOrException(
-            TeamDefinitionArtifact.ARTIFACT_NAME, TOP_TEAM_STATIC_ID, BranchManager.getAtsBranch());
+            TeamDefinitionArtifact.ARTIFACT_NAME, TOP_TEAM_STATIC_ID, AtsPlugin.getAtsBranch());
    }
 
    public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {
@@ -359,7 +359,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public VersionArtifact createVersion(String name) throws OseeCoreException {
       VersionArtifact versionArt =
             (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                  BranchManager.getAtsBranch(), name);
+                  AtsPlugin.getAtsBranch(), name);
       addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
       versionArt.persistAttributesAndRelations();
       AtsCache.cache(versionArt);

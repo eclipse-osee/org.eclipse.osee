@@ -36,7 +36,7 @@ public class WorkItemDefinitionFactory {
 
    public synchronized static void loadDefinitions() throws OseeCoreException {
       if (itemIdToDefinition == null) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "Loading Work Item Definitions");
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loading Work Item Definitions");
          itemIdToDefinition = new HashMap<String, WorkItemDefinition>();
          itemIdToWidArtifact = new HashMap<String, Artifact>();
 
@@ -135,7 +135,7 @@ public class WorkItemDefinitionFactory {
       if (wid == null) {
          // Attempt to get from DB
          loadDefinitions(ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
-               BranchManager.getAtsBranch()));
+               BranchManager.getCommonBranch()));
       }
       return itemIdToDefinition.get(id);
    }
@@ -147,7 +147,7 @@ public class WorkItemDefinitionFactory {
       if (art == null) {
          // Attempt to get from DB
          loadDefinitions(ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
-               BranchManager.getAtsBranch()));
+               BranchManager.getCommonBranch()));
       }
       return itemIdToWidArtifact.get(id);
    }

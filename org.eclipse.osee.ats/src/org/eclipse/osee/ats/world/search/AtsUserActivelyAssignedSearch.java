@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
@@ -67,7 +67,7 @@ public class AtsUserActivelyAssignedSearch extends UserSearchItem {
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
-            ArtifactPersistenceManager.getArtifacts(smaCriteria, true, BranchManager.getAtsBranch());
+            ArtifactPersistenceManager.getArtifacts(smaCriteria, true, AtsPlugin.getAtsBranch());
 
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamMember_Team));

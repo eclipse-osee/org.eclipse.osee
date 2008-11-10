@@ -135,7 +135,7 @@ public class AtsLib implements IAtsLib {
       BulkLoadAtsCache.run(false);
       Artifact artifact = null;
       try {
-         artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getAtsBranch());
+         artifact = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return;

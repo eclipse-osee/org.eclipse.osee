@@ -6,9 +6,9 @@
 package org.eclipse.osee.ats.test.config;
 
 import junit.framework.TestCase;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -26,7 +26,7 @@ public class AtsTeamDefintionToWorkflowTest extends TestCase {
    public void testTeamDefintionToWorkflow() throws Exception {
       boolean error = false;
       for (Artifact artifact : ArtifactQuery.getArtifactsFromType(TeamDefinitionArtifact.ARTIFACT_NAME,
-            BranchManager.getAtsBranch())) {
+            AtsPlugin.getAtsBranch())) {
          TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
          if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
             System.err.println("Team Definition \"" + teamDef + "\" has no Work Flow associated and is Actionable.");

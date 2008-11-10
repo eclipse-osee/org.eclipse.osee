@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -57,7 +56,7 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
                   DecisionReviewArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME);
       teamWorkflowNames.addAll(TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames());
 
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
 
       for (String artTypeName : teamWorkflowNames) {
          System.out.println("Processing artifact type - " + artTypeName);

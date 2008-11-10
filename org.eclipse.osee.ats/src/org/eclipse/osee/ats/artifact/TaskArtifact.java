@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -213,7 +212,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    @Override
    public void statusChanged() throws OseeCoreException {
       super.statusChanged();
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       if (smaMgr.getStateMgr().getPercentComplete() == 100 && !isCompleted())
          transitionToCompleted(false, transaction);
       else if (smaMgr.getStateMgr().getPercentComplete() != 100 && isCompleted()) {
@@ -365,5 +364,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (sma != null) return sma.getWorldViewSWEnhancement();
       return "";
    }
+
+
 
 }

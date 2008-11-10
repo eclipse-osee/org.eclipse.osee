@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -38,7 +37,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class DemoDbReviews {
 
    public static void createReviews() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       createPeerToPeerReviews(transaction);
       createDecisionReviews(transaction);
       transaction.execute();

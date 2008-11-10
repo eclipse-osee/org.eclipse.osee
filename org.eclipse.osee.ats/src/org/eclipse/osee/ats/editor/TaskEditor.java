@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -61,7 +60,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          for (TaskArtifact taskArt : tasks) {
             taskArt.saveSMA(transaction);
          }

@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -551,7 +550,7 @@ public class SMAWorkFlowSection extends SectionPart {
          if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name())) {
             EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
             if (cancelDialog.open() != 0) return;
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             Result result = smaMgr.transitionToCancelled(cancelDialog.getEntry(), true, transaction);
             transaction.execute();
             if (result.isFalse()) {
@@ -642,7 +641,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
          smaMgr.getSma().persistAttributes();
 
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          Result result = smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true, false, transaction);
          transaction.execute();
          if (result.isFalse()) {

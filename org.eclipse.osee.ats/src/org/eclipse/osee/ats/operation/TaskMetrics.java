@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -66,7 +66,7 @@ public class TaskMetrics extends AbstractBlam {
          ArtifactType descriptor = variableMap.getArtifactType("Artifact Type");
 
          List<Artifact> artifacts =
-               ArtifactQuery.getArtifactsFromType(descriptor.getName(), BranchManager.getAtsBranch());
+               ArtifactQuery.getArtifactsFromType(descriptor.getName(), AtsPlugin.getAtsBranch());
          Set<Artifact> tasks = RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.SmaToTask_Task);
          for (Artifact artifact : tasks) {
             if (artifact instanceof TaskArtifact) {

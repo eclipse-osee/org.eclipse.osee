@@ -387,7 +387,7 @@ public class AtsBranchManager {
             BranchManager.createWorkingBranch(parentTransactionId, finalBranchShortName, branchName,
                   stateMachineArtifact);
             // Create reviews as necessary
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr, transaction);
             transaction.execute();
          }
@@ -539,7 +539,7 @@ public class AtsBranchManager {
          if (result == 0) {
             BranchManager.commitBranch(branch, true, true);
             // Create reviews as necessary
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
             transaction.execute();
          } else if (result == 1) {

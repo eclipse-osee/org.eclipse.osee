@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
@@ -415,7 +414,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          public void run() {
             SkynetTransaction transaction;
             try {
-               transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+               transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
                for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
                   actionArt.resetAttributesOffChildren(transaction);
                }
@@ -845,7 +844,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                if (purge) {
                   ArtifactPersistenceManager.purgeArtifacts(deleteArts);
                } else {
-                  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+                  SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
                   ArtifactPersistenceManager.deleteArtifact(transaction, false,
                         deleteArts.toArray(new Artifact[deleteArts.size()]));
                   transaction.execute();

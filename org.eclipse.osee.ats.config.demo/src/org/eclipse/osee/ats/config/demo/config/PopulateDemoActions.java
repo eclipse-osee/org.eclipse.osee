@@ -108,19 +108,19 @@ public class PopulateDemoActions extends XNavigateItemAction {
          DemoDbUtil.sleep(5000);
 
          // Create traceability between System, Subsystem and Software requirements
-         SkynetTransaction demoDbTraceability = new SkynetTransaction(BranchManager.getAtsBranch());
+         SkynetTransaction demoDbTraceability = new SkynetTransaction(AtsPlugin.getAtsBranch());
          demoDbTraceabilityTx(demoDbTraceability);
          demoDbTraceability.execute();
 
          DemoDbUtil.sleep(5000);
 
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
-         SkynetTransaction createMainWorkingBranch = new SkynetTransaction(BranchManager.getAtsBranch());
+         SkynetTransaction createMainWorkingBranch = new SkynetTransaction(AtsPlugin.getAtsBranch());
          createMainWorkingBranchTx(createMainWorkingBranch, !SkynetDbInit.isDbInit());
          createMainWorkingBranch.execute();
 
          // Create SAW_Bld_2 Actions 
-         SkynetTransaction sawActionsTransaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         SkynetTransaction sawActionsTransaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          Set<ActionArtifact> actionArts =
                createActions(DemoDbActionData.getReqSawActionsData(),
                      DemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null, sawActionsTransaction);
@@ -369,7 +369,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private void createNonReqChangeDemoActions() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
       createActions(DemoDbActionData.getNonReqSawActionData(), DemoDatabaseConfig.SawBuilds.SAW_Bld_3.toString(), null,
             transaction);

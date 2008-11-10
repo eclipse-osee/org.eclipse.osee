@@ -30,13 +30,12 @@ import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -351,7 +350,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
                selectedAlias.add((ActionableItemArtifact) obj);
             }
 
-            toReturn = actionableItemsTx(BranchManager.getAtsBranch(), selectedAlias, null);
+            toReturn = actionableItemsTx(AtsPlugin.getAtsBranch(), selectedAlias, null);
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -413,7 +412,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Convert", sb.toString())) {
                Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
                toProcess.add(selectedAia);
-               toReturn = actionableItemsTx(BranchManager.getAtsBranch(), toProcess, newTeamDef);
+               toReturn = actionableItemsTx(AtsPlugin.getAtsBranch(), toProcess, newTeamDef);
             }
          }
       }

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -24,7 +25,6 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -129,7 +129,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       }
 
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactsFromCriteria(BranchManager.getAtsBranch(), 1000, criteria);
+            ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
 
       if (selectedShowAction) {
          return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.ActionToWorkflow_Action);

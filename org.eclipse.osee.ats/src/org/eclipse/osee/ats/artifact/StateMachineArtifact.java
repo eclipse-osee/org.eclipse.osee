@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
@@ -968,7 +967,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public static List<Artifact> getAllSMATypeArtifacts() throws OseeCoreException {
       List<Artifact> result = new ArrayList<Artifact>();
       for (String artType : getAllSMATypeNames()) {
-         result.addAll(ArtifactQuery.getArtifactsFromType(artType, BranchManager.getAtsBranch()));
+         result.addAll(ArtifactQuery.getArtifactsFromType(artType, AtsPlugin.getAtsBranch()));
       }
       return result;
    }
@@ -976,7 +975,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public static List<Artifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
       List<Artifact> result = new ArrayList<Artifact>();
       for (String artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-         result.addAll(ArtifactQuery.getArtifactsFromType(artType, BranchManager.getAtsBranch()));
+         result.addAll(ArtifactQuery.getArtifactsFromType(artType, AtsPlugin.getAtsBranch()));
       }
       return result;
    }

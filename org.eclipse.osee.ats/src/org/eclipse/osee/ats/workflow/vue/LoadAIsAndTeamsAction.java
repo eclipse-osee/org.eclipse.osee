@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -139,7 +138,7 @@ public class LoadAIsAndTeamsAction {
       if (workFlow == null) throw new IllegalArgumentException("ATS config items can't be loaded.");
 
       try {
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          // Get or create ATS root artifact
          Artifact atsHeading = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact(transaction);
 
@@ -316,7 +315,7 @@ public class LoadAIsAndTeamsAction {
          if (aia == null) {
             aia =
                   (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
-                        BranchManager.getAtsBranch());
+                        AtsPlugin.getAtsBranch());
             aia.setDescriptiveName(page.getName());
             for (String staticId : staticIds) {
                aia.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, staticId);

@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -46,7 +46,7 @@ public class CreateNewUser extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Create New User", IProgressMonitor.UNKNOWN);
 
-      User user = (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getAtsBranch());
+      User user = (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getCommonBranch());
 
       String name = variableMap.getString("Name (Last, First)");
       if (name.equals("")) {
@@ -130,8 +130,7 @@ public class CreateNewUser extends AbstractBlam {
       }
       // Add groups to belong to
       try {
-         groupArts =
-               EmailGroupsAndUserGroups.getEmailGroupsAndUserGroups(UserManager.getUser(), GroupType.Both);
+         groupArts = EmailGroupsAndUserGroups.getEmailGroupsAndUserGroups(UserManager.getUser(), GroupType.Both);
          String groupStr = "";
          for (Artifact art : groupArts) {
             groupStr += art.getDescriptiveName() + ",";

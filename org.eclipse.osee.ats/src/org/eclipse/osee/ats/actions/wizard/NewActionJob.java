@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -69,7 +68,7 @@ public class NewActionJob extends Job {
 
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
          actionArt =
                createAction(monitor, title, desc, changeType, priority, userComms, validationRequired, needByDate,
@@ -121,7 +120,7 @@ public class NewActionJob extends Job {
 
       if (monitor != null) monitor.subTask("Creating Action");
       ActionArtifact actionArt =
-            (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME, BranchManager.getAtsBranch());
+            (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch());
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
             validationRequired, needByDate);
 

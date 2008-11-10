@@ -105,6 +105,6 @@ public class AtsPlugin extends OseeUiActivator {
    }
 
    public static Branch getAtsBranch() throws OseeCoreException {
-      return BranchManager.getAtsBranch();
+      return BranchManager.getCommonBranch();
    }
 }

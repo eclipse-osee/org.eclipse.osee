@@ -349,7 +349,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                if (artifacts.size() == 0) return;
                Artifact artifact = artifacts.iterator().next();
                try {
-                  if (artifact.getBranch() != BranchManager.getAtsBranch() && artifact.getBranch() != BranchManager.getDefaultBranch()) {
+                  if (artifact.getBranch() != BranchManager.getCommonBranch() && artifact.getBranch() != BranchManager.getDefaultBranch()) {
                      AWorkbench.getActivePage().closeEditor(editor, false);
                      return;
                   }

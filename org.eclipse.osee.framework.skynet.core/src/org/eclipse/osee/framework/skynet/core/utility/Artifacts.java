@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -49,7 +48,7 @@ public final class Artifacts {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName(artifactTypeName, name, branch);
       } catch (ArtifactDoesNotExist ex) {
-         return ArtifactTypeManager.addArtifact(artifactTypeName, BranchManager.getAtsBranch(), name);
+         return ArtifactTypeManager.addArtifact(artifactTypeName, branch, name);
       }
    }
 

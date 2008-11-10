@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
@@ -131,7 +130,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                   "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
          } else {
             try {
-               SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+               SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
                if (getActivePage() == attributesPageIndex) {
                   smaMgr.getSma().persistAttributes(transaction);
                }
@@ -623,7 +622,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    public void setPriviledgedEditMode(PriviledgedEditMode priviledgedEditMode) throws OseeCoreException {
       this.priviledgedEditMode = priviledgedEditMode;
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       smaMgr.getSma().saveSMA(transaction);
       workFlowTab.refresh();
    }

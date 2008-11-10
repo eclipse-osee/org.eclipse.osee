@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.core.client.server.HttpRequest;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.core.client.server.IHttpServerRequest;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -59,7 +59,7 @@ public class AtsHttpServerRequest implements IHttpServerRequest {
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
       String guid = httpRequest.getParameter("guid");
       try {
-         final Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getAtsBranch());
+         final Artifact artifact = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch());
          if (artifact instanceof IATSArtifact) {
             Display.getDefault().asyncExec(new Runnable() {
 

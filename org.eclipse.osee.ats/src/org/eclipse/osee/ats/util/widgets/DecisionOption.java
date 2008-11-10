@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 public class DecisionOption {

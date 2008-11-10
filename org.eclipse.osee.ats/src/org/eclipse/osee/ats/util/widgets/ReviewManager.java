@@ -32,10 +32,9 @@ import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -106,7 +105,7 @@ public class ReviewManager {
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String reviewTitle, String againstState, User origUser, Date origDate, SkynetTransaction transaction) throws OseeCoreException {
       PeerToPeerReviewArtifact peerToPeerRev =
             (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(PeerToPeerReviewArtifact.ARTIFACT_NAME,
-                  BranchManager.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
+                  AtsPlugin.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
 
       if (teamParent != null) {
          teamParent.addRelation(AtsRelation.TeamWorkflowToReview_Review, peerToPeerRev);

@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -424,7 +423,7 @@ public class TaskComposite extends Composite implements IActionable {
                   builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             // Done for concurrent modification purposes
             ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
             delItems.addAll(items);
@@ -554,7 +553,7 @@ public class TaskComposite extends Composite implements IActionable {
          try {
             if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             for (Artifact art : artsToRelate) {
                if (art instanceof TaskArtifact) {
                   TaskArtifact taskArt = (TaskArtifact) art;

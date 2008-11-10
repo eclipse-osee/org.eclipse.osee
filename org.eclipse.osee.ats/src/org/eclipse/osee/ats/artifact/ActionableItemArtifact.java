@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -70,7 +70,7 @@ public class ActionableItemArtifact extends Artifact {
 
    public static ActionableItemArtifact getTopActionableItem() throws OseeCoreException {
       return (ActionableItemArtifact) StaticIdQuery.getSingletonArtifactOrException(
-            ActionableItemArtifact.ARTIFACT_NAME, TOP_AI_STATIC_ID, BranchManager.getAtsBranch());
+            ActionableItemArtifact.ARTIFACT_NAME, TOP_AI_STATIC_ID, AtsPlugin.getAtsBranch());
    }
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {

@@ -13,12 +13,12 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
@@ -65,6 +65,6 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
          criteria.add(new RelationCriteria(AtsRelation.ActionToWorkflow_Action));
       }
 
-      return ArtifactQuery.getArtifactsFromCriteria(BranchManager.getAtsBranch(), 200, criteria);
+      return ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 200, criteria);
    }
 }

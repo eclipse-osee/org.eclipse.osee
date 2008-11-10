@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -78,7 +77,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          }
 
          try {
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             createNewVersionItemTx(transaction, teamDefHoldingVersions, newVer);
             transaction.execute();
          } catch (Exception ex) {
@@ -106,7 +105,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
    private void createNewVersionItemTx( SkynetTransaction transaction, TeamDefinitionArtifact teamDefHoldingVersions, String newVer) throws OseeCoreException {
       VersionArtifact ver =
             (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                  BranchManager.getAtsBranch(), newVer);
+                  AtsPlugin.getAtsBranch(), newVer);
       teamDefHoldingVersions.addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
       ver.persistAttributesAndRelations(transaction);
       ArtifactEditor.editArtifact(ver);

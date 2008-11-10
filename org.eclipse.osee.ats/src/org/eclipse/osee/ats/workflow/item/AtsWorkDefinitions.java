@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
@@ -25,7 +26,6 @@ import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -231,7 +231,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static void importWorkItemDefinitionsIntoDb(final WriteType writeType, final XResultData resultData, final Collection<? extends WorkItemDefinition> workItemDefinitions) throws OseeCoreException {
 
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
 
       // Items must be imported in order due to the relations that are created between items
       for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,

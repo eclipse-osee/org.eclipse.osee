@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -705,7 +704,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       final StringBuffer sb = new StringBuffer();
 
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
 
       for (ActionableItemArtifact aia : diag.getChecked()) {
          Result result = addActionableItemToTeamsOrAddTeams(aia, transaction);
@@ -786,10 +785,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       TeamWorkFlowArtifact teamArt = null;
       if (guid == null)
-         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, BranchManager.getAtsBranch());
+         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsPlugin.getAtsBranch());
       else
          teamArt =
-               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, BranchManager.getAtsBranch(), guid,
+               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsPlugin.getAtsBranch(), guid,
                      hrid);
       setArtifactIdentifyData(this, teamArt);
 

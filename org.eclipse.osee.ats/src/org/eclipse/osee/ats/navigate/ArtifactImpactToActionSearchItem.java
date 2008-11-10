@@ -155,7 +155,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                if (transData.getCommitArtId() > 0) {
                   Artifact assocArt =
                         ArtifactQuery.getArtifactFromId(transData.getCommitArtId(),
-                              BranchManager.getAtsBranch());
+                              AtsPlugin.getAtsBranch());
                   if (assocArt instanceof TeamWorkFlowArtifact) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Committed",
                            assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));

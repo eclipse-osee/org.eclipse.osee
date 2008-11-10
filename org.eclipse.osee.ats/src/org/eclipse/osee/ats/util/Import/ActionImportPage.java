@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.WorldView;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.FileSelector;
@@ -137,9 +136,9 @@ public class ActionImportPage extends WizardDataTransferPage {
       final File file = fileSelector.getFile();
       try {
 
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          ExcelAtsActionArtifactExtractor extractor =
-               new ExcelAtsActionArtifactExtractor(BranchManager.getAtsBranch(), emailPocs.getSelection());
+               new ExcelAtsActionArtifactExtractor(AtsPlugin.getAtsBranch(), emailPocs.getSelection());
          extractor.discoverArtifactAndRelationData(file);
          if (extractor.dataIsValid()) extractor.createArtifactsAndNotify(transaction);
          WorldView.loadIt("Imported Action Artifacts", extractor.getActionArts());

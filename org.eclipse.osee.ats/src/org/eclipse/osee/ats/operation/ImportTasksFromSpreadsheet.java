@@ -130,7 +130,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                File file = new File(filename);
                try {
                   //this is odd, but this is passed into the TaskImportJob and the excel extractor, execute() is called after the extractor has been run
-                  //                  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+                  //                  SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
                   Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
                         (TeamWorkFlowArtifact) artifact, emailPocs, persist)));
                } catch (Exception ex) {

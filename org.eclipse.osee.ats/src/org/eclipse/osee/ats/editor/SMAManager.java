@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -364,7 +363,7 @@ public class SMAManager {
          teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, newVersion);
       }
       if (persist) {
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          for (TeamWorkFlowArtifact teamArt : smas) {
             teamArt.persistRelations(transaction);
          }
@@ -395,7 +394,7 @@ public class SMAManager {
          }
          if (dialog.open() == 0) {
 
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
 
             for (TeamWorkFlowArtifact team : teams) {
                if (team.getChangeType() != dialog.getSelection()) {
@@ -434,7 +433,7 @@ public class SMAManager {
          }
          if (ald.open() == 0) {
 
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             for (TeamWorkFlowArtifact team : teams) {
                if (team.getPriority() != ald.getSelection()) {
                   team.setPriority(ald.getSelection());
