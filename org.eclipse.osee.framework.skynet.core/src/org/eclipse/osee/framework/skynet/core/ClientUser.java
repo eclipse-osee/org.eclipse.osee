@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -33,11 +34,13 @@ final class ClientUser {
    private static final ClientUser instance = new ClientUser();
 
    private User currentUser;
-   private boolean notifiedAsGuest;
+   private boolean isGuestNotificationAllowed;
+   private boolean isGuestAuthenticationAllowed;
 
    private ClientUser() {
       this.currentUser = null;
-      this.notifiedAsGuest = false;
+      this.isGuestAuthenticationAllowed = true;
+      this.isGuestNotificationAllowed = true;
    }
 
    static synchronized User getMainUser() throws OseeCoreException {
@@ -64,30 +67,36 @@ final class ClientUser {
                setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
             }
          } catch (UserNotInDatabase ex) {
-            if (currentUser == null) {
-               executeGuestLogin();
-            }
+            executeGuestLogin();
          }
       } else {
          executeGuestLogin();
       }
    }
 
-   private void setCurrentUser(User newUser) {
+   private void setCurrentUser(User newUser) throws OseeStateException {
       this.currentUser = newUser;
+
+      if (newUser == null) {
+         throw new OseeStateException("Setting current user to null.");
+      } else {
+         if (isGuestNotificationAllowed && newUser.getName().equals(SystemUser.Guest.getName())) {
+            isGuestNotificationAllowed = false;
+            AWorkbench.popup(
+                  "OSEE Guest Login",
+                  "You are logged into OSEE as \"Guest\".\n\nIf you do not expect to be logged in as Guest, please report this immediately.");
+         }
+      }
       if (ClientSessionManager.isSessionValid()) {
          notifyListeners();
       }
    }
 
    private void executeGuestLogin() throws OseeCoreException {
-      if (!notifiedAsGuest) {
-         notifiedAsGuest = true;
+      if (isGuestAuthenticationAllowed) {
          ClientSessionManager.authenticateAsGuest();
          setCurrentUser(UserManager.getUser(SystemUser.Guest));
-         AWorkbench.popup(
-               "OSEE Guest Login",
-               "You are logged into OSEE as \"Guest\".\n\nIf you do not expect to be logged in as Guest, please report this immediately.");
+         isGuestAuthenticationAllowed = false;
       }
    }
 
