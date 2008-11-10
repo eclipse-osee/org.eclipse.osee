@@ -114,12 +114,9 @@ public class TaskComposite extends Composite implements IActionable {
       headerComp.setLayout(ALayout.getZeroMarginLayout(3, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       headerComp.setLayoutData(gd);
-      headerComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
 
       warningLabel = new Label(headerComp, SWT.NONE);
-      //      warningLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
       searchNameLabel = new Label(headerComp, SWT.NONE);
-      //      searchNameLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
          return;

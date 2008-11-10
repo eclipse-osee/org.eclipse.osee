@@ -26,8 +26,8 @@ import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -113,7 +113,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    public boolean isUsingTaskResolutionOptions() throws OseeCoreException {
-      return (getTaskResolutionOptionDefintions().size() == 0);
+      return (getTaskResolutionOptionDefintions().size() > 0);
    }
 
    public List<TaskResOptionDefinition> getTaskResolutionOptionDefintions() throws OseeCoreException {
@@ -365,7 +365,5 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (sma != null) return sma.getWorldViewSWEnhancement();
       return "";
    }
-
-
 
 }
