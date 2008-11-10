@@ -46,7 +46,8 @@ public class AddCommonBranchForAtsDemo extends AddCommonBranch {
    @Override
    public List<String> getSkynetDbTypeExtensionIds() {
       return Arrays.asList("org.eclipse.osee.framework.skynet.core.CommonBranch",
-            "org.eclipse.osee.framework.skynet.core.ProgramAndCommon", "org.eclipse.osee.ats.ATS_Skynet_Types",
-            "org.eclipse.osee.ats.config.demo.Demo_Common_Skynet_Types", "org.eclipse.osee.ats.ATS_Skynet_Types");
+            "org.eclipse.osee.framework.skynet.core.ProgramAndCommon", 
+            "org.eclipse.osee.ats.ATS_Skynet_Types",
+            "org.eclipse.osee.ats.config.demo.Demo_Common_Skynet_Types");
    }
 }
