@@ -12,13 +12,12 @@ package org.eclipse.osee.framework.ui.service.control.widgets;
 
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.type.InputManager;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
+import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.actions.InspectLookUpServerAction;
 import org.eclipse.osee.framework.ui.service.control.actions.LookupUpdates;
 import org.eclipse.osee.framework.ui.service.control.actions.NodeDoubleClicked;
@@ -58,7 +57,6 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
    private SashForm serviceAndDetailsSash;
    private ConnectionManager connectionManager;
    private ContributionManager contributionManager;
-   private Logger logger = ConfigUtil.getConfigFactory().getLogger(ManagerMain.class);
 
    public ManagerMain(Composite parent, int style) {
       super(parent, style);
@@ -210,12 +208,12 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
                connectionManager.registerForConnection(interfaceClass, (IServiceRenderer) renderer);
                stackedViewer.addControl(interfaceClass.getCanonicalName(), (IRenderer) renderer);
             } catch (InstantiationException ex) {
-               logger.log(Level.WARNING, "registerServiceRenderers: Instantiation Error.\n", ex);
+               OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: Instantiation Error.\n", ex);
             } catch (IllegalAccessException ex) {
-               logger.log(Level.WARNING, "registerServiceRenderers: IllegalAccess Error.\n", ex);
+               OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: IllegalAccess Error.\n", ex);
             }
          } catch (ClassNotFoundException ex) {
-            logger.log(Level.WARNING, "registerServiceRenderers: ClassNotFound Error.\n", ex);
+            OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: ClassNotFound Error.\n", ex);
          }
       }
    }
@@ -231,7 +229,7 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
                Class<?> interfaceClass = contributionManager.loadClass(interfaceName);
                servicesViewer.registerImage(interfaceClass, imageDescriptor);
             } catch (ClassNotFoundException ex) {
-               logger.log(Level.WARNING, "Error in registerServiceIcons.\n", ex);
+               OseeLog.log(ControlPlugin.class, Level.WARNING, "Error in registerServiceIcons.\n", ex);
             }
          }
       }

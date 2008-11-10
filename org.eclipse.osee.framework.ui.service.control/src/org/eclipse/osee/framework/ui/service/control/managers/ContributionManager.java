@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -27,7 +25,8 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.osgi.framework.Bundle;
 
 /**
@@ -41,7 +40,6 @@ public class ContributionManager extends ClassLoader {
    private List<String> bundleList; // <String>
    private Map<String, String> interfaceToRendererMap;
    private Map<String, String> interfaceToIconMap;
-   private Logger logger = ConfigUtil.getConfigFactory().getLogger(ContributionManager.class);
 
    private ContributionManager() {
       super();
@@ -111,7 +109,7 @@ public class ContributionManager extends ClassLoader {
             }
          }
       }
-      logger.log(Level.INFO, registrationStatus + "]\n");
+      OseeLog.log(ControlPlugin.class, Level.INFO, registrationStatus + "]\n");
    }
 
    public Map<String, String> getInterfaceToRendererMap() {

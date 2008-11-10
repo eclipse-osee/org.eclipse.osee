@@ -15,17 +15,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ServiceLaunchConfig {
-   private final Logger logger = ConfigUtil.getConfigFactory().getLogger(ServiceLaunchConfig.class);
    private final String EXTENSION_POINT_NAME = "org.eclipse.osee.framework.ui.service.control.ServiceLaunch";
    private final String APPLICATION_ELEMENT = "Application";
 
@@ -106,7 +105,7 @@ public class ServiceLaunchConfig {
                getApplicationConfig(ExecutionTypesEnum.StandAloneApplication, element, serviceItem);
                toReturn.add(serviceItem);
             } catch (Throwable ex) {
-               logger.log(Level.WARNING, String.format("Error while loading service launch extension for: [%s]",
+               OseeLog.log(ControlPlugin.class, Level.WARNING, String.format("Error while loading service launch extension for: [%s]",
                      serviceName), ex);
             }
          }

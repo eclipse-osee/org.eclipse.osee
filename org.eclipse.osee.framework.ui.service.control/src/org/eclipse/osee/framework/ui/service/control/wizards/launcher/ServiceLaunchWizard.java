@@ -10,17 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.wizards.launcher;
 
-import java.util.logging.Logger;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.osee.framework.jdk.core.util.io.IZipEntryCompleteCallback;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.pages.LocalRemotePage;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.pages.ServicePage;
 import org.eclipse.osee.framework.ui.swt.DynamicWizard;
 
 public class ServiceLaunchWizard extends DynamicWizard implements IZipEntryCompleteCallback {
 
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ServiceLaunchWizard.class);
    private ServiceLaunchingInformation serviceInfo;
 
    public ServiceLaunchWizard() {
@@ -59,10 +56,6 @@ public class ServiceLaunchWizard extends DynamicWizard implements IZipEntryCompl
       this.addPage(startingPage);
       this.addPage(new ServicePage(servicePageTitle, localRemoteTitle, null, serviceInfo));
       this.setStartingPage(startingPage);
-   }
-
-   public Logger getLogger() {
-      return logger;
    }
 
    public void setValue(int i) {

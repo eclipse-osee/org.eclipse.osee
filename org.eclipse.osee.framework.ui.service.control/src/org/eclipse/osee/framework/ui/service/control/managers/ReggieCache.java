@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceMatches;
@@ -35,15 +33,15 @@ import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscoveryManager;
 import net.jini.lookup.ServiceDiscoveryManager;
-
 import org.eclipse.osee.framework.jini.discovery.IRegistrarListener;
 import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
+import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 
 public class ReggieCache implements DiscoveryListener {
 
    private static ReggieCache theInstance = null;
-   private static Logger logger = Logger.getLogger(ReggieCache.class.getName());
 
    private Set<IRegistrarListener> registrarListeners;
    private Set<String> locators;
@@ -122,7 +120,7 @@ public class ReggieCache implements DiscoveryListener {
                lookupDiscoveryManager.addLocators(locatorList.toArray(new LookupLocator[locatorList.size()]));
             }
          } catch (MalformedURLException ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
+            OseeLog.log(ControlPlugin.class, Level.SEVERE, ex.getMessage(), ex);
          }
       }
    }

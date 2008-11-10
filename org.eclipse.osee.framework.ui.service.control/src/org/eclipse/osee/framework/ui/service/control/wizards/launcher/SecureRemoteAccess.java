@@ -15,12 +15,12 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import com.jcraft.jsch.Channel;
@@ -35,7 +35,6 @@ import com.jcraft.jsch.UserInfo;
  * @author Roberto E. Escobar
  */
 public class SecureRemoteAccess {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SecureRemoteAccess.class);
    private Session session;
 
    private SecureRemoteAccess(String host, String user) throws Exception {
@@ -113,7 +112,7 @@ public class SecureRemoteAccess {
          if (logLevel == null) {
             logLevel = Level.SEVERE;
          }
-         logger.log(logLevel, message);
+         OseeLog.log(ControlPlugin.class, logLevel, message);
       }
    }
 

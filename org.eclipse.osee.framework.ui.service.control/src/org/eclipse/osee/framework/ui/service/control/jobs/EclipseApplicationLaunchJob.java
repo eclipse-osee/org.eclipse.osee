@@ -13,13 +13,12 @@ package org.eclipse.osee.framework.ui.service.control.jobs;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
@@ -30,7 +29,6 @@ import org.eclipse.swt.SWT;
  * @author Roberto E. Escobar
  */
 public class EclipseApplicationLaunchJob extends Job {
-   private final Logger logger = ConfigUtil.getConfigFactory().getLogger(EclipseApplicationLaunchJob.class);
    private TextDisplayHelper display;
    private ServiceLaunchingInformation serviceInfo;
    private String javaCompiler;
@@ -71,7 +69,7 @@ public class EclipseApplicationLaunchJob extends Job {
 
             exec = exec.replaceAll(ServiceItem.EXEC_SEPARATOR + ServiceItem.EXEC_SEPARATOR, ServiceItem.EXEC_SEPARATOR);
 
-            logger.log(Level.INFO, "Local Launch: " + exec);
+            OseeLog.log(ControlPlugin.class, Level.INFO, "Local Launch: " + exec);
 
             exec += ServiceItem.EXEC_SEPARATOR + "-debug";
 

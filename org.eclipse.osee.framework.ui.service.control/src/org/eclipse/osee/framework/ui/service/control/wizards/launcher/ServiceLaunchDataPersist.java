@@ -20,12 +20,12 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,7 +43,6 @@ public class ServiceLaunchDataPersist {
    private static final String ROOT_ELEMENT = "ServiceLaunchData";
    private static final String HOST_ELEMENT = "Host";
    private static final String LAST_SERVICE_ELEMENT = "LastSelectedService";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ServiceLaunchDataPersist.class);
 
    private List<String> hosts;
    private String lastServiceLaunched;
@@ -106,7 +105,7 @@ public class ServiceLaunchDataPersist {
             document = builder.parse(file);
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, "Error reading File [" + file.getAbsolutePath() + "] ", ex);
+         OseeLog.log(ControlPlugin.class, Level.SEVERE, "Error reading File [" + file.getAbsolutePath() + "] ", ex);
       }
       return document;
    }
@@ -130,14 +129,14 @@ public class ServiceLaunchDataPersist {
          xmlSerializer.serialize(root);
          out.flush();
       } catch (FileNotFoundException ex) {
-         logger.log(Level.SEVERE, "File error [" + fileString + "] ", ex);
+         OseeLog.log(ControlPlugin.class, Level.SEVERE, "File error [" + fileString + "] ", ex);
       } catch (IOException ex) {
-         logger.log(Level.SEVERE, "Error writing to File [" + fileString + "] ", ex);
+         OseeLog.log(ControlPlugin.class, Level.SEVERE, "Error writing to File [" + fileString + "] ", ex);
       } finally {
          try {
             out.close();
          } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Error closing stream [" + fileString + "] ", ex);
+            OseeLog.log(ControlPlugin.class, Level.SEVERE, "Error closing stream [" + fileString + "] ", ex);
          }
       }
    }
@@ -174,7 +173,7 @@ public class ServiceLaunchDataPersist {
             }
             write(rootElement, getFile());
          } catch (ParserConfigurationException ex) {
-            logger.log(Level.SEVERE, "Error saving File [" + getFile() + "] ", ex);
+            OseeLog.log(ControlPlugin.class, Level.SEVERE, "Error saving File [" + getFile() + "] ", ex);
          }
 
       }
