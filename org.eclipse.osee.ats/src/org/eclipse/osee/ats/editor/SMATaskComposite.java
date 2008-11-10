@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ToolBar;
 
 /**
  * @author Donald G. Dunne
@@ -27,20 +28,13 @@ public class SMATaskComposite extends Composite {
    private static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
    private final TaskComposite taskComposite;
 
-   /**
-    * @param parent
-    * @param style
-    */
-   public SMATaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) throws OseeCoreException {
+   public SMATaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style, ToolBar toolBar) throws OseeCoreException {
       super(parent, style);
 
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      taskComposite = new TaskComposite(iXTaskViewer, this, style);
-
+      taskComposite = new TaskComposite(iXTaskViewer, this, style, toolBar);
       AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID);
-
       taskComposite.loadTable();
    }
 

@@ -359,8 +359,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                return;
             }
             try {
-               TaskEditor.open(new TaskEditorSimpleProvider(
-                     "ATS Tasks - " + getSelectedArtifacts().size() + " Selected", getSelectedTaskArtifacts()));
+               TaskEditor.open(new TaskEditorSimpleProvider("ATS Tasks", getSelectedTaskArtifacts()));
             } catch (OseeCoreException ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }

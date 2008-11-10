@@ -499,8 +499,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
                return;
             }
             WorldEditorInput worldEditorInput =
-                  new WorldEditorInput("ATS - " + worldXViewer.getSelectedArtifacts().size() + " Selected",
-                        worldXViewer.getSelectedArtifacts(),
+                  new WorldEditorInput("ATS World", worldXViewer.getSelectedArtifacts(),
                         worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions);
             if (worldEditorInput != null) {
                IWorkbenchPage page = AWorkbench.getActivePage();

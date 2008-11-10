@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
@@ -70,8 +71,6 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -260,18 +259,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
          // Create Tasks tab
          if (smaMgr.showTaskTab()) {
-            taskComposite = new SMATaskComposite(this, getContainer(), SWT.NONE);
-            taskPageIndex = addPage(taskComposite);
-            setPageText(taskPageIndex, "Tasks");
+            createTaskTab();
          }
 
-         // Create History tab
-         Composite composite = createCommonPageComposite();
-         createCommonToolBar(composite);
-         historyComposite = new SMAHistoryComposite(smaMgr, composite, SWT.NONE);
-         historyPageIndex = addPage(composite);
-         setPageText(historyPageIndex, "History");
-
+         createHistoryTab();
          createRelationsTab();
          createAttributesTab();
          createDetailsTab();
@@ -285,17 +276,33 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       enableGlobalPrint();
    }
 
+   private void createHistoryTab() throws OseeCoreException {
+      Composite composite = AtsLib.createCommonPageComposite(getContainer());
+      createToolBar(composite);
+      historyComposite = new SMAHistoryComposite(smaMgr, composite, SWT.NONE);
+      historyPageIndex = addPage(composite);
+      setPageText(historyPageIndex, "History");
+   }
+
+   private void createTaskTab() throws OseeCoreException {
+      Composite composite = AtsLib.createCommonPageComposite(getContainer());
+      ToolBar toolBar = createToolBar(composite);
+      taskComposite = new SMATaskComposite(this, composite, SWT.NONE, toolBar);
+      taskPageIndex = addPage(composite);
+      setPageText(taskPageIndex, "Tasks");
+   }
+
    private void createDetailsTab() {
-      Composite composite = createCommonPageComposite();
-      createCommonToolBar(composite);
+      Composite composite = AtsLib.createCommonPageComposite(getContainer());
+      createToolBar(composite);
       new DetailsBrowserComposite(smaMgr.getSma(), composite, SWT.NONE, null);
       detailsPageIndex = addPage(composite);
       setPageText(detailsPageIndex, "Details");
    }
 
    private void createMetricsTab() {
-      Composite composite = createCommonPageComposite();
-      createCommonToolBar(composite);
+      Composite composite = AtsLib.createCommonPageComposite(getContainer());
+      createToolBar(composite);
       metricsComposite = new AtsMetricsComposite(this, getContainer(), SWT.NONE);
       metricsPageIndex = addPage(metricsComposite);
       setPageText(metricsPageIndex, "Metrics");
@@ -306,8 +313,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (!AtsPlugin.isAtsAdmin()) return;
 
       // Create Attributes tab
-      Composite composite = createCommonPageComposite();
-      ToolBar toolBar = createCommonToolBar(composite);
+      Composite composite = AtsLib.createCommonPageComposite(getContainer());
+      ToolBar toolBar = createToolBar(composite);
 
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("save.gif"));
@@ -334,8 +341,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    private void createRelationsTab() {
       // Create Relations tab
-      Composite composite = createCommonPageComposite();
-      ToolBar toolBar = createCommonToolBar(composite);
+      Composite composite = AtsLib.createCommonPageComposite(getContainer());
+      ToolBar toolBar = createToolBar(composite);
 
       if (AtsPlugin.isAtsAdmin()) {
          final ToolItem showAllRelationsItem = new ToolItem(toolBar, SWT.CHECK);
@@ -394,19 +401,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
    };
 
-   protected ToolBar createCommonToolBar(Composite parent) {
-      Composite toolBarComposite = new Composite(parent, SWT.BORDER);
-      GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1);
-      toolBarComposite.setLayoutData(gridData);
-      GridLayout layout = new GridLayout(2, false);
-      layout.marginHeight = 0;
-      layout.marginWidth = 0;
-      toolBarComposite.setLayout(layout);
-
-      ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
-
-      gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1);
-      toolBar.setLayoutData(gridData);
+   private ToolBar createToolBar(Composite parent) {
+      ToolBar toolBar = AtsLib.createCommonToolBar(parent);
       SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
       ToolItem item;
 
@@ -448,23 +444,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
-      Text artifactInfoLabel = new Text(toolBarComposite, SWT.END);
+      Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);
       artifactInfoLabel.setText("Type: \"" + smaMgr.getSma().getArtifactTypeName() + "\"   HRID: " + smaMgr.getSma().getHumanReadableId());
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;
-   }
-
-   private Composite createCommonPageComposite() {
-      Composite composite = new Composite(getContainer(), SWT.NONE);
-      GridLayout layout = new GridLayout(1, false);
-      layout.marginHeight = 0;
-      layout.marginWidth = 0;
-      layout.verticalSpacing = 0;
-      composite.setLayout(layout);
-
-      return composite;
    }
 
    public void refreshPages() throws OseeCoreException {

@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -72,7 +71,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -92,7 +90,6 @@ public class TaskComposite extends Composite implements IActionable {
    private TaskXViewer taskXViewer;
    private MenuItem filterCompletedMenuItem, selectionMetricsMenuItem;
    private final IXTaskViewer iXTaskViewer;
-   private final Label warningLabel, searchNameLabel;
    private Label extraInfoLabel;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
 
@@ -101,34 +98,27 @@ public class TaskComposite extends Composite implements IActionable {
     * @throws Exception
     */
    public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) throws OseeCoreException {
+      this(iXTaskViewer, parent, style, null);
+   }
+
+   public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style, ToolBar toolBar) throws OseeCoreException {
       super(parent, style);
       this.iXTaskViewer = iXTaskViewer;
       BulkLoadAtsCache.run(false);
 
-      setLayout(new GridLayout(1, false));
+      setLayout(ALayout.getZeroMarginLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      // Header Composite
-      Composite headerComp = new Composite(this, SWT.NONE);
-      headerComp.setLayout(ALayout.getZeroMarginLayout(3, false));
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      headerComp.setLayoutData(gd);
-
-      warningLabel = new Label(headerComp, SWT.NONE);
-      searchNameLabel = new Label(headerComp, SWT.NONE);
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
          return;
       }
 
-      try {
-         createTaskActionBar(headerComp);
+      populateToolBar(toolBar);
 
-         extraInfoLabel = new Label(headerComp, SWT.NONE);
-         gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = 3;
-         extraInfoLabel.setLayoutData(gd);
-         //         extraInfoLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      try {
+
+         extraInfoLabel = new Label(this, SWT.NONE);
+         extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          taskXViewer =
                new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
@@ -187,19 +177,6 @@ public class TaskComposite extends Composite implements IActionable {
       }
    }
 
-   public void setTableTitle(final String title, final boolean warning) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (warning)
-               warningLabel.setImage(AtsPlugin.getInstance().getImage("warn.gif"));
-            else
-               warningLabel.setImage(null);
-            searchNameLabel.setText(title);
-            searchNameLabel.getParent().layout();
-         };
-      });
-   }
-
    /**
     * @return the iXTaskViewer
     */
@@ -225,20 +202,7 @@ public class TaskComposite extends Composite implements IActionable {
       taskXViewer.refresh();
    }
 
-   public void createTaskActionBar(Composite parent) throws OseeCoreException {
-
-      // Button composite for state transitions, etc
-      Composite bComp = new Composite(parent, SWT.NONE);
-      // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
-      bComp.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false, 1, 1));
-      GridLayout layout = new GridLayout(2, false);
-      layout.marginHeight = 0;
-      layout.marginWidth = 0;
-      bComp.setLayout(layout);
-
-      ToolBar toolBar = new ToolBar(bComp, SWT.FLAT | SWT.RIGHT);
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      toolBar.setLayoutData(gd);
+   private void populateToolBar(ToolBar toolBar) throws OseeCoreException {
       ToolItem item = null;
 
       if (iXTaskViewer.isTaskable()) {
@@ -295,7 +259,7 @@ public class TaskComposite extends Composite implements IActionable {
       });
 
       OseeAts.addButtonToEditorToolBar(this, AtsPlugin.getInstance(), toolBar, SMAEditor.EDITOR_ID, "ATS Task Tab");
-      createTaskActionBarPulldown(toolBar, bComp);
+      createTaskActionBarPulldown(toolBar, toolBar.getParent());
 
    }
 
@@ -334,8 +298,6 @@ public class TaskComposite extends Composite implements IActionable {
             }
          }
       });
-
-      new MenuItem(menu, SWT.SEPARATOR);
 
       filterCompletedMenuItem = new MenuItem(menu, SWT.CHECK);
       filterCompletedMenuItem.setText("Filter Out Completed/Cancelled - Ctrl-F");

@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
@@ -38,6 +39,11 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -51,6 +57,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    private SMATaskComposite taskComposite;
    private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
    private AtsMetricsComposite metricsComposite;
+   private Label warningLabel, searchNameLabel;
 
    /*
     * (non-Javadoc)
@@ -78,6 +85,19 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    public boolean isSaveOnCloseNeeded() {
       return isDirty();
+   }
+
+   public void setTableTitle(final String title, final boolean warning) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (warning)
+               warningLabel.setImage(AtsPlugin.getInstance().getImage("warn.gif"));
+            else
+               warningLabel.setImage(null);
+            searchNameLabel.setText(title);
+            searchNameLabel.getParent().layout();
+         };
+      });
    }
 
    @Override
@@ -125,10 +145,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
             throw new IllegalArgumentException("Editor Input not TaskEditorInput");
          }
 
-         // Create Tasks tab
-         taskComposite = new SMATaskComposite(this, getContainer(), SWT.NONE);
-         taskPageIndex = addPage(taskComposite);
-         setPageText(taskPageIndex, "Tasks");
+         createTaskTab();
 
          metricsComposite = new AtsMetricsComposite(this, getContainer(), SWT.NONE);
          metricsPageIndex = addPage(metricsComposite);
@@ -140,6 +157,24 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   private void createTaskTab() throws OseeCoreException {
+      // Create Tasks tab
+      Composite comp = AtsLib.createCommonPageComposite(getContainer());
+      ToolBar toolBar = AtsLib.createCommonToolBar(comp);
+
+      Composite headerComp = new Composite(comp, SWT.NONE);
+      headerComp.setLayout(new GridLayout(2, false));
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      headerComp.setLayoutData(gd);
+
+      warningLabel = new Label(headerComp, SWT.NONE);
+      searchNameLabel = new Label(headerComp, SWT.NONE);
+
+      taskComposite = new SMATaskComposite(this, comp, SWT.NONE, toolBar);
+      taskPageIndex = addPage(comp);
+      setPageText(taskPageIndex, "Tasks");
    }
 
    private void loadTable() throws OseeCoreException {
@@ -197,8 +232,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          this.searchType = searchType;
          this.taskEditor = taskEditor;
          taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
-         taskEditor.taskComposite.getTaskComposite().setTableTitle(
-               "Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"...", false);
+         taskEditor.setTableTitle("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"...", false);
          this.itaskEditorProvider = itaskEditorProvider;
       }
 
@@ -227,11 +261,10 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                   try {
                      taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
                      if (taskArts.size() == 0) {
-                        taskEditor.taskComposite.getTaskComposite().setTableTitle(
+                        taskEditor.setTableTitle(
                               "No Results Found - " + itaskEditorProvider.getTaskEditorLabel(searchType), true);
                      } else {
-                        taskEditor.taskComposite.getTaskComposite().setTableTitle(
-                              itaskEditorProvider.getTaskEditorLabel(searchType), false);
+                        taskEditor.setTableTitle(itaskEditorProvider.getTaskEditorLabel(searchType), false);
                      }
                      taskEditor.taskComposite.getTaskComposite().loadTable();
                   } catch (OseeCoreException ex) {
