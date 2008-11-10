@@ -200,8 +200,9 @@ public class InternalClientSessionManager {
       OseeSessionGrant session = null;
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("operation", "create");
+      String url = null;
       try {
-         String url =
+         url =
                HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult result =
@@ -210,7 +211,7 @@ public class InternalClientSessionManager {
             session = fromEncryptedBytes(outputStream.toByteArray());
          }
       } catch (Exception ex) {
-         throw new OseeAuthenticationException(ex);
+         throw new OseeAuthenticationException(url, ex);
       }
       return session;
    }
