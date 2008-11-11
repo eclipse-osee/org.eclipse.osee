@@ -27,10 +27,12 @@ import org.eclipse.osee.ats.editor.ITaskEditorProvider;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -85,7 +87,7 @@ public class EditTasks extends AbstractBlam {
                   sb.append("Include Completed");
                }
                if (!selected) {
-                  AWorkbench.popup("ERROR", "You must select at least one option");
+                  AWorkbench.popup("ERROR", "You must select at least Team, Version or Assignee");
                   return;
                }
 
@@ -95,7 +97,6 @@ public class EditTasks extends AbstractBlam {
             }
          }
       });
-
       monitor.done();
    }
 
@@ -136,31 +137,54 @@ public class EditTasks extends AbstractBlam {
        */
       @Override
       public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
-         Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
          List<Artifact> workflows = new ArrayList<Artifact>();
 
+         // If only user selected, handle that case separately
+         if (verArt == null && teamDefs.size() == 0 && user != null) {
+            return handleOnlyUserSelected();
+         }
+
+         // If version specified, get workflows from targeted relation
          if (verArt != null) {
-            workflows.addAll(verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
-         } else if (teamDefs.size() > 0 && teamDefs.iterator().next().getTeamDefinitionHoldingVersions() != null) {
-            for (TeamDefinitionArtifact teamDef : teamDefs) {
-               for (VersionArtifact versionArt : teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts()) {
-                  workflows.addAll(versionArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
+            for (Artifact art : verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow)) {
+               if (teamDefs.size() == 0) {
+                  workflows.add(art);
+               }
+               // Filter by team def if specified
+               else if (teamDefs.contains((((TeamWorkFlowArtifact) art).getTeamDefinition()))) {
+                  workflows.add(art);
                }
             }
          }
-
-         List<Artifact> teamDefWorkflows = new ArrayList<Artifact>();
-         for (Artifact workflow : workflows) {
-            if (teamDefs.contains((((TeamWorkFlowArtifact) workflow).getTeamDefinition()))) {
-               teamDefWorkflows.add(workflow);
-            }
+         // Else, get workflows from teamdefs
+         else if (teamDefs.size() > 0) {
+            TeamWorldSearchItem teamWorldSearchItem = new TeamWorldSearchItem("", teamDefs, true, false, false);
+            workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
          }
 
          // Bulk load tasks related to workflows
-         Collection<Artifact> artifacts =
-               RelationManager.getRelatedArtifacts(teamDefWorkflows, 1, AtsRelation.SmaToTask_Task);
+         Collection<Artifact> artifacts = RelationManager.getRelatedArtifacts(workflows, 1, AtsRelation.SmaToTask_Task);
 
          // Apply the remaining criteria
+         return filterByCompletedAndSelectedUser(artifacts);
+      }
+
+      private Collection<TaskArtifact> handleOnlyUserSelected() throws OseeCoreException {
+         return filterByCompletedAndSelectedUser(getUserAssignedTaskArtifacts());
+      }
+
+      private Collection<TaskArtifact> getUserAssignedTaskArtifacts() throws OseeCoreException {
+         Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+         for (Artifact art : user.getRelatedArtifacts(CoreRelationEnumeration.Users_Artifact)) {
+            if (art instanceof TaskArtifact) {
+               tasks.add((TaskArtifact) art);
+            }
+         }
+         return tasks;
+      }
+
+      private Collection<TaskArtifact> filterByCompletedAndSelectedUser(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+         Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
          for (Artifact art : artifacts) {
             TaskArtifact taskArt = (TaskArtifact) art;
             // If include completed and canceled and task is such, check implementer list
@@ -171,13 +195,10 @@ public class EditTasks extends AbstractBlam {
             if (user != null && !taskArt.getSmaMgr().getStateMgr().getAssignees().contains(user)) {
                continue;
             }
-
             tasks.add(taskArt);
          }
-
          return tasks;
       }
-
    }
 
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {

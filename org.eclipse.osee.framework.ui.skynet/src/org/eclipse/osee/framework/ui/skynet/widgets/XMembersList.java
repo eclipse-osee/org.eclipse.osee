@@ -13,10 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 
 /**
  * Set a AList with the members as the selections
@@ -37,8 +36,7 @@ public class XMembersList extends XListViewer {
       super(displayLabel, xmlRoot, xmlSubRoot);
       super.setLabelProvider(new ArtifactLabelProvider());
       super.setContentProvider(new ArrayContentProvider());
-      super.setInputArtifacts(UserManager.getUsers());
-      super.setSorter(new ArtifactViewerSorter());
+      super.setInputArtifacts(UserManager.getUsersSortedByName());
    }
 
    public String[] getEmails() throws OseeCoreException {
@@ -52,7 +50,7 @@ public class XMembersList extends XListViewer {
          else
             v.add(name);
       }
-      return (String[]) (v.toArray(new String[0]));
+      return (v.toArray(new String[0]));
    }
 
    public ArrayList<User> getUsers() {

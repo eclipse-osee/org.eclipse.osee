@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
@@ -49,7 +49,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
    }
 
    private static final UserManager instance = new UserManager();
-   private final Map<String, User> userIdToUserCache = Collections.synchronizedMap(new TreeMap<String, User>());
+   private final Map<String, User> userIdToUserCache = Collections.synchronizedMap(new HashMap<String, User>());
    private boolean userCacheIsLoaded = false;
    private boolean duringMainUserCreation = false;
 
@@ -74,6 +74,12 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
     */
    public static ArrayList<User> getUsers() throws OseeCoreException {
       return getUsers(UserStatusEnum.Active);
+   }
+
+   public static ArrayList<User> getUsersSortedByName() throws OseeCoreException {
+      ArrayList<User> users = getUsers();
+      Collections.sort(users);
+      return users;
    }
 
    public static ArrayList<User> getUsers(UserStatusEnum userStatus) throws OseeCoreException {

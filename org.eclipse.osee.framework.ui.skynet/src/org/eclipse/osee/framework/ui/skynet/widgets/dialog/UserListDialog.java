@@ -12,14 +12,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
 
@@ -46,21 +42,8 @@ public class UserListDialog extends ListDialog {
             return "Unknown Object";
          }
       });
-      setInput(UserManager.getUsers());
+      setInput(UserManager.getUsersSortedByName());
       setShellStyle(getShellStyle() | SWT.RESIZE);
-   }
-
-   @Override
-   protected Control createDialogArea(Composite container) {
-      Control c = super.createDialogArea(container);
-      getTableViewer().setSorter(new ViewerSorter() {
-         @SuppressWarnings("unchecked")
-         @Override
-         public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare(((User) e1).getName(), ((User) e2).getName());
-         }
-      });
-      return c;
    }
 
    public User getSelection() {

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.access;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.Dialog;
@@ -54,7 +53,7 @@ public class PolicyDialog extends Dialog {
    private Button chkChildrenPermission;
    private Combo cmbUsers;
    private Combo cmbPermissionLevel;
-   private Object object;
+   private final Object object;
    private Label accessLabel;
 
    public PolicyDialog(Shell parentShell, Object object) {
@@ -88,11 +87,8 @@ public class PolicyDialog extends Dialog {
       cmbUsers.setText("-Select Person-");
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
-      subjectList.addAll(UserManager.getUsers());
+      subjectList.addAll(UserManager.getUsersSortedByName());
       subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchManager.getCommonBranch()));
-
-      Collections.sort(subjectList);
-
       for (Artifact subject : subjectList) {
          String name = subject.getDescriptiveName();
          cmbUsers.add(name);
@@ -117,18 +113,21 @@ public class PolicyDialog extends Dialog {
 
    private void addListeners() {
       radDisabled.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             checkEnabled();
          }
       });
 
       radEnabled.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             checkEnabled();
          }
       });
 
       btnAdd.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             Artifact subject = (Artifact) cmbUsers.getData(cmbUsers.getText().replaceAll(" - Rank.*", ""));
             PermissionEnum permission =
