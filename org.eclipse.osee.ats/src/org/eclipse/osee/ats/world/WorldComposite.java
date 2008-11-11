@@ -88,7 +88,8 @@ import org.eclipse.ui.PartInitException;
 public class WorldComposite extends Composite implements IFrameworkTransactionEventListener {
 
    private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toWorkFlow;
-   private Label warningLabel, searchNameLabel, extraInfoLabel;
+   private final Label warningLabel, searchNameLabel;
+   private Label extraInfoLabel;
    private WorldSearchItem lastSearchItem;
    private final WorldXViewer worldXViewer;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
@@ -234,9 +235,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       this.loadName = name;
       this.arts = arts;
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
-      options.addAll(Arrays.asList(tableLoadOption));
+      if (tableLoadOption != null) {
+         options.addAll(Arrays.asList(tableLoadOption));
+      }
       options.add(TableLoadOption.ClearLastSearchItem);
-      load(null, name, arts, tableLoadOption);
+      load(null, name, arts, options.toArray(new TableLoadOption[options.size()]));
    }
 
    public void load(final WorldSearchItem searchItem, final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
@@ -316,8 +319,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException {
       this.searchItem = searchItem;
       this.tableLoadOptions = tableLoadOptions;
-      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
-      options.addAll(Arrays.asList(tableLoadOptions));
+      List<TableLoadOption> options = Collections.getAggregate(tableLoadOptions);
       searchItem.setCancelled(false);
       this.lastSearchItem = searchItem;
       Result result = AtsPlugin.areOSEEServicesAvailable();
@@ -453,7 +455,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          @Override
          public void run() {
             try {
-               loadTable(AtsNavigateViewItems.getInstance().getMyWorldSearchItem());
+               loadTable(AtsNavigateViewItems.getInstance().getMyWorldSearchItem(), TableLoadOption.None);
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -462,7 +464,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       myWorldAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("MyWorld.gif"));
       myWorldAction.setToolTipText("My World");
 
-      Action newWorldEditor = new Action("Open in New Editor") {
+      Action newWorldEditor = new Action("Open in ATS World Editor") {
 
          @Override
          public void run() {
@@ -482,9 +484,9 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          }
       };
       newWorldEditor.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newWorld.gif"));
-      newWorldEditor.setToolTipText("Open in New Editor");
+      newWorldEditor.setToolTipText("Open in ATS World Editor");
 
-      Action newWorldEditorSelected = new Action("Open Selected in New Editor") {
+      Action newWorldEditorSelected = new Action("Open Selected in ATS World Editor") {
 
          @Override
          public void run() {
@@ -507,7 +509,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          }
       };
       newWorldEditorSelected.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newWorldSelected.gif"));
-      newWorldEditorSelected.setToolTipText("Open Selected in New Editor");
+      newWorldEditorSelected.setToolTipText("Open Selected in ATS World Editor");
 
       Action expandAllAction = new Action("Expand All") {
 
@@ -539,7 +541,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          @Override
          public void run() {
             try {
-               if (lastSearchItem != null) loadTable(lastSearchItem, SearchType.ReSearch);
+               if (lastSearchItem != null) loadTable(lastSearchItem, SearchType.ReSearch, TableLoadOption.None);
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }

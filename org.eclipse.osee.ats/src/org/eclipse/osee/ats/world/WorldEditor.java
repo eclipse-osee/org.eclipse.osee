@@ -123,12 +123,10 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
          setPartName(editorInput.getName());
 
          createMainTab();
-
-         metricsComposite = new AtsMetricsComposite(this, getContainer(), SWT.NONE);
-         metricsPageIndex = addPage(metricsComposite);
-         setPageText(metricsPageIndex, "Metrics");
+         createMetricsTab();
 
          setActivePage(mainPageIndex);
+
          if (worldEditorInput.getCustomizeData() != null) {
             worldComposite.setCustomizeData(worldEditorInput.getCustomizeData());
          }
@@ -153,13 +151,19 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    }
 
    private void createMainTab() throws OseeCoreException {
-      // Create Tasks tab
       Composite comp = AtsLib.createCommonPageComposite(getContainer());
       ToolBar toolBar = AtsLib.createCommonToolBar(comp);
-
       worldComposite = new WorldComposite(EDITOR_ID, null, comp, SWT.NONE, toolBar);
       mainPageIndex = addPage(comp);
       setPageText(mainPageIndex, "Actions");
+   }
+
+   private void createMetricsTab() throws OseeCoreException {
+      Composite comp = AtsLib.createCommonPageComposite(getContainer());
+      AtsLib.createCommonToolBar(comp);
+      metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
+      metricsPageIndex = addPage(comp);
+      setPageText(metricsPageIndex, "Metrics");
    }
 
    /* (non-Javadoc)

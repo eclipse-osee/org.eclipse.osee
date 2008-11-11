@@ -303,8 +303,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    private void createMetricsTab() {
       Composite composite = AtsLib.createCommonPageComposite(getContainer());
       createToolBar(composite);
-      metricsComposite = new AtsMetricsComposite(this, getContainer(), SWT.NONE);
-      metricsPageIndex = addPage(metricsComposite);
+      metricsComposite = new AtsMetricsComposite(this, composite, SWT.NONE);
+      metricsPageIndex = addPage(composite);
       setPageText(metricsPageIndex, "Metrics");
 
    }
@@ -609,6 +609,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       this.priviledgedEditMode = priviledgedEditMode;
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       smaMgr.getSma().saveSMA(transaction);
+      transaction.execute();
       workFlowTab.refresh();
    }
 

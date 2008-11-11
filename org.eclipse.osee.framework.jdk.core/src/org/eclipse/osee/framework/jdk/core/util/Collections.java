@@ -124,7 +124,7 @@ public class Collections {
     * @param <T>
     * @param listA
     * @param listB
-    * @return
+    * @return boolean
     */
    public static <T> boolean isEqual(Collection<T> listA, Collection<T> listB) {
       if (listA.size() != listB.size()) return false;
@@ -149,12 +149,14 @@ public class Collections {
     * 
     * @param <T>
     * @param objects
-    * @return
+    * @return list
     */
    public static <T> List<T> getAggregate(T... objects) {
       List<T> objs = new ArrayList<T>();
-      for (T obj : objects) {
-         objs.add(obj);
+      if (objects != null) {
+         for (T obj : objects) {
+            objs.add(obj);
+         }
       }
       return objs;
    }
@@ -223,7 +225,7 @@ public class Collections {
     * 
     * @param <A>
     * @param objects
-    * @return
+    * @return List
     */
    public static <A> List<A> castAll(Collection<?> objects) {
       List<A> results = new ArrayList<A>(objects.size());
@@ -241,7 +243,7 @@ public class Collections {
     * @param <A>
     * @param objects
     * @param clazz
-    * @return
+    * @return List
     */
    public static <A extends Object> List<A> castAll(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.ALL);
@@ -255,7 +257,7 @@ public class Collections {
     * @param <A>
     * @param objects
     * @param clazz
-    * @return
+    * @return List
     */
    public static <A extends Object> List<A> castMatching(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.MATCHING);
