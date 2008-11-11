@@ -22,12 +22,12 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Search;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -43,7 +43,6 @@ public class XMembersCombo extends XWidget {
    private Composite composite;
    private User selectedUser;
    private Search searchControl;
-   private boolean resetCommand = false;
 
    public XMembersCombo(String displayLabel) {
       this(displayLabel, "", "");
@@ -133,28 +132,24 @@ public class XMembersCombo extends XWidget {
 
       if (dataCombo.getItemCount() > 20) dataCombo.setVisibleItemCount(20);
 
-      ModifyListener dataComboListener = new ModifyListener() {
+      dataCombo.addModifyListener(new ModifyListener() {
 
          public void modifyText(ModifyEvent e) {
             String selectedUserName = dataCombo.getText();
             selectedUser = (User) dataCombo.getData(selectedUserName);
             setLabelError();
-
-            if (resetCommand) {
-               resetCommand = false;
-               searchControl.reset();
-               dataCombo.setItems(searchControl.getItems());
-               refresh();
-            }
             notifyXModifiedListeners();
          }
-      };
-      dataCombo.addModifyListener(dataComboListener);
+      });
 
-      dataCombo.addSelectionListener(new SelectionAdapter() {
+      dataCombo.addFocusListener(new FocusListener() {
          @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-            resetCommand = true;
+         public void focusGained(FocusEvent e) {
+            resetSelectionList();
+         }
+
+         @Override
+         public void focusLost(FocusEvent e) {
          }
       });
 
@@ -168,6 +163,12 @@ public class XMembersCombo extends XWidget {
 
       refresh();
       dataCombo.setEnabled(editable);
+   }
+
+   private void resetSelectionList() {
+      searchControl.reset();
+      dataCombo.setItems(searchControl.getItems());
+      refresh();
    }
 
    @Override
@@ -315,8 +316,8 @@ public class XMembersCombo extends XWidget {
          }
       }
       // If delete key pressed, reset
-      if (keyEvent.character == SWT.DEL) {
-         searchControl.reset();
+      if (keyEvent.character == SWT.DEL || keyEvent.character == SWT.BS || keyEvent.character == SWT.ESC) {
+         resetSelectionList();
       }
    }
 
