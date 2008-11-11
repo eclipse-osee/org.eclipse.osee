@@ -36,16 +36,17 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  */
 public class DemoPurgeTest extends TestCase {
 
-   private List<String> tables =
+   private final List<String> tables =
          Arrays.asList("osee_attribute", "osee_artifact", "osee_artifact_version", "osee_relation_link",
                "osee_tx_details", "osee_txs");
-   private Map<String, Integer> preCreateActionCount = new HashMap<String, Integer>();
-   private Map<String, Integer> postCreateActionCount = new HashMap<String, Integer>();
-   private Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();
+   private final Map<String, Integer> preCreateActionCount = new HashMap<String, Integer>();
+   private final Map<String, Integer> postCreateActionCount = new HashMap<String, Integer>();
+   private final Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();
 
    /**
     * @throws java.lang.Exception
     */
+   @Override
    protected void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(AtsPlugin.isProductionDb());
@@ -74,7 +75,7 @@ public class DemoPurgeTest extends TestCase {
                               AtsPlugin.getAtsBranch())), transaction);
       actionArt.persistAttributesAndRelations(transaction);
       transaction.execute();
-      
+
       artsToPurge.add(actionArt);
       artsToPurge.addAll(actionArt.getTeamWorkFlowArtifacts());
 
@@ -109,8 +110,11 @@ public class DemoPurgeTest extends TestCase {
 
    private void checkThatEqual(Map<String, Integer> prevTableCount, Map<String, Integer> postTableCount) {
       for (String tableName : prevTableCount.keySet()) {
-         assertTrue(String.format("%s post[%d] vs pre[%d]", tableName, postTableCount.get(tableName),
-               prevTableCount.get(tableName)), postTableCount.get(tableName).equals(prevTableCount.get(tableName)));
+         String str =
+               String.format("%s post[%d] vs pre[%d]", tableName, postTableCount.get(tableName),
+                     prevTableCount.get(tableName));
+         System.out.println(str);
+         assertTrue(str, postTableCount.get(tableName).equals(prevTableCount.get(tableName)));
       }
    }
 
