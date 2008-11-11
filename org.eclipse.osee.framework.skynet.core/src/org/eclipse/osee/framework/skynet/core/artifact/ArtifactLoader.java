@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -52,25 +51,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Ryan D. Brooks
  */
 public final class ArtifactLoader {
-   private static final String SELECT_RELATIONS =
-         "SELECT rel_link_id, a_art_id, b_art_id, rel_link_type_id, a_order, b_order, rel1.gamma_id, rationale, al1.branch_id FROM osee_join_artifact al1, osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
-
-   private static final String SELECT_CURRENT_ATTRIBUTES_PREFIX =
-         "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs1.mod_type FROM osee_join_artifact al1, osee_attribute att1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id AND txs1.tx_current ";
-   private static final String SELECT_CURRENT_ATTRIBUTES =
-         SELECT_CURRENT_ATTRIBUTES_PREFIX + "= " + TxChange.CURRENT.getValue() + " order by al1.branch_id, al1.art_id";
-
-   private static final String SELECT_CURRENT_ATTRIBUTES_WITH_DELETED =
-         SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (" + TxChange.CURRENT.getValue() + ", " + TxChange.ARTIFACT_DELETED.getValue() + ") order by al1.branch_id, al1.art_id";
-
-   private static final String SELECT_CURRENT_ARTIFACTS_PREFIX =
-         "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_artifact art1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current ";
-
-   private static final String SELECT_CURRENT_ARTIFACTS =
-         SELECT_CURRENT_ARTIFACTS_PREFIX + "= " + TxChange.CURRENT.getValue();
-
-   private static final String SELECT_CURRENT_ARTIFACTS_WITH_DELETED =
-         SELECT_CURRENT_ARTIFACTS_PREFIX + "in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
 
    private static final String INSERT_JOIN_ARTIFACT =
          "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
@@ -142,7 +122,7 @@ public final class ArtifactLoader {
             if (historical) {
                sql = ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ARTIFACTS);
             } else {
-               sql = allowDeleted ? SELECT_CURRENT_ARTIFACTS_WITH_DELETED : SELECT_CURRENT_ARTIFACTS;
+               sql = allowDeleted ? ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED) : ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ARTIFACTS);
             }
             chStmt.runPreparedQuery(fetchSize, sql, queryId);
 
@@ -364,7 +344,7 @@ public final class ArtifactLoader {
       }
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(artifacts.size() * 8, SELECT_RELATIONS, queryId);
+         chStmt.runPreparedQuery(artifacts.size() * 8, ClientSessionManager.getSQL(SqlKey.SELECT_RELATIONS), queryId);
          while (chStmt.next()) {
             int relationId = chStmt.getInt("rel_link_id");
             int aArtifactId = chStmt.getInt("a_art_id");
@@ -408,7 +388,7 @@ public final class ArtifactLoader {
             chStmt.runPreparedQuery(artifacts.size() * 8,
                   ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ATTRIBUTES), queryId);
          } else {
-            String sql = allowDeletedArtifacts ? SELECT_CURRENT_ATTRIBUTES_WITH_DELETED : SELECT_CURRENT_ATTRIBUTES;
+            String sql = allowDeletedArtifacts ? ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED) : ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ATTRIBUTES);
             chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
          }
 
