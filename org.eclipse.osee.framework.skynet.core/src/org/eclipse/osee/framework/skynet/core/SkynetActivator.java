@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
@@ -44,6 +45,7 @@ public class SkynetActivator extends OseeUiActivator {
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
+      ClientSessionManager.class.getCanonicalName();
       HttpAttributeTagger.getInstance();
    }
 
