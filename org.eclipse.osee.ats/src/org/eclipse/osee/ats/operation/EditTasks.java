@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -90,7 +91,10 @@ public class EditTasks extends AbstractBlam {
                   AWorkbench.popup("ERROR", "You must select at least Team, Version or Assignee");
                   return;
                }
-
+               if (user != null && includeCompleted && verArt == null && teamDefs.size() == 0) {
+                  AWorkbench.popup("ERROR", "You must select at least Team or Version with Include Completed");
+                  return;
+               }
                TaskEditor.open(new EditTasksProvider(sb.toString(), teamDefs, user, verArt, includeCompleted));
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
@@ -144,6 +148,11 @@ public class EditTasks extends AbstractBlam {
             return handleOnlyUserSelected();
          }
 
+         if (user != null && includeCompleted && verArt == null && teamDefs.size() == 0) {
+            // This case is unsupported  and should be filtered out prior to this point
+            throw new OseeArgumentException("Unsupported User and Include Completed selected.");
+         }
+
          // If version specified, get workflows from targeted relation
          if (verArt != null) {
             for (Artifact art : verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow)) {
@@ -187,12 +196,18 @@ public class EditTasks extends AbstractBlam {
          Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
          for (Artifact art : artifacts) {
             TaskArtifact taskArt = (TaskArtifact) art;
-            // If include completed and canceled and task is such, check implementer list
-            if (includeCompleted && taskArt.getSmaMgr().isCompleted() && taskArt.getImplementers().contains(user)) {
+            // If not include completed and task is such, skip this task
+            if (!includeCompleted && taskArt.getSmaMgr().isCompleted()) {
+               continue;
+            }
+            // If include completed and task is such and user not implementer, skip this task
+            if (includeCompleted && taskArt.getSmaMgr().isCompleted() && user != null && taskArt.getImplementers().contains(
+                  user)) {
                tasks.add(taskArt);
+               continue;
             }
             // If user is selected and not user is assigned, skip this task
-            if (user != null && !taskArt.getSmaMgr().getStateMgr().getAssignees().contains(user)) {
+            else if (user != null && !taskArt.getSmaMgr().getStateMgr().getAssignees().contains(user)) {
                continue;
             }
             tasks.add(taskArt);
