@@ -42,10 +42,19 @@ public class OseeDbConnection {
    }
 
    public static OseeConnection getConnection() throws OseeDataStoreException {
+      checkThread();
       return getConnection(getDatabaseInfoProvider());
    }
 
+   private static void checkThread() {
+      String threadName = Thread.currentThread().getName();
+      if (threadName.equals("main") || threadName.equals("Start Level Event Dispatcher")) {
+         OseeLog.log(InternalActivator.class, Level.SEVERE, "Making db calls in display threads.");
+      }
+   }
+
    public static OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeDataStoreException {
+      checkThread();
       if (databaseInfo == null) {
          throw new OseeDataStoreException("Unable to get connection - database info was null.");
       }
