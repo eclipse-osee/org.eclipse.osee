@@ -89,11 +89,11 @@ public class SnapshotProvider implements IResourceProvider {
       InputStream inputStream = null;
       try {
          File storageFile = optionsProcessor.getStorageFile();
-         // Remove all other files from this folder
-         File parent = storageFile.getParentFile();
-         if (parent != null) {
-            Lib.emptyDirectory(parent);
-         }
+         //         // Remove all other files from this folder
+         //         File parent = storageFile.getParentFile();
+         //         if (parent != null) {
+         //            Lib.emptyDirectory(parent);
+         //         }
          IResource resourceToStore = optionsProcessor.getResourceToStore();
 
          outputStream = new FileOutputStream(storageFile);

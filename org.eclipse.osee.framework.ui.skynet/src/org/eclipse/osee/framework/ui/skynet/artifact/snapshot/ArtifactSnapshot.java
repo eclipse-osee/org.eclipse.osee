@@ -10,65 +10,63 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 
 /**
  * @author Roberto E. Escobar
  */
-final class ArtifactSnapshot implements Serializable {
-   private static final long serialVersionUID = -8702924997281390156L;
+final class ArtifactSnapshot {
 
-   private String namespace;
-   private String key;
+   private final String guid;
+   private final long gammaId;
+   private final Timestamp createdOn;
+
    private String renderedData;
-   private int gammaId;
-   private Timestamp createdOn;
    private Map<String, byte[]> binaryData;
 
-   protected ArtifactSnapshot(String namespace, String key, Artifact artifact) throws OseeCoreException {
-      this.namespace = namespace;
-      this.key = key;
-      this.gammaId = getGamma(artifact);
+   ArtifactSnapshot(String guid, long gammaId, Timestamp creationDate) throws OseeCoreException {
+      this.guid = guid;
+      this.gammaId = gammaId;
+      this.createdOn = creationDate;
+      this.renderedData = null;
       this.binaryData = new HashMap<String, byte[]>();
-      this.createdOn = getCreationDate(artifact);
-   }
-
-   public Timestamp getCreatedOn() {
-      return createdOn;
    }
 
    protected void setRenderedData(String data) {
       this.renderedData = data;
    }
 
+   public Timestamp getCreatedOn() {
+      return createdOn;
+   }
+
    public boolean isDataValid() {
-      return Strings.isValid(this.renderedData);
+      return Strings.isValid(renderedData);
    }
 
    protected void addBinaryData(String key, byte[] data) {
       this.binaryData.put(key, data);
    }
 
-   public String getNamespace() {
-      return namespace;
+   public String getGuid() {
+      return guid;
    }
 
    public String getRenderedData() {
       return renderedData;
    }
 
-   public int getGamma() {
+   public long getGamma() {
       return gammaId;
+   }
+
+   public Set<String> getBinaryDataKeys() {
+      return this.binaryData.keySet();
    }
 
    public byte[] getBinaryData(String key) {
@@ -76,53 +74,8 @@ final class ArtifactSnapshot implements Serializable {
       return toReturn != null ? toReturn : new byte[0];
    }
 
-   public String getKey() {
-      return key;
-   }
-
    public String toString() {
-      return String.format("Snapshot: %s - %s \nCreated On: %s\t Binary Objects: %s", getNamespace(), getKey(),
+      return String.format("Snapshot: %s - %s \nCreated On: %s\t Binary Objects: %s", getGuid(), getGamma(),
             getCreatedOn(), binaryData.size());
-   }
-
-   /**
-    * Determine whether data in the snapshot is stale compared to data in the artifact
-    * 
-    * @param artifact The artifact in question
-    * @return isStale <b>true</b> if the snapshot is stale, otherwise <b>false</b>
-    */
-   public boolean isStaleComparedTo(Artifact artifact) throws OseeCoreException {
-      boolean snapshotGammaLessThanArts = this.getGamma() != getGamma(artifact);
-      boolean snapshotCreationAfterArtifacts = this.getCreatedOn().before(getCreationDate(artifact));
-      return snapshotGammaLessThanArts || snapshotCreationAfterArtifacts;
-   }
-
-   /**
-    * Determine whether this snapshot is a valid representation of the artifact
-    * 
-    * @param artifact The artifact in question
-    * @return isValid <b>true</b> if the snapshot pertains to this version of the artifact, otherwise <b>false</b>
-    */
-   public boolean isValidFor(Artifact artifact) throws OseeCoreException {
-      boolean gammasAreEqual = this.getGamma() == getGamma(artifact);
-      long snapTime = this.getCreatedOn().getTime();
-      long artTime = getCreationDate(artifact).getTime();
-      boolean creationDatesMatch = snapTime >= artTime;
-      return gammasAreEqual && creationDatesMatch;
-   }
-
-   private int getGamma(Artifact artifact) {
-      return artifact.getGammaId();
-   }
-
-   private Timestamp getCreationDate(Artifact artifact) throws OseeCoreException {
-      List<TransactionData> txData =
-            new ArrayList<TransactionData>(RevisionManager.getInstance().getTransactionsPerArtifact(artifact));
-      for (TransactionData data : txData) {
-         if (artifact.getArtId() == data.getAssociatedArtId()) {
-            return data.getTimeStamp();
-         }
-      }
-      return null;
    }
 }

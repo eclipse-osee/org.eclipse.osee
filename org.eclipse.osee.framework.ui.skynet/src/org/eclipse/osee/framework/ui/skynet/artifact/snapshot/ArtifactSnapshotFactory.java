@@ -12,18 +12,22 @@ package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpImageProcessor;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.HttpImageRequest;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -33,14 +37,11 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  * @author Roberto E. Escobar
  */
 class ArtifactSnapshotFactory {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSnapshotFactory.class);
 
    private HttpImageRequest httpImageRequest;
    private HttpImageProcessor httpImageProcessor;
-   private KeyGenerator keyGenerator;
 
    protected ArtifactSnapshotFactory() {
-      this.keyGenerator = new KeyGenerator();
       this.httpImageRequest = HttpImageRequest.getInstance();
       this.httpImageProcessor = HttpImageProcessor.getInstance();
    }
@@ -54,22 +55,25 @@ class ArtifactSnapshotFactory {
     */
    public ArtifactSnapshot createSnapshot(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
       long start = System.currentTimeMillis();
-      Pair<String, String> key = keyGenerator.getKeyPair(artifact);
-      ArtifactSnapshot snapshotData = new ArtifactSnapshot(key.getKey(), key.getValue(), artifact);
+      ArtifactSnapshot snapshotData =
+            new ArtifactSnapshot(artifact.getGuid(), artifact.getGammaId(), getCreationDate(artifact));
       snapshotData.setRenderedData(RendererManager.renderToHtml(artifact));
       processImageLinks(snapshotData);
-      logger.log(Level.INFO, String.format("Artifact Snapshot Render Time: [%s] - for artifact: [%s, %s]",
-            System.currentTimeMillis() - start, artifact.getGuid(), artifact.getGammaId()));
+      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(
+            "Artifact Snapshot Render Time: [%s] - for artifact: [%s, %s]", System.currentTimeMillis() - start,
+            artifact.getGuid(), artifact.getGammaId()));
       return snapshotData;
    }
 
-   /**
-    * Get key generator used to create snapshots
-    * 
-    * @return key generator
-    */
-   public KeyGenerator getKeyGenerator() {
-      return keyGenerator;
+   private Timestamp getCreationDate(Artifact artifact) throws OseeCoreException {
+      List<TransactionData> txData =
+            new ArrayList<TransactionData>(RevisionManager.getInstance().getTransactionsPerArtifact(artifact));
+      for (TransactionData data : txData) {
+         if (artifact.getArtId() == data.getAssociatedArtId()) {
+            return data.getTimeStamp();
+         }
+      }
+      return null;
    }
 
    /**
@@ -96,7 +100,8 @@ class ArtifactSnapshotFactory {
                      String result = String.format("src=\"%s%s", prefix, tag);
                      changeSet.replace(matcher.start(), matcher.end(), result);
                   } catch (Exception ex) {
-                     logger.log(Level.SEVERE, String.format("Error adding http server address."), ex);
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                           String.format("Error adding http server address."), ex);
                   }
                }
             }
@@ -109,7 +114,7 @@ class ArtifactSnapshotFactory {
                String prefix = HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
                changeSet.replace(matcher.start(1), matcher.end(1), prefix);
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, String.format("Error adding http server address."), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Error adding http server address."), ex);
             }
          }
          toReturn = changeSet.applyChangesToSelf().toString();
@@ -140,10 +145,11 @@ class ArtifactSnapshotFactory {
                      httpImageProcessor.processRequest(imageKey, outputStream);
                      snapshotData.addBinaryData(imageKey, outputStream.toByteArray());
                      String result =
-                           httpImageRequest.getRequestUrl(snapshotData.getNamespace(), snapshotData.getKey(), imageKey);
+                           httpImageRequest.getRequestUrl(snapshotData.getGuid(),
+                                 Long.toString(snapshotData.getGamma()), imageKey);
                      changeSet.replace(matcher.start(), matcher.end(), result + "\"");
                   } catch (Exception ex) {
-                     logger.log(Level.SEVERE, String.format(
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
                            "Image processing error. Unable to take a snapshot of: [%s]", imageKey), ex);
                   }
                }

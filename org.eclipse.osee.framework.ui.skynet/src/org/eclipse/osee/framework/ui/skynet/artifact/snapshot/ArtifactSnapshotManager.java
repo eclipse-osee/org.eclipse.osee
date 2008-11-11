@@ -13,13 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,14 +34,10 @@ public class ArtifactSnapshotManager {
 
    private ArtifactSnapshotFactory snapshotFactory;
    private RemoteSnapshotManager remoteSnapshotManager;
-   private KeyGenerator keyGenerator;
-   private Map<String, ArtifactSnapshot> snapshotLocalCache;
 
    private ArtifactSnapshotManager() {
-      this.snapshotLocalCache = Collections.synchronizedMap(new HashMap<String, ArtifactSnapshot>());
       this.snapshotFactory = new ArtifactSnapshotFactory();
       this.remoteSnapshotManager = new RemoteSnapshotManager();
-      this.keyGenerator = snapshotFactory.getKeyGenerator();
    }
 
    public static ArtifactSnapshotManager getInstance() {
@@ -88,11 +80,7 @@ public class ArtifactSnapshotManager {
     * @throws Exception
     */
    public void getImageSnapshot(String namespace, String key, String imageKey, OutputStream outputStream) throws Exception {
-      Pair<String, String> keyPair = new Pair<String, String>(namespace, key);
-      ArtifactSnapshot snapshot = getSnapshotFromRemoteStorage(keyPair);
-      if (snapshot == null || !snapshot.getKey().equals(key)) {
-         snapshot = snapshotLocalCache.get(keyGenerator.toLocalCacheKey(keyPair));
-      }
+      ArtifactSnapshot snapshot = getSnapshotFromRemoteStorage(namespace, key);
       try {
          byte[] imageData = snapshot.getBinaryData(imageKey);
          BufferedOutputStream bos = new BufferedOutputStream(outputStream);
@@ -127,9 +115,9 @@ public class ArtifactSnapshotManager {
    private ArtifactSnapshot doSave(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
       checkArtifact(artifact);
       ArtifactSnapshot snapshot = null;
-      if (isSavingAllowed() != false) {
+      if (isSavingAllowed()) {
          snapshot = snapshotFactory.createSnapshot(artifact);
-         if (snapshot.isDataValid() != false) {
+         if (snapshot.isDataValid()) {
             new ArtifactSnapshotPersistOperation(remoteSnapshotManager, snapshot).run();
          }
       }
@@ -149,80 +137,14 @@ public class ArtifactSnapshotManager {
    }
 
    /**
-    * Get the Artifact Snapshot from remote repository and update if needed
-    * 
-    * @param artifact Identifying the snapshot to get
-    * @return The artifact snapshot
-    * @throws UnsupportedEncodingException
-    */
-   private ArtifactSnapshot getRemoteSnapshotAndUpdateIfNeeded(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
-      Pair<String, String> snapshotKey = keyGenerator.getKeyPair(artifact);
-      ArtifactSnapshot currentSnapshot = getSnapshotFromRemoteStorage(snapshotKey);
-      if (currentSnapshot == null) {
-         currentSnapshot = getRemoteSnapshotFromParentBranch(artifact);
-      }
-      if (currentSnapshot == null || currentSnapshot.isStaleComparedTo(artifact) == true) {
-         try {
-            currentSnapshot = doSave(artifact);
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
-      return currentSnapshot;
-   }
-
-   /**
-    * Get the Artifact Snapshot from the remote repository using the artifact's parent branch id
-    * 
-    * @param artifact Identifying the snapshot to get
-    * @return The artifact snapshot
-    */
-   private ArtifactSnapshot getRemoteSnapshotFromParentBranch(Artifact artifact) {
-      ArtifactSnapshot toReturn = null;
-      try {
-         if (artifact.getBranch().hasParentBranch()) {
-            Pair<String, String> parentKey = keyGenerator.getKeyPair(artifact, artifact.getBranch().getParentBranch());
-            toReturn = getSnapshotFromRemoteStorage(parentKey);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      return toReturn;
-   }
-
-   /**
     * Retrieve snapshot from remote storage. This method returns null if no snapshot is found in remote storage.
     * 
     * @param keyPair
     * @return snapshot instance from remote storage
     * @throws UnsupportedEncodingException
     */
-   private ArtifactSnapshot getSnapshotFromRemoteStorage(Pair<String, String> key) throws UnsupportedEncodingException {
-      return remoteSnapshotManager.getSnapshot(key);
-   }
-
-   /**
-    * Retrieve snapshot from local storage
-    * 
-    * @param artifact
-    * @return snapshot from local cache
-    * @throws UnsupportedEncodingException
-    */
-   private ArtifactSnapshot getSnapshotFromLocalCacheAndUpdateIfNeeded(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
-      Pair<String, String> key = keyGenerator.getKeyPair(artifact);
-      String localCacheKey = keyGenerator.toLocalCacheKey(key);
-      ArtifactSnapshot toReturn = snapshotLocalCache.get(localCacheKey);
-      if (toReturn == null) {
-         toReturn = snapshotFactory.createSnapshot(artifact);
-         // Do not allow more than 10 cached snapshots at any given time
-         if (snapshotLocalCache.size() > 10) {
-            snapshotLocalCache.clear();
-         }
-         if (toReturn.isDataValid() != false) {
-            snapshotLocalCache.put(localCacheKey, toReturn);
-         }
-      }
-      return toReturn;
+   private ArtifactSnapshot getSnapshotFromRemoteStorage(String guid, String gammaId) throws UnsupportedEncodingException {
+      return remoteSnapshotManager.getSnapshot(guid, gammaId);
    }
 
    /**
@@ -233,16 +155,19 @@ public class ArtifactSnapshotManager {
     * @throws UnsupportedEncodingException
     */
    private ArtifactSnapshot getSnapshotForRenderRetrieval(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
-      ArtifactSnapshot data = null;
+      ArtifactSnapshot currentSnapshot = null;
       try {
-         data = getRemoteSnapshotAndUpdateIfNeeded(artifact);
+         currentSnapshot = getSnapshotFromRemoteStorage(artifact.getGuid(), Long.toString(artifact.getGammaId()));
+         if (currentSnapshot == null) {
+            try {
+               currentSnapshot = doSave(artifact);
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         }
       } catch (UnsupportedEncodingException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      if (data == null || data.isValidFor(artifact) != true) {
-         data = getSnapshotFromLocalCacheAndUpdateIfNeeded(artifact);
-      }
-      return data;
+      return currentSnapshot;
    }
-
 }
