@@ -139,8 +139,8 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(guidOrHrids, branch, allowDeleted, FULL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getArtifactsFromName(String artifactName, Branch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria("Name", artifactName)).getArtifacts(
+   public static List<Artifact> getArtifactsFromName(String artifactName, Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(branch, FULL, allowDeleted, new AttributeCriteria("Name", artifactName)).getArtifacts(
             30, null);
    }
 

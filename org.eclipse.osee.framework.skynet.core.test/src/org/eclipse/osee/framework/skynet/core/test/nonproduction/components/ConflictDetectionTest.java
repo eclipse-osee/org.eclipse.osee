@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
@@ -58,8 +58,9 @@ public class ConflictDetectionTest extends TestCase {
       try {
          conflicts =
                ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
-                           ConflictTestManager.getSourceBranch()).getKey());
+                     ConflictTestManager.getDestBranch(),
+                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey(),
+                     new EmptyMonitor());
       } catch (Exception ex) {
          fail(ex.getMessage());
       }

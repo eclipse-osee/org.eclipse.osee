@@ -49,19 +49,20 @@ public class DemoDbReviews {
     * 2) Decision in ReWork state w Joe Smith assignee and 2 reviewers<br>
     * 3) Decision in Complete state w Joe Smith assignee and completed<br>
     * <br>
-    * @param transaction 
     * 
+    * @param transaction
     * @param codeWorkflows
     * @throws Exception
     */
    public static void createDecisionReviews(SkynetTransaction transaction) throws Exception {
 
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Create Decision reviews");
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Create Decision reviews");
       TeamWorkFlowArtifact firstTestArt = getSampleReviewTestWorkflows().get(0);
       TeamWorkFlowArtifact secondTestArt = getSampleReviewTestWorkflows().get(1);
 
       // Create a Decision review and transition to ReWork
-      DecisionReviewArtifact reviewArt = firstTestArt.getSmaMgr().getReviewManager().createValidateReview(true, transaction);
+      DecisionReviewArtifact reviewArt =
+            firstTestArt.getSmaMgr().getReviewManager().createValidateReview(true, transaction);
       Result result =
             DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Followup,
                   UserManager.getUser(), false, transaction);
@@ -88,7 +89,7 @@ public class DemoDbReviews {
          reviewTestArts = new ArrayList<DemoTestTeamWorkflowArtifact>();
          for (String actionName : new String[] {"Button W doesn't work on%", "%Diagram Tree"}) {
             DemoTestTeamWorkflowArtifact testArt = null;
-            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsPlugin.getAtsBranch())) {
+            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsPlugin.getAtsBranch(), false)) {
                if (art instanceof DemoTestTeamWorkflowArtifact) {
                   testArt = (DemoTestTeamWorkflowArtifact) art;
                   reviewTestArts.add(testArt);
@@ -105,21 +106,22 @@ public class DemoDbReviews {
     * 2) PeerToPeer in Review state w Joe Smith assignee and 2 reviewers<br>
     * 3) PeerToPeer in Prepare state w Joe Smith assignee and completed<br>
     * <br>
-    * @param transaction 
     * 
+    * @param transaction
     * @param codeWorkflows
     * @throws Exception
     */
    public static void createPeerToPeerReviews(SkynetTransaction transaction) throws Exception {
 
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,  "Create Peer To Peer reviews");
+      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Create Peer To Peer reviews");
       TeamWorkFlowArtifact firstCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(0);
       TeamWorkFlowArtifact secondCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(1);
 
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
             firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(
-                  "Peer Review first set of code changes", firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
+                  "Peer Review first set of code changes",
+                  firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
       reviewArt.persistAttributesAndRelations(transaction);
 
       // Create a PeerToPeer review and transition to Review state
@@ -131,8 +133,9 @@ public class DemoDbReviews {
       roles.add(new UserRole(Role.Reviewer, DemoUsers.getDemoUser(DemoUsers.Kay_Jones)));
       roles.add(new UserRole(Role.Reviewer, DemoUsers.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
       Result result =
-            PeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Review,
-                  roles, null, UserManager.getUser(), false, transaction);
+            PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,
+                  PeerToPeerReviewArtifact.PeerToPeerReviewState.Review, roles, null, UserManager.getUser(), false,
+                  transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
       }
@@ -160,8 +163,9 @@ public class DemoDbReviews {
       defects.add(new DefectItem(DemoUsers.getDemoUser(DemoUsers.Joe_Smith), Severity.Major, Disposition.Accept,
             InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
       result =
-            PeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Completed,
-                  roles, defects, UserManager.getUser(), false,transaction);
+            PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,
+                  PeerToPeerReviewArtifact.PeerToPeerReviewState.Completed, roles, defects, UserManager.getUser(),
+                  false, transaction);
       reviewArt.persistAttributesAndRelations(transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());

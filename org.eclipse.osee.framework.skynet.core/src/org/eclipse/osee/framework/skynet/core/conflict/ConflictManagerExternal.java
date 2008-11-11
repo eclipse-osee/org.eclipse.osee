@@ -10,6 +10,7 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
+import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
@@ -30,7 +31,7 @@ public class ConflictManagerExternal {
       if (originalConflicts == null) {
          originalConflicts =
                ConflictManagerInternal.getInstance().getConflictsPerBranch(fromBranch, toBranch,
-                     TransactionIdManager.getStartEndPoint(fromBranch).getKey());
+                     TransactionIdManager.getStartEndPoint(fromBranch).getKey(), new EmptyMonitor());
       }
       return originalConflicts;
    }

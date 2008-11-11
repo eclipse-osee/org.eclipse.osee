@@ -35,7 +35,7 @@ public class DemoDbUtil {
          for (String actionName : new String[] {"SAW (committed) Reqt Changes for Diagram View",
                "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
             DemoCodeTeamWorkflowArtifact codeArt = null;
-            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsPlugin.getAtsBranch())) {
+            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsPlugin.getAtsBranch(), false)) {
                if (art instanceof DemoCodeTeamWorkflowArtifact) {
                   codeArt = (DemoCodeTeamWorkflowArtifact) art;
                   codeArts.add(codeArt);

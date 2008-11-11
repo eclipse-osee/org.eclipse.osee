@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -31,7 +30,14 @@ import org.eclipse.swt.graphics.Image;
 public abstract class Conflict implements IAdaptable {
    public static enum Status {
 
-      UNTOUCHED(1), EDITED(2), RESOLVED(3), OUT_OF_DATE_COMMITTED(4), NOT_RESOLVABLE(5), COMMITTED(6), INFORMATIONAL(7), OUT_OF_DATE(8);
+      UNTOUCHED(1),
+      EDITED(2),
+      RESOLVED(3),
+      OUT_OF_DATE_COMMITTED(4),
+      NOT_RESOLVABLE(5),
+      COMMITTED(6),
+      INFORMATIONAL(7),
+      OUT_OF_DATE(8);
       private final int value;
 
       Status(int value) {
@@ -97,10 +103,7 @@ public abstract class Conflict implements IAdaptable {
     */
    public Artifact getArtifact() throws OseeCoreException {
       if (artifact == null) {
-         artifact = ArtifactCache.getActive(artId, mergeBranch.getBranchId());
-         if (artifact == null) {
-            artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, true);
-         }
+         artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, true);
       }
       return artifact;
    }
@@ -108,12 +111,11 @@ public abstract class Conflict implements IAdaptable {
    public Artifact getSourceArtifact() throws OseeCoreException {
       if (sourceArtifact == null) {
          if (commitTransactionId == null) {
-            sourceArtifact = ArtifactCache.getActive(artId, sourceBranch.getBranchId());
-            if (sourceArtifact == null) {
-               sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
-            }
+            sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
          } else {
-            sourceArtifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, TransactionIdManager.getStartEndPoint(mergeBranch).getKey());
+            sourceArtifact =
+                  ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
+                        TransactionIdManager.getStartEndPoint(mergeBranch).getKey());
          }
       }
       return sourceArtifact;
@@ -122,12 +124,11 @@ public abstract class Conflict implements IAdaptable {
    public Artifact getDestArtifact() throws OseeCoreException {
       if (destArtifact == null) {
          if (commitTransactionId == null) {
-            destArtifact = ArtifactCache.getActive(artId, destBranch.getBranchId());
-            if (destArtifact == null) {
-               destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
-            }
+            destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
          } else {
-            destArtifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, TransactionIdManager.getPriorTransaction(commitTransactionId));
+            destArtifact =
+                  ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
+                        TransactionIdManager.getPriorTransaction(commitTransactionId));
 
          }
       }
@@ -221,7 +222,10 @@ public abstract class Conflict implements IAdaptable {
          if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
       } catch (AttributeDoesNotExist ex) {
       }
-      status = ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID, getConflictType().getValue(), passedStatus, TransactionIdManager.getStartEndPoint(mergeBranch).getKey().getTransactionNumber());
+      status =
+            ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
+                  getConflictType().getValue(), passedStatus,
+                  TransactionIdManager.getStartEndPoint(mergeBranch).getKey().getTransactionNumber());
       return status;
    }
 

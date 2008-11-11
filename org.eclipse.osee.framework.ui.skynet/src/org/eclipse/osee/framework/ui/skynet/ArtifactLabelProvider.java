@@ -59,6 +59,10 @@ public class ArtifactLabelProvider extends LabelProvider {
             name += " <Deleted>";
          }
          if (artifactExplorer != null) {
+            if (artifactExplorer.showArtVersion()) {
+               name += " -" + artifact.getGammaId() + "- ";
+            }
+
             if (artifactExplorer.showArtIds()) {
                name += " (" + artifact.getArtId() + ") ";
             }

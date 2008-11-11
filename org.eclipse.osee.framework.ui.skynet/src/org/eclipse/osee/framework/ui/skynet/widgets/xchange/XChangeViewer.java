@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.status.SwtStatusMonitor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -239,12 +240,13 @@ public class XChangeViewer extends XWidget implements IActionable {
          protected IStatus run(IProgressMonitor monitor) {
             final Collection<Change> changes;
             final boolean hasBranch = branch != null;
+            SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
 
             try {
                if (hasBranch) {
-                  changes = ChangeManager.getChangesPerBranch(branch);
+                  changes = ChangeManager.getChangesPerBranch(branch, swtMonitor);
                } else {
-                  changes = ChangeManager.getChangesPerTransaction(transactionId);
+                  changes = ChangeManager.getChangesPerTransaction(transactionId, swtMonitor);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {

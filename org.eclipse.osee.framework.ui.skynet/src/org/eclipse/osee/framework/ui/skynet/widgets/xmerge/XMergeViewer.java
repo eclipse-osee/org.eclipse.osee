@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.status.SwtStatusMonitor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
@@ -319,21 +320,32 @@ public class XMergeViewer extends XWidget implements IActionable {
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, MergeView.VIEW_ID, "Merge Manager");
    }
 
-   public void refreshTable() {
-      try {
-         if (!(conflicts.length == 0)) {
-            Conflict[] artifactChanges = new Conflict[0];
-            if (conflicts[0].getToTransactionId() != null) {
-               setConflicts(ConflictManagerInternal.getInstance().getConflictsPerBranch(conflicts[0].getSourceBranch(),
-                     conflicts[0].getDestBranch(), conflicts[0].getToTransactionId()).toArray(artifactChanges));
-            } else {
-               setConflicts(org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal.getInstance().getConflictsPerBranch(
-                     conflicts[0].getCommitTransactionId()).toArray(artifactChanges));
+   public void refreshTable() throws InterruptedException {
+      Job job = new Job("Loading Merge Manager") {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+
+            try {
+               if (!(conflicts.length == 0)) {
+                  Conflict[] artifactChanges = new Conflict[0];
+                  if (conflicts[0].getToTransactionId() != null) {
+                     setConflicts(ConflictManagerInternal.getInstance().getConflictsPerBranch(
+                           conflicts[0].getSourceBranch(), conflicts[0].getDestBranch(),
+                           conflicts[0].getToTransactionId(), new SwtStatusMonitor(monitor)).toArray(artifactChanges));
+                  } else {
+                     setConflicts(org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal.getInstance().getConflictsPerBranch(
+                           conflicts[0].getCommitTransactionId(), new SwtStatusMonitor(monitor)).toArray(
+                           artifactChanges));
+                  }
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(XMergeViewer.class, ex, true);
             }
+
+            return Status.OK_STATUS;
          }
-      } catch (Exception ex) {
-         OSEELog.logException(XMergeViewer.class, ex, true);
-      }
+      };
+      Jobs.startJob(job).join();
       loadTable();
    }
 
@@ -474,14 +486,15 @@ public class XMergeViewer extends XWidget implements IActionable {
       Job job = new Job("Loading Merge Manager") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
+            SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
             try {
                if (commitTrans == null) {
                   conflicts =
-                        ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
-                              new Conflict[0]);
+                        ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId,
+                              swtMonitor).toArray(new Conflict[0]);
                } else {
                   conflicts =
-                        ConflictManagerInternal.getInstance().getConflictsPerBranch(commitTrans).toArray(
+                        ConflictManagerInternal.getInstance().getConflictsPerBranch(commitTrans, swtMonitor).toArray(
                               new Conflict[0]);
                }
 

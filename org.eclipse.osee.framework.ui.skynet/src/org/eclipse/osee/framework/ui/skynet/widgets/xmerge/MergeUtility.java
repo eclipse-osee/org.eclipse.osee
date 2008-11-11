@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Theron Virgin
@@ -224,22 +225,29 @@ public class MergeUtility {
             }
             String[] buttons;
             if (attributeConflict.mergeEqualsSource() || attributeConflict.mergeEqualsDestination() || attributeConflict.statusUntouched()) {
-               buttons = new String[] {"Cancel", "Begin New Merge"};
+               buttons = new String[] {"Begin New Merge", "Show Help", "Cancel"};
             } else {
-               buttons = new String[] {"Cancel", "Begin New Merge", "Continue with last Merge"};
+               buttons = new String[] {"Continue with last Merge", "Begin New Merge", "Show Help", "Cancel"};
             }
 
             MessageDialog dialog =
                   new MessageDialog(Display.getCurrent().getActiveShell().getShell(), "Merge Word Artifacts", null,
                         OPEN_MERGE_DIALOG, 4, buttons, 2);
             int response = dialog.open();
-            if (response == 1) {
+            if (buttons.length == 3) {
+               response++;
+            }
+            if (response == 2) {
+               PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(
+                     "/org.eclipse.osee.framework.ui.skynet/reference/Merge_Manager.html");
+            } else if (response == 1) {
 
                Job job = new Job("Generate 3 Way Merge") {
 
                   @Override
                   protected IStatus run(final IProgressMonitor monitor) {
                      try {
+                        int gamma = attributeConflict.getAttribute().getGammaId();
                         monitor.beginTask("Generate 3 Way Merge", 100);
                         VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
                         generator.initialize(false, false);
@@ -264,8 +272,10 @@ public class MergeUtility {
 
                         monitor.worked(40);
                         attributeConflict.markStatusToReflectEdit();
-                        //need to wait for the artifact to update. Need to find a better way to know when the update has happened.
-                        Thread.sleep(5000);
+
+                        while (gamma == attributeConflict.getAttribute().getGammaId()) {
+                           Thread.sleep(500);
+                        }
                         monitor.done();
                         RendererManager.editInJob(attributeConflict.getArtifact());
 
@@ -279,7 +289,7 @@ public class MergeUtility {
 
                Jobs.startJob(job);
 
-            } else if (response == 2) {
+            } else if (response == 0) {
                RendererManager.editInJob(attributeConflict.getArtifact());
                attributeConflict.markStatusToReflectEdit();
             }

@@ -209,7 +209,7 @@ public abstract class Renderer implements IRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getBooleanOption(java.lang.String)
     */
    public String getStringOption(String key) throws OseeArgumentException {
-      return options.getString(key);
+      return options == null ? null : options.getString(key);
    }
 
 }

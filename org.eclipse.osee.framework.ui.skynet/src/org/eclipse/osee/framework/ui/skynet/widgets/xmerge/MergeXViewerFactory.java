@@ -41,10 +41,12 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Merged =
          new XViewerColumn("framework.merge.mergedValue", "Merged Value", 100, SWT.LEFT, true, SortDataType.String,
                false, null);
+   public static XViewerColumn Art_Id =
+         new XViewerColumn("framework.merge.artId", "Artifact Id", 75, SWT.LEFT, true, SortDataType.String, false, null);
 
    public MergeXViewerFactory() {
       super("osee.skynet.gui.MergeXViewer");
-      registerColumn(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged);
+      registerColumn(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged, Art_Id);
       registerAllAttributeColumns();
    }
 

@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.status.IStatusMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -85,20 +86,21 @@ public class InternalChangeManager {
     * @return
     * @throws OseeCoreException
     */
-   protected Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId) throws OseeCoreException {
+   protected Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId, IStatusMonitor monitor) throws OseeCoreException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
       Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
       boolean historical = sourceBranch == null;
       long totalTime = System.currentTimeMillis();
 
+      monitor.startJob("Find Changes", 100);
       if (DEBUG) {
          System.out.println(String.format("\nChange Manager: getChanges(%s, %s)", sourceBranch, transactionId));
       }
 
-      loadNewOrDeletedArtifactChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds);
-      loadAttributeChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds);
-      loadRelationChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds);
+      loadNewOrDeletedArtifactChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds, monitor);
+      loadAttributeChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds, monitor);
+      loadRelationChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds, monitor);
 
       Branch branch = historical ? transactionId.getBranch() : sourceBranch;
 
@@ -108,6 +110,7 @@ public class InternalChangeManager {
          }
       }
 
+      monitor.setSubtaskName("Loading Artifacts from the Database");
       long time = System.currentTimeMillis();
       if (!artIds.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
@@ -126,6 +129,7 @@ public class InternalChangeManager {
          System.out.println(String.format("Change Manager: Found all of the Changes in %s\n",
                Lib.getElapseString(totalTime)));
       }
+      monitor.done();
       return changes;
    }
 
@@ -136,7 +140,7 @@ public class InternalChangeManager {
     * @throws BranchDoesNotExist
     * @throws OseeDataStoreException
     */
-   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws OseeCoreException {
+   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds, IStatusMonitor monitor) throws OseeCoreException {
 
       Map<Integer, ArtifactChanged> artifactChanges = new HashMap<Integer, ArtifactChanged>();
       boolean hasBranch = sourceBranch != null;
@@ -148,6 +152,7 @@ public class InternalChangeManager {
                hasBranch ? "Branch: " + sourceBranch : "Transaction: " + transactionId));
       }
 
+      monitor.setSubtaskName("Gathering New or Deleted Artifacts");
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
 
@@ -190,6 +195,7 @@ public class InternalChangeManager {
          if (DEBUG) {
             System.out.println(String.format("        Found %d Changes in %s", count, Lib.getElapseString(time)));
          }
+         monitor.updateWork(25);
       } finally {
          chStmt.close();
       }
@@ -200,11 +206,12 @@ public class InternalChangeManager {
     * @param changes
     * @throws OseeCoreException
     */
-   private void loadRelationChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws OseeCoreException {
+   private void loadRelationChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds, IStatusMonitor monitor) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       TransactionId fromTransactionId;
       TransactionId toTransactionId;
 
+      monitor.setSubtaskName("Gathering Relation Changes");
       try {
          boolean hasBranch = sourceBranch != null;
          long time = System.currentTimeMillis();
@@ -251,6 +258,7 @@ public class InternalChangeManager {
          if (DEBUG) {
             System.out.println(String.format("        Found %d Changes in %s", count, Lib.getElapseString(time)));
          }
+         monitor.updateWork(25);
       } finally {
          chStmt.close();
       }
@@ -263,7 +271,7 @@ public class InternalChangeManager {
     * @throws BranchDoesNotExist
     * @throws OseeDataStoreException
     */
-   private void loadAttributeChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws OseeCoreException {
+   private void loadAttributeChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds, IStatusMonitor monitor) throws OseeCoreException {
       Map<Integer, Change> attributesWasValueCache = new HashMap<Integer, Change>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
@@ -272,6 +280,7 @@ public class InternalChangeManager {
       ModificationType artModType;
       boolean hasBranch = sourceBranch != null;
       long time = System.currentTimeMillis();
+      monitor.setSubtaskName("Gathering Attribute Changes");
       if (DEBUG) {
          System.out.println(String.format("     Gathering Attribute Changes on %s",
                hasBranch ? "Branch: " + sourceBranch : "Transaction: " + transactionId));
@@ -349,6 +358,8 @@ public class InternalChangeManager {
          if (DEBUG) {
             System.out.println(String.format("        Found %d Changes in %s", count, Lib.getElapseString(time)));
          }
+         monitor.updateWork(13);
+         monitor.setSubtaskName("Gathering Was values");
          //Load was values for branch change reports only
          if (!artIds.isEmpty()) {
             time = System.currentTimeMillis();
@@ -403,6 +414,7 @@ public class InternalChangeManager {
             if (DEBUG) {
                System.out.println(String.format("        Loaded %d was values in %s", count, Lib.getElapseString(time)));
             }
+            monitor.updateWork(12);
          }
       } finally {
          chStmt1.close();

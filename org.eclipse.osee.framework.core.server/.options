@@ -1,0 +1,5 @@
+org.eclipse.osee.framework.core.server/debug = false
+
+org.eclipse.osee.framework.core.server/debug/JoinCleanup = false
+
+

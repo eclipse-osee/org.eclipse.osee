@@ -175,6 +175,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    final Color myYellowColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
    private Action showArtIds;
    private Action showArtType;
+   private Action showArtVersion;
    private Action newArtifactExplorer;
    private Action collapseAllAction;
    private ShowAttributeAction attributesAction;
@@ -278,6 +279,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
       createCollapseAllAction();
       createUpAction();
+      createShowArtVersionAction();
       createShowArtTypeAction();
       createAttributesAction();
       createNewArtifactExplorerAction();
@@ -372,7 +374,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createCopyMenuItem(popupMenu);
       createPasteMenuItem(popupMenu);
-      createExpandAllMenuItem(popupMenu);
       createSelectAllMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createAccessControlMenuItem(popupMenu);
@@ -468,6 +469,24 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       toolbarManager.add(showArtType);
    }
 
+   protected void createShowArtVersionAction() {
+
+      showArtVersion = new Action("Show Artifact Version") {
+         @Override
+         public void run() {
+            setChecked(!isChecked());
+            updateShowArtVersionText();
+            treeViewer.refresh();
+         }
+      };
+
+      showArtVersion.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+      updateShowArtVersionText();
+
+      IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
+      toolbarManager.add(showArtVersion);
+   }
+
    private void createNewArtifactExplorerAction() {
 
       newArtifactExplorer = new Action("New Artifact Explorer") {
@@ -516,6 +535,10 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
    private void updateShowArtTypeText() {
       showArtType.setText((showArtType.isChecked() ? "Hide" : "Show") + " Artifact Type");
+   }
+
+   private void updateShowArtVersionText() {
+      showArtVersion.setText((showArtVersion.isChecked() ? "Hide" : "Show") + " Artifact Version");
    }
 
    protected void createAttributesAction() {
@@ -940,19 +963,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       }
    }
 
-   private void createExpandAllMenuItem(Menu parentMenu) {
-      MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
-      menuItem.setText("Expand All\tCtrl+X");
-      menuItem.addSelectionListener(new ExpandListener());
-   }
-
-   public class ExpandListener extends SelectionAdapter {
-      @Override
-      public void widgetSelected(SelectionEvent event) {
-         expandAll((IStructuredSelection) treeViewer.getSelection());
-      }
-   }
-
    public class ReportListener extends SelectionAdapter {
       @Override
       public void widgetSelected(SelectionEvent event) {
@@ -977,13 +987,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                }
             }
          }
-      }
-   }
-
-   private void expandAll(IStructuredSelection selection) {
-      Iterator<?> iter = selection.iterator();
-      while (iter.hasNext()) {
-         treeViewer.expandToLevel(iter.next(), TreeViewer.ALL_LEVELS);
       }
    }
 
@@ -1165,9 +1168,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL && permiss.isReadPermission()) {
                treeViewer.getTree().selectAll();
             }
-            if (e.keyCode == 'x' && e.stateMask == SWT.CONTROL && permiss.isReadPermission()) {
-               expandAll((IStructuredSelection) treeViewer.getSelection());
-            }
             if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL && permiss.isWritePermission()) {
                performCopy();
             }
@@ -1242,6 +1242,10 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
    public boolean showArtType() {
       return showArtType != null && showArtType.isChecked();
+   }
+
+   public boolean showArtVersion() {
+      return showArtVersion != null && showArtVersion.isChecked();
    }
 
    private class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
@@ -1323,11 +1327,11 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                final Artifact[] artifactsToBeRelated = artData.getArtifacts();
                try {
                   SkynetTransaction transaction = new SkynetTransaction(parentArtifact.getBranch());
-                  // Replace all of the parent relations
-                  for (Artifact artifact : artifactsToBeRelated) {
-                     artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+                     // Replace all of the parent relations
+                     for (Artifact artifact : artifactsToBeRelated) {
+                        artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
                      artifact.persistAttributesAndRelations(transaction);
-                  }
+                     }
                   transaction.execute();
                } catch (Exception ex) {
                   OSEELog.logException(getClass(), ex, true);

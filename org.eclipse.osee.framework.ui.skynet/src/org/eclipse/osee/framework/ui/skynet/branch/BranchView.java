@@ -136,6 +136,7 @@ public class BranchView extends ViewPart implements IActionable {
 
    public BranchView() {
       super();
+
       this.preferencesService = Platform.getPreferencesService();
 
       IEclipsePreferences instanceNode =
@@ -187,7 +188,7 @@ public class BranchView extends ViewPart implements IActionable {
       }
 
       public IParameterValues getValues() throws ParameterValuesException {
-         return null;
+         throw new ParameterValuesException("Branch View has no parameters", null);
       }
 
       public boolean isOptional() {
@@ -304,7 +305,7 @@ public class BranchView extends ViewPart implements IActionable {
    public void dispose() {
       disposed = true;
       if (branchListComposite != null) {
-         branchListComposite.disposeComposite();
+      branchListComposite.disposeComposite();
       }
 
       try {
@@ -543,20 +544,20 @@ public class BranchView extends ViewPart implements IActionable {
 
       @Override
       public boolean isEnabledWithException() throws OseeCoreException {
-         IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-         if (!selection.isEmpty()) {
-            Object obj = ((JobbedNode) selection.getFirstElement()).getBackingData();
-            if (obj instanceof Branch) {
-               Branch selectedBranch = (Branch) obj;
-               if (selectedBranch != null && !ConflictManagerInternal.getInstance().getDestinationBranchesMerged(
-                     selectedBranch.getBranchId()).isEmpty()) {
-                  return true;
+            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+            if (!selection.isEmpty()) {
+               Object obj = ((JobbedNode) selection.getFirstElement()).getBackingData();
+               if (obj instanceof Branch) {
+                  Branch selectedBranch = (Branch) obj;
+                  if (selectedBranch != null && !ConflictManagerInternal.getInstance().getDestinationBranchesMerged(
+                        selectedBranch.getBranchId()).isEmpty()) {
+                     return true;
+                  }
+                  return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch());
                }
-               return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch());
+               return false;
             }
             return false;
-         }
-         return false;
       }
 
    };
@@ -814,7 +815,7 @@ public class BranchView extends ViewPart implements IActionable {
             if (SkynetSelections.oneBranchSelected(selection)) {
                try {
                   if ((UserManager.getUser().isFavoriteBranch((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())))) {
-                     markState = "Unmark";
+                  markState = "Unmark";
                   }
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -839,15 +840,16 @@ public class BranchView extends ViewPart implements IActionable {
                UserManager.getUser().toggleFavoriteBranch(branch);
 
                if (branchListComposite.isFavoritesFirst()) {
-                  branchTable.refresh();
+               branchTable.refresh();
                } else {
-                  branchTable.update(selection.getFirstElement(), null);
+               branchTable.update(selection.getFirstElement(), null);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
 
             // Saving of this change is done in saveState()
+
             return null;
          }
 
@@ -1031,6 +1033,7 @@ public class BranchView extends ViewPart implements IActionable {
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+
             return !selection.isEmpty();
          }
       });

@@ -39,6 +39,8 @@ import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictBuilder;
+import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
+import org.eclipse.osee.framework.skynet.core.status.IStatusMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -51,11 +53,23 @@ public class ConflictManagerInternal {
    private static final String ARTIFACT_CONFLICTS =
          "SELECT art1.art_type_id, arv1.art_id, txs1.mod_type AS source_mod_type, txs1.gamma_id AS source_gamma, txs2.mod_type AS dest_mod_type, txs2.gamma_id AS dest_gamma, arv3.gamma_id AS begin_gamma FROM osee_txs txs1, osee_txs txs2, osee_txs txs3, osee_tx_details txd1, osee_tx_details txd2, osee_artifact_version arv1, osee_artifact_version arv2, osee_artifact_version arv3 , osee_artifact art1 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = arv1.gamma_id and arv1.art_id = art1.art_id AND arv1.art_id = arv2.art_id AND arv2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ? AND txs3.transaction_id = ? AND txs3.gamma_id = arv3.gamma_id and arv3.art_id = arv1.art_id";
 
+   private static final String REVISED_ARTIFACT_CONFLICTS =
+         "SELECT art1.art_type_id, arv1.art_id, txs1.mod_type AS source_mod_type, txs1.gamma_id AS source_gamma, txs2.mod_type AS dest_mod_type, txs2.gamma_id AS dest_gamma FROM osee_txs txs1, osee_txs txs2, osee_tx_details txd1, osee_tx_details txd2, osee_artifact_version arv1, osee_artifact_version arv2, osee_artifact art1 WHERE txd1.tx_type = 0 AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id and arv1.art_id = art1.art_id AND arv1.art_id = arv2.art_id AND arv2.gamma_id = txs2.gamma_id AND txs2.transaction_id = txd2.transaction_id AND txd2.branch_id = ? AND ((txs2.tx_current = 1 AND txs2.gamma_id not in (SELECT txs.gamma_id FROM osee_txs txs WHERE txs.transaction_id = ?)) OR txs2.tx_current = 2)";
+
+   //   private static final String REVISED_ARTIFACT_CONFLICTS =
+   //      "SELECT art1.art_type_id, arv1.art_id, txs1.mod_type AS source_mod_type, txs1.gamma_id AS source_gamma, txs2.mod_type AS dest_mod_type, txs2.gamma_id AS dest_gamma FROM osee_txs txs1, osee_txs txs2, osee_tx_details txd1, osee_tx_details txd2, osee_artifact_version arv1, osee_artifact_version arv2, osee_artifact art1 WHERE txd1.tx_type = 0 AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id and arv1.art_id = art1.art_id AND arv1.art_id = arv2.art_id AND arv2.gamma_id = txs2.gamma_id AND txs2.transaction_id = txd2.transaction_id AND txd2.branch_id = ? AND ((txs2.tx_current = 1 AND txs2.gamma_id not in (SELECT txs.gamma_id FROM osee_artifact_version arv, osee_txs txs, osee_tx_details det, osee_join_branch jn WHERE det.branch_id = jn.branch_id AND det.transaction_id < jn.transaction_id AND jn.query_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = arv.gamma_id AND arv.art_id = arv2.art_id)) OR txs2.tx_current = 2)";
+
    private static final String ATTRIBUTE_CONFLICTS_NEW =
          "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type FROM osee_txs txs1, osee_txs txs2, osee_tx_details txd1, osee_tx_details txd2, osee_attribute atr1, osee_attribute atr2 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.mod_type =  " + ModificationType.NEW.getValue() + " AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ?";
 
    private static final String ATTRIBUTE_CONFLICTS =
          "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type, atr3.gamma_id AS begin_gamma FROM osee_txs txs1, osee_txs txs2, osee_txs txs3, osee_tx_details txd1, osee_tx_details txd2, osee_attribute atr1, osee_attribute atr2, osee_attribute atr3 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ? AND txs3.transaction_id = ?  AND txs3.gamma_id = atr3.gamma_id and atr3.attr_id = atr1.attr_id";
+
+   private static final String REVISED_ATTRIBUTE_CONFLICTS =
+         "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type FROM osee_txs txs1, osee_txs txs2, osee_tx_details txd1, osee_tx_details txd2, osee_attribute atr1, osee_attribute atr2 WHERE txd1.tx_type = 0 AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.transaction_id = txd2.transaction_id AND txd2.branch_id = ? AND ((txs2.tx_current = 1 AND txs2.gamma_id not in (SELECT txs.gamma_id FROM osee_txs txs WHERE txs.transaction_id = ? )) OR txs2.tx_current = 2)";
+
+   //   private static final String REVISED_ATTRIBUTE_CONFLICTS =
+   //      "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type FROM osee_txs txs1, osee_txs txs2, osee_tx_details txd1, osee_tx_details txd2, osee_attribute atr1, osee_attribute atr2 WHERE txd1.tx_type = 0 AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.transaction_id = txd2.transaction_id AND txd2.branch_id = ? AND ((txs2.tx_current = 1 AND txs2.gamma_id not in (SELECT txs.gamma_id FROM osee_attribute attr, osee_txs txs, osee_tx_details det,osee_join_branch jn WHERE det.branch_id = jn.branch_id AND det.transaction_id < jn.transaction_id AND jn.query_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = attr.gamma_id AND attr.attr_id = atr2.attr_id)) OR txs2.tx_current = 2)";
 
    private static final String HISTORICAL_ATTRIBUTE_CONFLICTS =
          "SELECT atr.attr_id, atr.art_id, source_gamma_id, dest_gamma_id, attr_type_id, mer.merge_branch_id, mer.dest_branch_id, value as source_value, status FROM osee_conflict con, osee_merge mer, osee_attribute atr Where mer.commit_transaction_id = ? AND mer.merge_branch_id = con.merge_branch_id And con.source_gamma_id = atr.gamma_id AND con.status in (" + Conflict.Status.COMMITTED.getValue() + ", " + Conflict.Status.INFORMATIONAL.getValue() + " ) order by attr_id";
@@ -85,9 +99,13 @@ public class ConflictManagerInternal {
       return instance;
    }
 
-   public List<Conflict> getConflictsPerBranch(TransactionId commitTransaction) throws OseeCoreException {
+   public List<Conflict> getConflictsPerBranch(TransactionId commitTransaction, IStatusMonitor monitor) throws OseeCoreException {
       long time = System.currentTimeMillis();
       long totalTime = time;
+      if (monitor == null) monitor = new EmptyMonitor();
+      monitor.startJob(String.format("Loading Merge Manager for Transaction %d",
+            commitTransaction.getTransactionNumber()), 100);
+      monitor.setSubtaskName("Finding Database stored conflicts");
       if (DEBUG) {
          System.out.println(String.format("\nDiscovering Conflicts based on Transaction ID: %d",
                commitTransaction.getTransactionNumber()));
@@ -99,10 +117,8 @@ public class ConflictManagerInternal {
          System.out.println("Running Query to find conflicts stored in the DataBase");
          time = System.currentTimeMillis();
       }
-      int mergeBranchId = 0;
       try {
-         chStmt.runPreparedQuery(HISTORICAL_ATTRIBUTE_CONFLICTS,
-                     commitTransaction.getTransactionNumber());
+         chStmt.runPreparedQuery(HISTORICAL_ATTRIBUTE_CONFLICTS, commitTransaction.getTransactionNumber());
          if (DEBUG) {
             System.out.println(String.format("          Query finished in %s", Lib.getElapseString(time)));
          }
@@ -116,9 +132,8 @@ public class ConflictManagerInternal {
             conflicts.add(attributeConflict);
 
             attributeConflict.setStatus(Conflict.Status.getStatus(chStmt.getInt("status")));
-            mergeBranchId = chStmt.getInt("merge_branch_id");
-
          }
+         monitor.done();
       } finally {
          chStmt.close();
       }
@@ -128,37 +143,73 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   public List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction) throws OseeCoreException {
+   public List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, IStatusMonitor monitor) throws OseeCoreException {
+      //      boolean commitIntoParent = false;
+      //      Set<Object[]> branchHistory = new HashSet<Object[]>();
+      ArrayList<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
+      ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
+      Set<Integer> artIdSet = new HashSet<Integer>();
+      Set<Integer> artIdSetDontShow = new HashSet<Integer>();
+      Set<Integer> artIdSetDontAdd = new HashSet<Integer>();
+
       //Check to see if the branch has already been committed than use the transaction version
+      if (monitor == null) monitor = new EmptyMonitor();
       int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
       if (commitTransactionId != 0) {
          try {
-            return getConflictsPerBranch(TransactionIdManager.getTransactionId(commitTransactionId));
+            return getConflictsPerBranch(TransactionIdManager.getTransactionId(commitTransactionId), monitor);
          } catch (TransactionDoesNotExist ex) {
          }
       }
 
+      //      try {
+      //         if (sourceBranch.getParentBranch().equals(destinationBranch)) {
+      //            commitIntoParent = true;
+      //         }
+      //         Branch branch = sourceBranch;
+      //         if (!commitIntoParent) {
+      //            while (branch.getParentBranch() != null) {
+      //               branchHistory.add(new Object[] {branch.getParentBranchId(),
+      //                     TransactionIdManager.getStartEndPoint(branch).getKey().getTransactionNumber()});
+      //               branch = branch.getParentBranch();
+      //            }
+      //         }
+      //      } catch (BranchDoesNotExist ex) {
+      //      }
+
+      monitor.startJob(String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getBranchId(),
+            destinationBranch.getBranchId()), 100);
+      monitor.setSubtaskName("Finding Database stored conflicts");
       long totalTime = 0;
       if (DEBUG) {
          System.out.println(String.format("\nDiscovering Conflicts based on Source Branch: %d Destination Branch: %d",
                sourceBranch.getBranchId(), destinationBranch.getBranchId()));
          totalTime = System.currentTimeMillis();
       }
-      ArrayList<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
-      ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
-      Set<Integer> artIdSet = new HashSet<Integer>();
-      Set<Integer> artIdSetDontShow = new HashSet<Integer>();
-      Set<Integer> artIdSetDontAdd = new HashSet<Integer>();
+
       if ((sourceBranch == null) || (destinationBranch == null)) {
          throw new IllegalArgumentException(String.format("Source Branch = %s Destination Branch = %s",
                sourceBranch == null ? "NULL" : sourceBranch.getBranchId(),
                destinationBranch == null ? "NULL" : destinationBranch.getBranchId()));
       }
-
-      loadArtifactVersionConflicts(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
-            artIdSetDontShow, artIdSetDontAdd);
-      loadAttributeConflicts(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet);
-
+      //      if (commitIntoParent) {
+      //         loadArtifactVersionConflicts(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
+      //               artIdSetDontShow, artIdSetDontAdd, monitor);
+      //         loadAttributeConflicts(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
+      //               monitor);
+      //} else {
+      //int queryId = 0;
+      //try {
+      //   queryId = JoinUtility.getNewQueryId();
+      int transactionId = findCommonTransaction(sourceBranch, destinationBranch);
+      loadArtifactVersionConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
+            artIdSetDontShow, artIdSetDontAdd, monitor, transactionId);
+      loadAttributeConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
+            monitor, transactionId);
+      // } finally {
+      //    ConnectionHandler.runPreparedUpdate("DELETE FROM osee_join_branch WHERE query_id = ?", queryId);
+      // }
+      //      }
       //Remove Art IDs for artifacts that should not be added to the branch because they were deleted etc. 
       for (Integer integer : artIdSetDontAdd) {
          artIdSet.remove(integer);
@@ -166,14 +217,13 @@ public class ConflictManagerInternal {
       if (artIdSet.isEmpty()) return conflicts;
 
       Branch mergeBranch =
-            BranchManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<Integer>(
-                  artIdSet));
+            BranchManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<Integer>(artIdSet));
 
       if (mergeBranch == null) {
          throw new BranchMergeException("Could not create the Merge Branch.");
       }
 
-      preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet);
+      preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet, monitor);
 
       //Don't create the conflicts for attributes on an artifact that is deleted etc.
       for (ConflictBuilder conflictBuilder : conflictBuilders) {
@@ -186,12 +236,14 @@ public class ConflictManagerInternal {
       if (DEBUG) {
          debugDump(conflicts, totalTime);
       }
-      cleanUpConflictDB(conflicts, mergeBranch.getBranchId());
+      cleanUpConflictDB(conflicts, mergeBranch.getBranchId(), monitor);
       return conflicts;
    }
 
-   private void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet) throws OseeCoreException {
+   private void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet, IStatusMonitor monitor) throws OseeCoreException {
       long time = 0;
+
+      monitor.setSubtaskName("Preloading Artifacts Associated with the Conflicts");
       if (DEBUG) {
          System.out.println("Prelodaing Conflict Artifacts");
          time = System.currentTimeMillis();
@@ -214,6 +266,7 @@ public class ConflictManagerInternal {
       if (DEBUG) {
          System.out.println(String.format("    Preloading took %s", Lib.getElapseString(time)));
       }
+      monitor.updateWork(25);
    }
 
    /**
@@ -224,19 +277,20 @@ public class ConflictManagerInternal {
     * @param artIdSet
     */
 
-   private void loadArtifactVersionConflicts(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd) throws OseeDataStoreException {
+   private void loadArtifactVersionConflicts(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IStatusMonitor monitor) throws OseeDataStoreException {
       long time = 0;
       if (DEBUG) {
          System.out.println("Finding Artifact Version Conflicts");
          System.out.println("    Running the Artifact Conflict Query");
          time = System.currentTimeMillis();
       }
+      monitor.setSubtaskName("Finding Artifact Version Conflicts");
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
          chStmt.runPreparedQuery(ARTIFACT_CONFLICTS, sourceBranch.getBranchId(),
-                     baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId(),
-                     baselineTransaction.getTransactionNumber());
+               baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId(),
+               baselineTransaction.getTransactionNumber());
 
          if (DEBUG) {
             System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
@@ -277,6 +331,65 @@ public class ConflictManagerInternal {
       } finally {
          chStmt.close();
       }
+      monitor.updateWork(20);
+      for (Integer integer : artIdSet) {
+         artIdSetDontShow.add(integer);
+      }
+   }
+
+   private void loadArtifactVersionConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IStatusMonitor monitor, int transactionId) throws OseeDataStoreException {
+      long time = 0;
+      if (DEBUG) {
+         System.out.println("Finding Artifact Version Conflicts");
+         System.out.println("    Running the Artifact Conflict Query");
+         time = System.currentTimeMillis();
+      }
+      monitor.setSubtaskName("Finding Artifact Version Conflicts");
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+
+      try {
+         chStmt.runPreparedQuery(REVISED_ARTIFACT_CONFLICTS, sourceBranch.getBranchId(),
+               destinationBranch.getBranchId(), transactionId);
+
+         if (DEBUG) {
+            System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
+         }
+
+         if (!chStmt.next()) {
+            return;
+         }
+         ArtifactConflictBuilder artifactConflictBuilder;
+         int artId = 0;
+
+         do {
+            int nextArtId = chStmt.getInt("art_id");
+            int sourceGamma = chStmt.getInt("source_gamma");
+            int destGamma = chStmt.getInt("dest_gamma");
+            int sourceModType = chStmt.getInt("source_mod_type");
+            int destModType = chStmt.getInt("dest_mod_type");
+            int artTypeId = chStmt.getInt("art_type_id");
+
+            if (artId != nextArtId) {
+               artId = nextArtId;
+
+               if ((destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.CHANGE.getValue()) || (destModType == ModificationType.CHANGE.getValue() && sourceModType == ModificationType.DELETED.getValue())) {
+
+                  artifactConflictBuilder =
+                        new ArtifactConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
+                              destinationBranch, sourceModType, destModType, artTypeId);
+
+                  conflictBuilders.add(artifactConflictBuilder);
+                  artIdSet.add(artId);
+               } else if (destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.DELETED.getValue()) {
+                  artIdSetDontShow.add(artId);
+                  artIdSetDontAdd.add(artId);
+               }
+            }
+         } while (chStmt.next());
+      } finally {
+         chStmt.close();
+      }
+      monitor.updateWork(20);
       for (Integer integer : artIdSet) {
          artIdSetDontShow.add(integer);
       }
@@ -288,18 +401,19 @@ public class ConflictManagerInternal {
     * @param baselineTransaction
     * @param conflicts
     */
-   private void loadAttributeConflicts(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) throws OseeDataStoreException {
+   private void loadAttributeConflicts(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IStatusMonitor monitor) throws OseeDataStoreException {
       long time = 0;
       if (DEBUG) {
          System.out.println("Finding Attribute Version Conflicts");
          System.out.println("    Running the First Attribute Conflict Query");
          time = System.currentTimeMillis();
       }
+      monitor.setSubtaskName("Finding the First Set of Attribute Conflicts");
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       AttributeConflictBuilder attributeConflictBuilder;
       try {
          chStmt.runPreparedQuery(ATTRIBUTE_CONFLICTS_NEW, sourceBranch.getBranchId(),
-                     baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId());
+               baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId());
 
          if (DEBUG) {
             System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
@@ -333,14 +447,16 @@ public class ConflictManagerInternal {
          chStmt.close();
       }
 
+      monitor.updateWork(20);
+      monitor.setSubtaskName("Finding the Second Set of Attribute Conflicts");
       if (DEBUG) {
          System.out.println("    Running the Second Attribute Conflict Query");
          time = System.currentTimeMillis();
       }
       try {
          chStmt.runPreparedQuery(ATTRIBUTE_CONFLICTS, sourceBranch.getBranchId(),
-                     baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId(),
-                     baselineTransaction.getTransactionNumber());
+               baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId(),
+               baselineTransaction.getTransactionNumber());
 
          if (DEBUG) {
             System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
@@ -372,6 +488,60 @@ public class ConflictManagerInternal {
       } finally {
          chStmt.close();
       }
+      monitor.updateWork(20);
+   }
+
+   /**
+    * @param sourceBranch
+    * @param destinationBranch
+    * @param baselineTransaction
+    * @param conflicts
+    */
+   private void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IStatusMonitor monitor, int transactionId) throws OseeDataStoreException {
+      long time = 0;
+      if (DEBUG) {
+         System.out.println("Finding Attribute Version Conflicts");
+         System.out.println("    Running the Attribute Conflict Query");
+         time = System.currentTimeMillis();
+      }
+      monitor.setSubtaskName("Finding the Attribute Conflicts");
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      AttributeConflictBuilder attributeConflictBuilder;
+      try {
+         chStmt.runPreparedQuery(REVISED_ATTRIBUTE_CONFLICTS, sourceBranch.getBranchId(),
+               destinationBranch.getBranchId(), transactionId);
+
+         if (DEBUG) {
+            System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
+         }
+         int attrId = 0;
+
+         if (chStmt.next()) {
+
+            do {
+               int nextAttrId = chStmt.getInt("attr_id");
+               int artId = chStmt.getInt("art_id");
+               int sourceGamma = chStmt.getInt("source_gamma");
+               int destGamma = chStmt.getInt("dest_gamma");
+               int attrTypeId = chStmt.getInt("attr_type_id");
+               String sourceValue =
+                     chStmt.getString("source_value") != null ? chStmt.getString("source_value") : chStmt.getString("dest_value");
+
+               if (attrId != nextAttrId) {
+                  attrId = nextAttrId;
+                  attributeConflictBuilder =
+                        new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
+                              destinationBranch, sourceValue, attrId, attrTypeId);
+
+                  conflictBuilders.add(attributeConflictBuilder);
+                  artIdSet.add(artId);
+               }
+            } while (chStmt.next());
+         }
+      } finally {
+         chStmt.close();
+      }
+      monitor.updateWork(30);
    }
 
    private void debugDump(Collection<Conflict> conflicts, long time) throws OseeCoreException {
@@ -385,9 +555,10 @@ public class ConflictManagerInternal {
       }
    }
 
-   private void cleanUpConflictDB(Collection<Conflict> conflicts, int branchId) throws OseeCoreException {
+   private void cleanUpConflictDB(Collection<Conflict> conflicts, int branchId, IStatusMonitor monitor) throws OseeCoreException {
       int count = 0;
       long time = System.currentTimeMillis();
+      monitor.setSubtaskName("Cleaning up old conflict data");
       if (conflicts != null && conflicts.size() != 0 && branchId != 0) {
          count = ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP + createData(conflicts), branchId);
       }
@@ -395,6 +566,7 @@ public class ConflictManagerInternal {
          System.out.println(String.format("       Cleaned up %d conflicts that are no longer conflicting in %s ",
                count, Lib.getElapseString(time)));
       }
+      monitor.updateWork(10);
    }
 
    private String createData(Collection<Conflict> conflicts) throws OseeCoreException {
@@ -433,8 +605,7 @@ public class ConflictManagerInternal {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       if (sourceBranch != null && destBranch != null) {
          try {
-            chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getBranchId(),
-                        destBranch.getBranchId());
+            chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getBranchId(), destBranch.getBranchId());
             if (chStmt.next()) {
                transactionId = chStmt.getInt("commit_transaction_id");
             }
@@ -444,8 +615,7 @@ public class ConflictManagerInternal {
          if (transactionId == 0) {
             try {
                chStmt.runPreparedQuery(GET_COMMIT_TRANSACTION_COMMENT,
-                           BranchManager.COMMIT_COMMENT + sourceBranch.getBranchName(),
-                           destBranch.getBranchId());
+                     BranchManager.COMMIT_COMMENT + sourceBranch.getBranchName(), destBranch.getBranchId());
                if (chStmt.next()) {
                   transactionId = chStmt.getInt("transaction_id");
                }
@@ -469,6 +639,60 @@ public class ConflictManagerInternal {
          chStmt.close();
       }
       return mergeBranchId;
+   }
+
+   /**
+    * The purpose of this function is find the transaction (Branch Create) that holds the last common values for two
+    * branches that share a common history. If two branches share the same history than the point at which they diverged
+    * should provide the reference for detecting conflicts based on the gamma at that point.
+    */
+   public int findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+      List<Branch> sourceBranches = getBranchHierarchy(sourceBranch);
+      List<Branch> destBranches = getBranchHierarchy(destBranch);
+      Branch commonBranch = null;
+      for (Branch branch : sourceBranches) {
+         if (destBranches.contains(branch)) {
+            commonBranch = branch;
+            break;
+         }
+      }
+      if (commonBranch == null) {
+         throw new OseeCoreException(String.format("Can not find a common ancestor for Branch %s and Branch %s",
+               sourceBranch.getBranchShortName(), destBranch.getBranchShortName()));
+      }
+      int sourceTransaction = 0;
+      int destTransaction = 0;
+      if (commonBranch.equals(destBranch)) {
+         destTransaction = Integer.MAX_VALUE;
+      } else {
+         for (Branch branch : destBranches) {
+            if (branch.getParentBranch().equals(commonBranch)) {
+               destTransaction = TransactionIdManager.getStartEndPoint(branch).getKey().getTransactionNumber();
+               break;
+            }
+
+         }
+      }
+      for (Branch branch : sourceBranches) {
+         if (branch.getParentBranch().equals(commonBranch)) {
+            sourceTransaction = TransactionIdManager.getStartEndPoint(branch).getKey().getTransactionNumber();
+            break;
+         }
+      }
+      return sourceTransaction <= destTransaction ? sourceTransaction : destTransaction;
+   }
+
+   private List<Branch> getBranchHierarchy(Branch branch) {
+      List<Branch> ancestors = new LinkedList<Branch>();
+      ancestors.add(branch);
+      try {
+         while (branch.getParentBranch() != BranchManager.getSystemRootBranch()) {
+            ancestors.add(branch.getParentBranch());
+            branch = branch.getParentBranch();
+         }
+      } catch (OseeCoreException ex) {
+      }
+      return ancestors;
    }
 
 }

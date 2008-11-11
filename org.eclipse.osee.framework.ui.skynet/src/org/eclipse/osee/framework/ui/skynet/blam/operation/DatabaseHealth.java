@@ -31,6 +31,8 @@ public class DatabaseHealth extends AbstractBlam {
    private Map<String, DatabaseHealthTask> dbFix = new TreeMap<String, DatabaseHealthTask>();
    private Map<String, DatabaseHealthTask> dbVerify = new TreeMap<String, DatabaseHealthTask>();
    private static final String SHOW_DETAILS_PROMPT = "Show Details of Operations";
+   private static final String CLEAN_ALL_PROMPT = "Run all the Cleanup Operations";
+   private static final String SHOW_ALL_PROMPT = "Run all the Verification Operations";;
 
    public DatabaseHealth() {
       loadExtensions();
@@ -89,8 +91,10 @@ public class DatabaseHealth extends AbstractBlam {
       if (OseeProperties.isDeveloper()) {
          StringBuilder builder = new StringBuilder();
          boolean showDetails = variableMap.getBoolean(SHOW_DETAILS_PROMPT);
+         boolean fixAll = variableMap.getBoolean(CLEAN_ALL_PROMPT);
+         boolean verifyAll = variableMap.getBoolean(SHOW_ALL_PROMPT);
          for (String taskName : dbFix.keySet()) {
-            if (variableMap.getBoolean(taskName)) {
+            if (fixAll || variableMap.getBoolean(taskName)) {
                monitor.setTaskName(taskName);
                DatabaseHealthTask task = dbFix.get(taskName);
                task.run(variableMap, new SubProgressMonitor(monitor, 1), Operation.Fix, builder, showDetails);
@@ -98,7 +102,7 @@ public class DatabaseHealth extends AbstractBlam {
             }
          }
          for (String taskName : dbVerify.keySet()) {
-            if (variableMap.getBoolean(taskName)) {
+            if (verifyAll || variableMap.getBoolean(taskName)) {
                monitor.setTaskName(taskName);
                DatabaseHealthTask task = dbVerify.get(taskName);
                task.run(variableMap, new SubProgressMonitor(monitor, 1), Operation.Verify, builder, showDetails);
@@ -116,6 +120,9 @@ public class DatabaseHealth extends AbstractBlam {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + SHOW_DETAILS_PROMPT + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + CLEAN_ALL_PROMPT + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + SHOW_ALL_PROMPT + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Clean Up Operations to Run:\"/>");
       for (String taskName : dbFix.keySet()) {

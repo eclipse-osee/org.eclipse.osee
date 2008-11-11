@@ -96,7 +96,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
       private void getMatrixItems() throws OseeCoreException {
          final Collection<Artifact> srchArts =
-               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%", BranchManager.getDefaultBranch());
+               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%", BranchManager.getDefaultBranch(), true);
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.size() == 0) return;
          if (srchArts.size() > 1) {
@@ -154,8 +154,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                monitor.subTask(transStr);
                if (transData.getCommitArtId() > 0) {
                   Artifact assocArt =
-                        ArtifactQuery.getArtifactFromId(transData.getCommitArtId(),
-                              AtsPlugin.getAtsBranch());
+                        ArtifactQuery.getArtifactFromId(transData.getCommitArtId(), BranchManager.getCommonBranch());
                   if (assocArt instanceof TeamWorkFlowArtifact) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Committed",
                            assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));

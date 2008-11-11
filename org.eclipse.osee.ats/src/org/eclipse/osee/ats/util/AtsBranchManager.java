@@ -563,12 +563,12 @@ public class AtsBranchManager {
    public ChangeData getChangeData() throws OseeCoreException {
       ChangeData changeData = null;
       if (smaMgr.getBranchMgr().isWorkingBranch()) {
-         changeData = ChangeManager.getChangeDataPerBranch(getWorkingBranch());
+         changeData = ChangeManager.getChangeDataPerBranch(getWorkingBranch(), null);
       } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
          TransactionId transactionId = getTransactionId();
          if (changeDataCacheForCommittedBranch.get(transactionId) == null) {
-            changeDataCacheForCommittedBranch.put(transactionId,
-                  ChangeManager.getChangeDataPerTransaction(transactionId));
+            changeDataCacheForCommittedBranch.put(transactionId, ChangeManager.getChangeDataPerTransaction(
+                  transactionId, null));
          }
          changeData = changeDataCacheForCommittedBranch.get(transactionId);
       } else {

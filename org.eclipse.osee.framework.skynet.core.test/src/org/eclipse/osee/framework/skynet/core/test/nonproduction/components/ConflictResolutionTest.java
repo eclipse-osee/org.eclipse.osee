@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
+import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
@@ -55,7 +56,8 @@ public class ConflictResolutionTest extends TestCase {
          Collection<Conflict> conflicts =
                ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(),
-                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey());
+                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey(),
+                     new EmptyMonitor());
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
@@ -73,7 +75,8 @@ public class ConflictResolutionTest extends TestCase {
          conflicts =
                ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(),
-                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey());
+                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey(),
+                     new EmptyMonitor());
 
          for (Conflict conflict : conflicts) {
             assertTrue(
