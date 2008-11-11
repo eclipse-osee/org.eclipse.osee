@@ -190,26 +190,18 @@ public abstract class Renderer implements IRenderer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getOption(java.lang.String[])
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getOptions()
     */
    @Override
-   public Object getOption(String key) throws OseeArgumentException {
-      return options.getValue(key);
+   public VariableMap getOptions() {
+      return options;
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getBooleanOption(java.lang.String)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getStringOption(java.lang.String)
     */
    @Override
-   public boolean getBooleanOption(String key) throws OseeArgumentException {
-      return options.getBoolean(key);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getBooleanOption(java.lang.String)
-    */
    public String getStringOption(String key) throws OseeArgumentException {
       return options == null ? null : options.getString(key);
    }
-
 }

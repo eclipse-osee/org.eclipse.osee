@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -429,10 +430,11 @@ public class WordTemplateProcessor {
             String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
             CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
-            if (paragraphNumber != null && renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
+            VariableMap options = renderer.getOptions();
+            if (paragraphNumber != null && options.getBoolean(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
                if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
                   artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
-                  artifact.persistAttributes();
+                  artifact.persistAttributes((SkynetTransaction) options.getValue(WordTemplateRenderer.TRANSACTION_OPTION));
                }
             }
          }
