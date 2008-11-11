@@ -41,13 +41,13 @@ public class XBranchSelectWidget extends XWidget implements Listener {
 
    private BranchSelectComposite selectComposite;
    private Composite composite;
-   private int defaultBranch;
+   private int defaultBranchId;
 
    private final List<Listener> listeners = new ArrayList<Listener>();
 
    public XBranchSelectWidget(String label) {
       super(label);
-      this.defaultBranch = -1;
+      this.defaultBranchId = -1;
    }
 
    /* (non-Javadoc)
@@ -81,11 +81,11 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       }
       selectComposite = BranchSelectComposite.createBranchSelectComposite(composite, SWT.NONE);
       try {
-         if (defaultBranch != -1) {
-            selectComposite.setDefaultSelectedBranch(BranchManager.getBranch(defaultBranch));
+         if (defaultBranchId != -1) {
+            selectComposite.setDefaultSelectedBranch(BranchManager.getBranch(defaultBranchId));
          }
       } catch (OseeCoreException ex) {
-         // do nothing
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       selectComposite.addListener(this);
    }
@@ -224,7 +224,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       if (Strings.isValid(branchName) != false) {
          try {
             Branch branch = BranchManager.getBranch(branchName);
-            defaultBranch = branch.getBranchId();
+            defaultBranchId = branch.getBranchId();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Unable to set default branch.", ex);
          }

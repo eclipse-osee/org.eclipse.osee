@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -114,15 +113,6 @@ public class BranchSelectionDialog extends MessageDialog {
    private void handleDoubleClick() {
       storeSelectedBranch();
       okPressed();
-   }
-
-   @Override
-   protected void okPressed() {
-      if (selected == null) {
-         AWorkbench.popup("ERROR", "Must make selection.");
-         return;
-      }
-      super.okPressed();
    }
 
    private static Branch createDialog(boolean allowOnlyWorkingBranches) {

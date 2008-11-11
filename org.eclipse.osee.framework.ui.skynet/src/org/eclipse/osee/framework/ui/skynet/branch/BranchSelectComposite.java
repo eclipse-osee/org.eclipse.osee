@@ -33,7 +33,6 @@ public class BranchSelectComposite extends Composite implements Listener {
    private Button branchSelectButton;
    private Text branchSelectTextWidget;
    private Branch selectedBranch;
-   private Branch defaultSelectedBranch;
    private final Set<Listener> listeners;
    private final boolean allowOnlyWorkingBranches;
 
@@ -60,7 +59,6 @@ public class BranchSelectComposite extends Composite implements Listener {
       GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
       data.widthHint = SIZING_TEXT_FIELD_WIDTH;
       branchSelectTextWidget.setLayoutData(data);
-      setSelected(defaultSelectedBranch);
 
       branchSelectButton = new Button(parent, SWT.PUSH);
       branchSelectButton.setText("Select Branch...");
@@ -91,13 +89,10 @@ public class BranchSelectComposite extends Composite implements Listener {
    }
 
    public void setSelected(Branch branch) {
-      selectedBranch = branch;
-      String name = "";
-      if (selectedBranch != null) {
-         name = selectedBranch.getBranchName();
+      if (branch != null) {
+         selectedBranch = branch;
+         branchSelectTextWidget.setText(selectedBranch.getBranchName());
       }
-      branchSelectTextWidget.setText(name);
-
    }
 
    private void notifyListener(Event event) {
@@ -121,17 +116,10 @@ public class BranchSelectComposite extends Composite implements Listener {
    }
 
    /**
-    * @return the defaultSelectedBranch
-    */
-   public Branch getDefaultSelectedBranch() {
-      return defaultSelectedBranch;
-   }
-
-   /**
     * @param defaultSelectedBranch the defaultSelectedBranch to set
     */
    public void setDefaultSelectedBranch(Branch defaultSelectedBranch) {
-      this.defaultSelectedBranch = defaultSelectedBranch;
+      setSelected(defaultSelectedBranch);
    }
 
    /**
