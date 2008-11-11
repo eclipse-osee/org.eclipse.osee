@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="server.task.scheduler">
+	<implementation class="org.eclipse.osee.framework.core.server.internal.ServerTaskScheduler"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.core.server.IServerTaskScheduler"/>
+	</service>
+	<reference name="server.task.provider"
+		interface="org.eclipse.osee.framework.core.server.IServerTask"
+		bind="addServerTask"
+		unbind="removeServerTask"
+		cardinality="0..n"
+		policy="dynamic"/>
+</component>

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="join.cleanup.task.provider">
+	<implementation class="org.eclipse.osee.framework.core.server.internal.task.CleanJoinTablesServerTask"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.core.server.IServerTask"/>
+	</service>	
+</component>

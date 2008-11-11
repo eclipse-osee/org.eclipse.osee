@@ -25,6 +25,7 @@ public class CoreServerActivator implements BundleActivator {
    private ServiceTracker applicationLookupTracker;
    private ServiceTracker authenticationServiceTracker;
    private ServiceTracker sessionServiceTracker;
+   private ServiceTracker scheduledServerTracker;
 
    private static List<ServiceRegistration> services;
    private static CoreServerActivator instance;
@@ -51,6 +52,9 @@ public class CoreServerActivator implements BundleActivator {
 
       sessionServiceTracker = new ServiceTracker(context, ISessionManager.class.getName(), null);
       sessionServiceTracker.open();
+
+      scheduledServerTracker = new ServiceTracker(context, IServerTaskScheduler.class.getName(), null);
+      scheduledServerTracker.open();
    }
 
    /*
@@ -78,6 +82,11 @@ public class CoreServerActivator implements BundleActivator {
       if (sessionServiceTracker != null) {
          sessionServiceTracker.close();
          sessionServiceTracker = null;
+      }
+
+      if (scheduledServerTracker != null) {
+         scheduledServerTracker.close();
+         scheduledServerTracker = null;
       }
 
       for (ServiceRegistration service : services) {
