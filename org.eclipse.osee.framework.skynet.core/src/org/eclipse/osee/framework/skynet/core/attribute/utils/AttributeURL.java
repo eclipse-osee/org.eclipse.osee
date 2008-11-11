@@ -56,6 +56,7 @@ public class AttributeURL {
    private static URL generatePathURL(String uri) throws OseeDataStoreException {
       try {
          Map<String, String> parameterMap = new HashMap<String, String>();
+         parameterMap.put("sessionId", ClientSessionManager.getSessionId());
          parameterMap.put("uri", uri);
          String urlString =
                HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);

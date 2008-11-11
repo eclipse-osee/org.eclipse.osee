@@ -22,7 +22,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -31,14 +30,12 @@ import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Roberto E. Escobar
  */
 class RemoteSnapshotManager {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RemoteSnapshotManager.class);
 
    protected RemoteSnapshotManager() {
    }
@@ -74,7 +71,7 @@ class RemoteSnapshotManager {
          URL url = getDeleteURL(key);
          String response = HttpProcessor.delete(url);
          if (response != null) {
-            logger.log(Level.INFO, String.format("[%s]", response));
+            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("[%s]", response));
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
