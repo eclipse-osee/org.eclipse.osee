@@ -36,25 +36,25 @@ public class ApplicationDatabaseManager implements IApplicationDatabaseManager {
    }
 
    public IApplicationDatabaseInfoProvider getProvider() throws OseeCoreException {
-      IApplicationDatabaseInfoProvider selectedDriver = getInternal();
-      if (selectedDriver == null) {
+      IApplicationDatabaseInfoProvider provider = getInternal();
+      if (provider == null) {
          long endTime = System.currentTimeMillis() + (1000 * 20);
          long timeLeft = 1000 * 20;
-         while (timeLeft > 0 && selectedDriver == null) {
+         while (timeLeft > 0 && provider == null) {
             synchronized (myWait) {
                try {
                   myWait.wait(timeLeft);
                } catch (InterruptedException ex) {
                }
-               selectedDriver = getInternal();
+               provider = getInternal();
             }
             timeLeft = endTime - System.currentTimeMillis();
          }
       }
-      if (selectedDriver == null) {
+      if (provider == null) {
          throw new OseeStateException("Unable to find an application database provider");
       }
-      return selectedDriver;
+      return provider;
    }
 
    public void removeDatabaseProvider(IApplicationDatabaseInfoProvider provider) {
