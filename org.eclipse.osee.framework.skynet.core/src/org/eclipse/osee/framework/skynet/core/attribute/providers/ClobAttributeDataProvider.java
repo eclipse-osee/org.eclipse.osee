@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -97,7 +98,8 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
 
    private void storeValue(String value) throws IOException {
       if (value != null && value.length() > MAX_VARCHAR_LENGTH) {
-         byte[] compressed = Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());
+         byte[] compressed =
+               Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());
          dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
       } else {
          this.rawStringValue = value;
@@ -132,7 +134,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
     */
    @Override
-   public void persist() throws OseeDataStoreException {
+   public void persist() throws OseeDataStoreException, OseeAuthenticationRequiredException {
       dataStore.persist();
    }
 

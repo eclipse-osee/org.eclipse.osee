@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
@@ -25,7 +26,7 @@ public interface IAttributeDataProvider {
 
    public Object[] getData() throws OseeDataStoreException;
 
-   public void persist() throws OseeDataStoreException;
+   public void persist() throws OseeCoreException;
 
    public void purge() throws OseeDataStoreException;
 }

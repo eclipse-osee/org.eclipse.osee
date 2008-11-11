@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -159,7 +160,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
     */
    @Override
-   public void persist() throws OseeDataStoreException {
+   public void persist() throws OseeDataStoreException, OseeAuthenticationRequiredException {
       dataStore.persist();
    }
 

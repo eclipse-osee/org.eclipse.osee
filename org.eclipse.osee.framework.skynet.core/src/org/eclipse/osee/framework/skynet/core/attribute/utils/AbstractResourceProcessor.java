@@ -32,41 +32,39 @@ public abstract class AbstractResourceProcessor {
 
    protected abstract URL getStorageURL(DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException;
 
-   public void saveResource(DataStore dataStore) throws OseeDataStoreException {
-      InputStream inputStream = null;
+   public void saveResource(DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+      URL url = getStorageURL(dataStore);
+      InputStream inputStream = dataStore.getInputStream();
       try {
-         URL url = getStorageURL(dataStore);
-         inputStream = dataStore.getInputStream();
          URI uri = HttpProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
-         if (uri != null) {
-            dataStore.setLocator(uri.toASCIIString());
-         }
+         dataStore.setLocator(uri.toASCIIString());
       } catch (Exception ex) {
          throw new OseeDataStoreException("Error saving resource", ex);
       } finally {
-         if (inputStream != null) {
-            try {
-               inputStream.close();
-            } catch (Exception ex) {
-               throw new OseeDataStoreException("Error closing stream during save resource", ex);
-            }
+         try {
+            inputStream.close();
+         } catch (Exception ex) {
+            throw new OseeDataStoreException("Error closing stream during save resource", ex);
          }
       }
    }
 
-   public void acquire(DataStore dataStore) throws OseeDataStoreException {
-      int code = -1;
+   public void acquire(DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+      URL url = getAcquireURL(dataStore);
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      AcquireResult result;
       try {
-         URL url = getAcquireURL(dataStore);
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         AcquireResult result = HttpProcessor.acquire(url, outputStream);
-         code = result.getCode();
-         if (code == HttpURLConnection.HTTP_OK) {
-            dataStore.setContent(outputStream.toByteArray(), "", result.getContentType(), result.getEncoding());
-         }
+         result = HttpProcessor.acquire(url, outputStream);
       } catch (Exception ex) {
-         throw new OseeDataStoreException(String.format("Error acquiring resource: [%s] - status code: [%s]",
-               dataStore.getLocator(), code), ex);
+         throw new OseeDataStoreException(String.format("Error acquiring resource: [%s]", dataStore.getLocator()), ex);
+      }
+
+      int code = result.getCode();
+      if (code == HttpURLConnection.HTTP_OK) {
+         dataStore.setContent(outputStream.toByteArray(), "", result.getContentType(), result.getEncoding());
+      } else {
+         throw new OseeDataStoreException(String.format("Error acquiring resource: [%s] - status code: [%s]; %s",
+               dataStore.getLocator(), code, new String(outputStream.toByteArray())));
       }
    }
 

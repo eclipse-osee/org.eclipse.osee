@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
 
@@ -51,11 +52,11 @@ public class DataStore {
       return this.rawContent != null && this.rawContent.length > 0;
    }
 
-   public InputStream getInputStream() throws Exception {
+   public InputStream getInputStream() throws OseeDataStoreException, OseeAuthenticationRequiredException {
       return new ByteArrayInputStream(getContent());
    }
 
-   public byte[] getContent() throws OseeDataStoreException {
+   public byte[] getContent() throws OseeDataStoreException, OseeAuthenticationRequiredException {
       if (isLocatorValid() != false && needToReadFromRemote) {
          resourceProcessor.acquire(this);
          needToReadFromRemote = false;
@@ -76,7 +77,7 @@ public class DataStore {
       other.encoding = this.encoding;
    }
 
-   public void persist() throws OseeDataStoreException {
+   public void persist() throws OseeDataStoreException, OseeAuthenticationRequiredException {
       if (this.rawContent != null && this.rawContent.length > 0) {
          resourceProcessor.saveResource(this);
       }

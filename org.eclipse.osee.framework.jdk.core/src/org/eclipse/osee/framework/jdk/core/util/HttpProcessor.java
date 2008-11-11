@@ -37,17 +37,8 @@ public class HttpProcessor {
    }
 
    public static URI save(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
-      URI toReturn = null;
-      try {
-         String locator = put(url, inputStream, contentType, encoding);
-         URI uri = new URI(locator);
-         if (uri != null) {
-            toReturn = uri;
-         }
-      } catch (Exception ex) {
-         throw new Exception("Error saving resource", ex);
-      }
-      return toReturn;
+      String locator = put(url, inputStream, contentType, encoding);
+      return new URI(locator);
    }
 
    public static String put(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
