@@ -76,18 +76,11 @@ public class SnapshotLocatorProvider implements IResourceLocatorProvider {
       StringBuilder builder = new StringBuilder("snapshot://");
       if (isArgValid(seed) != false && isArgValid(name) != false) {
          try {
-            String[] values = seed.split("BRANCH");
-            String struct = values[0];
             char[] buffer = new char[3];
             int cnt = -1;
-            Reader in = new StringReader(struct);
+            Reader in = new StringReader(seed);
             while ((cnt = in.read(buffer)) != -1) {
                builder.append(buffer, 0, cnt);
-               builder.append("/");
-            }
-
-            if (values.length == 2) {
-               builder.append(values[1]);
                builder.append("/");
             }
          } catch (IOException ex) {
