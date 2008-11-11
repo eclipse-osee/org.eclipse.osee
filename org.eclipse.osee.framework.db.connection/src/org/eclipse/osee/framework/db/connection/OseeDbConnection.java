@@ -46,11 +46,15 @@ public class OseeDbConnection {
       return getConnection(getDatabaseInfoProvider());
    }
 
-   private static void checkThread() {
-      String threadName = Thread.currentThread().getName();
-      if (threadName.equals("main") || threadName.equals("Start Level Event Dispatcher")) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, "Making db calls in display threads.");
-      }
+   private static void checkThread() {/*
+         String threadName = Thread.currentThread().getName();
+         
+         if (Display.getCurrent() == null) return false;
+         return Display.getCurrent().getThread() == Thread.currentThread();
+         
+         if (threadName.equals("main") || threadName.equals("Start Level Event Dispatcher")) {
+            OseeLog.log(InternalActivator.class, Level.SEVERE, "Making db calls in display threads.");
+         }*/
    }
 
    public static OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeDataStoreException {
