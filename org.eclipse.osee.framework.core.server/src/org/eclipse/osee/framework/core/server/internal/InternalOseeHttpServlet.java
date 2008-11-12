@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -80,6 +81,8 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
                checkAccessControl(request);
                super.service(request, response);
             } catch (OseeCoreException ex) {
+               response.setStatus(HttpServletResponse.SC_PROXY_AUTHENTICATION_REQUIRED);
+               response.getWriter().write(Lib.exceptionToString(ex));
                throw new ServletException(ex);
             }
          } else {
