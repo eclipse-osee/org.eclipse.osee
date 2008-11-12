@@ -27,6 +27,7 @@ public class SqlKey {
    public static final String SELECT_RELATIONS = "SELECT_RELATIONS";   
    public static final String SELECT_CURRENT_ARTIFACTS = "SELECT_CURRENT_ARTIFACTS";
    public static final String SELECT_CURRENT_ARTIFACTS_WITH_DELETED = "SELECT_CURRENT_ARTIFACTS_WITH_DELETED";
+   public static final String QUERY_BUILDER_HINT = "QUERY_BUILDER_HINT";
    
    public static final String SELECT_HISTORICAL_ARTIFACTS_DEFINITION =
          "SELECT%s al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id, al1.transaction_id as stripe_transaction_id FROM osee_join_artifact al1, osee_artifact art1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= al1.transaction_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, art1.art_id, txs1.transaction_id desc";
@@ -55,6 +56,7 @@ public class SqlKey {
    private static final String SELECT_CURRENT_ARTIFACTS_WITH_DELETED_DEFINITION =
       SELECT_CURRENT_ARTIFACTS_PREFIX + "in (1, 2)";
 
+   
    
    public static final String ORDERED_HINT = " /*+ ordered */";
    public static final String ORDERED_HINT_AND_TXS_INDEX = " /*+ ordered INDEX(txs1) */";
@@ -87,6 +89,8 @@ public class SqlKey {
       
       sqlProperties.put(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED,
             getFormattedSql(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
+      
+      sqlProperties.put(SqlKey.QUERY_BUILDER_HINT, HINTS__ORDERED__FIRST_ROWS);            
       
       return sqlProperties;
    }

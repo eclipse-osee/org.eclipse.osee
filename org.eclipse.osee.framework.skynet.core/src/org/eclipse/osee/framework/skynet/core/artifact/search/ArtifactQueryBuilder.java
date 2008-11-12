@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SqlKey;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
@@ -173,7 +174,7 @@ public class ArtifactQueryBuilder {
       return id;
    }
 
-   private String getArtifactSelectSql() throws OseeDataStoreException {
+   private String getArtifactSelectSql() throws OseeCoreException {
       if (count) {
          sql.append("SELECT count(art1.art_id) FROM ");
       } else {
@@ -265,7 +266,7 @@ public class ArtifactQueryBuilder {
       sql.append(" AND txd1.branch_id=?");
       addParameter(branch.getBranchId());
 
-      return SqlKey.getFormattedSql(sql.toString(), SqlKey.HINTS__ORDERED__FIRST_ROWS);
+      return SqlKey.getFormattedSql(sql.toString(), ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ATTRIBUTES));
    }
 
    public void append(String sqlSnippet) {
@@ -381,7 +382,7 @@ public class ArtifactQueryBuilder {
       clearCriteria();
    }
 
-   public int countArtifacts() throws OseeDataStoreException {
+   public int countArtifacts() throws OseeCoreException {
       if (emptyCriteria) {
          return 0;
       }
