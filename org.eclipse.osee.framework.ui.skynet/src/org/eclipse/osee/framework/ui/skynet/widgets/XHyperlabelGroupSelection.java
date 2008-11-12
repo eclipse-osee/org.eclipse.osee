@@ -54,6 +54,7 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelSelection {
    public boolean handleSelection() {
       try {
          GroupListDialog dialog = new GroupListDialog(Display.getCurrent().getActiveShell());
+         dialog.setRequireSelection(false);
          int result = dialog.open();
          if (result == 0) {
             selectedGroups.clear();

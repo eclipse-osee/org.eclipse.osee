@@ -28,6 +28,22 @@ import org.eclipse.ui.dialogs.ListDialog;
  */
 public class ArtifactListDialog extends ListDialog {
 
+   boolean requireSelection = true;
+
+   /**
+    * @return the requireSelection
+    */
+   public boolean isRequireSelection() {
+      return requireSelection;
+   }
+
+   /**
+    * @param requireSelection the requireSelection to set
+    */
+   public void setRequireSelection(boolean requireSelection) {
+      this.requireSelection = requireSelection;
+   }
+
    public ArtifactListDialog(Shell parent) {
       this(parent, null);
    }
@@ -62,7 +78,7 @@ public class ArtifactListDialog extends ListDialog {
 
    @Override
    protected void okPressed() {
-      if (getTableViewer().getSelection().isEmpty()) {
+      if (requireSelection && getTableViewer().getSelection().isEmpty()) {
          AWorkbench.popup("ERROR", "Must make selection.");
          return;
       }
