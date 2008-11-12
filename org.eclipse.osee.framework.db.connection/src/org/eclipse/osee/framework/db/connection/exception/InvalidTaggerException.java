@@ -8,13 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine;
+package org.eclipse.osee.framework.db.connection.exception;
+
 
 /**
  * @author Roberto E. Escobar
  */
-public class InvalidTaggerException extends Exception {
+public class InvalidTaggerException extends OseeCoreException {
+   private static final long serialVersionUID = 1L;
 
-   private static final long serialVersionUID = 8827972753892224287L;
-
+   public InvalidTaggerException() {
+      super("");
+   }
 }
