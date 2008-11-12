@@ -58,6 +58,9 @@ public class SqlKey {
    
    public static final String ORDERED_HINT = " /*+ ordered */";
    public static final String ORDERED_HINT_AND_TXS_INDEX = " /*+ ordered INDEX(txs1) */";
+   public static final String HINTS__ORDERED__TXS_IDX__REL_IDX = " /*+ ordered INDEX(txs1) INDEX(rel1) */";
+   public static final String HINTS__ORDERED__TXS_IDX__ART_IDX__ARTV_IDX__TXD_IDX = " /*+ ordered INDEX(txs1) INDEX(art1) INDEX(arv1) INDEX(txd1) */";
+   public static final String HINTS__ORDERED__FIRST_ROWS = " /*+ ordered FIRST_ROWS */";
 
    private SqlKey() {
    }
@@ -65,25 +68,25 @@ public class SqlKey {
    public static Properties getSqlProperties() throws OseeDataStoreException {
       Properties sqlProperties = new Properties();
       sqlProperties.put(SqlKey.SELECT_HISTORICAL_ARTIFACTS,
-            getFormattedSql(SqlKey.SELECT_HISTORICAL_ARTIFACTS_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
+            getFormattedSql(SqlKey.SELECT_HISTORICAL_ARTIFACTS_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
       
       sqlProperties.put(SqlKey.SELECT_HISTORICAL_ATTRIBUTES,
-            getFormattedSql(SqlKey.SELECT_HISTORICAL_ATTRIBUTES_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
+            getFormattedSql(SqlKey.SELECT_HISTORICAL_ATTRIBUTES_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
       
       sqlProperties.put(SqlKey.SELECT_CURRENT_ATTRIBUTES,
-            getFormattedSql(SqlKey.SELECT_CURRENT_ATTRIBUTES_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
+            getFormattedSql(SqlKey.SELECT_CURRENT_ATTRIBUTES_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
       
       sqlProperties.put(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED,
-            getFormattedSql(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
+            getFormattedSql(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
       
       sqlProperties.put(SqlKey.SELECT_RELATIONS,
-            getFormattedSql(SqlKey.SELECT_RELATIONS_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
+            getFormattedSql(SqlKey.SELECT_RELATIONS_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
       
       sqlProperties.put(SqlKey.SELECT_CURRENT_ARTIFACTS,
-            getFormattedSql(SqlKey.SELECT_CURRENT_ARTIFACTS_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
+            getFormattedSql(SqlKey.SELECT_CURRENT_ARTIFACTS_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
       
       sqlProperties.put(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED,
-            getFormattedSql(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
+            getFormattedSql(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
       
       return sqlProperties;
    }
