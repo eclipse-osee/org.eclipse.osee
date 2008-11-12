@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.util.widgets;
 
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetProvider;
@@ -28,6 +29,11 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       XWidget toReturn = null;
       if (widgetName.equals(XHyperlabelTeamDefinitionSelection.WIDGET_ID)) {
          XHyperlabelTeamDefinitionSelection widget = new XHyperlabelTeamDefinitionSelection(name);
+         widget.setToolTip(widgetLayoutData.getToolTip());
+         toReturn = widget;
+      }
+      if (widgetName.equals(XHyperlabelGroupSelection.WIDGET_ID)) {
+         XHyperlabelGroupSelection widget = new XHyperlabelGroupSelection(name);
          widget.setToolTip(widgetLayoutData.getToolTip());
          toReturn = widget;
       }

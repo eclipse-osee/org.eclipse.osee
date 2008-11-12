@@ -26,7 +26,7 @@ public class EditTasksNavigateItem extends XNavigateItemBlam {
     */
    @Override
    public String getName() {
-      return "Edit Tasks";
+      return "Tasks ...";
    }
 
 }

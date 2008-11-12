@@ -87,7 +87,7 @@ import org.eclipse.ui.PartInitException;
  */
 public class WorldComposite extends Composite implements IFrameworkTransactionEventListener {
 
-   private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toWorkFlow;
+   private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toWorkFlow, toTask;
    private final Label warningLabel, searchNameLabel;
    private Label extraInfoLabel;
    private WorldSearchItem lastSearchItem;
@@ -578,23 +578,32 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       };
       selectionMetricsAction.setToolTipText("Show Release Metrics by Selection - Ctrl-X");
 
-      toAction = new Action("Re-display WorkFlows as Actions", Action.AS_PUSH_BUTTON) {
+      toAction = new Action("Re-display as Actions", Action.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
             redisplayAsAction();
          }
       };
-      toAction.setToolTipText("Re-display WorkFlows as Actions");
+      toAction.setToolTipText("Re-display as Actions");
 
-      toWorkFlow = new Action("Re-display Actions as WorkFlows", Action.AS_PUSH_BUTTON) {
+      toWorkFlow = new Action("Re-display as WorkFlows", Action.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
             redisplayAsWorkFlow();
          }
       };
-      toWorkFlow.setToolTipText("Re-display Actions as WorkFlows");
+      toWorkFlow.setToolTipText("Re-display as WorkFlows");
+
+      toTask = new Action("Re-display as Tasks", Action.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            redisplayAsTask();
+         }
+      };
+      toTask.setToolTipText("Re-display as Tasks");
 
       if (viewSite != null) {
          IToolBarManager toolbarManager = viewSite.getActionBars().getToolBarManager();
@@ -614,6 +623,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          manager.add(new Separator());
          manager.add(toAction);
          manager.add(toWorkFlow);
+         manager.add(toTask);
          if (AtsPlugin.isAtsAdmin()) {
             manager.add(new Separator());
          }
@@ -651,9 +661,8 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       new MenuItem(menu, SWT.SEPARATOR);
       actionToMenuItem(menu, toAction, SWT.PUSH);
       actionToMenuItem(menu, toWorkFlow, SWT.PUSH);
-      if (AtsPlugin.isAtsAdmin()) {
-         new MenuItem(menu, SWT.SEPARATOR);
-      }
+      actionToMenuItem(menu, toTask, SWT.PUSH);
+
    }
 
    private ToolItem actionToToolItem(ToolBar toolBar, Action action) {
@@ -705,10 +714,14 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
             Object obj = item.getData();
             if (obj instanceof Artifact) {
                Artifact art = (Artifact) obj;
-               if (art instanceof TeamWorkFlowArtifact) {
-                  arts.add(((TeamWorkFlowArtifact) art).getParentActionArtifact());
-               } else
+               if (art instanceof ActionArtifact) {
                   arts.add(art);
+               } else if (art instanceof StateMachineArtifact) {
+                  Artifact parentArt = ((StateMachineArtifact) art).getParentActionArtifact();
+                  if (parentArt != null) {
+                     arts.add(parentArt);
+                  }
+               }
             }
          }
          load(searchNameLabel.getText(), arts);
@@ -726,8 +739,34 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
                Artifact art = (Artifact) item.getData();
                if (art instanceof ActionArtifact) {
                   arts.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
-               } else
-                  arts.add(art);
+               } else if (art instanceof StateMachineArtifact) {
+                  Artifact parentArt = ((StateMachineArtifact) art).getParentTeamWorkflow();
+                  if (parentArt != null) {
+                     arts.add(parentArt);
+                  }
+               }
+            }
+         }
+         load(searchNameLabel.getText(), arts);
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+   }
+
+   public void redisplayAsTask() {
+      try {
+         TreeItem treeItem[] = worldXViewer.getTree().getItems();
+         Set<Artifact> arts = new HashSet<Artifact>();
+         for (TreeItem item : treeItem) {
+            if (item.getData() instanceof Artifact) {
+               Artifact art = (Artifact) item.getData();
+               if (art instanceof ActionArtifact) {
+                  for (TeamWorkFlowArtifact team : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
+                     arts.addAll(team.getSmaMgr().getTaskMgr().getTaskArtifacts());
+                  }
+               } else if (art instanceof StateMachineArtifact) {
+                  arts.addAll(((StateMachineArtifact) art).getSmaMgr().getTaskMgr().getTaskArtifacts());
+               }
             }
          }
          load(searchNameLabel.getText(), arts);

@@ -5,18 +5,14 @@
  */
 package org.eclipse.osee.ats.test.testDb;
 
-import java.util.Arrays;
 import java.util.Collection;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
 import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.world.search.EditTasksByTeamVersionSearchItem;
 import org.eclipse.osee.ats.world.search.MyTaskSearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -48,16 +44,6 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof MyTaskSearchItem);
       ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
       handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getTaskTitles(true).size());
-   }
-
-   public void testEditTasksTeamVersion() throws Exception {
-      closeTaskEditors();
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Edit Tasks by Team Version");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof EditTasksByTeamVersionSearchItem);
-      ((EditTasksByTeamVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList("SAW Code")));
-      ((EditTasksByTeamVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedVersion(VersionArtifact.getVersions(
-            Arrays.asList("SAW_Bld_2")).iterator().next());
-      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getNumTasks());
    }
 
    public void testEditTasksByUser() throws Exception {

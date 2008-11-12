@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
@@ -78,6 +80,11 @@ public class EditTasks extends AbstractBlam {
                   sb.append("Version: " + verArt + " - ");
                   selected = true;
                }
+               Collection<Artifact> groups = getSelectedGroups();
+               if (groups.size() > 0) {
+                  sb.append("Groups: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", groups) + " - ");
+                  selected = true;
+               }
                User user = variableMap.getUser("Assignee");
                if (user != null) {
                   sb.append("Assignee: " + user + " - ");
@@ -88,14 +95,18 @@ public class EditTasks extends AbstractBlam {
                   sb.append("Include Completed");
                }
                if (!selected) {
-                  AWorkbench.popup("ERROR", "You must select at least Team, Version or Assignee");
+                  AWorkbench.popup("ERROR", "You must select at least Team, Version or Assignee.");
+                  return;
+               }
+               if (groups.size() > 0 && (verArt != null || teamDefs.size() > 0)) {
+                  AWorkbench.popup("ERROR", "Group selection not valid with Team and Version.");
                   return;
                }
                if (user != null && includeCompleted && verArt == null && teamDefs.size() == 0) {
-                  AWorkbench.popup("ERROR", "You must select at least Team or Version with Include Completed");
+                  AWorkbench.popup("ERROR", "You must select at least Team or Version with Include Completed.");
                   return;
                }
-               TaskEditor.open(new EditTasksProvider(sb.toString(), teamDefs, user, verArt, includeCompleted));
+               TaskEditor.open(new EditTasksProvider(sb.toString(), teamDefs, groups, user, verArt, includeCompleted));
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -111,10 +122,12 @@ public class EditTasks extends AbstractBlam {
       private final VersionArtifact verArt;
       private final boolean includeCompleted;
       private final Collection<TeamDefinitionArtifact> teamDefs;
+      private final Collection<Artifact> groups;
 
-      public EditTasksProvider(String title, Collection<TeamDefinitionArtifact> teamDefs, User user, VersionArtifact verArt, boolean includeCompleted) {
+      public EditTasksProvider(String title, Collection<TeamDefinitionArtifact> teamDefs, Collection<Artifact> groups, User user, VersionArtifact verArt, boolean includeCompleted) {
          this.title = title;
          this.teamDefs = teamDefs;
+         this.groups = groups;
          this.user = user;
          this.verArt = verArt;
          this.includeCompleted = includeCompleted;
@@ -153,6 +166,11 @@ public class EditTasks extends AbstractBlam {
             throw new OseeArgumentException("Unsupported User and Include Completed selected.");
          }
 
+         if (groups.size() > 0 && (verArt != null || teamDefs.size() > 0)) {
+            // This case is unsupported  and should be filtered out prior to this point
+            throw new OseeArgumentException("Unsupported Groups selection with Version or Team(s).");
+         }
+
          // If version specified, get workflows from targeted relation
          if (verArt != null) {
             for (Artifact art : verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow)) {
@@ -169,6 +187,16 @@ public class EditTasks extends AbstractBlam {
          else if (teamDefs.size() > 0) {
             TeamWorldSearchItem teamWorldSearchItem = new TeamWorldSearchItem("", teamDefs, true, false, false);
             workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
+         } else if (groups.size() > 0) {
+            Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
+            for (Artifact art : groups) {
+               if (art instanceof TaskArtifact) {
+                  taskArts.add((TaskArtifact) art);
+               } else if (art instanceof StateMachineArtifact) {
+                  taskArts.addAll(((StateMachineArtifact) art).getSmaMgr().getTaskMgr().getTaskArtifacts());
+               }
+            }
+            return filterByCompletedAndSelectedUser(taskArts);
          }
 
          // Bulk load tasks related to workflows
@@ -244,6 +272,8 @@ public class EditTasks extends AbstractBlam {
             //
             "<XWidget xwidgetType=\"XCombo()\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
             //
+            "<XWidget xwidgetType=\"XHyperlabelGroupSelection\" displayName=\"Group(s)\" horizontalLabel=\"true\"/>" +
+            //
             "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>" +
             //
             "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
@@ -252,6 +282,7 @@ public class EditTasks extends AbstractBlam {
    }
 
    private XHyperlabelTeamDefinitionSelection teamCombo = null;
+   private final XHyperlabelGroupSelection groupWidget = null;
    private XCombo versionCombo = null;
 
    /* (non-Javadoc)
@@ -301,6 +332,10 @@ public class EditTasks extends AbstractBlam {
 
    private Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
       return teamCombo.getSelectedTeamDefintions();
+   }
+
+   private Collection<Artifact> getSelectedGroups() throws OseeCoreException {
+      return groupWidget.getSelectedGroups();
    }
 
 }
