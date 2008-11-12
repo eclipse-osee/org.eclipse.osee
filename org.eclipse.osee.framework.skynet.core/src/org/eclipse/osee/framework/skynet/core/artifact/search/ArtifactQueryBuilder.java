@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.SqlKey;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
@@ -176,7 +177,7 @@ public class ArtifactQueryBuilder {
       if (count) {
          sql.append("SELECT count(art1.art_id) FROM ");
       } else {
-         sql.append("SELECT art1.art_id, txd1.transaction_id, txd1.branch_id FROM ");
+         sql.append("SELECT%s art1.art_id, txd1.transaction_id, txd1.branch_id FROM ");
       }
       appendAliasedTable("osee_artifact", false);
       appendAliasedTables("osee_artifact_version", "osee_txs", "osee_tx_details");
@@ -264,7 +265,7 @@ public class ArtifactQueryBuilder {
       sql.append(" AND txd1.branch_id=?");
       addParameter(branch.getBranchId());
 
-      return sql.toString();
+      return SqlKey.getFormattedSql(sql.toString(), SqlKey.HINTS__ORDERED__FIRST_ROWS);
    }
 
    public void append(String sqlSnippet) {
