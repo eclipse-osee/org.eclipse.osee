@@ -10,82 +10,97 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.core.client.CorePreferences;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArbitrationServerPage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-
-   private DefaultWithStringAndIntegerFields fields;
+public class ArbitrationServerPage extends PreferencePage implements IWorkbenchPreferencePage {
 
    public ArbitrationServerPage() {
-      super(GRID);
+      super();
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+    * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
     */
    @Override
-   protected void createFieldEditors() {
-      Composite parent = getFieldEditorParent();
-
+   protected Control createContents(Composite parent) {
       Composite content = new Composite(parent, SWT.NONE);
       GridLayout layout = new GridLayout();
       layout.marginHeight = 0;
       layout.marginWidth = 0;
       content.setLayout(layout);
-      content.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      content.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      Group httpGroup = new Group(content, SWT.NONE);
-      httpGroup.setLayout(new GridLayout());
-      httpGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      httpGroup.setText("OSEE Arbitration Server");
+      Group resourceGroup = new Group(content, SWT.NONE);
+      resourceGroup.setLayout(new GridLayout());
+      resourceGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      resourceGroup.setText("OSEE Arbitration");
 
-      String defaultRemoteAddress =
-            CoreClientActivator.getInstance().getPluginPreferences().getDefaultString(
-                  CorePreferences.ARBITRATION_SERVER);
-      fields =
-            new DefaultWithStringAndIntegerFields(CorePreferences.ARBITRATION_SERVER, defaultRemoteAddress,
-                  "Enter Address:", "Enter Port:", httpGroup);
-      addField(fields);
-   }
+      Composite resourceComposite = new Composite(resourceGroup, SWT.NONE);
+      resourceComposite.setLayout(new GridLayout(2, false));
+      resourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
-    */
-   @Override
-   public boolean performOk() {
-      super.performOk();
-      Preferences preferences = CoreClientActivator.getInstance().getPluginPreferences();
-      String current = fields.getSelected();
-      String lastSelected = preferences.getString(CorePreferences.ARBITRATION_SERVER);
-      preferences.setValue(CorePreferences.ARBITRATION_SERVER, current);
-      if (!lastSelected.equals(current)) {
-         Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-
-               MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Shutdown Requested", "Arbitration server change - restart required.");
-               PlatformUI.getWorkbench().restart();
-            }
-         });
+      boolean wasArbitrationOverriden = Strings.isValid(OseeProperties.getOseeApplicationServerOverride());
+      String defaultArbitrationServer = null;
+      if (!wasArbitrationOverriden) {
+         try {
+            defaultArbitrationServer = HttpUrlBuilder.getInstance().getArbitrationServerPrefix();
+         } catch (OseeDataStoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+         }
       }
-      return true;
+
+      String defaultApplicationServer = null;
+      try {
+         defaultApplicationServer = HttpUrlBuilder.getInstance().getApplicationServerPrefix();
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+      }
+
+      List<Data> entries = new ArrayList<Data>();
+
+      if (wasArbitrationOverriden) {
+         entries.add(new Data("Arbitration", "Disabled", Display.getDefault().getSystemColor(SWT.COLOR_RED)));
+         entries.add(new Data("Application Server: ", defaultApplicationServer != null ? defaultApplicationServer : ""));
+      } else {
+         entries.add(new Data("Arbitration Server: ", defaultArbitrationServer != null ? defaultArbitrationServer : ""));
+         entries.add(new Data("Version To Match: ", OseeCodeVersion.getVersion()));
+         entries.add(new Data("Resolved To Server: ", defaultApplicationServer != null ? defaultApplicationServer : ""));
+      }
+      for (Data entry : entries) {
+         Label label1 = new Label(resourceComposite, SWT.NONE);
+         label1.setForeground(entry.getLabelColor());
+         label1.setText(entry.getLabelText());
+
+         Label label2 = new Label(resourceComposite, SWT.NONE);
+         label2.setForeground(entry.getDataColor());
+         label2.setText(entry.getDataText());
+      }
+      return content;
    }
 
    /* (non-Javadoc)
@@ -93,6 +108,51 @@ public class ArbitrationServerPage extends FieldEditorPreferencePage implements 
     */
    public void init(IWorkbench workbench) {
       setPreferenceStore(SkynetActivator.getInstance().getPreferenceStore());
-      setDescription("Select an arbitration server or specify a server address and port in the entry boxes below. NOTE: Must restart workbench after change.");
+      setDescription("See default Arbitration Server below.");
+   }
+
+   private final class Data {
+      private String label;
+      private Color labelColor;
+      private String value;
+      private Color valueColor;
+
+      public Data(String label, Color labelColor, String value, Color valueColor) {
+         super();
+         this.label = label;
+         this.labelColor = labelColor;
+         this.value = value;
+         this.valueColor = valueColor;
+      }
+
+      public Data(String label, Color labelColor, String value) {
+         this(label, labelColor, value, Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
+      }
+
+      public Data(String label, String value, Color valueColor) {
+         this(label, Display.getDefault().getSystemColor(SWT.COLOR_BLUE), value, valueColor);
+      }
+
+      public Data(String label, String value) {
+         this(label, Display.getDefault().getSystemColor(SWT.COLOR_BLUE), value, Display.getDefault().getSystemColor(
+               SWT.COLOR_BLACK));
+      }
+
+      public String getLabelText() {
+         return label;
+      }
+
+      public Color getLabelColor() {
+         return labelColor;
+      }
+
+      public String getDataText() {
+         return value;
+      }
+
+      public Color getDataColor() {
+         return valueColor;
+      }
+
    }
 }
