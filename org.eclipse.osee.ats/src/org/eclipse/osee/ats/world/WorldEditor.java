@@ -67,9 +67,8 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       }
    }
 
-   public static void open(WorldSearchItem searchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      WorldEditorInput worldEditorInput =
-            new WorldEditorInput(searchItem, SearchType.Search, customizeData, tableLoadOptions);
+   public static void open(WorldSearchItem searchItem, SearchType searchType, CustomizeData customizeData, TableLoadOption... tableLoadOptions) throws OseeCoreException {
+      WorldEditorInput worldEditorInput = new WorldEditorInput(searchItem, searchType, customizeData, tableLoadOptions);
       if (worldEditorInput != null) {
          IWorkbenchPage page = AWorkbench.getActivePage();
          try {

@@ -355,7 +355,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          @Override
          public void run() {
             if (getSelectedTaskArtifacts().size() == 0) {
-               AWorkbench.popup("Error", "No items selected");
+               AWorkbench.popup("Error", "No Tasks selected");
                return;
             }
             try {

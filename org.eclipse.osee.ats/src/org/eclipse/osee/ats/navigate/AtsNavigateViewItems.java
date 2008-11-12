@@ -152,13 +152,11 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       }
       items.add(otherItems);
 
+      items.add(new EditTasksNavigateItem(null));
       items.add(new SearchNavigateItem(null, new GroupWorldSearchItem()));
       items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));
-
-      XNavigateItem aiTeam = new XNavigateItem(null, "Actionable Items");
-      new SearchNavigateItem(aiTeam, new ActionableItemWorldSearchItem(null, "Actionable Item Actions", false, true,
-            false));
-      items.add(aiTeam);
+      items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search", false,
+            true, false)));
 
       XNavigateItem teamItem = new XNavigateItem(null, "Teams");
       new SearchNavigateItem(teamItem, new TeamWorldSearchItem("Team Workflows", null, false, false, false, null));
@@ -168,8 +166,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             true, false, false));
       new MassEditTeamVersionItem("Show Team Versions", teamItem, "");
       items.add(teamItem);
-
-      items.add(new EditTasksNavigateItem(null));
 
       XNavigateItem releaseItems = new XNavigateItem(null, "Versions");
       new MassEditTeamVersionItem("Edit Versions", releaseItems, (TeamDefinitionArtifact) null);
@@ -209,6 +205,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(stateItems);
 
       // Search Items
+      items.add(new OpenChangeReportByIdItem(null));
       items.add(new SearchNavigateItem(null, new MultipleHridSearchItem()));
       if (AtsPlugin.isAtsAdmin()) items.add(new SearchNavigateItem(null, new ArtIdSearchItem()));
       items.add(new SearchNavigateItem(null, new AtsAttributeSearchItem()));

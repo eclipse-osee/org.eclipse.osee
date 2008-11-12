@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -20,19 +17,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
-import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -41,7 +31,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -117,19 +106,10 @@ public class NavigateView extends ViewPart implements IActionable {
 
          @Override
          public void run() {
-            MultipleHridSearchItem srch = new MultipleHridSearchItem();
             try {
-               Collection<Artifact> artifacts = srch.performSearchGetResults(true);
-               final Set<Artifact> addedArts = new HashSet<Artifact>();
-               for (Artifact artifact : artifacts) {
-                  if ((!(artifact instanceof ActionArtifact)) && (!(artifact instanceof StateMachineArtifact))) {
-                     ArtifactEditor.editArtifact(artifact);
-                     continue;
-                  } else
-                     addedArts.add(artifact);
-               }
-               WorldView.getWorldView().load("Open by Id: \"" + srch.getEnteredIds() + "\"", addedArts);
-            } catch (Exception ex) {
+               xNavComp.handleDoubleClick(new SearchNavigateItem(null, new MultipleHridSearchItem()),
+                     TableLoadOption.None);
+            } catch (OseeCoreException ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
@@ -141,31 +121,9 @@ public class NavigateView extends ViewPart implements IActionable {
 
          @Override
          public void run() {
-            MultipleHridSearchItem srch = new MultipleHridSearchItem("Open Change Report by Id");
             try {
-               Collection<Artifact> artifacts = srch.performSearchGetResults(true);
-               final Set<Artifact> addedArts = new HashSet<Artifact>();
-               for (Artifact artifact : artifacts) {
-                  if (artifact instanceof ActionArtifact) {
-                     for (TeamWorkFlowArtifact team : ((ActionArtifact) artifact).getTeamWorkFlowArtifacts()) {
-                        if (team.getSmaMgr().getBranchMgr().isCommittedBranch() || team.getSmaMgr().getBranchMgr().isWorkingBranch()) {
-                           addedArts.add(team);
-                        }
-                     }
-                  }
-               }
-               if (addedArts.size() == 0) {
-                  AWorkbench.popup("ERROR", "No committed or working branches for entered id.");
-                  return;
-               }
-               if (addedArts.size() < 3 || MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
-                     "Open Change Reports",
-                     "Opening " + addedArts.size() + " Change Reports?\n\n(may want to run this off-hours)")) {
-                  for (Artifact art : addedArts) {
-                     ((StateMachineArtifact) art).getSmaMgr().getBranchMgr().showChangeReport();
-                  }
-               }
-            } catch (Exception ex) {
+               xNavComp.handleDoubleClick(new OpenChangeReportByIdItem(null), TableLoadOption.None);
+            } catch (OseeCoreException ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }

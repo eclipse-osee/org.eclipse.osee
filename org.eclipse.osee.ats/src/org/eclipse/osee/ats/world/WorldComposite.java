@@ -96,7 +96,6 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
    private final IViewSite viewSite;
-   private WorldSearchItem searchItem;
    private TableLoadOption[] tableLoadOptions;
    private Collection<? extends Artifact> arts;
    private String loadName;
@@ -234,6 +233,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
       this.loadName = name;
       this.arts = arts;
+      this.lastSearchItem = null;
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
       if (tableLoadOption != null) {
          options.addAll(Arrays.asList(tableLoadOption));
@@ -243,6 +243,8 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    }
 
    public void load(final WorldSearchItem searchItem, final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
+      this.lastSearchItem = searchItem;
+      this.arts = arts;
       List<TableLoadOption> options = Collections.getAggregate(tableLoadOption);
       if (options.contains(TableLoadOption.ClearLastSearchItem)) lastSearchItem = null;
       Displays.ensureInDisplayThread(new Runnable() {
@@ -317,11 +319,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    }
 
    public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException {
-      this.searchItem = searchItem;
       this.tableLoadOptions = tableLoadOptions;
       List<TableLoadOption> options = Collections.getAggregate(tableLoadOptions);
       searchItem.setCancelled(false);
       this.lastSearchItem = searchItem;
+      this.arts = null;
       Result result = AtsPlugin.areOSEEServicesAvailable();
       if (result.isFalse()) {
          AWorkbench.popup("ERROR", "DB Connection Unavailable");
@@ -469,11 +471,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          @Override
          public void run() {
             try {
-               if (arts != null) {
+               if (lastSearchItem != null) {
+                  WorldEditor.open(lastSearchItem, SearchType.ReSearch,
+                        worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions);
+               } else if (arts != null) {
                   WorldEditor.open(loadName, arts, worldXViewer.getCustomizeMgr().generateCustDataFromTable(),
-                        tableLoadOptions);
-               } else if (searchItem != null) {
-                  WorldEditor.open(searchItem, worldXViewer.getCustomizeMgr().generateCustDataFromTable(),
                         tableLoadOptions);
                } else {
                   AWorkbench.popup("ERROR", "Nothing loaded");
@@ -541,7 +543,9 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          @Override
          public void run() {
             try {
-               if (lastSearchItem != null) loadTable(lastSearchItem, SearchType.ReSearch, TableLoadOption.None);
+               if (lastSearchItem != null) {
+                  loadTable(lastSearchItem, SearchType.ReSearch, TableLoadOption.None);
+               }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }

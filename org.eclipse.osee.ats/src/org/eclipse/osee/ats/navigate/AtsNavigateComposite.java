@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
@@ -61,7 +62,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
       if (item instanceof SearchNavigateItem) {
          WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWorldSearchItem();
          if (worldSearchItem.getLoadView() == LoadView.WorldEditor)
-            WorldEditor.open(worldSearchItem, null, tableLoadOptions);
+            WorldEditor.open(worldSearchItem, SearchType.Search, null, tableLoadOptions);
          else if (worldSearchItem.getLoadView() == LoadView.WorldView)
             openWorld(worldSearchItem, tableLoadOptions);
          else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) TaskEditor.open(new TaskEditorSearchItemProvider(
