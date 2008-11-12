@@ -36,14 +36,15 @@ public class CorePreferenceInitializer extends AbstractPreferenceInitializer {
       Preferences store = CoreClientActivator.getInstance().getPluginPreferences();
 
       String defaultValue = OseeProperties.getDefaultArbitrationServer();
-      if (!Strings.isValid(defaultValue)) {
-         defaultValue = store.getString(CorePreferences.ARBITRATION_SERVER);
-         if (!Strings.isValid(defaultValue)) {
-            OseeLog.log(CoreClientActivator.class, Level.WARNING,
-                  "DefaultArbitrationServer is not set. See Windows->Preferences->Osee->Arbitration Server to set arbitration server.");
-         }
-      }
+      //      if (!Strings.isValid(defaultValue)) {
+      //         defaultValue = store.getString(CorePreferences.ARBITRATION_SERVER);
+      //         if (!Strings.isValid(defaultValue)) {
+      //            OseeLog.log(CoreClientActivator.class, Level.WARNING,
+      //                  "DefaultArbitrationServer is not set. See Windows->Preferences->Osee->Arbitration Server to set arbitration server.");
+      //         }
+      //      }
       store.setDefault(CorePreferences.ARBITRATION_SERVER, defaultValue);
+      store.setValue(CorePreferences.ARBITRATION_SERVER, defaultValue);
 
       try {
          String defaultNetworkValue = Network.getValidIP().getHostAddress();
