@@ -266,7 +266,7 @@ public class ArtifactQueryBuilder {
       sql.append(" AND txd1.branch_id=?");
       addParameter(branch.getBranchId());
 
-      return SqlKey.getFormattedSql(sql.toString(), ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ATTRIBUTES));
+      return SqlKey.getFormattedSql(sql.toString(), ClientSessionManager.getSQL(SqlKey.QUERY_BUILDER_HINT));
    }
 
    public void append(String sqlSnippet) {
