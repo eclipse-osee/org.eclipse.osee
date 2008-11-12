@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -76,7 +77,7 @@ public class ArtifactPromptChange {
       return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX, artifacts, persist);
    }
 
-   public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist ) throws Exception {
+   public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX, Arrays.asList(artifact),
             persist);
    }
@@ -187,6 +188,9 @@ public class ArtifactPromptChange {
             if (result == 0) {
                sma.setSoleAttributeFromString(attributeName, value);
             } else {
+               if (attributeName.equals("Name")) {
+                  throw new OseeArgumentException("Can not delete Name attribute");
+               }
                sma.deleteSoleAttribute(attributeName);
             }
             if (persist) sma.persistAttributes();

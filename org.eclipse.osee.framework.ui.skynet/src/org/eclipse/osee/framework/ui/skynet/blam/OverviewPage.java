@@ -27,8 +27,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayou
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
@@ -102,6 +105,7 @@ public class OverviewPage extends FormPage implements IActionable {
       }
    }
 
+   @Override
    protected void createFormContent(IManagedForm managedForm) {
       ScrolledForm form = managedForm.getForm();
       form.setText(getEditorInput().getName());
@@ -116,17 +120,9 @@ public class OverviewPage extends FormPage implements IActionable {
 
    private void createToolBarActions(ScrolledForm form) {
       Action runAction = new Action("Run Workflow in Job", Action.AS_PUSH_BUTTON) {
+         @Override
          public void run() {
-
-            VariableMap blamVariableMap = editor.getBlamVariableMap();
-            for (DynamicXWidgetLayoutData xWidgetData : dynamicXWidgetLayout.getLayoutDatas()) {
-               XWidget widget = xWidgetData.getXWidget();
-               blamVariableMap.setValue(widget.getLabel(), widget.getData());
-            }
-
-            BlamJob blamJob = new BlamJob(editor);
-            blamJob.addListener(editor);
-            Jobs.startJob(blamJob);
+            runWorkflow();
          }
       };
       runAction.setToolTipText("Starts the workflow in a platform job");
@@ -136,6 +132,18 @@ public class OverviewPage extends FormPage implements IActionable {
       OseeAts.addButtonToEditorToolBar(editor, this, SkynetGuiPlugin.getInstance(), form.getToolBarManager(),
             WorkflowEditor.EDITOR_ID, "Blam Workflow Editor");
 
+   }
+
+   private void runWorkflow() {
+      VariableMap blamVariableMap = editor.getBlamVariableMap();
+      for (DynamicXWidgetLayoutData xWidgetData : dynamicXWidgetLayout.getLayoutDatas()) {
+         XWidget widget = xWidgetData.getXWidget();
+         blamVariableMap.setValue(widget.getLabel(), widget.getData());
+      }
+
+      BlamJob blamJob = new BlamJob(editor);
+      blamJob.addListener(editor);
+      Jobs.startJob(blamJob);
    }
 
    public String getActionDescription() {
@@ -153,8 +161,8 @@ public class OverviewPage extends FormPage implements IActionable {
       PlatformUI.getWorkbench().getHelpSystem().setHelp(body, IHelpContextIds.MAIN_WORKFLOW_PAGE);
 
       managedForm.addPart(new SectionPart(createUsageSection(body)));
-      managedForm.addPart(new SectionPart(createOutputSection(body)));
       managedForm.addPart(new SectionPart(createParametersSection(body)));
+      managedForm.addPart(new SectionPart(createOutputSection(body)));
       managedForm.refresh();
    }
 
@@ -166,15 +174,11 @@ public class OverviewPage extends FormPage implements IActionable {
 
       Composite mainComp = toolkit.createClientContainer(section, 1);
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
-      GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
-      gridData.widthHint = 400;
-      mainComp.setLayoutData(gridData);
+      mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       mainComp.layout();
 
-      Text formText = toolkit.createText(mainComp, workflow.getDescriptionUsage(), SWT.WRAP);
-      gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
-      gridData.widthHint = 400;
-      formText.setLayoutData(gridData);
+      Text formText = toolkit.createText(mainComp, workflow.getDescriptionUsage(), SWT.NONE);
+      formText.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
 
       section.layout();
       return section;
@@ -182,19 +186,26 @@ public class OverviewPage extends FormPage implements IActionable {
 
    private Section createOutputSection(Composite body) {
       outputSection = toolkit.createSection(body, Section.TITLE_BAR);
-      outputSection.setText("Output");
-      outputSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      outputSection.setText("Execute");
+      outputSection.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       outputComp = toolkit.createClientContainer(outputSection, 1);
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
-      GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
-      gridData.widthHint = 400;
-      outputComp.setLayoutData(gridData);
-      outputComp.layout();
+      outputComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+      outputComp.setLayout(new GridLayout(1, false));
+
+      Button button = toolkit.createButton(outputComp, "Run this Workflow", SWT.PUSH);
+      button.setImage(SkynetGuiPlugin.getInstance().getImage("run_exc.gif"));
+      button.addListener(SWT.MouseUp, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            runWorkflow();
+         }
+      });
 
       outputText = toolkit.createText(outputComp, "Workflow has not yet run\n", SWT.WRAP);
-      gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
-      gridData.widthHint = 400;
+      GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+      gridData.heightHint = 500;
       outputText.setLayoutData(gridData);
 
       outputSection.layout();
