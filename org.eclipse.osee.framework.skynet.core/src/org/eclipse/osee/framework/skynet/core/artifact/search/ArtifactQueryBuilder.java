@@ -207,7 +207,7 @@ public class ArtifactQueryBuilder {
 
       if (artifactId != 0) {
          sql.append(artAlias);
-         sql.append("art_id=? AND ");
+         sql.append(".art_id=? AND ");
          addParameter(artifactId);
       }
 
