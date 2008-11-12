@@ -51,6 +51,7 @@ public class ArtifactDiffMenu {
 
       stdDiffMenuItem.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent ev) {
             try {
                processSelectedArtifacts(null, viewer, diffType);
@@ -64,6 +65,7 @@ public class ArtifactDiffMenu {
 
       diffArtifactMenuItem.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent ev) {
             try {
                processSelectedArtifacts(DIFF_ARTIFACT, viewer, diffType);
@@ -110,8 +112,8 @@ public class ArtifactDiffMenu {
 
       if (selection.size() == 2) {
          Object[] selections = selection.toArray();
-         firstSelection = selections[1];
-         secondSelection = selections[0];
+         firstSelection = selections[0];
+         secondSelection = selections[1];
 
          if (firstSelection instanceof TransactionData && secondSelection instanceof TransactionData) {
             TransactionData firstTransactionData = (TransactionData) firstSelection;
