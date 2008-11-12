@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.logging;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -24,39 +24,54 @@ public class OseeLogger {
 
    private List<ILoggerListener> listeners;
    private Map<String, Level> levelMap;
+   private Level defaultLevel;
 
    public OseeLogger() {
       levelMap = new ConcurrentHashMap<String, Level>();
       listeners = new CopyOnWriteArrayList<ILoggerListener>();
       listeners.add(new ConsoleLogger());
-   }
 
-   public void log(String loggerName, String bundleId, Level level, String message, Throwable th) {
+      String level = System.getProperty("osee.log.default", "WARNING");
+      try {
+         defaultLevel = Level.parse(level);
+      } catch (Exception ex) {
+         defaultLevel = Level.WARNING;
+      }
 
-      Level lvl = levelMap.get(loggerName);
-
-      if (lvl != null && level.intValue() < lvl.intValue()) return;
-
-      for (ILoggerListener logger : listeners) {
-         if (shouldLog(logger, loggerName, bundleId, level)) {
-            logger.log(loggerName, bundleId, level, message, th);
+      for (Entry<Object, Object> entry : System.getProperties().entrySet()) {
+         if (entry.getKey().toString().startsWith("osee.log.")) {
+            String name = entry.getKey().toString().substring(9);
+            level = entry.getValue().toString();
+            try {
+               Level lev = Level.parse(level);
+               levelMap.put(name, lev);
+            } catch (Exception ex) {
+            }
          }
       }
    }
 
-   public void format(String loggerName, String bundleId, Level level, String message, Object... objects) {
-      format(null, loggerName, bundleId, level, message, objects);
-   }
-
-   public void format(Throwable th, String loggerName, String bundleId, Level level, String message, Object... objects) {
-      Level lvl = levelMap.get(loggerName);
-      if (lvl != null && level.intValue() < lvl.intValue()) return;
+   public void log(String loggerName, Level level, String message, Throwable th) {
+      if (!shouldLog(loggerName, level)) {
+         return;
+      }
 
       for (ILoggerListener logger : listeners) {
-         if (shouldLog(logger, loggerName, bundleId, level)) {
-            String msg = String.format(message, objects);
-            logger.log(loggerName, bundleId, level, msg, th);
-         }
+         logger.log(loggerName, level, message, th);
+      }
+   }
+
+   public void format(String loggerName, Level level, String message, Object... objects) {
+      format(null, loggerName, level, message, objects);
+   }
+
+   public void format(Throwable th, String loggerName, Level level, String message, Object... objects) {
+      if (!shouldLog(loggerName, level)) {
+         return;
+      }
+      for (ILoggerListener logger : listeners) {
+         String msg = String.format(message, objects);
+         logger.log(loggerName, level, msg, th);
       }
    }
 
@@ -74,23 +89,16 @@ public class OseeLogger {
       levelMap.put(loggerName, level);
    }
 
-   private boolean shouldLog(ILoggerListener logger, String loggerName, String bundleId, Level level) {
-      ILoggerFilter filter = logger.getFilter();
-      boolean levelMatch = true, nameMatch = true, bundleIdMatch = true;
-      if (filter != null) {
-         Level filterLevel = filter.getLoggerLevel();
-         Pattern bundleIdMatcher = filter.bundleId();
-         Pattern nameMatcher = filter.name();
-         if (filterLevel != null && level != null) {
-            levelMatch = level.intValue() >= filterLevel.intValue();
-         }
-         if (bundleIdMatcher != null && bundleId != null) {
-            bundleIdMatch = bundleIdMatcher.matcher(bundleId).matches();
-         }
-         if (nameMatcher != null && loggerName != null) {
-            nameMatch = nameMatcher.matcher(loggerName).matches();
-         }
+   private boolean shouldLog(String loggerName, Level level) {
+      Level filterLevel = levelMap.get(loggerName);
+      if (filterLevel == null) {
+         filterLevel = defaultLevel;
+         levelMap.put(loggerName, filterLevel);
       }
-      return levelMatch && bundleIdMatch && nameMatch;
+      if (level.intValue() >= filterLevel.intValue()) {
+         return true;
+      } else {
+         return false;
+      }
    }
 }

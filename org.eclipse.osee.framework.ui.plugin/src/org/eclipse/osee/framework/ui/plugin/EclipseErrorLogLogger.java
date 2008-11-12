@@ -3,7 +3,6 @@ package org.eclipse.osee.framework.ui.plugin;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 
@@ -15,11 +14,7 @@ public class EclipseErrorLogLogger implements ILoggerListener {
       isDeveloper = OseeProperties.isDeveloper();
    }
 
-   public ILoggerFilter getFilter() {
-      return null;
-   }
-
-   public void log(String loggerName, String bundleId, Level level, String message, Throwable th) {
+   public void log(String loggerName, Level level, String message, Throwable th) {
       int statusLevel = 0;
       if (level.intValue() >= Level.SEVERE.intValue()) {
          statusLevel = Status.ERROR;
@@ -32,7 +27,7 @@ public class EclipseErrorLogLogger implements ILoggerListener {
       } else {
          return;
       }
-      PluginCoreActivator.getInstance().getLog().log(new Status(statusLevel, bundleId, statusLevel, message, th));
+      PluginCoreActivator.getInstance().getLog().log(new Status(statusLevel, loggerName, statusLevel, message, th));
    }
 
 }

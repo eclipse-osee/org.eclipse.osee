@@ -17,8 +17,6 @@ import java.util.logging.Level;
  */
 public interface ILoggerListener {
 
-   ILoggerFilter getFilter();
-
-   void log(String loggerName, String bundleId, Level level, String message, Throwable th);
+   void log(String loggerName, Level level, String message, Throwable th);
 
 }

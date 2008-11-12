@@ -41,32 +41,35 @@ public class OseeLog {
    }
 
    public static void log(Class<?> activatorClass, Level level, String message) {
-      if (level == Level.SEVERE) {
-         getLog().log(activatorClass.getName(), activatorClass.getName(), level, message,
-               new Exception("used to get a stack trace"));
+      if (level.intValue() >= Level.SEVERE.intValue()) {
+         getLog().log(activatorClass.getName(), level, message, new Exception("used to get a stack trace"));
       } else {
-         getLog().log(activatorClass.getName(), activatorClass.getName(), level, message, null);
+         getLog().log(activatorClass.getName(), level, message, null);
       }
    }
 
    public static void log(Class<?> activatorClass, Level level, Throwable th) {
-      getLog().log(activatorClass.getName(), activatorClass.getName(), level, th.getLocalizedMessage(), th);
+      getLog().log(activatorClass.getName(), level, th.getLocalizedMessage(), th);
    }
 
    public static void log(Class<?> activatorClass, Level level, String message, Throwable th) {
-      getLog().log(activatorClass.getName(), activatorClass.getName(), level, message, th);
+      getLog().log(activatorClass.getName(), level, message, th);
    }
 
-   public static void log(String loggerName, String bundleId, Level level, String message, Throwable th) {
-      getLog().log(loggerName, bundleId, level, message, th);
+   public static void log(String loggerName, Level level, String message, Throwable th) {
+      getLog().log(loggerName, level, message, th);
    }
 
-   public static void format(String loggerName, String bundleId, Level level, String message, Object... objects) {
-      getLog().format(loggerName, bundleId, level, message, objects);
+   public static void log(String loggerName, String name2, Level level, String message, Throwable th) {
+      getLog().log(loggerName, level, message, th);
+   }
+   
+   public static void format(String loggerName, Level level, String message, Object... objects) {
+      getLog().format(loggerName, level, message, objects);
    }
 
-   public static void format(Throwable th, String loggerName, String bundleId, Level level, String message, Object... objects) {
-      getLog().format(th, loggerName, bundleId, level, message, objects);
+   public static void format(Throwable th, String loggerName, Level level, String message, Object... objects) {
+      getLog().format(th, loggerName, level, message, objects);
    }
 
    public static void registerLoggerListener(ILoggerListener listener) {

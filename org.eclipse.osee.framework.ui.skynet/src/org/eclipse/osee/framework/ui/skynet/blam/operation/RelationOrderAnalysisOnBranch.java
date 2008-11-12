@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,12 +64,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
    private ILoggerListener listener = new ILoggerListener() {
 
       @Override
-      public ILoggerFilter getFilter() {
-         return null;
-      }
-
-      @Override
-      public void log(String loggerName, String bundleId, Level level, String message, Throwable th) {
+      public void log(String loggerName, Level level, String message, Throwable th) {
          if (loggerName.equals(RelationManager.class.getName())) {
             messages.add(message);
             getIds.reset(message);
