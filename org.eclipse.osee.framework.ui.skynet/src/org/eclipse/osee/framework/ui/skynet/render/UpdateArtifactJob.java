@@ -276,6 +276,7 @@ public class UpdateArtifactJob extends UpdateJob {
       boolean delete = false;
       Node node = rootNode.getFirstChild();
       while (node != null) {
+         Node nextNode = node.getNextSibling();
          if (node.getNodeName().endsWith("sub-section")) {
             worked = cleanUpParagraph(node);
          } else {
@@ -284,15 +285,14 @@ public class UpdateArtifactJob extends UpdateJob {
                System.out.println(" " + node.getNodeName());
                System.out.println("    " + content);
             }
-            Node nextNode = node.getNextSibling();
             if (content != null && content.contains("LISTNUM \"listreset\"")) {
                delete = true;
             }
             if (delete) {
                rootNode.removeChild(node);
             }
-            node = nextNode;
          }
+         node = nextNode;
       }
       return worked || delete;
    }

@@ -67,7 +67,7 @@ public class VariableMap {
    }
 
    public boolean getBoolean(String parameterName) throws OseeArgumentException {
-      return getValue(Boolean.class, parameterName);
+      return getValue(Boolean.class, parameterName) != null && getValue(Boolean.class, parameterName);
    }
 
    @SuppressWarnings("unchecked")

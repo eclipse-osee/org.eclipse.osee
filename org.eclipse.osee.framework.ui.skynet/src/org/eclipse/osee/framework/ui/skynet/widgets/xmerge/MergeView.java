@@ -818,7 +818,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
     */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      if (sourceBranch.getBranchId() == branchId || destBranch.getBranchId() == branchId) {
+      if (sourceBranch != null && destBranch != null && (sourceBranch.getBranchId() == branchId || destBranch.getBranchId() == branchId)) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()
