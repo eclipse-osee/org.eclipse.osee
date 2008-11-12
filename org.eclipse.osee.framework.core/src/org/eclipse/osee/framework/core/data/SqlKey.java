@@ -96,9 +96,13 @@ public class SqlKey {
    }
 
    public static String getFormattedSql(String sql, String sqlHints) throws OseeDataStoreException {
+      return String.format(sql, isHintsAllowed() ? sqlHints : "");
+   }
+   
+   public static boolean isHintsAllowed() throws OseeDataStoreException{
       if (areHintsAllowed == null) {
          areHintsAllowed = ConnectionHandler.areHintsSupported();
       }
-      return String.format(sql, areHintsAllowed ? sqlHints : "");
+      return areHintsAllowed;
    }
 }

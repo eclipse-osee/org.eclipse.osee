@@ -53,6 +53,8 @@ public class ArtifactQueryBuilder {
    private final ArtifactLoad loadLevel;
    private boolean count = false;
    private boolean emptyCriteria = false;
+   private boolean firstTable = true;
+   private final boolean tableOrderForward;
 
    /**
     * @param artId
@@ -60,7 +62,7 @@ public class ArtifactQueryBuilder {
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
    public ArtifactQueryBuilder(int artId, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
-      this(null, artId, null, null, null, branch, allowDeleted, loadLevel);
+      this(null, artId, null, null, null, branch, allowDeleted, loadLevel, true);
    }
 
    /**
@@ -71,58 +73,58 @@ public class ArtifactQueryBuilder {
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
    public ArtifactQueryBuilder(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
-      this(artifactIds, 0, null, null, null, branch, allowDeleted, loadLevel);
+      this(artifactIds, 0, null, null, null, branch, allowDeleted, loadLevel, true);
       emptyCriteria = artifactIds.size() == 0;
    }
 
    public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, guidOrHrids, null, null, branch, false, loadLevel);
+      this(null, 0, guidOrHrids, null, null, branch, false, loadLevel, true);
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
    public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
-      this(null, 0, guidOrHrids, null, null, branch, allowDeleted, loadLevel);
+      this(null, 0, guidOrHrids, null, null, branch, allowDeleted, loadLevel, true);
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
    public ArtifactQueryBuilder(String guidOrHrid, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
-      this(null, 0, null, ensureValid(guidOrHrid), null, branch, allowDeleted, loadLevel);
+      this(null, 0, null, ensureValid(guidOrHrid), null, branch, allowDeleted, loadLevel, true);
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel);
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, true);
    }
 
    public ArtifactQueryBuilder(Collection<ArtifactType> artifactTypes, Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, null, null, artifactTypes, branch, false, loadLevel);
+      this(null, 0, null, null, artifactTypes, branch, false, loadLevel, true);
       emptyCriteria = artifactTypes.size() == 0;
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
-      this(null, 0, null, null, null, branch, allowDeleted, loadLevel);
+      this(null, 0, null, null, null, branch, allowDeleted, loadLevel, false);
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
-      this(null, 0, null, null, null, branch, allowDeleted, loadLevel, criteria);
+      this(null, 0, null, null, null, branch, allowDeleted, loadLevel, true, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
-      this(null, 0, null, null, null, branch, false, loadLevel, toArray(criteria));
+      this(null, 0, null, null, null, branch, false, loadLevel, true, toArray(criteria));
       emptyCriteria = criteria.size() == 0;
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, criteria);
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, true, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, toArray(criteria));
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, true, toArray(criteria));
       emptyCriteria = criteria.size() == 0;
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
       this.artifactTypes = artifactTypes;
       this.branch = branch;
       this.criteria = criteria;
@@ -130,7 +132,7 @@ public class ArtifactQueryBuilder {
       this.allowDeleted = allowDeleted;
       this.guidOrHrid = guidOrHrid;
       this.artifactId = artifactId;
-
+      this.tableOrderForward = tableOrderForward;
       if (artifactIds != null && !artifactIds.isEmpty()) {
          if (artifactIds.size() == 1) {
             this.artifactId = artifactIds.iterator().next();
@@ -176,31 +178,46 @@ public class ArtifactQueryBuilder {
 
    private String getArtifactSelectSql() throws OseeCoreException {
       if (count) {
-         sql.append("SELECT count(art1.art_id) FROM ");
+         sql.append("SELECT%s count(%s.art_id) FROM ");
       } else {
-         sql.append("SELECT%s art1.art_id, txd1.transaction_id, txd1.branch_id FROM ");
+         sql.append("SELECT%s %s.art_id, %s.transaction_id, %s.branch_id FROM ");
       }
-      appendAliasedTable("osee_artifact", false);
-      appendAliasedTables("osee_artifact_version", "osee_txs", "osee_tx_details");
-      sql.append("\n");
 
       if (criteria.length > 0) {
          for (AbstractArtifactSearchCriteria x : criteria) {
             x.addToTableSql(this);
          }
       }
+
+      String artAlias, artvAlias, txsAlias, txdAlias;
+      if (tableOrderForward) {
+         artAlias = appendAliasedTable("osee_artifact");
+         artvAlias = appendAliasedTable("osee_artifact_version");
+         txsAlias = appendAliasedTable("osee_txs");
+         txdAlias = appendAliasedTable("osee_tx_details");
+      } else {
+         txdAlias = appendAliasedTable("osee_tx_details");
+         txsAlias = appendAliasedTable("osee_txs");
+         artvAlias = appendAliasedTable("osee_artifact_version");
+         artAlias = appendAliasedTable("osee_artifact");
+      }
+      sql.append("\n");
+
       sql.append(" WHERE ");
 
       if (artifactId != 0) {
-         sql.append("art1.art_id=? AND ");
+         sql.append(artAlias);
+         sql.append("art_id=? AND ");
          addParameter(artifactId);
       }
 
       if (artifactIds != null) {
-         sql.append("art1.art_id IN (" + Collections.toString(",", artifactIds) + ") AND ");
+         sql.append(artAlias);
+         sql.append(".art_id IN (" + Collections.toString(",", artifactIds) + ") AND ");
       }
       if (artifactTypes != null) {
-         sql.append("art1.art_type_id");
+         sql.append(artAlias);
+         sql.append(".art_type_id");
          if (artifactTypes.size() == 1) {
             sql.append("=? AND ");
             addParameter(artifactTypes.iterator().next().getArtTypeId());
@@ -217,18 +234,22 @@ public class ArtifactQueryBuilder {
 
       if (guidOrHrid != null) {
          if (GUID.isValid(guidOrHrid)) {
-            sql.append("art1.guid=? AND ");
+            sql.append(artAlias);
+            sql.append(".guid=? AND ");
          } else {
-            sql.append("art1.human_readable_id=? AND ");
+            sql.append(artAlias);
+            sql.append(".human_readable_id=? AND ");
          }
          addParameter(guidOrHrid);
       }
 
       if (guids != null && guids.size() > 0) {
-         sql.append("art1.guid IN ('" + Collections.toString("','", guids) + "') AND ");
+         sql.append(artAlias);
+         sql.append(".guid IN ('" + Collections.toString("','", guids) + "') AND ");
       }
       if (hrids != null && hrids.size() > 0) {
-         sql.append("art1.human_readable_id IN ('" + Collections.toString("','", hrids) + "') AND ");
+         sql.append(artAlias);
+         sql.append(".human_readable_id IN ('" + Collections.toString("','", hrids) + "') AND ");
       }
 
       sql.append("\n");
@@ -246,10 +267,21 @@ public class ArtifactQueryBuilder {
             sql.append("\n");
          }
          criteria[criteria.length - 1].addJoinArtId(this, false);
-         sql.append("=art1.art_id AND ");
+         sql.append("=");
+         sql.append(artAlias);
+         sql.append(".art_id AND ");
       }
 
-      sql.append("art1.art_id=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current");
+      sql.append(artAlias);
+      sql.append(".art_id=");
+      sql.append(artvAlias);
+      sql.append(".art_id AND ");
+      sql.append(artvAlias);
+      sql.append(".gamma_id=");
+      sql.append(txsAlias);
+      sql.append(".gamma_id AND ");
+      sql.append(txsAlias);
+      sql.append(".tx_current");
 
       if (allowDeleted) {
          sql.append(" IN (");
@@ -262,11 +294,26 @@ public class ArtifactQueryBuilder {
          sql.append(TxChange.CURRENT.getValue());
       }
 
-      sql.append(" AND txs1.transaction_id=txd1.transaction_id");
-      sql.append(" AND txd1.branch_id=?");
+      sql.append(" AND ");
+      sql.append(txsAlias);
+      sql.append(".transaction_id=");
+      sql.append(txdAlias);
+      sql.append(".transaction_id");
+      sql.append(" AND ");
+      sql.append(txdAlias);
+      sql.append(".branch_id=?");
       addParameter(branch.getBranchId());
 
-      return SqlKey.getFormattedSql(sql.toString(), ClientSessionManager.getSQL(SqlKey.QUERY_BUILDER_HINT));
+      List<String> paramList = new ArrayList<String>();
+      paramList.add(SqlKey.isHintsAllowed() ? ClientSessionManager.getSQL(SqlKey.QUERY_BUILDER_HINT) : "");
+      if (count) {
+         paramList.add(artAlias);
+      } else {
+         paramList.add(artAlias);
+         paramList.add(txdAlias);
+         paramList.add(txdAlias);
+      }
+      return String.format(sql.toString(), paramList.toArray());
    }
 
    public void append(String sqlSnippet) {
@@ -299,8 +346,10 @@ public class ArtifactQueryBuilder {
       addParameter(branch.getBranchId());
    }
 
-   private String appendAliasedTable(String table, boolean comma) {
-      if (comma) {
+   public String appendAliasedTable(String table) {
+      if (firstTable) {
+         firstTable = false;
+      } else {
          sql.append(',');
       }
       sql.append(table);
@@ -310,13 +359,9 @@ public class ArtifactQueryBuilder {
       return alias;
    }
 
-   public String appendAliasedTable(String table) {
-      return appendAliasedTable(table, true);
-   }
-
    private void appendAliasedTables(String... tables) {
       for (String table : tables) {
-         appendAliasedTable(table, true);
+         appendAliasedTable(table);
       }
    }
 

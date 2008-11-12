@@ -48,8 +48,15 @@ public class WorkItemDefinitionFactory {
          }
 
          // This load is faster than loading each by artifact type
-         for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType(
-               WorkItemAttributes.WORK_ID.getAttributeTypeName(), BranchManager.getCommonBranch())) {
+         
+         
+         
+         Collection<String> artifactTypeNames = new ArrayList<String>(4);
+         artifactTypeNames.add(WorkRuleDefinition.ARTIFACT_NAME);
+         artifactTypeNames.add(WorkPageDefinition.ARTIFACT_NAME);
+         artifactTypeNames.add(WorkFlowDefinition.ARTIFACT_NAME);
+         artifactTypeNames.add(WorkWidgetDefinition.ARTIFACT_NAME);
+         for (Artifact art : ArtifactQuery.getArtifactsFromTypes(artifactTypeNames , BranchManager.getCommonBranch())) {
             if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
             } else if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
