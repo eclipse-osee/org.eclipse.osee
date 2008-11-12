@@ -57,6 +57,7 @@ public class SqlKey {
 
    
    public static final String ORDERED_HINT = " /*+ ordered */";
+   public static final String ORDERED_HINT_AND_TXS_INDEX = " /*+ ordered INDEX(txs1) */";
 
    private SqlKey() {
    }
@@ -64,33 +65,33 @@ public class SqlKey {
    public static Properties getSqlProperties() throws OseeDataStoreException {
       Properties sqlProperties = new Properties();
       sqlProperties.put(SqlKey.SELECT_HISTORICAL_ARTIFACTS,
-            getFormattedSql(SqlKey.SELECT_HISTORICAL_ARTIFACTS_DEFINITION));
+            getFormattedSql(SqlKey.SELECT_HISTORICAL_ARTIFACTS_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
       
       sqlProperties.put(SqlKey.SELECT_HISTORICAL_ATTRIBUTES,
-            getFormattedSql(SqlKey.SELECT_HISTORICAL_ATTRIBUTES_DEFINITION));
+            getFormattedSql(SqlKey.SELECT_HISTORICAL_ATTRIBUTES_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
       
       sqlProperties.put(SqlKey.SELECT_CURRENT_ATTRIBUTES,
-            getFormattedSql(SqlKey.SELECT_CURRENT_ATTRIBUTES_DEFINITION));
+            getFormattedSql(SqlKey.SELECT_CURRENT_ATTRIBUTES_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
       
       sqlProperties.put(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED,
-            getFormattedSql(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED_DEFINITION));
+            getFormattedSql(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
       
       sqlProperties.put(SqlKey.SELECT_RELATIONS,
-            getFormattedSql(SqlKey.SELECT_RELATIONS_DEFINITION));
+            getFormattedSql(SqlKey.SELECT_RELATIONS_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
       
       sqlProperties.put(SqlKey.SELECT_CURRENT_ARTIFACTS,
-            getFormattedSql(SqlKey.SELECT_CURRENT_ARTIFACTS_DEFINITION));
+            getFormattedSql(SqlKey.SELECT_CURRENT_ARTIFACTS_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
       
       sqlProperties.put(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED,
-            getFormattedSql(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED_DEFINITION));
+            getFormattedSql(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED_DEFINITION, ORDERED_HINT_AND_TXS_INDEX));
       
       return sqlProperties;
    }
 
-   private static String getFormattedSql(String sql) throws OseeDataStoreException {
+   public static String getFormattedSql(String sql, String sqlHints) throws OseeDataStoreException {
       if (areHintsAllowed == null) {
          areHintsAllowed = ConnectionHandler.areHintsSupported();
       }
-      return String.format(sql, areHintsAllowed ? SqlKey.ORDERED_HINT : "");
+      return String.format(sql, areHintsAllowed ? sqlHints : "");
    }
 }
