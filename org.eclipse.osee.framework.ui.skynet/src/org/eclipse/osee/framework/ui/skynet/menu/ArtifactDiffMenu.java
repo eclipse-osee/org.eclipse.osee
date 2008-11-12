@@ -107,8 +107,8 @@ public class ArtifactDiffMenu {
 
    private static void processSelectedArtifacts(String option, Viewer viewer, DiffTypes type) throws Exception {
       IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-      WordArtifact firstArtifact = null;
-      WordArtifact secondArtifact = null;
+      WordArtifact newerArtifact = null;
+      WordArtifact baselineArtifact = null;
 
       if (selection.size() == 2) {
          Object[] selections = selection.toArray();
@@ -116,17 +116,21 @@ public class ArtifactDiffMenu {
          secondSelection = selections[1];
 
          if (firstSelection instanceof TransactionData && secondSelection instanceof TransactionData) {
+
             TransactionData firstTransactionData = (TransactionData) firstSelection;
             TransactionData secondTransactionData = (TransactionData) secondSelection;
-
-            firstArtifact =
+            if (firstTransactionData.getTransactionId().getTransactionNumber() < secondTransactionData.getTransactionId().getTransactionNumber()) {
+               firstTransactionData = (TransactionData) secondSelection;
+               secondTransactionData = (TransactionData) firstSelection;
+            }
+            newerArtifact =
                   (WordArtifact) ArtifactPersistenceManager.getInstance().getArtifactFromId(
                         firstTransactionData.getAssociatedArtId(), firstTransactionData.getTransactionId());
-            secondArtifact =
+            baselineArtifact =
                   (WordArtifact) ArtifactPersistenceManager.getInstance().getArtifactFromId(
                         secondTransactionData.getAssociatedArtId(), secondTransactionData.getTransactionId());
          }
       }
-      RendererManager.diffInJob(secondArtifact, firstArtifact);
+      RendererManager.diffInJob(baselineArtifact, newerArtifact);
    }
 }
