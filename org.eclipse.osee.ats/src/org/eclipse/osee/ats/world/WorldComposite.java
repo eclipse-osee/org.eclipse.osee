@@ -433,8 +433,8 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       } else if (selectionMetricsAction.isChecked()) {
          SMAMetrics sMet = new SMAMetrics(getXViewer().getSelectedSMAArtifacts(), null);
          str = sMet.toString();
-      } else
-         extraInfoLabel.setText(str);
+      }
+      extraInfoLabel.setText(str);
       extraInfoLabel.getParent().layout();
    }
 

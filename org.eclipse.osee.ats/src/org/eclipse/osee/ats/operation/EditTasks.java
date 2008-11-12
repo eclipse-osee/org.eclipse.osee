@@ -189,11 +189,13 @@ public class EditTasks extends AbstractBlam {
             workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
          } else if (groups.size() > 0) {
             Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
-            for (Artifact art : groups) {
-               if (art instanceof TaskArtifact) {
-                  taskArts.add((TaskArtifact) art);
-               } else if (art instanceof StateMachineArtifact) {
-                  taskArts.addAll(((StateMachineArtifact) art).getSmaMgr().getTaskMgr().getTaskArtifacts());
+            for (Artifact groupArt : groups) {
+               for (Artifact art : groupArt.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
+                  if (art instanceof TaskArtifact) {
+                     taskArts.add((TaskArtifact) art);
+                  } else if (art instanceof StateMachineArtifact) {
+                     taskArts.addAll(((StateMachineArtifact) art).getSmaMgr().getTaskMgr().getTaskArtifacts());
+                  }
                }
             }
             return filterByCompletedAndSelectedUser(taskArts);
@@ -282,7 +284,7 @@ public class EditTasks extends AbstractBlam {
    }
 
    private XHyperlabelTeamDefinitionSelection teamCombo = null;
-   private final XHyperlabelGroupSelection groupWidget = null;
+   private XHyperlabelGroupSelection groupWidget = null;
    private XCombo versionCombo = null;
 
    /* (non-Javadoc)
@@ -291,6 +293,9 @@ public class EditTasks extends AbstractBlam {
    @Override
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      if (widget.getLabel().equals("Group(s)")) {
+         groupWidget = (XHyperlabelGroupSelection) widget;
+      }
       if (widget.getLabel().equals("Team(s)")) {
          teamCombo = (XHyperlabelTeamDefinitionSelection) widget;
          teamCombo.addXModifiedListener(new XModifiedListener() {
