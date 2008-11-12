@@ -231,7 +231,7 @@ public abstract class Conflict implements IAdaptable {
 
    public void setStatus(Status status) throws OseeCoreException {
       if (this.status.equals(status)) return;
-      ConflictStatusManager.setStatus(status, sourceGamma, destGamma);
+      ConflictStatusManager.setStatus(status, sourceGamma, destGamma, mergeBranch.getBranchId());
       this.status = status;
    }
 

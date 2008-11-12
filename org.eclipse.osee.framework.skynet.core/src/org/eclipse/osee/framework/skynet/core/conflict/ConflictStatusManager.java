@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict.Status;
 public class ConflictStatusManager {
 
    private static final String MERGE_UPDATE_STATUS =
-         "UPDATE osee_conflict SET status = ? WHERE source_gamma_id = ? AND dest_gamma_id = ?";
+         "UPDATE osee_conflict SET status = ? WHERE source_gamma_id = ? AND dest_gamma_id = ? AND merge_branch_id = ?";
    private static final String MERGE_ATTRIBUTE_STATUS =
          "SELECT source_gamma_id, dest_gamma_id, status  FROM osee_conflict WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String MERGE_UPDATE_GAMMAS =
@@ -33,11 +33,12 @@ public class ConflictStatusManager {
    private static final String MERGE_INSERT_STATUS =
          "INSERT INTO osee_conflict ( conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
 
-   public static void setStatus(Status status, int sourceGamma, int destGamma) throws OseeDataStoreException {
+   public static void setStatus(Status status, int sourceGamma, int destGamma, int mergeBranchId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       //Gammas should be up to date so you can use them to get entry just update the status field.
       try {
-         ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, status.getValue(), sourceGamma, destGamma);
+         ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, status.getValue(), sourceGamma, destGamma,
+               mergeBranchId);
       } finally {
          chStmt.close();
       }
