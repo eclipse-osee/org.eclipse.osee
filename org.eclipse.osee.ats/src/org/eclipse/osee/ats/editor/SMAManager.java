@@ -90,7 +90,7 @@ public class SMAManager {
    private SMAEditor editor;
    private final ATSLog atsLog;
    private final ATSNote atsNote;
-   private final AtsStateItems stateItems;
+   private static final AtsStateItems stateItems = new AtsStateItems();
    private boolean inTransition = false;
 
    public SMAManager(StateMachineArtifact sma, SMAEditor editor) {
@@ -102,7 +102,6 @@ public class SMAManager {
       taskMgr = new TaskManager(this);
       branchMgr = new AtsBranchManager(this);
       deadlineMgr = new DeadlineManager(this);
-      stateItems = new AtsStateItems();
       atsLog = new ATSLog(sma);
       atsNote = new ATSNote(sma);
    }

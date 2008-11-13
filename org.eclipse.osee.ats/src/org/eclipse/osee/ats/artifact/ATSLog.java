@@ -17,12 +17,15 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -104,6 +107,23 @@ public class ATSLog {
          OSEELog.logException(AtsPlugin.class, "Error Parsing ATS Log for " + artifact.getHumanReadableId(), ex, true);
       } catch (ParserConfigurationException ex) {
          OSEELog.logException(AtsPlugin.class, "Error Parsing ATS Log for " + artifact.getHumanReadableId(), ex, true);
+      }
+      return logItems;
+   }
+
+   private static Pattern LOG_ITEM_PATTERN = Pattern.compile("<" + LOG_ITEM_TAG + ">(.*)</" + LOG_ITEM_TAG + ">");
+
+   public List<LogItem> getLogItemsRegEx() throws OseeCoreException {
+      List<LogItem> logItems = new ArrayList<LogItem>();
+      String xml = artifact.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
+      if (!xml.equals("")) {
+         Matcher m = LOG_ITEM_PATTERN.matcher(xml);
+         while (m.find()) {
+            LogItem item =
+                  new LogItem(AXml.getTagData(m.group(), "type"), AXml.getTagData(m.group(), "date"), AXml.getTagData(
+                        m.group(), "userId"), AXml.getTagData(m.group(), "state"), AXml.getTagData(m.group(), "msg"));
+            logItems.add(item);
+         }
       }
       return logItems;
    }
