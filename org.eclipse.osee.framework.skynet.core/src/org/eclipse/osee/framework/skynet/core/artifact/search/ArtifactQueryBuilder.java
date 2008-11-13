@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SqlKey;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -357,12 +358,6 @@ public class ArtifactQueryBuilder {
       String alias = nextAliases.get(table).getNextAlias();
       sql.append(alias);
       return alias;
-   }
-
-   private void appendAliasedTables(String... tables) {
-      for (String table : tables) {
-         appendAliasedTable(table);
-      }
    }
 
    private class NextAlias {
