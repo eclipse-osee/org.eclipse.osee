@@ -51,4 +51,8 @@ public enum SupportedDatabase {
          connection.close();
       }
    }
+
+   public static boolean areHintsSupported() throws OseeDataStoreException {
+      return getDatabaseType() == oracle;
+   }
 }
