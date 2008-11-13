@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.CHANGE;
+import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.ARTIFACT_DELETED;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.MERGED;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,11 +25,11 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;

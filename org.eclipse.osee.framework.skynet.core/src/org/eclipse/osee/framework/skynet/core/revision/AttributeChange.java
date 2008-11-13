@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+
 import java.io.InputStream;
+
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
 
 /**

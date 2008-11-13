@@ -11,7 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -43,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;

@@ -12,11 +12,11 @@
 package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
 
 import junit.framework.TestCase;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.change.TxChange;
 
 /**
  * @author Theron Virgin

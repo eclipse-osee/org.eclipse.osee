@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
 
 /**

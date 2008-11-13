@@ -9,6 +9,7 @@ Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.osee.framework.core.client,
+ org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.db.connection,

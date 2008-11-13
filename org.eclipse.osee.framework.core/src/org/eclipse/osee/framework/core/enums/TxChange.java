@@ -9,7 +9,8 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.change;
+package org.eclipse.osee.framework.core.enums;
+
 
 /**
  * @author Ryan D. Brooks
