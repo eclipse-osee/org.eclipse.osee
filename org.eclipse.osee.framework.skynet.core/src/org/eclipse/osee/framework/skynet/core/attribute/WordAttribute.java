@@ -47,4 +47,12 @@ public class WordAttribute extends StringAttribute {
       if (temp.contains("<w:delText>") || temp.contains("w:type=\"Word.Insertion\"")) return true;
       return false;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
+    */
+   @Override
+   public String getDisplayableString() throws OseeCoreException {
+      return WordUtil.textOnly(getValue());
+   }
 }
