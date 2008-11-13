@@ -78,7 +78,7 @@ public abstract class UserSearchItem extends WorldSearchItem {
       UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell());
       int result = ld.open();
       if (result == 0) {
-         selectedUser = (User) ld.getSelection();
+         selectedUser = ld.getSelection();
          return;
       }
       cancelled = true;
@@ -90,4 +90,5 @@ public abstract class UserSearchItem extends WorldSearchItem {
    public void setSelectedUser(User selectedUser) {
       this.selectedUser = selectedUser;
    }
+
 }

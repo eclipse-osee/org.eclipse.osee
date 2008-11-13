@@ -61,6 +61,14 @@ public class WorldEditorInput implements IEditorInput {
 
    @Override
    public boolean equals(Object obj) {
+      if (getSearchItem() == null) return false;
+      if (obj instanceof WorldEditorInput) {
+         WorldEditorInput input = (WorldEditorInput) obj;
+         if (input.getSearchItem() == null) {
+            return false;
+         }
+         //         return input.getSearchItem().equals(getSearchItem());
+      }
       return false;
    }
 

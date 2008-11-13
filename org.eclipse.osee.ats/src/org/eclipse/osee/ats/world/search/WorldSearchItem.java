@@ -141,4 +141,5 @@ public abstract class WorldSearchItem {
    public String toString() {
       return getName();
    }
+
 }
