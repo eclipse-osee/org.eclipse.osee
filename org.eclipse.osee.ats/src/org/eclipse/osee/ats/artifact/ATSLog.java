@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.artifact;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -19,13 +18,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -35,8 +32,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * @author Donald G. Dunne
@@ -87,42 +82,30 @@ public class ATSLog {
       return sb.toString();
    }
 
+   private static Pattern LOG_ITEM_PATTERN =
+         Pattern.compile("<Item date=\"(.*?)\" msg=\"(.*?)\" state=\"(.*?)\" type=\"(.*?)\" userId=\"(.*?)\"/>");
+
+   private static Pattern LOG_ITEM_TAG_PATTERN = Pattern.compile("<Item ");
+
    public List<LogItem> getLogItems() throws OseeCoreException {
-      List<LogItem> logItems = new ArrayList<LogItem>();
-      try {
-         String xml = artifact.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
-         if (!xml.equals("")) {
-            NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
-            for (int i = 0; i < nodes.getLength(); i++) {
-               Element element = (Element) nodes.item(i);
-               LogItem item =
-                     new LogItem(element.getAttribute("type"), element.getAttribute("date"),
-                           element.getAttribute("userId"), element.getAttribute("state"), element.getAttribute("msg"));
-               logItems.add(item);
-            }
-         }
-      } catch (IOException ex) {
-         OSEELog.logException(AtsPlugin.class, "Error Parsing ATS Log for " + artifact.getHumanReadableId(), ex, true);
-      } catch (SAXException ex) {
-         OSEELog.logException(AtsPlugin.class, "Error Parsing ATS Log for " + artifact.getHumanReadableId(), ex, true);
-      } catch (ParserConfigurationException ex) {
-         OSEELog.logException(AtsPlugin.class, "Error Parsing ATS Log for " + artifact.getHumanReadableId(), ex, true);
-      }
-      return logItems;
-   }
-
-   private static Pattern LOG_ITEM_PATTERN = Pattern.compile("<" + LOG_ITEM_TAG + ">(.*)</" + LOG_ITEM_TAG + ">");
-
-   public List<LogItem> getLogItemsRegEx() throws OseeCoreException {
+      //      System.out.println("getLogItems " + artifact.getHumanReadableId());
       List<LogItem> logItems = new ArrayList<LogItem>();
       String xml = artifact.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
       if (!xml.equals("")) {
          Matcher m = LOG_ITEM_PATTERN.matcher(xml);
          while (m.find()) {
-            LogItem item =
-                  new LogItem(AXml.getTagData(m.group(), "type"), AXml.getTagData(m.group(), "date"), AXml.getTagData(
-                        m.group(), "userId"), AXml.getTagData(m.group(), "state"), AXml.getTagData(m.group(), "msg"));
+            LogItem item = new LogItem(m.group(4), m.group(1), m.group(5), m.group(3), m.group(2));
             logItems.add(item);
+         }
+
+         Matcher m2 = LOG_ITEM_TAG_PATTERN.matcher(xml);
+         int openTagsFound = 0;
+         while (m2.find())
+            openTagsFound++;
+         if (logItems.size() != openTagsFound) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
+                  "ATS Log: open tags found %d doesn't match log items parsed %d for %s", openTagsFound,
+                  logItems.size(), artifact.getHumanReadableId()));
          }
       }
       return logItems;
