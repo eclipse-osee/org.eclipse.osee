@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -151,6 +152,7 @@ class CommitJob extends Job {
       private boolean success = true;
       private int fromBranchId = -1;
       private List<Object[]> relLinks = new ArrayList<Object[]>();
+      private long startTime;
 
       private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch, ConflictManagerExternal conflictManager) throws OseeCoreException {
          this.toBranch = toBranch;
@@ -170,7 +172,7 @@ class CommitJob extends Job {
          User userToBlame = UserManager.getUser();
 
          long time = System.currentTimeMillis();
-         long totalTime = time;
+         startTime = System.currentTimeMillis();
          int count = 0;
          //Load new and deleted artifact so that they can be compressed out of the commit transaction
 
@@ -360,8 +362,22 @@ class CommitJob extends Job {
             ConnectionHandler.runBatchUpdate(connection, RESET_DELETED_NEW, relLinks);
          }
 
-         time = System.currentTimeMillis();
-         if (insertCount > 0) {
+         if (insertCount == 0) {
+            throw new OseeStateException(" A branch can not be commited without any changes made.");
+         }
+
+         success = true;
+         monitor.done();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxFinally()
+       */
+      @Override
+      protected void handleTxFinally() throws OseeCoreException {
+         if (success) {
+            OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, fromBranchId);
+            long time = System.currentTimeMillis();
             Object[] dataList =
                   new Object[] {toBranch.getBranchId(), newTransactionNumber, toBranch.getBranchId(),
                         newTransactionNumber};
@@ -376,24 +392,9 @@ class CommitJob extends Job {
                fromBranch.archive();
             }
 
-         } else {
-            throw new IllegalStateException(" A branch can not be commited without any changes made.");
-         }
-
-         if (DEBUG) {
-            System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(totalTime)));
-         }
-         success = true;
-         monitor.done();
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxFinally()
-       */
-      @Override
-      protected void handleTxFinally() throws OseeCoreException {
-         if (success) {
-            OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, fromBranchId);
+            if (DEBUG) {
+               System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(startTime)));
+            }
          }
       }
 
