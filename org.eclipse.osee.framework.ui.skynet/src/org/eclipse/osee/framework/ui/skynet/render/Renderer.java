@@ -204,4 +204,19 @@ public abstract class Renderer implements IRenderer {
    public String getStringOption(String key) throws OseeArgumentException {
       return options == null ? null : options.getString(key);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getBooleanOption(java.lang.String)
+    */
+   @Override
+   public boolean getBooleanOption(String key) throws OseeArgumentException {
+      if (options != null) {
+         Boolean option = options.getBoolean(key);
+         if (option != null) {
+            return option;
+         }
+      }
+      return false;
+   }
+
 }

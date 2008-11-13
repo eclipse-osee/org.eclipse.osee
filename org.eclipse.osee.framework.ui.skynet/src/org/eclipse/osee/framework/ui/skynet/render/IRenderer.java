@@ -71,6 +71,8 @@ public interface IRenderer {
 
    public abstract String getStringOption(String key) throws OseeArgumentException;
 
+   public abstract boolean getBooleanOption(String key) throws OseeArgumentException;
+
    public abstract VariableMap getOptions();
 
    public abstract IRenderer newInstance() throws OseeCoreException;
