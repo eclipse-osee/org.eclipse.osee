@@ -17,9 +17,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -33,9 +30,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
-import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -126,23 +121,20 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          return;
       }
 
-      if (lastSearchItem instanceof MyWorldSearchItem && ((MyWorldSearchItem) lastSearchItem).getSearchUser().isMe()) {
-         String nameStr = getWhoAmI();
-         if (AtsPlugin.isAtsAdmin()) nameStr += " - Admin";
-         if (AtsPlugin.isAtsDisableEmail()) nameStr += " - Email Disabled";
-         if (AtsPlugin.isAtsAlwaysEmailMe()) nameStr += " - AtsAlwaysEmailMe";
-         if (!nameStr.equals("")) {
-            Label label = new Label(headerComp, SWT.NONE);
-            label.setText(nameStr);
-            if (AtsPlugin.isAtsAdmin()) {
-               label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            } else {
-               label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-            }
-            gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-            label.setLayoutData(gd);
+      String nameStr = getWhoAmI();
+      if (AtsPlugin.isAtsAdmin()) nameStr += " - Admin";
+      if (AtsPlugin.isAtsDisableEmail()) nameStr += " - Email Disabled";
+      if (AtsPlugin.isAtsAlwaysEmailMe()) nameStr += " - AtsAlwaysEmailMe";
+      if (!nameStr.equals("")) {
+         Label label = new Label(headerComp, SWT.NONE);
+         label.setText(nameStr);
+         if (AtsPlugin.isAtsAdmin()) {
+            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         } else {
+            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
          }
-
+         gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
+         label.setLayoutData(gd);
       }
 
       extraInfoLabel = new Label(headerComp, SWT.NONE);
@@ -450,19 +442,6 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    }
 
    protected void createActions() {
-      Action myWorldAction = new Action("My World") {
-
-         @Override
-         public void run() {
-            try {
-               loadTable(AtsNavigateViewItems.getInstance().getMyWorldSearchItem(), TableLoadOption.None);
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
-            }
-         }
-      };
-      myWorldAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("MyWorld.gif"));
-      myWorldAction.setToolTipText("My World");
 
       Action newWorldEditor = new Action("Open in ATS World Editor") {
 
@@ -607,38 +586,14 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       };
       toTask.setToolTipText("Re-display as Tasks");
 
-      if (viewSite != null) {
-         IToolBarManager toolbarManager = viewSite.getActionBars().getToolBarManager();
-         toolbarManager.add(myWorldAction);
-         toolbarManager.add(new NewAction());
-         toolbarManager.add(expandAllAction);
-         toolbarManager.add(newWorldEditor);
-         toolbarManager.add(newWorldEditorSelected);
-         toolbarManager.add(refreshAction);
-         getXViewer().addCustomizeToViewToolbar(toolbarManager);
+      actionToToolItem(toolBar, new NewAction());
+      actionToToolItem(toolBar, expandAllAction);
+      actionToToolItem(toolBar, newWorldEditor);
+      actionToToolItem(toolBar, newWorldEditorSelected);
+      actionToToolItem(toolBar, refreshAction);
+      actionToToolItem(toolBar, worldXViewer.getCustomizeAction());
 
-         IMenuManager manager = viewSite.getActionBars().getMenuManager();
-         manager.add(filterCompletedAction);
-         manager.add(new Separator());
-         manager.add(releaseMetricsAction);
-         manager.add(selectionMetricsAction);
-         manager.add(new Separator());
-         manager.add(toAction);
-         manager.add(toWorkFlow);
-         manager.add(toTask);
-         if (AtsPlugin.isAtsAdmin()) {
-            manager.add(new Separator());
-         }
-      } else {
-
-         actionToToolItem(toolBar, expandAllAction);
-         actionToToolItem(toolBar, newWorldEditor);
-         actionToToolItem(toolBar, newWorldEditorSelected);
-         actionToToolItem(toolBar, refreshAction);
-         actionToToolItem(toolBar, worldXViewer.getCustomizeAction());
-
-         createToolBarPulldown(toolBar, toolBar.getParent());
-      }
+      createToolBarPulldown(toolBar, toolBar.getParent());
    }
 
    public void createToolBarPulldown(final ToolBar toolBar, Composite composite) {
