@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,18 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  */
 class ArtifactSnapshotFactory {
 
+   private final Matcher IMAGE_SRC_MATCHER;
+   private final String HTTP_IMAGE_REQUEST_TAG;
+
    private HttpImageRequest httpImageRequest;
    private HttpImageProcessor httpImageProcessor;
 
    protected ArtifactSnapshotFactory() {
       this.httpImageRequest = HttpImageRequest.getInstance();
       this.httpImageProcessor = HttpImageProcessor.getInstance();
+
+      HTTP_IMAGE_REQUEST_TAG = httpImageRequest.getRequestType();
+      IMAGE_SRC_MATCHER = Pattern.compile("src=\"(" + HTTP_IMAGE_REQUEST_TAG.replace(".", "\\.") + ")").matcher("");
    }
 
    /**
@@ -83,43 +90,86 @@ class ArtifactSnapshotFactory {
     * @return modified pre-rendered artifact data
     */
    protected String toAbsoluteUrls(String original) {
+      System.err.println(original);
       String toReturn = "";
       if (Strings.isValid(original) != true) {
          toReturn = "<HTML><BODY><H3>Empty Contents</H3></BODY></HTML>";
       } else {
+         String serverPrefix = HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
          ChangeSet changeSet = new ChangeSet(original);
-         String tag = httpImageRequest.getRequestType();
-         Pattern pattern = Pattern.compile("src=\"(" + tag.replace(".", "\\.") + ")");
-         Matcher matcher = pattern.matcher(original);
-         while (matcher.find()) {
-            if (matcher.groupCount() > 0) {
-               String entry = matcher.group(1);
-               if (Strings.isValid(entry)) {
-                  try {
-                     String prefix = HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
-                     String result = String.format("src=\"%s%s", prefix, tag);
-                     changeSet.replace(matcher.start(), matcher.end(), result);
-                  } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-                           String.format("Error adding http server address."), ex);
+         convertImageLinks(serverPrefix, original, changeSet);
+         convertArtsLinks(serverPrefix, original, changeSet);
+         toReturn = changeSet.toString();
+      }
+      System.out.println(toReturn);
+      return toReturn;
+   }
+
+   private void convertArtsLinks(String serverPrefix, String original, ChangeSet changeSet) {
+      Pattern pattern = Pattern.compile("href=\"(.+?)Define\\?guid=(.*?)\"");
+      Matcher matcher = pattern.matcher(original);
+      while (matcher.find()) {
+         try {
+            changeSet.replace(matcher.start(1), matcher.end(1), serverPrefix);
+            String encodedGuid = matcher.group(2);
+            if (Strings.isValid(encodedGuid)) {
+               try {
+                  if (isEncodingRequired(encodedGuid)) {
+                     encodedGuid = URLEncoder.encode(encodedGuid, "UTF-8");
+                     changeSet.replace(matcher.start(2), matcher.end(2), encodedGuid);
                   }
+
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Error encoding url link guid."), ex);
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Error adding http server address."), ex);
+         }
+      }
+   }
+
+   private void convertImageLinks(String serverPrefix, String original, ChangeSet changeSet) {
+      IMAGE_SRC_MATCHER.reset(original);
+      while (IMAGE_SRC_MATCHER.find()) {
+         if (IMAGE_SRC_MATCHER.groupCount() > 0) {
+            String entry = IMAGE_SRC_MATCHER.group(1);
+            if (Strings.isValid(entry)) {
+               try {
+                  String result = String.format("src=\"%s%s", serverPrefix, HTTP_IMAGE_REQUEST_TAG);
+                  changeSet.replace(IMAGE_SRC_MATCHER.start(), IMAGE_SRC_MATCHER.end(), result);
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Error adding http server address."),
+                        ex);
                }
             }
          }
+      }
+   }
 
-         pattern = Pattern.compile("href=\"(.*)?Define?");
-         matcher = pattern.matcher(original);
-         while (matcher.find()) {
-            try {
-               String prefix = HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
-               changeSet.replace(matcher.start(1), matcher.end(1), prefix);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Error adding http server address."), ex);
+   private static boolean isEncodingRequired(String parameter) {
+      boolean result = false;
+      if (parameter.contains("+") || parameter.contains(" ")) {
+         result = true;
+      } else {
+         for (int index = 0; index < parameter.length(); index++) {
+            char c = parameter.charAt(index);
+            if (c == '%') {
+               if (index + 2 < parameter.length()) {
+                  char ch1 = parameter.charAt(index + 1);
+                  char ch2 = parameter.charAt(index + 2);
+                  if (!Character.isLetterOrDigit(ch1) || !Character.isLetterOrDigit(ch2)) {
+                     result = true;
+                     break;
+                  }
+               } else {
+                  result = true;
+                  break;
+               }
             }
          }
-         toReturn = changeSet.applyChangesToSelf().toString();
       }
-      return toReturn;
+      return result;
    }
 
    /**

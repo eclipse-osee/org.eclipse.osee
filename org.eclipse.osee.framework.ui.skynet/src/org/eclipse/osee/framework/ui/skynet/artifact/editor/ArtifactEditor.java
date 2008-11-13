@@ -367,30 +367,28 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          }
       });
 
-      if (OseeProperties.isDeveloper()) {
-         ToolItem snapshotSave = new ToolItem(toolBar, SWT.NONE);
-         snapshotSave.setImage(SkynetGuiPlugin.getInstance().getImage("snapshotSave.gif"));
-         snapshotSave.setToolTipText("DEVELOPERS ONLY: Take a Snapshot of the preview");
-         snapshotSave.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent event) {
-               final String oldUrl = previewComposite.getUrl();
-               if (oldUrl.contains("GET.ARTIFACT") && !oldUrl.contains("&force=true")) {
-                  previewComposite.setUrl(oldUrl + "&force=true");
-                  Job job = new Job("Update Preview") {
-                     @Override
-                     protected IStatus run(IProgressMonitor monitor) {
-                        renderPreviewPage();
-                        return Status.OK_STATUS;
-                     }
-                  };
-                  job.setUser(false);
-                  job.setPriority(Job.SHORT);
-                  job.schedule(2000);
-               }
+      ToolItem snapshotSave = new ToolItem(toolBar, SWT.NONE);
+      snapshotSave.setImage(SkynetGuiPlugin.getInstance().getImage("snapshotSave.gif"));
+      snapshotSave.setToolTipText("Store a snapshot of the preview by rendering the artifact and storing a copy for others to use in their preview window.");
+      snapshotSave.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            final String oldUrl = previewComposite.getUrl();
+            if (oldUrl.contains("GET.ARTIFACT") && !oldUrl.contains("&force=true")) {
+               previewComposite.setUrl(oldUrl + "&force=true");
+               Job job = new Job("Update Preview") {
+                  @Override
+                  protected IStatus run(IProgressMonitor monitor) {
+                     renderPreviewPage();
+                     return Status.OK_STATUS;
+                  }
+               };
+               job.setUser(false);
+               job.setPriority(Job.SHORT);
+               job.schedule(2000);
             }
-         });
-      }
+         }
+      });
       return toolBar;
 
    }
