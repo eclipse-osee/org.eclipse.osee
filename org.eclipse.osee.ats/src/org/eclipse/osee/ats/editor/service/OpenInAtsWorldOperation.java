@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.world.WorldView;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -37,10 +37,10 @@ public class OpenInAtsWorldOperation extends WorkPageService {
       try {
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
             ActionArtifact actionArt = ((TeamWorkFlowArtifact) smaMgr.getSma()).getParentActionArtifact();
-            WorldView.loadIt("Action " + actionArt.getHumanReadableId(), Arrays.asList(actionArt));
+            WorldEditor.open("Action " + actionArt.getHumanReadableId(), Arrays.asList(actionArt));
             return;
          } else if (smaMgr.getSma() instanceof StateMachineArtifact) {
-            WorldView.loadIt(smaMgr.getSma().getArtifactTypeName() + ": " + smaMgr.getSma().getHumanReadableId(),
+            WorldEditor.open(smaMgr.getSma().getArtifactTypeName() + ": " + smaMgr.getSma().getHumanReadableId(),
                   Arrays.asList(smaMgr.getSma()));
             return;
          }
@@ -56,6 +56,7 @@ public class OpenInAtsWorldOperation extends WorkPageService {
    @Override
    public Action createToolbarService() {
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         @Override
          public void run() {
             performOpen();
          }

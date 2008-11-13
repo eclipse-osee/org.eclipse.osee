@@ -45,6 +45,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    private int mainPageIndex, metricsPageIndex;
    private WorldComposite worldComposite;
    private AtsMetricsComposite metricsComposite;
+   public static final String HELP_CONTEXT_ID = "atsWorldView";
 
    /*
     * (non-Javadoc)
@@ -53,6 +54,10 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
     */
    @Override
    public void doSave(IProgressMonitor monitor) {
+   }
+
+   public static void open(String name, Collection<? extends Artifact> arts) {
+      open(name, arts, null, TableLoadOption.None);
    }
 
    public static void open(String name, Collection<? extends Artifact> arts, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
@@ -143,7 +148,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
             throw new OseeArgumentException("Unknown WorldEditorInput values.");
 
          // Until WorldEditor has different help, just use WorldView's help
-         AtsPlugin.getInstance().setHelp(worldComposite.getControl(), WorldView.HELP_CONTEXT_ID);
+         AtsPlugin.getInstance().setHelp(worldComposite.getControl(), HELP_CONTEXT_ID);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -152,7 +157,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    private void createMainTab() throws OseeCoreException {
       Composite comp = AtsLib.createCommonPageComposite(getContainer());
       ToolBar toolBar = AtsLib.createCommonToolBar(comp);
-      worldComposite = new WorldComposite(EDITOR_ID, null, comp, SWT.NONE, toolBar);
+      worldComposite = new WorldComposite(EDITOR_ID, comp, SWT.NONE, toolBar);
       mainPageIndex = addPage(comp);
       setPageText(mainPageIndex, "Actions");
    }

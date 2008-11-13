@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.operation.EditTasksNavigateItem;
-import org.eclipse.osee.ats.report.ExtendedStatusReportItem;
 import org.eclipse.osee.ats.util.DoesNotWorkItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtIdSearchItem;
@@ -119,8 +118,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
       XNavigateItem otherItems = new XNavigateItem(null, "Other My Searches");
       new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("My Team Workflows", user));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks (WorldView)", user, LoadView.WorldView));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks (Editor)", user, LoadView.TaskEditor));
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks", user, LoadView.TaskEditor));
       new SearchNavigateItem(otherItems, new MySubscribedSearchItem("My Subscribed", user));
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - InWork", user,
             MyOrigSearchItem.OriginatedState.InWork));
@@ -137,8 +135,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - All", null,
             MyOrigSearchItem.OriginatedState.All));
       new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("User's Team Workflows"));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("User's Tasks (WorldView)", LoadView.WorldView));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("User's Tasks (Editor)", LoadView.TaskEditor));
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("User's Tasks", LoadView.TaskEditor));
       new SearchNavigateItem(otherItems, new MyCompletedSearchItem("User's Completed"));
       new SearchNavigateItem(otherItems, new MyFavoritesSearchItem("User's Favorites"));
       new SearchNavigateItem(otherItems, new MySubscribedSearchItem("User's Subscribed"));
@@ -146,9 +143,9 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - All", null, ReviewState.All));
       if (AtsPlugin.isAtsAdmin()) {
          new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch("User's All Related Objects - Admin Only",
-               null, false, LoadView.WorldView));
+               null, false, LoadView.WorldEditor));
          new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch(
-               "User's All Active Related Objects - Admin Only", null, true, LoadView.WorldView));
+               "User's All Active Related Objects - Admin Only", null, true, LoadView.WorldEditor));
       }
       items.add(otherItems);
 
@@ -169,10 +166,11 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
       XNavigateItem releaseItems = new XNavigateItem(null, "Versions");
       new MassEditTeamVersionItem("Edit Versions", releaseItems, (TeamDefinitionArtifact) null);
-      new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldView));
       new SearchNavigateItem(releaseItems,
             new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor));
-      new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldView));
+      new SearchNavigateItem(releaseItems,
+            new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor));
+      new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
       new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
       new ReleaseVersionItem(releaseItems, null);
       new CreateNewVersionItem(releaseItems, null);
@@ -216,7 +214,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new FirstTimeQualityMetricReportItem(reportItems);
       XNavigateItem atsReportItems =
             new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World");
-      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
+      //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 
       XNavigateItem emailItems = new XNavigateItem(null, "Email");
       new EmailTeamsItem(emailItems, null, MemberType.Both);

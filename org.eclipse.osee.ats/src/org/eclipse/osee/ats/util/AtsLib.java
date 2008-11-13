@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.world.WorldView;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -223,7 +223,7 @@ public class AtsLib implements IAtsLib {
                      for (TeamWorkFlowArtifact team : teams)
                         SMAEditor.editArtifact(team);
                   else if (option == AtsOpenOption.AtsWorld)
-                     WorldView.loadIt("Action " + actionArt.getHumanReadableId(), Arrays.asList(actionArt));
+                     WorldEditor.open("Action " + actionArt.getHumanReadableId(), Arrays.asList(actionArt));
                   else if (option == AtsOpenOption.OpenOneOrPopupSelect) {
                      if (teams.size() == 1)
                         SMAEditor.editArtifact(teams.iterator().next());
@@ -261,6 +261,6 @@ public class AtsLib implements IAtsLib {
    }
 
    public void openInAtsWorld(String name, Collection<Artifact> artifacts) {
-      WorldView.loadIt(name, artifacts);
+      WorldEditor.open(name, artifacts);
    }
 }

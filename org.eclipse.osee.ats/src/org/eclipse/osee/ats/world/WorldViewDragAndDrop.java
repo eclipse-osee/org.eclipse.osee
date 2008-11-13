@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -34,16 +33,16 @@ import org.eclipse.swt.dnd.DropTargetEvent;
  */
 public class WorldViewDragAndDrop extends SkynetDragAndDrop {
 
-   private final TreeViewer treeViewer;
+   private final WorldComposite worldComposite;
 
-   public WorldViewDragAndDrop(TreeViewer treeViewer, String viewId) {
-      super(treeViewer.getTree(), viewId);
-      this.treeViewer = treeViewer;
+   public WorldViewDragAndDrop(WorldComposite worldComposite, String viewId) {
+      super(worldComposite.getXViewer().getTree(), viewId);
+      this.worldComposite = worldComposite;
    }
 
    @Override
    public Artifact[] getArtifacts() {
-      IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+      IStructuredSelection selection = (IStructuredSelection) worldComposite.getXViewer().getSelection();
       Iterator<?> i = selection.iterator();
       List<Artifact> artifacts = new ArrayList<Artifact>();
       while (i.hasNext()) {
@@ -113,7 +112,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                      }
                   }
                   if (arts.size() > 0) {
-                     WorldView.loadIt(name, arts, TableLoadOption.None);
+                     worldComposite.loadIt(name, arts, TableLoadOption.None);
                   }
                } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);

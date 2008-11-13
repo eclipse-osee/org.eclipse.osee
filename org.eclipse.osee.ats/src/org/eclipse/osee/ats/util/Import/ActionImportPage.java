@@ -16,9 +16,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.world.WorldView;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.FileSelector;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -81,6 +80,7 @@ public class ActionImportPage extends WizardDataTransferPage {
       setControl(composite);
    }
 
+   @Override
    protected void createOptionsGroup(Composite parent) {
       Group composite = new Group(parent, SWT.NONE);
       composite.setText("Options");
@@ -117,9 +117,10 @@ public class ActionImportPage extends WizardDataTransferPage {
       if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
       setPageComplete(determinePageCompletion());
    } /*
-                       * @see WizardPage#becomesVisible
-                       */
+                           * @see WizardPage#becomesVisible
+                           */
 
+   @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
       // policy: wizards are not allowed to come up with an error message
@@ -128,6 +129,7 @@ public class ActionImportPage extends WizardDataTransferPage {
       }
    }
 
+   @Override
    protected boolean validateSourceGroup() {
       return fileSelector.validate(this);
    }
@@ -141,8 +143,7 @@ public class ActionImportPage extends WizardDataTransferPage {
                new ExcelAtsActionArtifactExtractor(AtsPlugin.getAtsBranch(), emailPocs.getSelection());
          extractor.discoverArtifactAndRelationData(file);
          if (extractor.dataIsValid()) extractor.createArtifactsAndNotify(transaction);
-         WorldView.loadIt("Imported Action Artifacts", extractor.getActionArts());
-         AWorkbench.popup("Complete", "Action Import Complete");
+         WorldEditor.open("Imported Action Artifacts", extractor.getActionArts());
          transaction.execute();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

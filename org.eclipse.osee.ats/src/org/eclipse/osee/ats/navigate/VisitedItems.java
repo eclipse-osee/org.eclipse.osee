@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.world.WorldView;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -51,7 +51,7 @@ public class VisitedItems extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      WorldView.loadIt(getName(), visited, tableLoadOptions);
+      WorldEditor.open(getName(), visited, null, tableLoadOptions);
    }
 
 }

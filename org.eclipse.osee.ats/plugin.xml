@@ -116,13 +116,6 @@
          name="Artifact View"
          id="org.eclipse.osee.ats.hyper.ArtifactHyperView">
    </view>
-   <view
-         class="org.eclipse.osee.ats.world.WorldView"
-         icon="images/world.gif"
-         category="org.eclipse.osee.ats.category"
-         name="ATS World"
-         id="org.eclipse.osee.ats.world.WorldView">
-   </view>
    </extension>
    <extension
          id="AtsDatabaseConfig"

@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.hyper;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.world.WorldView;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -29,7 +29,7 @@ public class TasksActionHyperItem extends ActionHyperItem {
    @Override
    public void handleDoubleClick(HyperViewItem hyperViewItem) {
       super.handleDoubleClick(hyperViewItem);
-      WorldView.loadIt("Tasks", taskArtifacts);
+      WorldEditor.open("Tasks", taskArtifacts);
    }
 
    /* (non-Javadoc)

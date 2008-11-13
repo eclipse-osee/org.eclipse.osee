@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
+import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -78,7 +79,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
@@ -95,19 +95,17 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
-   private final IViewSite viewSite;
    private TableLoadOption[] tableLoadOptions;
    private Collection<? extends Artifact> arts;
    private String loadName;
    private final ToolBar toolBar;
 
-   public WorldComposite(String viewEditorId, IViewSite viewSite, Composite parent, int style) {
-      this(viewEditorId, viewSite, parent, style, null);
+   public WorldComposite(String viewEditorId, Composite parent, int style) {
+      this(viewEditorId, parent, style, null);
    }
 
-   public WorldComposite(String viewEditorId, IViewSite viewSite, Composite parent, int style, ToolBar toolBar) {
+   public WorldComposite(String viewEditorId, Composite parent, int style, ToolBar toolBar) {
       super(parent, style);
-      this.viewSite = viewSite;
       this.toolBar = toolBar;
 
       setLayout(new GridLayout(1, false));
@@ -128,7 +126,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          return;
       }
 
-      if (viewSite != null) {
+      if (lastSearchItem instanceof MyWorldSearchItem && ((MyWorldSearchItem) lastSearchItem).getSearchUser().isMe()) {
          String nameStr = getWhoAmI();
          if (AtsPlugin.isAtsAdmin()) nameStr += " - Admin";
          if (AtsPlugin.isAtsDisableEmail()) nameStr += " - Email Disabled";
@@ -201,7 +199,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          }
       });
 
-      new WorldViewDragAndDrop(worldXViewer, viewEditorId);
+      new WorldViewDragAndDrop(this, viewEditorId);
       parent.layout();
       createActions();
 

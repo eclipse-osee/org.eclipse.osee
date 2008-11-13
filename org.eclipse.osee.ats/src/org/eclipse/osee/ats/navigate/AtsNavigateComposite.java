@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.editor.TaskEditorSearchItemProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -28,8 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -63,23 +59,10 @@ public class AtsNavigateComposite extends XNavigateComposite {
          WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWorldSearchItem();
          if (worldSearchItem.getLoadView() == LoadView.WorldEditor)
             WorldEditor.open(worldSearchItem, SearchType.Search, null, tableLoadOptions);
-         else if (worldSearchItem.getLoadView() == LoadView.WorldView)
-            openWorld(worldSearchItem, tableLoadOptions);
          else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) TaskEditor.open(new TaskEditorSearchItemProvider(
                worldSearchItem, tableLoadOptions));
       } else
          super.handleDoubleClick(item, tableLoadOptions);
-   }
-
-   public static void openWorld(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) {
-      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-      try {
-         WorldView worldView = (WorldView) page.showView(WorldView.VIEW_ID);
-         worldView.loadTable(searchItem, tableLoadOptions);
-      } catch (Exception e1) {
-         MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-               "Couldn't Launch Search View " + e1.getMessage());
-      }
    }
 
    @Override

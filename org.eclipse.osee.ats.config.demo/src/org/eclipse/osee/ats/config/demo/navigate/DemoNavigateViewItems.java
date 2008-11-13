@@ -93,9 +93,9 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                else if (team.name().contains("CIS")) new XNavigateUrlItem(teamItems, "Open CIS Website",
                      "http://www.cisst.org/cisst/cis/", false);
 
-               new SearchNavigateItem(teamItems, new NextVersionSearchItem(teamDef, LoadView.WorldView));
+               new SearchNavigateItem(teamItems, new NextVersionSearchItem(teamDef, LoadView.WorldEditor));
                new SearchNavigateItem(teamItems, new VersionTargetedForTeamSearchItem(teamDef, null, false,
-                     LoadView.WorldView));
+                     LoadView.WorldEditor));
                new SearchNavigateItem(teamItems, new UnReleasedTeamWorldSearchItem("Show Un-Released Team Workflows",
                      teamDef, true, false, true));
                new ReleaseVersionItem(teamItems, teamDef);

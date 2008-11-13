@@ -29,7 +29,7 @@ public abstract class WorldSearchItem {
    protected boolean cancelled = false;
    private LoadView loadView;
    public static enum LoadView {
-      WorldView, TaskEditor, WorldEditor, None
+      TaskEditor, WorldEditor, None
    }
    public static enum SearchType {
       Search, ReSearch
@@ -47,7 +47,7 @@ public abstract class WorldSearchItem {
    }
 
    public WorldSearchItem(String name) {
-      this(name, LoadView.WorldView);
+      this(name, LoadView.WorldEditor);
    }
 
    public WorldSearchItem(String name, LoadView loadView) {
