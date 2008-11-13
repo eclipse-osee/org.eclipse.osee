@@ -431,7 +431,7 @@ public class WordTemplateProcessor {
             CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
             VariableMap options = renderer.getOptions();
-            if (paragraphNumber != null && options.getBoolean(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
+            if (paragraphNumber != null && options != null && options.getBoolean(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
                if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
                   artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
                   artifact.persistAttributes((SkynetTransaction) options.getValue(WordTemplateRenderer.TRANSACTION_OPTION));
