@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -316,9 +315,7 @@ public class RelationManager {
    public static void prepareRelationsForReload(Artifact artifact) {
       //This is inappropriate to use as references held to links by other applications will continue to exist.
       artifactToRelations.remove(artifact);
-      for (RelationType type : RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch())) {
-         relationsByType.remove(artifact, type);
-      }
+      relationsByType.removeValues(artifact);
    }
 
    public static boolean hasDirtyLinks(Artifact artifact) {
