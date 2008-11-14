@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -29,7 +29,7 @@ public class ServerDatabaseProvider implements IApplicationDatabaseInfoProvider 
     * @see org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider#getDatabaseInfo()
     */
    @Override
-   public IDatabaseInfo getDatabaseInfo() throws OseeCoreException {
+   public IDatabaseInfo getDatabaseInfo() throws OseeDataStoreException {
       IDatabaseInfo databaseInfo = null;
       databaseInfo = DatabaseInfoManager.getDefault();
       OseeLog.reportStatus(new BaseStatus(NAME, Level.INFO, "%s [%s as %s]", databaseInfo.getDriver(),

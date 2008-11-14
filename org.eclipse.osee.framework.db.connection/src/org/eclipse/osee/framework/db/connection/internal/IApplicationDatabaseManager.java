@@ -6,14 +6,14 @@
 package org.eclipse.osee.framework.db.connection.internal;
 
 import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IApplicationDatabaseManager {
 
-   public IApplicationDatabaseInfoProvider getProvider() throws OseeCoreException;
+   public IApplicationDatabaseInfoProvider getProvider() throws OseeDataStoreException;
 
    public void removeDatabaseProvider(IApplicationDatabaseInfoProvider provider);
 

@@ -60,7 +60,7 @@ public class HttpProcessor {
       return response;
    }
 
-   public static AcquireResult post(URL url, InputStream inputStream, String contentType, String encoding, OutputStream outputStream) throws Exception {
+   public static AcquireResult post(URL url, InputStream inputStream, String contentType, String encoding, OutputStream outputStream) throws IOException {
       AcquireResult result = new AcquireResult();
       int code = -1;
       HttpURLConnection connection = null;
@@ -83,10 +83,10 @@ public class HttpProcessor {
             result.setEncoding(connection.getContentEncoding());
             Lib.inputStreamToOutputStream(httpInputStream, outputStream);
          } else {
-            throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, code));
+            throw new IOException(String.format("Error during POST [%s] - status code: [%s]", url, code));
          }
-      } catch (Exception ex) {
-         throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, code), ex);
+      } catch (IOException ex) {
+         throw new IOException(String.format("Error during POST [%s] - status code: [%s]", url, code), ex);
       } finally {
          result.setCode(code);
          if (httpInputStream != null) {

@@ -8,9 +8,7 @@ package org.eclipse.osee.framework.db.connection.internal;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 
 /**
  * @author Roberto E. Escobar
@@ -35,7 +33,7 @@ public class ApplicationDatabaseManager implements IApplicationDatabaseManager {
       return toReturn;
    }
 
-   public IApplicationDatabaseInfoProvider getProvider() throws OseeCoreException {
+   public IApplicationDatabaseInfoProvider getProvider() throws OseeDataStoreException {
       IApplicationDatabaseInfoProvider provider = getInternal();
       if (provider == null) {
          long endTime = System.currentTimeMillis() + (1000 * 20);
@@ -52,7 +50,7 @@ public class ApplicationDatabaseManager implements IApplicationDatabaseManager {
          }
       }
       if (provider == null) {
-         throw new OseeStateException("Unable to find an application database provider");
+         throw new OseeDataStoreException("Unable to find an application database provider");
       }
       return provider;
    }

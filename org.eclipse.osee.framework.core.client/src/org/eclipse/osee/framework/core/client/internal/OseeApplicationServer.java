@@ -143,6 +143,7 @@ public class OseeApplicationServer {
             oseeServerInfo = OseeServerInfo.fromXml(inputStream);
          }
       } catch (Exception ex) {
+         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
          OseeLog.reportStatus(new BaseStatus(ArbitrationService, Level.SEVERE, ex,
                "Error requesting application server for version [%s]", OseeCodeVersion.getVersion()));
       } finally {

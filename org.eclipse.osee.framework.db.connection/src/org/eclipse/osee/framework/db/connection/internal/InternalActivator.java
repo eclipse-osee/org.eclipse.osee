@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.db.connection.internal;
 
 import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -41,8 +41,12 @@ public class InternalActivator implements BundleActivator {
       return (IApplicationDatabaseManager) instance.applicationDbManagerTracker.waitForService(TIMEOUT);
    }
 
-   public static IApplicationDatabaseInfoProvider getApplicationDatabaseProvider() throws OseeCoreException, InterruptedException {
-      return getApplicationDatabaseManager().getProvider();
+   public static IApplicationDatabaseInfoProvider getApplicationDatabaseProvider() throws OseeDataStoreException {
+      try {
+         return getApplicationDatabaseManager().getProvider();
+      } catch (InterruptedException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
    /*

@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeAuthenticationRequiredException extends OseeCoreException {
+public class OseeAuthenticationRequiredException extends OseeDataStoreException {
 
    private static final long serialVersionUID = 1890728724625261131L;
 

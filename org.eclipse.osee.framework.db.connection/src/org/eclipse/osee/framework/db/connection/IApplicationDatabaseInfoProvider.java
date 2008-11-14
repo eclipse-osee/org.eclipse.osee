@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IApplicationDatabaseInfoProvider {
 
-   public IDatabaseInfo getDatabaseInfo() throws OseeCoreException;
+   public IDatabaseInfo getDatabaseInfo() throws OseeDataStoreException;
 
    public int getPriority();
 

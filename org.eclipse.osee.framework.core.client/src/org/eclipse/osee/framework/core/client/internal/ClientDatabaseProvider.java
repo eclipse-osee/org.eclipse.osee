@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.core.client.internal;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -28,13 +28,13 @@ public class ClientDatabaseProvider implements IApplicationDatabaseInfoProvider 
     * @see org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider#getDatabaseInfo()
     */
    @Override
-   public IDatabaseInfo getDatabaseInfo() throws OseeCoreException {
+   public IDatabaseInfo getDatabaseInfo() throws OseeAuthenticationRequiredException {
       IDatabaseInfo databaseInfo = null;
       try {
          databaseInfo = InternalClientSessionManager.getInstance().getDatabaseInfo();
          OseeLog.reportStatus(new BaseStatus(NAME, Level.INFO, "%s [%s as %s]", databaseInfo.getDriver(),
                databaseInfo.getDatabaseName(), databaseInfo.getDatabaseLoginName()));
-      } catch (OseeCoreException ex) {
+      } catch (OseeAuthenticationRequiredException ex) {
          OseeLog.reportStatus(new BaseStatus(NAME, Level.SEVERE, ex, "Error obtaining database connection."));
          throw ex;
       }

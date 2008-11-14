@@ -135,10 +135,11 @@ public class InternalClientSessionManager {
                }
             });
          } catch (Exception ex) {
+            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
             try {
                authenticateAsGuest();
             } catch (Exception ex1) {
-               OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
+               OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex1);
             }
          }
       }
@@ -202,15 +203,14 @@ public class InternalClientSessionManager {
       parameters.put("operation", "create");
       String url = null;
       try {
-         url =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
+         url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult result =
                HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);
          if (result.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
             session = fromEncryptedBytes(outputStream.toByteArray());
          }
-      } catch (Exception ex) {
+      } catch (IOException ex) {
          throw new OseeAuthenticationException(url, ex);
       }
       return session;
