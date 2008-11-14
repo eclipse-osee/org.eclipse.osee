@@ -77,7 +77,7 @@ public class EditTeamWorkflows extends AbstractBlam {
                   sb.append("Assignee: " + user + " - ");
                   selected = true;
                }
-               boolean includeCompleted = variableMap.getBoolean("Include Completed");
+               boolean includeCompleted = variableMap.getBoolean("Include Completed/Cancelled");
                if (includeCompleted) {
                   sb.append("Include Completed/Cancelled");
                }
@@ -136,7 +136,7 @@ public class EditTeamWorkflows extends AbstractBlam {
             //
             "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>" +
             //
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
       widgetXml += "</xWidgets>";
       return widgetXml;
    }
