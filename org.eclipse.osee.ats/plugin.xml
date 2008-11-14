@@ -301,4 +301,12 @@
             classname="org.eclipse.osee.ats.util.widgets.AtsWidgetProvider">
       </XWidgetProvider>
    </extension>
+   <extension
+         id="EditTeamWorkflows"
+         name="EditTeamWorkflows"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.operation.EditTeamWorkflows">
+      </Operation>
+   </extension>
 </plugin>

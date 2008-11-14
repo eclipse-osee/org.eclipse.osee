@@ -1,0 +1,222 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
+package org.eclipse.osee.ats.world.search;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+
+/**
+ * @author Donald G. Dunne
+ */
+public class TeamWorldNewSearchItem extends WorldSearchItem {
+
+   public enum ReleasedOption {
+      Released, UnReleased, Both
+   };
+   private Collection<TeamDefinitionArtifact> teamDefs;
+   private final boolean recurseChildren;
+   private boolean showFinished;
+   private boolean showAction;
+   private final Collection<String> teamDefNames;
+   private final ChangeType changeType;
+   private final VersionArtifact versionArt;
+   private final User userArt;
+   private final ReleasedOption releasedOption;
+
+   public TeamWorldNewSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
+      super(displayName);
+      this.versionArt = versionArt;
+      this.userArt = userArt;
+      if (teamDefNames != null) {
+         this.teamDefNames = Arrays.asList(teamDefNames);
+      } else {
+         this.teamDefNames = null;
+      }
+      this.showFinished = showFinished;
+      this.releasedOption = releasedOption;
+      this.showAction = showAction;
+      this.recurseChildren = recurseChildren;
+      this.changeType = changeType;
+   }
+
+   public TeamWorldNewSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean showFinished, boolean showAction, boolean recurseChildren, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
+      super(displayName);
+      this.versionArt = versionArt;
+      this.userArt = userArt;
+      this.recurseChildren = recurseChildren;
+      this.releasedOption = releasedOption;
+      this.teamDefNames = null;
+      this.teamDefs = teamDefs;
+      this.showFinished = showFinished;
+      this.showAction = showAction;
+      this.changeType = null;
+   }
+
+   public TeamWorldNewSearchItem(TeamWorldNewSearchItem teamWorldSearchItem) {
+      super(teamWorldSearchItem);
+      this.versionArt = null;
+      this.userArt = null;
+      this.releasedOption = null;
+      this.recurseChildren = teamWorldSearchItem.recurseChildren;
+      this.teamDefNames = teamWorldSearchItem.teamDefNames;
+      this.teamDefs = teamWorldSearchItem.teamDefs;
+      this.showFinished = teamWorldSearchItem.showFinished;
+      this.showAction = teamWorldSearchItem.showAction;
+      this.changeType = teamWorldSearchItem.changeType;
+   }
+
+   public TeamWorldNewSearchItem(String displayName, TeamDefinitionArtifact teamDef, boolean showFinished, boolean showAction, boolean recurseChildren) {
+      this(displayName, Arrays.asList(teamDef), showFinished, showAction, recurseChildren, null, null, null);
+   }
+
+   public Collection<String> getProductSearchName() {
+      if (teamDefNames != null)
+         return teamDefNames;
+      else if (teamDefs != null) return Artifacts.artNames(teamDefs);
+      return new ArrayList<String>();
+   }
+
+   @Override
+   public String getSelectedName(SearchType searchType) {
+      return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
+   }
+
+   /**
+    * Loads all team definitions if specified by name versus by team definition class
+    * 
+    * @throws IllegalArgumentException
+    */
+   public void getTeamDefs() throws OseeCoreException {
+      if (teamDefNames != null && teamDefs == null) {
+         teamDefs = new HashSet<TeamDefinitionArtifact>();
+         for (String teamDefName : teamDefNames) {
+            TeamDefinitionArtifact aia = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
+            if (aia != null) {
+               teamDefs.add(aia);
+            }
+         }
+      }
+   }
+
+   @Override
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+      List<String> teamDefinitionGuids = new ArrayList<String>(teamDefs.size());
+      for (TeamDefinitionArtifact art : teamDefs) {
+         teamDefinitionGuids.add(art.getGuid());
+      }
+      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+      criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
+            teamDefinitionGuids));
+
+      if (!showFinished) {
+         List<String> cancelOrComplete = new ArrayList<String>(2);
+         cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
+         cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
+         criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
+               Operator.NOT_EQUAL));
+      }
+      if (changeType != null) {
+         criteria.add(new AttributeCriteria(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name()));
+      }
+
+      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
+
+      Set<Artifact> resultSet = new HashSet<Artifact>();
+      for (Artifact art : artifacts) {
+         StateMachineArtifact sma = (StateMachineArtifact) art;
+         // don't include if userArt specified and userArt not assignee
+         if (userArt != null && !sma.getSmaMgr().getStateMgr().getAssignees().contains(userArt)) {
+            continue;
+         }
+         // don't include if version specified and workflow's not targeted for version
+         if (versionArt != null) {
+            TeamWorkFlowArtifact team = sma.getParentTeamWorkflow();
+            if (team != null && (team.getTargetedForVersion() == null || !team.getTargetedForVersion().equals(
+                  versionArt))) {
+               continue;
+            }
+         }
+         // don't include if release option doesn't match relese state of targeted version
+         if (releasedOption != ReleasedOption.Both) {
+            TeamWorkFlowArtifact team = sma.getParentTeamWorkflow();
+            if (team != null) {
+               // skip if released is desired and version artifact is not set
+               VersionArtifact setVerArt = team.getTargetedForVersion();
+               if (setVerArt == null && releasedOption == ReleasedOption.Released) {
+                  continue;
+               }
+               // skip of version release is opposite of desired
+               if (setVerArt != null) {
+                  if (releasedOption == ReleasedOption.Released && !setVerArt.isReleased()) {
+                     continue;
+                  } else if (releasedOption == ReleasedOption.UnReleased && setVerArt.isReleased()) {
+                     continue;
+                  }
+               }
+            }
+         }
+         resultSet.add(art);
+      }
+      if (showAction) {
+         return RelationManager.getRelatedArtifacts(resultSet, 1, AtsRelation.ActionToWorkflow_Action);
+      } else {
+         return resultSet;
+      }
+
+   }
+
+   /**
+    * @param showAction The showAction to set.
+    */
+   public void setShowAction(boolean showAction) {
+      this.showAction = showAction;
+   }
+
+   /**
+    * @param showFinished The showFinished to set.
+    */
+   public void setShowFinished(boolean showFinished) {
+      this.showFinished = showFinished;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new TeamWorldNewSearchItem(this);
+   }
+
+}
