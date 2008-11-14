@@ -32,7 +32,6 @@ public class SqlKey {
    public static final String SELECT_CURRENT_ARTIFACTS_WITH_DELETED = "SELECT_CURRENT_ARTIFACTS_WITH_DELETED";
    public static final String QUERY_BUILDER_HINT = "QUERY_BUILDER_HINT";
 
-   //////////////
    public static final String BRANCH_ATTRIBUTE_WAS_CHANGE =
        "SELECT attxs1.attr_id, attxs1.value as was_value, txs1.mod_type FROM osee_join_artifact ja1, osee_artifact artxs1, osee_attribute attxs1, osee_txs txs1, osee_tx_details txd1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txd1.tx_type = 1 AND artxs1.art_id = attxs1.art_id AND attxs1.gamma_id = txs1.gamma_id AND attxs1.art_id = ja1.art_id AND txd1.branch_id = ja1.branch_id AND ja1.query_id = ?";
    
@@ -54,8 +53,9 @@ public class SqlKey {
    public static final String BRANCH_ARTIFACT_CHANGES =
        "select art1.art_id, art1.art_type_id, atv1.gamma_id, txs1.mod_type FROM osee_artifact art1, osee_artifact_version atv1, osee_txs txs1, osee_tx_details txd1 WHERE txd1.branch_id = ? AND txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atv1.gamma_id AND (txs1.tx_current = " + TxChange.DELETED.getValue() + " OR txs1.mod_type = " + ModificationType.NEW.getValue() + ")  AND atv1.art_id = art1.art_id";
 
-   
-   /////////////
+   public static final String TRANSACTION_ARTIFACT_CHANGES =
+       "select art1.art_id, art1.art_type_id, atv1.gamma_id, txs1.mod_type FROM osee_artifact art1, osee_artifact_version atv1, osee_txs txs1, osee_tx_details txd1 WHERE txd1.transaction_id = ? AND txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atv1.gamma_id AND (txs1.mod_type = " + ModificationType.DELETED.getValue() + " OR txs1.mod_type = " + ModificationType.NEW.getValue() + ")  AND atv1.art_id = art1.art_id";
+
    public static final String SELECT_HISTORICAL_ARTIFACTS_DEFINITION =
          "SELECT%s al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id, al1.transaction_id as stripe_transaction_id FROM osee_join_artifact al1, osee_artifact art1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= al1.transaction_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, art1.art_id, txs1.transaction_id desc";
 
