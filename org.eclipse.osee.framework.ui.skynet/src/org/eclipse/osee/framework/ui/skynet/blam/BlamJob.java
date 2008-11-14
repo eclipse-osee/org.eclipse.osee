@@ -29,10 +29,10 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 public class BlamJob extends Job {
    private final BlamWorkflow workflow;
    private final VariableMap variableMap;
-   private final WorkflowEditor editor;
+   private final BlamEditor editor;
    private final Collection<IBlamEventListener> listeners;
 
-   public BlamJob(WorkflowEditor editor) {
+   public BlamJob(BlamEditor editor) {
       super(editor.getWorkflow().getDescriptiveName());
       this.editor = editor;
       this.variableMap = editor.getBlamVariableMap();
@@ -55,7 +55,7 @@ public class BlamJob extends Job {
          for (BlamOperation operation : operations) {
             IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
 
-            operation.setWorkflowEditor(editor);
+            operation.setBlamEditor(editor);
             operation.runOperation(variableMap, subMonitor);
             monitor.worked(1);
          }

@@ -47,9 +47,8 @@ import org.xml.sax.SAXException;
 public class BlamWorkflow extends Artifact {
    public static final String ARTIFACT_NAME = "Blam Workflow";
    private final List<BlamOperation> operations;
-   private XWidgetParser xWidgetParser;
    private List<DynamicXWidgetLayoutData> layoutDatas;
-   private DynamicXWidgetLayout dynamicXWidgetLayout;
+   private final DynamicXWidgetLayout dynamicXWidgetLayout;
    private BlamOperation soleOperation;
 
    /**
@@ -62,7 +61,6 @@ public class BlamWorkflow extends Artifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
 
       this.operations = new ArrayList<BlamOperation>();
-      this.xWidgetParser = new XWidgetParser();
       this.dynamicXWidgetLayout = new DynamicXWidgetLayout();
       this.layoutDatas = new LinkedList<DynamicXWidgetLayoutData>();
    }

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 
 /**
  * @author Ryan D. Brooks
@@ -30,5 +30,5 @@ public interface BlamOperation {
 
    public abstract String getName();
 
-   public abstract void setWorkflowEditor(WorkflowEditor workflow);
+   public abstract void setBlamEditor(BlamEditor workflow);
 }

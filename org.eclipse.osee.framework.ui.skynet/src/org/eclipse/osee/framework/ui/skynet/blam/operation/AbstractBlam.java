@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
@@ -25,7 +25,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayoutListener {
-   private WorkflowEditor workflowEditor;
+   private BlamEditor blamEditor;
 
    /*
     * (non-Javadoc)
@@ -54,12 +54,12 @@ public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayou
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#setOverpages(org.eclipse.osee.framework.ui.skynet.blam.OverviewPage)
     */
    @Override
-   public void setWorkflowEditor(WorkflowEditor workflowEditor) {
-      this.workflowEditor = workflowEditor;
+   public void setBlamEditor(BlamEditor blamEditor) {
+      this.blamEditor = blamEditor;
    }
 
    public void appendResultLine(String output) {
-      workflowEditor.appendOuputLine(output);
+      blamEditor.appendOuputLine(output);
    }
 
    /* (non-Javadoc)

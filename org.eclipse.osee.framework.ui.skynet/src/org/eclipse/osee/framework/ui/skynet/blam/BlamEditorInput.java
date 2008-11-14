@@ -20,26 +20,26 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * @author Donald G. Dunne
  */
-public class WorkflowEditorInput implements IEditorInput {
+public class BlamEditorInput implements IEditorInput {
 
    private Artifact artifact;
 
-   public WorkflowEditorInput(Artifact artifact) {
+   public BlamEditorInput(Artifact artifact) {
       this.artifact = artifact;
    }
 
-   public WorkflowEditorInput(String workflowId) throws OseeCoreException {
+   public BlamEditorInput(String workflowId) throws OseeCoreException {
       this.artifact = BlamWorkflow.getOrCreateBlamWorkflow(BlamOperations.getBlamOperation(workflowId));
    }
 
-   public WorkflowEditorInput(BlamOperation blamOperation) throws OseeCoreException {
+   public BlamEditorInput(BlamOperation blamOperation) throws OseeCoreException {
       this.artifact = BlamWorkflow.getOrCreateBlamWorkflow(blamOperation);
    }
 
    public boolean equals(Object obj) {
       boolean equals = false;
-      if (obj instanceof WorkflowEditorInput) {
-         WorkflowEditorInput otherEdInput = (WorkflowEditorInput) obj;
+      if (obj instanceof BlamEditorInput) {
+         BlamEditorInput otherEdInput = (BlamEditorInput) obj;
 
          equals = (artifact == otherEdInput.artifact);
       }

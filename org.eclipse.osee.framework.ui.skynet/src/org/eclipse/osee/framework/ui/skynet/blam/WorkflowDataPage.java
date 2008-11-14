@@ -47,10 +47,10 @@ public class WorkflowDataPage extends FormPage {
    private final OverviewPage overviewPage;
    private final DynamicXWidgetLayout dynamicXWidgetLayout;
 
-   public WorkflowDataPage(WorkflowEditor editor, OverviewPage overviewPage) {
+   public WorkflowDataPage(BlamEditor editor, OverviewPage overviewPage) {
       super(editor, "overview", "Workflow Data");
 
-      this.workflow = (BlamWorkflow) ((WorkflowEditorInput) editor.getEditorInput()).getArtifact();
+      this.workflow = (BlamWorkflow) ((BlamEditorInput) editor.getEditorInput()).getArtifact();
       this.toolkit = editor.getToolkit();
       this.parameters = new LinkedList<Text>();
       this.localVariables = new LinkedList<Text>();

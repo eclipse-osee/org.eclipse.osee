@@ -48,15 +48,15 @@ public class OverviewPage extends FormPage implements IActionable {
    private DynamicXWidgetLayout dynamicXWidgetLayout;
    private final XFormToolkit toolkit;
    private Composite parametersContainer;
-   private final WorkflowEditor editor;
+   private final BlamEditor editor;
    private Text outputText;
    private Section parameterSection;
    private Section outputSection;
    private IManagedForm managedForm;
    private Composite outputComp;
 
-   public OverviewPage(WorkflowEditor editor) {
-      super(editor, "overview", "Blam Workflow");
+   public OverviewPage(BlamEditor editor) {
+      super(editor, "overview", "BLAM Workflow");
 
       this.editor = editor;
       this.toolkit = editor.getToolkit();
@@ -119,18 +119,18 @@ public class OverviewPage extends FormPage implements IActionable {
    }
 
    private void createToolBarActions(ScrolledForm form) {
-      Action runAction = new Action("Run Workflow in Job", Action.AS_PUSH_BUTTON) {
+      Action runAction = new Action("Run BLAM in Job", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             runWorkflow();
          }
       };
-      runAction.setToolTipText("Starts the workflow in a platform job");
+      runAction.setToolTipText("Starts the BLAM");
       runAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("run_exc.gif"));
       form.getToolBarManager().add(runAction);
 
       OseeAts.addButtonToEditorToolBar(editor, this, SkynetGuiPlugin.getInstance(), form.getToolBarManager(),
-            WorkflowEditor.EDITOR_ID, "Blam Workflow Editor");
+            BlamEditor.EDITOR_ID, "BLAM Editor");
 
    }
 
@@ -194,7 +194,7 @@ public class OverviewPage extends FormPage implements IActionable {
       outputComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       outputComp.setLayout(new GridLayout(1, false));
 
-      Button button = toolkit.createButton(outputComp, "Run this Workflow", SWT.PUSH);
+      Button button = toolkit.createButton(outputComp, "Run this BLAM", SWT.PUSH);
       button.setImage(SkynetGuiPlugin.getInstance().getImage("run_exc.gif"));
       button.addListener(SWT.MouseUp, new Listener() {
          @Override
@@ -203,7 +203,7 @@ public class OverviewPage extends FormPage implements IActionable {
          }
       });
 
-      outputText = toolkit.createText(outputComp, "Workflow has not yet run\n", SWT.WRAP);
+      outputText = toolkit.createText(outputComp, "BLAM has not yet run\n", SWT.WRAP);
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
       gridData.heightHint = 500;
       outputText.setLayoutData(gridData);

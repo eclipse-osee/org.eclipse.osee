@@ -25,8 +25,8 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Ryan D. Brooks
  */
-public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEventListener {
-   public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor";
+public class BlamEditor extends AbstractArtifactEditor implements IBlamEventListener {
+   public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.blam.BlamEditor";
    private OverviewPage overviewPage;
    private List<XWidget> widgets;
    private VariableMap blamVariableMap;
@@ -61,18 +61,18 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
    }
 
    public BlamWorkflow getWorkflow() {
-      return (BlamWorkflow) ((WorkflowEditorInput) getEditorInput()).getArtifact();
+      return (BlamWorkflow) ((BlamEditorInput) getEditorInput()).getArtifact();
    }
 
    public static void edit(BlamWorkflow blamWorkflow) {
-      WorkflowEditor.edit(new WorkflowEditorInput(blamWorkflow));
+      BlamEditor.edit(new BlamEditorInput(blamWorkflow));
    }
 
-   public static void edit(final WorkflowEditorInput workflowEditorInput) {
+   public static void edit(final BlamEditorInput blamEditorInput) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               AWorkbench.getActivePage().openEditor(workflowEditorInput, EDITOR_ID);
+               AWorkbench.getActivePage().openEditor(blamEditorInput, EDITOR_ID);
             } catch (PartInitException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
@@ -81,11 +81,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
    }
 
    public static void edit(String workflowId) throws OseeCoreException {
-      WorkflowEditor.edit(new WorkflowEditorInput(workflowId));
+      BlamEditor.edit(new BlamEditorInput(workflowId));
    }
 
    public static void edit(BlamOperation blamOperation) throws OseeCoreException {
-      WorkflowEditor.edit(new WorkflowEditorInput(blamOperation));
+      BlamEditor.edit(new BlamEditorInput(blamOperation));
    }
 
    /**
@@ -99,11 +99,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
 
       if (blamEvent instanceof BlamStartedEvent) {
          BlamStartedEvent blamStartEvent = (BlamStartedEvent) blamEvent;
-         setOuputText("Starting workflow at " + blamStartEvent.getDate() + "\n");
+         setOuputText("Starting BLAM at " + blamStartEvent.getDate() + "\n");
 
       } else if (blamEvent instanceof BlamFinishedEvent) {
          BlamFinishedEvent blamFinishedEvent = (BlamFinishedEvent) blamEvent;
-         appendOuputLine("Workflow completed in " + (blamFinishedEvent.getDurationMillis() / 1000) + " secs");
+         appendOuputLine("BLAM completed in " + (blamFinishedEvent.getDurationMillis() / 1000) + " secs");
       }
    }
 
