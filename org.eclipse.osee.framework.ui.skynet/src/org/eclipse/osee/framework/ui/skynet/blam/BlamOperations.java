@@ -30,31 +30,26 @@ import org.osgi.framework.Bundle;
  * @author Donald G. Dunne
  */
 public class BlamOperations {
-   private static List<BlamOperation> blamsSortedByName;
-   private static Map<String, BlamOperation> blamMap;
 
    public static BlamOperation getBlamOperation(String operationId) {
-      ensurePopulated();
-      return blamMap.get(operationId);
-   }
-
-   public static Collection<BlamOperation> ensurePopulated() {
-      if (blamsSortedByName == null) {
-         blamsSortedByName = new ArrayList<BlamOperation>();
-         blamMap = new HashMap<String, BlamOperation>();
-         for (BlamOperation blam : getBlamOperations()) {
-            blamMap.put(blam.getClass().getSimpleName(), blam);
+      for (BlamOperation blam : getBlamOperations()) {
+         if (blam.getClass().getSimpleName().equals(operationId)) {
+            return blam;
          }
-         String names[] = blamMap.keySet().toArray(new String[blamMap.keySet().size()]);
-         Arrays.sort(names);
-         for (String name : names)
-            blamsSortedByName.add(blamMap.get(name));
       }
-      return blamsSortedByName;
+      return null;
    }
 
    public static Collection<BlamOperation> getBlamOperationsNameSort() {
-      ensurePopulated();
+      ArrayList<BlamOperation> blamsSortedByName = new ArrayList<BlamOperation>();
+      Map<String, BlamOperation> blamMap = new HashMap<String, BlamOperation>();
+      for (BlamOperation blam : getBlamOperations()) {
+         blamMap.put(blam.getClass().getSimpleName(), blam);
+      }
+      String names[] = blamMap.keySet().toArray(new String[blamMap.keySet().size()]);
+      Arrays.sort(names);
+      for (String name : names)
+         blamsSortedByName.add(blamMap.get(name));
       return blamsSortedByName;
    }
 
@@ -73,7 +68,7 @@ public class BlamOperations {
                BlamOperation task = (BlamOperation) obj;
                blamOperations.add(task);
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  "Error loading BlamOperation extension", ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error loading BlamOperation extension", ex);
             }
          }
       }

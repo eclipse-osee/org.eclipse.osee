@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
+import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -32,6 +33,7 @@ public class XNavigateItemBlam extends XNavigateItem {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      WorkflowEditor.edit(blamOperation);
+      // Need a new copy of the BLAM operation so widgets don't collide
+      WorkflowEditor.edit(BlamOperations.getBlamOperation(blamOperation.getName()));
    }
 }
