@@ -13,14 +13,15 @@ package org.eclipse.osee.framework.search.engine.attribute;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.search.engine.Options;
 
 /**
@@ -35,7 +36,7 @@ public class AttributeDataStore {
 
    private static final String SEARCH_TAG_TABLE = "osee_search_tags ost%s";
    private static final String SELECT_ATTRIBUTE_BY_TAG_TEMPLATE =
-         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_attribute_type attrtype, %s WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attr1.attr_type_id = attrtype.attr_type_id AND %s";
+         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_attribute_type attrtype, %s \nWHERE attr1.gamma_id = txs1.gamma_id \nAND txs1.transaction_id = txd1.transaction_id \nAND attr1.attr_type_id = attrtype.attr_type_id \nAND %s";
 
    private static final String GET_TAGGABLE_SQL_BODY =
          " FROM osee_attribute attr1, osee_attribute_type type1,  osee_txs txs1, osee_tx_details txd1, osee_branch br1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = attr1.gamma_id AND txd1.branch_id = br1.branch_id AND br1.archived <> 1 AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL";
@@ -46,6 +47,8 @@ public class AttributeDataStore {
 
    private static final String POSTGRESQL_CHECK = " AND type1.tagger_id <> ''";
    private static final String RESTRICT_BY_BRANCH = " AND txd1.branch_id = ?";
+
+   private static final Map<Integer, String> queryCache = new HashMap<Integer, String>();
 
    private AttributeDataStore() {
    }
@@ -68,22 +71,29 @@ public class AttributeDataStore {
    }
 
    private static String getAttributeTagQuery(int numberOfTags) {
-      List<String> tables = new ArrayList<String>();
-      StringBuilder postBuffer = new StringBuilder();
-      for (int index = 0; index < numberOfTags; index++) {
-         tables.add(String.format(SEARCH_TAG_TABLE, index));
-
-         if (index == 0) {
-            postBuffer.append(" ost0.gamma_id = attr1.gamma_id");
+      String query = queryCache.get(numberOfTags);
+      if (query != null) {
+         return query;
+      } else {
+         StringBuilder codedTag = new StringBuilder();
+         codedTag.append("SELECT  /*+ ordered FIRST_ROWS */ attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM \n");
+         for (int index = 0; index < numberOfTags; index++) {
+            codedTag.append(String.format("osee_search_tags ost%d, \n", index));
          }
-         postBuffer.append(String.format(" and ost%s.coded_tag_id = ?", index));
+         codedTag.append(" osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_attribute_type attrtype WHERE \n");
 
-         if (index > 0) {
-            postBuffer.append(String.format(" and ost%s.gamma_id = ost%s.gamma_id", index - 1, index));
+         for (int index = 0; index < numberOfTags; index++) {
+            codedTag.append(String.format("ost%d.coded_tag_id = ? and\n", index));
          }
+         for (int index = 1; index < numberOfTags; index++) {
+            codedTag.append(String.format("ost%d.gamma_id = ost%d.gamma_id and \n", index - 1, index));
+         }
+         codedTag.append(String.format(
+               "ost%d.gamma_id = attr1.gamma_id and\n attr1.gamma_id = txs1.gamma_id \nand txs1.transaction_id = txd1.transaction_id \nand attr1.attr_type_id = attrtype.attr_type_id ",
+               numberOfTags - 1));
+
+         return codedTag.toString();
       }
-      return String.format(SELECT_ATTRIBUTE_BY_TAG_TEMPLATE, StringFormat.listToCommaSeparatedString(tables),
-            postBuffer.toString());
    }
 
    private static String getQuery(final String baseQuery, final int branchId, final Options options) {
@@ -103,6 +113,56 @@ public class AttributeDataStore {
       }
 
       return toReturn.toString();
+   }
+
+   public static void main(String[] args) {
+      List<Long> data = new ArrayList<Long>();
+      String sqlQuery = getQuery(getAttributeTagQuery(1), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(2), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(3), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(4), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(5), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(6), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(7), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(8), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(9), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(10), 2, new Options());
+      System.out.println(sqlQuery);
+      System.out.println();
+      System.out.println();
+      sqlQuery = getQuery(getAttributeTagQuery(11), 2, new Options());
+      System.out.println(sqlQuery);
+      sqlQuery = getQuery(getAttributeTagQuery(12), 2, new Options());
+      System.out.println(sqlQuery);
+      sqlQuery = getQuery(getAttributeTagQuery(13), 2, new Options());
+      System.out.println(sqlQuery);
    }
 
    public static Set<AttributeData> getAttributesByTags(final int branchId, final Options options, final Collection<Long> tagData) throws OseeDataStoreException {
