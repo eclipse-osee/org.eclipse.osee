@@ -63,21 +63,16 @@ public class ATSPerspective implements IPerspectiveFactory {
       left.addView(ArtifactExplorer.VIEW_ID);
       left.addView(BranchView.VIEW_ID);
 
+      if (AtsPlugin.isAtsAdmin()) {
+         IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float) 0.80, editorArea);
+         right.addView("org.eclipse.pde.runtime.LogView");
+      }
+
       IFolderLayout botLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, (float) 0.60, NavigateView.VIEW_ID);
       //      botLeft.addView(ActionSkyWalker.VIEW_ID);
       botLeft.addView(ActionHyperView.VIEW_ID);
+      botLeft.addView(QuickSearchView.VIEW_ID);
+      botLeft.addView(XResultView.VIEW_ID);
 
-      IFolderLayout lower = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.65, editorArea);
-      lower.addView(QuickSearchView.VIEW_ID);
-      if (AtsPlugin.isAtsAdmin()) {
-         lower.addView("osee.admin.AdminView");
-         lower.addView(ArtifactHyperView.VIEW_ID);
-      }
-
-      if (AtsPlugin.isAtsAdmin()) {
-         IFolderLayout bottomRight =
-               layout.createFolder("bottomRight", IPageLayout.RIGHT, (float) 0.75, QuickSearchView.VIEW_ID);
-         bottomRight.addView("org.eclipse.pde.runtime.LogView");
-      }
    }
 }
