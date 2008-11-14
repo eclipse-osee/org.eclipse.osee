@@ -27,15 +27,27 @@ public class MySubscribedSearchItem extends UserSearchItem {
 
    public MySubscribedSearchItem() {
       this("My Subscribed", null);
-
    }
 
    public MySubscribedSearchItem(String name, User user) {
       super(name, user);
    }
 
+   public MySubscribedSearchItem(MySubscribedSearchItem mySubscribedSearchItem) {
+      super(mySubscribedSearchItem);
+   }
+
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       return user.getRelatedArtifacts(AtsRelation.SubscribedUser_Artifact);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new MySubscribedSearchItem(this);
+   }
+
 }

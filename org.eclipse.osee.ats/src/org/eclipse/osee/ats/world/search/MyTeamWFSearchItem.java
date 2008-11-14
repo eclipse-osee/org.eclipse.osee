@@ -40,6 +40,10 @@ public class MyTeamWFSearchItem extends UserSearchItem {
       super(name, user);
    }
 
+   public MyTeamWFSearchItem(MyTeamWFSearchItem myTeamWFSearchItem) {
+      super(myTeamWFSearchItem);
+   }
+
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
 
@@ -60,7 +64,15 @@ public class MyTeamWFSearchItem extends UserSearchItem {
             artifactsToReturn.add(artifact);
          }
       }
-
       return artifactsToReturn;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new MyTeamWFSearchItem(this);
+   }
+
 }

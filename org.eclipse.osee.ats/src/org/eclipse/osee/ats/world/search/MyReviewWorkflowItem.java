@@ -44,6 +44,11 @@ public class MyReviewWorkflowItem extends UserSearchItem {
       this.reviewState = reviewState;
    }
 
+   public MyReviewWorkflowItem(MyReviewWorkflowItem myReviewWorkflowItem) {
+      super(myReviewWorkflowItem);
+      this.reviewState = myReviewWorkflowItem.reviewState;
+   }
+
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
 
@@ -69,7 +74,15 @@ public class MyReviewWorkflowItem extends UserSearchItem {
             }
          }
       }
-
       return artifactsToReturn;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new MyReviewWorkflowItem(this);
+   }
+
 }

@@ -50,6 +50,12 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
       this("Search ATS Attributes", "%", "");
    }
 
+   public AtsAttributeSearchItem(AtsAttributeSearchItem atsAttributeSearchItem) {
+      super(atsAttributeSearchItem);
+      this.searchStr = atsAttributeSearchItem.searchStr;
+      this.attributeName = atsAttributeSearchItem.attributeName;
+   }
+
    @Override
    public String getSelectedName(SearchType searchType) {
       return String.format("%s - %s", super.getSelectedName(searchType), searchStr);
@@ -91,6 +97,14 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
          return;
       } else
          cancelled = true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new AtsAttributeSearchItem(this);
    }
 
 }

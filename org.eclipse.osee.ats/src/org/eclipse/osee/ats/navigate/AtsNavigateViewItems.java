@@ -168,9 +168,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new MassEditTeamVersionItem("Edit Versions", releaseItems, (TeamDefinitionArtifact) null);
       new SearchNavigateItem(releaseItems,
             new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor));
-      new SearchNavigateItem(releaseItems,
-            new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor));
-      new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
       new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
       new ReleaseVersionItem(releaseItems, null);
       new CreateNewVersionItem(releaseItems, null);

@@ -27,11 +27,14 @@ public class MyFavoritesSearchItem extends UserSearchItem {
 
    public MyFavoritesSearchItem() {
       this("My Favorites", null);
-
    }
 
    public MyFavoritesSearchItem(String name, User user) {
       super(name, user);
+   }
+
+   public MyFavoritesSearchItem(MyFavoritesSearchItem myFavoritesSearchItem) {
+      super(myFavoritesSearchItem);
    }
 
    @Override
@@ -43,6 +46,14 @@ public class MyFavoritesSearchItem extends UserSearchItem {
    public void performUI(SearchType searchType) throws OseeCoreException {
       if (user != null) return;
       super.performUI(searchType);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new MyFavoritesSearchItem(this);
    }
 
 }

@@ -76,6 +76,14 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       this.selectedRecurseChildren = recurseChildren;
    }
 
+   public UnReleasedTeamWorldSearchItem(UnReleasedTeamWorldSearchItem unReleasedTeamWorldSearchItem) {
+      super(unReleasedTeamWorldSearchItem);
+      this.teamDefNames = unReleasedTeamWorldSearchItem.teamDefNames;
+      this.showFinished = unReleasedTeamWorldSearchItem.showFinished;
+      this.showAction = unReleasedTeamWorldSearchItem.showAction;
+      this.recurseChildren = unReleasedTeamWorldSearchItem.recurseChildren;
+   }
+
    public Collection<String> getProductSearchName() {
       if (teamDefNames != null)
          return Arrays.asList(teamDefNames);
@@ -138,8 +146,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
                Operator.NOT_EQUAL));
       }
 
-      List<Artifact> artifacts =
-            ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
 
       List<Artifact> unReleasedArtifacts = new ArrayList<Artifact>();
       for (Artifact artifact : artifacts) {
@@ -224,4 +231,13 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
    public void setSelectedTeamDefs(Set<TeamDefinitionArtifact> selectedTeamDefs) {
       this.selectedTeamDefs = selectedTeamDefs;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new UnReleasedTeamWorldSearchItem(this);
+   }
+
 }

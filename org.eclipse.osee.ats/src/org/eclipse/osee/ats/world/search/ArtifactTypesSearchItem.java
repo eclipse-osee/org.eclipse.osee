@@ -29,10 +29,24 @@ public class ArtifactTypesSearchItem extends WorldSearchItem {
       this.artifactTypeNames = artifactTypeNames;
    }
 
+   public ArtifactTypesSearchItem(ArtifactTypesSearchItem artifactTypesSearchItem) {
+      super(artifactTypesSearchItem);
+      this.artifactTypeNames = artifactTypesSearchItem.artifactTypeNames;
+   }
+
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (artifactTypeNames == null || artifactTypeNames.size() == 0) throw new OseeArgumentException(
             "Inavlid search \"" + getName() + "\"");
       return ArtifactQuery.getArtifactsFromTypes(artifactTypeNames, AtsPlugin.getAtsBranch());
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new ArtifactTypesSearchItem(this);
+   }
+
 }

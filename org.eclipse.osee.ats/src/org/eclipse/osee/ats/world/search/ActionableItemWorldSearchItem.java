@@ -68,6 +68,15 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       this.recurseChildren = recurseChildren;
    }
 
+   public ActionableItemWorldSearchItem(ActionableItemWorldSearchItem item) {
+      super(item);
+      this.actionItemNames = item.actionItemNames;
+      this.actionItems = item.actionItems;
+      this.showFinished = item.showFinished;
+      this.showAction = item.showAction;
+      this.recurseChildren = item.recurseChildren;
+   }
+
    public Collection<String> getProductSearchName() {
       if (actionItemNames != null)
          return actionItemNames;
@@ -128,8 +137,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
                Operator.NOT_EQUAL));
       }
 
-      List<Artifact> artifacts =
-            ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
 
       if (selectedShowAction) {
          return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.ActionToWorkflow_Action);
@@ -197,6 +205,14 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
     */
    public void setSelectedActionItems(Set<ActionableItemArtifact> selectedActionItems) {
       this.selectedActionItems = selectedActionItems;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new ActionableItemWorldSearchItem(this);
    }
 
 }

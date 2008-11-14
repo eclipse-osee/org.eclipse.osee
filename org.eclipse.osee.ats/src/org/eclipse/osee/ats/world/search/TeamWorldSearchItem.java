@@ -43,7 +43,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    private Collection<TeamDefinitionArtifact> teamDefs;
    private Set<TeamDefinitionArtifact> selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();
    private boolean selectedRecurseChildren; // Used to not corrupt original values
-   private boolean recurseChildren;
+   private final boolean recurseChildren;
    private boolean selectedShowFinished; // Used to not corrupt original values
    private boolean showFinished;
    private boolean selectedShowAction; // Used to not corrupt original values
@@ -72,6 +72,16 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       this.showFinished = showFinished;
       this.showAction = showAction;
       this.changeType = null;
+   }
+
+   public TeamWorldSearchItem(TeamWorldSearchItem teamWorldSearchItem) {
+      super(teamWorldSearchItem);
+      this.recurseChildren = teamWorldSearchItem.recurseChildren;
+      this.teamDefNames = teamWorldSearchItem.teamDefNames;
+      this.teamDefs = teamWorldSearchItem.teamDefs;
+      this.showFinished = teamWorldSearchItem.showFinished;
+      this.showAction = teamWorldSearchItem.showAction;
+      this.changeType = teamWorldSearchItem.changeType;
    }
 
    public TeamWorldSearchItem(String displayName, TeamDefinitionArtifact teamDef, boolean showFinished, boolean showAction, boolean recurseChildren) {
@@ -147,8 +157,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
          criteria.add(new AttributeCriteria(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name()));
       }
 
-      List<Artifact> artifacts =
-            ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
 
       if (selectedShowAction) {
          return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.ActionToWorkflow_Action);
@@ -202,6 +211,14 @@ public class TeamWorldSearchItem extends WorldSearchItem {
     */
    public void setSelectedTeamDefs(Set<TeamDefinitionArtifact> selectedTeamDefs) {
       this.selectedTeamDefs = selectedTeamDefs;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new TeamWorldSearchItem(this);
    }
 
 }

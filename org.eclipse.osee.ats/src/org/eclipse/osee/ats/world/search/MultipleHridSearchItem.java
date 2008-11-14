@@ -47,6 +47,11 @@ public class MultipleHridSearchItem extends WorldSearchItem {
       this("Search by ID(s)");
    }
 
+   public MultipleHridSearchItem(MultipleHridSearchItem multipleHridSearchItem) {
+      super(multipleHridSearchItem);
+      this.enteredIds = multipleHridSearchItem.enteredIds;
+   }
+
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       List<String> hridGuids = new ArrayList<String>();
@@ -75,8 +80,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
       }
 
       if (hridGuids.size() > 0) {
-         Collection<Artifact> arts =
-               ArtifactQuery.getArtifactsFromIds(hridGuids, AtsPlugin.getAtsBranch());
+         Collection<Artifact> arts = ArtifactQuery.getArtifactsFromIds(hridGuids, AtsPlugin.getAtsBranch());
          if (isCancelled()) return EMPTY_SET;
          if (arts != null) resultArts.addAll(arts);
       }
@@ -114,6 +118,14 @@ public class MultipleHridSearchItem extends WorldSearchItem {
     */
    public String getEnteredIds() {
       return enteredIds;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new MultipleHridSearchItem(this);
    }
 
 }

@@ -40,6 +40,11 @@ public class MyWorldSearchItem extends UserSearchItem {
       super(name, user);
    }
 
+   public MyWorldSearchItem(MyWorldSearchItem myWorldSearchItem) {
+      super(myWorldSearchItem);
+   }
+
+   @Override
    public Collection<Artifact> searchIt(User user) throws OseeCoreException {
       Set<Artifact> assigned =
             RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationEnumeration.Users_Artifact);
@@ -54,7 +59,15 @@ public class MyWorldSearchItem extends UserSearchItem {
             artifactsToReturn.add(artifact);
          }
       }
-
       return artifactsToReturn;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new MyWorldSearchItem(this);
+   }
+
 }

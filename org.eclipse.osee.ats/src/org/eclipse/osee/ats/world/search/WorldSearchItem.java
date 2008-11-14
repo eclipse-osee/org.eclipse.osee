@@ -57,6 +57,14 @@ public abstract class WorldSearchItem {
       this.cancelled = false;
    }
 
+   public WorldSearchItem(WorldSearchItem worldSearchItem) {
+      this.name = worldSearchItem.name;
+      this.cancelled = worldSearchItem.cancelled;
+      this.loadView = worldSearchItem.loadView;
+   }
+
+   public abstract WorldSearchItem copy();
+
    public String getName() {
       return name;
    }

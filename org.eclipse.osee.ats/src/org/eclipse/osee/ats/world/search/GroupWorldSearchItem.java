@@ -37,6 +37,12 @@ public class GroupWorldSearchItem extends WorldSearchItem {
       this("Groups Search", null);
    }
 
+   public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem) {
+      super(groupWorldSearchItem);
+      this.group = groupWorldSearchItem.group;
+      this.groupName = groupWorldSearchItem.groupName;
+   }
+
    public String getGroupSearchName() {
       if (group != null)
          return group.getDescriptiveName();
@@ -83,7 +89,7 @@ public class GroupWorldSearchItem extends WorldSearchItem {
       GroupListDialog gld = new GroupListDialog(Display.getCurrent().getActiveShell());
       int result = gld.open();
       if (result == 0) {
-         selectedGroup = (Artifact) gld.getSelection();
+         selectedGroup = gld.getSelection();
          return;
       } else {
          selectedGroup = null;
@@ -96,6 +102,14 @@ public class GroupWorldSearchItem extends WorldSearchItem {
     */
    public void setSelectedGroup(Artifact selectedGroup) {
       this.selectedGroup = selectedGroup;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new GroupWorldSearchItem(this);
    }
 
 }

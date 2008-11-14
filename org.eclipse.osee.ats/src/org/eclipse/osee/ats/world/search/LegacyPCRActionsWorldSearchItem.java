@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
  * @author Donald G. Dunne
  */
 public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
-   private boolean returnActions;
+   private final boolean returnActions;
    private final Collection<String> pcrIds;
    private final Collection<TeamDefinitionArtifact> teamDefs;
 
@@ -41,6 +41,13 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
 
    public LegacyPCRActionsWorldSearchItem(Collection<TeamDefinitionArtifact> teamDefs, boolean returnActions) {
       this(null, teamDefs, returnActions);
+   }
+
+   public LegacyPCRActionsWorldSearchItem(LegacyPCRActionsWorldSearchItem legacyPCRActionsWorldSearchItem) {
+      super(legacyPCRActionsWorldSearchItem);
+      this.returnActions = legacyPCRActionsWorldSearchItem.returnActions;
+      this.pcrIds = legacyPCRActionsWorldSearchItem.pcrIds;
+      this.teamDefs = legacyPCRActionsWorldSearchItem.teamDefs;
    }
 
    @Override
@@ -67,4 +74,13 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
 
       return ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 200, criteria);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new LegacyPCRActionsWorldSearchItem(this);
+   }
+
 }

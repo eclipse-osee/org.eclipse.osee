@@ -67,7 +67,7 @@ public class WorldEditorInput implements IEditorInput {
          if (input.getSearchItem() == null) {
             return false;
          }
-         //         return input.getSearchItem().equals(getSearchItem());
+         return input.getSearchItem().equals(getSearchItem());
       }
       return false;
    }

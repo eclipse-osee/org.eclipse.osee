@@ -41,6 +41,13 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
       this.showWorkflow = showWorkflow;
    }
 
+   public ShowOpenWorkflowsByArtifactType(ShowOpenWorkflowsByArtifactType showOpenWorkflowsByArtifactType) {
+      super(showOpenWorkflowsByArtifactType);
+      this.artifactTypeName = showOpenWorkflowsByArtifactType.artifactTypeName;
+      this.showFinished = showOpenWorkflowsByArtifactType.showFinished;
+      this.showWorkflow = showOpenWorkflowsByArtifactType.showWorkflow;
+   }
+
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
 
@@ -63,4 +70,13 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
          return artifacts;
       }
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new ShowOpenWorkflowsByArtifactType(this);
+   }
+
 }

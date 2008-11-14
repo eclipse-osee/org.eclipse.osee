@@ -43,6 +43,10 @@ public class AtsUserActivelyAssignedSearch extends UserSearchItem {
       setLoadView(loadView);
    }
 
+   public AtsUserActivelyAssignedSearch(AtsUserActivelyAssignedSearch atsActivelyAssignedSearch) {
+      super(atsActivelyAssignedSearch);
+   }
+
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
@@ -66,8 +70,7 @@ public class AtsUserActivelyAssignedSearch extends UserSearchItem {
       smaCriteria.add(currentStateSearch);
 
       if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getArtifacts(smaCriteria, true, AtsPlugin.getAtsBranch());
+      Collection<Artifact> arts = ArtifactPersistenceManager.getArtifacts(smaCriteria, true, AtsPlugin.getAtsBranch());
 
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamMember_Team));
@@ -76,4 +79,13 @@ public class AtsUserActivelyAssignedSearch extends UserSearchItem {
       if (isCancelled()) return EMPTY_SET;
       return arts;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new AtsUserActivelyAssignedSearch(this);
+   }
+
 }

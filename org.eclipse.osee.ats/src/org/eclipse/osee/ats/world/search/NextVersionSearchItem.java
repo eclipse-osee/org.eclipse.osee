@@ -42,8 +42,13 @@ public class NextVersionSearchItem extends WorldSearchItem {
    }
 
    public NextVersionSearchItem(String name, TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
-      super(name != null ? name : "Workflows Targeted-For Next Version - " + loadView, loadView);
+      super(name != null ? name : "Workflows Targeted-For Next Version", loadView);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
+   }
+
+   public NextVersionSearchItem(NextVersionSearchItem nextVersionSearchItem) {
+      super(nextVersionSearchItem);
+      this.teamDefHoldingVersions = nextVersionSearchItem.teamDefHoldingVersions;
    }
 
    @Override
@@ -112,6 +117,14 @@ public class NextVersionSearchItem extends WorldSearchItem {
     */
    public void setSelectedTeamDef(TeamDefinitionArtifact selectedTeamDef) {
       this.selectedTeamDef = selectedTeamDef;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new NextVersionSearchItem(this);
    }
 
 }

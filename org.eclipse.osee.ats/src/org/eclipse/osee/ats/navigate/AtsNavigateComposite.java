@@ -57,10 +57,11 @@ public class AtsNavigateComposite extends XNavigateComposite {
    protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (item instanceof SearchNavigateItem) {
          WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWorldSearchItem();
-         if (worldSearchItem.getLoadView() == LoadView.WorldEditor)
-            WorldEditor.open(worldSearchItem, SearchType.Search, null, tableLoadOptions);
-         else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) TaskEditor.open(new TaskEditorSearchItemProvider(
-               worldSearchItem, tableLoadOptions));
+         if (worldSearchItem.getLoadView() == LoadView.WorldEditor) {
+            WorldEditor.open(worldSearchItem.copy(), SearchType.Search, null, tableLoadOptions);
+         } else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) {
+            TaskEditor.open(new TaskEditorSearchItemProvider(worldSearchItem.copy(), tableLoadOptions));
+         }
       } else
          super.handleDoubleClick(item, tableLoadOptions);
    }

@@ -37,6 +37,11 @@ public class MyOrigSearchItem extends UserSearchItem {
       this.originatedState = originatedState;
    }
 
+   public MyOrigSearchItem(MyOrigSearchItem myOrigSearchItem) {
+      super(myOrigSearchItem);
+      this.originatedState = myOrigSearchItem.originatedState;
+   }
+
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
 
@@ -52,7 +57,15 @@ public class MyOrigSearchItem extends UserSearchItem {
             }
          }
       }
-
       return artifactsToReturn;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new MyOrigSearchItem(this);
+   }
+
 }

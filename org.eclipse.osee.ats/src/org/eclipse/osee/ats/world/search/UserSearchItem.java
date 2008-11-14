@@ -34,6 +34,12 @@ public abstract class UserSearchItem extends WorldSearchItem {
       this.user = user;
    }
 
+   public UserSearchItem(UserSearchItem userSearchItem) {
+      super(userSearchItem);
+      this.user = userSearchItem.user;
+      this.selectedUser = userSearchItem.selectedUser;
+   }
+
    @Override
    public String getSelectedName(SearchType searchType) {
       return String.format("%s - %s", super.getSelectedName(searchType), getUserSearchName());
@@ -89,6 +95,39 @@ public abstract class UserSearchItem extends WorldSearchItem {
     */
    public void setSelectedUser(User selectedUser) {
       this.selectedUser = selectedUser;
+   }
+
+   /**
+    * @return the user
+    */
+   public User getDefaultUser() {
+      return user;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof UserSearchItem) {
+         UserSearchItem wsi = (UserSearchItem) obj;
+         if (!getClass().equals(obj.getClass()) || !wsi.getName().equals(getName()) || wsi.getLoadView() != getLoadView()) {
+            return false;
+         }
+         if (getDefaultUser() != null && wsi.getDefaultUser() != null) {
+            if (!wsi.getDefaultUser().equals(getDefaultUser())) return false;
+         }
+         return true;
+      }
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      return getName().hashCode() + (getDefaultUser() != null ? getDefaultUser().hashCode() : 0) * 13;
    }
 
 }

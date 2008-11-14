@@ -35,6 +35,11 @@ public class StateWorldSearchItem extends WorldSearchItem {
 
    }
 
+   public StateWorldSearchItem(StateWorldSearchItem stateWorldSearchItem) {
+      super(stateWorldSearchItem);
+      this.stateClass = stateWorldSearchItem.stateClass;
+   }
+
    public String getStateSearchName() {
       if (stateClass != null)
          return stateClass;
@@ -84,6 +89,14 @@ public class StateWorldSearchItem extends WorldSearchItem {
     */
    public void setSelectedStateClass(String selectedStateClass) {
       this.selectedStateClass = selectedStateClass;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new StateWorldSearchItem(this);
    }
 
 }

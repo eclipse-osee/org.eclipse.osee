@@ -35,6 +35,10 @@ public class ArtIdSearchItem extends WorldSearchItem {
       super("Search by Guid/ArtId on Default Branch");
    }
 
+   public ArtIdSearchItem(ArtIdSearchItem artIdSearchItem) {
+      super(artIdSearchItem);
+   }
+
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
@@ -74,6 +78,14 @@ public class ArtIdSearchItem extends WorldSearchItem {
     */
    public String getEnteredIds() {
       return enteredIds;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new ArtIdSearchItem(this);
    }
 
 }

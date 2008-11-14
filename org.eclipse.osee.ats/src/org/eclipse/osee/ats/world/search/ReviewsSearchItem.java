@@ -41,6 +41,10 @@ public class ReviewsSearchItem extends UserSearchItem {
       super(name, user);
    }
 
+   public ReviewsSearchItem(ReviewsSearchItem reviewsSearchItem) {
+      super(reviewsSearchItem);
+   }
+
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
 
@@ -61,9 +65,17 @@ public class ReviewsSearchItem extends UserSearchItem {
       allCriteria.add(reviewArtSearch);
 
       if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getArtifacts(allCriteria, true, AtsPlugin.getAtsBranch());
+      Collection<Artifact> arts = ArtifactPersistenceManager.getArtifacts(allCriteria, true, AtsPlugin.getAtsBranch());
       if (isCancelled()) return EMPTY_SET;
       return arts;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new ReviewsSearchItem(this);
+   }
+
 }

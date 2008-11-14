@@ -35,6 +35,10 @@ public class MyCompletedSearchItem extends UserSearchItem {
       super(name, user);
    }
 
+   public MyCompletedSearchItem(MyCompletedSearchItem myCompletedSearchItem) {
+      super(myCompletedSearchItem);
+   }
+
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       if (isCancelled()) return EMPTY_SET;
@@ -44,4 +48,13 @@ public class MyCompletedSearchItem extends UserSearchItem {
       return ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), valueToMatch,
             AtsPlugin.getAtsBranch());
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new MyCompletedSearchItem(this);
+   }
+
 }

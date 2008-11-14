@@ -40,11 +40,17 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    }
 
    public VersionTargetedForTeamSearchItem(String name, TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
-      super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version - " + loadView,
-            loadView);
+      super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version", loadView);
       this.teamDef = teamDef;
       this.versionArt = versionArt;
       this.returnAction = returnAction;
+   }
+
+   public VersionTargetedForTeamSearchItem(VersionTargetedForTeamSearchItem versionTargetedForTeamSearchItem) {
+      super(versionTargetedForTeamSearchItem);
+      this.versionArt = versionTargetedForTeamSearchItem.versionArt;
+      this.returnAction = versionTargetedForTeamSearchItem.returnAction;
+      this.teamDef = versionTargetedForTeamSearchItem.teamDef;
    }
 
    @Override
@@ -109,6 +115,14 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
     */
    public void setSelectedVersionArt(VersionArtifact selectedVersionArt) {
       this.selectedVersionArt = selectedVersionArt;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new VersionTargetedForTeamSearchItem(this);
    }
 
 }

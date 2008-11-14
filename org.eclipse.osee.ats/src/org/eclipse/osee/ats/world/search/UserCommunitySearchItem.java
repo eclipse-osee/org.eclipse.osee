@@ -46,6 +46,12 @@ public class UserCommunitySearchItem extends WorldSearchItem {
       this("User Community Search", null);
    }
 
+   public UserCommunitySearchItem(UserCommunitySearchItem userCommunitySearchItem) {
+      super(userCommunitySearchItem);
+      this.userComm = userCommunitySearchItem.userComm;
+      this.userCommName = userCommunitySearchItem.userCommName;
+   }
+
    public String getGroupSearchName() {
       if (userComm != null)
          return userComm;
@@ -112,6 +118,14 @@ public class UserCommunitySearchItem extends WorldSearchItem {
     */
    public void setSelectedUserComm(String selectedUserComm) {
       this.selectedUserComm = selectedUserComm;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new UserCommunitySearchItem(this);
    }
 
 }

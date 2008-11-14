@@ -586,12 +586,16 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       };
       toTask.setToolTipText("Re-display as Tasks");
 
-      actionToToolItem(toolBar, new NewAction());
+      actionToToolItem(toolBar, refreshAction);
+      new ToolItem(toolBar, SWT.SEPARATOR);
       actionToToolItem(toolBar, expandAllAction);
+      actionToToolItem(toolBar, worldXViewer.getCustomizeAction());
+      new ToolItem(toolBar, SWT.SEPARATOR);
       actionToToolItem(toolBar, newWorldEditor);
       actionToToolItem(toolBar, newWorldEditorSelected);
-      actionToToolItem(toolBar, refreshAction);
-      actionToToolItem(toolBar, worldXViewer.getCustomizeAction());
+      new ToolItem(toolBar, SWT.SEPARATOR);
+      actionToToolItem(toolBar, new NewAction());
+      new ToolItem(toolBar, SWT.SEPARATOR);
 
       createToolBarPulldown(toolBar, toolBar.getParent());
    }

@@ -56,6 +56,14 @@ public class TeamVersionWorldSearchItem extends WorldSearchItem {
       this.recurseChildren = recurseChildren;
    }
 
+   public TeamVersionWorldSearchItem(TeamVersionWorldSearchItem teamVersionWorldSearchItem) {
+      super(teamVersionWorldSearchItem);
+      this.teamDefNames = teamVersionWorldSearchItem.teamDefNames;
+      this.showFinished = teamVersionWorldSearchItem.showFinished;
+      this.showAction = teamVersionWorldSearchItem.showAction;
+      this.recurseChildren = teamVersionWorldSearchItem.recurseChildren;
+   }
+
    public Collection<String> getProductSearchName() {
       if (teamDefNames != null)
          return Arrays.asList(teamDefNames);
@@ -202,6 +210,14 @@ public class TeamVersionWorldSearchItem extends WorldSearchItem {
     */
    public void setSelectedVersion(VersionArtifact selectedVersion) {
       this.selectedVersion = selectedVersion;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new TeamVersionWorldSearchItem(this);
    }
 
 }

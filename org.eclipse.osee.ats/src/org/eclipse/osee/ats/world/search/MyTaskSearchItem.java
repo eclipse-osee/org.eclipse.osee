@@ -36,6 +36,10 @@ public class MyTaskSearchItem extends UserSearchItem {
       setLoadView(loadView);
    }
 
+   public MyTaskSearchItem(MyTaskSearchItem myTaskSearchItem) {
+      super(myTaskSearchItem);
+   }
+
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       Set<Artifact> assigned =
@@ -47,7 +51,15 @@ public class MyTaskSearchItem extends UserSearchItem {
             artifactsToReturn.add(artifact);
          }
       }
-
       return artifactsToReturn;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return new MyTaskSearchItem(this);
+   }
+
 }
