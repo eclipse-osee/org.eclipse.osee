@@ -62,12 +62,12 @@ alter session set create_stored_outlines = false;
 
 	
 	-- create the outline
-declare begin dbms_outln.create_outline(4179948584, 0); end;
+declare begin dbms_outln.create_outline(hash_value, child_number); end;
 
 	-- now test for success
 	select * from dba_outlines;
 	select * from user_outlines;
-
+	select * from dba_outline_hints where name = 'SYS_OUTLINE_08111414044364301' order by join_pos;
 
 =======  table information  =======
 select * from dba_tables where owner='OSEE' and table_name='OSEE_DEFINE_TXS';
