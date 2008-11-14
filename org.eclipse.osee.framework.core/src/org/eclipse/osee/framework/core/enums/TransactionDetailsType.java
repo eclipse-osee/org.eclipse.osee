@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.transaction;
+package org.eclipse.osee.framework.core.enums;
 
 /**
  * @author Jeff C. Phillips
