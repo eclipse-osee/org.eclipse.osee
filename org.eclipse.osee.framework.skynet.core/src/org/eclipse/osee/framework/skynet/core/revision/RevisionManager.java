@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
@@ -32,8 +31,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
@@ -48,7 +45,6 @@ import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExis
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -83,7 +79,7 @@ public class RevisionManager {
          "SELECT arv2.gamma_id, txs1.mod_type FROM osee_artifact ar1, osee_artifact_version arv2, osee_txs txs1, osee_tx_details txd4 WHERE ar1.art_id = ? AND ar1.art_id = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd4.transaction_id AND txd4.transaction_id > ? AND txd4.transaction_id <= ? AND txd4.branch_id = ?";
 
    private static final String GET_DELETED_ARTIFACTS =
-         "SELECT txd10.branch_id, att8.value AS name, art5.art_id, ary6.name AS type_name, arv7.modification_id, arv7.gamma_id, (SELECT MAX(txd3.transaction_id) FROM osee_ARTIFACT_VERSION arv1,osee_TXS txs2,osee_TX_DETAILS txd3 WHERE arv1.art_id=arv7.art_id AND arv1.modification_id<> 3 AND arv1.gamma_id=txs2.gamma_id AND txs2.transaction_id=txd3.transaction_id AND txd3.branch_id=txd10.branch_id AND txd3.transaction_id< txd10.transaction_id) as last_good_transaction, txs4.transaction_id as deleted_transaction FROM osee_txs txs4,osee_ARTIFACT art5, osee_ARTIFACT_TYPE ary6, osee_ARTIFACT_VERSION arv7, osee_ATTRIBUTE att8,osee_TXS txs9,osee_TX_DETAILS txd10, osee_TX_DETAILS txd11, (SELECT MAX(att11.gamma_id) as gamma_id FROM osee_ATTRIBUTE att11, osee_ATTRIBUTE_TYPE aty12 WHERE att11.attr_type_id=aty12.attr_type_id AND aty12.name=? GROUP BY att11.art_id) as ATTR_GAMMA WHERE txd11.branch_id = txd10.branch_id AND txd11.transaction_id = txs4.transaction_id AND txs4.gamma_id = arv7.gamma_id AND txd10.branch_id=? AND txd10.transaction_id=txs9.transaction_id AND txs9.transaction_id > ?  AND txs9.transaction_id <= ? AND txs9.gamma_id=arv7.gamma_id AND arv7.art_id=art5.art_id AND arv7.modification_id=? AND art5.art_type_id=ary6.art_type_id AND art5.art_id=att8.art_id AND att8.gamma_id= ATTR_GAMMA.gamma_id";
+         "SELECT txd10.branch_id, att8.value AS name, art5.art_id, ary6.name AS type_name, arv7.modification_id, arv7.gamma_id, (SELECT MAX(txd3.transaction_id) FROM osee_ARTIFACT_VERSION arv1,osee_TXS txs2,osee_TX_DETAILS txd3 WHERE arv1.art_id=arv7.art_id AND arv1.modification_id<> 3 AND arv1.gamma_id=txs2.gamma_id AND txs2.transaction_id=txd3.transaction_id AND txd3.branch_id=txd10.branch_id AND txd3.transaction_id< txd10.transaction_id) last_good_transaction, txs4.transaction_id as deleted_transaction FROM osee_txs txs4,osee_ARTIFACT art5, osee_ARTIFACT_TYPE ary6, osee_ARTIFACT_VERSION arv7, osee_ATTRIBUTE att8,osee_TXS txs9,osee_TX_DETAILS txd10, osee_TX_DETAILS txd11, (SELECT MAX(att11.gamma_id) as gamma_id FROM osee_ATTRIBUTE att11, osee_ATTRIBUTE_TYPE aty12 WHERE att11.attr_type_id=aty12.attr_type_id AND aty12.name=? GROUP BY att11.art_id) ATTR_GAMMA WHERE txd11.branch_id = txd10.branch_id AND txd11.transaction_id = txs4.transaction_id AND txs4.gamma_id = arv7.gamma_id AND txd10.branch_id=? AND txd10.transaction_id=txs9.transaction_id AND txs9.transaction_id > ?  AND txs9.transaction_id <= ? AND txs9.gamma_id=arv7.gamma_id AND arv7.art_id=art5.art_id AND arv7.modification_id=? AND art5.art_type_id=ary6.art_type_id AND art5.art_id=att8.art_id AND att8.gamma_id= ATTR_GAMMA.gamma_id";
 
    private static final Table TX_DATA = new Table("tx_data");
    private static final String SELECT_TRANSACTIONS_FOR_ARTIFACT =
@@ -101,7 +97,6 @@ public class RevisionManager {
                TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(
                TRANSACTIONS_TABLE, "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + ")" + TX_DATA + " WHERE " + TX_DATA.column("transaction_id") + "<?" + " ORDER BY " + TX_DATA.column("transaction_id") + " DESC";
 
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RevisionManager.class);
    private static final Pair<String, ArtifactType> UNKNOWN_DATA = new Pair<String, ArtifactType>(null, null);
 
    private Map<Integer, Set<Integer>> commitArtifactIdToTransactionId;
@@ -332,8 +327,8 @@ public class RevisionManager {
 
       try {
          Query.acquireCollection(revisions, new AttributeChangeProcessor(changeType), sql, dataList.toArray());
-      } catch (OseeDataStoreException e) {
-         logger.log(Level.SEVERE, e.toString(), e);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
 
       return revisions;
@@ -347,7 +342,7 @@ public class RevisionManager {
 
       Collection<RelationLinkChange> revisions = new LinkedList<RelationLinkChange>();
       String sql =
-            "SELECT gamma_id, rationale, modification_id, art_id, rel_link_id, order_val, type_name, side_name FROM (SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "," + RELATION_LINK_VERSION_TABLE.column("rationale") + "," + RELATION_LINK_VERSION_TABLE.column("modification_id") + "," + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AS art_id, " + RELATION_LINK_VERSION_TABLE.column("rel_link_id") + "," + RELATION_LINK_VERSION_TABLE.column("a_order") + " AS order_val, " + RELATION_LINK_TYPE_TABLE.column("type_name") + "," + RELATION_LINK_TYPE_TABLE.column("a_name") + " AS side_name" + " FROM " + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + ",(SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?) as T2 WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T2.branch_id" + " AND " + RELATION_LINK_VERSION_TABLE.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND b_art_id = ?) as aliasForSyntax UNION ALL " + "(SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "," + RELATION_LINK_VERSION_TABLE.column("rationale") + "," + RELATION_LINK_VERSION_TABLE.column("modification_id") + "," + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AS art_id, " + RELATION_LINK_VERSION_TABLE.column("rel_link_id") + "," + RELATION_LINK_VERSION_TABLE.column("b_order") + " AS order_val, " + RELATION_LINK_TYPE_TABLE.column("type_name") + "," + RELATION_LINK_TYPE_TABLE.column("b_name") + " AS side_name" + " FROM " + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + ",(SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?) as T2 WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T2.branch_id" + " AND " + RELATION_LINK_VERSION_TABLE.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND a_art_id = ?)" + " ORDER BY gamma_id DESC";
+            "SELECT gamma_id, rationale, modification_id, art_id, rel_link_id, order_val, type_name, side_name FROM (SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "," + RELATION_LINK_VERSION_TABLE.column("rationale") + "," + RELATION_LINK_VERSION_TABLE.column("modification_id") + "," + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AS art_id, " + RELATION_LINK_VERSION_TABLE.column("rel_link_id") + "," + RELATION_LINK_VERSION_TABLE.column("a_order") + " AS order_val, " + RELATION_LINK_TYPE_TABLE.column("type_name") + "," + RELATION_LINK_TYPE_TABLE.column("a_name") + " AS side_name" + " FROM " + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + ",(SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?) T2 WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T2.branch_id" + " AND " + RELATION_LINK_VERSION_TABLE.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND b_art_id = ?) aliasForSyntax UNION ALL " + "(SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "," + RELATION_LINK_VERSION_TABLE.column("rationale") + "," + RELATION_LINK_VERSION_TABLE.column("modification_id") + "," + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AS art_id, " + RELATION_LINK_VERSION_TABLE.column("rel_link_id") + "," + RELATION_LINK_VERSION_TABLE.column("b_order") + " AS order_val, " + RELATION_LINK_TYPE_TABLE.column("type_name") + "," + RELATION_LINK_TYPE_TABLE.column("b_name") + " AS side_name" + " FROM " + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + ",(SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?) T2 WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T2.branch_id" + " AND " + RELATION_LINK_VERSION_TABLE.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND a_art_id = ?)" + " ORDER BY gamma_id DESC";
 
       Collection<Object> dataList = new LinkedList<Object>();
       dataList.add(fromTransactionNumber);
@@ -367,8 +362,8 @@ public class RevisionManager {
          Query.acquireCollection(revisions,
                new RelationLinkChangeProcessor(changeType, artifactNameDescriptorResolver), sql, dataList.toArray());
 
-      } catch (OseeDataStoreException e) {
-         logger.log(Level.SEVERE, e.toString(), e);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
 
       return revisions;
@@ -443,7 +438,7 @@ public class RevisionManager {
          Query.acquireCollection(deletedArtifacts, new ArtifactChangeProcessor(baseParentTransactionId,
                headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, "Name",
                fromTransactionId.getBranchId(), fromTransactionId.getTransactionNumber(),
-               toTransactionId.getTransactionNumber(), DELETED.getValue());
+               toTransactionId.getTransactionNumber(), ModificationType.DELETED.getValue());
       } catch (OseeDataStoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
@@ -516,7 +511,7 @@ public class RevisionManager {
             ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
             try {
                String sql =
-                     "SELECT min(transaction_id) as base_tx, " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
+                     "SELECT min(osee_tx_details.transaction_id) as base_tx, " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
                            artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
 
                chStmt.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(),
@@ -591,7 +586,6 @@ public class RevisionManager {
       private final TransactionId baseParentTransactionId;
       private final TransactionId headParentTransactionId;
       private TransactionId fromTransactionId;
-      private TransactionId toTransactionId;
 
       /**
        * This constructor is to be used for processing deleted artifact change data, and is appropriate for all
@@ -647,7 +641,7 @@ public class RevisionManager {
 
       public AttributeChange process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
          ModificationType modType = ModificationType.getMod(chStmt.getInt("modification_id"));
-         if (modType == DELETED) {
+         if (modType == ModificationType.DELETED) {
             String wasValue = chStmt.getString("was_value");
             return new AttributeChange(changeType, chStmt.getInt("attr_id"), chStmt.getLong("gamma_id"),
                   chStmt.getString("name"), wasValue == null ? "" : wasValue);
@@ -696,7 +690,7 @@ public class RevisionManager {
             artifactData = UNKNOWN_DATA;
 
          String relName = chStmt.getString("type_name") + " (" + chStmt.getString("side_name") + ")";
-         if (modType == DELETED) {
+         if (modType == ModificationType.DELETED) {
             return new RelationLinkChange(changeType, chStmt.getInt("rel_link_id"), chStmt.getLong("gamma_id"),
                   relName, artifactData.getKey(), artifactData.getValue());
          } else {
@@ -738,8 +732,8 @@ public class RevisionManager {
             while (chStmt.next()) {
                otherBranches.add(BranchManager.getBranch(chStmt.getInt("branch_id")));
             }
-         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.toString(), e);
+         } catch (Exception ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          } finally {
             chStmt.close();
          }
