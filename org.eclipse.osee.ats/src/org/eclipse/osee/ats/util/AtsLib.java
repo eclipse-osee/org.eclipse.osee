@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -205,7 +204,6 @@ public class AtsLib implements IAtsLib {
       NewAction newAction = new NewAction(actionableItemName);
       newAction.setInitialDescription(initialDescription);
       newAction.run();
-
    }
 
    public static void openAtsAction(final Artifact art, final AtsOpenOption option) {
@@ -213,35 +211,31 @@ public class AtsLib implements IAtsLib {
    }
 
    public void openATSAction(final Artifact art, final AtsOpenOption option) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            try {
-               if (art instanceof ActionArtifact) {
-                  ActionArtifact actionArt = (ActionArtifact) art;
-                  Collection<TeamWorkFlowArtifact> teams = actionArt.getTeamWorkFlowArtifacts();
-                  if (option == AtsOpenOption.OpenAll)
-                     for (TeamWorkFlowArtifact team : teams)
-                        SMAEditor.editArtifact(team);
-                  else if (option == AtsOpenOption.AtsWorld)
-                     WorldEditor.open("Action " + actionArt.getHumanReadableId(), Arrays.asList(actionArt));
-                  else if (option == AtsOpenOption.OpenOneOrPopupSelect) {
-                     if (teams.size() == 1)
-                        SMAEditor.editArtifact(teams.iterator().next());
-                     else {
-                        TeamWorkFlowArtifact art = promptSelectTeamWorkflow(actionArt);
-                        if (art != null)
-                           SMAEditor.editArtifact((Artifact) art);
-                        else
-                           return;
-                     }
-                  }
-               } else
-                  SMAEditor.editArtifact(art);
-            } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+      try {
+         if (art instanceof ActionArtifact) {
+            ActionArtifact actionArt = (ActionArtifact) art;
+            Collection<TeamWorkFlowArtifact> teams = actionArt.getTeamWorkFlowArtifacts();
+            if (option == AtsOpenOption.OpenAll)
+               for (TeamWorkFlowArtifact team : teams)
+                  SMAEditor.editArtifact(team);
+            else if (option == AtsOpenOption.AtsWorld)
+               WorldEditor.open("Action " + actionArt.getHumanReadableId(), Arrays.asList(actionArt));
+            else if (option == AtsOpenOption.OpenOneOrPopupSelect) {
+               if (teams.size() == 1)
+                  SMAEditor.editArtifact(teams.iterator().next());
+               else {
+                  TeamWorkFlowArtifact teamArt = promptSelectTeamWorkflow(actionArt);
+                  if (teamArt != null)
+                     SMAEditor.editArtifact((Artifact) teamArt);
+                  else
+                     return;
+               }
             }
-         }
-      });
+         } else
+            SMAEditor.editArtifact(art);
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
    }
 
    public static TeamWorkFlowArtifact promptSelectTeamWorkflow(ActionArtifact actArt) throws OseeCoreException {
