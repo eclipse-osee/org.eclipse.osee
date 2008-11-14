@@ -19,8 +19,10 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
+import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -82,6 +84,21 @@ public class NavigateView extends ViewPart implements IActionable {
    }
 
    protected void createActions() {
+      Action myWorldAction = new Action("My World") {
+
+         @Override
+         public void run() {
+            try {
+               xNavComp.handleDoubleClick(new SearchNavigateItem(null, new MyWorldSearchItem("My World",
+                     UserManager.getUser())), TableLoadOption.None);
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      };
+      myWorldAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("MyWorld.gif"));
+      myWorldAction.setToolTipText("My World");
+
       Action collapseAction = new Action("Collapse All") {
 
          @Override
@@ -132,6 +149,7 @@ public class NavigateView extends ViewPart implements IActionable {
       openChangeReportById.setToolTipText("Open Change Report by Id");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+      toolbarManager.add(myWorldAction);
       toolbarManager.add(collapseAction);
       toolbarManager.add(expandAction);
       toolbarManager.add(openChangeReportById);

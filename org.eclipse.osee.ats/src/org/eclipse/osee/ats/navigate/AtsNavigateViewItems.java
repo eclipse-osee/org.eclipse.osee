@@ -57,7 +57,6 @@ import org.eclipse.osee.ats.world.search.UnReleasedTeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
-import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -87,10 +86,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
    public static AtsNavigateViewItems getInstance() {
       return navigateItems;
-   }
-
-   public WorldSearchItem getMyWorldSearchItem() throws OseeCoreException {
-      return new MyWorldSearchItem("My World", UserManager.getUser());
    }
 
    @Override
