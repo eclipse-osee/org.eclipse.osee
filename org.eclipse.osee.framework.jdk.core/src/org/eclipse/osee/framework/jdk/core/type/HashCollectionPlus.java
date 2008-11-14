@@ -212,6 +212,10 @@ public class HashCollectionPlus<K, V, O> {
       return false;
    }
 
+   public Collection<V> removeValues(K key) {
+      return map.remove(key).object1;
+   }
+
    /**
     * Returns the Collection of items for this key, or null if the key does not exist.
     * 
@@ -283,4 +287,20 @@ public class HashCollectionPlus<K, V, O> {
       return size;
    }
 
+   /**
+    * @param value
+    * @return whether the map contains this value
+    */
+   public boolean containsValue(Object value) {
+      for (ObjectPair<Collection<V>, O> objectPair : map.values()) {
+         if (objectPair != null) {
+            for (V tempValue : objectPair.object1) {
+               if (value.equals(tempValue)) {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
 }

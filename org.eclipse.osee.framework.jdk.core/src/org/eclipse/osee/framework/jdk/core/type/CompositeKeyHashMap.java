@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,8 +25,8 @@ import java.util.Set;
  * @param <KeyTwo>
  * @param <Value>
  */
-public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<CompositeKeyHashMap.CompositeKey<KeyOne, KeyTwo>, Value> {
-
+public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<CompositeKey<KeyOne, KeyTwo>, Value> {
+   private final HashCollection<KeyOne, KeyTwo> signleKeyMap = new HashCollection<KeyOne, KeyTwo>();
    private final Map<CompositeKey<KeyOne, KeyTwo>, Value> map;
 
    private final ThreadLocal<CompositeKey<KeyOne, KeyTwo>> threadLocalKey =
@@ -37,60 +39,8 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
 
          };
 
-   public static final class CompositeKey<A, B> {
-      private A key1;
-      private B key2;
-
-      public CompositeKey() {
-
-      }
-
-      public CompositeKey(A key1, B key2) {
-         setKeys(key1, key2);
-      }
-
-      public A getKey1() {
-         return key1;
-      }
-
-      public B getKey2() {
-         return key2;
-      }
-
-      public CompositeKey<A, B> setKeys(A key1, B key2) {
-         this.key1 = key1;
-         this.key2 = key2;
-         return this;
-      }
-
-      @Override
-      public boolean equals(Object obj) {
-         if (obj instanceof CompositeKey) {
-            final CompositeKey<A, B> otherKey = (CompositeKey<A, B>) obj;
-            return otherKey.key1.equals(key1) && otherKey.key2.equals(key2);
-         }
-         return false;
-      }
-
-      @Override
-      public int hashCode() {
-         int hashCode = 11;
-         hashCode = hashCode * 31 + key1.hashCode();
-         hashCode = hashCode * 31 + key2.hashCode();
-         return hashCode;
-      }
-
-      /* (non-Javadoc)
-       * @see java.lang.Object#toString()
-       */
-      @Override
-      public String toString() {
-         return "key1: \"" + key1 + "\" + key2: \"" + key2 + "\"";
-      }
-   }
-
    public CompositeKeyHashMap() {
-      map = new HashMap<CompositeKey<KeyOne, KeyTwo>, Value>();
+      this(50);
    }
 
    public CompositeKeyHashMap(Map<CompositeKey<KeyOne, KeyTwo>, Value> map) {
@@ -103,18 +53,39 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
 
    public void clear() {
       map.clear();
+      signleKeyMap.clear();
    }
 
-   public boolean containsKey(Object key) {
-      return map.containsKey(key);
+   /* (non-Javadoc)
+    * @see java.util.Map#containsKey(java.lang.Object)
+    */
+   /**
+    * Use this method to determine if any puts(keyOne, anything) have occurred
+    * 
+    * @param keyOne
+    * @return whether the map contains the key keyOne
+    */
+   public boolean containsKey(Object key1) {
+      return signleKeyMap.containsKey((KeyOne) key1);
    }
 
-   public boolean containsKey(KeyOne a, KeyTwo b) {
-      return map.containsKey(threadLocalKey.get().setKeys(a, b));
+   /**
+    * @param key1
+    * @param key2
+    * @return whether the map contains the compound key <keyOne, keyTwo>
+    */
+   public boolean containsKey(KeyOne key1, KeyTwo key2) {
+      return map.containsKey(threadLocalKey.get().setKeys(key1, key2));
    }
 
+   /**
+    * determines if at least one of the compound keys are mapped to this value
+    * 
+    * @param value
+    * @return whether the map contains this value
+    */
    public boolean containsValue(Object value) {
-      return map.containsValue(value);
+      return signleKeyMap.containsValue(value);
    }
 
    public Set<Map.Entry<CompositeKey<KeyOne, KeyTwo>, Value>> entrySet() {
@@ -122,16 +93,20 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    }
 
    public Value get(Object key) {
-      if (CompositeKey.class.isInstance(key)) {
-         return map.get(key);
-      } else {
-         throw new IllegalArgumentException(String.format("Expected Type [CompositeKey], got type [%s].",
-               key.getClass().getName()));
-      }
+      throw new UnsupportedOperationException("use getValues() instead");
    }
 
-   public Value get(KeyOne a, KeyTwo b) {
-      return map.get(threadLocalKey.get().setKeys(a, b));
+   public List<Value> getValues(KeyOne key1) {
+      Collection<KeyTwo> key2s = signleKeyMap.getValues(key1);
+      ArrayList<Value> values = new ArrayList<Value>(key2s.size());
+      for (KeyTwo key2 : key2s) {
+         values.add(get(key1, key2));
+      }
+      return values;
+   }
+
+   public Value get(KeyOne key1, KeyTwo key2) {
+      return map.get(threadLocalKey.get().setKeys(key1, key2));
    }
 
    public boolean isEmpty() {
@@ -143,23 +118,47 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    }
 
    public Value put(CompositeKey<KeyOne, KeyTwo> key, Value value) {
+      signleKeyMap.put(key.getKey1(), key.getKey2());
       return map.put(key, value);
    }
 
-   public Value put(KeyOne a, KeyTwo b, Value value) {
-      return map.put(new CompositeKey<KeyOne, KeyTwo>(a, b), value);
+   public Value put(KeyOne key1, KeyTwo key2, Value value) {
+      signleKeyMap.put(key1, key2);
+      return map.put(threadLocalKey.get().setKeys(key1, key2), value);
    }
 
-   public void putAll(Map<? extends CompositeKey<KeyOne, KeyTwo>, ? extends Value> m) {
-      map.putAll(m);
+   public void putAll(Map<? extends CompositeKey<KeyOne, KeyTwo>, ? extends Value> copyMap) {
+      map.putAll(copyMap);
+
+      for (CompositeKey<KeyOne, KeyTwo> key : copyMap.keySet()) {
+         signleKeyMap.put(key.getKey1(), key.getKey2());
+      }
    }
 
+   /* (non-Javadoc)
+    * @see java.util.Map#remove(java.lang.Object)
+    */
    public Value remove(Object key) {
-      return map.remove(key);
+      throw new UnsupportedOperationException("use removeValues() instead");
    }
 
-   public Value remove(KeyOne a, KeyTwo b) {
-      return map.remove(threadLocalKey.get().setKeys(a, b));
+   /**
+    * @param key1
+    * @return the previous value associated with key, or null if there was no mapping for key.
+    */
+   public Collection<Value> removeValues(KeyOne key1) {
+      Collection<KeyTwo> key2s = signleKeyMap.getValues(key1);
+      ArrayList<Value> values = new ArrayList<Value>(key2s.size());
+      for (KeyTwo key2 : key2s) {
+         values.add(remove(key1, key2));
+      }
+      return values;
+   }
+
+   public Value remove(KeyOne key1, KeyTwo key2) {
+      Value value = map.remove(threadLocalKey.get().setKeys(key1, key2));
+      signleKeyMap.removeValue(key1, key2);
+      return value;
    }
 
    public int size() {
