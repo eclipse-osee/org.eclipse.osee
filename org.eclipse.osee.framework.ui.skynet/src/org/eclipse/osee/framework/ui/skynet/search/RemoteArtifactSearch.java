@@ -58,6 +58,10 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       if (includeDeleted) {
          optionsList.add("Include Deleted");
       }
+
+      if (matchWordOrder) {
+         optionsList.add("Match Word Order");
+      }
       String options = String.format(" - Options:[%s]", StringFormat.listToValueSeparatedString(optionsList, "& "));
       return String.format("%s%s", queryString, optionsList.size() > 0 ? options : "");
    }
