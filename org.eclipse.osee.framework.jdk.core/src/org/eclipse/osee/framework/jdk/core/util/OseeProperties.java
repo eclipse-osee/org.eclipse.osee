@@ -10,80 +10,56 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+
+/**
+ * @author Roberto E. Escobar
+ */
 public class OseeProperties {
+   private static final String OSEE_LOG_DEFAULT = "osee.log.default";
+   private static final String OSEE_CONFIG_FACTORY = "osee.config.factory";
+   private static final String OSEE_JINI_SERVICE_GROUPS = "osee.jini.lookup.groups";
+   private static final String OSEE_JINI_FORCED_REGGIE_SEARCH = "osee.jini.forced.reggie.search";
+   private static final String OSEE_PORT_SCAN_START_PORT = "osee.port.scanner.start.port";
 
-   public static final String OSEE_CONFIG_FACTORY = "OseeConfigFactory";
+   // These need to only be used by the server but for now remain here until OSEE clients stop accessing the database directly
    public static final String OSEE_DB_CONNECTION_ID = "osee.db.connection.id";
-   public static final String OSEE_IMPORT_FROM_DB_SERVICE = "OseeImportFromDbService";
-   public static final String OSEE_TIMING_LOG = "OseeTimingLog";
-   public static final String OSEE_BENCHMARK = "osee.benchmark";
-   public static final String OSEE_JINI_SERVICE_GROUPS = "osee.jini.lookup.groups";
-   public static final String OSEE_CMD_CONSOLE = "osee.cmd.console";
-   public static final String OSEE_LOCAL_HTTP_WORKER_PORT = "osee.local.http.worker.port";
-   public static final String OSEE_DEVELOPER = "osee.developer";
+   protected static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
+   private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
 
-   public static final String OSEE_NO_PROMPT = "OseeNoPrompt";
-   private static final String OSEE_USE_FILE_SPECIFIED_SCHEMAS = "OseeUseFileSpecifiedSchemas";
-   private static final String DONT_LOG_USAGE = "DontLogUsage";
-   private static final String OSEE_DB_CONFIG_INIT_CHOICE = "osee.db.config.init.choice";
-   private static final String OSEE_DB_IMPORT_SKYNET_BRANCH = "osee.db.import.skynet.branch";
-   private static final String OSEE_AUTHENTICATION_PROTOCOL = "osee.authentication.protocol";
-
-   public static final String OSEE_APPLICATION_SERVER_OVERRIDE = "osee.application.server.override";
-   private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
-   private static final String OSEE_LOCAL_APPLICATION_SERVER = "osee.local.application.server";
-   private static final String DEFAULT_OSEE_ARIBTRATION_SERVER = "osee.default.arbitration.server";
-
-   private OseeProperties() {
+   protected OseeProperties() {
    }
 
-   public static void setDeveloper(boolean developer) {
-      System.setProperty(OSEE_DEVELOPER, Boolean.toString(developer));
-   }
-
-   public static boolean isDeveloper() {
-      return getBooleanProperty(OSEE_DEVELOPER);
-   }
-
-   public static boolean isPromptEnabled() {
-      return !getBooleanProperty(OSEE_NO_PROMPT);
-   }
-
-   public static boolean useSchemasSpecifiedInDbConfigFiles() {
-      return getBooleanProperty(OSEE_USE_FILE_SPECIFIED_SCHEMAS);
-   }
-
-   public static boolean isUsageLoggingEnabled() {
-      return System.getProperty(DONT_LOG_USAGE) == null;
-   }
-
-   private static boolean getBooleanProperty(String key) {
-      String propertyValue = System.getProperty(key, "false");
-      if (propertyValue != null && propertyValue.equalsIgnoreCase("true")) {
-         return true;
+   public static int getOseePortScannerStartPort() {
+      int toReturn = 18000;
+      String startPort = System.getProperty(OSEE_PORT_SCAN_START_PORT, "18000");
+      try {
+         toReturn = Integer.parseInt(startPort);
+      } catch (Exception ex) {
+         toReturn = 18000;
       }
-      return false;
-   }
-
-   public static String getDbConfigInitChoice() {
-      return System.getProperty(OSEE_DB_CONFIG_INIT_CHOICE, "");
-   }
-
-   public static boolean getDbOseeSkynetBranchImport() {
-      return getBooleanProperty(OSEE_DB_IMPORT_SKYNET_BRANCH);
-   }
-
-   public static void setDBConfigInitChoice(String value) {
-      System.setProperty(OSEE_DB_CONFIG_INIT_CHOICE, value);
+      return toReturn;
    }
 
    /**
-    * Authentication Protocol to use
+    * Get the default OSEE logging level. The default level is WARNING.
     * 
-    * @return client/server authentication protocol.
+    * @return default logging level
     */
-   public static String getAuthenticationProtocol() {
-      return System.getProperty(OSEE_AUTHENTICATION_PROTOCOL, "trustAll");
+   public static Level getOseeLogDefault() {
+      Level toReturn = Level.WARNING;
+      String level = System.getProperty(OSEE_LOG_DEFAULT, "WARNING");
+      try {
+         toReturn = Level.parse(level);
+      } catch (Exception ex) {
+         toReturn = Level.WARNING;
+      }
+      return toReturn;
    }
 
    /**
@@ -103,34 +79,101 @@ public class OseeProperties {
    }
 
    /**
-    * Gets whether local application server launch is required
+    * Retrieve the application server port
     * 
-    * @return <b>true</b> if local application server launch is required. <b>false</b> if local application server
-    *         launch is not required.
+    * @return the application server port
     */
-   public static boolean isLocalApplicationServerRequired() {
-      return getBooleanProperty(OSEE_LOCAL_APPLICATION_SERVER);
+   public static int getOseeApplicationServerPort() {
+      return Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
    }
 
    /**
-    * Gets value entered for application server override. When specified, this system property sets the URL used to
-    * reference the application server.
+    * OSEE database information id to use for default database connections.
     * 
-    * @return application server URL to use instead of server specified in database
+    * @return the default database information id to use for database connections.
     */
-   public static String getOseeApplicationServerOverride() {
-      return System.getProperty(OSEE_APPLICATION_SERVER_OVERRIDE, "");
+   public static String getOseeDbConnectionId() {
+      return System.getProperty(OSEE_DB_CONNECTION_ID);
    }
 
    /**
-    * Gets value entered as the default arbitration server. When specified, this system property sets default address
-    * and port values for the arbitration server preferences. If it is not specified, the user will be responsible for
-    * setting the arbitration server address and port in the arbitration server preference page.
+    * Retrieves the JINI Groups this system is a part of.
     * 
-    * @return default arbitration server URL to set preferences.
+    * @return JINI service groups
     */
-   public static String getDefaultArbitrationServer() {
-      return System.getProperty(DEFAULT_OSEE_ARIBTRATION_SERVER, "");
+   public static String getOseeJiniServiceGroups() {
+      return System.getProperty(OSEE_JINI_SERVICE_GROUPS);
    }
 
+   /**
+    * Sets the JINI Groups this system is a part of.
+    * 
+    * @param JINI service groups
+    */
+   public static void setOseeJiniServiceGroups(String toStore) {
+      System.setProperty(OSEE_JINI_SERVICE_GROUPS, toStore);
+   }
+
+   /**
+    * @return whether forced reggie search is enabled
+    */
+   public static boolean isOseeJiniForcedReggieSearchEnabled() {
+      return Boolean.valueOf(System.getProperty(OSEE_JINI_FORCED_REGGIE_SEARCH));
+   }
+
+   /**
+    * Retrieves the OSEE Configuration Factory to use.
+    * 
+    * @return OSEE configuration factory to use
+    */
+   public static String getOseeConfigFactory() {
+      return System.getProperty(OSEE_CONFIG_FACTORY);
+   }
+
+   /**
+    * Sets the OSEE Configuration Factory to use.
+    * 
+    * @param OSEE configuration factory to use
+    */
+   public static void setOseeConfigFactory(String value) {
+      System.setProperty(OSEE_CONFIG_FACTORY, value);
+   }
+
+   private void toStringHelper(List<String> list, Class<?> clazz) {
+      Field[] fields = clazz.getDeclaredFields();
+      for (Field field : fields) {
+         int mod = field.getModifiers();
+         if (Modifier.isStatic(mod) && Modifier.isFinal(mod)) {
+            boolean wasModified = false;
+            try {
+               if (!field.isAccessible()) {
+                  field.setAccessible(true);
+                  wasModified = true;
+               }
+               Object object = field.get(this);
+               if (object instanceof String) {
+                  String value = (String) object;
+                  list.add(String.format("%s: %s", value, System.getProperty(value)));
+               }
+            } catch (Exception ex) {
+               // DO NOTHING
+            } finally {
+               if (wasModified) {
+                  field.setAccessible(false);
+               }
+            }
+         }
+      }
+      Class<?> superClazz = clazz.getSuperclass();
+      if (superClazz != null) {
+         toStringHelper(list, superClazz);
+      }
+   }
+
+   public String toString() {
+      List<String> list = new ArrayList<String>();
+      toStringHelper(list, getClass());
+      Collections.sort(list);
+      return StringFormat.listToValueSeparatedString(list, "\n");
+   }
 }
