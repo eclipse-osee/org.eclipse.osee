@@ -16,8 +16,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.resource.provider.common.OptionsProcessor;
  * @author Roberto E. Escobar
  */
 public class ExchangeProvider implements IResourceProvider {
-   private static String BASE_PATH = OseeProperties.getOseeApplicationServerData();
+   private static String BASE_PATH = OseeServerProperties.getOseeApplicationServerData();
    private static String RESOLVED_PATH = BASE_PATH + File.separator + ExchangeLocatorProvider.PROTOCOL + File.separator;
 
    public ExchangeProvider() {

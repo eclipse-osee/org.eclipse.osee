@@ -11,9 +11,6 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.File;
-import org.eclipse.osee.framework.core.data.JoinUtility;
-import org.eclipse.osee.framework.core.data.JoinUtility.ExportImportJoinQuery;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -23,11 +20,11 @@ import org.eclipse.osee.framework.resource.management.Options;
 public class RelationalExportItemWithType extends RelationalExportItem {
 
    private final RelationalExportItem typeExportItem;
-   private final TypeCollector typeCollector;
+   private final ColumnIdCollector typeCollector;
 
    public RelationalExportItemWithType(int priority, String name, String source, String typeColumn, String regularQuery, String typeQuery) {
       super(priority, name, source, regularQuery);
-      this.typeCollector = new TypeCollector(typeColumn);
+      this.typeCollector = new ColumnIdCollector(typeColumn);
       this.typeExportItem = new RelationalExportItem(priority * -1, name + ".type", getSource() + "_type", typeQuery);
    }
 
@@ -55,7 +52,11 @@ public class RelationalExportItemWithType extends RelationalExportItem {
    @Override
    public void cleanUp() {
       this.typeExportItem.cleanUp();
-      this.typeCollector.cleanUp();
+      try {
+         this.typeCollector.cleanUp();
+      } catch (OseeDataStoreException ex) {
+         notifyOnExportException(ex);
+      }
       super.cleanUp();
    }
 
@@ -82,52 +83,5 @@ public class RelationalExportItemWithType extends RelationalExportItem {
       this.typeExportItem.setOptions(getOptions());
       this.typeExportItem.setJoinQueryId(typeCollector.getQueryId());
       this.typeExportItem.run();
-   }
-
-   private final class TypeCollector implements IExportColumnListener {
-      private String columnToListenFor;
-      private ExportImportJoinQuery joinQuery;
-
-      public TypeCollector(String columnToListenFor) {
-         this.columnToListenFor = columnToListenFor;
-         this.joinQuery = null;
-      }
-
-      public void initialize() {
-         this.joinQuery = JoinUtility.createExportImportJoinQuery();
-      }
-
-      public void cleanUp() {
-         try {
-            this.joinQuery.delete(getConnection());
-         } catch (OseeDataStoreException ex) {
-            notifyOnExportException(ex);
-         }
-         this.joinQuery = null;
-      }
-
-      public String getColumnToListenFor() {
-         return columnToListenFor;
-      }
-
-      public void store() throws OseeDataStoreException {
-         if (this.joinQuery != null) {
-            this.joinQuery.store(getConnection());
-         }
-      }
-
-      public int getQueryId() {
-         return this.joinQuery != null ? this.joinQuery.getQueryId() : -1;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.branch.management.export.RelationalExportItem.IExportColumnListener#onColumnExport(java.lang.String, java.sql.ResultSet)
-       */
-      @Override
-      public void onColumnExport(String columnName, ConnectionHandlerStatement chStmt) throws Exception {
-         if (columnName.equals(getColumnToListenFor())) {
-            this.joinQuery.add(chStmt.getInt(columnName), -1);
-         }
-      }
    }
 }
