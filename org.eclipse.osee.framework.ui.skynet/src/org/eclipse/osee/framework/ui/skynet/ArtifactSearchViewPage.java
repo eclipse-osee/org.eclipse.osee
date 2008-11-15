@@ -37,8 +37,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -729,7 +729,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
-            return OseeProperties.isDeveloper() && accessControlManager.checkObjectListPermission(
+            return AccessControlManager.isOseeAdmin() && accessControlManager.checkObjectListPermission(
                   getSelectedArtifacts(viewer), PermissionEnum.WRITE);
          }
       });

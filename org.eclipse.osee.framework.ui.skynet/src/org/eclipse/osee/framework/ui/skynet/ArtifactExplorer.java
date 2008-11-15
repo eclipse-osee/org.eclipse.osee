@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -292,7 +291,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       new ArtifactExplorerDragAndDrop(tree, VIEW_ID);
       parent.layout();
 
-      if (OseeProperties.isDeveloper()) {
+      if (AccessControlManager.isOseeAdmin()) {
          createShowArtIdsAction();
       }
       createSetDefaultBranchAction();
@@ -1327,11 +1326,11 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                final Artifact[] artifactsToBeRelated = artData.getArtifacts();
                try {
                   SkynetTransaction transaction = new SkynetTransaction(parentArtifact.getBranch());
-                     // Replace all of the parent relations
-                     for (Artifact artifact : artifactsToBeRelated) {
-                        artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+                  // Replace all of the parent relations
+                  for (Artifact artifact : artifactsToBeRelated) {
+                     artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
                      artifact.persistAttributesAndRelations(transaction);
-                     }
+                  }
                   transaction.execute();
                } catch (Exception ex) {
                   OSEELog.logException(getClass(), ex, true);
