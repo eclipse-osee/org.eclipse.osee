@@ -45,7 +45,7 @@ public class User extends Artifact implements Serializable {
    @Override
    public void onBirth() throws OseeCoreException {
       super.onBirth();
-      EveryoneGroup.addGroupMember(this);
+      SystemGroup.Everyone.addMember(this);
    }
 
    public User(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {

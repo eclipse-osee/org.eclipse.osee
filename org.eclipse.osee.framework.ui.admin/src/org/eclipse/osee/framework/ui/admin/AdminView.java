@@ -17,8 +17,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
@@ -113,7 +113,7 @@ public class AdminView extends ViewPart implements IActionable {
       };
 
       broadcastMessage.setToolTipText("Broadcast Message");
-      broadcastMessage.setEnabled(OseeProperties.isDeveloper());
+      broadcastMessage.setEnabled(AccessControlManager.isOseeAdmin());
 
       Action pingAction = new Action("Ping OSEE Clients") {
 
@@ -125,7 +125,7 @@ public class AdminView extends ViewPart implements IActionable {
 
       pingAction.setImageDescriptor(plugin.getImageDescriptor("help.gif"));
       pingAction.setToolTipText("Ping OSEE Clients");
-      pingAction.setEnabled(OseeProperties.isDeveloper());
+      pingAction.setEnabled(AccessControlManager.isOseeAdmin());
 
       OseeAts.addBugToViewToolbar(this, this, AdminPlugin.getInstance(), VIEW_ID, "Admin");
 
@@ -133,7 +133,7 @@ public class AdminView extends ViewPart implements IActionable {
       toolbarManager.add(saveAction);
       toolbarManager.add(refreshAction);
       toolbarManager.add(broadcastMessage);
-      if (OseeProperties.isDeveloper()) {
+      if (AccessControlManager.isOseeAdmin()) {
          toolbarManager.add(pingAction);
       }
    }

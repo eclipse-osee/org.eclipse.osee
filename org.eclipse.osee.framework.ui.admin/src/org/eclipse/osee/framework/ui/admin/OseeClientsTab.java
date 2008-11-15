@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -61,7 +61,7 @@ public class OseeClientsTab {
       users.remove(whoAmI);
       this.mainComposite = null;
       createControl(tabFolder);
-      mainComposite.setEnabled(isUserAllowedToOperate(whoAmI));
+      mainComposite.setEnabled(isUserAllowedToOperate());
    }
 
    private void createControl(TabFolder tabFolder) {
@@ -78,7 +78,7 @@ public class OseeClientsTab {
       group.setText("Issue Shutdown Request");
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (true != isUserAllowedToOperate(whoAmI)) {
+      if (true != isUserAllowedToOperate()) {
          createDefaultWarning(group);
       } else {
          SashForm sashForm = new SashForm(group, SWT.NONE);
@@ -169,8 +169,8 @@ public class OseeClientsTab {
       }
    }
 
-   private boolean isUserAllowedToOperate(User user) {
-      return OseeProperties.isDeveloper();
+   private boolean isUserAllowedToOperate() {
+      return AccessControlManager.isOseeAdmin();
    }
 
    private String[] getSelectedUsers() {

@@ -189,6 +189,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
+    * Check if artifacts are related to each other by relation type
+    * 
+    * @param relationEnum
+    * @param other artifact to check
+    * @return whether they are related
+    * @throws OseeCoreException
+    */
+   public boolean isRelated(IRelationEnumeration relationEnum, Artifact other) throws OseeCoreException {
+      List<Artifact> relatedArtifacts = getRelatedArtifacts(relationEnum);
+      return relatedArtifacts.contains(other);
+   }
+
+   /**
     * Get the exactly one artifact related to this artifact by relations of type relationType are returned in a list
     * order based on
     * 

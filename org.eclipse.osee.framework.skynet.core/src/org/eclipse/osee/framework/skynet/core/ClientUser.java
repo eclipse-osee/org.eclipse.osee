@@ -10,22 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import java.util.logging.Level;
-import org.eclipse.core.runtime.ISafeRunnable;
-import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 
 /**
  * @author Roberto E. Escobar
@@ -101,19 +100,15 @@ final class ClientUser {
    }
 
    private void notifyListeners() {
-      SafeRunner.run(new ISafeRunnable() {
+      Jobs.run("Osee User Authenticated", new IExceptionableRunnable() {
 
          @Override
-         public void handleException(Throwable exception) {
-            OseeLog.log(CoreClientActivator.class, Level.SEVERE, exception);
-         }
-
-         @Override
-         public void run() throws Exception {
+         public void run(IProgressMonitor monitor) throws Exception {
             OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.UserAuthenticated,
                   LoadedArtifacts.EmptyLoadedArtifacts());
          }
 
-      });
+      }, CoreClientActivator.class, CoreClientActivator.PLUGIN_ID);
+
    }
 }

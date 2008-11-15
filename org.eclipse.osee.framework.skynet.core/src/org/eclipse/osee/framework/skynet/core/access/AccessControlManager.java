@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -768,5 +769,12 @@ public class AccessControlManager {
          hasAccess = objectToBranchLockCache.get(object.getArtId()) == object.getBranch().getBranchId();
       }
       return hasAccess;
+   }
+
+   /**
+    * @return whether the current user belongs to the OSEE Administration System Group
+    */
+   public static boolean isOseeAdmin() {
+      return SystemGroup.OseeAdmin.isCurrentUserMember();
    }
 }
