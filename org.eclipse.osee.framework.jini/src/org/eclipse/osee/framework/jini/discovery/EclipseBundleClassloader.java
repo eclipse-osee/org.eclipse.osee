@@ -15,9 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.jini.JiniPlugin;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 
 /**
@@ -29,8 +29,6 @@ import org.osgi.framework.Bundle;
 public class EclipseBundleClassloader extends ClassLoader {
    private Map<String, Class<?>> classesloaded;
    private Map<String, Bundle> bundleLoaded;
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(EclipseBundleClassloader.class);
 
    public EclipseBundleClassloader(List<String> bundleNames) {
       this(bundleNames, EclipseBundleClassloader.class.getClassLoader());
@@ -44,7 +42,7 @@ public class EclipseBundleClassloader extends ClassLoader {
          String name = bundleNames.get(i);
          Bundle bundle = Platform.getBundle(name);
          if (bundle == null) {
-            logger.log(Level.WARNING, "The bundle " + name + " does not exist");
+            OseeLog.log(JiniPlugin.class, Level.WARNING, "The bundle " + name + " does not exist");
          } else {
             bundleLoaded.put(bundle.getSymbolicName(), bundle);
          }
@@ -74,7 +72,7 @@ public class EclipseBundleClassloader extends ClassLoader {
             }
             return foundclass;
          } catch (NoClassDefFoundError err) {
-            logger.log(Level.SEVERE, "Caught Error: bundle = " + bundle.getSymbolicName(), err);
+            OseeLog.log(JiniPlugin.class, Level.SEVERE, "Caught Error: bundle = " + bundle.getSymbolicName(), err);
          } catch (ClassNotFoundException ex) {
             // Do nothing
          }

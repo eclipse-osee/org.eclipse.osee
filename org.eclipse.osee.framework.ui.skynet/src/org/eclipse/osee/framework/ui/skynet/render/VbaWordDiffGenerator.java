@@ -8,11 +8,9 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
 /**
  * @author Theron Virgin
@@ -29,8 +27,6 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
    private final static String tail =
          "    If visible Then\n        oWord.Visible = True\n     Else\n         oWord.Quit()\n        set oWord = Nothing\n    End If\n\nEnd Sub\n\nmain";
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordTemplateRenderer.class);
 
    private StringBuilder builder;
    private boolean finalized;
@@ -115,7 +111,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
          Process proc = Runtime.getRuntime().exec(cmd);
 
-         StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR", logger);
+         StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR");
          StreamCatcher outputCatcher = new StreamCatcher(proc.getInputStream(), "OUTPUT");
 
          errorCatcher.start();

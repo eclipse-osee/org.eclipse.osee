@@ -11,11 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -24,7 +23,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
    private static final String SELECT_USER_COUNT =
          "select count(*) from v$session t1 where t1.username='OSEE_CLIENT' and not exists (select null from v$session t2 where t1.machine=t2.machine and t2.sid < t1.sid)";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UniqueNumberOfCurrentOseeUsers.class);
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
@@ -41,7 +39,7 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
       try {
          chStmt.runPreparedQuery(SELECT_USER_COUNT);
          if (chStmt.next()) {
-            logger.log(Level.INFO, "active user count: " + chStmt.getInt("user_count"));
+            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "active user count: " + chStmt.getInt("user_count"));
          }
       } finally {
          chStmt.close();

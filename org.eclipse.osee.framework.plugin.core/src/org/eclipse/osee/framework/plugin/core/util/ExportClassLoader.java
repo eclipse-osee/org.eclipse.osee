@@ -6,7 +6,6 @@
 package org.eclipse.osee.framework.plugin.core.util;
 
 import java.util.HashMap;
-
 import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 import org.osgi.framework.Bundle;
 import org.osgi.service.packageadmin.ExportedPackage;

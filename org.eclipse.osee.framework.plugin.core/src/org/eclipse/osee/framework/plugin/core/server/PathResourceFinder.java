@@ -27,8 +27,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 
 public class PathResourceFinder extends ResourceFinder {
 
@@ -37,7 +37,6 @@ public class PathResourceFinder extends ResourceFinder {
    private final HashMap<String, JarFile[]> map = new HashMap<String, JarFile[]>(128);
    private boolean trees;
    private ClassServerPermissions perm;
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(PathResourceFinder.class);
    private static final int NUMBER_OF_FILE_READ_ATTEMPTS = 20;
 
    public PathResourceFinder(String[] dirsToAdd, boolean trees) {
@@ -209,7 +208,7 @@ public class PathResourceFinder extends ResourceFinder {
             JarFile jarFile = it.next();
             if (jarFile.getName().endsWith(File.separator + name)) {
                try {
-                  logger.log(Level.INFO, "removing JAR file " + name);
+                  OseeLog.log(PluginCoreActivator.class, Level.INFO, "removing JAR file " + name);
                   jarFile.close();
                } catch (IOException ex) {
                   // do nothing
@@ -228,7 +227,7 @@ public class PathResourceFinder extends ResourceFinder {
     */
    public void dispose() {
       synchronized (jars) {
-         logger.log(Level.INFO, "disposing path resource finder's cached JAR files");
+         OseeLog.log(PluginCoreActivator.class, Level.INFO, "disposing path resource finder's cached JAR files");
          Iterator<JarFile> it = jars.iterator();
          while (it.hasNext()) {
             JarFile jarFile = it.next();

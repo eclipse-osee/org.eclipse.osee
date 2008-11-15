@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.util.Collection;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;

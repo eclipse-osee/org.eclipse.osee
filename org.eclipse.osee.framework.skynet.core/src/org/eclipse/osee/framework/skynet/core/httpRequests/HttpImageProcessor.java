@@ -18,17 +18,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 
 /**
  * @author Roberto E. Escobar
  */
 public class HttpImageProcessor {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HttpImageProcessor.class);
    private static HttpImageProcessor instance = null;
 
    private ExtensionDefinedObjects<IHtmlImageHandler> extensionDefinedObjects;
@@ -70,7 +69,7 @@ public class HttpImageProcessor {
                outputStream.flush();
                is.close();
             } catch (IOException ex) {
-               logger.log(Level.WARNING, ex.toString(), ex);
+               OseeLog.log(SkynetActivator.class, Level.WARNING, ex);
             }
          }
       }

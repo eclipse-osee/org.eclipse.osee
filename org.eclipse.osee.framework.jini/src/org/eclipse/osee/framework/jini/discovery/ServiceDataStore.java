@@ -114,7 +114,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       } catch (ConfigurationException ex) {
          OseeLog.log(JiniPlugin.class, Level.SEVERE, ex);
       } catch (Throwable t) {
-         logger.log(Level.SEVERE, "failed to setup managers", t);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, "failed to setup managers", t);
       }
    }
 
@@ -184,7 +184,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
                   ServiceRegistrar reg = locator.getRegistrar(5000);
                   if (lookupDiscoveryManager.getFrom(reg) == LookupDiscoveryManager.FROM_GROUP || compareGroups(reg)) if (reg != null) locatorList.add(locator);
                } catch (MalformedURLException ex) {
-                  logger.log(Level.SEVERE, ex.getMessage(), ex);
+                  OseeLog.log(JiniPlugin.class, Level.SEVERE, ex.getMessage(), ex);
                } catch (Exception ex) {
                   System.out.println(); // ?
                }
@@ -559,7 +559,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
             }
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, ex.getMessage(), ex);
       }
    }
 

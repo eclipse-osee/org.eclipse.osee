@@ -75,7 +75,7 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
       } catch (ConfigurationException ex) {
          OseeLog.log(JiniPlugin.class, Level.SEVERE, ex);
       } catch (Throwable t) {
-         logger.log(Level.SEVERE, "failed to setup managers", t);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, "failed to setup managers", t);
       }
    }
 
@@ -116,7 +116,7 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
             }
          }
       } catch (RuntimeException ex) {
-         logger.log(Level.SEVERE, "exception while adding service", ex);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, "exception while adding service", ex);
       }
    }
 
@@ -166,7 +166,7 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
                System.out.println("\tgroup " + group);
             }
          } catch (RemoteException ex) {
-            logger.log(Level.SEVERE, "failed to get registrar groups", ex);
+            OseeLog.log(JiniPlugin.class, Level.SEVERE, "failed to get registrar groups", ex);
          }
       }
 
@@ -196,7 +196,7 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
       try {
          ex.addGroup(new String[] {"LBA_DEVELOPMENT", "net.jini_2.1.0.200803130705"});
       } catch (IOException ex2) {
-         logger.log(Level.SEVERE, ex2.toString(), ex2);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, ex2.toString(), ex2);
       }
       BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
       try {
@@ -205,7 +205,7 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
             line = reader.readLine();
          }
       } catch (Exception ex1) {
-         logger.log(Level.SEVERE, ex1.toString(), ex1);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, ex1.toString(), ex1);
       } finally {
          ex.terminate();
 

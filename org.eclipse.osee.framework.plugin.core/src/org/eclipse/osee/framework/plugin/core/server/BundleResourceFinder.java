@@ -14,14 +14,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 import org.osgi.framework.Bundle;
 
 public class BundleResourceFinder extends ResourceFinder {
-
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(BundleResourceFinder.class);
    private ArrayList<Bundle> bundles;
 
    public BundleResourceFinder(String[] bundlenames) {
@@ -31,7 +29,7 @@ public class BundleResourceFinder extends ResourceFinder {
          if (bundle != null) {
             bundles.add(Platform.getBundle(bundlenames[i]));
          } else {
-            logger.log(Level.SEVERE, String.format(
+            OseeLog.log(PluginCoreActivator.class, Level.SEVERE, String.format(
                   "Unable to load bundle [ %s ].  This bundle was not added to the list in BundleResourceFinder.",
                   bundlenames[i]));
          }

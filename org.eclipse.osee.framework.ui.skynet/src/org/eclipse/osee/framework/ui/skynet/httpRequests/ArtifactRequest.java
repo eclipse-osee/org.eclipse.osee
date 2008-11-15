@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -29,7 +28,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotManager;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -54,7 +54,6 @@ public class ArtifactRequest implements IHttpServerRequest {
    private static final String FORMAT_KEY = "format";
    private static final HttpUrlBuilder urlBuilder = HttpUrlBuilder.getInstance();
    private static final ArtifactRequest instance = new ArtifactRequest();
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactRequest.class);
 
    public enum FormatEnums {
       HTML, NATIVE
@@ -120,10 +119,11 @@ public class ArtifactRequest implements IHttpServerRequest {
                break;
          }
       } catch (Exception ex) {
-         logger.log(Level.WARNING, String.format("Get Artifact Error: [%s]", httpRequest.getParametersAsString()), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, String.format("Get Artifact Error: [%s]",
+               httpRequest.getParametersAsString()), ex);
          httpResponse.outputStandardError(400, "Exception handling request", ex);
       }
-      logger.log(Level.INFO, String.format("Time to serve Artifact Request: [%s] ms.",
+      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Time to serve Artifact Request: [%s] ms.",
             System.currentTimeMillis() - start));
    }
 

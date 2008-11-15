@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;

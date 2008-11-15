@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.httpRequests;
 
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.core.client.server.HttpRequest;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.client.server.IHttpServerRequest;
@@ -20,7 +19,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -40,7 +38,6 @@ public class ArtifactTreeRequest implements IHttpServerRequest {
    private static final String FROM_KEY = "guid";
    private static final String LEVELS_KEY = "levels";
    private static final ArtifactTreeRequest instance = new ArtifactTreeRequest();
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactTreeRequest.class);
 
    private ArtifactTreeRequest() {
    }
@@ -125,7 +122,7 @@ public class ArtifactTreeRequest implements IHttpServerRequest {
          try {
             newElement.setAttribute("hasChildren", Boolean.toString(artifact.getChildren().size() > 0));
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Error sending error string", ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error sending error string", ex);
          }
       }
       return newElement;

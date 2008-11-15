@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 import net.jini.core.lease.Lease;
 import net.jini.core.lease.LeaseDeniedException;
 import net.jini.core.lease.UnknownLeaseException;
+import org.eclipse.osee.framework.jini.JiniPlugin;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * This class handles the renewal of leases. It is designed such that a lease will be renewed a set amount of time prior
@@ -81,7 +83,8 @@ public class OseeLeaseRenewer {
       if (renewer != null)
          renewer.cancel();
       else
-         logger.log(Level.WARNING, this.getClass().getName() + ": Lease Cancel Attempt: Lease Not Found!");
+         OseeLog.log(JiniPlugin.class, Level.WARNING,
+               this.getClass().getName() + ": Lease Cancel Attempt: Lease Not Found!");
 
       if (map.isEmpty()) {
          timer.cancel();
@@ -103,9 +106,9 @@ public class OseeLeaseRenewer {
             // Obtain the longest lease allowed
             lease.renew(Lease.FOREVER);
          } catch (LeaseDeniedException ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
+            OseeLog.log(JiniPlugin.class, Level.SEVERE, ex.getMessage(), ex);
          } catch (UnknownLeaseException ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
+            OseeLog.log(JiniPlugin.class, Level.SEVERE, ex.getMessage(), ex);
          }
          /*
           * If there was a problem with the lease renewal, retry up until there is less than 250 ms
@@ -119,7 +122,7 @@ public class OseeLeaseRenewer {
             else {
                // debug.report("Canceling Renewals Retries");
                cancelRenewal(lease);
-               logger.log(Level.SEVERE, "Unable to renew lease.", ex);
+               OseeLog.log(JiniPlugin.class, Level.SEVERE, "Unable to renew lease.", ex);
             }
          }
       }

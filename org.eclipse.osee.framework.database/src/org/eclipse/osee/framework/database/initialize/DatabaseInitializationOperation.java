@@ -17,7 +17,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.lang.time.StopWatch;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -34,10 +33,8 @@ import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.HeadlessEclipseConfigurationFactory;
 import org.osgi.framework.Bundle;
 
 /**
@@ -63,16 +60,8 @@ public class DatabaseInitializationOperation {
       return preSelectedChoice;
    }
 
-   private void setupLogging() {
-      Logger.getLogger("org.eclipse.osee.framework.jdk.core.util.db.ConnectionHandler").setLevel(Level.SEVERE);
-      Logger.getLogger("org.eclipse.osee.framework.jdk.core.util.db.DBConnection").setLevel(Level.SEVERE);
-      Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
-   }
-
    private void execute() throws OseeCoreException {
       boolean isConfigured = false;
-      OseeProperties.setOseeConfigFactory(HeadlessEclipseConfigurationFactory.class.getName());
-      setupLogging();
       if (checkPreconditions()) {
          IDatabaseInfo dbInfo = DatabaseInfoManager.getDefault();
          String dbName = dbInfo.getDatabaseName();

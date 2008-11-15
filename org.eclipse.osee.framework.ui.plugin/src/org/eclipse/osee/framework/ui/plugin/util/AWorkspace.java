@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -44,7 +43,8 @@ import org.eclipse.jdt.ui.IPackagesViewPart;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
@@ -62,19 +62,12 @@ import org.eclipse.ui.views.navigator.ResourceNavigator;
  * @author Donald G. Dunne
  */
 public class AWorkspace {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AWorkspace.class);
-
    private static HashMap<String, File> fileFindMap = new HashMap<String, File>();
 
    private static boolean initializedWorkspaceSearch = false;
    private static HashMap<String, List<File>> fileSearch = new HashMap<String, List<File>>();
    private static IWindowListener windowListener;
    private static IResourceChangeListener changeListener;
-
-   static {
-      logger.setLevel(Level.WARNING);
-   }
 
    public static void init(final Object objectToNotify) {
       Job initJob = new WorkspaceSearchInit(objectToNotify);
@@ -111,17 +104,19 @@ public class AWorkspace {
          if (savefile.exists() && mapfile.exists()) {
             ObjectInputStream ois;
             try {
-               logger.log(Level.INFO, "starting init");
+               OseeLog.log(OseePluginUiActivator.class, Level.INFO, "starting init");
                long time = System.currentTimeMillis();
                ois = new ObjectInputStream(new FileInputStream(savefile));
                fileSearch = (HashMap<String, List<File>>) ois.readObject();
-               logger.log(Level.INFO, "ending init " + (System.currentTimeMillis() - time) / 1000 + " secs");
+               OseeLog.log(OseePluginUiActivator.class, Level.INFO,
+                     "ending init " + (System.currentTimeMillis() - time) / 1000 + " secs");
 
-               logger.log(Level.INFO, "starting init");
+               OseeLog.log(OseePluginUiActivator.class, Level.INFO, "starting init");
                time = System.currentTimeMillis();
                ois = new ObjectInputStream(new FileInputStream(mapfile));
                fileFindMap = (HashMap<String, File>) ois.readObject();
-               logger.log(Level.INFO, "ending init " + (System.currentTimeMillis() - time) / 1000 + " secs");
+               OseeLog.log(OseePluginUiActivator.class, Level.INFO,
+                     "ending init " + (System.currentTimeMillis() - time) / 1000 + " secs");
 
             } catch (FileNotFoundException ex) {
                ex.printStackTrace();
@@ -131,14 +126,15 @@ public class AWorkspace {
                ex.printStackTrace();
             }
          } else {
-            logger.log(Level.INFO, "starting init");
+            OseeLog.log(OseePluginUiActivator.class, Level.INFO, "starting init");
             long time = System.currentTimeMillis();
             List files = Lib.recursivelyListFiles(new File(getWorkspacePath()), Pattern.compile(".*"));
             for (Object obj : files) {
                File file = (File) obj;
                addFile(file);
             }
-            logger.log(Level.INFO, "ending init " + (System.currentTimeMillis() - time) / 1000 + " secs");
+            OseeLog.log(OseePluginUiActivator.class, Level.INFO,
+                  "ending init " + (System.currentTimeMillis() - time) / 1000 + " secs");
          }
 
          if (changeListener == null) {
@@ -173,8 +169,8 @@ public class AWorkspace {
                }
 
                public void windowClosed(IWorkbenchWindow window) {
-                  logger.log(Level.INFO, "closed window");
-                  logger.log(Level.INFO, "saving...");
+                  OseeLog.log(OseePluginUiActivator.class, Level.INFO, "closed window");
+                  OseeLog.log(OseePluginUiActivator.class, Level.INFO, "saving...");
 
                   try {
                      ObjectOutputStream oos =

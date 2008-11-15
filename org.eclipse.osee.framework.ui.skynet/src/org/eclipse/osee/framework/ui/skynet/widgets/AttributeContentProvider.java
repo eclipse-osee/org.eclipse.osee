@@ -12,11 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -26,8 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Jeff C. Phillips
  */
 public class AttributeContentProvider implements ITreeContentProvider {
-   protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AttributeContentProvider.class);
-
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }

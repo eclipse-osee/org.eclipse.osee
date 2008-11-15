@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.hyper;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionEndpointLocator;
@@ -45,7 +44,6 @@ import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -113,7 +111,6 @@ public class HyperView extends ViewPart implements IPartListener {
    protected Zoom defaultZoom = new Zoom();
    private int verticalSelection = 40;
    private ActionDebug debug = new ActionDebug(false, "HV");
-   protected static Logger logger = ConfigUtil.getConfigFactory().getLogger(HyperView.class);
    protected ArrayList<String> onlyShowRelations = new ArrayList<String>();
 
    public class Zoom {

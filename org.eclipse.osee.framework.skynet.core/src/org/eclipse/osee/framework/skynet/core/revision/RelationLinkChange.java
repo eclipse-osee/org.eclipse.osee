@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;

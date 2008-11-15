@@ -16,24 +16,21 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.jini.export.Exporter;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
 import org.eclipse.osee.framework.jdk.core.util.Network;
+import org.eclipse.osee.framework.jini.JiniPlugin;
 import org.eclipse.osee.framework.jini.service.interfaces.IService;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 public class OseeJini {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(OseeJini.class);
-
    public static Remote getRemoteReference(Remote object) throws ExportException {
       try {
          return getRemoteReference(object, Network.getValidIP());
       } catch (UnknownHostException ex) {
-         logger.log(Level.SEVERE, "OseeJini.getRemoteReference: ", ex);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, "OseeJini.getRemoteReference: ", ex);
          return null;
       }
    }
@@ -48,7 +45,7 @@ public class OseeJini {
    public static void printClassLoaders(Class<?> clazz) {
       ClassLoader cl = clazz.getClassLoader();
       do {
-         logger.log(Level.INFO, cl.toString());
+         OseeLog.log(JiniPlugin.class, Level.INFO, cl.toString());
          cl = cl.getParent();
       } while (cl != null);
    }

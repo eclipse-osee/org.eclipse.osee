@@ -18,10 +18,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -37,218 +37,201 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
  * @author Donald G. Dunne
  */
 public class OseeConsole {
+   private IOConsoleOutputStream streamOut = null;
 
-    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(
-	    OseeConsole.class);
+   private IOConsoleOutputStream streamErr = null;
 
-    private IOConsoleOutputStream streamOut = null;
+   private IOConsoleOutputStream streamPrompt = null;
 
-    private IOConsoleOutputStream streamErr = null;
+   private final IOConsole console;
 
-    private IOConsoleOutputStream streamPrompt = null;
+   private final HandleInput inputHandler;
 
-    private final IOConsole console;
+   private boolean time;
 
-    private final HandleInput inputHandler;
+   private final Thread thread;
 
-    private boolean time;
+   public OseeConsole(String title) {
+      this(title, true);
+   }
 
-    private final Thread thread;
+   public OseeConsole(String title, boolean time) {
+      console = new IOConsole(title, null);
+      this.time = time;
+      this.inputHandler = new HandleInput();
 
-    public OseeConsole(String title) {
-	this(title, true);
-    }
+      thread = new Thread(inputHandler);
+      thread.setName("Osee console input handler");
+      ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] {console});
+      PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+         public void run() {
+            streamOut = console.newOutputStream();// newMessageStream();
+            streamOut.setColor(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
+            streamErr = console.newOutputStream();
+            streamErr.setColor(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+            streamPrompt = console.newOutputStream();
+            streamPrompt.setColor(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
+         }
+      });
+      thread.start();
+   }
 
-    public OseeConsole(String title, boolean time) {
-	console = new IOConsole(title, null);
-	this.time = time;
-	this.inputHandler = new HandleInput();
+   public PrintStream getPrintStream() {
+      return new PrintStream(streamOut);
+   }
 
-	thread = new Thread(inputHandler);
-	thread.setName("Osee console input handler");
-	ConsolePlugin.getDefault().getConsoleManager().addConsoles(
-		new IConsole[] { console });
-	PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-	    public void run() {
-		streamOut = console.newOutputStream();// newMessageStream();
-		streamOut.setColor(Display.getDefault().getSystemColor(
-			SWT.COLOR_BLACK));
-		streamErr = console.newOutputStream();
-		streamErr.setColor(Display.getDefault().getSystemColor(
-			SWT.COLOR_RED));
-		streamPrompt = console.newOutputStream();
-		streamPrompt.setColor(Display.getDefault().getSystemColor(
-			SWT.COLOR_BLUE));
-	    }
-	});
-	thread.start();
-    }
+   public void shutdown() {
+      thread.interrupt();
+      ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] {console});
+   }
 
-    public PrintStream getPrintStream() {
-	return new PrintStream(streamOut);
-    }
+   public static final int CONSOLE_ERROR = 0;
 
-    public void shutdown() {
-	thread.interrupt();
-	ConsolePlugin.getDefault().getConsoleManager().removeConsoles(
-		new IConsole[] { console });
-    }
+   public static final int CONSOLE_OUT = 1;
 
-    public static final int CONSOLE_ERROR = 0;
+   public static final int CONSOLE_PROMPT = 2;
 
-    public static final int CONSOLE_OUT = 1;
+   /**
+    * Writes string to console without popping console forward
+    * 
+    * @param str
+    */
+   public void write(String str) {
+      write(str, false);
+   }
 
-    public static final int CONSOLE_PROMPT = 2;
+   /**
+    * Writes string to console without popping console forward
+    * 
+    * @param str
+    */
+   public void writeError(String str) {
+      write(str, CONSOLE_ERROR, true);
+   }
 
-    /**
-     * Writes string to console without popping console forward
-     * 
-     * @param str
-     */
-    public void write(String str) {
-	write(str, false);
-    }
+   /**
+    * Writes string to console
+    * 
+    * @param str
+    * @param popup bring console window forward
+    */
+   public void write(String str, boolean popup) {
+      write(str, CONSOLE_OUT, true);
+   }
 
-    /**
-     * Writes string to console without popping console forward
-     * 
-     * @param str
-     */
-    public void writeError(String str) {
-	write(str, CONSOLE_ERROR, true);
-    }
+   /**
+    * Write string to console
+    * 
+    * @param str
+    * @param type CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
+    */
+   public void write(String str, int type) {
+      write(str, type, false);
+   }
 
-    /**
-     * Writes string to console
-     * 
-     * @param str
-     * @param popup
-     *            bring console window forward
-     */
-    public void write(String str, boolean popup) {
-	write(str, CONSOLE_OUT, true);
-    }
+   /**
+    * Write string to console
+    * 
+    * @param str
+    * @param type CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
+    * @param popup bring console window forward
+    */
+   public void write(String str, int type, boolean popup) {
+      String time = "";
+      if (this.time) {
+         Calendar cal = Calendar.getInstance();
+         cal.setTime(new Date());
 
-    /**
-     * Write string to console
-     * 
-     * @param str
-     * @param type
-     *            CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
-     */
-    public void write(String str, int type) {
-	write(str, type, false);
-    }
+         if (cal.get(Calendar.HOUR) == 0)
+            time = "12";
+         else
+            time = "" + cal.get(Calendar.HOUR);
+         time = Lib.padLeading(time, '0', 2);
+         String minute = "" + cal.get(Calendar.MINUTE);
+         minute = Lib.padLeading(minute, '0', 2);
+         time += ":" + minute + " => ";
+      }
+      try {
+         sendToStreams(type, time);
+         if (str.length() > 100000) {
+            int i = 0;
 
-    /**
-     * Write string to console
-     * 
-     * @param str
-     * @param type
-     *            CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
-     * @param popup
-     *            bring console window forward
-     */
-    public void write(String str, int type, boolean popup) {
-	String time = "";
-	if (this.time) {
-	    Calendar cal = Calendar.getInstance();
-	    cal.setTime(new Date());
+            while (i < str.length()) {
+               int endIndex = i + 100000;
+               endIndex = endIndex > str.length() ? str.length() : endIndex;
+               String chunk = str.substring(i, endIndex);
+               sendToStreams(type, chunk);
+               i = endIndex;
+            }
+         } else {
+            sendToStreams(type, str);
+         }
 
-	    if (cal.get(Calendar.HOUR) == 0)
-		time = "12";
-	    else
-		time = "" + cal.get(Calendar.HOUR);
-	    time = Lib.padLeading(time, '0', 2);
-	    String minute = "" + cal.get(Calendar.MINUTE);
-	    minute = Lib.padLeading(minute, '0', 2);
-	    time += ":" + minute + " => ";
-	}
-	try {
-	    sendToStreams(type, time);
-	    if (str.length() > 100000) {
-		int i = 0;
+         sendToStreams(type, "\n");
+         if (popup) popup();
+      } catch (IOException ex) {
+         ex.printStackTrace();
+      }
+   }
 
-		while (i < str.length()) {
-		    int endIndex = i + 100000;
-		    endIndex = endIndex > str.length() ? str.length()
-			    : endIndex;
-		    String chunk = str.substring(i, endIndex);
-		    sendToStreams(type, chunk);
-		    i = endIndex;
-		}
-	    } else {
-		sendToStreams(type, str);
-	    }
+   public void prompt(String str) throws IOException {
+      sendToStreams(CONSOLE_PROMPT, str);
+   }
 
-	    sendToStreams(type, "\n");
-	    if (popup)
-		popup();
-	} catch (IOException ex) {
-	    ex.printStackTrace();
-	}
-    }
-    
-    public void prompt(String str) throws IOException {
-	sendToStreams(CONSOLE_PROMPT, str);
-    }
+   private void sendToStreams(int type, String str) throws IOException {
+      if (type == CONSOLE_ERROR && streamErr != null) {
+         streamErr.write(str);
+      }
+      if (type == CONSOLE_PROMPT && streamPrompt != null) {
+         streamPrompt.write(str);
+      }
+      if (type == CONSOLE_OUT && streamOut != null) {
+         streamOut.write(str);
+      }
+   }
 
-    private void sendToStreams(int type, String str) throws IOException {
-	if (type == CONSOLE_ERROR && streamErr != null) {
-	    streamErr.write(str);
-	}
-	if (type == CONSOLE_PROMPT && streamPrompt != null) {
-	    streamPrompt.write(str);
-	}
-	if (type == CONSOLE_OUT && streamOut != null) {
-	    streamOut.write(str);
-	}
-    }
+   public void popup() {
+      ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
+   }
 
-    public void popup() {
-	ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
-    }
+   public void addInputListener(IConsoleInputListener listener) {
+      inputHandler.addListener(listener);
+   }
 
-    public void addInputListener(IConsoleInputListener listener) {
-	inputHandler.addListener(listener);
-    }
+   public void removeInputListener(IConsoleInputListener listener) {
+      inputHandler.removeListener(listener);
+   }
 
-    public void removeInputListener(IConsoleInputListener listener) {
-	inputHandler.removeListener(listener);
-    }
+   private class HandleInput implements Runnable {
 
-    private class HandleInput implements Runnable {
+      private final CopyOnWriteArrayList<IConsoleInputListener> listeners;
 
-	private final CopyOnWriteArrayList<IConsoleInputListener> listeners;
+      public HandleInput() {
+         listeners = new CopyOnWriteArrayList<IConsoleInputListener>();
+      }
 
-	public HandleInput() {
-	    listeners = new CopyOnWriteArrayList<IConsoleInputListener>();
-	}
+      public void addListener(IConsoleInputListener listener) {
+         listeners.add(listener);
+      }
 
-	public void addListener(IConsoleInputListener listener) {
-	    listeners.add(listener);
-	}
+      public void removeListener(IConsoleInputListener listener) {
+         listeners.remove(listener);
+      }
 
-	public void removeListener(IConsoleInputListener listener) {
-	    listeners.remove(listener);
-	}
+      public void run() {
+         BufferedReader input = new BufferedReader(new InputStreamReader(console.getInputStream()));
+         try {
+            String line = null;
+            while ((line = input.readLine()) != null) {
+               for (IConsoleInputListener listener : listeners) {
+                  listener.lineRead(line);
+               }
+            }
+         } catch (IOException e) {
+            e.printStackTrace();
+         }
+         OseeLog.log(OseePluginUiActivator.class, Level.INFO, "done with the handling of input");
+      }
 
-
-	public void run() {
-	    BufferedReader input = new BufferedReader(new InputStreamReader(
-		    console.getInputStream()));
-	    try {
-		String line = null;
-		while ((line = input.readLine()) != null) {
-		    for (IConsoleInputListener listener : listeners) {
-			listener.lineRead(line);
-		    }
-		}
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
-	    logger.log(Level.INFO, "done with the handling of input");
-	}
-
-    }
+   }
 }

@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.swt.graphics.Image;

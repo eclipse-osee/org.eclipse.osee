@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.logging;
+package org.eclipse.osee.framework.logging.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

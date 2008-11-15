@@ -15,20 +15,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Ryan D. Brooks
  */
 public class WordMLProducer {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordMLProducer.class);
    public static final String RGB_RED = "FF0000";
    public static final String RGB_GREEN = "00FF00";
    public static final String RGB_BLUE = "0000FF";
@@ -38,9 +37,9 @@ public class WordMLProducer {
    public static final String LISTNUM_FIELD_HEAD = "<w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr>";
    public static final String LISTNUM_FIELD_TAIL =
          "<w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:instrText> LISTNUM \"listreset\"  \\l 1 \\s 0 </w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\" .\"/></w:r>";
-  
-  //This regular expression pulls out all of the stuff after the inserted listnum reordering stuff.  This needs to be
-                     //here so that we remove unwanted template information from single editing
+
+   //This regular expression pulls out all of the stuff after the inserted listnum reordering stuff.  This needs to be
+   //here so that we remove unwanted template information from single editing
    public static final String LISTNUM_FIELD_TAIL_REG_EXP =
          "<w:r(>| .*?>)<w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r(>| .*?>)<w:rPr><w:vanish/></w:rPr><w:instrText> LISTNUM \"listreset\"";
    public static final String LISTNUM_FIELD = LISTNUM_FIELD_HEAD + LISTNUM_FIELD_TAIL;
@@ -79,7 +78,7 @@ public class WordMLProducer {
       } else {
          flattenedLevelCount++;
          endOutlineSubSection(true);
-         logger.log(Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
          if (false) {
             startParagraph();
             addTextInsideParagraph("OUTLINE LEVEL FLATTENED: " + headingText, RGB_RED);

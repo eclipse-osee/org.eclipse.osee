@@ -11,15 +11,14 @@
 package org.eclipse.osee.framework.plugin.core.util;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class LogProgressMonitor implements IProgressMonitor {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(LogProgressMonitor.class);
    private boolean isCancelled;
    private String taskName;
 
@@ -34,7 +33,7 @@ public class LogProgressMonitor implements IProgressMonitor {
    @Override
    public void beginTask(String name, int totalWork) {
       this.taskName = name;
-      logger.log(Level.INFO, String.format("Starting: %s", taskName));
+      OseeLog.log(PluginCoreActivator.class, Level.INFO, String.format("Starting: %s", taskName));
    }
 
    /* (non-Javadoc)
@@ -42,7 +41,7 @@ public class LogProgressMonitor implements IProgressMonitor {
     */
    @Override
    public void done() {
-      logger.log(Level.INFO, String.format("Finished: %s", taskName));
+      OseeLog.log(PluginCoreActivator.class, Level.INFO, String.format("Finished: %s", taskName));
    }
 
    /* (non-Javadoc)
@@ -76,7 +75,7 @@ public class LogProgressMonitor implements IProgressMonitor {
    @Override
    public void setTaskName(String name) {
       this.taskName = name;
-      logger.log(Level.INFO, name);
+      OseeLog.log(PluginCoreActivator.class, Level.INFO, name);
    }
 
    /* (non-Javadoc)
@@ -84,7 +83,7 @@ public class LogProgressMonitor implements IProgressMonitor {
     */
    @Override
    public void subTask(String name) {
-      logger.log(Level.FINER, name);
+      OseeLog.log(PluginCoreActivator.class, Level.FINER, name);
    }
 
    /* (non-Javadoc)

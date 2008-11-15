@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.search.report;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.MenuItem;
@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.MenuItem;
  * @author Ryan D. Brooks
  */
 public class ReportSelectionListener implements SelectionListener {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ReportSelectionListener.class);
    private TableViewer tableViewer;
 
    public ReportSelectionListener(TableViewer tableViewer) {
@@ -41,7 +40,7 @@ public class ReportSelectionListener implements SelectionListener {
       try {
          Jobs.startJob(job);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

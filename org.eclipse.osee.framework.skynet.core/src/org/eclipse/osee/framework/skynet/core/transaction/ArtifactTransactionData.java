@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

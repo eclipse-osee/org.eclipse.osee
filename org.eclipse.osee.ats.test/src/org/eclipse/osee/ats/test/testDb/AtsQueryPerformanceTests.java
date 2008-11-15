@@ -7,9 +7,7 @@ package org.eclipse.osee.ats.test.testDb;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import junit.framework.TestCase;
-
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import static org.eclipse.osee.framework.core.enums.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;

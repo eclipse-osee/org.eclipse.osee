@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
 import java.io.IOException;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;

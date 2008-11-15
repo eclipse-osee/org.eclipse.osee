@@ -15,16 +15,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class EMZHtmlImageHandler implements IHtmlImageHandler {
-
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(EMZHtmlImageHandler.class);
    private static final byte[] EMZ_HEADER = new byte[] {31, -117, 8, 0, 0, 0, 0, 0, 2, 11};
 
    /*
@@ -61,12 +59,12 @@ public class EMZHtmlImageHandler implements IHtmlImageHandler {
                }
             }
          } catch (Exception ex) {
-            logger.log(Level.WARNING, "Exception during isValid check. ", ex);
+            OseeLog.log(SkynetActivator.class, Level.WARNING, "Exception during isValid check. ", ex);
          } finally {
             try {
                is.reset();
             } catch (IOException ex) {
-               logger.log(Level.WARNING, "Exception during isValid check. ", ex);
+               OseeLog.log(SkynetActivator.class, Level.WARNING, "Exception during isValid check. ", ex);
             }
          }
       }

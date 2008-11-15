@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.jini.service.core.JiniService;
 import org.eclipse.osee.framework.jini.service.core.SimpleFormattedEntry;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
-import org.eclipse.osee.framework.plugin.core.config.NonEclipseConfigurationFactory;
 import org.eclipse.osee.framework.plugin.core.config.NonEclipseManifestHeader;
 
 /**
@@ -198,7 +197,6 @@ public class StartJini extends JiniService {
    }
 
    public static void main(String[] args) {
-      OseeProperties.setOseeConfigFactory(NonEclipseConfigurationFactory.class.getName());
       OseeLog.log(StartJini.class, Level.INFO, "num args + " + args.length);
       InputStream manifestFile = getManifestFile(args);
       if (args.length == 1) {

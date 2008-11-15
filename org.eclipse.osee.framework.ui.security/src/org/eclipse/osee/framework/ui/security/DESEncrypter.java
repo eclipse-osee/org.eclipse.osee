@@ -16,7 +16,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -25,7 +24,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.security.internal.Activator;
 
 /**
  * Encrypts and Decrypts inputStreams using DES and MD5 hashing.
@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
  */
 
 public class DESEncrypter {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(DESEncrypter.class);
    private static final String KEY_FORMAT = "PBEWithMD5AndDES";
    private static int iterationCount = 15;
    private Cipher encryptCipher;
@@ -45,7 +44,9 @@ public class DESEncrypter {
          {(byte) 0x8E, (byte) 0x45, (byte) 0x77, (byte) 0x94, (byte) 0x21, (byte) 0x32, (byte) 0x90, (byte) 0x22};
 
    /**
-    * This constructor will auto generate a secret key. Therefore, the getKey() method should be used to save off the key to decrypt.
+    * This constructor will auto generate a secret key. Therefore, the getKey() method should be used to save off the
+    * key to decrypt.
+    * 
     * @throws InvalidKeySpecException
     * @throws NoSuchAlgorithmException
     */
@@ -89,7 +90,7 @@ public class DESEncrypter {
          encryptCipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
          decryptCipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, "", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "", ex);
       }
    }
 
@@ -112,7 +113,7 @@ public class DESEncrypter {
          in.close();
          out.close();
       } catch (java.io.IOException ex) {
-         logger.log(Level.SEVERE, "", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "", ex);
       }
    }
 
@@ -143,7 +144,7 @@ public class DESEncrypter {
          }
          out.close();
       } catch (java.io.IOException ex) {
-         logger.log(Level.SEVERE, "", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "", ex);
       }
    }
 }

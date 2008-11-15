@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
-
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
