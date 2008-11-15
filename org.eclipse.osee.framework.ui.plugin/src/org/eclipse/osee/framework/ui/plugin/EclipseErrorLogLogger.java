@@ -2,16 +2,13 @@ package org.eclipse.osee.framework.ui.plugin;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 
 public class EclipseErrorLogLogger implements ILoggerListener {
 
-   private boolean isDeveloper = false;
-
    public EclipseErrorLogLogger() {
-      isDeveloper = OseeProperties.isDeveloper();
    }
 
    public void log(String loggerName, Level level, String message, Throwable th) {
@@ -22,7 +19,7 @@ public class EclipseErrorLogLogger implements ILoggerListener {
          statusLevel = Status.WARNING;
       } else if (level.intValue() >= Level.INFO.intValue()) {
          statusLevel = Status.INFO;
-      } else if (isDeveloper) {
+      } else if (OseeCodeVersion.isDevelopment()) {
          statusLevel = Status.INFO;
       } else {
          return;
