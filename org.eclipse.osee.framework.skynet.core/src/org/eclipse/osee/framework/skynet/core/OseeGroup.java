@@ -15,7 +15,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -92,19 +94,52 @@ public class OseeGroup {
    private Artifact getOrCreateGroupArtifact(String groupName) {
       Artifact groupArtifact = null;
       try {
-         List<Artifact> artifacts =
-               ArtifactQuery.getArtifactsFromTypeAndName(GROUP_ARTIFACT_TYPE, groupName,
-                     BranchManager.getCommonBranch());
+         Branch commonBranch = BranchManager.getCommonBranch();
+         try {
+            List<Artifact> artifacts =
+                  ArtifactQuery.getArtifactsFromTypeAndName(GROUP_ARTIFACT_TYPE, groupName, commonBranch);
+            if (!artifacts.isEmpty()) {
+               groupArtifact = artifacts.get(0);
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, String.format("Osee group not found [%s]", groupName));
+         }
 
-         if (!artifacts.isEmpty()) {
-            groupArtifact = artifacts.get(0);
-         } else {
-            groupArtifact =
-                  ArtifactTypeManager.addArtifact(GROUP_ARTIFACT_TYPE, BranchManager.getCommonBranch(), groupName);
+         if (groupArtifact == null) {
+            Artifact userGroupsFolder = getOrCreateUserGroupsFolder(commonBranch);
+            if (userGroupsFolder != null) {
+               groupArtifact = ArtifactTypeManager.addArtifact(GROUP_ARTIFACT_TYPE, commonBranch, groupName);
+               userGroupsFolder.addChild(groupArtifact);
+               userGroupsFolder.persistAttributesAndRelations();
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return groupArtifact;
+   }
+
+   private Artifact getOrCreateUserGroupsFolder(Branch branch) {
+      Artifact userGroups = null;
+      Artifact root = null;
+      try {
+         root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch);
+         if (root != null) {
+            userGroups = root.getChild("User Groups");
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, String.format("Unable to find 'User Groups' folder on [%s]",
+               branch.getBranchName()));
+         if (root != null) {
+            try {
+               userGroups = ArtifactTypeManager.addArtifact("Folder", branch, "User Groups");
+               root.addChild(userGroups);
+               root.persistAttributesAndRelations();
+            } catch (OseeCoreException ex1) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
+            }
+         }
+      }
+      return userGroups;
    }
 }
