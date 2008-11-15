@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.health.BranchCommitRegressionTest;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -50,7 +50,7 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
       }
       items.add(blamOperationItems);
 
-      if (OseeProperties.isDeveloper()) {
+      if (AccessControlManager.isOseeAdmin()) {
          XNavigateItem adminItems = new XNavigateItem(null, "Admin");
          new BranchCommitRegressionTest(adminItems);
          items.add(adminItems);
