@@ -281,14 +281,8 @@ public class DatabaseInitializationOperation {
    }
 
    public static void executeConfigureFromJvmProperties() throws OseeCoreException {
-      boolean arePromptsAllowed = false;
-      String predefinedChoice = System.getProperty("osee.choice.on.db.init");
-      String promptValue = System.getProperty("osee.prompt.on.db.init");
-      if (promptValue == null) {
-         arePromptsAllowed = true;
-      } else {
-         arePromptsAllowed = Boolean.valueOf(promptValue);
-      }
+      boolean arePromptsAllowed = OseeClientProperties.promptOnDbInit();
+      String predefinedChoice = OseeClientProperties.getChoiceOnDbInit();
       new DatabaseInitializationOperation(predefinedChoice, arePromptsAllowed).execute();
    }
 }

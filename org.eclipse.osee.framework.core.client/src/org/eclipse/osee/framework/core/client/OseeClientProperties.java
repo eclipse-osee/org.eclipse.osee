@@ -36,7 +36,8 @@ public class OseeClientProperties extends OseeProperties {
    private static final String OSEE_IMPORT_DURING_DB_INIT = "osee.import.on.db.init";
    private static final String OSEE_IMPORT_FROM_DB_SERVICE = "osee.import.from.connection.id.on.db.init";
    private static final String OSEE_USE_FILE_SPECIFIED_SCHEMAS = "osee.file.specified.schema.names.on.db.init";
-
+   private static final String OSEE_PROMPT_ON_DB_INIT = "osee.prompt.on.db.init";
+   private static final String OSEE_CHOICE_ON_DB_INIT = "osee.choice.on.db.init";
    private enum InitializerFlag {
       overwrite_settings, client_defaults;
 
@@ -78,6 +79,20 @@ public class OseeClientProperties extends OseeProperties {
    }
 
    /**
+    * @return whether to interactively prompt the user during database initialization for init choice
+    */
+   public static boolean promptOnDbInit() {
+      return Boolean.valueOf(getProperty(OSEE_PROMPT_ON_DB_INIT, "true"));
+   }
+
+   /**
+    * @return the predefined database initialization choice
+    */
+   public static String getChoiceOnDbInit() {
+      return getProperty(OSEE_CHOICE_ON_DB_INIT);
+   }
+
+   /**
     * Retrieves whether OSEE database initialization should import database data as part of its tasks.
     * 
     * @return <b>true</b> if database initialization should import database data as part of its tasks.
@@ -102,8 +117,7 @@ public class OseeClientProperties extends OseeProperties {
     * @return <b>true</b> if user activity should be logged
     */
    public static boolean isActivityLoggingEnabled() {
-      String value = getProperty(OSEE_USAGE_LOG);
-      return Strings.isValid(value) ? Boolean.valueOf(value) : true;
+      return Boolean.valueOf(getProperty(OSEE_USAGE_LOG, "true"));
    }
 
    /**
@@ -168,13 +182,17 @@ public class OseeClientProperties extends OseeProperties {
    }
 
    private static String getProperty(String name) {
+      return getProperty(name, "");
+   }
+
+   private static String getProperty(String name, String defaultValue) {
       String toReturn = null;
       if (overwriteProperties.containsKey(name)) {
          toReturn = overwriteProperties.getProperty(name);
       } else if (defaultProperties.containsKey(name)) {
          toReturn = System.getProperty(name, defaultProperties.getProperty(name));
       } else {
-         toReturn = System.getProperty(name, "");
+         toReturn = System.getProperty(name, defaultValue);
       }
       return toReturn;
    }

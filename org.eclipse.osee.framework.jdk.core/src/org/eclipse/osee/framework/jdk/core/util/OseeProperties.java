@@ -22,7 +22,6 @@ import java.util.logging.Level;
  */
 public class OseeProperties {
    private static final String OSEE_LOG_DEFAULT = "osee.log.default";
-   private static final String OSEE_CONFIG_FACTORY = "osee.config.factory";
    private static final String OSEE_JINI_SERVICE_GROUPS = "osee.jini.lookup.groups";
    private static final String OSEE_JINI_FORCED_REGGIE_SEARCH = "osee.jini.forced.reggie.search";
    private static final String OSEE_PORT_SCAN_START_PORT = "osee.port.scanner.start.port";
@@ -119,24 +118,6 @@ public class OseeProperties {
     */
    public static boolean isOseeJiniForcedReggieSearchEnabled() {
       return Boolean.valueOf(System.getProperty(OSEE_JINI_FORCED_REGGIE_SEARCH));
-   }
-
-   /**
-    * Retrieves the OSEE Configuration Factory to use.
-    * 
-    * @return OSEE configuration factory to use
-    */
-   public static String getOseeConfigFactory() {
-      return System.getProperty(OSEE_CONFIG_FACTORY);
-   }
-
-   /**
-    * Sets the OSEE Configuration Factory to use.
-    * 
-    * @param OSEE configuration factory to use
-    */
-   public static void setOseeConfigFactory(String value) {
-      System.setProperty(OSEE_CONFIG_FACTORY, value);
    }
 
    private void toStringHelper(List<String> list, Class<?> clazz) {

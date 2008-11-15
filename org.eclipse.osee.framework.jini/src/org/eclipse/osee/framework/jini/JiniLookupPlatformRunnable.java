@@ -21,10 +21,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jini.utility.StartJini;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.HeadlessEclipseConfigurationFactory;
 import org.osgi.framework.Bundle;
 
 public class JiniLookupPlatformRunnable implements IApplication {
@@ -54,7 +52,6 @@ public class JiniLookupPlatformRunnable implements IApplication {
     * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
     */
    public Object start(IApplicationContext context) throws Exception {
-      OseeProperties.setOseeConfigFactory(HeadlessEclipseConfigurationFactory.class.getName());
       String[] inputArgs = Platform.getApplicationArgs();
       CmdLineArgs args = new CmdLineArgs(inputArgs);
 
