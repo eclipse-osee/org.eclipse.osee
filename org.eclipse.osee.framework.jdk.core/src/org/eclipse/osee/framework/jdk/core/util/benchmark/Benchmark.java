@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 /**
  * Takes time measurements and provides some simple statistics. Useful for determining elapsed time between two points
@@ -30,9 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
  */
 public class Benchmark {
 
-   public static final boolean BENCHMARKS_ENABLED =
-         System.getProperty(OseeProperties.OSEE_BENCHMARK) != null ? true : false;
-
+   private static boolean IS_BENCHMARKING_ENABLED = false;
    private final long threshold;
    private long totalSamples;
    private long startTime;
@@ -87,17 +84,17 @@ public class Benchmark {
     * Begins the sample
     */
    public void startSample() {
-      if (!BENCHMARKS_ENABLED) return;
+      if (!isBenchmarkingEnabled()) return;
       startSample(System.nanoTime());
    }
 
    public void startSample(long time) {
-      if (!BENCHMARKS_ENABLED) return;
+      if (!isBenchmarkingEnabled()) return;
       startTime = time;
    }
 
    public void samplePoint() {
-      if (!BENCHMARKS_ENABLED) return;
+      if (!isBenchmarkingEnabled()) return;
       samplePoint(System.nanoTime());
    }
 
@@ -105,7 +102,7 @@ public class Benchmark {
     * Measures time between sample points
     */
    public void samplePoint(long time) {
-      if (!BENCHMARKS_ENABLED) return;
+      if (!isBenchmarkingEnabled()) return;
       if (startTime == Long.MIN_VALUE) {
          // this is the first time samplePoint was called
          startTime = time;
@@ -129,7 +126,7 @@ public class Benchmark {
    }
 
    public boolean endSample() {
-      if (!BENCHMARKS_ENABLED) return false;
+      if (!isBenchmarkingEnabled()) return false;
       return endSample(System.nanoTime());
    }
 
@@ -138,7 +135,7 @@ public class Benchmark {
     */
    public boolean endSample(long time) {
       boolean exceeded = false;
-      if (!BENCHMARKS_ENABLED) return exceeded;
+      if (!isBenchmarkingEnabled()) return exceeded;
       final long duration = (time - startTime) / 1000;
       totalTime += duration;
       if (duration > threshold) {
@@ -217,11 +214,12 @@ public class Benchmark {
    public static void main(String[] args) {
       Benchmark bm = new Benchmark("unit test", 10000);
 
-      //   System.out.printf("benchmarking is %s\n", BENCHMARKS_ENABLED ? "enabled" : "disabled");
-      if (BENCHMARKS_ENABLED)
+      if (isBenchmarkingEnabled()) {
          System.out.println("benchmarking is enabled");
-      else
+      } else {
          System.out.println("benchmarking is disabled");
+      }
+
       for (int i = 0; i < 1000; i++) {
          bm.startSample();
          try {
@@ -268,6 +266,14 @@ public class Benchmark {
       synchronized (list) {
          return new ArrayList<Benchmark>(list);
       }
+   }
+
+   public static void setBenchmarkingEnabled(boolean isEnabled) {
+      Benchmark.IS_BENCHMARKING_ENABLED = isEnabled;
+   }
+
+   public static boolean isBenchmarkingEnabled() {
+      return Benchmark.IS_BENCHMARKING_ENABLED;
    }
 
 }

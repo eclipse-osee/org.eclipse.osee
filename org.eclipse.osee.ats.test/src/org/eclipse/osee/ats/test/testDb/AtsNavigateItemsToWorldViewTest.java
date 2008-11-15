@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;

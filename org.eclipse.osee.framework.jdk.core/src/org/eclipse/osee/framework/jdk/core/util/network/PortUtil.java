@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -36,12 +37,7 @@ public class PortUtil {
    int nextPort = 18000;
 
    private PortUtil() {
-	   String startPort = System.getProperty("osee.startport", "18000");
-	   try{
-		   basePort = nextPort = Integer.parseInt(startPort);
-	   } catch (Exception ex){
-		   
-	   }
+      basePort = nextPort = OseeProperties.getOseePortScannerStartPort();
       for (int j = nextPort; j < 64000; j += 250) {
          if (checkIfPortIsTaken(j)) {
             basePort = nextPort = j;
@@ -54,20 +50,20 @@ public class PortUtil {
          }
       }
    }
-   
-   public void computeNewBasePort(){
-	   basePort = nextPort = basePort + 1000;
-	   for (int j = nextPort; j < 64000; j += 250) {
-	         if (checkIfPortIsTaken(j)) {
-	            basePort = nextPort = j;
-	            try {
-	               ss = new ServerSocket(basePort);
-	            } catch (IOException e) {
-	               e.printStackTrace();
-	            }
-	            break;
-	         }
-	      }
+
+   public void computeNewBasePort() {
+      basePort = nextPort = basePort + 1000;
+      for (int j = nextPort; j < 64000; j += 250) {
+         if (checkIfPortIsTaken(j)) {
+            basePort = nextPort = j;
+            try {
+               ss = new ServerSocket(basePort);
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+            break;
+         }
+      }
    }
 
    public int getValidPort() throws IOException {

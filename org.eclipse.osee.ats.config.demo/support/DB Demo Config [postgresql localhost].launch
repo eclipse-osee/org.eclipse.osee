@@ -20,7 +20,7 @@
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-nosplash"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx768M -Dosee.db.connection.id=postgresqlLocalhost -XX:MaxPermSize=256m"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx768M&#13;&#10;-XX:MaxPermSize=256m&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.db.connection.id=postgresqlLocalhost&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dosee.local.http.worker.port=8020"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.osee.framework.messaging.event.skynet.EventServiceProd"/>
 <booleanAttribute key="show_selected_only" value="false"/>
