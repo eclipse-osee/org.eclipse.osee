@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -459,11 +460,11 @@ public class RelationManager {
       }
    }
 
-   public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) {
+   public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeArgumentException {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
       // TODO Fix this when fix cross branching (not writing or reading from db correctly)
       if (!artifactA.getBranch().equals(artifactB.getBranch())) {
-         throw new IllegalArgumentException("Cross branch linking is not yet supported.");
+         throw new OseeArgumentException("Cross branch linking is not yet supported.");
       }
       ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_A, artifactA.getArtifactType(), 1);
       ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_B, artifactB.getArtifactType(), 1);
@@ -477,18 +478,19 @@ public class RelationManager {
     * @param relationSide
     * @param artifact
     * @param artifactCount
+    * @throws OseeArgumentException
     */
-   public static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, ArtifactType artifactType, int artifactCount) {
+   public static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, ArtifactType artifactType, int artifactCount) throws OseeArgumentException {
       int maxCount = RelationTypeManager.getRelationSideMax(relationType, artifactType, relationSide);
       int usedCount = getRelatedArtifactsCount(artifact, relationType, relationSide.oppositeSide());
 
       if (maxCount == 0) {
-         throw new IllegalArgumentException(String.format(
+         throw new OseeArgumentException(String.format(
                "Artifact \"%s\" of type \"%s\" does not belong on side \"%s\" of relation \"%s\"",
                artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
                relationType.getTypeName()));
       } else if (maxCount == 1 && usedCount + artifactCount > maxCount) {
-         throw new IllegalArgumentException(
+         throw new OseeArgumentException(
                String.format(
                      "Artifact \"%s\" of type \"%s\" can not be added to \"%s\" of relation \"%s\" because doing so would exceed the side maximum of %d for this artifact type",
                      artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationSide.toString(),
