@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -64,7 +64,7 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
       resourceComposite.setLayout(new GridLayout(2, false));
       resourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      boolean wasArbitrationOverriden = Strings.isValid(OseeProperties.getOseeApplicationServerOverride());
+      boolean wasArbitrationOverriden = Strings.isValid(OseeClientProperties.getOseeApplicationServer());
       String defaultArbitrationServer = null;
       if (!wasArbitrationOverriden) {
          try {
