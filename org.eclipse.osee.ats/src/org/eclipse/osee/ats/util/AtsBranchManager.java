@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExis
 import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
@@ -497,7 +496,7 @@ public class AtsBranchManager {
       } else if (conflictManager.getRemainingConflicts().size() > 0) {
 
          MessageDialog dialog;
-         if (OseeProperties.isDeveloper()) {
+         if (AccessControlManager.isOseeAdmin()) {
             dialog =
                   new MessageDialog(
                         Display.getCurrent().getActiveShell(),

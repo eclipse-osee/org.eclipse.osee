@@ -116,7 +116,7 @@ public class AtsLib implements IAtsLib {
    }
 
    public boolean isAtsAdmin() {
-      return AtsAdmin.isAtsAdmin();
+      return AtsPlugin.isAtsAdmin();
    }
 
    public static String doubleToStrString(double d) {

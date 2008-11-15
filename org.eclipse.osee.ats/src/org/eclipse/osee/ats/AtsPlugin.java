@@ -11,11 +11,11 @@
 
 package org.eclipse.osee.ats;
 
-import org.eclipse.osee.ats.util.AtsAdmin;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -37,6 +37,7 @@ public class AtsPlugin extends OseeUiActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
    private static boolean emailEnabled = true;
    public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
+   private static OseeGroup atsAdminGroup = null;
 
    /**
     * The constructor.
@@ -89,19 +90,22 @@ public class AtsPlugin extends OseeUiActivator {
    }
 
    public static boolean isAtsAdmin() {
-      return AtsAdmin.isAtsAdmin();
+      if (atsAdminGroup == null) {
+         atsAdminGroup = new OseeGroup("AtsAdmin");
+      }
+      return atsAdminGroup.isCurrentUserMember();
    }
 
    public static boolean isAtsIgnoreConfigUpgrades() {
-      return System.getProperty("AtsIgnoreConfigUpgrades") != null;
+      return AtsProperties.isAtsIgnoreConfigUpgrades();
    }
 
    public static boolean isAtsDisableEmail() {
-      return System.getProperty("AtsDisableEmail") != null;
+      return AtsProperties.isAtsDisableEmail();
    }
 
    public static boolean isAtsAlwaysEmailMe() {
-      return System.getProperty("AtsAlwaysEmailMe") != null;
+      return AtsProperties.isAtsAlwaysEmailMe();
    }
 
    public static Branch getAtsBranch() throws OseeCoreException {
