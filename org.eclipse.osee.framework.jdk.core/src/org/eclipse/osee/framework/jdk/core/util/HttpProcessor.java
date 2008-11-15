@@ -43,19 +43,15 @@ public class HttpProcessor {
 
    public static String put(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
       String response = null;
-      try {
-         HttpUploader uploader = new HttpUploader(url.toString(), inputStream, contentType, encoding);
-         boolean wasSuccessful = uploader.execute();
-         if (wasSuccessful) {
-            response = uploader.getUploadResponse();
-            if (response == null) {
-               throw new Exception(String.format("Error uploading resource [%s]", url));
-            }
-         } else {
+      HttpUploader uploader = new HttpUploader(url.toString(), inputStream, contentType, encoding);
+      boolean wasSuccessful = uploader.execute();
+      if (wasSuccessful) {
+         response = uploader.getUploadResponse();
+         if (response == null) {
             throw new Exception(String.format("Error uploading resource [%s]", url));
          }
-      } catch (Exception ex) {
-         throw new Exception(String.format("Error sending resource [%s]", ex.getLocalizedMessage()), ex);
+      } else {
+         throw new Exception(String.format("Error uploading resource [%s]", url));
       }
       return response;
    }
