@@ -90,7 +90,6 @@ class ArtifactSnapshotFactory {
     * @return modified pre-rendered artifact data
     */
    protected String toAbsoluteUrls(String original) {
-      System.err.println(original);
       String toReturn = "";
       if (Strings.isValid(original) != true) {
          toReturn = "<HTML><BODY><H3>Empty Contents</H3></BODY></HTML>";
@@ -101,7 +100,6 @@ class ArtifactSnapshotFactory {
          convertArtsLinks(serverPrefix, original, changeSet);
          toReturn = changeSet.toString();
       }
-      System.out.println(toReturn);
       return toReturn;
    }
 
