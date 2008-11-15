@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeDatabaseId;
@@ -39,8 +40,6 @@ import org.eclipse.osee.framework.database.utility.DatabaseConfigurationData;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
-import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -50,7 +49,6 @@ import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -68,7 +66,6 @@ public class SkynetDbInit implements IDbInitializationTask {
 
    public void run(OseeConnection connection) throws OseeCoreException {
       setIsInDbInit(true);
-      //      UserManager.setBasicUsersCreated(false);
       DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(connection, getSchemaFiles());
       Map<String, SchemaData> userSpecifiedConfig = databaseConfigurationData.getUserSpecifiedSchemas();
       DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(connection, userSpecifiedConfig.keySet());
@@ -101,15 +98,6 @@ public class SkynetDbInit implements IDbInitializationTask {
    }
 
    private static void initializeApplicationServer() throws OseeCoreException {
-      IDatabaseInfo dbInfo = DatabaseInfoManager.getDefault();
-      String resourceServer = dbInfo.getDefaultArbitrationServer();
-      if (Strings.isValid(resourceServer) != true) {
-         throw new OseeDataStoreException(
-               String.format(
-                     "Invalid resource server address [%s]. Please ensure db service info has a valid resource server defined.",
-                     resourceServer));
-      }
-
       try {
          Map<String, String> parameters = new HashMap<String, String>();
          parameters.put("registerToLookup", "true");
@@ -139,7 +127,7 @@ public class SkynetDbInit implements IDbInitializationTask {
          Socket socket = new Socket(serverUrl.getHost(), serverUrl.getPort());
          if (socket.getInetAddress().isLoopbackAddress()) {
             OseeLog.log(CoreClientActivator.class, Level.INFO, "Deleting binary data from application server...");
-            String binaryDataPath = OseeProperties.getOseeApplicationServerData();
+            String binaryDataPath = OseeClientProperties.getOseeApplicationServerData();
             Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
             Lib.deleteDir(new File(binaryDataPath + File.separator + "snapshot"));
          } else {

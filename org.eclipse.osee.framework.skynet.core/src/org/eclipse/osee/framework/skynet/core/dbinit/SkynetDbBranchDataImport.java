@@ -27,11 +27,11 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -56,7 +56,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
     */
    @Override
    public void run(OseeConnection connection) throws OseeCoreException {
-      if (OseeProperties.getDbOseeSkynetBranchImport()) {
+      if (OseeClientProperties.isOseeImportAllowed()) {
          // Clean up and delete all branches except Common
          for (Branch branch : BranchManager.getNormalBranches()) {
             if (!branch.getBranchName().equals(Branch.COMMON_BRANCH_CONFIG_ID)) {

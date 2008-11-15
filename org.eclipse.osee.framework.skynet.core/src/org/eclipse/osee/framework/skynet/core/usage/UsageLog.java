@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -36,7 +36,7 @@ public class UsageLog {
    private int userId;
 
    private UsageLog() {
-      this.usageLoggingEnabled = OseeProperties.isUsageLoggingEnabled();
+      this.usageLoggingEnabled = OseeClientProperties.isActivityLoggingEnabled();
       this.log = new LinkedList<UsageEntry>();
       this.exceptionCount = 0;
 
