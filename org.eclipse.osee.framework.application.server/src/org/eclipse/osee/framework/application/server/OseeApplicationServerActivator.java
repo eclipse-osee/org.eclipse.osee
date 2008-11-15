@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -65,7 +66,7 @@ public class OseeApplicationServerActivator implements BundleActivator {
       }
       try {
          String requiredBundles = (String) context.getBundle().getHeaders().get("Require-Bundle");
-         if (OseeProperties.isLocalApplicationServerRequired() != false) {
+         if (OseeClientProperties.isLocalApplicationServerRequired() != false) {
             launchApplicationServer(requiredBundles, bundles);
          } else {
             processBundles(requiredBundles, bundles, Operation.STOP);
@@ -117,8 +118,8 @@ public class OseeApplicationServerActivator implements BundleActivator {
    private void launchApplicationServer(String requiredBundles, Map<String, Bundle> bundles) throws BundleException, InterruptedException {
       processBundles(requiredBundles, bundles, Operation.START);
       String message =
-            String.format("Osee Application Server - port: [%s] data: [%s]", System.getProperty(
-                  "org.osgi.service.http.port", "-1"), OseeProperties.getOseeApplicationServerData());
+            String.format("Osee Application Server - port: [%s] data: [%s]",
+                  OseeProperties.getOseeApplicationServerPort(), OseeProperties.getOseeApplicationServerData());
       System.out.println(message);
    }
 

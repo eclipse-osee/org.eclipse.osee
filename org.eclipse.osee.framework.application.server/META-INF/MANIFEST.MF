@@ -6,7 +6,8 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.application.server.OseeApplicationServerActivator
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
-Import-Package: org.osgi.framework;version="1.3.0"
+Import-Package: org.eclipse.osee.framework.core.client,
+ org.osgi.framework;version="1.3.0"
 OseeEarlyStart: true 
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.equinox.ds;bundle-version="1.0.0",
