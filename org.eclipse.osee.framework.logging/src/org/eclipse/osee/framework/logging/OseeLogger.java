@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -31,17 +32,12 @@ public class OseeLogger {
       listeners = new CopyOnWriteArrayList<ILoggerListener>();
       listeners.add(new ConsoleLogger());
 
-      String level = System.getProperty("osee.log.default", "WARNING");
-      try {
-         defaultLevel = Level.parse(level);
-      } catch (Exception ex) {
-         defaultLevel = Level.WARNING;
-      }
+      defaultLevel = OseeProperties.getOseeLogDefault();
 
       for (Entry<Object, Object> entry : System.getProperties().entrySet()) {
          if (entry.getKey().toString().startsWith("osee.log.")) {
             String name = entry.getKey().toString().substring(9);
-            level = entry.getValue().toString();
+            String level = entry.getValue().toString();
             try {
                Level lev = Level.parse(level);
                levelMap.put(name, lev);

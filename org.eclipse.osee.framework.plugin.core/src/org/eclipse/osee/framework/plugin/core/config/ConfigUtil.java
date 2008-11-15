@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.plugin.core.config;
 
-import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_CONFIG_FACTORY;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 
 public class ConfigUtil {
@@ -21,7 +21,7 @@ public class ConfigUtil {
 
    public static IOseeConfigurationFactory getConfigFactory() {
       if (config == null) {
-         String classname = System.getProperty(OSEE_CONFIG_FACTORY);
+         String classname = OseeProperties.getOseeConfigFactory();
          if (classname == null) {
             classname = "org.eclipse.osee.framework.plugin.core.config.EclipseConfigurationFactory";
          }

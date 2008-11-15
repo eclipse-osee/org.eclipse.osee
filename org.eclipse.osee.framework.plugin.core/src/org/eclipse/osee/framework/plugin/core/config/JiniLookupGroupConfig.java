@@ -29,7 +29,7 @@ public class JiniLookupGroupConfig {
          OseeLog.log(JiniLookupGroupConfig.class, Level.INFO, "Error getting bundle org.eclipse.osee.framework.jini");
       }
 
-      String filterGroups = System.getProperty(OseeProperties.OSEE_JINI_SERVICE_GROUPS);
+      String filterGroups = OseeProperties.getOseeJiniServiceGroups();
       if (filterGroups != null && filterGroups.length() > 0) {
          String[] values = filterGroups.split(",");
          for (int index = 0; index < values.length; index++) {
@@ -39,10 +39,8 @@ public class JiniLookupGroupConfig {
       }
 
       if (serviceGroups == null || serviceGroups.length == 0) {
-         OseeLog.log(
-               JiniLookupGroupConfig.class,
-               Level.SEVERE,
-               "[-D" + OseeProperties.OSEE_JINI_SERVICE_GROUPS + "] was not set.\n" + "Please enter the Jini Group this service register with.");
+         OseeLog.log(JiniLookupGroupConfig.class, Level.SEVERE,
+               "[-D" + filterGroups + "] was not set.\n" + "Please enter the Jini Group this service register with.");
          serviceGroups = new String[] {"NO_LOOKUP_GROUP_SPECIFIED"};
       } else {
          String toStore = "";
@@ -53,7 +51,7 @@ public class JiniLookupGroupConfig {
             }
          }
          OseeLog.log(JiniLookupGroupConfig.class, Level.INFO, "osee.jini.lookup.groups: " + toStore);
-         System.setProperty(OseeProperties.OSEE_JINI_SERVICE_GROUPS, toStore);
+         OseeProperties.setOseeJiniServiceGroups(toStore);
       }
 
       return serviceGroups;

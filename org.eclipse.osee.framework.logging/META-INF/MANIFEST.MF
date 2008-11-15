@@ -6,6 +6,7 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.logging.Activator
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
-Import-Package: org.osgi.framework;version="1.3.0"
+Import-Package: org.eclipse.osee.framework.jdk.core.util,
+ org.osgi.framework;version="1.3.0"
 Export-Package: org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
