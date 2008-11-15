@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.database.utility;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,8 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 
@@ -79,65 +75,50 @@ public class GroupSelection {
       initGroups.put(listName, dbInitTasks);
    }
 
-   /**
-    * Call to get DB initialization Tasks from choice made by User
-    * 
-    * @return initialization task list
-    */
-   public List<String> getDbInitTasks() {
-      String choice = null;
-      if (initGroups.keySet().size() == 1) {
-         String[] keys = initGroups.keySet().toArray(new String[1]);
-         choice = keys[0];
-      } else {
-         List<String> choices = new ArrayList<String>(initGroups.keySet());
-         Collections.sort(choices);
-         choice = chooser("Select Init Group To Run.", choices);
-      }
+   //   /**
+   //    * Call to get DB initialization Tasks from choice made by User
+   //    * 
+   //    * @return initialization task list
+   //    */
+   //   public List<String> getDbInitTasks() {
+   //      String choice = null;
+   //      if (initGroups.keySet().size() == 1) {
+   //         String[] keys = initGroups.keySet().toArray(new String[1]);
+   //         choice = keys[0];
+   //      } else {
+   //         List<String> choices = new ArrayList<String>(initGroups.keySet());
+   //         Collections.sort(choices);
+   //         int selection = -1;
+   //         String configChoice = OseeProperties.getDbConfigInitChoice();
+   //         if (false != Strings.isValid(configChoice)) {
+   //            selection = choices.indexOf(configChoice);
+   //         }
+   //         if (selection <= -1) {
+   //            choice = getSelectionFromUser("Select Init Group To Run.", choices);
+   //         }
+   //      }
+   //      OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("DB Config Choice Selected: [%s]", choice));
+   //      return initGroups.get(choice);
+   //   }
+
+   public List<String> getChoices() {
+      List<String> choices = new ArrayList<String>(initGroups.keySet());
+      Collections.sort(choices);
+      return choices;
+   }
+
+   public List<String> getDbInitTasksByChoiceEntry(String choice) {
       return initGroups.get(choice);
    }
 
-   /**
-    * Call get get DB initialization Tasks from specified taskId
-    * 
-    * @param dbInitTaskId
-    * @return initialization task list
-    */
-   public List<String> getDbInitTasks(String dbInitTaskId) {
-      populateDbInitChoices();
-      return initGroups.get(dbInitTaskId);
-   }
-
-   private String chooser(String message, List<String> choices) {
-      String configChoice = OseeProperties.getDbConfigInitChoice();
-      int selection = -1;
-      if (false != Strings.isValid(configChoice)) {
-         selection = choices.indexOf(configChoice);
-      }
-
-      if (selection <= -1) {
-         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-         while (selection == -1) {
-            try {
-               System.out.println(message);
-               for (int i = 0; i < choices.size(); i++) {
-                  System.out.println("   " + i + ") " + choices.get(i));
-               }
-               System.out.println("Enter: 0 - " + (choices.size() - 1));
-               String line = stdin.readLine();
-               selection = Integer.parseInt(line);
-               if (selection < 0 || selection >= choices.size()) {
-                  System.out.println("Invalid selection:  Index [" + selection + "] is out of range.");
-                  selection = -1;
-               }
-            } catch (Exception ex) {
-               System.out.println("Invalid selection:  Index [" + selection + "] is out of range.");
-               ex.printStackTrace();
-            }
-         }
-      }
-      String choice = choices.get(selection);
-      OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("DB Config Choice Selected: [%s]", choice));
-      return choice;
-   }
+   //   /**
+   //    * Call get get DB initialization Tasks from specified taskId
+   //    * 
+   //    * @param dbInitTaskId
+   //    * @return initialization task list
+   //    */
+   //   public List<String> getDbInitTasks(String dbInitTaskId) {
+   //      populateDbInitChoices();
+   //      return initGroups.get(dbInitTaskId);
+   //   }
 }

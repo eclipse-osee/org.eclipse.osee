@@ -18,11 +18,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 
 /**
  * @author Roberto E. Escobar
@@ -101,7 +102,7 @@ public class TableElement implements Xmlizable {
       if(this.tableDescription.containsKey(TableDescriptionFields.importFrom)){
          return this.tableDescription.get(TableDescriptionFields.importFrom);
       }     
-      return OseeProperties.OSEE_IMPORT_FROM_DB_SERVICE;
+      return OseeClientProperties.getTableImportSource();
    }
    
    public void addTableDescription(TableDescriptionFields field, String value){

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
+import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public class ApplicationServerManager implements IApplicationServerManager {
-   private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
    private Map<String, OseeServerThreadFactory> threadFactories;
    private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
 
@@ -67,7 +67,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
          serverAddress = InetAddress.getLocalHost().getCanonicalHostName();
       } catch (UnknownHostException ex) {
       }
-      int port = Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
+      int port = OseeServerProperties.getOseeApplicationServerPort();
 
       String checkSum = "-1";
       try {

@@ -13,25 +13,23 @@ package org.eclipse.osee.framework.database;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.osee.framework.database.initialize.LaunchOseeDbConfigClient;
+import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
 
 public class ConfigDatabase implements IApplication {
 
-   private static String[] bundlesToStart = new String[]{
-      "org.eclipse.osee.framework.db.connection",
-      "org.eclipse.equinox.ds"
-      };
-   
+   private static String[] bundlesToStart =
+         new String[] {"org.eclipse.osee.framework.db.connection", "org.eclipse.equinox.ds"};
+
    /*
     * (non-Javadoc)
     * 
     * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
     */
    public Object start(IApplicationContext context) throws Exception {
-      for(String symbolicName:bundlesToStart){
+      for (String symbolicName : bundlesToStart) {
          Platform.getBundle(symbolicName).start();
       }
-      LaunchOseeDbConfigClient.main(null);
+      DatabaseInitializationOperation.executeConfigureFromJvmProperties();
       return EXIT_OK;
    }
 

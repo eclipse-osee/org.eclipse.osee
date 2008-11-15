@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
@@ -29,7 +30,7 @@ import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class ImportDataFromDbService implements IDbInitializationTask {
    private final Map<String, SchemaData> userSpecifiedConfig;
@@ -68,7 +69,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
 
                      Set<String> tablesToImport;
                      if (importFromDbService.equals(determineDefaultConnection())) {
-                        tablesToImport = dataToImport.get(OseeProperties.OSEE_IMPORT_FROM_DB_SERVICE);
+                        tablesToImport = dataToImport.get(OseeClientProperties.getTableImportSource());
                      } else {
                         tablesToImport = dataToImport.get(importFromDbService);
                      }
@@ -108,8 +109,8 @@ public class ImportDataFromDbService implements IDbInitializationTask {
    }
 
    private String determineDefaultConnection() {
-      String importFromDbService = System.getProperty(OseeProperties.OSEE_IMPORT_FROM_DB_SERVICE);
-      if (importFromDbService == null || importFromDbService.equals("")) {
+      String importFromDbService = System.getProperty(OseeClientProperties.getTableImportSource());
+      if (!Strings.isValid(importFromDbService)) {
          importFromDbService = "oracle";
       }
       return importFromDbService;
@@ -124,7 +125,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
          Map<String, Set<String>> tableNamesToImport = schemaDataInUserConfig.getTablesToImport();
          Set<String> keys = tableNamesToImport.keySet();
          for (String connectionString : keys) {
-            if (connectionString.equals(OseeProperties.OSEE_IMPORT_FROM_DB_SERVICE)) {
+            if (connectionString.equals(OseeClientProperties.getTableImportSource())) {
                connectionsNeeded.add(defaultConnection);
             } else {
                connectionsNeeded.add(connectionString);

@@ -11,12 +11,12 @@
 
 package org.eclipse.osee.framework.db.connection.internal;
 
-import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_DB_CONNECTION_ID;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -47,7 +47,7 @@ public class DbConnectionInformation implements IDbConnectionInformation {
    @Override
    public IDatabaseInfo getSelectedDatabaseInfo() {
       if (selectedDbInfo == null) {
-         String dbConnectionId = System.getProperty(OSEE_DB_CONNECTION_ID);
+         String dbConnectionId = OseeProperties.getOseeDbConnectionId();
          if (dbConnectionId != null && dbConnectionId.length() > 0) {
             selectedDbInfo = getDatabaseInfo(dbConnectionId);
             if (selectedDbInfo == null) {

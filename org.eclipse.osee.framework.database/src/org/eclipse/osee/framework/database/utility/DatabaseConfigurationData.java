@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.database.config.SchemaConfigUtility;
 import org.eclipse.osee.framework.database.data.ColumnMetadata;
 import org.eclipse.osee.framework.database.data.ConstraintElement;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.database.data.ReferenceClause;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 public class DatabaseConfigurationData {
 
@@ -67,7 +67,7 @@ public class DatabaseConfigurationData {
    }
 
    private boolean useFileSpecifiedSchemas() {
-      return OseeProperties.useSchemasSpecifiedInDbConfigFiles();
+      return OseeClientProperties.useSchemasSpecifiedInDbConfigFiles();
    }
 
    private Map<String, SchemaData> useUserNameAsSchema(String userName, Map<String, SchemaData> userSchemas) {
