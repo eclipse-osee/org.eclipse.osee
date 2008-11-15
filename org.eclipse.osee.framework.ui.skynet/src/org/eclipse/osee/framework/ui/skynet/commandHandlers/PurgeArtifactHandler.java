@@ -24,9 +24,9 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -99,7 +99,7 @@ public class PurgeArtifactHandler extends CommandHandler {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
          isEnabled =
-               OseeProperties.isDeveloper() && AccessControlManager.getInstance().checkObjectListPermission(artifacts,
+               AccessControlManager.isOseeAdmin() && AccessControlManager.getInstance().checkObjectListPermission(artifacts,
                      PermissionEnum.WRITE);
       }
       return isEnabled;

@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask.Operation;
@@ -88,7 +88,7 @@ public class DatabaseHealth extends AbstractBlam {
          }
       }
       monitor.beginTask("Database Health", count);
-      if (OseeProperties.isDeveloper()) {
+      if (AccessControlManager.isOseeAdmin()) {
          StringBuilder builder = new StringBuilder();
          boolean showDetails = variableMap.getBoolean(SHOW_DETAILS_PROMPT);
          boolean fixAll = variableMap.getBoolean(CLEAN_ALL_PROMPT);

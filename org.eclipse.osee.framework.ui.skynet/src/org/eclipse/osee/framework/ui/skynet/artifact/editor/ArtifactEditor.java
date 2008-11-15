@@ -23,7 +23,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -200,7 +199,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       attributesPageIndex = createAttributesPage();
       setPageText(attributesPageIndex, "Attributes");
 
-      if (false && OseeProperties.isDeveloper()) {
+      if (false && AccessControlManager.isOseeAdmin()) {
          newAttributesPageIndex = createNewAttributesPage();
          setPageText(newAttributesPageIndex, "Attributes2");
       }

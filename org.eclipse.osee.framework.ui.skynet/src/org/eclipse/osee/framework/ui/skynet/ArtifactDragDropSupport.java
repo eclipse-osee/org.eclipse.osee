@@ -14,6 +14,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
@@ -55,7 +56,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void ensureLinkValidity(RelationTypeSide group, Artifact artifact) {
+   private static void ensureLinkValidity(RelationTypeSide group, Artifact artifact) throws OseeArgumentException {
       RelationType relationType = group.getRelationType();
       Artifact otherArtifact = group.getArtifact();
 
@@ -88,7 +89,7 @@ public class ArtifactDragDropSupport {
                window.addInvalidArtifact(artifact, ex.getMessage());
             }
          }
-      } catch (IllegalArgumentException ex) {
+      } catch (OseeArgumentException ex) {
          window.addInvalid("All", ex.getMessage());
       }
    }
@@ -126,7 +127,7 @@ public class ArtifactDragDropSupport {
             try {
                ensureLinkValidity(group, artifact);
                window.addValid(artifact);
-            } catch (IllegalArgumentException ex) {
+            } catch (OseeArgumentException ex) {
                window.addInvalid(artifact.getDescriptiveName(), ex.getMessage());
             }
 
@@ -159,7 +160,7 @@ public class ArtifactDragDropSupport {
       try {
          ensureLinkValidity(group, artifact);
          window.addValid(artifact);
-      } catch (IllegalArgumentException ex) {
+      } catch (OseeArgumentException ex) {
          window.addInvalid(artifact.getDescriptiveName(), ex.getMessage());
       }
    }

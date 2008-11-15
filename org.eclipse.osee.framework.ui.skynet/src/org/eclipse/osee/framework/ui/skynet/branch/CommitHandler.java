@@ -12,8 +12,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -68,7 +68,7 @@ public class CommitHandler extends AbstractSelectionEnabledHandler {
 
    public void handleConflicts(Branch fromBranch, Branch toBranch) throws OseeCoreException {
       MessageDialog dialog;
-      if (OseeProperties.isDeveloper()) {
+      if (AccessControlManager.isOseeAdmin()) {
          dialog =
                new MessageDialog(
                      Display.getCurrent().getActiveShell(),
@@ -104,6 +104,6 @@ public class CommitHandler extends AbstractSelectionEnabledHandler {
          validBranchSelected &=
                !((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).isChangeManaged();
       }
-      return (validBranchSelected) || (!useParentBranch && OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection));
+      return (validBranchSelected) || (!useParentBranch && AccessControlManager.isOseeAdmin() && SkynetSelections.oneBranchSelected(selection));
    }
 }

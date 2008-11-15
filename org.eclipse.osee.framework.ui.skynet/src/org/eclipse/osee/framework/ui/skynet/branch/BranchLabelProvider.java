@@ -20,9 +20,9 @@ import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -153,7 +153,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          Branch branch = (Branch) element;
 
          if (columnIndex == 0) {
-            return (OseeProperties.isDeveloper() ? "(" + branch.getBranchId() + ") " : "") + branch.getBranchName();
+            return (AccessControlManager.isOseeAdmin() ? "(" + branch.getBranchId() + ") " : "") + branch.getBranchName();
          } else if (columnIndex == 1) {
             return branch.getDisplayName();
          } else if (columnIndex == 2) {

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.swt.graphics.Image;
 
@@ -34,7 +34,7 @@ public class CustomizeDataLabelProvider implements ILabelProvider {
    }
 
    public String getText(Object arg0) {
-      return (xViewer.getCustomizeMgr().isCustomizationUserDefault((CustomizeData) arg0) ? "(Default) " : "") + (((CustomizeData) arg0)).getName() + (OseeProperties.isDeveloper() ? " - " + ((CustomizeData) arg0).getGuid() : "");
+      return (xViewer.getCustomizeMgr().isCustomizationUserDefault((CustomizeData) arg0) ? "(Default) " : "") + (((CustomizeData) arg0)).getName() + (AccessControlManager.isOseeAdmin() ? " - " + ((CustomizeData) arg0).getGuid() : "");
    }
 
    public void addListener(ILabelProviderListener arg0) {

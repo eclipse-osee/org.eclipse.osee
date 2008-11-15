@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,8 +30,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -116,7 +115,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          if (parentElement instanceof BranchManager) {
             List<BranchType> branchTypes = new ArrayList<BranchType>(4);
             branchTypes.add(BranchType.TOP_LEVEL);
-            if (OseeProperties.isDeveloper() && showMergeBranches) {
+            if (AccessControlManager.isOseeAdmin() && showMergeBranches) {
                branchTypes.add(BranchType.MERGE);
             }
 

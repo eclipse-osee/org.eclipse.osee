@@ -25,9 +25,9 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -98,7 +98,7 @@ public class GlobalMenu {
          try {
             GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
             if (deleteMenuItem != null) deleteMenuItem.setEnabled(permiss.isFullAccess());
-            if (purgeMenuItem != null) purgeMenuItem.setEnabled(permiss.isHasArtifacts() && OseeProperties.isDeveloper());
+            if (purgeMenuItem != null) purgeMenuItem.setEnabled(permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
             if (tagMenuItem != null) tagMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isFullAccess());
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);

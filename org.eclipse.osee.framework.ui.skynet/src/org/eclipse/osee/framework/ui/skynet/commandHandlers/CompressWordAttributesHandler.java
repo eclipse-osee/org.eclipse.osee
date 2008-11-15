@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -102,7 +102,7 @@ public class CompressWordAttributesHandler extends AbstractHandler {
             if (!artifacts.isEmpty()) {
                boolean writePermission =
                      AccessControlManager.checkObjectPermission(artifacts.get(0), PermissionEnum.WRITE);
-               enabled = writePermission && OseeProperties.isDeveloper();
+               enabled = writePermission && AccessControlManager.isOseeAdmin();
             }
          }
       } catch (Exception ex) {

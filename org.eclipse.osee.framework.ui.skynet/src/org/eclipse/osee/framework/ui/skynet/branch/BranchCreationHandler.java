@@ -20,7 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -120,7 +120,7 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
    public boolean isEnabledWithException() throws OseeCoreException {
       IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
-      return (!selective || OseeProperties.isDeveloper()) && ((SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
+      return (!selective || AccessControlManager.isOseeAdmin()) && ((SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
             SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(selection) && AccessControlManager.checkObjectPermission(
             ((TransactionData) SkynetSelections.boilDownObject(selection.getFirstElement())).getTransactionId().getBranch(),
             PermissionEnum.READ)));
