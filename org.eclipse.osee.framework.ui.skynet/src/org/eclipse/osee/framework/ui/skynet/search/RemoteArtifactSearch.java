@@ -22,16 +22,18 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Roberto E. Escobar
  */
 final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
-   private String queryString;
-   private boolean nameOnly;
-   private boolean includeDeleted;
-   private Branch branch;
+   private final String queryString;
+   private final boolean nameOnly;
+   private final boolean includeDeleted;
+   private final boolean matchWordOrder;
+   private final Branch branch;
 
-   RemoteArtifactSearch(String queryString, Branch branch, boolean nameOnly, boolean includeDeleted) {
+   RemoteArtifactSearch(String queryString, Branch branch, boolean nameOnly, boolean includeDeleted, boolean matchWordOrder) {
       this.branch = branch;
       this.includeDeleted = includeDeleted;
       this.nameOnly = nameOnly;
       this.queryString = queryString;
+      this.matchWordOrder = matchWordOrder;
    }
 
    /* (non-Javadoc)
@@ -39,7 +41,8 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
     */
    @Override
    public Collection<Artifact> getArtifacts() throws Exception {
-      return ArtifactQuery.getArtifactsFromAttributeWithKeywords(queryString, nameOnly, includeDeleted, branch);
+      return ArtifactQuery.getArtifactsFromAttributeWithKeywords(queryString, matchWordOrder, nameOnly, includeDeleted,
+            branch);
    }
 
    /* (non-Javadoc)

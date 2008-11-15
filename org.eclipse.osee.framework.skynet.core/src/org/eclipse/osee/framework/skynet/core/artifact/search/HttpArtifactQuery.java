@@ -33,13 +33,15 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Roberto E. Escobar
  */
 final class HttpArtifactQuery {
-   private String queryString;
-   private boolean nameOnly;
-   private boolean includeDeleted;
-   private Branch branch;
+   private final String queryString;
+   private final boolean matchWordOrder;
+   private final boolean nameOnly;
+   private final boolean includeDeleted;
+   private final Branch branch;
 
-   protected HttpArtifactQuery(String queryString, boolean nameOnly, boolean includeDeleted, Branch branch) {
+   protected HttpArtifactQuery(String queryString, boolean matchWordOrder, boolean nameOnly, boolean includeDeleted, Branch branch) {
       this.branch = branch;
+      this.matchWordOrder = matchWordOrder;
       this.includeDeleted = includeDeleted;
       this.nameOnly = nameOnly;
       this.queryString = queryString;
@@ -51,10 +53,13 @@ final class HttpArtifactQuery {
       parameters.put("query", queryString);
       parameters.put("branchId", Integer.toString(branch.getBranchId()));
       if (includeDeleted) {
-         parameters.put("include deleted", Boolean.toString(includeDeleted));
+         parameters.put("include deleted", "true");
       }
       if (nameOnly) {
-         parameters.put("name only", Boolean.toString(nameOnly));
+         parameters.put("name only", "true");
+      }
+      if (matchWordOrder) {
+         parameters.put("match word order", "true");
       }
       return HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_CONTEXT, parameters);
    }

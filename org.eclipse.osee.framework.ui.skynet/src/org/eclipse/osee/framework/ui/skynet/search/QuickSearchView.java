@@ -58,6 +58,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
    private enum SearchOption {
       Name_Only("quick_search_name_option", "When selected, searches only through the artifact's name attribute field.", true),
+      Match_Word_Order("quick_search_word_order_option", "When selected, match search string word order.", true),
       By_Id("quick_search_by_id_option", "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.", true),
       Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.", false);
 
@@ -239,6 +240,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
             } else {
                NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
                      BranchManager.getDefaultBranch(),
+                     searchComposite.isOptionSelected(SearchOption.Match_Word_Order.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.Name_Only.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel())));
             }

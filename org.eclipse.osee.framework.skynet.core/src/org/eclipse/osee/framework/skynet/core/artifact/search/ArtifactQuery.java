@@ -314,15 +314,17 @@ public class ArtifactQuery {
     * </p>
     * 
     * @param queryString keywords to match
+    * @param matchWordOrder <b>true</b> ensures the query string words exist in order; <b>false</b> matches words in any
+    *           order
     * @param nameOnly <b>true</b> searches in name attributes only; <b>false</b> includes all tagged attribute types
     * @param allowDeleted <b>true</b> includes deleted artifacts in results; <b>false</b> omits deleted artifacts
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws Exception
     */
-   public static List<Artifact> getArtifactsFromAttributeWithKeywords(String queryString, boolean nameOnly, boolean allowDeleted, Branch branch) throws Exception {
-      return new HttpArtifactQuery(queryString, nameOnly, allowDeleted, branch).getArtifacts(FULL, null, false, false,
-            allowDeleted);
+   public static List<Artifact> getArtifactsFromAttributeWithKeywords(String queryString, boolean matchWordOrder, boolean nameOnly, boolean allowDeleted, Branch branch) throws Exception {
+      return new HttpArtifactQuery(queryString, matchWordOrder, nameOnly, allowDeleted, branch).getArtifacts(FULL,
+            null, false, false, allowDeleted);
    }
 
    /**

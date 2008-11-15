@@ -42,15 +42,29 @@ public class SearchEngine implements ISearchEngine {
       Collection<AttributeData> tagMatches = attributeSearch.getMatchingAttributes();
       long timeAfterPass1 = System.currentTimeMillis() - startTime;
       long secondPass = System.currentTimeMillis();
-      for (AttributeData attributeData : tagMatches) {
-         if (manager.find(attributeData, searchString)) {
+
+      boolean bypassSecondPass = !options.getBoolean("match word order");
+      if (bypassSecondPass) {
+         for (AttributeData attributeData : tagMatches) {
             joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
+         }
+      } else {
+         for (AttributeData attributeData : tagMatches) {
+            if (manager.find(attributeData, searchString)) {
+               joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
+            }
          }
       }
       secondPass = System.currentTimeMillis() - secondPass;
       joinQuery.store();
-      System.out.println(String.format("Search for [%s] Pass 1: [%d items in %d ms] 2nd Pass: [%d items in %d ms]",
-            searchString, tagMatches.size(), timeAfterPass1, joinQuery.size(), secondPass));
+
+      String firstPassMsg =
+            String.format("Pass 1: [%d items in %d ms]);", bypassSecondPass ? joinQuery.size() : tagMatches.size(),
+                  timeAfterPass1);
+      String secondPassMsg = String.format(" Pass 2: [%d items in %d ms]", joinQuery.size(), secondPass);
+
+      System.out.println(String.format("Search for [%s] - %s%s", searchString, firstPassMsg,
+            bypassSecondPass ? "" : secondPassMsg));
       statistics.addEntry(searchString, branchId, options, joinQuery.size(), System.currentTimeMillis() - startTime);
       return String.format("%d,%d", joinQuery.getQueryId(), joinQuery.size());
    }
