@@ -51,6 +51,10 @@ public class OseeCodeVersion {
       return getInstance().get();
    }
 
+   public static boolean isDevelopment() {
+      return getVersion().equalsIgnoreCase(DEFAULT_DEVELOPMENT_VERSION);
+   }
+
    private String get() {
       if (oseeVersion == null) {
          try {
