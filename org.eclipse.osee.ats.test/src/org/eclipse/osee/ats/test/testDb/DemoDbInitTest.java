@@ -6,8 +6,7 @@
 package org.eclipse.osee.ats.test.testDb;
 
 import junit.framework.TestCase;
-import org.eclipse.osee.framework.database.initialize.LaunchOseeDbConfigClient;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
 
 /**
  * @author Donald G. Dunne
@@ -16,9 +15,7 @@ public class DemoDbInitTest extends TestCase {
 
    public void testDemoDbInit() throws Exception {
       System.out.println("Begin Database Initialization...");
-      OseeProperties.setDBConfigInitChoice("OSEE Demo Database");
-      System.setProperty(OseeProperties.OSEE_NO_PROMPT, "true");
-      LaunchOseeDbConfigClient.main(null);
+      DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
       System.out.println("Database Initialization Complete.");
    }
 
