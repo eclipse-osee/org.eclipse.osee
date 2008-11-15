@@ -49,10 +49,10 @@ public class ReggieCache implements DiscoveryListener {
    private LookupDiscoveryManager lookupDiscoveryManager;
    private ServiceDiscoveryManager serviceDiscoveryManager;
 
-   private ClassLoader loader;
+   //   private ClassLoader loader;
 
    private ReggieCache(ClassLoader loader) {
-      this.loader = loader;
+      //      this.loader = loader;
       registrarListeners = Collections.synchronizedSet(new HashSet<IRegistrarListener>());
       serviceRegistrars = Collections.synchronizedMap(new HashMap<ServiceID, ServiceRegistrar>());
       locators = Collections.synchronizedSet(new HashSet<String>());

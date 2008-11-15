@@ -66,7 +66,7 @@ public class ServiceItem implements Comparable<ServiceItem> {
       String jiniVmArg = "";
       if (false != isJiniGroupRequired()) {
          jiniVmArg =
-               String.format("-D%s=\"%s\"", OseeProperties.OSEE_JINI_SERVICE_GROUPS,
+               String.format("-D%s=\"%s\"", OseeProperties.getOseeJiniServiceGroups(),
                      Strings.isValid(getJiniGroup()) ? getJiniGroup() : JINI_GROUP_FIELD);
       }
       return source.replace(JINI_GROUP_FIELD, jiniVmArg);
