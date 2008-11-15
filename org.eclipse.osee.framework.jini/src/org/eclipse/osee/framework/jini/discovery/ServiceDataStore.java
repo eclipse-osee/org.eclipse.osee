@@ -91,7 +91,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
          if (filterGroups == null) {
             logger.log(
                   Level.SEVERE,
-                  "[-D" + OseeProperties.OSEE_JINI_SERVICE_GROUPS + "] was not set.\n" + "Please enter the Jini Group this service register with.");
+                  "[-D" + OseeProperties.getOseeJiniServiceGroups() + "] was not set.\n" + "Please enter the Jini Group this service register with.");
             System.exit(1);
          }
 
@@ -663,8 +663,8 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
     *           from refresh().
     */
    private void addLookupLocators(Collection<String> lookupList, boolean addToLocators) {
-      String value = System.getProperty("OseeJiniDisableForcedReggieSearch", "false");
-      if (!value.equalsIgnoreCase("true")) {
+      boolean isEnabled = OseeProperties.isOseeJiniForcedReggieSearchEnabled();
+      if (isEnabled) {
          Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          if (addToLocators) locators.addAll(lookupList);
 

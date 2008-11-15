@@ -54,7 +54,7 @@ public class JiniLookupPlatformRunnable implements IApplication {
     * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
     */
    public Object start(IApplicationContext context) throws Exception {
-      System.setProperty(OseeProperties.OSEE_CONFIG_FACTORY, HeadlessEclipseConfigurationFactory.class.getName());
+      OseeProperties.setOseeConfigFactory(HeadlessEclipseConfigurationFactory.class.getName());
       String[] inputArgs = Platform.getApplicationArgs();
       CmdLineArgs args = new CmdLineArgs(inputArgs);
 

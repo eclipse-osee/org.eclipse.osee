@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.jini.core.entry.Entry;
@@ -38,7 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.eclipse.osee.framework.jini.service.core.JiniService;
 import org.eclipse.osee.framework.jini.service.core.SimpleFormattedEntry;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 import org.eclipse.osee.framework.plugin.core.config.NonEclipseConfigurationFactory;
 import org.eclipse.osee.framework.plugin.core.config.NonEclipseManifestHeader;
@@ -47,8 +46,6 @@ import org.eclipse.osee.framework.plugin.core.config.NonEclipseManifestHeader;
  * @author Andrew M. Finkbeiner
  */
 public class StartJini extends JiniService {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(StartJini.class);
 
    public static final String SPAWNED_REGGIE_SERVICE_ID = "Spawned Reggie Id";
    public static final String SPAWNED_REGGIE_ON_HOST = "On Host";
@@ -74,9 +71,10 @@ public class StartJini extends JiniService {
          if (groups != null) {
             allowedGroups = StringFormat.commaSeparate(groups);
          } else {
-            logger.log(
+            OseeLog.log(
+                  StartJini.class,
                   Level.SEVERE,
-                  "[-D" + OseeProperties.OSEE_JINI_SERVICE_GROUPS + "] was not set.\nPlease enter the Group(s) this Lookup Server will register with.");
+                  "[-D" + OseeProperties.getOseeJiniServiceGroups() + "] was not set.\nPlease enter the Group(s) this Lookup Server will register with.");
             return;
          }
          String quote = null;
@@ -92,15 +90,15 @@ public class StartJini extends JiniService {
          String startServices =
                javaexeBigMem + " -Dlookupcomponent " + " -Dosee.jini.lookup.groups=" + allowedGroups + " " + " -Dosee.jini.install=" + quote + jiniHome + "/jini2_1" + quote + " " + " -Dosee.jini.config=" + quote + jiniHome + "/jini_config" + quote + " " + " -Dosee.classserver.host=" + host + " " + " -Dosee.classserver.port=" + port + " " + " -Djava.security.policy=" + quote + jiniHome + "/jini_config/jsk-all.policy" + quote + " " + " -jar " + quote + jiniHome + "/jini2_1/lib/start.jar" + quote + " " + quote + jiniHome + "/jini_config/start-transient-jeri-services.config" + quote;
 
-         logger.log(Level.INFO, "RUN REGGIE ***************************************************");
-         logger.log(Level.INFO, startServices);
+         OseeLog.log(StartJini.class, Level.INFO, "RUN REGGIE ***************************************************");
+         OseeLog.log(StartJini.class, Level.INFO, startServices);
          Process process = Runtime.getRuntime().exec(startServices);
          jiniProcesses.add(process);
          String reggieServiceId = catchTheReggieServiceId(process);
          Lib.handleProcessNoWait(process, new OutputStreamWriter(System.err));
 
          if (reggieServiceId == null || reggieServiceId.length() == 0) {
-            logger.log(Level.SEVERE, "\n Jini Initialization Failed. \n");
+            OseeLog.log(StartJini.class, Level.SEVERE, "\n Jini Initialization Failed. \n");
             killProcesses();
             return;
          }
@@ -119,7 +117,7 @@ public class StartJini extends JiniService {
                new SimpleFormattedEntry(SPAWNED_REGGIE_SERVICE_ID, reggieServiceId),
                new SimpleFormattedEntry(SPAWNED_REGGIE_ON_HOST, getHostName())}, getHeaders(manifestFile));
 
-         logger.log(Level.INFO, "....................Core Jini Service is Alive....................");
+         OseeLog.log(StartJini.class, Level.INFO, "....................Core Jini Service is Alive....................");
          this.stayAlive();
 
       } catch (IOException ex) {
@@ -138,7 +136,7 @@ public class StartJini extends JiniService {
       try {
          while ((line = reader.readLine()) != null) {
             wr.append(line);
-            logger.log(Level.SEVERE, "err: " + line + "\n");
+            OseeLog.log(StartJini.class, Level.SEVERE, "err: " + line + "\n");
             Matcher reggieStartMatcher = reggieStartPattern.matcher(wr);
             if (!wr.toString().contains(reggieFail)) {
                if (reggieStartMatcher.matches()) {
@@ -176,17 +174,17 @@ public class StartJini extends JiniService {
          manifestFileString = "META-INF/MANIFEST.MF";
       }
       File file = new File(manifestFileString);
-      
+
       if (file == null || !file.exists()) {
-         logger.log(Level.SEVERE, "The Specified Manifest File does not exist!!");
+         OseeLog.log(StartJini.class, Level.SEVERE, "The Specified Manifest File does not exist!!");
          System.exit(1);
       }
       try {
-		toReturn = new FileInputStream(file);
-	} catch (FileNotFoundException ex) {
-		logger.log(Level.SEVERE, "The Specified Manifest File can not be opened!!",ex);
-        System.exit(1);
-	}
+         toReturn = new FileInputStream(file);
+      } catch (FileNotFoundException ex) {
+         OseeLog.log(StartJini.class, Level.SEVERE, "The Specified Manifest File can not be opened!!", ex);
+         System.exit(1);
+      }
       return toReturn;
    }
 
@@ -200,8 +198,8 @@ public class StartJini extends JiniService {
    }
 
    public static void main(String[] args) {
-      System.setProperty(OseeProperties.OSEE_CONFIG_FACTORY, NonEclipseConfigurationFactory.class.getName());
-      logger.log(Level.INFO, "num args + " + args.length);
+      OseeProperties.setOseeConfigFactory(NonEclipseConfigurationFactory.class.getName());
+      OseeLog.log(StartJini.class, Level.INFO, "num args + " + args.length);
       InputStream manifestFile = getManifestFile(args);
       if (args.length == 1) {
          new StartJini(args[0], false, false, null, manifestFile);
@@ -210,7 +208,7 @@ public class StartJini extends JiniService {
 
          for (int i = 1; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("-nohup")) {
-               logger.log(Level.INFO, "nohup!!");
+               OseeLog.log(StartJini.class, Level.INFO, "nohup!!");
                nohup = true;
             } else if (args[i].equalsIgnoreCase("-browser")) {
                browser = true;
@@ -219,15 +217,16 @@ public class StartJini extends JiniService {
 
          new StartJini(args[0], nohup, browser, null, manifestFile);
       } else {
-         logger.log(Level.INFO, "USAGE: -Dosee.jini.lookup.groups=<groups> StartJini <port> ?<-nohup> ?<-browser>");
+         OseeLog.log(StartJini.class, Level.INFO,
+               "USAGE: -Dosee.jini.lookup.groups=<groups> StartJini <port> ?<-nohup> ?<-browser>");
       }
 
-      logger.log(Level.INFO, "Exiting...");
+      OseeLog.log(StartJini.class, Level.INFO, "Exiting...");
       Runtime.getRuntime().exit(0);
    }
 
    private void killProcesses() {
-      logger.log(Level.INFO, "Destroying Spawned Processes...");
+      OseeLog.log(StartJini.class, Level.INFO, "Destroying Spawned Processes...");
       for (Process process : jiniProcesses) {
          if (process != null) {
             process.destroy();
@@ -241,7 +240,7 @@ public class StartJini extends JiniService {
     * @see org.eclipse.osee.framework.jini.service.interfaces.IService#kill()
     */
    public void kill() throws RemoteException {
-      logger.log(Level.INFO, "De-registering Core Jini Service...");
+      OseeLog.log(StartJini.class, Level.INFO, "De-registering Core Jini Service...");
       deregisterService();
       killProcesses();
       ServiceDataStore.getNonEclipseInstance().terminate();
