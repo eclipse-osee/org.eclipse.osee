@@ -21,13 +21,16 @@ public class CoreClientActivator extends OseeActivator {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core.client";
    private static CoreClientActivator plugin;
+   private BundleContext context;
 
    public CoreClientActivator() {
       plugin = this;
+      context = null;
    }
 
    public void start(BundleContext context) throws Exception {
       super.start(context);
+      this.context = context;
       HttpServer.startServers(1);
    }
 
@@ -39,10 +42,14 @@ public class CoreClientActivator extends OseeActivator {
       HttpServer.stopServers();
 
       ClientSessionManager.releaseSession();
+      context = null;
    }
 
    public static CoreClientActivator getInstance() {
       return plugin;
    }
 
+   public static BundleContext getBundleContext() {
+      return getInstance().context;
+   }
 }

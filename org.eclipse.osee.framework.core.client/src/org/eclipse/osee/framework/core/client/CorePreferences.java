@@ -24,9 +24,7 @@ public class CorePreferences {
    private CorePreferences() {
 
    }
-   public static final String INETADDRESS_KEY = "org.eclipse.osee.framework.skynet.core.preferences.InetAddressDefault";
-   public static final String ARBITRATION_SERVER =
-         "org.eclipse.osee.framework.skynet.core.preferences.ArbitrationServer";
+   public static final String INETADDRESS_KEY = "org.eclipse.osee.framework.core.client.preferences.InetAddressDefault";
 
    public static InetAddress getDefaultInetAddress() throws UnknownHostException {
       Preferences prefStore = CoreClientActivator.getInstance().getPluginPreferences();

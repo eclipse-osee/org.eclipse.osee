@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.GuestCredentialProvider;
 import org.eclipse.osee.framework.core.client.ICredentialProvider;
 import org.eclipse.osee.framework.core.client.OseeClientSession;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeClientInfo;
@@ -41,7 +42,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.BaseStatus;
@@ -130,7 +130,7 @@ public class InternalClientSessionManager {
                   credential.setUserName(System.getProperty("user.name"));
                   credential.setDomain("");
                   credential.setPassword("");
-                  credential.setAuthenticationProtocol(OseeProperties.getAuthenticationProtocol());
+                  credential.setAuthenticationProtocol(OseeClientProperties.getAuthenticationProtocol());
                   return credential;
                }
             });

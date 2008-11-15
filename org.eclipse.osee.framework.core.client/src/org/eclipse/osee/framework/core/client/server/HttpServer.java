@@ -26,7 +26,8 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.CorePreferences;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -204,7 +205,7 @@ public class HttpServer implements Runnable {
          String serviceName = element.getAttribute("serviceName");
          try {
             String portAttribute = "productionPort";
-            if (OseeProperties.isDeveloper()) {
+            if (OseeCodeVersion.isDevelopment()) {
                portAttribute = "developmentPort";
             }
             Integer port = new Integer(element.getAttribute(portAttribute));
@@ -223,12 +224,21 @@ public class HttpServer implements Runnable {
                   element.getName(), serviceName), ex);
          }
       }
-      int portToUse = Integer.getInteger(OseeProperties.OSEE_LOCAL_HTTP_WORKER_PORT, 0);
+      String value = OseeClientProperties.getLocalHttpWorkerPort();
+      int portToUse = 0;
+      if (Strings.isValid(value)) {
+         try {
+            portToUse = Integer.valueOf(value);
+         } catch (Exception ex) {
+            portToUse = 0;
+         }
+      }
+
       if (ports.containsKey(DEFAULT_SERVICE_NAME) == false || portToUse != 0) {
          // User Specified Port take Precedence
          if (portToUse == 0) {
             portToUse =
-                  false != OseeProperties.isDeveloper() ? DEFAULT_HTTP_DEVELOPMENT_PORT : DEFAULT_HTTP_PRODUCTION_PORT;
+                  false != OseeCodeVersion.isDevelopment() ? DEFAULT_HTTP_DEVELOPMENT_PORT : DEFAULT_HTTP_PRODUCTION_PORT;
          }
          ports.put(DEFAULT_SERVICE_NAME, portToUse);
 

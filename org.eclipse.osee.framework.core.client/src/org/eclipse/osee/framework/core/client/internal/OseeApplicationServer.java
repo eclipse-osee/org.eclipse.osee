@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeArbitrationServerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.BaseStatus;
@@ -69,7 +69,7 @@ public class OseeApplicationServer {
    private static void checkAndUpdateStatus() {
       isServerAlive = false;
       if (serverInfo == null) {
-         String overrideValue = OseeProperties.getOseeApplicationServerOverride();
+         String overrideValue = OseeClientProperties.getOseeApplicationServer();
          if (Strings.isValid(overrideValue)) {
             serverInfo = fromString(overrideValue);
          } else {

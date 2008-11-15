@@ -16,7 +16,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.core.client.CorePreferences;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.exception.OseeArbitrationServerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -98,8 +98,7 @@ public class HttpUrlBuilder {
    }
 
    public String getArbitrationServerPrefix() throws OseeDataStoreException {
-      String address =
-            CoreClientActivator.getInstance().getPluginPreferences().getString(CorePreferences.ARBITRATION_SERVER);
+      String address = OseeClientProperties.getOseeArbitrationServer();
       if (address.endsWith("/") != true) {
          address += "/";
       }

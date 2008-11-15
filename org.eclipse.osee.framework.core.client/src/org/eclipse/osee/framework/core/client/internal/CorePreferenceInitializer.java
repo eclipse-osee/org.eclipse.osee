@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.CorePreferences;
 import org.eclipse.osee.framework.jdk.core.util.Network;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -34,18 +33,6 @@ public class CorePreferenceInitializer extends AbstractPreferenceInitializer {
     */
    public void initializeDefaultPreferences() {
       Preferences store = CoreClientActivator.getInstance().getPluginPreferences();
-
-      String defaultValue = OseeProperties.getDefaultArbitrationServer();
-      //      if (!Strings.isValid(defaultValue)) {
-      //         defaultValue = store.getString(CorePreferences.ARBITRATION_SERVER);
-      //         if (!Strings.isValid(defaultValue)) {
-      //            OseeLog.log(CoreClientActivator.class, Level.WARNING,
-      //                  "DefaultArbitrationServer is not set. See Windows->Preferences->Osee->Arbitration Server to set arbitration server.");
-      //         }
-      //      }
-      store.setDefault(CorePreferences.ARBITRATION_SERVER, defaultValue);
-      store.setValue(CorePreferences.ARBITRATION_SERVER, defaultValue);
-
       try {
          String defaultNetworkValue = Network.getValidIP().getHostAddress();
          store.setDefault(CorePreferences.INETADDRESS_KEY, defaultNetworkValue);
