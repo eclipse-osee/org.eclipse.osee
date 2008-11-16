@@ -318,6 +318,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return null;
    }
 
+   public boolean hasParent() throws OseeCoreException {
+      return getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT) > 0;
+   }
+
    public boolean isOrphan() throws OseeCoreException {
       Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(getBranch());
       for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {

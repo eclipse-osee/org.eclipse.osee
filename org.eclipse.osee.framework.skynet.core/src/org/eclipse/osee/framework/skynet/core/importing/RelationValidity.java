@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.util.ArrayList;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -39,13 +40,13 @@ public class RelationValidity {
             SkynetTypesImporter.getQuantity(row[3])));
    }
 
-   public void persist() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public void persist() throws OseeTypeDoesNotExist, OseeDataStoreException, OseeArgumentException {
       for (ValidityRow row : validityArray) {
          for (String artifactTypeName : importer.determineConcreteTypes(row.artifactSuperTypeName)) {
             ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
-            RelationType linkDescriptor = RelationTypeManager.getType(row.relationTypeName);
+            RelationType relationType = RelationTypeManager.getType(row.relationTypeName);
 
-            RelationTypeManager.createRelationLinkValidity(branch, artifactType, linkDescriptor, row.sideAmax,
+            RelationTypeManager.createRelationLinkValidity(branch, artifactType, relationType, row.sideAmax,
                   row.sideBmax);
          }
       }

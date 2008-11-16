@@ -107,8 +107,7 @@ public class AtsConfig {
 
    private void validateATSHeadingParent(Artifact art, SkynetTransaction transaction) {
       try {
-         if (art.getParent() == null) {
-
+         if (!art.hasParent()) {
             Artifact atsHeadingArtifact = getOrCreateAtsHeadingArtifact(transaction);
             atsHeadingArtifact.addChild(art);
             art.persistAttributesAndRelations(transaction);
@@ -120,15 +119,10 @@ public class AtsConfig {
 
    public Artifact getOrCreateAtsHeadingArtifact(SkynetTransaction transaction) throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, ATS_HEADING);
-      if (art.getParent() == null) {
-         try {
-            Artifact rootArt =
-                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
-            rootArt.addChild(art);
-            art.persistAttributesAndRelations(transaction);
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
+      if (!art.hasParent()) {
+         Artifact rootArt = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
+         rootArt.addChild(art);
+         art.persistAttributesAndRelations(transaction);
       }
       return art;
    }
@@ -137,8 +131,7 @@ public class AtsConfig {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, MSA_TOOLS_HEADING);
       if (art.getParent() == null) {
          try {
-            Artifact rootArt =
-                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
+            Artifact rootArt = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
             rootArt.addChild(art);
             art.persistAttributesAndRelations(transaction);
          } catch (Exception ex) {

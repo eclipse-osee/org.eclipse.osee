@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
@@ -217,10 +218,11 @@ public class RelationTypeManager {
     * @param sideAMax
     * @param sideBMax
     * @throws OseeDataStoreException
+    * @throws OseeArgumentException
     */
-   public static void createRelationLinkValidity(Branch branch, ArtifactType artifactType, RelationType relationType, int sideAMax, int sideBMax) throws OseeDataStoreException {
-      if (sideAMax < 0) throw new IllegalArgumentException("The sideAMax can no be negative");
-      if (sideBMax < 0) throw new IllegalArgumentException("The sideBMax can no be negative");
+   public static void createRelationLinkValidity(Branch branch, ArtifactType artifactType, RelationType relationType, int sideAMax, int sideBMax) throws OseeDataStoreException, OseeArgumentException {
+      if (sideAMax < 0) throw new OseeArgumentException("The sideAMax can no be negative");
+      if (sideBMax < 0) throw new OseeArgumentException("The sideBMax can no be negative");
 
       int artTypeId = artifactType.getArtTypeId();
       int relLinkTypeId = relationType.getRelationTypeId();

@@ -124,7 +124,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
 
    public Value put(KeyOne key1, KeyTwo key2, Value value) {
       signleKeyMap.put(key1, key2);
-      return map.put(threadLocalKey.get().setKeys(key1, key2), value);
+      return map.put(new CompositeKey<KeyOne, KeyTwo>(key1, key2), value);
    }
 
    public void putAll(Map<? extends CompositeKey<KeyOne, KeyTwo>, ? extends Value> copyMap) {
