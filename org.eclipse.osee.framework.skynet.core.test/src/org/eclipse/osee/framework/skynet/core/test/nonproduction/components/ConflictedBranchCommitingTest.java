@@ -12,10 +12,10 @@
 package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
 
 import junit.framework.TestCase;
-import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 
 /**
  * @author Theron Virgin
@@ -29,41 +29,13 @@ public class ConflictedBranchCommitingTest extends TestCase {
       super(name);
    }
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
-   }
-
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#tearDown()
-    */
-   protected void tearDown() throws Exception {
-      super.tearDown();
-   }
-
-   public void CheckCommitWithResolutionErrors() {
-      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
-      OseeLog.registerLoggerListener(monitorLog);
-      try {
-         BranchManager.commitBranch(ConflictTestManager.getSourceBranch(),
-               ConflictTestManager.getDestBranch(), false, false).join();
-      } catch (ConflictDetectionException ex) {
-         return;
-      } catch (Exception ex) {
-         fail("Only the ConflictDetectionException should be thrown not a " + ex.getLocalizedMessage() + "Exception");
-      }
-      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
-            monitorLog.getSevereLogs().size() == 0);
-   }
-
    public void CheckCommitWithoutResolutionErrors() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
-         BranchManager.commitBranch(ConflictTestManager.getSourceBranch(),
-               ConflictTestManager.getDestBranch(), false, false).join();
+         ConflictManagerExternal conflictManager =
+               new ConflictManagerExternal(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
+         BranchManager.commitBranch(conflictManager, false);
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
       } catch (Exception ex) {
          fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");

@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
+import org.eclipse.osee.framework.ui.skynet.branch.CommitHandler;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -490,67 +491,26 @@ public class AtsBranchManager {
             if (result.isFalse()) return result;
          }
       }
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(branch.getParentBranch(), branch);
-      if (!commitPopup) {
-         BranchManager.commitBranch(branch, true, true);
-      } else if (conflictManager.getRemainingConflicts().size() > 0) {
-
-         MessageDialog dialog;
-         if (AccessControlManager.isOseeAdmin()) {
-            dialog =
-                  new MessageDialog(
-                        Display.getCurrent().getActiveShell(),
-                        "Unresolved Conflicts",
-                        null,
-                        "Commit stopped due to unresolved conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts\n  Force the commit",
-                        MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
-         } else {
-            dialog =
-                  new MessageDialog(
-                        Display.getCurrent().getActiveShell(),
-                        "Unresolved Conflicts",
-                        null,
-                        "Commit stopped due to unresolved conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts",
-                        MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
-
-         }
-
-         int result = dialog.open();
-         if (commitPopup && result == 1) {
-            MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getStartEndPoint(branch).getKey());
-         } else if (result == 2) {
-            BranchManager.commitBranch(branch, true, true);
-         }
-      } else {
-         StringBuffer sb =
-               new StringBuffer(
-                     "Commit branch\n\n\"" + branch + "\"\n\nto parent branch\n\n\"" + conflictManager.getToBranch() + "\"\n");
-         if (conflictManager.getOriginalConflicts().size() > 0) {
-            sb.append("\nwith " + conflictManager.getOriginalConflicts().size() + " conflicts resolved.\n");
-         } else {
-            sb.append("\n(no conflicts found)\n");
-         }
-         sb.append("\nCommit?");
-         MessageDialog dialog =
-               new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null, sb.toString(),
-                     MessageDialog.QUESTION, new String[] {"Ok", "Launch Merge Manager", "Cancel"}, 0);
-         int result = dialog.open();
-         if (result == 0) {
-            BranchManager.commitBranch(branch, true, true);
-            // Create reviews as necessary
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-            createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
-            transaction.execute();
-         } else if (result == 1) {
-            MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getStartEndPoint(branch).getKey());
-         }
-      }
-
+      commit(commitPopup, branch);
       return Result.TrueResult;
    }
 
-   public void commit() {
+   private void commit(boolean commitPopup, Branch branch) throws OseeCoreException {
+      boolean branchCommitted = false;
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(branch.getParentBranch(), branch);
 
+      if (commitPopup) {
+         branchCommitted = CommitHandler.commitBranch(conflictManager, true);
+      } else {
+         BranchManager.commitBranch(conflictManager, true);
+         branchCommitted = true;
+      }
+      if (branchCommitted) {
+         // Create reviews as necessary
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
+         transaction.execute();
+      }
    }
 
    /**

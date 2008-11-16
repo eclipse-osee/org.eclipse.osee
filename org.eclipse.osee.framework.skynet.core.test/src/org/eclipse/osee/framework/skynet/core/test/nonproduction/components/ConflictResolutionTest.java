@@ -54,10 +54,9 @@ public class ConflictResolutionTest extends TestCase {
       OseeLog.registerLoggerListener(monitorLog);
       try {
          Collection<Conflict> conflicts =
-               ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(),
-                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey(),
-                     new EmptyMonitor());
+               ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+                     ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
+                           ConflictTestManager.getSourceBranch()).getKey(), new EmptyMonitor());
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
@@ -73,10 +72,9 @@ public class ConflictResolutionTest extends TestCase {
          }
 
          conflicts =
-               ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(),
-                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey(),
-                     new EmptyMonitor());
+               ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+                     ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
+                           ConflictTestManager.getSourceBranch()).getKey(), new EmptyMonitor());
 
          for (Conflict conflict : conflicts) {
             assertTrue(

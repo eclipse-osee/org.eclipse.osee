@@ -57,10 +57,9 @@ public class ConflictDetectionTest extends TestCase {
       Collection<Conflict> conflicts = new HashSet<Conflict>();
       try {
          conflicts =
-               ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(),
-                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey(),
-                     new EmptyMonitor());
+               ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+                     ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
+                           ConflictTestManager.getSourceBranch()).getKey(), new EmptyMonitor());
       } catch (Exception ex) {
          fail(ex.getMessage());
       }

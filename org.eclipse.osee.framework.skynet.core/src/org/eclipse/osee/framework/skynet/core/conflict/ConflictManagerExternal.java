@@ -30,7 +30,7 @@ public class ConflictManagerExternal {
    public List<Conflict> getOriginalConflicts() throws OseeCoreException {
       if (originalConflicts == null) {
          originalConflicts =
-               ConflictManagerInternal.getInstance().getConflictsPerBranch(fromBranch, toBranch,
+               ConflictManagerInternal.getConflictsPerBranch(fromBranch, toBranch,
                      TransactionIdManager.getStartEndPoint(fromBranch).getKey(), new EmptyMonitor());
       }
       return originalConflicts;

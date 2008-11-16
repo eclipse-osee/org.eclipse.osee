@@ -69,20 +69,13 @@ public class ConflictManagerInternal {
    private static final String GET_COMMIT_TRANSACTION_COMMENT =
          "SELECT transaction_id FROM osee_tx_details WHERE osee_comment = ? AND branch_id = ?";
 
-   private static ConflictManagerInternal instance = new ConflictManagerInternal();
-
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
 
    private ConflictManagerInternal() {
-      super();
    }
 
-   public static ConflictManagerInternal getInstance() {
-      return instance;
-   }
-
-   public List<Conflict> getConflictsPerBranch(TransactionId commitTransaction, IStatusMonitor monitor) throws OseeCoreException {
+   public static List<Conflict> getConflictsPerBranch(TransactionId commitTransaction, IStatusMonitor monitor) throws OseeCoreException {
       long time = System.currentTimeMillis();
       long totalTime = time;
       if (monitor == null) monitor = new EmptyMonitor();
@@ -126,7 +119,7 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   public List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, IStatusMonitor monitor) throws OseeCoreException {
+   public static List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, IStatusMonitor monitor) throws OseeCoreException {
       ArrayList<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
       Set<Integer> artIdSet = new HashSet<Integer>();
@@ -194,7 +187,7 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   private void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet, IStatusMonitor monitor) throws OseeCoreException {
+   private static void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet, IStatusMonitor monitor) throws OseeCoreException {
       long time = 0;
 
       monitor.setSubtaskName("Preloading Artifacts Associated with the Conflicts");
@@ -231,7 +224,7 @@ public class ConflictManagerInternal {
     * @param artIdSet
     */
 
-   private void loadArtifactVersionConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IStatusMonitor monitor, int transactionId) throws OseeDataStoreException {
+   private static void loadArtifactVersionConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IStatusMonitor monitor, int transactionId) throws OseeDataStoreException {
       long time = 0;
       if (DEBUG) {
          System.out.println("Finding Artifact Version Conflicts");
@@ -295,7 +288,7 @@ public class ConflictManagerInternal {
     * @param baselineTransaction
     * @param conflicts
     */
-   private void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IStatusMonitor monitor, int transactionId) throws OseeDataStoreException {
+   private static void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IStatusMonitor monitor, int transactionId) throws OseeDataStoreException {
       long time = 0;
       if (DEBUG) {
          System.out.println("Finding Attribute Version Conflicts");
@@ -342,7 +335,7 @@ public class ConflictManagerInternal {
       monitor.updateWork(30);
    }
 
-   private void debugDump(Collection<Conflict> conflicts, long time) throws OseeCoreException {
+   private static void debugDump(Collection<Conflict> conflicts, long time) throws OseeCoreException {
       int displayCount = 1;
       System.out.println(String.format("Found %d conflicts in %s", conflicts.size(), Lib.getElapseString(time)));
       for (Conflict conflict : conflicts) {
@@ -353,7 +346,7 @@ public class ConflictManagerInternal {
       }
    }
 
-   private void cleanUpConflictDB(Collection<Conflict> conflicts, int branchId, IStatusMonitor monitor) throws OseeCoreException {
+   private static void cleanUpConflictDB(Collection<Conflict> conflicts, int branchId, IStatusMonitor monitor) throws OseeCoreException {
       int count = 0;
       long time = System.currentTimeMillis();
       monitor.setSubtaskName("Cleaning up old conflict data");
@@ -367,7 +360,7 @@ public class ConflictManagerInternal {
       monitor.updateWork(10);
    }
 
-   private String createData(Collection<Conflict> conflicts) throws OseeCoreException {
+   private static String createData(Collection<Conflict> conflicts) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       builder.append("(");
       boolean first = true;
@@ -383,7 +376,7 @@ public class ConflictManagerInternal {
       return builder.toString();
    }
 
-   public Collection<Integer> getDestinationBranchesMerged(int sourceBranchId) throws OseeCoreException {
+   public static Collection<Integer> getDestinationBranchesMerged(int sourceBranchId) throws OseeCoreException {
       List<Integer> destinationBranches = new LinkedList<Integer>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
@@ -398,7 +391,7 @@ public class ConflictManagerInternal {
       return destinationBranches;
    }
 
-   public int getCommitTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   public static int getCommitTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       int transactionId = 0;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       if (sourceBranch != null && destBranch != null) {
@@ -425,7 +418,7 @@ public class ConflictManagerInternal {
       return transactionId;
    }
 
-   public int getMergeBranchId(int sourceBranchId, int destBranchId) throws OseeCoreException {
+   public static int getMergeBranchId(int sourceBranchId, int destBranchId) throws OseeCoreException {
       int mergeBranchId = 0;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
@@ -444,7 +437,7 @@ public class ConflictManagerInternal {
     * branches that share a common history. If two branches share the same history than the point at which they diverged
     * should provide the reference for detecting conflicts based on the gamma at that point.
     */
-   public int findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   public static int findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       List<Branch> sourceBranches = getBranchHierarchy(sourceBranch);
       List<Branch> destBranches = getBranchHierarchy(destBranch);
       Branch commonBranch = null;
@@ -480,17 +473,13 @@ public class ConflictManagerInternal {
       return sourceTransaction <= destTransaction ? sourceTransaction : destTransaction;
    }
 
-   private List<Branch> getBranchHierarchy(Branch branch) {
+   private static List<Branch> getBranchHierarchy(Branch branch) throws OseeCoreException {
       List<Branch> ancestors = new LinkedList<Branch>();
       ancestors.add(branch);
-      try {
-         while (branch.getParentBranch() != BranchManager.getSystemRootBranch()) {
-            ancestors.add(branch.getParentBranch());
-            branch = branch.getParentBranch();
-         }
-      } catch (OseeCoreException ex) {
+      while (branch.getParentBranch() != BranchManager.getSystemRootBranch()) {
+         ancestors.add(branch.getParentBranch());
+         branch = branch.getParentBranch();
       }
       return ancestors;
    }
-
 }

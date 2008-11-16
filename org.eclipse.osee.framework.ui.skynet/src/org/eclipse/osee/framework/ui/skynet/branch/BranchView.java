@@ -50,7 +50,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -336,85 +335,89 @@ public class BranchView extends ViewPart implements IActionable {
 
    @Override
    public void createPartControl(Composite parent) {
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+      try {
+         if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
-      PlatformUI.getWorkbench().getService(IHandlerService.class);
-      handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+         PlatformUI.getWorkbench().getService(IHandlerService.class);
+         handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
-      parent.setLayout(new GridLayout());
-      parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         parent.setLayout(new GridLayout());
+         parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      branchListComposite = new BranchListComposite(parent);
-      branchTable = branchListComposite.getBranchTable();
+         branchListComposite = new BranchListComposite(parent);
+         branchTable = branchListComposite.getBranchTable();
 
-      MenuManager menuManager = new MenuManager("#PopupMenu");
-      menuManager.setRemoveAllWhenShown(true);
-      menuManager.addMenuListener(new IMenuListener() {
-         public void menuAboutToShow(IMenuManager manager) {
-            fillPopupMenu(manager);
+         MenuManager menuManager = new MenuManager("#PopupMenu");
+         menuManager.setRemoveAllWhenShown(true);
+         menuManager.addMenuListener(new IMenuListener() {
+            public void menuAboutToShow(IMenuManager manager) {
+               fillPopupMenu(manager);
+            }
+         });
+
+         branchTable.getTree().setMenu(menuManager.createContextMenu(branchTable.getTree()));
+
+         menuManager.add(new Separator());
+         createOpenArtifactsMenuItem(menuManager);
+         menuManager.add(new Separator());
+         createSetDefaultCommand(menuManager);
+         createBranchCommand(menuManager);
+         createSelectivelyBranchCommand(menuManager);
+         createCommitCommand(menuManager);
+         createCommitIntoCommand(menuManager);
+         menuManager.add(new Separator());
+         createMarkAsFavoriteCommand(menuManager);
+         menuManager.add(new Separator());
+         createDeleteBranchCommand(menuManager);
+         createDeleteTransactionCommand(menuManager);
+         createMoveTransactionCommand(menuManager);
+         createRenameBranchCommand(menuManager);
+         createSetBranchShortNameCommand(menuManager);
+         createSetAssociatedArtifactCommand(menuManager);
+         createOpenAssociatedArtifactCommand(menuManager);
+         menuManager.add(new Separator());
+         createViewTableMenuItem(menuManager);
+         menuManager.add(new Separator());
+         createAccessControlCommand(menuManager);
+         createMergeViewCommand(menuManager);
+         createChangeViewCommand(menuManager);
+         // The additions group is a standard group
+         menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+
+         getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.branch.BranchView", menuManager,
+               branchTable);
+
+         branchTable.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
+
+         getSite().setSelectionProvider(branchTable);
+
+         IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
+         toolbarManager.add(createFavoritesFirstAction());
+         toolbarManager.add(createShowTransactionsAction());
+         if (AccessControlManager.isOseeAdmin()) {
+            toolbarManager.add(createShowMergeBranchesAction());
          }
-      });
+         toolbarManager.add(new ParentBranchAction(this));
+         loadPreferences();
 
-      branchTable.getTree().setMenu(menuManager.createContextMenu(branchTable.getTree()));
+         createActions();
 
-      menuManager.add(new Separator());
-      createOpenArtifactsMenuItem(menuManager);
-      menuManager.add(new Separator());
-      createSetDefaultCommand(menuManager);
-      createBranchCommand(menuManager);
-      createSelectivelyBranchCommand(menuManager);
-      createCommitCommand(menuManager);
-      createCommitIntoCommand(menuManager);
-      menuManager.add(new Separator());
-      createMarkAsFavoriteCommand(menuManager);
-      menuManager.add(new Separator());
-      createDeleteBranchCommand(menuManager);
-      createDeleteTransactionCommand(menuManager);
-      createMoveTransactionCommand(menuManager);
-      createRenameBranchCommand(menuManager);
-      createSetBranchShortNameCommand(menuManager);
-      createSetAssociatedArtifactCommand(menuManager);
-      createOpenAssociatedArtifactCommand(menuManager);
-      menuManager.add(new Separator());
-      createViewTableMenuItem(menuManager);
-      menuManager.add(new Separator());
-      createAccessControlCommand(menuManager);
-      createMergeViewCommand(menuManager);
-      createChangeViewCommand(menuManager);
-      // The additions group is a standard group
-      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+         setHelpContexts();
 
-      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.branch.BranchView", menuManager, branchTable);
+         OseeContributionItem.addTo(this, true);
 
-      branchTable.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
-
-      getSite().setSelectionProvider(branchTable);
-
-      IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
-      toolbarManager.add(createFavoritesFirstAction());
-      toolbarManager.add(createShowTransactionsAction());
-      if (AccessControlManager.isOseeAdmin()) {
-         toolbarManager.add(createShowMergeBranchesAction());
+         branchListComposite.getFilterText().addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+               if (branchListComposite.isFiltering())
+                  setContentDescription("Filtered for :\"" + branchListComposite.getFilterText().getText() + "\"");
+               else
+                  setContentDescription("");
+            }
+         });
+         branchListComposite.setFavoritesFirst(getViewPreference().getBoolean(FAVORITE_KEY, false));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      toolbarManager.add(new ParentBranchAction(this));
-      loadPreferences();
-
-      createActions();
-
-      setHelpContexts();
-
-      OseeContributionItem.addTo(this, true);
-
-      branchListComposite.getFilterText().addModifyListener(new ModifyListener() {
-         public void modifyText(ModifyEvent e) {
-            if (branchListComposite.isFiltering())
-               setContentDescription("Filtered for :\"" + branchListComposite.getFilterText().getText() + "\"");
-            else
-               setContentDescription("");
-         }
-      });
-      branchListComposite.setFavoritesFirst(getViewPreference().getBoolean(FAVORITE_KEY, false));
-
    }
 
    private void fillPopupMenu(IMenuManager Manager) {
@@ -484,7 +487,7 @@ public class BranchView extends ViewPart implements IActionable {
             if (selectedBranch != null) {
                try {
                   Collection<Integer> destBranches =
-                        ConflictManagerInternal.getInstance().getDestinationBranchesMerged(selectedBranch.getBranchId());
+                        ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getBranchId());
                   try {
                      if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getBranchId())) {
                         destBranches.add(selectedBranch.getParentBranch().getBranchId());
@@ -548,7 +551,7 @@ public class BranchView extends ViewPart implements IActionable {
             Object obj = ((JobbedNode) selection.getFirstElement()).getBackingData();
             if (obj instanceof Branch) {
                Branch selectedBranch = (Branch) obj;
-               if (selectedBranch != null && !ConflictManagerInternal.getInstance().getDestinationBranchesMerged(
+               if (selectedBranch != null && !ConflictManagerInternal.getDestinationBranchesMerged(
                      selectedBranch.getBranchId()).isEmpty()) {
                   return true;
                }
@@ -877,83 +880,6 @@ public class BranchView extends ViewPart implements IActionable {
             "I accept responsibility for the results of this action", MessageDialog.QUESTION, 0);
    }
 
-   private class CommitHandler extends AbstractSelectionEnabledHandler {
-      private final boolean useParentBranch;
-      private final boolean archiveSourceBranch;
-
-      public CommitHandler(MenuManager menuManager, boolean useParentBranch, boolean archiveSourceBranch) {
-         super(menuManager);
-         this.useParentBranch = useParentBranch;
-         this.archiveSourceBranch = archiveSourceBranch;
-
-      }
-
-      @Override
-      public Object execute(ExecutionEvent event) throws ExecutionException {
-         IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-
-         Branch fromBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-         Branch toBranch = null;
-
-         try {
-            if (useParentBranch) {
-               toBranch = fromBranch.getParentBranch();
-            } else {
-               toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
-            }
-            BranchManager.commitBranch(fromBranch, toBranch, archiveSourceBranch, false);
-         } catch (ConflictDetectionException ex) {
-            MessageDialog dialog;
-            if (AccessControlManager.isOseeAdmin()) {
-               dialog =
-                     new MessageDialog(
-                           Display.getCurrent().getActiveShell(),
-                           "Commit Failed",
-                           null,
-                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts\n  Force the commit",
-                           MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
-            } else {
-               dialog =
-                     new MessageDialog(
-                           Display.getCurrent().getActiveShell(),
-                           "Commit Failed",
-                           null,
-                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts",
-                           MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
-
-            }
-
-            try {
-               int result = dialog.open();
-               if (result == 1) {
-                  MergeView.openView(fromBranch, toBranch, TransactionIdManager.getStartEndPoint(fromBranch).getKey());
-               } else if (result == 2) {
-                  BranchManager.commitBranch(fromBranch, toBranch, true, true);
-               }
-            } catch (Exception exc) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Commit Branch Failed", exc);
-            }
-
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Commit Branch Failed", ex);
-         }
-
-         return null;
-      }
-
-      @Override
-      public boolean isEnabledWithException() throws OseeCoreException {
-         IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-         boolean validBranchSelected = SkynetSelections.oneDescendantBranchSelected(selection) && useParentBranch;
-
-         if (validBranchSelected) {
-            validBranchSelected &=
-                  !((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).isChangeManaged();
-         }
-         return (validBranchSelected) || (!useParentBranch && AccessControlManager.isOseeAdmin() && SkynetSelections.oneBranchSelected(selection));
-      }
-   }
-
    private void addCommitCommand(MenuManager menuManager) {
       menuManager.add(new CompoundContributionItem() {
          @Override
@@ -981,7 +907,7 @@ public class BranchView extends ViewPart implements IActionable {
    private void createCommitCommand(MenuManager menuManager) {
       addCommitCommand(menuManager);
       handlerService.activateHandler(getSite().getId() + ".commitIntoParentCommand", new CommitHandler(menuManager,
-            true, true));
+            true, true, branchTable));
    }
 
    private String addBranchCommand(MenuManager menuManager) {
@@ -1133,7 +1059,7 @@ public class BranchView extends ViewPart implements IActionable {
    private void createCommitIntoCommand(MenuManager menuManager) {
       MenuManager subMenuManager = new MenuManager("Commit Into", "commitTransaction");
       menuManager.add(subMenuManager);
-      createBranchSelectionMenu(subMenuManager, new CommitHandler(menuManager, false, false));
+      createBranchSelectionMenu(subMenuManager, new CommitHandler(menuManager, false, false, branchTable));
    }
 
    private String addDeleteBranchCommand(MenuManager menuManager) {

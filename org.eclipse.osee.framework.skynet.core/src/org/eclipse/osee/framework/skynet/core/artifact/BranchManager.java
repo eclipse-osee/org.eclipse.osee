@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,10 +45,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
+import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.internal.CommitDbTx;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -62,7 +62,7 @@ public class BranchManager {
          "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
    private static final String READ_MERGE_BRANCHES =
          "SELECT m1.* FROM osee_merge m1, osee_tx_details txd1 WHERE m1.merge_branch_id = txd1.branch_id and txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
-   private static final String COMMIT_TRANSACTION =
+   public static final String COMMIT_TRANSACTION =
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("tx_type", "branch_id", "transaction_id",
                TXD_COMMENT, "time", "author", "commit_art_id");
 
@@ -156,7 +156,7 @@ public class BranchManager {
       throw new BranchDoesNotExist("No branch exists with the name: " + branchName);
    }
 
-   private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeCoreException {
+   private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeDataStoreException {
       if (forceRead || branchCache.size() == 0) {
          // The branch cache can not be cleared here because applications may contain branch references.
 
@@ -290,7 +290,7 @@ public class BranchManager {
       return mergeBranch;
    }
 
-   public static Branch getBranch(Integer branchId) throws OseeCoreException {
+   public static Branch getBranch(Integer branchId) throws OseeDataStoreException, BranchDoesNotExist {
       // Always exception for invalid id's, they won't ever be found in the
       // database or cache.
       if (branchId == null) throw new BranchDoesNotExist("Branch Id is null");
@@ -326,27 +326,32 @@ public class BranchManager {
    }
 
    /**
-    * Commit the net changes from the childBranch into its parent branch.
-    * 
-    * @throws OseeCoreException
-    */
-   public static Job commitBranch(final Branch childBranch, final boolean archiveChildBranch, final boolean forceCommit) throws OseeCoreException {
-      Branch parentBranch = childBranch.getParentBranch();
-
-      return commitBranch(childBranch, parentBranch, archiveChildBranch, forceCommit);
-   }
-
-   /**
-    * Commit the net changes from the fromBranch into the toBranch. If there are conflicts between the two branches, the
-    * fromBranch's changes override those on the toBranch if overrideConflicts is true otherwise a
+    * * Commit the net changes from the fromBranch into the toBranch. If there are conflicts between the two branches,
+    * the fromBranch's changes override those on the toBranch if overrideConflicts is true otherwise a
     * CommitConflictException is thrown.
     * 
-    * @throws ConflictDetectionException
+    * @param sourceBranch
+    * @param destinationBranch
+    * @param archiveFromBranch
+    * @param forceCommit
+    * @throws OseeCoreException
     */
-   public static Job commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch, boolean forceCommit) throws OseeCoreException {
-      CommitJob commitJob = new CommitJob(toBranch, fromBranch, archiveFromBranch, forceCommit);
-      Jobs.startJob(commitJob);
-      return commitJob;
+   @Deprecated
+   public static void commitBranch(final Branch sourceBranch, final Branch destinationBranch, boolean archiveFromBranch, boolean forceCommit) throws OseeCoreException {
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, sourceBranch);
+
+      int numRemainingConflicts = 0;
+      if (!forceCommit) {
+         numRemainingConflicts = conflictManager.getRemainingConflicts().size();
+         if (numRemainingConflicts > 0) {
+            throw new ConflictDetectionException(numRemainingConflicts + " unresovled conflicts exist.");
+         }
+      }
+      new CommitDbTx(conflictManager, archiveFromBranch).execute();
+   }
+
+   public static void commitBranch(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
+      new CommitDbTx(conflictManager, archiveSourceBranch).execute();
    }
 
    /**
@@ -380,27 +385,6 @@ public class BranchManager {
 
       createWorkingBranch(fromTransactionId, toBranchName, toBranchName, associatedArtifact);
       return getBranch(toBranchName);
-   }
-
-   /**
-    * @throws OseeDataStoreException
-    */
-   static int addCommitTransactionToDatabase(Connection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
-      int newTransactionNumber = SequenceManager.getNextTransactionId();
-
-      Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-      String comment = COMMIT_COMMENT + childBranch.getBranchName();
-      int authorId = (userToBlame == null) ? -1 : userToBlame.getArtId();
-      ConnectionHandler.runPreparedUpdate(connection, COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
-            parentBranch.getBranchId(), newTransactionNumber, comment, timestamp, authorId,
-            childBranch.getAssociatedArtifactId());
-      // Update commit artifact cache with new information
-      if (childBranch.getAssociatedArtifactId() > 0) {
-         RevisionManager.getInstance().cacheTransactionDataPerCommitArtifact(childBranch.getAssociatedArtifactId(),
-               newTransactionNumber);
-      }
-
-      return newTransactionNumber;
    }
 
    /**

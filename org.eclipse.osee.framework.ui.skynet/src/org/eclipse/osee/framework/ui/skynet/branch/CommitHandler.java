@@ -3,23 +3,20 @@
  */
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetSelections;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Display;
@@ -39,60 +36,79 @@ public class CommitHandler extends AbstractSelectionEnabledHandler {
       this.branchTable = branchTable;
    }
 
+   public static boolean commitBranch(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
+      Branch sourceBranch = conflictManager.getFromBranch();
+      Branch destinationBranch = conflictManager.getToBranch();
+      boolean branchCommitted = false;
+
+      int numRemainingConflicts = conflictManager.getRemainingConflicts().size();
+      if (numRemainingConflicts > 0) {
+         String message =
+               "Commit stopped due to unresolved conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts";
+         String[] choices;
+         if (AccessControlManager.isOseeAdmin()) {
+            message += "\n  Force the commit";
+            choices = new String[] {"Cancel", "Launch Merge Manager", "Force Commit"};
+         } else {
+            choices = new String[] {"Cancel", "Launch Merge Manager"};
+         }
+
+         MessageDialog dialog =
+               new MessageDialog(Display.getCurrent().getActiveShell(), "Unresolved Conflicts", null, message,
+                     MessageDialog.QUESTION, choices, 0);
+
+         int result = dialog.open();
+         if (result == 1) {
+            MergeView.openView(sourceBranch, destinationBranch,
+                  TransactionIdManager.getStartEndPoint(sourceBranch).getKey());
+         } else if (result == 2) {
+            BranchManager.commitBranch(conflictManager, archiveSourceBranch);
+            branchCommitted = true;
+         }
+      } else {
+         StringBuilder message =
+               new StringBuilder(
+                     "Commit branch\n\n\"" + sourceBranch + "\"\n\n onto destination branch\n\n\"" + destinationBranch + "\"\n");
+         int numOriginalConfilcts = conflictManager.getOriginalConflicts().size();
+         if (numOriginalConfilcts > 0) {
+            message.append("\nwith " + numOriginalConfilcts + " conflicts resolved.\n");
+         } else {
+            message.append("\n(no conflicts found)\n");
+         }
+         message.append("\nCommit?");
+         MessageDialog dialog =
+               new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null, message.toString(),
+                     MessageDialog.QUESTION, new String[] {"Ok", "Launch Merge Manager", "Cancel"}, 0);
+         int result = dialog.open();
+         if (result == 0) {
+            BranchManager.commitBranch(conflictManager, archiveSourceBranch);
+            branchCommitted = true;
+         } else if (result == 1) {
+            MergeView.openView(sourceBranch, sourceBranch.getParentBranch(), TransactionIdManager.getStartEndPoint(
+                  sourceBranch).getKey());
+         }
+      }
+      return branchCommitted;
+   }
+
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
-      Branch fromBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-      Branch toBranch = null;
-
+      Branch sourceBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
       try {
+         Branch destinationBranch = null;
          if (useParentBranch) {
-            toBranch = fromBranch.getParentBranch();
+            destinationBranch = sourceBranch.getParentBranch();
          } else {
-            toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchView.BRANCH_ID)));
+            destinationBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchView.BRANCH_ID)));
          }
-         BranchManager.commitBranch(fromBranch, toBranch, archiveSourceBranch, false);
-      } catch (ConflictDetectionException ex) {
-         try {
-            handleConflicts(fromBranch, toBranch);
-         } catch (Exception ex1) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Commit Branch Failed", ex);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Commit Branch Failed", ex);
+         commitBranch(new ConflictManagerExternal(destinationBranch, sourceBranch), archiveSourceBranch);
+      } catch (OseeCoreException ex) {
+         throw new ExecutionException(ex.getLocalizedMessage(), ex);
       }
 
       return null;
-   }
-
-   public void handleConflicts(Branch fromBranch, Branch toBranch) throws OseeCoreException {
-      MessageDialog dialog;
-      if (AccessControlManager.isOseeAdmin()) {
-         dialog =
-               new MessageDialog(
-                     Display.getCurrent().getActiveShell(),
-                     "Commit Failed",
-                     null,
-                     "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts\n  Force the commit",
-                     MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
-      } else {
-         dialog =
-               new MessageDialog(
-                     Display.getCurrent().getActiveShell(),
-                     "Commit Failed",
-                     null,
-                     "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts",
-                     MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
-
-      }
-
-      int result = dialog.open();
-      if (result == 1) {
-         MergeView.openView(fromBranch, toBranch, TransactionIdManager.getStartEndPoint(fromBranch).getKey());
-      } else if (result == 2) {
-         BranchManager.commitBranch(fromBranch, toBranch, true, true);
-      }
    }
 
    @Override
