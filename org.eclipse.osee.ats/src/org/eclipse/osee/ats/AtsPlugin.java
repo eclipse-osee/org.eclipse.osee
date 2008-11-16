@@ -11,10 +11,12 @@
 
 package org.eclipse.osee.ats;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -93,7 +95,12 @@ public class AtsPlugin extends OseeUiActivator {
       if (atsAdminGroup == null) {
          atsAdminGroup = new OseeGroup("AtsAdmin");
       }
-      return atsAdminGroup.isCurrentUserMember();
+      try {
+         return atsAdminGroup.isCurrentUserMember();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return false;
+      }
    }
 
    public static boolean isAtsIgnoreConfigUpgrades() {

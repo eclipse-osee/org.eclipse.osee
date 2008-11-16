@@ -280,8 +280,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                   ArrayList<Integer> branchIds = new ArrayList<Integer>();
                   try {
                      Collection<Integer> destBranches =
-                           ConflictManagerInternal.getInstance().getDestinationBranchesMerged(
-                                 sourceBranch.getBranchId());
+                           ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getBranchId());
                      for (Integer integer : destBranches) {
                         if (integer.intValue() != destBranch.getBranchId()) {
                            selections.add(BranchManager.getBranch(integer).getBranchName());
@@ -297,7 +296,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                         if (dialog.open() == 0) {
                            System.out.print("Applying the merge found for Branch " + branchIds.toArray()[dialog.getSelection()]);
                            for (Conflict conflict : conflicts) {
-                              conflict.applyPreviousMerge(ConflictManagerInternal.getInstance().getMergeBranchId(
+                              conflict.applyPreviousMerge(ConflictManagerInternal.getMergeBranchId(
                                     conflicts[0].getSourceBranch().getBranchId(), branchIds.get(dialog.getSelection())));
                            }
                            setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans,
@@ -329,11 +328,11 @@ public class XMergeViewer extends XWidget implements IActionable {
                if (!(conflicts.length == 0)) {
                   Conflict[] artifactChanges = new Conflict[0];
                   if (conflicts[0].getToTransactionId() != null) {
-                     setConflicts(ConflictManagerInternal.getInstance().getConflictsPerBranch(
-                           conflicts[0].getSourceBranch(), conflicts[0].getDestBranch(),
-                           conflicts[0].getToTransactionId(), new SwtStatusMonitor(monitor)).toArray(artifactChanges));
+                     setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getSourceBranch(),
+                           conflicts[0].getDestBranch(), conflicts[0].getToTransactionId(),
+                           new SwtStatusMonitor(monitor)).toArray(artifactChanges));
                   } else {
-                     setConflicts(org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal.getInstance().getConflictsPerBranch(
+                     setConflicts(org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal.getConflictsPerBranch(
                            conflicts[0].getCommitTransactionId(), new SwtStatusMonitor(monitor)).toArray(
                            artifactChanges));
                   }
@@ -490,12 +489,11 @@ public class XMergeViewer extends XWidget implements IActionable {
             try {
                if (commitTrans == null) {
                   conflicts =
-                        ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId,
-                              swtMonitor).toArray(new Conflict[0]);
+                        ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId, swtMonitor).toArray(
+                              new Conflict[0]);
                } else {
                   conflicts =
-                        ConflictManagerInternal.getInstance().getConflictsPerBranch(commitTrans, swtMonitor).toArray(
-                              new Conflict[0]);
+                        ConflictManagerInternal.getConflictsPerBranch(commitTrans, swtMonitor).toArray(new Conflict[0]);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {

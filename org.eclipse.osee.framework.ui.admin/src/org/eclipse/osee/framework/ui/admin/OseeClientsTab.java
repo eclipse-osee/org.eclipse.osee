@@ -64,7 +64,7 @@ public class OseeClientsTab {
       mainComposite.setEnabled(isUserAllowedToOperate());
    }
 
-   private void createControl(TabFolder tabFolder) {
+   private void createControl(TabFolder tabFolder) throws OseeCoreException {
       mainComposite = new Composite(tabFolder, SWT.NONE);
       mainComposite.setLayout(new GridLayout());
       mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -78,15 +78,15 @@ public class OseeClientsTab {
       group.setText("Issue Shutdown Request");
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (true != isUserAllowedToOperate()) {
-         createDefaultWarning(group);
-      } else {
+      if (isUserAllowedToOperate()) {
          SashForm sashForm = new SashForm(group, SWT.NONE);
          sashForm.setLayout(new GridLayout());
          sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
          createUserSelectionArea(sashForm);
          createMessageArea(sashForm);
+      } else {
+         createDefaultWarning(group);
       }
    }
 
@@ -169,7 +169,7 @@ public class OseeClientsTab {
       }
    }
 
-   private boolean isUserAllowedToOperate() {
+   private boolean isUserAllowedToOperate() throws OseeCoreException {
       return AccessControlManager.isOseeAdmin();
    }
 

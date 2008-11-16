@@ -773,8 +773,9 @@ public class AccessControlManager {
 
    /**
     * @return whether the current user belongs to the OSEE Administration System Group
+    * @throws OseeCoreException
     */
-   public static boolean isOseeAdmin() {
+   public static boolean isOseeAdmin() throws OseeCoreException {
       return SystemGroup.OseeAdmin.isCurrentUserMember();
    }
 }

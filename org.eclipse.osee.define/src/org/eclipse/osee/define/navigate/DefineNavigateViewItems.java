@@ -12,13 +12,17 @@ package org.eclipse.osee.define.navigate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.health.BranchCommitRegressionTest;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -50,10 +54,14 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
       }
       items.add(blamOperationItems);
 
-      if (AccessControlManager.isOseeAdmin()) {
-         XNavigateItem adminItems = new XNavigateItem(null, "Admin");
-         new BranchCommitRegressionTest(adminItems);
-         items.add(adminItems);
+      try {
+         if (AccessControlManager.isOseeAdmin()) {
+            XNavigateItem adminItems = new XNavigateItem(null, "Admin");
+            new BranchCommitRegressionTest(adminItems);
+            items.add(adminItems);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
       addExtensionPointItems(items);

@@ -185,7 +185,7 @@ public class SkynetTypesImporter implements RowProcessor {
       }
    }
 
-   protected ArrayList<String> determineConcreteTypes(String artifactSuperTypeName) throws OseeDataStoreException {
+   protected ArrayList<String> determineConcreteTypes(String artifactSuperTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ArrayList<String> artifactTypeList = superTypeMap.get(artifactSuperTypeName);
 
       // if no sub-types then just return artifactSuperTypeName as the only Concrete type
@@ -193,12 +193,9 @@ public class SkynetTypesImporter implements RowProcessor {
          artifactTypeList = new ArrayList<String>();
          artifactTypeList.add(artifactSuperTypeName);
       } else {
-         // artifactSuperTypeName might be a concrete type
-         try {
+         if (ArtifactTypeManager.typeExists(artifactSuperTypeName)) { // artifactSuperTypeName might also be a concrete type
             ArtifactTypeManager.getType(artifactSuperTypeName); // ensure existence
             artifactTypeList.add(artifactSuperTypeName);
-         } catch (OseeTypeDoesNotExist ex) {
-            // must not be a concrete type so ignore
          }
       }
       return artifactTypeList;

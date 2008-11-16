@@ -242,68 +242,69 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
    @Override
    public void createPartControl(Composite parent) {
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
-
-      GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-      gridData.heightHint = 1000;
-      gridData.widthHint = 1000;
-
-      parent.setLayout(new GridLayout(1, false));
-      parent.setLayoutData(gridData);
-
-      stackComposite = new Composite(parent, SWT.NONE);
-      stackLayout = new StackLayout();
-      stackComposite.setLayout(stackLayout);
-      stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-      branchUnreadableWarning = createDefaultWarning(stackComposite);
-
-      treeViewer = new TreeViewer(stackComposite);
-      myTree = treeViewer.getTree();
-      Tree tree = treeViewer.getTree();
-      treeViewer.setContentProvider(new ArtifactContentProvider());
-      treeViewer.setLabelProvider(new ArtifactLabelProvider(this));
-      treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
-      treeViewer.getControl().setLayoutData(gridData);
-      tree.addKeyListener(new keySelectedListener());
-
-      // We can not use the hash lookup because an artifact may not have a
-      // good equals.
-      // This can be added back once the content provider is converted over to
-      // use job node.
-      treeViewer.setUseHashlookup(false);
-
-      treeViewer.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
-      globalMenuHelper = new ArtifactTreeViewerGlobalMenuHelper(treeViewer);
-
-      createCollapseAllAction();
-      createUpAction();
-      createShowArtVersionAction();
-      createShowArtTypeAction();
-      createAttributesAction();
-      createNewArtifactExplorerAction();
-
-      getSite().setSelectionProvider(treeViewer);
-      addExploreSelection();
-
-      setupPopupMenu();
-
-      new ArtifactExplorerDragAndDrop(tree, VIEW_ID);
-      parent.layout();
-
-      if (AccessControlManager.isOseeAdmin()) {
-         createShowArtIdsAction();
-      }
-      createSetDefaultBranchAction();
-      OseeAts.addBugToViewToolbar(this, this, SkynetActivator.getInstance(), VIEW_ID, "Artifact Explorer");
-
-      OseeContributionItem.addTo(this, false);
-      getViewSite().getActionBars().updateActionBars();
-
-      updateEnablementsEtAl();
-      trees.add(tree);
-      setHelpContexts();
       try {
+         if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+
+         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+         gridData.heightHint = 1000;
+         gridData.widthHint = 1000;
+
+         parent.setLayout(new GridLayout(1, false));
+         parent.setLayoutData(gridData);
+
+         stackComposite = new Composite(parent, SWT.NONE);
+         stackLayout = new StackLayout();
+         stackComposite.setLayout(stackLayout);
+         stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+         branchUnreadableWarning = createDefaultWarning(stackComposite);
+
+         treeViewer = new TreeViewer(stackComposite);
+         myTree = treeViewer.getTree();
+         Tree tree = treeViewer.getTree();
+         treeViewer.setContentProvider(new ArtifactContentProvider());
+         treeViewer.setLabelProvider(new ArtifactLabelProvider(this));
+         treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
+         treeViewer.getControl().setLayoutData(gridData);
+         tree.addKeyListener(new keySelectedListener());
+
+         // We can not use the hash lookup because an artifact may not have a
+         // good equals.
+         // This can be added back once the content provider is converted over to
+         // use job node.
+         treeViewer.setUseHashlookup(false);
+
+         treeViewer.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
+         globalMenuHelper = new ArtifactTreeViewerGlobalMenuHelper(treeViewer);
+
+         createCollapseAllAction();
+         createUpAction();
+         createShowArtVersionAction();
+         createShowArtTypeAction();
+         createAttributesAction();
+         createNewArtifactExplorerAction();
+
+         getSite().setSelectionProvider(treeViewer);
+         addExploreSelection();
+
+         setupPopupMenu();
+
+         new ArtifactExplorerDragAndDrop(tree, VIEW_ID);
+         parent.layout();
+
+         if (AccessControlManager.isOseeAdmin()) {
+            createShowArtIdsAction();
+         }
+         createSetDefaultBranchAction();
+         OseeAts.addBugToViewToolbar(this, this, SkynetActivator.getInstance(), VIEW_ID, "Artifact Explorer");
+
+         OseeContributionItem.addTo(this, false);
+         getViewSite().getActionBars().updateActionBars();
+
+         updateEnablementsEtAl();
+         trees.add(tree);
+         setHelpContexts();
+
          checkBranchReadable();
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

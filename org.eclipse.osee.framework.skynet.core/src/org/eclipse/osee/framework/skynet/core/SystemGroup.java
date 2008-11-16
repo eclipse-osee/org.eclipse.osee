@@ -21,7 +21,7 @@ public enum SystemGroup {
       this.group = new OseeGroup(this.name());
    }
 
-   public Artifact getArtifact() {
+   public Artifact getArtifact() throws OseeCoreException {
       return group.getGroupArtifact();
    }
 
@@ -33,7 +33,7 @@ public enum SystemGroup {
       return this.group.isMember(user);
    }
 
-   public boolean isCurrentUserMember() {
+   public boolean isCurrentUserMember() throws OseeCoreException {
       return this.group.isCurrentUserMember();
    }
 }

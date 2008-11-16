@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.swt.graphics.Image;
 
@@ -34,7 +38,17 @@ public class CustomizeDataLabelProvider implements ILabelProvider {
    }
 
    public String getText(Object arg0) {
-      return (xViewer.getCustomizeMgr().isCustomizationUserDefault((CustomizeData) arg0) ? "(Default) " : "") + (((CustomizeData) arg0)).getName() + (AccessControlManager.isOseeAdmin() ? " - " + ((CustomizeData) arg0).getGuid() : "");
+      CustomizeData custom = (CustomizeData) arg0;
+      String text =
+            (xViewer.getCustomizeMgr().isCustomizationUserDefault(custom) ? "(Default) " : "") + custom.getName();
+      try {
+         if (AccessControlManager.isOseeAdmin()) {
+            text += " - " + custom.getGuid();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return text;
    }
 
    public void addListener(ILabelProviderListener arg0) {

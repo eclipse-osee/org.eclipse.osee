@@ -199,7 +199,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       attributesPageIndex = createAttributesPage();
       setPageText(attributesPageIndex, "Attributes");
 
-      if (false && AccessControlManager.isOseeAdmin()) {
+      if (false) {
          newAttributesPageIndex = createNewAttributesPage();
          setPageText(newAttributesPageIndex, "Attributes2");
       }

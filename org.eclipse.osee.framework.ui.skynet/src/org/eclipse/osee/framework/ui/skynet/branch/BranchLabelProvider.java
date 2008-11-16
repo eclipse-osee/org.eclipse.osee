@@ -153,7 +153,14 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          Branch branch = (Branch) element;
 
          if (columnIndex == 0) {
-            return (AccessControlManager.isOseeAdmin() ? "(" + branch.getBranchId() + ") " : "") + branch.getBranchName();
+            try {
+               if (AccessControlManager.isOseeAdmin()) {
+                  return "(" + branch.getBranchId() + ") " + branch.getBranchName();
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+            return branch.getBranchName();
          } else if (columnIndex == 1) {
             return branch.getDisplayName();
          } else if (columnIndex == 2) {

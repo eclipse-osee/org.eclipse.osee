@@ -846,8 +846,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    @Override
    public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       try {
-         if (ConflictManagerInternal.getInstance().getMergeBranchId(sourceBranch.getBranchId(),
-               destBranch.getBranchId()) != transData.getBranchId() && sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId()) {
+         if (ConflictManagerInternal.getMergeBranchId(sourceBranch.getBranchId(), destBranch.getBranchId()) != transData.getBranchId() && sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId()) {
             return;
          }
       } catch (OseeCoreException ex) {

@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -79,7 +80,7 @@ public class AdminView extends ViewPart implements IActionable {
    public void setFocus() {
    }
 
-   protected void createActions() {
+   protected void createActions() throws OseeCoreException {
 
       saveAction = new Action("Save") {
          @Override
@@ -176,35 +177,36 @@ public class AdminView extends ViewPart implements IActionable {
     */
    @Override
    public void createPartControl(Composite parent) {
-
-      // IStatusLineManager slManager= getViewSite().getActionBars().getStatusLineManager();
-      // slManager.setErrorMessage("error");
-
-      GridData gridData = new GridData();
-      gridData.verticalAlignment = GridData.FILL;
-      gridData.horizontalAlignment = GridData.FILL;
-      gridData.grabExcessVerticalSpace = true;
-      gridData.grabExcessHorizontalSpace = true;
-
-      GridLayout gridLayout = new GridLayout(1, false);
-      gridData.heightHint = 1000;
-      gridData.widthHint = 1000;
-      parent.setLayout(gridLayout);
-
-      tabFolder = new TabFolder(parent, SWT.BORDER);
-      tabFolder.setLayoutData(gridData);
-
-      // ModeChecker.check(parent);
       try {
+         // IStatusLineManager slManager= getViewSite().getActionBars().getStatusLineManager();
+         // slManager.setErrorMessage("error");
+
+         GridData gridData = new GridData();
+         gridData.verticalAlignment = GridData.FILL;
+         gridData.horizontalAlignment = GridData.FILL;
+         gridData.grabExcessVerticalSpace = true;
+         gridData.grabExcessHorizontalSpace = true;
+
+         GridLayout gridLayout = new GridLayout(1, false);
+         gridData.heightHint = 1000;
+         gridData.widthHint = 1000;
+         parent.setLayout(gridLayout);
+
+         tabFolder = new TabFolder(parent, SWT.BORDER);
+         tabFolder.setLayoutData(gridData);
+
+         // ModeChecker.check(parent);
+
          new OseeClientsTab(tabFolder);
+
+         new DbTableTab(tabFolder);
+
+         parent.layout();
+
+         createActions();
       } catch (Exception ex) {
          OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
       }
-      new DbTableTab(tabFolder);
-
-      parent.layout();
-
-      createActions();
    }
 
    /**
