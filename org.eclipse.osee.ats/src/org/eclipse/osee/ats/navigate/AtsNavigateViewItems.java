@@ -52,9 +52,6 @@ import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
 import org.eclipse.osee.ats.world.search.StateWorldSearchItem;
-import org.eclipse.osee.ats.world.search.TeamVersionWorldSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
-import org.eclipse.osee.ats.world.search.UnReleasedTeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
@@ -152,17 +149,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search", false,
             true, false)));
 
-      XNavigateItem teamItem = new XNavigateItem(null, "Teams");
-      new SearchNavigateItem(teamItem, new TeamWorldSearchItem("Team Workflows", null, false, false, false, null));
-      new SearchNavigateItem(teamItem, new TeamVersionWorldSearchItem("Team Workflows by Version", (String[]) null,
-            false, false, false));
-      new SearchNavigateItem(teamItem, new UnReleasedTeamWorldSearchItem("Un-Released Team Workflows", (String[]) null,
-            true, false, false));
-      new MassEditTeamVersionItem("Show Team Versions", teamItem, "");
-      items.add(teamItem);
-
       XNavigateItem releaseItems = new XNavigateItem(null, "Versions");
-      new MassEditTeamVersionItem("Edit Versions", releaseItems, (TeamDefinitionArtifact) null);
+      new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null);
       new SearchNavigateItem(releaseItems,
             new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor));
       new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
@@ -206,8 +194,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
       XNavigateItem reportItems = new XNavigateItem(null, "Reports");
       new FirstTimeQualityMetricReportItem(reportItems);
-      XNavigateItem atsReportItems =
-            new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World");
+      new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World");
       //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 
       XNavigateItem emailItems = new XNavigateItem(null, "Email");

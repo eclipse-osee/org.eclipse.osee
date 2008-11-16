@@ -97,10 +97,6 @@ public class TeamWorldNewSearchItem extends WorldSearchItem {
       this.changeType = teamWorldSearchItem.changeType;
    }
 
-   public TeamWorldNewSearchItem(String displayName, TeamDefinitionArtifact teamDef, boolean showFinished, boolean showAction, boolean recurseChildren) {
-      this(displayName, Arrays.asList(teamDef), showFinished, showAction, recurseChildren, null, null, null);
-   }
-
    public Collection<String> getProductSearchName() {
       if (teamDefNames != null)
          return teamDefNames;
