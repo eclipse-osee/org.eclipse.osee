@@ -173,18 +173,18 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private void createMainWorkingBranchTx(SkynetTransaction createMainWorkingBranch, boolean b) throws OseeCoreException {
-         try {
-            OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
-            // Create SAW_Bld_2 branch off SAW_Bld_1
-            createChildMainWorkingBranch(SawBuilds.SAW_Bld_1.name(), SawBuilds.SAW_Bld_2.name());
-            DemoDbUtil.sleep(5000);
-            // Map team definitions versions to their related branches
-            DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
+      try {
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
+         // Create SAW_Bld_2 branch off SAW_Bld_1
+         createChildMainWorkingBranch(SawBuilds.SAW_Bld_1.name(), SawBuilds.SAW_Bld_2.name());
+         DemoDbUtil.sleep(5000);
+         // Map team definitions versions to their related branches
+         DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
                SawBuilds.SAW_Bld_2.name(), SawBuilds.SAW_Bld_2.name(), createMainWorkingBranch);
-         } catch (Exception ex) {
-            OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
-         }
+      } catch (Exception ex) {
+         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
       }
+   }
 
    private Branch createChildMainWorkingBranch(String parentBrachName, String childBranchName) throws Exception {
       Branch parentBranch = BranchManager.getKeyedBranch(parentBrachName);
@@ -262,9 +262,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Committing branch");
-      result = reqTeam.getSmaMgr().getBranchMgr().commitWorkingBranch(false, true);
-      if (result.isFalse()) throw new IllegalArgumentException(
-            (new StringBuilder("Error committing working branch: ")).append(result.getText()).toString());
+      reqTeam.getSmaMgr().getBranchMgr().commitWorkingBranch(false, true);
 
       DemoDbUtil.sleep(5000);
 

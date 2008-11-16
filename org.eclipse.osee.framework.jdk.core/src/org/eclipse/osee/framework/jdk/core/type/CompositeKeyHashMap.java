@@ -148,10 +148,14 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
     */
    public Collection<Value> removeValues(KeyOne key1) {
       Collection<KeyTwo> key2s = signleKeyMap.getValues(key1);
+      if (key2s == null) {
+         return null;
+      }
       ArrayList<Value> values = new ArrayList<Value>(key2s.size());
       for (KeyTwo key2 : key2s) {
-         values.add(remove(key1, key2));
+         values.add(map.remove(threadLocalKey.get().setKeys(key1, key2)));
       }
+      signleKeyMap.removeValues(key1);
       return values;
    }
 

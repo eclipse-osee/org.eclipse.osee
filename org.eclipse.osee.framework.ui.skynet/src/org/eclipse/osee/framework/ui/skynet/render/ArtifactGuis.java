@@ -13,27 +13,16 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 public class ArtifactGuis {
    public ArtifactGuis() {
       super();
-   }
-
-   public static boolean promptToDeleteArtifactAndChildren() {
-      MessageDialog dialog =
-            new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion", null,
-                  " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
-
-      return dialog.open() == 0;
    }
 
    public static boolean checkOtherEdit(List<Artifact> artifacts) {

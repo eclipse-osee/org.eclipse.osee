@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -96,8 +95,6 @@ public class CommitDbTx extends DbTransaction {
    private static final String RESET_DELETED_NEW =
          "UPDATE osee_txs set tx_current = CASE WHEN mod_type = 3 THEN 2 WHEN mod_type = 5 THEN 3 ELSE 1 END WHERE gamma_id = ? AND transaction_id = ?";
 
-   private IProgressMonitor monitor;
-
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Commit"));
    private static final boolean MERGE_DEBUG =
@@ -133,8 +130,6 @@ public class CommitDbTx extends DbTransaction {
     */
    @Override
    protected void handleTxWork(Connection connection) throws OseeCoreException {
-      monitor.beginTask("Acquire from branch transactions", 100);
-
       User userToBlame = UserManager.getUser();
 
       long time = System.currentTimeMillis();
@@ -214,9 +209,6 @@ public class CommitDbTx extends DbTransaction {
          System.out.println(String.format("   Added commit transaction [%d] into the DB in %s", newTransactionNumber,
                Lib.getElapseString(time)));
       }
-
-      monitor.worked(25);
-      monitor.setTaskName("Commit transactions");
 
       time = System.currentTimeMillis();
       //Set the tx_current on the destination branch to 0 for the attributes that will be updated
@@ -328,7 +320,6 @@ public class CommitDbTx extends DbTransaction {
       }
 
       success = true;
-      monitor.done();
    }
 
    /* (non-Javadoc)

@@ -47,14 +47,14 @@ public class OseeDbConnection {
    }
 
    private static void checkThread() {/*
-                        String threadName = Thread.currentThread().getName();
-                        
-                        if (Display.getCurrent() == null) return false;
-                        return Display.getCurrent().getThread() == Thread.currentThread();
-                        
-                        if (threadName.equals("main") || threadName.equals("Start Level Event Dispatcher")) {
-                           OseeLog.log(InternalActivator.class, Level.SEVERE, "Making db calls in display threads.");
-                        }*/
+                           String threadName = Thread.currentThread().getName();
+                           
+                           if (Display.getCurrent() == null) return false;
+                           return Display.getCurrent().getThread() == Thread.currentThread();
+                           
+                           if (threadName.equals("main") || threadName.equals("Start Level Event Dispatcher")) {
+                              OseeLog.log(InternalActivator.class, Level.SEVERE, "Making db calls in display threads.");
+                           }*/
    }
 
    public static OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeDataStoreException {
@@ -128,7 +128,7 @@ public class OseeDbConnection {
    public static void reportTxCreation(DbTransaction transaction) throws OseeWrappedException {
       ObjectPair<DbTransaction, Exception> currentPair = txCreateds.get(Thread.currentThread());
       if (currentPair != null) {
-         throw new OseeWrappedException(currentPair.object2);
+         OseeLog.log(InternalActivator.class, Level.SEVERE, currentPair.object2);
       }
 
       txCreateds.put(Thread.currentThread(), new ObjectPair<DbTransaction, Exception>(transaction, new Exception()));

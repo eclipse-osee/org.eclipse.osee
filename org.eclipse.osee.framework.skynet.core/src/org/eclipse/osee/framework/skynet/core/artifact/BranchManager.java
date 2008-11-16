@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -326,30 +325,13 @@ public class BranchManager {
    }
 
    /**
-    * * Commit the net changes from the fromBranch into the toBranch. If there are conflicts between the two branches,
-    * the fromBranch's changes override those on the toBranch if overrideConflicts is true otherwise a
-    * CommitConflictException is thrown.
+    * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
+    * branches, the source branch changes will override those on the destination branch.
     * 
-    * @param sourceBranch
-    * @param destinationBranch
-    * @param archiveFromBranch
-    * @param forceCommit
+    * @param conflictManager
+    * @param archiveSourceBranch
     * @throws OseeCoreException
     */
-   @Deprecated
-   public static void commitBranch(final Branch sourceBranch, final Branch destinationBranch, boolean archiveFromBranch, boolean forceCommit) throws OseeCoreException {
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, sourceBranch);
-
-      int numRemainingConflicts = 0;
-      if (!forceCommit) {
-         numRemainingConflicts = conflictManager.getRemainingConflicts().size();
-         if (numRemainingConflicts > 0) {
-            throw new ConflictDetectionException(numRemainingConflicts + " unresovled conflicts exist.");
-         }
-      }
-      new CommitDbTx(conflictManager, archiveFromBranch).execute();
-   }
-
    public static void commitBranch(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
       new CommitDbTx(conflictManager, archiveSourceBranch).execute();
    }

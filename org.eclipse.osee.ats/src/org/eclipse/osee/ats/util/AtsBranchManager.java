@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -416,101 +418,131 @@ public class AtsBranchManager {
       }
    }
 
-   /**
-    * @param popup if true, popup errors associated with results
-    * @return Result
-    */
-   public Result commitWorkingBranch(boolean popup) throws OseeCoreException {
-      return commitWorkingBranch(popup, false);
+   private final class AtsCommitJob extends Job {
+      private boolean commitPopup;
+      private boolean overrideStateValidation;
+
+      /**
+       * @param name
+       * @param commitPopup
+       * @param overrideStateValidation
+       */
+      public AtsCommitJob(boolean commitPopup, boolean overrideStateValidation) {
+         super("Commit Branch");
+         this.commitPopup = commitPopup;
+         this.overrideStateValidation = overrideStateValidation;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+       */
+      @Override
+      protected IStatus run(IProgressMonitor monitor) {
+         try {
+            Branch branch = getWorkingBranch();
+            if (branch == null) {
+               return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
+                     "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId());
+            }
+
+            // If team uses versions, then validate that the parent branch id is specified by either
+            // the team definition's attribute or the related version's attribute
+            if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+               // Only perform checks if team definition uses ATS versions
+               TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
+               if (team.getTeamDefinition().isTeamUsesVersions()) {
+
+                  // Confirm that team is targeted for version
+                  if (team.getTargetedForVersion() == null) {
+                     return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, String.format(
+                           "Commit Branch Failed: Workflow \"%s\" must be targeted for a version.",
+                           smaMgr.getSma().getHumanReadableId()));
+                  }
+
+                  // Validate that a parent branch is specified in ATS configuration
+                  Branch parentBranch = getParentBranchForWorkingBranchCreation();
+                  if (parentBranch == null) {
+                     return new Status(
+                           Status.ERROR,
+                           AtsPlugin.PLUGIN_ID,
+                           String.format(
+                                 "Commit Branch Failed: Workflow \"%s\" can't access parent branch to commit to.\n\nSince the configured Team Definition uses versions, the parent branch must be specified in either the targeted Version Artifact or the Team Definition Artifact.",
+                                 smaMgr.getSma().getHumanReadableId()));
+                  }
+
+                  // Validate that the configured parentBranch is the same as the working branch's
+                  // parent branch.
+                  Integer targetedVersionBranchId = parentBranch.getBranchId();
+                  Integer workflowWorkingBranchParentBranchId =
+                        smaMgr.getBranchMgr().getWorkingBranch().getParentBranchId();
+                  if (!targetedVersionBranchId.equals(workflowWorkingBranchParentBranchId)) {
+                     return new Status(
+                           Status.ERROR,
+                           AtsPlugin.PLUGIN_ID,
+                           String.format(
+                                 "Commit Branch Failed: Workflow \"%s\" targeted version \"%s\" branch id \"%s\" does not match branch's " + "parent branch id \"%s\"",
+                                 smaMgr.getSma().getHumanReadableId(),
+                                 team.getTargetedForVersion().getDescriptiveName(),
+                                 String.valueOf(targetedVersionBranchId),
+                                 String.valueOf(workflowWorkingBranchParentBranchId)));
+                  }
+               }
+            }
+
+            // Confirm that all blocking reviews are completed
+            // Loop through this state's blocking reviews to confirm complete
+            for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
+               if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
+                  return new Status(
+                        Status.ERROR,
+                        AtsPlugin.PLUGIN_ID,
+                        "Blocking Review must be completed before commit.\n\nReview Title: \"" + reviewArt.getDescriptiveName() + "\"\nHRID: " + reviewArt.getHumanReadableId());
+               }
+            }
+
+            if (!overrideStateValidation) {
+               // Check extenstion points for valid commit
+               for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(smaMgr.getWorkPageDefinition().getId())) {
+                  Result tempResult = item.committing(smaMgr);
+                  if (tempResult.isFalse()) {
+                     return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, tempResult.getText());
+                  }
+               }
+            }
+
+            commit(commitPopup, branch);
+         } catch (OseeCoreException ex) {
+            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+         }
+         return Status.OK_STATUS;
+      }
+
+      private void commit(boolean commitPopup, Branch branch) throws OseeCoreException {
+         boolean branchCommitted = false;
+         ConflictManagerExternal conflictManager = new ConflictManagerExternal(branch.getParentBranch(), branch);
+
+         if (commitPopup) {
+            branchCommitted = CommitHandler.commitBranch(conflictManager, true);
+         } else {
+            BranchManager.commitBranch(conflictManager, true);
+            branchCommitted = true;
+         }
+         if (branchCommitted) {
+            // Create reviews as necessary
+            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
+            transaction.execute();
+         }
+      }
    }
 
    /**
     * @param commitPopup if true, popup errors associated with results
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     *           used for developmental testing or automation
-    * @return Result
     */
-   public Result commitWorkingBranch(boolean commitPopup, boolean overrideStateValidation) throws OseeCoreException {
-      Branch branch = getWorkingBranch();
-      if (branch == null) {
-         OSEELog.logSevere(AtsPlugin.class,
-               "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId(),
-               commitPopup);
-         return new Result("Commit Branch Failed: Can not locate branch.");
-      }
-
-      // If team uses versions, then validate that the parent branch id is specified by either
-      // the team definition's attribute or the related version's attribute
-      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-         // Only perform checks if team definition uses ATS versions
-         TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
-         if (team.getTeamDefinition().isTeamUsesVersions()) {
-
-            // Confirm that team is targeted for version
-            if (team.getTargetedForVersion() == null) {
-               return new Result(String.format("Commit Branch Failed: Workflow \"%s\" must be targeted for a version.",
-                     smaMgr.getSma().getHumanReadableId()));
-            }
-
-            // Validate that a parent branch is specified in ATS configuration
-            Branch parentBranch = getParentBranchForWorkingBranchCreation();
-            if (parentBranch == null) {
-               return new Result(
-                     String.format(
-                           "Commit Branch Failed: Workflow \"%s\" can't access parent branch to commit to.\n\nSince the configured Team Definition uses versions, the parent branch must be specified in either the targeted Version Artifact or the Team Definition Artifact.",
-                           smaMgr.getSma().getHumanReadableId()));
-            }
-
-            // Validate that the configured parentBranch is the same as the working branch's
-            // parent branch.
-            Integer targetedVersionBranchId = parentBranch.getBranchId();
-            Integer workflowWorkingBranchParentBranchId = smaMgr.getBranchMgr().getWorkingBranch().getParentBranchId();
-            if (!targetedVersionBranchId.equals(workflowWorkingBranchParentBranchId)) {
-               return new Result(
-                     String.format(
-                           "Commit Branch Failed: Workflow \"%s\" targeted version \"%s\" branch id \"%s\" does not match branch's " + "parent branch id \"%s\"",
-                           smaMgr.getSma().getHumanReadableId(), team.getTargetedForVersion().getDescriptiveName(),
-                           String.valueOf(targetedVersionBranchId), String.valueOf(workflowWorkingBranchParentBranchId)));
-            }
-         }
-      }
-
-      // Confirm that all blocking reviews are completed
-      // Loop through this state's blocking reviews to confirm complete
-      for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
-         if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
-            return new Result(
-                  "Blocking Review must be completed before commit.\n\nReview Title: \"" + reviewArt.getDescriptiveName() + "\"\nHRID: " + reviewArt.getHumanReadableId());
-         }
-      }
-
-      if (!overrideStateValidation) {
-         // Check extenstion points for valid commit
-         for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(smaMgr.getWorkPageDefinition().getId())) {
-            Result result = item.committing(smaMgr);
-            if (result.isFalse()) return result;
-         }
-      }
-      commit(commitPopup, branch);
-      return Result.TrueResult;
-   }
-
-   private void commit(boolean commitPopup, Branch branch) throws OseeCoreException {
-      boolean branchCommitted = false;
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(branch.getParentBranch(), branch);
-
-      if (commitPopup) {
-         branchCommitted = CommitHandler.commitBranch(conflictManager, true);
-      } else {
-         BranchManager.commitBranch(conflictManager, true);
-         branchCommitted = true;
-      }
-      if (branchCommitted) {
-         // Create reviews as necessary
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
-         transaction.execute();
-      }
+   public void commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation) {
+      Jobs.startJob(new AtsCommitJob(commitPopup, overrideStateValidation));
    }
 
    /**
