@@ -105,6 +105,10 @@ public class ArtifactTypeManager {
       return instance.nameToTypeMap.get(namespace + name) != null;
    }
 
+   public static boolean typeExists(String name) throws OseeDataStoreException {
+      return typeExists("", name);
+   }
+
    /**
     * Cache a newly created descriptor.
     * 
