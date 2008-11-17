@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.widgets.task;
+package org.eclipse.osee.ats.task;
 
 import java.util.Arrays;
 import java.util.List;

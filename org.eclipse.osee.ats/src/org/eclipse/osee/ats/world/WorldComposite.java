@@ -9,13 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -35,7 +30,6 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,15 +39,14 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -80,10 +73,9 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class WorldComposite extends Composite implements IFrameworkTransactionEventListener {
+public class WorldComposite extends ScrolledComposite implements IFrameworkTransactionEventListener {
 
    private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toWorkFlow, toTask;
-   private final Label warningLabel, searchNameLabel;
    private Label extraInfoLabel;
    private WorldSearchItem lastSearchItem;
    private final WorldXViewer worldXViewer;
@@ -91,29 +83,21 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
    private TableLoadOption[] tableLoadOptions;
-   private Collection<? extends Artifact> arts;
-   private String loadName;
    private final ToolBar toolBar;
+   private final WorldEditor worldEditor;
+   private final Composite mainComp;
 
-   public WorldComposite(String viewEditorId, Composite parent, int style) {
-      this(viewEditorId, parent, style, null);
-   }
-
-   public WorldComposite(String viewEditorId, Composite parent, int style, ToolBar toolBar) {
-      super(parent, style);
+   public WorldComposite(WorldEditor editor, Composite parent, int style, ToolBar toolBar) {
+      super(parent, style | SWT.V_SCROLL | SWT.H_SCROLL);
+      this.worldEditor = editor;
       this.toolBar = toolBar;
 
       setLayout(new GridLayout(1, false));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      // Header Composite
-      Composite headerComp = new Composite(this, SWT.NONE);
-      headerComp.setLayout(ALayout.getZeroMarginLayout(3, false));
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      headerComp.setLayoutData(gd);
-
-      warningLabel = new Label(headerComp, SWT.NONE);
-      searchNameLabel = new Label(headerComp, SWT.NONE);
+      mainComp = new Composite(this, SWT.NONE);
+      mainComp.setLayout(new GridLayout());
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
          extraInfoLabel = null;
@@ -121,28 +105,10 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          return;
       }
 
-      String nameStr = getWhoAmI();
-      if (AtsPlugin.isAtsAdmin()) nameStr += " - Admin";
-      if (AtsPlugin.isAtsDisableEmail()) nameStr += " - Email Disabled";
-      if (AtsPlugin.isAtsAlwaysEmailMe()) nameStr += " - AtsAlwaysEmailMe";
-      if (!nameStr.equals("")) {
-         Label label = new Label(headerComp, SWT.NONE);
-         label.setText(nameStr);
-         if (AtsPlugin.isAtsAdmin()) {
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-         } else {
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-         }
-         gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-         label.setLayoutData(gd);
-      }
+      extraInfoLabel = new Label(mainComp, SWT.NONE);
+      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      extraInfoLabel = new Label(headerComp, SWT.NONE);
-      gd = new GridData(GridData.FILL_HORIZONTAL);
-      gd.horizontalSpan = 3;
-      extraInfoLabel.setLayoutData(gd);
-
-      worldXViewer = new WorldXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+      worldXViewer = new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
       worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
@@ -191,9 +157,14 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          }
       });
 
-      new WorldViewDragAndDrop(this, viewEditorId);
-      parent.layout();
+      new WorldViewDragAndDrop(this, WorldEditor.EDITOR_ID);
+
       createActions();
+
+      setContent(mainComp);
+      setExpandHorizontal(true);
+      setExpandVertical(true);
+      layout();
 
       OseeEventManager.addListener(this);
    }
@@ -206,24 +177,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       return worldXViewer.getControl();
    }
 
-   public void loadIt(final String name, final Collection<? extends Artifact> arts, final TableLoadOption... tableLoadOption) {
-      final Set<TableLoadOption> options = new HashSet<TableLoadOption>();
-      options.addAll(Arrays.asList(tableLoadOption));
-      options.add(TableLoadOption.ClearLastSearchItem);
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         public void run() {
-            load(name, arts, options.toArray(new TableLoadOption[options.size()]));
-         }
-      }, options.contains(TableLoadOption.ForcePend));
-   }
-
    public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
-      this.loadName = name;
-      this.arts = arts;
-      this.lastSearchItem = null;
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
       if (tableLoadOption != null) {
          options.addAll(Arrays.asList(tableLoadOption));
@@ -233,10 +187,6 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
    }
 
    public void load(final WorldSearchItem searchItem, final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
-      this.lastSearchItem = searchItem;
-      this.arts = arts;
-      List<TableLoadOption> options = Collections.getAggregate(tableLoadOption);
-      if (options.contains(TableLoadOption.ClearLastSearchItem)) lastSearchItem = null;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -303,105 +253,11 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       }
    }
 
-   public void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException {
-      searchItem.setCancelled(false);
-      loadTable(searchItem, SearchType.Search, tableLoadOptions);
-   }
-
-   public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException {
-      this.tableLoadOptions = tableLoadOptions;
-      List<TableLoadOption> options = Collections.getAggregate(tableLoadOptions);
-      searchItem.setCancelled(false);
-      this.lastSearchItem = searchItem;
-      this.arts = null;
-      Result result = AtsPlugin.areOSEEServicesAvailable();
-      if (result.isFalse()) {
-         AWorkbench.popup("ERROR", "DB Connection Unavailable");
-         return;
-      }
-
-      if (searchItem == null) return;
-
-      if (!options.contains(TableLoadOption.NoUI)) {
-         searchItem.performUI(searchType);
-      }
-      if (searchItem.isCancelled()) return;
-
-      LoadTableJob job = null;
-      job = new LoadTableJob(searchItem, SearchType.Search);
-      job.setUser(false);
-      job.setPriority(Job.LONG);
-      job.schedule();
-      if (options.contains(TableLoadOption.ForcePend)) job.join();
-   }
-
-   private class LoadTableJob extends Job {
-
-      private final WorldSearchItem searchItem;
-      private boolean cancel = false;
-      private final SearchType searchType;
-
-      public LoadTableJob(WorldSearchItem searchItem, SearchType searchType) {
-         super("Loading \"" + searchItem.getSelectedName(searchType) + "\"...");
-         this.searchItem = searchItem;
-         this.searchType = searchType;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
-      @Override
-      protected IStatus run(IProgressMonitor monitor) {
-
-         setTableTitle(
-               "Loading \"" + (searchItem.getSelectedName(searchType) != null ? searchItem.getSelectedName(searchType) : "") + "\"...",
-               false);
-         cancel = false;
-         searchItem.setCancelled(cancel);
-         final Collection<Artifact> artifacts;
-         worldXViewer.clear();
-         try {
-            artifacts = searchItem.performSearchGetResults(false, searchType);
-            if (artifacts.size() == 0) {
-               if (searchItem.isCancelled()) {
-                  monitor.done();
-                  setTableTitle("CANCELLED - " + searchItem.getSelectedName(searchType), false);
-                  return Status.CANCEL_STATUS;
-               } else {
-                  monitor.done();
-                  setTableTitle("No Results Found - " + searchItem.getSelectedName(searchType), true);
-                  return Status.OK_STATUS;
-               }
-            }
-            load(searchItem,
-                  (searchItem.getSelectedName(searchType) != null ? searchItem.getSelectedName(searchType) : ""),
-                  artifacts);
-         } catch (final Exception ex) {
-            String str = "Exception occurred. Network may be down.";
-            if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
-                  " => " + ex.getLocalizedMessage();
-            setTableTitle("Searching Error - " + searchItem.getSelectedName(searchType), false);
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            monitor.done();
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
-         }
-         monitor.done();
-         return Status.OK_STATUS;
-      }
-   }
-
    public void setTableTitle(final String title, final boolean warning) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               if (warning)
-                  warningLabel.setImage(AtsPlugin.getInstance().getImage("warn.gif"));
-               else
-                  warningLabel.setImage(null);
-               searchNameLabel.setText(title);
-               searchNameLabel.getParent().layout();
+               worldEditor.setTableTitle(title, warning);
                worldXViewer.setReportingTitle(title + " - " + XDate.getDateNow());
                updateExtraInfoLine();
             } catch (OseeCoreException ex) {
@@ -426,6 +282,19 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          SMAMetrics sMet = new SMAMetrics(getXViewer().getSelectedSMAArtifacts(), null);
          str = sMet.toString();
       }
+      if (str.equals("")) {
+         str = getWhoAmI();
+         if (AtsPlugin.isAtsAdmin()) str += " - Admin";
+         if (AtsPlugin.isAtsDisableEmail()) str += " - Email Disabled";
+         if (AtsPlugin.isAtsAlwaysEmailMe()) str += " - AtsAlwaysEmailMe";
+         if (!str.equals("")) {
+            if (AtsPlugin.isAtsAdmin()) {
+               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            } else {
+               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+            }
+         }
+      }
       extraInfoLabel.setText(str);
       extraInfoLabel.getParent().layout();
    }
@@ -448,15 +317,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          @Override
          public void run() {
             try {
-               if (lastSearchItem != null) {
-                  WorldEditor.open(lastSearchItem, SearchType.ReSearch,
-                        worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions);
-               } else if (arts != null) {
-                  WorldEditor.open(loadName, arts, worldXViewer.getCustomizeMgr().generateCustDataFromTable(),
-                        tableLoadOptions);
-               } else {
-                  AWorkbench.popup("ERROR", "Nothing loaded");
-               }
+               WorldEditor.open(((WorldEditorInput) worldEditor.getEditorInput()).getIWorldEditorProvider());
             } catch (OseeCoreException ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -475,8 +336,8 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
                return;
             }
             WorldEditorInput worldEditorInput =
-                  new WorldEditorInput("ATS World", worldXViewer.getSelectedArtifacts(),
-                        worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions);
+                  new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", worldXViewer.getSelectedArtifacts(),
+                        worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions));
             if (worldEditorInput != null) {
                IWorkbenchPage page = AWorkbench.getActivePage();
                try {
@@ -521,7 +382,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
          public void run() {
             try {
                if (lastSearchItem != null) {
-                  loadTable(lastSearchItem, SearchType.ReSearch, TableLoadOption.None);
+                  worldEditor.reSearch();
                }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
@@ -586,18 +447,20 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
       };
       toTask.setToolTipText("Re-display as Tasks");
 
-      actionToToolItem(toolBar, refreshAction);
-      new ToolItem(toolBar, SWT.SEPARATOR);
-      actionToToolItem(toolBar, expandAllAction);
-      actionToToolItem(toolBar, worldXViewer.getCustomizeAction());
-      new ToolItem(toolBar, SWT.SEPARATOR);
-      actionToToolItem(toolBar, newWorldEditor);
-      actionToToolItem(toolBar, newWorldEditorSelected);
-      new ToolItem(toolBar, SWT.SEPARATOR);
-      actionToToolItem(toolBar, new NewAction());
-      new ToolItem(toolBar, SWT.SEPARATOR);
+      if (toolBar != null) {
+         actionToToolItem(toolBar, refreshAction);
+         new ToolItem(toolBar, SWT.SEPARATOR);
+         actionToToolItem(toolBar, expandAllAction);
+         actionToToolItem(toolBar, worldXViewer.getCustomizeAction());
+         new ToolItem(toolBar, SWT.SEPARATOR);
+         actionToToolItem(toolBar, newWorldEditor);
+         actionToToolItem(toolBar, newWorldEditorSelected);
+         new ToolItem(toolBar, SWT.SEPARATOR);
+         actionToToolItem(toolBar, new NewAction());
+         new ToolItem(toolBar, SWT.SEPARATOR);
 
-      createToolBarPulldown(toolBar, toolBar.getParent());
+         createToolBarPulldown(toolBar, toolBar.getParent());
+      }
    }
 
    public void createToolBarPulldown(final ToolBar toolBar, Composite composite) {
@@ -685,7 +548,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
                }
             }
          }
-         load(searchNameLabel.getText(), arts);
+         load(worldEditor.getCurrentTitleLabel(), arts);
       } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -708,7 +571,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
                }
             }
          }
-         load(searchNameLabel.getText(), arts);
+         load(worldEditor.getCurrentTitleLabel(), arts);
       } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -730,7 +593,7 @@ public class WorldComposite extends Composite implements IFrameworkTransactionEv
                }
             }
          }
-         load(searchNameLabel.getText(), arts);
+         load(worldEditor.getCurrentTitleLabel(), arts);
       } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }

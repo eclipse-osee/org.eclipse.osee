@@ -104,7 +104,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    }
 
    @Override
-   public void handleItemDoubleClick(HyperViewItem hvi) {
+   public void handleItemDoubleClick(HyperViewItem hvi) throws OseeCoreException {
       Artifact art = ((ActionHyperItem) hvi).getArtifact();
       if (art == null) {
          ((ActionHyperItem) hvi).handleDoubleClick(hvi);

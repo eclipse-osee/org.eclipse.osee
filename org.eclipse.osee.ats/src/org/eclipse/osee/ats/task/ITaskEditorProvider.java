@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.editor;
+package org.eclipse.osee.ats.task;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;

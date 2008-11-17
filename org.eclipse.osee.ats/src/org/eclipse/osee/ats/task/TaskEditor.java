@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor;
+package org.eclipse.osee.ats.task;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,8 +22,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMATaskComposite;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -140,6 +141,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
       try {
          OseeContributionItem.addTo(this, true);
+
          IEditorInput editorInput = getEditorInput();
          if (!(editorInput instanceof TaskEditorInput)) {
             throw new IllegalArgumentException("Editor Input not TaskEditorInput");

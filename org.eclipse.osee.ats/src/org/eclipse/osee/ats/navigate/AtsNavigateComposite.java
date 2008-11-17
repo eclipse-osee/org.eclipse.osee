@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.TaskEditor;
-import org.eclipse.osee.ats.editor.TaskEditorSearchItemProvider;
+import org.eclipse.osee.ats.task.TaskEditor;
+import org.eclipse.osee.ats.task.TaskEditorSearchItemProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.world.WorldEditorSearchItemProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
-import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
@@ -58,7 +58,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
       if (item instanceof SearchNavigateItem) {
          WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWorldSearchItem();
          if (worldSearchItem.getLoadView() == LoadView.WorldEditor) {
-            WorldEditor.open(worldSearchItem.copy(), SearchType.Search, null, tableLoadOptions);
+            WorldEditor.open(new WorldEditorSearchItemProvider(worldSearchItem.copy(), null, tableLoadOptions));
          } else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) {
             TaskEditor.open(new TaskEditorSearchItemProvider(worldSearchItem.copy(), tableLoadOptions));
          }

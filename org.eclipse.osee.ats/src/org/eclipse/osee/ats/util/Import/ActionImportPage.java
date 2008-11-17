@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.FileSelector;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -117,8 +118,8 @@ public class ActionImportPage extends WizardDataTransferPage {
       if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
       setPageComplete(determinePageCompletion());
    } /*
-                           * @see WizardPage#becomesVisible
-                           */
+                             * @see WizardPage#becomesVisible
+                             */
 
    @Override
    public void setVisible(boolean visible) {
@@ -143,7 +144,7 @@ public class ActionImportPage extends WizardDataTransferPage {
                new ExcelAtsActionArtifactExtractor(AtsPlugin.getAtsBranch(), emailPocs.getSelection());
          extractor.discoverArtifactAndRelationData(file);
          if (extractor.dataIsValid()) extractor.createArtifactsAndNotify(transaction);
-         WorldEditor.open("Imported Action Artifacts", extractor.getActionArts());
+         WorldEditor.open(new WorldEditorSimpleProvider("Imported Action Artifacts", extractor.getActionArts()));
          transaction.execute();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

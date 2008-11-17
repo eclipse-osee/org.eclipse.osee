@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.editor;
 
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
-import org.eclipse.osee.ats.util.widgets.task.TaskComposite;
+import org.eclipse.osee.ats.task.IXTaskViewer;
+import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.swt.layout.GridData;

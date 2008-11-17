@@ -15,7 +15,7 @@
             id="org.eclipse.osee.ats.editor.SMAEditor"
             name="ATS Workflow Editor"/>
          <editor
-               class="org.eclipse.osee.ats.editor.TaskEditor"
+               class="org.eclipse.osee.ats.task.TaskEditor"
                default="false"
                icon="images/task.gif"
                id="org.eclipse.osee.ats.editor.TaskEditor"

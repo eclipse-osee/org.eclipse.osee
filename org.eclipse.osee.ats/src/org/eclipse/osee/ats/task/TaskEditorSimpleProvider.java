@@ -1,12 +1,11 @@
 /*
- * Created on Nov 6, 2008
+ * Created on Nov 7, 2008
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.editor;
+package org.eclipse.osee.ats.task;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -16,18 +15,16 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditorSearchItemProvider implements ITaskEditorProvider {
+public class TaskEditorSimpleProvider implements ITaskEditorProvider {
 
-   private final WorldSearchItem worldSearchItem;
-   private final TableLoadOption[] tableLoadOptions;
+   private final String name;
+   private final Collection<? extends Artifact> artifacts;
+   private final TableLoadOption[] tableLoadOption;
 
-   public TaskEditorSearchItemProvider(WorldSearchItem worldSearchItem) {
-      this(worldSearchItem, TableLoadOption.None);
-   }
-
-   public TaskEditorSearchItemProvider(WorldSearchItem worldSearchItem, TableLoadOption... tableLoadOptions) {
-      this.worldSearchItem = worldSearchItem;
-      this.tableLoadOptions = tableLoadOptions;
+   public TaskEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts, TableLoadOption... tableLoadOption) {
+      this.name = name;
+      this.artifacts = artifacts;
+      this.tableLoadOption = tableLoadOption;
    }
 
    /* (non-Javadoc)
@@ -35,15 +32,15 @@ public class TaskEditorSearchItemProvider implements ITaskEditorProvider {
     */
    @Override
    public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException {
-      return Collections.getAggregate(tableLoadOptions);
+      return Collections.getAggregate(tableLoadOption);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorLabel()
+    * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorLabel(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
     */
    @Override
    public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
-      return worldSearchItem.getSelectedName(searchType);
+      return name;
    }
 
    /* (non-Javadoc)
@@ -51,7 +48,7 @@ public class TaskEditorSearchItemProvider implements ITaskEditorProvider {
     */
    @Override
    public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
-      return worldSearchItem.performSearchGetResults(false, SearchType.ReSearch);
+      return artifacts;
    }
 
 }

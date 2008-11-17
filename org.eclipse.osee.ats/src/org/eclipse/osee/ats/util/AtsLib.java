@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.IAtsLib;
@@ -71,9 +73,14 @@ public class AtsLib implements IAtsLib {
    }
 
    public static ToolBar createCommonToolBar(Composite parent) {
+      return createCommonToolBar(parent, null);
+   }
+
+   public static ToolBar createCommonToolBar(Composite parent, XFormToolkit toolkit) {
       Composite toolBarComposite = new Composite(parent, SWT.BORDER);
       GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1);
       toolBarComposite.setLayoutData(gridData);
+      if (toolkit != null) toolkit.adapt(toolBarComposite);
       GridLayout layout = new GridLayout(2, false);
       layout.marginHeight = 0;
       layout.marginWidth = 0;
@@ -82,6 +89,7 @@ public class AtsLib implements IAtsLib {
       ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
       gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1);
       toolBar.setLayoutData(gridData);
+      if (toolkit != null) toolkit.adapt(toolBar);
       return toolBar;
    }
 
@@ -219,7 +227,8 @@ public class AtsLib implements IAtsLib {
                for (TeamWorkFlowArtifact team : teams)
                   SMAEditor.editArtifact(team);
             else if (option == AtsOpenOption.AtsWorld)
-               WorldEditor.open("Action " + actionArt.getHumanReadableId(), Arrays.asList(actionArt));
+               WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
+                     Arrays.asList(actionArt)));
             else if (option == AtsOpenOption.OpenOneOrPopupSelect) {
                if (teams.size() == 1)
                   SMAEditor.editArtifact(teams.iterator().next());
@@ -254,7 +263,8 @@ public class AtsLib implements IAtsLib {
       return null;
    }
 
-   public void openInAtsWorld(String name, Collection<Artifact> artifacts) {
-      WorldEditor.open(name, artifacts);
+   @Override
+   public void openInAtsWorld(String name, Collection<Artifact> artifacts) throws OseeCoreException {
+      WorldEditor.open(new WorldEditorSimpleProvider(name, artifacts));
    }
 }

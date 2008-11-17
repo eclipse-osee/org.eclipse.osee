@@ -112,7 +112,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                      }
                   }
                   if (arts.size() > 0) {
-                     worldComposite.loadIt(name, arts, TableLoadOption.None);
+                     worldComposite.load(name, arts, TableLoadOption.None);
                   }
                } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);

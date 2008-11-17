@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor;
+package org.eclipse.osee.ats.task;
 
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;

@@ -18,9 +18,9 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.world.WorldEditorSearchItemProvider;
 import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem.ReleasedOption;
-import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -93,8 +92,8 @@ public class EditTeamWorkflows extends AbstractBlam {
                   AWorkbench.popup("ERROR", "You must select at least Team or Version with Include Completed.");
                   return;
                }
-               WorldEditor.open(new TeamWorldNewSearchItem("Team Workflows", teamDefs, includeCompleted, false, false,
-                     verArt, user, releaseOption), SearchType.Search, null, TableLoadOption.NoUI);
+               WorldEditor.open(new WorldEditorSearchItemProvider(new TeamWorldNewSearchItem("Team Workflows",
+                     teamDefs, includeCompleted, false, false, verArt, user, releaseOption)));
 
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);

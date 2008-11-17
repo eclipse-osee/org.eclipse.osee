@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -17,22 +18,19 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
-import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -43,7 +41,7 @@ import org.eclipse.ui.PartInitException;
 public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEditor, IAtsMetricsProvider {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
    private int mainPageIndex, metricsPageIndex;
-   private WorldComposite worldComposite;
+   private WorldXWidgetActionPage actionPage;
    private AtsMetricsComposite metricsComposite;
    public static final String HELP_CONTEXT_ID = "atsWorldView";
 
@@ -56,32 +54,20 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    public void doSave(IProgressMonitor monitor) {
    }
 
-   public static void open(String name, Collection<? extends Artifact> arts) {
-      open(name, arts, null, TableLoadOption.None);
-   }
-
-   public static void open(String name, Collection<? extends Artifact> arts, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
-      WorldEditorInput worldEditorInput = new WorldEditorInput(name, arts, customizeData, tableLoadOptions);
-      if (worldEditorInput != null) {
-         IWorkbenchPage page = AWorkbench.getActivePage();
-         try {
-            page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
-         } catch (PartInitException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
+   public static void open(final IWorldEditorProvider provider) throws OseeCoreException {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         public void run() {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+               page.openEditor(new WorldEditorInput(provider), EDITOR_ID);
+            } catch (PartInitException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
-      }
-   }
-
-   public static void open(WorldSearchItem searchItem, SearchType searchType, CustomizeData customizeData, TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      WorldEditorInput worldEditorInput = new WorldEditorInput(searchItem, searchType, customizeData, tableLoadOptions);
-      if (worldEditorInput != null) {
-         IWorkbenchPage page = AWorkbench.getActivePage();
-         try {
-            page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
-         } catch (PartInitException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
-      }
+      }, provider.getTableLoadOptions().contains(TableLoadOption.ForcePend));
    }
 
    @Override
@@ -91,9 +77,19 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
 
    @Override
    public void dispose() {
-      if (worldComposite != null) worldComposite.disposeComposite();
+      if (actionPage != null && actionPage.getWorldComposite() != null) {
+         actionPage.getWorldComposite().disposeComposite();
+      }
       if (metricsComposite != null) metricsComposite.disposeComposite();
       super.dispose();
+   }
+
+   public String getCurrentTitleLabel() {
+      return actionPage.getCurrentTitleLabel();
+   }
+
+   public void setTableTitle(final String title, final boolean warning) {
+      actionPage.setTableTitle(title, warning);
    }
 
    /*
@@ -118,48 +114,33 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
          OseeContributionItem.addTo(this, true);
 
          IEditorInput editorInput = getEditorInput();
-         WorldEditorInput worldEditorInput = null;
-         if (editorInput instanceof WorldEditorInput) {
-            worldEditorInput = (WorldEditorInput) editorInput;
-         } else
+         if (!(editorInput instanceof WorldEditorInput)) {
             throw new IllegalArgumentException("Editor Input not WorldEditorInput");
+         }
+         WorldEditorInput worldEditorInput = (WorldEditorInput) editorInput;
+         IWorldEditorProvider provider = worldEditorInput.getIWorldEditorProvider();
 
-         setPartName(editorInput.getName());
+         setPartName(provider.getWorldEditorLabel(SearchType.Search));
 
          createMainTab();
          createMetricsTab();
 
          setActivePage(mainPageIndex);
 
-         if (worldEditorInput.getCustomizeData() != null) {
-            worldComposite.setCustomizeData(worldEditorInput.getCustomizeData());
-         }
-
-         if (worldEditorInput.getSearchItem() != null && worldEditorInput.getSearchType() != null) {
-            worldComposite.loadTable(worldEditorInput.getSearchItem(), worldEditorInput.getSearchType(),
-                  worldEditorInput.getTableLoadOptions());
-         } else if (worldEditorInput.getSearchItem() != null) {
-            worldComposite.loadTable(worldEditorInput.getSearchItem(), SearchType.Search,
-                  worldEditorInput.getTableLoadOptions());
-         } else if (worldEditorInput.getArts() != null) {
-            worldComposite.load(worldEditorInput.getName(), worldEditorInput.getArts(),
-                  worldEditorInput.getTableLoadOptions());
-         } else
-            throw new OseeArgumentException("Unknown WorldEditorInput values.");
-
          // Until WorldEditor has different help, just use WorldView's help
-         AtsPlugin.getInstance().setHelp(worldComposite.getControl(), HELP_CONTEXT_ID);
+         //         AtsPlugin.getInstance().setHelp(worldComposite.getControl(), HELP_CONTEXT_ID);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   private void createMainTab() throws OseeCoreException {
-      Composite comp = AtsLib.createCommonPageComposite(getContainer());
-      ToolBar toolBar = AtsLib.createCommonToolBar(comp);
-      worldComposite = new WorldComposite(EDITOR_ID, comp, SWT.NONE, toolBar);
-      mainPageIndex = addPage(comp);
-      setPageText(mainPageIndex, "Actions");
+   public void reSearch() throws OseeCoreException {
+      actionPage.reSearch();
+   }
+
+   private void createMainTab() throws OseeCoreException, PartInitException {
+      actionPage = new WorldXWidgetActionPage(this);
+      mainPageIndex = addPage(actionPage);
    }
 
    private void createMetricsTab() throws OseeCoreException {
@@ -170,12 +151,16 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       setPageText(metricsPageIndex, "Metrics");
    }
 
+   public ArrayList<Artifact> getLoadedArtifacts() {
+      return actionPage.getWorldComposite().getLoadedArtifacts();
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getArtifacts()
     */
    @Override
    public Collection<? extends Artifact> getMetricsArtifacts() {
-      return worldComposite.getLoadedArtifacts();
+      return getLoadedArtifacts();
    }
 
    /* (non-Javadoc)
@@ -183,8 +168,8 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
     */
    @Override
    public VersionArtifact getMetricsVersionArtifact() {
-      if (worldComposite.getLastSearchItem() instanceof VersionTargetedForTeamSearchItem) {
-         return ((VersionTargetedForTeamSearchItem) worldComposite.getLastSearchItem()).getSearchVersionArtifact();
+      if (actionPage.getWorldComposite().getLastSearchItem() instanceof VersionTargetedForTeamSearchItem) {
+         return ((VersionTargetedForTeamSearchItem) actionPage.getWorldComposite().getLastSearchItem()).getSearchVersionArtifact();
       }
       return null;
    }

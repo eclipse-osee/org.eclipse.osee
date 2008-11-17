@@ -42,8 +42,8 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.TaskEditor;
-import org.eclipse.osee.ats.editor.TaskEditorSimpleProvider;
+import org.eclipse.osee.ats.task.TaskEditor;
+import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.Favorites;
@@ -338,8 +338,8 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                return;
             }
             WorldEditorInput worldEditorInput =
-                  new WorldEditorInput("ATS World", getSelectedArtifacts(),
-                        getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None);
+                  new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(),
+                        getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None));
             if (worldEditorInput != null) {
                IWorkbenchPage page = AWorkbench.getActivePage();
                try {

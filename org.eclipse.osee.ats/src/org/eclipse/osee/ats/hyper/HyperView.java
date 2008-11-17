@@ -79,24 +79,24 @@ public class HyperView extends ViewPart implements IPartListener {
    protected Composite composite;
    private Figure container; // main container Figure to hold others
    private XYLayout contentsLayout;
-   private Vector<PolylineConnection> connectors = new Vector<PolylineConnection>(); // PolylineConnection
-   private Vector<HyperViewItem> backList = new Vector<HyperViewItem>();
+   private final Vector<PolylineConnection> connectors = new Vector<PolylineConnection>(); // PolylineConnection
+   private final Vector<HyperViewItem> backList = new Vector<HyperViewItem>();
    // List of SearchItems visited
    private int backListIndex = 0; // Index we are on in backList
    private HyperViewItem homeSearchItem = null;
    // private static Canvas canvas;
    private FigureCanvas canvas;
-   private Cursor hCursor = null;
+   private final Cursor hCursor = null;
    private Menu popupMenu;
    private Menu connectPopupMenu;
    /* Full circle is (2*Math.PI) */
-   private double quadrant = ((2 * Math.PI) / 4);
+   private final double quadrant = ((2 * Math.PI) / 4);
    /* Each quadrant is 90 degrees */
-   private double oneEighthCircle = quadrant / 2; /* Start 45 degrees off 0 */
-   private double bottomQuadrantStart = oneEighthCircle;
-   private double topQuadrantStart = oneEighthCircle + (2 * quadrant);
-   private double leftQuadrantStart = oneEighthCircle + quadrant;
-   private double rightQuadrantStart = oneEighthCircle + (3 * quadrant);
+   private final double oneEighthCircle = quadrant / 2; /* Start 45 degrees off 0 */
+   private final double bottomQuadrantStart = oneEighthCircle;
+   private final double topQuadrantStart = oneEighthCircle + (2 * quadrant);
+   private final double leftQuadrantStart = oneEighthCircle + quadrant;
+   private final double rightQuadrantStart = oneEighthCircle + (3 * quadrant);
    // private ChopboxAnchor sourceAnchor = null;
    private boolean dragCenter = false;
    protected static Color nodeColor = new Color(null, 255, 255, 206);
@@ -110,7 +110,7 @@ public class HyperView extends ViewPart implements IPartListener {
    private Zoom zoom;
    protected Zoom defaultZoom = new Zoom();
    private int verticalSelection = 40;
-   private ActionDebug debug = new ActionDebug(false, "HV");
+   private final ActionDebug debug = new ActionDebug(false, "HV");
    protected ArrayList<String> onlyShowRelations = new ArrayList<String>();
 
    public class Zoom {
@@ -127,6 +127,7 @@ public class HyperView extends ViewPart implements IPartListener {
       int ySeparationFactor = 5;
       Point dragCenter = null;
 
+      @Override
       public String toString() {
          StringBuilder builder = new StringBuilder();
          builder.append("xR:" + pcRadius);
@@ -223,6 +224,7 @@ public class HyperView extends ViewPart implements IPartListener {
    /**
     * This is a callback that will allow us to create the viewer and initialize it.
     */
+   @Override
    public void createPartControl(Composite parent) {
       debug.report("createPartControl");
 
@@ -312,7 +314,7 @@ public class HyperView extends ViewPart implements IPartListener {
       printBackList("pre backListAddSearchItem");
       backListClearToIndex();
       if (backList.size() > 0) {
-         if (((HyperViewItem) backList.get(backList.size() - 1)).equals(hvi)) {
+         if ((backList.get(backList.size() - 1)).equals(hvi)) {
             // System.out.println("same as last; skip");
             return;
          }
@@ -335,7 +337,7 @@ public class HyperView extends ViewPart implements IPartListener {
       debug.report("gridClear");
       if (connectors != null) {
          for (int i = 0; i < connectors.size(); i++) {
-            ((PolylineConnection) connectors.get(i)).erase();
+            (connectors.get(i)).erase();
          }
          connectors.clear();
       }
@@ -509,7 +511,7 @@ public class HyperView extends ViewPart implements IPartListener {
          setMouseListener(figure);
          /* Draw line to left */
          ChopboxAnchor targetAnchor = new ChopboxAnchor(figure);
-         drawLine(sourceAnchor, targetAnchor, ((NodeFigure) figure).getHvi());
+         drawLine(sourceAnchor, targetAnchor, (figure).getHvi());
          // .getRelationToolTip(),
          // ((NodeFigure) figure).getHvi().getRelationLabel(), ((NodeFigure)
          // figure).getHvi().getRelationDirty());
@@ -586,6 +588,7 @@ public class HyperView extends ViewPart implements IPartListener {
             editItem.setText("Delete Link");
             editItem.addSelectionListener(new SelectionAdapter() {
 
+               @Override
                public void widgetSelected(SelectionEvent e) {
                   try {
                      if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Delete Link",
@@ -688,8 +691,12 @@ public class HyperView extends ViewPart implements IPartListener {
          public void mouseDoubleClicked(MouseEvent e) {
             if ((e.button == 1) && e.getSource() instanceof NodeFigure) {
                NodeFigure nf = (NodeFigure) e.getSource();
-               HyperViewItem si = (HyperViewItem) nf.getSearchItem();
-               handleItemDoubleClick(si);
+               HyperViewItem si = nf.getSearchItem();
+               try {
+                  handleItemDoubleClick(si);
+               } catch (OseeCoreException ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+               }
             }
          }
 
@@ -705,7 +712,7 @@ public class HyperView extends ViewPart implements IPartListener {
             }
             if (e.getSource() instanceof NodeFigure) {
                NodeFigure nf = (NodeFigure) e.getSource();
-               HyperViewItem si = (HyperViewItem) nf.getSearchItem();
+               HyperViewItem si = nf.getSearchItem();
                debug.report("Click: " + si.getTitle());
                if (e.button == 3) {
                   createMenuBar(si);
@@ -716,7 +723,7 @@ public class HyperView extends ViewPart implements IPartListener {
       figure.addMouseListener(mouseListener);
    }
 
-   public void handleItemDoubleClick(HyperViewItem hvi) {
+   public void handleItemDoubleClick(HyperViewItem hvi) throws OseeCoreException {
       backListAddSearchItem(hvi);
       jumpTo(hvi);
    }
@@ -737,6 +744,7 @@ public class HyperView extends ViewPart implements IPartListener {
             editItem.setText("Open in Artifact Editor");
             editItem.addSelectionListener(new SelectionAdapter() {
 
+               @Override
                public void widgetSelected(SelectionEvent e) {
                   Artifact a = null;
                   if (fHvi instanceof ArtifactHyperItem)
@@ -751,6 +759,7 @@ public class HyperView extends ViewPart implements IPartListener {
             deleteItem.setText("Delete Artifact");
             deleteItem.addSelectionListener(new SelectionAdapter() {
 
+               @Override
                public void widgetSelected(SelectionEvent e) {
                   Artifact art = null;
                   if (fHvi instanceof ArtifactHyperItem)
@@ -780,6 +789,7 @@ public class HyperView extends ViewPart implements IPartListener {
          previewItem.setEnabled(((fHvi instanceof ArtifactHyperItem) && (((ArtifactHyperItem) fHvi).getArtifact() instanceof StateMachineArtifact)) || ((fHvi instanceof ActionHyperItem) && (((ActionHyperItem) fHvi).getArtifact() instanceof StateMachineArtifact)));
          previewItem.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                Artifact a = null;
                if (fHvi instanceof ArtifactHyperItem)
@@ -812,6 +822,7 @@ public class HyperView extends ViewPart implements IPartListener {
       // Reset Action
       Action centerAction = new Action() {
 
+         @Override
          public void run() {
             center();
          }
@@ -824,6 +835,7 @@ public class HyperView extends ViewPart implements IPartListener {
          // Back Action
          backAction = new Action() {
 
+            @Override
             public void run() {
                printBackList("pre backSelected");
                if (backList.size() == 0) {
@@ -832,7 +844,7 @@ public class HyperView extends ViewPart implements IPartListener {
                if (backListIndex > 0) {
                   backListIndex--;
                }
-               jumpTo((HyperViewItem) backList.get(backListIndex));
+               jumpTo(backList.get(backListIndex));
                printBackList("post backSelected");
             }
          };
@@ -844,11 +856,12 @@ public class HyperView extends ViewPart implements IPartListener {
          // Forward Action
          forwardAction = new Action() {
 
+            @Override
             public void run() {
                printBackList("pre forwardSelected");
                if (backList.size() - 1 > backListIndex) {
                   backListIndex++;
-                  jumpTo((HyperViewItem) backList.get(backListIndex));
+                  jumpTo(backList.get(backListIndex));
                }
                printBackList("post forwardSelected");
             }
@@ -877,6 +890,7 @@ public class HyperView extends ViewPart implements IPartListener {
       // Zoom in
       Action zoomInAction = new Action() {
 
+         @Override
          public void run() {
             if (homeSearchItem == null) {
                return;
@@ -895,6 +909,7 @@ public class HyperView extends ViewPart implements IPartListener {
       // Zoom Out
       Action zoomOutAction = new Action() {
 
+         @Override
          public void run() {
             if (homeSearchItem == null) {
                return;
@@ -918,6 +933,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
       titleAction = new Action("Expand Titles", IAction.AS_CHECK_BOX) {
 
+         @Override
          public void run() {
             debug.report("expandTitles");
             refresh();
@@ -927,6 +943,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
       Action refreshAction = new Action("Refresh") {
 
+         @Override
          public void run() {
             if (homeSearchItem == null) {
                MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
@@ -941,6 +958,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
       showOrderAction = new Action("Show Order Value", IAction.AS_CHECK_BOX) {
 
+         @Override
          public void run() {
             setShowOrder(showOrderAction.isChecked());
             handleRefreshButton();
@@ -975,6 +993,7 @@ public class HyperView extends ViewPart implements IPartListener {
    /**
     * Passing the focus request to the viewer's control.
     */
+   @Override
    public void setFocus() {
       // viewer.getControl().setFocus();
    }
@@ -1004,6 +1023,7 @@ public class HyperView extends ViewPart implements IPartListener {
       if (vsb != null) vsb.setSelection(verticalSelection);
    }
 
+   @Override
    public void dispose() {
    }
 

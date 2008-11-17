@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.navigate;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -50,8 +52,8 @@ public class VisitedItems extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) {
-      WorldEditor.open(getName(), visited, null, tableLoadOptions);
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+      WorldEditor.open(new WorldEditorSimpleProvider(getName(), visited, null, tableLoadOptions));
    }
 
 }
