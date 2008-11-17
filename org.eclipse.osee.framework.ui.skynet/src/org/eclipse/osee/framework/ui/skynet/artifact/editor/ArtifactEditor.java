@@ -543,20 +543,26 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    private void checkEnabledTooltems() {
       if (!attributeComposite.isDisposed()) {
-         boolean areBranchesEqual = artifact.getBranch().equals(BranchManager.getDefaultBranch());
-         boolean isEditAllowed = artifact.isReadOnly() != true;
+         Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+               boolean areBranchesEqual = artifact.getBranch().equals(BranchManager.getDefaultBranch());
+               boolean isEditAllowed = artifact.isReadOnly() != true;
 
-         previewComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
-         previewComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed && areBranchesEqual);
-         previewComposite.getToolBar().update();
+               previewComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
+               previewComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed && areBranchesEqual);
+               previewComposite.getToolBar().update();
 
-         attributeComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
-         attributeComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed && areBranchesEqual);
-         attributeComposite.getToolBar().update();
+               attributeComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
+               attributeComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(
+                     isEditAllowed && areBranchesEqual);
+               attributeComposite.getToolBar().update();
 
-         relationsComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
-         relationsComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed && areBranchesEqual);
-         relationsComposite.getToolBar().update();
+               relationsComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
+               relationsComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(
+                     isEditAllowed && areBranchesEqual);
+               relationsComposite.getToolBar().update();
+            }
+         });
       }
    }
 
