@@ -44,17 +44,25 @@ public class OseeClientProperties extends OseeProperties {
       public static InitializerFlag fromString(String value) {
          InitializerFlag toReturn = client_defaults;
          if (Strings.isValid(value)) {
-
+            value = value.toLowerCase();
+            for (InitializerFlag flag : InitializerFlag.values()) {
+               if (flag.name().equals(value)) {
+                  toReturn = flag;
+                  break;
+               }
+            }
          }
          return toReturn;
       }
    }
 
-   private static Properties defaultProperties = new Properties();
-   private static Properties overwriteProperties = new Properties();
+   private final Properties defaultProperties;
+   private final Properties overwriteProperties;
 
    private OseeClientProperties() {
       super();
+      this.defaultProperties = new Properties();
+      this.overwriteProperties = new Properties();
       initialize();
    }
 
@@ -187,10 +195,10 @@ public class OseeClientProperties extends OseeProperties {
 
    private static String getProperty(String name, String defaultValue) {
       String toReturn = null;
-      if (overwriteProperties.containsKey(name)) {
-         toReturn = overwriteProperties.getProperty(name);
-      } else if (defaultProperties.containsKey(name)) {
-         toReturn = System.getProperty(name, defaultProperties.getProperty(name));
+      if (instance.overwriteProperties.containsKey(name)) {
+         toReturn = instance.overwriteProperties.getProperty(name);
+      } else if (instance.defaultProperties.containsKey(name)) {
+         toReturn = System.getProperty(name, instance.defaultProperties.getProperty(name));
       } else {
          toReturn = System.getProperty(name, defaultValue);
       }
@@ -206,7 +214,7 @@ public class OseeClientProperties extends OseeProperties {
       return instance.toString();
    }
 
-   public static void initialize() {
+   public void initialize() {
       BundleContext context = CoreClientActivator.getBundleContext();
       for (Bundle bundle : context.getBundles()) {
          Dictionary<?, ?> header = bundle.getHeaders();
@@ -229,7 +237,7 @@ public class OseeClientProperties extends OseeProperties {
       }
    }
 
-   private static void processInitializer(Bundle bundle, String resourcePath, InitializerFlag flag) {
+   private void processInitializer(Bundle bundle, String resourcePath, InitializerFlag flag) {
       URL url = bundle.getResource(resourcePath);
       Properties properties = new Properties();
       try {
