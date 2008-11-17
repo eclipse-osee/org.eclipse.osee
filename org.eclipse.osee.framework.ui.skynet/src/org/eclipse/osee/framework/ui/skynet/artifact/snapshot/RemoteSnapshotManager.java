@@ -33,8 +33,10 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -109,7 +111,15 @@ class RemoteSnapshotManager {
          Properties properties = new Properties();
          properties.put(GAMMA, Long.toString(snapshot.getGamma()));
          properties.put(GUID, snapshot.getGuid());
-         properties.put(CREATED_ON, Long.toString(snapshot.getCreatedOn().getTime()));
+         Timestamp creationDate = snapshot.getCreatedOn();
+         if (creationDate != null) {
+            try {
+               properties.put(CREATED_ON, Long.toString(creationDate.getTime()));
+            } catch (Exception ex) {
+               OseeLog.log(SkynetActivator.class, Level.WARNING, "Error storing artifact creation date for snapshot.",
+                     ex);
+            }
+         }
          properties.storeToXML(metaOut, "UTF-8");
 
          addZipEntry(out, METADATA, new ByteArrayInputStream(metaOut.toByteArray()));
@@ -167,7 +177,16 @@ class RemoteSnapshotManager {
             String gamma = properties.getProperty(GAMMA);
             String guid = properties.getProperty(GUID);
             String createdOn = properties.getProperty(CREATED_ON);
-            toReturn = new ArtifactSnapshot(guid, Long.parseLong(gamma), new Timestamp(Long.parseLong(createdOn)));
+            Timestamp creationDate = null;
+            if (Strings.isValid(createdOn)) {
+               try {
+                  creationDate = new Timestamp(Long.parseLong(createdOn));
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetActivator.class, Level.WARNING,
+                        "Error obtaining artifact creation date from snapshot.", ex);
+               }
+            }
+            toReturn = new ArtifactSnapshot(guid, Long.parseLong(gamma), creationDate);
             toReturn.setRenderedData(renderedData);
             for (String key : binData.keySet()) {
                toReturn.addBinaryData(key, binData.get(key));
