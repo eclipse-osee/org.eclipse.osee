@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -205,7 +205,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             relationTypeList.add(linkDescriptor.getTypeName());
             relationTypeList.setData(linkDescriptor.getTypeName(), linkDescriptor);
          }
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 

@@ -23,7 +23,9 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -40,8 +42,8 @@ public class RelationTypeManager {
 
    private final HashMap<String, RelationType> nameToTypeMap = new HashMap<String, RelationType>();
    private final HashMap<Integer, RelationType> idToTypeMap = new HashMap<Integer, RelationType>();
-   private final CompositeKeyHashMap<Integer, Integer, ObjectPair<Integer, Integer>> validityMap =
-         new CompositeKeyHashMap<Integer, Integer, ObjectPair<Integer, Integer>>(300);
+   private final CompositeKeyHashMap<RelationType, ArtifactType, ObjectPair<Integer, Integer>> validityMap =
+         new CompositeKeyHashMap<RelationType, ArtifactType, ObjectPair<Integer, Integer>>(300);
 
    private static final String SELECT_LINK_VALIDITY = "SELECT * FROM osee_valid_relations";
    private static final RelationTypeManager instance = new RelationTypeManager();
@@ -53,16 +55,18 @@ public class RelationTypeManager {
     * @param branch
     * @return all the relation types that are valid for the given branch
     * @throws OseeDataStoreException
+    * @throws OseeTypeDoesNotExist
     */
-   public static List<RelationType> getValidTypes(Branch branch) throws OseeDataStoreException {
+   public static List<RelationType> getValidTypes(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
       return instance.getAllTypes();
    }
 
    /**
     * @return all Relation types in the datastore
     * @throws OseeDataStoreException
+    * @throws OseeTypeDoesNotExist
     */
-   private List<RelationType> getAllTypes() throws OseeDataStoreException {
+   private List<RelationType> getAllTypes() throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
       return new ArrayList<RelationType>(idToTypeMap.values());
    }
@@ -84,7 +88,10 @@ public class RelationTypeManager {
 
    public static RelationType getType(int relationTypeId) throws OseeTypeDoesNotExist, OseeDataStoreException {
       ensurePopulated();
+      return internalGetType(relationTypeId);
+   }
 
+   private static RelationType internalGetType(int relationTypeId) throws OseeTypeDoesNotExist {
       RelationType relationType = instance.idToTypeMap.get(relationTypeId);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation with type id: " + relationTypeId + " does not exist");
@@ -101,7 +108,7 @@ public class RelationTypeManager {
       return relationType;
    }
 
-   public static boolean typeExists(String namespace, String name) throws OseeDataStoreException {
+   public static boolean typeExists(String namespace, String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
       return instance.nameToTypeMap.get(namespace + name) != null;
    }
@@ -115,19 +122,19 @@ public class RelationTypeManager {
       idToTypeMap.put(relationType.getRelationTypeId(), relationType);
    }
 
-   public void refreshCache() throws OseeDataStoreException {
+   public void refreshCache() throws OseeDataStoreException, OseeTypeDoesNotExist {
       nameToTypeMap.clear();
       idToTypeMap.clear();
       populateCache();
    }
 
-   private static synchronized void ensurePopulated() throws OseeDataStoreException {
-      if (instance.idToTypeMap.size() == 0) {
+   private static synchronized void ensurePopulated() throws OseeDataStoreException, OseeTypeDoesNotExist {
+      if (instance.idToTypeMap.isEmpty()) {
          instance.populateCache();
       }
    }
 
-   private void populateCache() throws OseeDataStoreException {
+   private void populateCache() throws OseeDataStoreException, OseeTypeDoesNotExist {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
@@ -148,22 +155,23 @@ public class RelationTypeManager {
    }
 
    public static int getRelationSideMax(RelationType relationType, ArtifactType artifactType, RelationSide relationSide) {
-      ObjectPair<Integer, Integer> pair =
-            instance.validityMap.get(relationType.getRelationTypeId(), artifactType.getArtTypeId());
+      ObjectPair<Integer, Integer> pair = instance.validityMap.get(relationType, artifactType);
       if (pair == null) {
          return 0;
       }
       return relationSide == RelationSide.SIDE_A ? pair.object1 : pair.object2;
    }
 
-   private void loadLinkValidities() throws OseeDataStoreException {
+   private void loadLinkValidities() throws OseeDataStoreException, OseeTypeDoesNotExist {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_LINK_VALIDITY);
 
          while (chStmt.next()) {
-            validityMap.put(chStmt.getInt("rel_link_type_id"), chStmt.getInt("art_type_id"),
-                  new ObjectPair<Integer, Integer>(chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max")));
+            RelationType relationType = internalGetType(chStmt.getInt("rel_link_type_id"));
+            ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
+            validityMap.put(relationType, artifactType, new ObjectPair<Integer, Integer>(chStmt.getInt("side_a_max"),
+                  chStmt.getInt("side_b_max")));
          }
       } finally {
          chStmt.close();
@@ -186,18 +194,13 @@ public class RelationTypeManager {
       if (typeExists(namespace, relationTypeName)) {
          return getType(namespace, relationTypeName);
       }
-      if (relationTypeName == null || relationTypeName.equals("")) throw new IllegalArgumentException(
+      if (!Strings.isValid(relationTypeName)) throw new IllegalArgumentException(
             "The relationName can not be null or empty");
-      if (sideAName == null || sideAName.equals("")) throw new IllegalArgumentException(
-            "The sideAName can not be null or empty");
-      if (sideBName == null || sideBName.equals("")) throw new IllegalArgumentException(
-            "The sideBName can not be null or empty");
-      if (abPhrasing == null || abPhrasing.equals("")) throw new IllegalArgumentException(
-            "The abPhrasing can not be null or empty");
-      if (baPhrasing == null || baPhrasing.equals("")) throw new IllegalArgumentException(
-            "The baPhrasing can not be null or empty");
-      if (shortName == null || shortName.equals("")) throw new IllegalArgumentException(
-            "The shortName can not be null or empty");
+      if (!Strings.isValid(sideAName)) throw new IllegalArgumentException("The sideAName can not be null or empty");
+      if (!Strings.isValid(sideBName)) throw new IllegalArgumentException("The sideBName can not be null or empty");
+      if (!Strings.isValid(abPhrasing)) throw new IllegalArgumentException("The abPhrasing can not be null or empty");
+      if (!Strings.isValid(baPhrasing)) throw new IllegalArgumentException("The baPhrasing can not be null or empty");
+      if (!Strings.isValid(shortName)) throw new IllegalArgumentException("The shortName can not be null or empty");
 
       int relationTypeId = SequenceManager.getNextRelationTypeId();
 
@@ -224,13 +227,11 @@ public class RelationTypeManager {
       if (sideAMax < 0) throw new OseeArgumentException("The sideAMax can no be negative");
       if (sideBMax < 0) throw new OseeArgumentException("The sideBMax can no be negative");
 
-      int artTypeId = artifactType.getArtTypeId();
-      int relLinkTypeId = relationType.getRelationTypeId();
-
-      if (instance.validityMap.get(relLinkTypeId, artTypeId) == null) {
-         ConnectionHandler.runPreparedUpdate(INSERT_VALID_RELATION, artTypeId, relLinkTypeId, sideAMax, sideBMax,
-               branch.getBranchId());
-         instance.validityMap.put(relLinkTypeId, artTypeId, new ObjectPair<Integer, Integer>(sideAMax, sideBMax));
+      ObjectPair<Integer, Integer> entry = instance.validityMap.get(relationType, artifactType);
+      if (entry == null) {
+         ConnectionHandler.runPreparedUpdate(INSERT_VALID_RELATION, artifactType.getArtTypeId(),
+               relationType.getRelationTypeId(), sideAMax, sideBMax, branch.getBranchId());
+         instance.validityMap.put(relationType, artifactType, new ObjectPair<Integer, Integer>(sideAMax, sideBMax));
       }
    }
 }

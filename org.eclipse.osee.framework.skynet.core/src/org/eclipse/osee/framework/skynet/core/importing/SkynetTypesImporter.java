@@ -18,17 +18,24 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKey;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -48,7 +55,7 @@ public class SkynetTypesImporter implements RowProcessor {
    private Table currentTable;
    private Iterator<Table> tableIterator;
    private final HashMap<String, ArrayList<String>> superTypeMap;
-   private final RelationValidity relationValidity;
+   private final ArrayList<ValidityRow> validityArray;
    private final List<AttributeMapRow> attributeMapRows;
    private boolean done;
    private final boolean debugRows = false;
@@ -61,7 +68,7 @@ public class SkynetTypesImporter implements RowProcessor {
    public SkynetTypesImporter(Branch branch) throws SAXException, IOException {
       excelHandler = new ExcelSaxHandler(this, true, true);
       superTypeMap = new HashMap<String, ArrayList<String>>();
-      relationValidity = new RelationValidity(this, branch);
+      validityArray = new ArrayList<ValidityRow>();
       attributeMapRows = new ArrayList<AttributeMapRow>();
 
       xmlReader = XMLReaderFactory.createXMLReader();
@@ -78,7 +85,40 @@ public class SkynetTypesImporter implements RowProcessor {
       for (AttributeMapRow attributeRow : attributeMapRows) {
          attributeRow.persist();
       }
-      relationValidity.persist();
+      persistRelationValidity();
+   }
+
+   private void persistRelationValidity() throws OseeCoreException {
+      CompositeKeyHashMap<ArtifactType, RelationType, ObjectPair<Integer, Integer>> keyMap =
+            new CompositeKeyHashMap<ArtifactType, RelationType, ObjectPair<Integer, Integer>>();
+      for (ValidityRow row : validityArray) {
+         for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName)) {
+            ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
+            RelationType relationType = RelationTypeManager.getType(row.relationTypeName);
+            int sideAMax = row.sideAmax;
+            int sideBMax = row.sideBmax;
+
+            ObjectPair<Integer, Integer> sideDefinition = keyMap.get(artifactType, relationType);
+            if (sideDefinition == null) {
+               sideDefinition = new ObjectPair<Integer, Integer>(sideAMax, sideBMax);
+               keyMap.put(artifactType, relationType, sideDefinition);
+            } else {
+               sideDefinition.object1 = Math.max(sideDefinition.object1, sideAMax);
+               sideDefinition.object2 = Math.max(sideDefinition.object2, sideBMax);
+            }
+         }
+      }
+
+      Branch systemBranch = BranchManager.getSystemRootBranch();
+
+      for (Entry<CompositeKey<ArtifactType, RelationType>, ObjectPair<Integer, Integer>> entry : keyMap.entrySet()) {
+         ArtifactType artifactType = entry.getKey().getKey1();
+         RelationType relationType = entry.getKey().getKey2();
+         ObjectPair<Integer, Integer> sideDefinition = entry.getValue();
+         int sideAMax = sideDefinition.object1;
+         int sideBMax = sideDefinition.object2;
+         RelationTypeManager.createRelationLinkValidity(systemBranch, artifactType, relationType, sideAMax, sideBMax);
+      }
    }
 
    public static String getDescription() {
@@ -122,11 +162,16 @@ public class SkynetTypesImporter implements RowProcessor {
                addRelationType(row);
                break;
             case RELATION_SIDE_TABLE:
-               relationValidity.addValidityConstraints(row);
+               addValidityConstraints(row);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
+   }
+
+   private void addValidityConstraints(String[] row) {
+      validityArray.add(new ValidityRow(row[0], row[1], SkynetTypesImporter.getQuantity(row[2]),
+            SkynetTypesImporter.getQuantity(row[3])));
    }
 
    private void associateAttribute(String[] row) {
@@ -185,7 +230,7 @@ public class SkynetTypesImporter implements RowProcessor {
       }
    }
 
-   protected ArrayList<String> determineConcreteTypes(String artifactSuperTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   ArrayList<String> determineConcreteTypes(String artifactSuperTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ArrayList<String> artifactTypeList = superTypeMap.get(artifactSuperTypeName);
 
       // if no sub-types then just return artifactSuperTypeName as the only Concrete type
@@ -266,5 +311,24 @@ public class SkynetTypesImporter implements RowProcessor {
     * @see osee.define.artifact.Import.RowProcessor#foundStartOfWorksheet(java.lang.String)
     */
    public void foundStartOfWorksheet(String sheetName) {
+   }
+
+   private class ValidityRow {
+      public String artifactSuperTypeName;
+      public String relationTypeName;
+      public int sideAmax;
+      public int sideBmax;
+
+      public ValidityRow(String artifactSuperTypeName, String relationTypeName, int sideAmax, int sideBmax) {
+         this.artifactSuperTypeName = artifactSuperTypeName;
+         this.relationTypeName = relationTypeName;
+         this.sideAmax = sideAmax;
+         this.sideBmax = sideBmax;
+      }
+
+      public String toString() {
+         return String.format("RelationType:[%s] ArtifactSuperType:[%s] Sides(A,B) - (%s, %s)", relationTypeName,
+               artifactSuperTypeName, sideAmax, sideBmax);
+      }
    }
 }

@@ -13,7 +13,7 @@ public final class CompositeKey<A, B> {
    private B key2;
 
    public CompositeKey() {
-
+      this(null, null);
    }
 
    public CompositeKey(A key1, B key2) {
@@ -38,16 +38,36 @@ public final class CompositeKey<A, B> {
    public boolean equals(Object obj) {
       if (obj instanceof CompositeKey) {
          final CompositeKey<A, B> otherKey = (CompositeKey<A, B>) obj;
-         return otherKey.key1.equals(key1) && otherKey.key2.equals(key2);
+         boolean result = true;
+         if (otherKey.key1 != null && key1 != null) {
+            result &= otherKey.key1.equals(key1);
+         } else {
+            result &= otherKey.key1 == null && key1 == null;
+         }
+         if (otherKey.key2 != null && key2 != null) {
+            result &= otherKey.key2.equals(key2);
+         } else {
+            result &= otherKey.key2 == null && key2 == null;
+         }
+         return result;
       }
       return false;
    }
 
    @Override
    public int hashCode() {
+      final int constant = 31;
       int hashCode = 11;
-      hashCode = hashCode * 31 + key1.hashCode();
-      hashCode = hashCode * 31 + key2.hashCode();
+      if (key1 != null) {
+         hashCode = hashCode * constant + key1.hashCode();
+      } else {
+         hashCode = hashCode * constant;
+      }
+      if (key2 != null) {
+         hashCode = hashCode * constant + key2.hashCode();
+      } else {
+         hashCode = hashCode * constant;
+      }
       return hashCode;
    }
 
