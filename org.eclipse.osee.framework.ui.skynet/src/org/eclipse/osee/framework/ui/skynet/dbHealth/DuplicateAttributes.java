@@ -93,7 +93,7 @@ public class DuplicateAttributes extends DatabaseHealthTask {
          while (chStmt1.next()) {
             ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
             try {
-               if (ConnectionHandler.runPreparedQueryFetchInt(-1, FILTER_DELTED, chStmt1.getInt("attr_id_1")) == -1) {
+               if (ConnectionHandler.runPreparedQueryFetchInt(-1, FILTER_DELTED, chStmt1.getInt("attr_id_1")) != -1) {
                   chStmt2.runPreparedQuery(FILTER_DELTED, chStmt1.getInt("attr_id_2"));
                   if (chStmt2.next()) {
                      DuplicateAttribute duplicateAttribute;
