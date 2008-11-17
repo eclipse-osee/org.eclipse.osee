@@ -52,7 +52,7 @@ public class ExchangeDb {
    private static final String[] ARTIFACT_ID_NEG_ONE_ALIASES =
          new String[] {"commit_art_id", "associated_art_id", "a_order", "b_order", "author"};
 
-   private static final String[] ARTIFACT_ID_REG_ALIASES = new String[] {"a_art_id", "b_art_id"};
+   private static final String[] ARTIFACT_ID_REG_ALIASES = new String[] {"a_art_id", "b_art_id", "privilege_entity_id"};
 
    private static final String[] GAMMA_ID_REG_ALIASES = new String[] {"source_gamma_id", "dest_gamma_id"};
 
@@ -128,6 +128,12 @@ public class ExchangeDb {
    private static final String CONFLICT_TABLE_QUERY =
          "SELECT oc1.* FROM osee_conflict oc1, osee_merge om1, osee_join_export_import jex1 WHERE oc1.merge_branch_id = om1.merge_branch_id AND om1.merge_branch_id = jex1.id1 AND jex1.query_id=? %s";
 
+   private static final String ARTIFACT_ACL_QUERY =
+         "SELECT oaa1.* FROM osee_artifact_acl oaa1, osee_join_export_import jex1 WHERE oaa1.branch_id = jex1.id1 AND jex1.query_id=? ORDER BY oaa1.branch_id";
+
+   private static final String BRANCH_ACL_QUERY =
+         "SELECT oba1.* FROM osee_branch_acl oba1, osee_join_export_import jex1 WHERE oba1.branch_id = jex1.id1 AND jex1.query_id=? ORDER BY oba1.branch_id";
+
    static List<AbstractExportItem> createTaskList() {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
       items.add(new ManifestExportItem(0, "export.manifest", items));
@@ -155,6 +161,12 @@ public class ExchangeDb {
             MERGE_TABLE_QUERY));
       items.add(new RelationalExportItem(10, "osee.conflict.data", SkynetDatabase.OSEE_CONFLICT_TABLE.toString(),
             CONFLICT_TABLE_QUERY));
+
+      items.add(new RelationalExportItem(11, "osee.branch.acl.data", SkynetDatabase.BRANCH_TABLE_ACL.toString(),
+            BRANCH_ACL_QUERY));
+      items.add(new RelationalExportItem(12, "osee.artifact.acl.data", SkynetDatabase.ARTIFACT_TABLE_ACL.toString(),
+            ARTIFACT_ACL_QUERY));
+
       return items;
    }
 
