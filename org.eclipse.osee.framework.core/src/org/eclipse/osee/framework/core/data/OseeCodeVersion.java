@@ -61,6 +61,7 @@ public class OseeCodeVersion {
             oseeVersion = loadVersionInfo();
             if (oseeVersion != null) {
                oseeVersion = oseeVersion.replace("^0=", "");
+               oseeVersion = oseeVersion.trim();
             }
          } catch (Exception ex) {
             OseeLog.log(CoreActivator.class, Level.SEVERE, "Can't access OseeVersion.txt\n" + Lib.exceptionToString(ex));
