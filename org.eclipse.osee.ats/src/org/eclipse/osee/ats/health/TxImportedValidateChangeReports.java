@@ -211,8 +211,13 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       ChangeSet changeSet = new ChangeSet(data);
       SOURCE_DB_GUID_MATCHER.reset(data);
       if (SOURCE_DB_GUID_MATCHER.find()) {
-         changeSet.replace(SOURCE_DB_GUID_MATCHER.start(1), SOURCE_DB_GUID_MATCHER.end(1), currentDbGuid);
-         toReturn = changeSet.applyChangesToSelf().toString();
+         String id = SOURCE_DB_GUID_MATCHER.group(1);
+         if (!currentDbGuid.equals(id)) {
+            changeSet.replace(SOURCE_DB_GUID_MATCHER.start(1), SOURCE_DB_GUID_MATCHER.end(1), currentDbGuid);
+            toReturn = changeSet.applyChangesToSelf().toString();
+         } else {
+            toReturn = data;
+         }
       } else {
          if (!data.contains(VCR_ROOT_ELEMENT_TAG)) {
             toReturn =
