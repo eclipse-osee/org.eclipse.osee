@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
@@ -73,6 +74,9 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ValidateChangeReports extends XNavigateItemAction {
 
+   static final String VCR_ROOT_ELEMENT_TAG = "ValidateChangeReport";
+   static final String VCR_DB_GUID = "dbGuid";
+
    /**
     * @param parent
     */
@@ -118,6 +122,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    }
 
    private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
+      String currentDbGuid = OseeInfo.getValue("osee.db.guid");
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
@@ -141,7 +146,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
                   // Only validate committed branches cause working branches change too much
                   if (!teamArt.getSmaMgr().getBranchMgr().isCommittedBranch()) continue;
-                  Result valid = changeReportValidated(teamArt, xResultData, false);
+                  Result valid = changeReportValidated(currentDbGuid, teamArt, xResultData, false);
                   if (valid.isFalse()) {
                      resultStr = "Error: Not Valid: " + valid.getText();
                   }
@@ -171,7 +176,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
     * @return Result.TrueResult if same, else Result.FalseResult with comparison in resultData
     * @throws ParserConfigurationException
     */
-   public static Result changeReportValidated(final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException, ParserConfigurationException {
+   static Result changeReportValidated(final String currentDbGuid, final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException, ParserConfigurationException {
       String name = "VCR_" + teamArt.getHumanReadableId();
       List<Artifact> arts =
             ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, name, AtsPlugin.getAtsBranch());
@@ -193,15 +198,15 @@ public class ValidateChangeReports extends XNavigateItemAction {
             artifactForStore =
                   ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, AtsPlugin.getAtsBranch(), name);
          }
-         artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME,
-               getReport(currentChangeData));
+         artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, getReport(
+               currentDbGuid, currentChangeData));
          artifactForStore.persistAttributes();
          resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());
          return new Result(true, "Stored Change Report for " + teamArt.getHumanReadableId());
       }
       // Else, compare the two and report
       else {
-         final String currentChangeReport = getReport(currentChangeData);
+         final String currentChangeReport = getReport(currentDbGuid, currentChangeData);
          final String fStoredChangeReport = storedChangeReport;
          if (storedChangeReport.equals(currentChangeReport)) {
             resultData.log("Change Report Valid for " + teamArt.getHumanReadableId());
@@ -250,8 +255,9 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return new Result(true, "PASS");
    }
 
-   private static String getReport(ChangeData changeData) throws OseeCoreException, ParserConfigurationException {
+   private static String getReport(String dbGuid, ChangeData changeData) throws OseeCoreException, ParserConfigurationException {
       StringBuffer sb = new StringBuffer();
+      sb.append(String.format("<%s %s=\"%s\" >\n", VCR_ROOT_ELEMENT_TAG, VCR_DB_GUID, dbGuid));
       for (Change change : changeData.getChanges()) {
          if (change instanceof RelationChanged) {
             sb.append(toXml((RelationChanged) change) + "\n");
@@ -261,6 +267,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
             sb.append(toXml((AttributeChanged) change) + "\n");
          }
       }
+      sb.append(String.format("</%s>", VCR_ROOT_ELEMENT_TAG));
       return sb.toString().replaceAll(">[\\s\\n\\r]+$", ">");
    }
 

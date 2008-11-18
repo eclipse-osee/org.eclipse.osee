@@ -15,9 +15,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,13 +46,29 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    private static final String RELATION_TYPE_ID = "relTId";
    private static final String ATTRIBUTE_ID = "attrId";
    private static final String RELATION_ID = "relId";
+   private static final String EMPTY_STRING = "";
 
+   private static final String VCR_ROOT_ELEMENT_TAG = ValidateChangeReports.VCR_ROOT_ELEMENT_TAG;
+   private static final String VCR_DB_GUID = ValidateChangeReports.VCR_DB_GUID;
+
+   private final Matcher NUMERICAL_MATCH;
+   private final Matcher SOURCE_DB_GUID_MATCHER;
+   private final Matcher XML_TAGGED_IDS_MATCHER;
    private Map<String, ImportedId> translatorMap;
+   private String currentDbGuid;
 
-   private void setup(String databaseSourceId) throws OseeDataStoreException {
+   public TxImportedValidateChangeReports() {
+      this.NUMERICAL_MATCH = Pattern.compile("\\d+").matcher(EMPTY_STRING);
+      this.SOURCE_DB_GUID_MATCHER =
+            Pattern.compile("\\s*<" + VCR_ROOT_ELEMENT_TAG + "\\s*" + VCR_DB_GUID + "=\"(.*?)\"\\s*>").matcher(
+                  EMPTY_STRING);
+      this.XML_TAGGED_IDS_MATCHER = Pattern.compile("<(.*?)>(\\d+)</(.*?)>").matcher(EMPTY_STRING);
+   }
+
+   private void setup(String databaseTargetId) throws OseeDataStoreException {
       List<ImportedId> importtedIds = getImportedIds();
       for (ImportedId importedId : importtedIds) {
-         importedId.load(databaseSourceId);
+         importedId.load(databaseTargetId);
       }
 
       this.translatorMap = new HashMap<String, ImportedId>();
@@ -57,6 +77,18 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
             translatorMap.put(alias, translator);
          }
       }
+
+      this.currentDbGuid = OseeInfo.getValue("osee.db.guid");
+   }
+
+   private void cleanUp() {
+      if (translatorMap != null && !translatorMap.isEmpty()) {
+         for (String key : translatorMap.keySet()) {
+            translatorMap.get(key).clear();
+         }
+         translatorMap.clear();
+      }
+      this.currentDbGuid = null;
    }
 
    private List<ImportedId> getImportedIds() {
@@ -75,11 +107,22 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
 
    private long translate(String tag, long original) {
       long toReturn = original;
-      ImportedId importedId = translatorMap.get(tag);
-      if (importedId != null) {
-         toReturn = importedId.getFromCache(original);
+      if (Strings.isValid(tag)) {
+         ImportedId importedId = translatorMap.get(tag.toLowerCase());
+         if (importedId != null) {
+            toReturn = importedId.getFromCache(original);
+         }
       }
       return toReturn;
+   }
+
+   private String getDataDbGuid(String data) {
+      String toReturn = null;
+      SOURCE_DB_GUID_MATCHER.reset(data);
+      if (SOURCE_DB_GUID_MATCHER.find()) {
+         toReturn = SOURCE_DB_GUID_MATCHER.group(1);
+      }
+      return toReturn != null ? toReturn : EMPTY_STRING;
    }
 
    /* (non-Javadoc)
@@ -87,19 +130,43 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
     */
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      Branch branch = AtsPlugin.getAtsBranch();
-      String databaseSourceId = variableMap.getString("Import Db Id");
-      setup(databaseSourceId);
+      try {
+         Branch branch = AtsPlugin.getAtsBranch();
+         String databaseTargetId = variableMap.getString("Import Db Id");
+         boolean shouldIncludeItemsWithoutDbId = variableMap.getBoolean("Include items without database id");
+         if (!Strings.isValid(databaseTargetId)) {
+            throw new OseeArgumentException("Invalid database target id");
+         }
 
-      SkynetTransaction transaction = new SkynetTransaction(branch);
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, "VCR_%", branch);
-      for (Artifact artifact : artifacts) {
-         String data = artifact.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         String modified = translateImportedData(data);
-         artifact.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, modified);
-         artifact.persistAttributes(transaction);
+         databaseTargetId = databaseTargetId.trim();
+         setup(databaseTargetId);
+
+         SkynetTransaction transaction = new SkynetTransaction(branch);
+         List<Artifact> artifacts =
+               ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, "VCR_%", branch);
+         for (Artifact artifact : artifacts) {
+            String data = artifact.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+            String name = artifact.getDescriptiveName();
+            try {
+               String dataDbGuid = getDataDbGuid(data);
+               if (Strings.isValid(dataDbGuid) || shouldIncludeItemsWithoutDbId) {
+                  if (databaseTargetId.equals(dataDbGuid) || shouldIncludeItemsWithoutDbId) {
+                     if (!currentDbGuid.equals(dataDbGuid)) {
+                        String modified = translateImportedData(data);
+                        modified = updateSourceGuid(currentDbGuid, data);
+                        artifact.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, modified);
+                        artifact.persistAttributes(transaction);
+                     }
+                  }
+               }
+            } catch (Exception ex) {
+               throw new OseeCoreException(String.format("Error processing [%s]", name), ex);
+            }
+         }
+         transaction.execute();
+      } finally {
+         cleanUp();
       }
-      transaction.execute();
    }
 
    /*
@@ -111,6 +178,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
       builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Import Db Id\" defaultValue=\"AAABHL_5XvkAFHT8QsrrPQ\"/>");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include items without database id\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       builder.append("</xWidgets>");
       return builder.toString();
    }
@@ -118,31 +186,49 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    private boolean isNumerical(String value) {
       boolean result = false;
       if (Strings.isValid(value)) {
-         Pattern pattern = Pattern.compile("\\d+");
-         Matcher matcher = pattern.matcher(value);
-         result = matcher.matches();
+         NUMERICAL_MATCH.reset(value);
+         result = NUMERICAL_MATCH.matches();
       }
       return result;
    }
 
    private String translateImportedData(String data) {
       ChangeSet changeSet = new ChangeSet(data);
-      Pattern pattern = Pattern.compile("<(.*?)>(\\d+)</(.*?)>");
-      Matcher matcher = pattern.matcher(data);
-      while (matcher.find()) {
-         String tag = matcher.group(3);
-         String value = matcher.group(2);
+      XML_TAGGED_IDS_MATCHER.reset(data);
+      while (XML_TAGGED_IDS_MATCHER.find()) {
+         String tag = XML_TAGGED_IDS_MATCHER.group(3);
+         tag = tag.trim();
+         String value = XML_TAGGED_IDS_MATCHER.group(2);
          if (isNumerical(value)) {
             long original = Long.parseLong(value);
             long newValue = translate(tag, original);
             if (original != newValue) {
-               changeSet.replace(matcher.start(2), matcher.end(2), Long.toString(newValue));
+               changeSet.replace(XML_TAGGED_IDS_MATCHER.start(2), XML_TAGGED_IDS_MATCHER.end(2),
+                     Long.toString(newValue));
             }
          }
       }
       return changeSet.applyChangesToSelf().toString();
    }
 
+   private String updateSourceGuid(String currentDbGuid, String data) throws OseeStateException {
+      String toReturn = null;
+      ChangeSet changeSet = new ChangeSet(data);
+      SOURCE_DB_GUID_MATCHER.reset(data);
+      if (SOURCE_DB_GUID_MATCHER.find()) {
+         changeSet.replace(SOURCE_DB_GUID_MATCHER.start(1), SOURCE_DB_GUID_MATCHER.end(1), currentDbGuid);
+         toReturn = changeSet.applyChangesToSelf().toString();
+      } else {
+         if (!data.contains(VCR_ROOT_ELEMENT_TAG)) {
+            toReturn =
+                  String.format("<%s dbGuid=\"%s\">%s</%s>", VCR_ROOT_ELEMENT_TAG, currentDbGuid, data,
+                        VCR_ROOT_ELEMENT_TAG);
+         } else {
+            throw new OseeStateException("Error updating dbId");
+         }
+      }
+      return toReturn;
+   }
    private final class ImportedId {
       private static final String SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME =
             "SELECT original_id, mapped_id FROM osee_import_source ois, osee_import_map oim, osee_import_index_map oiim WHERE ois.import_id = oim.import_id AND oim.sequence_id = oiim.sequence_id AND oiim.sequence_id = oiim.sequence_id AND ois.db_source_guid = ?  AND oim.sequence_name = ?";
@@ -160,6 +246,11 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
                this.aliases.add(alias.toLowerCase());
             }
          }
+      }
+
+      public void clear() {
+         this.originalToMapped.clear();
+         this.aliases.clear();
       }
 
       public boolean hasAliases() {

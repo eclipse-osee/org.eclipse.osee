@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -77,7 +78,8 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
             try {
                TeamWorkFlowArtifact teamArt =
                      (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(hrid, AtsPlugin.getAtsBranch());
-               ValidateChangeReports.changeReportValidated(teamArt, rd, exportWasIs);
+               String currentDbGuid = OseeInfo.getValue("osee.db.guid");
+               ValidateChangeReports.changeReportValidated(currentDbGuid, teamArt, rd, exportWasIs);
             } catch (Exception ex) {
                rd.logError(ex.getLocalizedMessage());
             }
