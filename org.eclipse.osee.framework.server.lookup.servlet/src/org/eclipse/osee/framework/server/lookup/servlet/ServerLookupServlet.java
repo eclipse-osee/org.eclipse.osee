@@ -51,6 +51,7 @@ public class ServerLookupServlet extends OseeHttpServlet {
 
          OseeServerInfo info = null;
          if (Strings.isValid(version)) {
+            version = version.trim();
             info = CoreServerActivator.getApplicationServerLookup().getServerInfoBy(version);
          } else {
             wasBadRequest = true;
