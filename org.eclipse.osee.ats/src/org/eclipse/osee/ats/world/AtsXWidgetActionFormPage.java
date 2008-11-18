@@ -23,8 +23,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayou
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
@@ -92,6 +95,17 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
       parametersContainer = toolkit.createClientContainer(parameterSection, 1);
       parameterSection.setExpanded(true);
+
+      Button runButton = toolkit.createButton(parameterSection, "Search", SWT.PUSH);
+      runButton.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            System.out.println("Run it");
+         }
+      });
 
       List<DynamicXWidgetLayoutData> layoutDatas = null;
       dynamicXWidgetLayout = new DynamicXWidgetLayout();

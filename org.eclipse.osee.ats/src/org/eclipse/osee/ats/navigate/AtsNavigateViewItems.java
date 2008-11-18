@@ -142,6 +142,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       }
       items.add(otherItems);
 
+      items.add(new SearchNavigateItem(null, new EditTeamWorkflowSearchItem()));
       items.add(new EditTeamsNavigateItem(null));
       items.add(new EditTasksNavigateItem(null));
       items.add(new SearchNavigateItem(null, new GroupWorldSearchItem()));

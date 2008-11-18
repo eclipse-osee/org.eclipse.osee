@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.ats;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -26,7 +27,7 @@ public interface IAtsLib {
 
    public void openArtifact(String guidOrHrid, Integer branchId, OseeAts.OpenView view);
 
-   public void openInAtsWorld(String name, Collection<Artifact> artifacts);
+   public void openInAtsWorld(String name, Collection<Artifact> artifacts) throws OseeCoreException;
 
    public boolean isAtsAdmin();
 }
