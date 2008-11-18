@@ -51,19 +51,14 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    private static final String VCR_ROOT_ELEMENT_TAG = ValidateChangeReports.VCR_ROOT_ELEMENT_TAG;
    private static final String VCR_DB_GUID = ValidateChangeReports.VCR_DB_GUID;
 
-   private final Matcher NUMERICAL_MATCH;
-   private final Matcher SOURCE_DB_GUID_MATCHER;
-   private final Matcher XML_TAGGED_IDS_MATCHER;
+   private static final Matcher NUMERICAL_MATCH = Pattern.compile("\\d+").matcher(EMPTY_STRING);
+   private static final Matcher SOURCE_DB_GUID_MATCHER =
+         Pattern.compile("\\s*<" + VCR_ROOT_ELEMENT_TAG + "\\s*" + VCR_DB_GUID + "=\"(.*?)\"\\s*>").matcher(
+               EMPTY_STRING);
+   private static final Matcher XML_TAGGED_IDS_MATCHER = Pattern.compile("<(.*?)>(\\d+)</(.*?)>").matcher(EMPTY_STRING);
+
    private Map<String, ImportedId> translatorMap;
    private String currentDbGuid;
-
-   public TxImportedValidateChangeReports() {
-      this.NUMERICAL_MATCH = Pattern.compile("\\d+").matcher(EMPTY_STRING);
-      this.SOURCE_DB_GUID_MATCHER =
-            Pattern.compile("\\s*<" + VCR_ROOT_ELEMENT_TAG + "\\s*" + VCR_DB_GUID + "=\"(.*?)\"\\s*>").matcher(
-                  EMPTY_STRING);
-      this.XML_TAGGED_IDS_MATCHER = Pattern.compile("<(.*?)>(\\d+)</(.*?)>").matcher(EMPTY_STRING);
-   }
 
    private void setup(String databaseTargetId) throws OseeDataStoreException {
       List<ImportedId> importtedIds = getImportedIds();
@@ -108,7 +103,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    private long translate(String tag, long original) {
       long toReturn = original;
       if (Strings.isValid(tag)) {
-         ImportedId importedId = translatorMap.get(tag.toLowerCase());
+         ImportedId importedId = translatorMap.get(tag);
          if (importedId != null) {
             toReturn = importedId.getFromCache(original);
          }
@@ -183,7 +178,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       return builder.toString();
    }
 
-   private boolean isNumerical(String value) {
+   private static boolean isNumerical(String value) {
       boolean result = false;
       if (Strings.isValid(value)) {
          NUMERICAL_MATCH.reset(value);
@@ -197,7 +192,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       XML_TAGGED_IDS_MATCHER.reset(data);
       while (XML_TAGGED_IDS_MATCHER.find()) {
          String tag = XML_TAGGED_IDS_MATCHER.group(3);
-         tag = tag.trim();
+         tag = tag.toLowerCase().trim();
          String value = XML_TAGGED_IDS_MATCHER.group(2);
          if (isNumerical(value)) {
             long original = Long.parseLong(value);

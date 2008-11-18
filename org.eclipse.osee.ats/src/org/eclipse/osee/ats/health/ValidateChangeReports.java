@@ -207,8 +207,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
       // Else, compare the two and report
       else {
          final String currentChangeReport = getReport(currentDbGuid, currentChangeData);
-         final String fStoredChangeReport = storedChangeReport;
-         if (storedChangeReport.equals(currentChangeReport)) {
+         final String fStoredChangeReport = storedChangeReport.replaceAll("\n", "");
+         if (fStoredChangeReport.equals(currentChangeReport)) {
             resultData.log("Change Report Valid for " + teamArt.getHumanReadableId());
          } else {
             resultData.logError("Was/Is Change Report different for " + teamArt.getHumanReadableId());
@@ -257,18 +257,19 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
    private static String getReport(String dbGuid, ChangeData changeData) throws OseeCoreException, ParserConfigurationException {
       StringBuffer sb = new StringBuffer();
-      sb.append(String.format("<%s %s=\"%s\" >\n", VCR_ROOT_ELEMENT_TAG, VCR_DB_GUID, dbGuid));
+      sb.append(String.format("<%s %s=\"%s\" >", VCR_ROOT_ELEMENT_TAG, VCR_DB_GUID, dbGuid));
       for (Change change : changeData.getChanges()) {
          if (change instanceof RelationChanged) {
-            sb.append(toXml((RelationChanged) change) + "\n");
+            sb.append(toXml((RelationChanged) change));
          } else if (change instanceof ArtifactChanged) {
-            sb.append(toXml((ArtifactChanged) change) + "\n");
+            sb.append(toXml((ArtifactChanged) change));
          } else if (change instanceof AttributeChanged) {
-            sb.append(toXml((AttributeChanged) change) + "\n");
+            sb.append(toXml((AttributeChanged) change));
          }
       }
       sb.append(String.format("</%s>", VCR_ROOT_ELEMENT_TAG));
-      return sb.toString().replaceAll(">[\\s\\n\\r]+$", ">");
+      String toReturn = sb.toString().replaceAll(">[\\s\\n\\r]+$", ">");
+      return toReturn.replaceAll("\n", "");
    }
 
    private static String toXml(RelationChanged change) throws OseeCoreException, ParserConfigurationException {
