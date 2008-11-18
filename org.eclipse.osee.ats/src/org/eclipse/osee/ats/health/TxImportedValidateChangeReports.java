@@ -148,7 +148,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
                   if (databaseTargetId.equals(dataDbGuid) || shouldIncludeItemsWithoutDbId) {
                      if (!currentDbGuid.equals(dataDbGuid)) {
                         String modified = translateImportedData(data);
-                        modified = updateSourceGuid(currentDbGuid, data);
+                        modified = updateSourceGuid(currentDbGuid, modified);
                         artifact.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, modified);
                         artifact.persistAttributes(transaction);
                      }
