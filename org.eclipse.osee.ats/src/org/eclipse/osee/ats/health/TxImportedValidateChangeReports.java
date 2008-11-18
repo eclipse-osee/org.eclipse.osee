@@ -1,0 +1,199 @@
+/*
+ * Created on Nov 17, 2008
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.ats.health;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class TxImportedValidateChangeReports extends AbstractBlam {
+
+   private static final String[] ARTIFACT_ID_ALIASES = new String[] {"artId", "bArtId", "aOrdr", "bOrdr"};
+   private static final String BRANCH_ID_ALIASES = "brId";
+   private static final String GAMMA_ID_ALIASES = "gamma";
+   private static final String[] TRANSACTION_ID_ALIASES = new String[] {"tTranId", "fTranId"};
+   private static final String ARTIFACT_TYPE_ID = "artTId";
+   private static final String ATTRIBUTE_TYPE_ID = "attrTId";
+   private static final String RELATION_TYPE_ID = "relTId";
+   private static final String ATTRIBUTE_ID = "attrId";
+   private static final String RELATION_ID = "relId";
+
+   private Map<String, ImportedId> translatorMap;
+
+   private void setup(String databaseSourceId) throws OseeDataStoreException {
+      List<ImportedId> importtedIds = getImportedIds();
+      for (ImportedId importedId : importtedIds) {
+         importedId.load(databaseSourceId);
+      }
+
+      this.translatorMap = new HashMap<String, ImportedId>();
+      for (ImportedId translator : importtedIds) {
+         for (String alias : translator.getAliases()) {
+            translatorMap.put(alias, translator);
+         }
+      }
+   }
+
+   private List<ImportedId> getImportedIds() {
+      List<ImportedId> translators = new ArrayList<ImportedId>();
+      translators.add(new ImportedId(SequenceManager.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
+      translators.add(new ImportedId(SequenceManager.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
+      translators.add(new ImportedId(SequenceManager.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
+      translators.add(new ImportedId(SequenceManager.ART_TYPE_ID_SEQ, ARTIFACT_TYPE_ID));
+      translators.add(new ImportedId(SequenceManager.ATTR_TYPE_ID_SEQ, ATTRIBUTE_TYPE_ID));
+      translators.add(new ImportedId(SequenceManager.REL_LINK_TYPE_ID_SEQ, RELATION_TYPE_ID));
+      translators.add(new ImportedId(SequenceManager.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
+      translators.add(new ImportedId(SequenceManager.ATTR_ID_SEQ, ATTRIBUTE_ID));
+      translators.add(new ImportedId(SequenceManager.REL_LINK_ID_SEQ, RELATION_ID));
+      return translators;
+   }
+
+   private long translate(String tag, long original) {
+      long toReturn = original;
+      ImportedId importedId = translatorMap.get(tag);
+      if (importedId != null) {
+         toReturn = importedId.getFromCache(original);
+      }
+      return toReturn;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor)
+    */
+   @Override
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      Branch branch = AtsPlugin.getAtsBranch();
+      String databaseSourceId = variableMap.getString("Import Db Id");
+      setup(databaseSourceId);
+
+      SkynetTransaction transaction = new SkynetTransaction(branch);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, "VCR_%", branch);
+      for (Artifact artifact : artifacts) {
+         String data = artifact.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+         String modified = translateImportedData(data);
+         artifact.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, modified);
+         artifact.persistAttributes(transaction);
+      }
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    */
+   public String getXWidgetsXml() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("<xWidgets>");
+      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Import Db Id\" defaultValue=\"AAABHL_5XvkAFHT8QsrrPQ\"/>");
+      builder.append("</xWidgets>");
+      return builder.toString();
+   }
+
+   private boolean isNumerical(String value) {
+      boolean result = false;
+      if (Strings.isValid(value)) {
+         Pattern pattern = Pattern.compile("\\d+");
+         Matcher matcher = pattern.matcher(value);
+         result = matcher.matches();
+      }
+      return result;
+   }
+
+   private String translateImportedData(String data) {
+      ChangeSet changeSet = new ChangeSet(data);
+      Pattern pattern = Pattern.compile("<(.*?)>(\\d+)</(.*?)>");
+      Matcher matcher = pattern.matcher(data);
+      while (matcher.find()) {
+         String tag = matcher.group(3);
+         String value = matcher.group(2);
+         if (isNumerical(value)) {
+            long original = Long.parseLong(value);
+            long newValue = translate(tag, original);
+            if (original != newValue) {
+               changeSet.replace(matcher.start(2), matcher.end(2), Long.toString(newValue));
+            }
+         }
+      }
+      return changeSet.applyChangesToSelf().toString();
+   }
+
+   private final class ImportedId {
+      private static final String SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME =
+            "SELECT original_id, mapped_id FROM osee_import_source ois, osee_import_map oim, osee_import_index_map oiim WHERE ois.import_id = oim.import_id AND oim.sequence_id = oiim.sequence_id AND oiim.sequence_id = oiim.sequence_id AND ois.db_source_guid = ?  AND oim.sequence_name = ?";
+
+      private final String sequenceName;
+      private final Map<Long, Long> originalToMapped;
+      private final Set<String> aliases;
+
+      ImportedId(String sequenceName, String... aliases) {
+         this.sequenceName = sequenceName;
+         this.originalToMapped = new HashMap<Long, Long>();
+         this.aliases = new HashSet<String>();
+         if (aliases != null && aliases.length > 0) {
+            for (String alias : aliases) {
+               this.aliases.add(alias.toLowerCase());
+            }
+         }
+      }
+
+      public boolean hasAliases() {
+         return this.aliases.size() > 0;
+      }
+
+      public Set<String> getAliases() {
+         return this.aliases;
+      }
+
+      public String getSequence() {
+         return this.sequenceName;
+      }
+
+      public Long getFromCache(Long original) {
+         Long newVersion = null;
+         if (original <= 0L) {
+            newVersion = original;
+         } else {
+            newVersion = this.originalToMapped.get(original);
+         }
+         return newVersion;
+      }
+
+      public void load(String sourceDatabaseId) throws OseeDataStoreException {
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         try {
+            originalToMapped.clear();
+            chStmt.runPreparedQuery(SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequence());
+            while (chStmt.next()) {
+               originalToMapped.put(chStmt.getLong("original_id"), chStmt.getLong("mapped_id"));
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
+   }
+}
