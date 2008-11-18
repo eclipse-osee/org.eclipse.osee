@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.util.Set;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -33,8 +33,8 @@ public class CleanUpBackingData extends DatabaseHealthTask {
    private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS =
          "DELETE FROM osee_tx_details WHERE transaction_id = ?";
 
-   private Set<Object[]> gammas = null;
-   private Set<Object[]> transactions = null;
+   private List<Object[]> gammas = null;
+   private List<Object[]> transactions = null;
 
    @Override
    public String getFixTaskName() {
@@ -74,13 +74,13 @@ public class CleanUpBackingData extends DatabaseHealthTask {
       if (monitor.isCanceled()) return;
 
       if (fix) {
-         ConnectionHandler.runPreparedUpdate(REMOVE_GAMMAS_ARTIFACT, gammas);
+         ConnectionHandler.runBatchUpdate(REMOVE_GAMMAS_ARTIFACT, gammas);
          monitor.worked(5);
-         ConnectionHandler.runPreparedUpdate(REMOVE_GAMMAS_ATTRIBUTE, gammas);
+         ConnectionHandler.runBatchUpdate(REMOVE_GAMMAS_ATTRIBUTE, gammas);
          monitor.worked(5);
-         ConnectionHandler.runPreparedUpdate(REMOVE_GAMMAS_RELATIONS, gammas);
+         ConnectionHandler.runBatchUpdate(REMOVE_GAMMAS_RELATIONS, gammas);
          monitor.worked(5);
-         ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
+         ConnectionHandler.runBatchUpdate(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
          monitor.worked(5);
          gammas = null;
          transactions = null;

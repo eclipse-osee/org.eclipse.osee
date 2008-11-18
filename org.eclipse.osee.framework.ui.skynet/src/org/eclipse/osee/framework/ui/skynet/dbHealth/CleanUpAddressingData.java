@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.util.Set;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -30,8 +30,8 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
    private static final String REMOVE_NOT_ADDRESSED_GAMMAS = "DELETE FROM osee_txs WHERE gamma_id = ?";
    private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS = "DELETE FROM osee_txs WHERE transaction_id = ?";
 
-   private Set<Object[]> gammas = null;
-   private Set<Object[]> transactions = null;
+   private List<Object[]> gammas = null;
+   private List<Object[]> transactions = null;
 
    @Override
    public String getFixTaskName() {
@@ -72,11 +72,11 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
 
       if (fix) {
          if (gammas.size() > 0) {
-            ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_GAMMAS, gammas);
+            ConnectionHandler.runBatchUpdate(REMOVE_NOT_ADDRESSED_GAMMAS, gammas);
          }
          monitor.worked(5);
          if (transactions.size() > 0) {
-            ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
+            ConnectionHandler.runBatchUpdate(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
          }
          monitor.worked(5);
          gammas = null;

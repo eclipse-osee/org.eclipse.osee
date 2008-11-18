@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -140,20 +140,20 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
       monitor.worked(10);
 
       if (fix) {
-         Set<Object[]> insertParameters = new HashSet<Object[]>();
+         List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (LocalRelationLink relLink : deleteMap.allValues()) {
             insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
          }
          monitor.subTask("Deleting Relation Addressing with non existant Artifacts");
          if (insertParameters.size() != 0) {
-            ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS, insertParameters);
+            ConnectionHandler.runBatchUpdate(DELETE_FROM_TXS, insertParameters);
          }
          deleteMap = null;
          monitor.worked(10);
 
          insertParameters.clear();
-         Set<Object[]> insertParametersInsert = new HashSet<Object[]>();
-         Set<Object[]> insertParametersTransaction = new HashSet<Object[]>();
+         List<Object[]> insertParametersInsert = new LinkedList<Object[]>();
+         List<Object[]> insertParametersTransaction = new LinkedList<Object[]>();
          for (LocalRelationLink relLink : updateMap.allValues()) {
             insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
             if (relLink.transactionId == relLink.transIdForArtifactDeletion) {
@@ -167,15 +167,15 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
 
          monitor.subTask("Inserting Addressing for Deleted Artifacts");
          if (insertParametersInsert.size() != 0) {
-            ConnectionHandler.runPreparedUpdate(INSERT_TXS, insertParametersInsert);
+            ConnectionHandler.runBatchUpdate(INSERT_TXS, insertParametersInsert);
          }
          monitor.worked(5);
          monitor.subTask("Updating Addressing for Deleted Artifacts");
          if (insertParameters.size() != 0) {
-            ConnectionHandler.runPreparedUpdate(UPDATE_TXS, insertParameters);
+            ConnectionHandler.runBatchUpdate(UPDATE_TXS, insertParameters);
          }
          if (insertParametersTransaction.size() != 0) {
-            ConnectionHandler.runPreparedUpdate(UPDATE_TXS_SAME, insertParametersTransaction);
+            ConnectionHandler.runBatchUpdate(UPDATE_TXS_SAME, insertParametersTransaction);
          }
          monitor.worked(5);
          updateMap = null;

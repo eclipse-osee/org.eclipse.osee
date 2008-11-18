@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -117,10 +117,10 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
    }
 
    private void fixAttributes() throws OseeDataStoreException {
-      Set<Object[]> insertParameters = new HashSet<Object[]>();
+      List<Object[]> insertParameters = new LinkedList<Object[]>();
       for (Integer[] data : datas) {
          insertParameters.add(new Object[] {data[0], data[1]});
       }
-      ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTES, insertParameters);
+      ConnectionHandler.runBatchUpdate(DELETE_ATTRIBUTES, insertParameters);
    }
 }

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -50,7 +51,7 @@ public class RelationConflict extends Conflict {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#computeStatus()
     */
-   public Status computeStatus() {
+   public ConflictStatus computeStatus() {
       return null;
    }
 

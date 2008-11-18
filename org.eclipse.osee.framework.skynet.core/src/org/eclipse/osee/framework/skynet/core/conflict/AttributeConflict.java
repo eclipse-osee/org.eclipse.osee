@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
@@ -78,7 +79,7 @@ public class AttributeConflict extends Conflict {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
-      this.status = Status.EDITED;
+      this.status = ConflictStatus.EDITED;
       this.isWordAttribute = getAttribute() instanceof WordAttribute;
    }
 
@@ -86,7 +87,7 @@ public class AttributeConflict extends Conflict {
       super(sourceGamma, destGamma, artId, commitTransaction, mergeBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
-      this.status = Status.EDITED;
+      this.status = ConflictStatus.EDITED;
       this.isWordAttribute = getAttribute() instanceof WordAttribute;
    }
 
@@ -362,7 +363,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Cleared the Merge Value for attr_id %d", getAttrId()));
       }
-      setStatus(Status.UNTOUCHED);
+      setStatus(ConflictStatus.UNTOUCHED);
       if (isWordAttribute) {
          ((WordAttribute) getAttribute()).initializeToDefaultValue();
          getArtifact().persistAttributes();
@@ -374,20 +375,20 @@ public class AttributeConflict extends Conflict {
    }
 
    public void markStatusToReflectEdit() throws OseeCoreException {
-      if ((status.equals(Status.UNTOUCHED)) || (status.equals(Status.OUT_OF_DATE_COMMITTED) || (status.equals(Status.OUT_OF_DATE)))) setStatus(Status.EDITED);
+      if ((status.equals(ConflictStatus.UNTOUCHED)) || (status.equals(ConflictStatus.OUT_OF_DATE_COMMITTED) || (status.equals(ConflictStatus.OUT_OF_DATE)))) setStatus(ConflictStatus.EDITED);
    }
 
-   public Status computeStatus() throws OseeCoreException {
-      Status passedStatus = Status.UNTOUCHED;
+   public ConflictStatus computeStatus() throws OseeCoreException {
+      ConflictStatus passedStatus = ConflictStatus.UNTOUCHED;
       try {
          getSourceAttribute();
       } catch (AttributeDoesNotExist ex) {
-         passedStatus = Status.INFORMATIONAL;
+         passedStatus = ConflictStatus.INFORMATIONAL;
       }
       try {
          getDestAttribute();
       } catch (AttributeDoesNotExist ex) {
-         passedStatus = Status.NOT_RESOLVABLE;
+         passedStatus = ConflictStatus.NOT_RESOLVABLE;
       }
       return super.computeStatus(attrId, passedStatus);
    }
@@ -425,8 +426,8 @@ public class AttributeConflict extends Conflict {
       return isWordAttribute;
    }
 
-   public void setStatus(Status status) throws OseeCoreException {
-      if (status.equals(Status.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
+   public void setStatus(ConflictStatus status) throws OseeCoreException {
+      if (status.equals(ConflictStatus.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
          throw new MergeChangesInArtifactException(RESOLVE_MERGE_MARKUP);
       }
       super.setStatus(status);
@@ -461,7 +462,7 @@ public class AttributeConflict extends Conflict {
          return false;
       }
       setAttributeValue(getAttribute(artifact).getValue());
-      setStatus(Status.OUT_OF_DATE);
+      setStatus(ConflictStatus.OUT_OF_DATE);
       return true;
    }
 }

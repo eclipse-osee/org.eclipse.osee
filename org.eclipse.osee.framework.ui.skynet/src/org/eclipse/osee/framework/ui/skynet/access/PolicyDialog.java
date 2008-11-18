@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.access;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.Dialog;
@@ -89,6 +90,7 @@ public class PolicyDialog extends Dialog {
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
       subjectList.addAll(UserManager.getUsersSortedByName());
       subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchManager.getCommonBranch()));
+      Collections.sort(subjectList, new userComparator<Artifact>());
       for (Artifact subject : subjectList) {
          String name = subject.getDescriptiveName();
          cmbUsers.add(name);
@@ -109,6 +111,20 @@ public class PolicyDialog extends Dialog {
             cmbPermissionLevel.setData(permission.getName(), permission);
          }
       }
+   }
+   private class userComparator<T> implements Comparator<T> {
+
+      /* (non-Javadoc)
+       * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+       */
+      @Override
+      public int compare(T o1, T o2) {
+         if (o1 instanceof Artifact && o2 instanceof Artifact) {
+            return ((Artifact) o1).getDescriptiveName().compareToIgnoreCase(((Artifact) o2).getDescriptiveName());
+         }
+         return 0;
+      }
+
    }
 
    private void addListeners() {

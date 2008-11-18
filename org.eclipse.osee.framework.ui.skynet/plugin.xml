@@ -111,6 +111,11 @@
         id="org.eclipse.osee.framework.ui.skynet.expandTree.command"
         name="TreeExpansion">
   </command>
+  <command
+        description="Collapse  a Tree Viewer"
+        id="org.eclipse.osee.framework.ui.skynet.collapseTree.command"
+        name="TreeCollapse">
+  </command>
 	</extension>
 	<extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">
 		<command id="org.eclipse.osee.ats.worldXView.editChangeType.command" name="Edit Change Type">
@@ -166,6 +171,12 @@
                  variable="activePartId">
               <equals
                     value="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
               </equals>
            </with>
         </or>
@@ -330,6 +341,12 @@
                     value="org.eclipse.search.ui.views.SearchView">
               </equals>
            </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
+              </equals>
+           </with>
         </or>
      </activeWhen>
   </handler>
@@ -368,6 +385,56 @@
            </count>
         </with>
      </enabledWhen>
+     <activeWhen>
+        <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.branch.BranchView">
+              </equals>
+           </with>
+        </or>
+     </activeWhen>
+  </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PasteHandler"
+        commandId="org.eclipse.ui.edit.paste">
+     <activeWhen>
+        <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
+              </equals>
+           </with>
+        </or>
+     </activeWhen>
+  </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CollapseTreeHandler"
+        commandId="org.eclipse.gef.zoom_out">
+     <activeWhen>
+        <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.branch.BranchView">
+              </equals>
+           </with>
+        </or>
+     </activeWhen>
   </handler>
 	</extension>
 	<extension name="The menus for the Branch View." point="org.eclipse.ui.menus">
@@ -1021,15 +1088,6 @@
     </Operation>
  </extension>
  <extension
-       point="org.eclipse.ui.bindings">
-    <key
-          commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command"
-          contextId="org.eclipse.ui.contexts.window"
-          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-          sequence="M1+W">
-    </key>
- </extension>
- <extension
        id="DuplicateRelationCheck"
        name="DuplicateRelationCheck"
        point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
@@ -1038,12 +1096,14 @@
     </Task>
  </extension>
  <extension
+       id="org.eclipse.osee.framework.ui.skynet.expandtree.binding"
+       name="Expand Tree"
        point="org.eclipse.ui.bindings">
     <key
           commandId="org.eclipse.osee.framework.ui.skynet.expandTree.command"
           contextId="org.eclipse.ui.contexts.window"
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-          sequence="M1+X">
+          sequence="M1++">
     </key>
  </extension>
 </plugin>

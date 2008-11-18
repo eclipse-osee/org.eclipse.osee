@@ -11,11 +11,11 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.conflict.Conflict.Status;
 
 /**
  * @author Theron Virgin
@@ -33,7 +33,7 @@ public class ConflictStatusManager {
    private static final String MERGE_INSERT_STATUS =
          "INSERT INTO osee_conflict ( conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
 
-   public static void setStatus(Status status, int sourceGamma, int destGamma, int mergeBranchId) throws OseeDataStoreException {
+   public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, int mergeBranchId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       //Gammas should be up to date so you can use them to get entry just update the status field.
       try {
@@ -44,7 +44,7 @@ public class ConflictStatusManager {
       }
    }
 
-   public static Status computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, Conflict.Status passedStatus, int transactionId) throws OseeDataStoreException {
+   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, ConflictStatus passedStatus, int transactionId) throws OseeDataStoreException {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited
@@ -56,12 +56,12 @@ public class ConflictStatusManager {
          if (chStmt.next()) {
             //There was an entry so lets check it and update it.
             int intStatus = chStmt.getInt("status");
-            if (((chStmt.getInt("source_gamma_id") != sourceGamma) || (chStmt.getInt("dest_gamma_id") != destGamma)) && intStatus != Status.COMMITTED.getValue()) {
-               if (intStatus == Status.RESOLVED.getValue()) {
-                  intStatus = Status.OUT_OF_DATE_COMMITTED.getValue();
+            if (((chStmt.getInt("source_gamma_id") != sourceGamma) || (chStmt.getInt("dest_gamma_id") != destGamma)) && intStatus != ConflictStatus.COMMITTED.getValue()) {
+               if (intStatus == ConflictStatus.RESOLVED.getValue()) {
+                  intStatus = ConflictStatus.OUT_OF_DATE_COMMITTED.getValue();
                }
-               if (intStatus == Status.EDITED.getValue()) {
-                  intStatus = Status.OUT_OF_DATE.getValue();
+               if (intStatus == ConflictStatus.EDITED.getValue()) {
+                  intStatus = ConflictStatus.OUT_OF_DATE.getValue();
                }
                ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, sourceGamma, destGamma, intStatus, branchID,
                      objectID, conflictType);
@@ -69,7 +69,7 @@ public class ConflictStatusManager {
                   ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, sourceGamma, transactionId, objectID);
                }
             }
-            return Status.getStatus(intStatus);
+            return ConflictStatus.getStatus(intStatus);
          }
          // add the entry to the table and set as UNTOUCHED
       } finally {

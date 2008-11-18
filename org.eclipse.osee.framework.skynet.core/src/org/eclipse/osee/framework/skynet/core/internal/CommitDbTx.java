@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -294,7 +295,7 @@ public class CommitDbTx extends DbTransaction {
                }
                ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_TRANSACTIONS, conflict.getMergeGammaId(),
                      newTransactionNumber, conflict.getSourceGamma());
-               conflict.setStatus(Conflict.Status.COMMITTED);
+               conflict.setStatus(ConflictStatus.COMMITTED);
             }
          }
          if (DEBUG) {

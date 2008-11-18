@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -100,12 +102,12 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
       if (monitor.isCanceled()) return;
 
       if (fix) {
-         HashSet<Object[]> insertParameters = new HashSet<Object[]>();
+         List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (LocalValues value : addressing) {
-            insertParameters.add(new Object[] {String.valueOf(value.gammaId), String.valueOf(value.transactionId)});
+            insertParameters.add(new Object[] {value.gammaId, value.transactionId});
          }
          if (insertParameters.size() > 0) {
-            ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_GAMMAS, insertParameters);
+            ConnectionHandler.runBatchUpdate(REMOVE_NOT_ADDRESSED_GAMMAS, insertParameters);
          }
          monitor.worked(5);
          addressing = null;

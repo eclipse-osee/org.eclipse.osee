@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
 
 import java.util.Collection;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
@@ -64,7 +65,7 @@ public class ConflictResolutionTest extends TestCase {
                ((ArtifactConflict) conflict).revertSourceArtifact();
             } else if (conflict instanceof AttributeConflict) {
                ConflictTestManager.resolveAttributeConflict((AttributeConflict) conflict);
-               conflict.setStatus(Conflict.Status.RESOLVED);
+               conflict.setStatus(ConflictStatus.RESOLVED);
             } else if (conflict instanceof RelationConflict) {
                fail("Relation Conflicts are not supported yet");
             }

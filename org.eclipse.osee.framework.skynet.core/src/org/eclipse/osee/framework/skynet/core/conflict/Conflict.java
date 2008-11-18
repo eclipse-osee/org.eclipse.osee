@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -28,35 +29,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Theron Virgin
  */
 public abstract class Conflict implements IAdaptable {
-   public static enum Status {
-
-      UNTOUCHED(1),
-      EDITED(2),
-      RESOLVED(3),
-      OUT_OF_DATE_COMMITTED(4),
-      NOT_RESOLVABLE(5),
-      COMMITTED(6),
-      INFORMATIONAL(7),
-      OUT_OF_DATE(8);
-      private final int value;
-
-      Status(int value) {
-         this.value = value;
-      }
-
-      public final int getValue() {
-         return value;
-      }
-
-      public static Status getStatus(int value) {
-         for (Status status : values()) {
-            if (status.value == value) return status;
-         }
-         return null;
-      }
-   };
-
-   protected Status status;
+   protected ConflictStatus status;
    protected int sourceGamma;
    protected int destGamma;
    private int artId;
@@ -208,18 +181,18 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public boolean okToOverwriteMerge() throws OseeCoreException {
-      if (status.equals(Status.RESOLVED) || status.equals(Status.COMMITTED)) {
+      if (status.equals(ConflictStatus.RESOLVED) || status.equals(ConflictStatus.COMMITTED)) {
          return false;
       }
       return true;
    }
 
-   public abstract Status computeStatus() throws OseeCoreException;
+   public abstract ConflictStatus computeStatus() throws OseeCoreException;
 
-   public Status computeStatus(int objectID, Status DefaultStatus) throws OseeCoreException {
-      Status passedStatus = DefaultStatus;
+   public ConflictStatus computeStatus(int objectID, ConflictStatus DefaultStatus) throws OseeCoreException {
+      ConflictStatus passedStatus = DefaultStatus;
       try {
-         if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
+         if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = ConflictStatus.RESOLVED;
       } catch (AttributeDoesNotExist ex) {
       }
       status =
@@ -229,46 +202,46 @@ public abstract class Conflict implements IAdaptable {
       return status;
    }
 
-   public void setStatus(Status status) throws OseeCoreException {
+   public void setStatus(ConflictStatus status) throws OseeCoreException {
       if (this.status.equals(status)) return;
       ConflictStatusManager.setStatus(status, sourceGamma, destGamma, mergeBranch.getBranchId());
       this.status = status;
    }
 
    public boolean statusUntouched() {
-      return status.equals(Status.UNTOUCHED);
+      return status.equals(ConflictStatus.UNTOUCHED);
    }
 
    public boolean statusResolved() {
-      return status.equals(Status.RESOLVED);
+      return status.equals(ConflictStatus.RESOLVED);
    }
 
    public boolean statusCommitted() {
-      return status.equals(Status.COMMITTED);
+      return status.equals(ConflictStatus.COMMITTED);
    }
 
    public boolean statusEdited() {
-      return status.equals(Status.EDITED);
+      return status.equals(ConflictStatus.EDITED);
    }
 
    public boolean statusOutOfDateCommitted() {
-      return status.equals(Status.OUT_OF_DATE_COMMITTED);
+      return status.equals(ConflictStatus.OUT_OF_DATE_COMMITTED);
    }
 
    public boolean statusOutOfDate() {
-      return status.equals(Status.OUT_OF_DATE);
+      return status.equals(ConflictStatus.OUT_OF_DATE);
    }
 
    public boolean statusNotResolvable() {
-      return status.equals(Status.NOT_RESOLVABLE);
+      return status.equals(ConflictStatus.NOT_RESOLVABLE);
    }
 
    public boolean statusInformational() {
-      return status.equals(Status.INFORMATIONAL);
+      return status.equals(ConflictStatus.INFORMATIONAL);
    }
 
    public boolean statusEditable() {
-      return !(status.equals(Status.RESOLVED) || status.equals(Status.COMMITTED) || status.equals(Status.INFORMATIONAL) || status.equals(Status.NOT_RESOLVABLE));
+      return !(status.equals(ConflictStatus.RESOLVED) || status.equals(ConflictStatus.COMMITTED) || status.equals(ConflictStatus.INFORMATIONAL) || status.equals(ConflictStatus.NOT_RESOLVABLE));
    }
 
    public int getMergeBranchID() {
@@ -280,14 +253,14 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public void handleResolvedSelection() throws Exception {
-      if (status.equals(Conflict.Status.EDITED)) {
-         setStatus(Conflict.Status.RESOLVED);
-      } else if (status.equals(Conflict.Status.RESOLVED)) {
-         setStatus(Conflict.Status.EDITED);
-      } else if (status.equals(Conflict.Status.OUT_OF_DATE_COMMITTED)) {
-         setStatus(Conflict.Status.RESOLVED);
-      } else if (status.equals(Conflict.Status.OUT_OF_DATE)) {
-         setStatus(Conflict.Status.EDITED);
+      if (status.equals(ConflictStatus.EDITED)) {
+         setStatus(ConflictStatus.RESOLVED);
+      } else if (status.equals(ConflictStatus.RESOLVED)) {
+         setStatus(ConflictStatus.EDITED);
+      } else if (status.equals(ConflictStatus.OUT_OF_DATE_COMMITTED)) {
+         setStatus(ConflictStatus.RESOLVED);
+      } else if (status.equals(ConflictStatus.OUT_OF_DATE)) {
+         setStatus(ConflictStatus.EDITED);
       }
    }
 
@@ -319,7 +292,7 @@ public abstract class Conflict implements IAdaptable {
       this.destDiffFile = destDiffFile;
    }
 
-   public Status getStatus() {
+   public ConflictStatus getStatus() {
       return status;
    }
 

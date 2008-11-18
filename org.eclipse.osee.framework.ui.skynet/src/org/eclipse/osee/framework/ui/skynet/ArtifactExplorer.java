@@ -111,7 +111,6 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -266,7 +265,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          treeViewer.setLabelProvider(new ArtifactLabelProvider(this));
          treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
          treeViewer.getControl().setLayoutData(gridData);
-         tree.addKeyListener(new keySelectedListener());
 
          // We can not use the hash lookup because an artifact may not have a
          // good equals.
@@ -374,6 +372,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createCopyMenuItem(popupMenu);
       createPasteMenuItem(popupMenu);
+      createExpandAllMenuItem(popupMenu);
       createSelectAllMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createAccessControlMenuItem(popupMenu);
@@ -963,6 +962,19 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       }
    }
 
+   private void createExpandAllMenuItem(Menu parentMenu) {
+      MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
+      menuItem.setText("Expand All\tCtrl++");
+      menuItem.addSelectionListener(new ExpandListener());
+   }
+
+   public class ExpandListener extends SelectionAdapter {
+      @Override
+      public void widgetSelected(SelectionEvent event) {
+         expandAll((IStructuredSelection) treeViewer.getSelection());
+      }
+   }
+
    public class ReportListener extends SelectionAdapter {
       @Override
       public void widgetSelected(SelectionEvent event) {
@@ -987,6 +999,13 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                }
             }
          }
+      }
+   }
+
+   private void expandAll(IStructuredSelection selection) {
+      Iterator<?> iter = selection.iterator();
+      while (iter.hasNext()) {
+         treeViewer.expandToLevel(iter.next(), TreeViewer.ALL_LEVELS);
       }
    }
 
@@ -1151,32 +1170,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
 
-      }
-   }
-
-   private class keySelectedListener implements KeyListener {
-      public void keyPressed(KeyEvent e) {
-      }
-
-      public void keyReleased(KeyEvent e) {
-         try {
-            GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
-
-            if (e.keyCode == SWT.DEL && permiss.isWritePermission() && e.stateMask == 0) {
-               (new GlobalMenu(new ArtifactTreeViewerGlobalMenuHelper(treeViewer))).getDeleteArtifactAction().run();
-            }
-            if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL && permiss.isReadPermission()) {
-               treeViewer.getTree().selectAll();
-            }
-            if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL && permiss.isWritePermission()) {
-               performCopy();
-            }
-            if (e.keyCode == 'v' && e.stateMask == SWT.CONTROL && permiss.isWritePermission()) {
-               performPaste();
-            }
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
       }
    }
 

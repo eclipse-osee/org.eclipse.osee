@@ -11,7 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -63,7 +64,7 @@ public class HealthHelper {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
-   public static void displayForCleanUp(String header, StringBuffer sbFull, StringBuilder builder, boolean verify, Set<Object[]> set, String toPrint) {
+   public static void displayForCleanUp(String header, StringBuffer sbFull, StringBuilder builder, boolean verify, List<Object[]> set, String toPrint) {
       int count = 0;
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {header}));
       sbFull.append(AHTML.addRowSpanMultiColumnTable(header + toPrint, 1));
@@ -78,8 +79,8 @@ public class HealthHelper {
       builder.append(toPrint);
    }
 
-   public static HashSet<Object[]> runSingleResultQuery(String sql, String dbColumn) throws OseeCoreException {
-      HashSet<Object[]> foundItems = new HashSet<Object[]>();
+   public static List<Object[]> runSingleResultQuery(String sql, String dbColumn) throws OseeCoreException {
+      List<Object[]> foundItems = new LinkedList<Object[]>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(sql);
@@ -157,14 +158,14 @@ public class HealthHelper {
       String sql =
             DUPLICATE_TX_CURRENT_CLEANUP[0] + dataTable + DUPLICATE_TX_CURRENT_CLEANUP[1] + dataId + DUPLICATE_TX_CURRENT_CLEANUP[2] + dataTable + DUPLICATE_TX_CURRENT_CLEANUP[3] + dataId + DUPLICATE_TX_CURRENT_CLEANUP[4];
 
-      Set<Object[]> insertParameters = new HashSet<Object[]>();
+      List<Object[]> insertParameters = new LinkedList<Object[]>();
 
       for (LocalTxData link : multipleSet) {
          insertParameters.add(new Object[] {link.dataId, link.branchId, link.dataId});
       }
       int total = 0;
       if (insertParameters.size() > 0) {
-         total = ConnectionHandler.runPreparedUpdate(sql, insertParameters);
+         total = ConnectionHandler.runBatchUpdate(sql, insertParameters);
       }
       builder.append("Fixed " + total + " Tx_Current duplication errors\n");
    }
@@ -173,14 +174,14 @@ public class HealthHelper {
       String sql =
             NO_TX_CURRENT_CLEANUP[0] + dataTable + NO_TX_CURRENT_CLEANUP[1] + dataId + NO_TX_CURRENT_CLEANUP[2] + dataTable + NO_TX_CURRENT_CLEANUP[3] + dataId + NO_TX_CURRENT_CLEANUP[4];
 
-      Set<Object[]> insertParameters = new HashSet<Object[]>();
+      List<Object[]> insertParameters = new LinkedList<Object[]>();
 
       for (Pair<Integer, Integer> pair : noneSet) {
          insertParameters.add(new Object[] {pair.getKey(), pair.getValue(), pair.getKey()});
       }
       int total = 0;
       if (insertParameters.size() > 0) {
-         total = ConnectionHandler.runPreparedUpdate(sql, insertParameters);
+         total = ConnectionHandler.runBatchUpdate(sql, insertParameters);
       }
       builder.append("Fixed " + total + " Tx_Current not set errors\n");
    }

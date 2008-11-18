@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
@@ -104,11 +105,11 @@ public class ArtifactConflict extends Conflict {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#computeStatus()
     */
-   public Status computeStatus() throws OseeCoreException {
+   public ConflictStatus computeStatus() throws OseeCoreException {
       if (!sourceDeleted)
-         return super.computeStatus(getObjectId(), Status.NOT_RESOLVABLE);
+         return super.computeStatus(getObjectId(), ConflictStatus.NOT_RESOLVABLE);
       else
-         return super.computeStatus(getObjectId(), Status.INFORMATIONAL);
+         return super.computeStatus(getObjectId(), ConflictStatus.INFORMATIONAL);
 
    }
 

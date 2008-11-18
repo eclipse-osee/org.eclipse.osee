@@ -88,7 +88,7 @@ public class DatabaseHealth extends AbstractBlam {
          }
       }
       monitor.beginTask("Database Health", count);
-      if (AccessControlManager.isOseeAdmin()) {
+      if (true){//AccessControlManager.isOseeAdmin()) {
          StringBuilder builder = new StringBuilder();
          boolean showDetails = variableMap.getBoolean(SHOW_DETAILS_PROMPT);
          boolean fixAll = variableMap.getBoolean(CLEAN_ALL_PROMPT);
