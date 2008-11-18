@@ -202,7 +202,7 @@ public class ConflictManagerInternal {
             insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getBranchId(),
                   SQL3DataType.INTEGER});
          }
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, true);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
       }
       if (DEBUG) {
          System.out.println(String.format("    Preloading took %s", Lib.getElapseString(time)));

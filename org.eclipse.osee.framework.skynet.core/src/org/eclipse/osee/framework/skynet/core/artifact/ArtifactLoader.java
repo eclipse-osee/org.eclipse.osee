@@ -122,7 +122,8 @@ public final class ArtifactLoader {
             if (historical) {
                sql = ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ARTIFACTS);
             } else {
-               sql = allowDeleted ? ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED) : ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ARTIFACTS);
+               sql =
+                     allowDeleted ? ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED) : ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ARTIFACTS);
             }
             chStmt.runPreparedQuery(fetchSize, sql, queryId);
 
@@ -388,7 +389,8 @@ public final class ArtifactLoader {
             chStmt.runPreparedQuery(artifacts.size() * 8,
                   ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ATTRIBUTES), queryId);
          } else {
-            String sql = allowDeletedArtifacts ? ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED) : ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ATTRIBUTES);
+            String sql =
+                  allowDeletedArtifacts ? ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED) : ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ATTRIBUTES);
             chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
          }
 
@@ -425,7 +427,7 @@ public final class ArtifactLoader {
             }
 
             // if a different attribute than the previous iteration and its attribute had not already been loaded and this attribute is not deleted
-            if (attrId != previousAttrId && artifact != null && chStmt.getInt("mod_type") != ModificationType.DELETED.getValue()) {
+            if ((attrId != previousAttrId || branchId != previousBranchId) && artifact != null && chStmt.getInt("mod_type") != ModificationType.DELETED.getValue()) {
                AttributeToTransactionOperation.initializeAttribute(artifact, chStmt.getInt("attr_type_id"), attrId,
                      chStmt.getInt("gamma_id"), chStmt.getString("value"), chStmt.getString("uri"));
             }
