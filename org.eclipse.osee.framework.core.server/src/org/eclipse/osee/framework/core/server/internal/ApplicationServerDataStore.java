@@ -33,7 +33,7 @@ public class ApplicationServerDataStore {
          "UPDATE osee_server_lookup SET accepts_requests = ? WHERE server_address = ? AND port = ?";
 
    private static final String DELETE_FROM_LOOKUP_TABLE =
-         "DELETE FROM osee_server_lookup WHERE server_address = ? AND port = ?";
+         "DELETE FROM osee_server_lookup WHERE server_address = ? AND port = ? AND version_id=?";
 
    private static final String SELECT_FROM_LOOKUP_TABLE = "SELECT * FROM osee_server_lookup where version_id%s";
 
@@ -41,7 +41,7 @@ public class ApplicationServerDataStore {
       boolean status = false;
       try {
          ConnectionHandler.runPreparedUpdate(DELETE_FROM_LOOKUP_TABLE, applicationServerInfo.getServerAddress(),
-               applicationServerInfo.getPort());
+               applicationServerInfo.getPort(), applicationServerInfo.getVersion());
          status = true;
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to deregister server from lookup table.", ex);
