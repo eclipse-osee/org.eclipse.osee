@@ -99,6 +99,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
          artifact.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, modified);
          artifact.persistAttributes(transaction);
       }
+      transaction.execute();
    }
 
    /*
