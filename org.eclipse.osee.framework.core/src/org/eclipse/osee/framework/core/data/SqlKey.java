@@ -36,6 +36,9 @@ public class SqlKey {
    public static final String SELECT_ARTIFACT_CONFLICTS = "SELECT_ARTIFACT_CONFLICTS";
    public static final String SELECT_ATTRIBUTE_CONFLICTS = "SELECT_ATTRIBUTE_CONFLICTS";
    public static final String SELECT_HISTORIC_ATTRIBUTE_CONFLICTS = "SELECT_HISTORIC_ATTRIBUTE_CONFLICTS";
+   public static final String SELECT_ARTIFACTS_ON_A_BRANCH = "SELECT_ARTIFACT_BRANCH";
+   public static final String SELECT_ATTRIBUTES_ON_A_BRANCH = "SELECT_ATTRIBUTE_BRANCH";
+   public static final String SELECT_REL_LINKS_ON_A_BRANCH = "SELECT_RELATIONS_BRANCH";
 
    public static final String SELECT_BRANCH_ATTRIBUTE_WAS_CHANGE = "BRANCH_ATTRIBUTE_WAS_CHANGE";
    public static final String SELECT_TRANSACTION_ATTRIBUTE_WAS_CHANGE = "TRANSACTION_ATTRIBUTE_WAS_CHANGE";
@@ -105,6 +108,15 @@ public class SqlKey {
    private static final String HISTORICAL_ATTRIBUTE_CONFLICTS_DEFINITION =
          "SELECT%s atr.attr_id, atr.art_id, source_gamma_id, dest_gamma_id, attr_type_id, mer.merge_branch_id, mer.dest_branch_id, value as source_value, status FROM osee_merge mer, osee_conflict con,  osee_attribute atr Where mer.commit_transaction_id = ? AND mer.merge_branch_id = con.merge_branch_id And con.source_gamma_id = atr.gamma_id AND con.status in (" + ConflictStatus.COMMITTED.getValue() + ", " + ConflictStatus.INFORMATIONAL.getValue() + " ) order by attr_id";
 
+   private static final String GET_ART_IDS_FOR_BRANCH_DEFINITION =
+         "SELECT%s arv.art_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version arv WHERE det.transaction_id = txs.transaction_id and txs.gamma_id = arv.gamma_id and det.branch_id = ?";
+
+   private static final String GET_ATTRIBUTES_FOR_BRANCH_DEFINITION =
+         "SELECT%s atr.art_id, atr.attr_id FROM  osee_tx_details det,  osee_txs txs, osee_attribute atr WHERE det.transaction_id = txs.transaction_id and txs.gamma_id = atr.gamma_id and det.branch_id = ?";
+
+   private static final String GET_RELATIONS_FOR_BRANCH_DEFINITION =
+         "SELECT%s rel.a_art_id, rel.b_art_id FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.transaction_id = txs.transaction_id and txs.gamma_id = rel.gamma_id and det.branch_id = ?";
+
    public static final String ORDERED_HINT = " /*+ ordered */";
    public static final String ORDERED_HINT_AND_TXS_INDEX = " /*+ ordered INDEX(txs1) */";
    public static final String HINTS__ORDERED__TXS_IDX__REL_IDX = " /*+ ordered INDEX(txs1) INDEX(rel1) */";
@@ -150,6 +162,15 @@ public class SqlKey {
             HINTS__ORDERED__INDEX__ATTRIBUTE_CONFLICT));
 
       sqlProperties.put(SELECT_HISTORIC_ATTRIBUTE_CONFLICTS, getFormattedSql(HISTORICAL_ATTRIBUTE_CONFLICTS_DEFINITION,
+            HINTS__ORDERED__FIRST_ROWS));
+
+      sqlProperties.put(SELECT_ARTIFACTS_ON_A_BRANCH, getFormattedSql(GET_ART_IDS_FOR_BRANCH_DEFINITION,
+            HINTS__ORDERED__FIRST_ROWS));
+
+      sqlProperties.put(SELECT_ATTRIBUTES_ON_A_BRANCH, getFormattedSql(GET_ATTRIBUTES_FOR_BRANCH_DEFINITION,
+            HINTS__ORDERED__FIRST_ROWS));
+
+      sqlProperties.put(SELECT_REL_LINKS_ON_A_BRANCH, getFormattedSql(GET_RELATIONS_FOR_BRANCH_DEFINITION,
             HINTS__ORDERED__FIRST_ROWS));
 
       sqlProperties.put(SELECT_ARTIFACT_CONFLICTS, getFormattedSql(ARTIFACT_CONFLICT_DEFINITION,

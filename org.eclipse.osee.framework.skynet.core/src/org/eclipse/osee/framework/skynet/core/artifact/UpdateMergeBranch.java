@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.SqlKey;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -27,7 +28,7 @@ public class UpdateMergeBranch extends DbTransaction {
    private static final String GET_ART_IDS_FOR_ART_VER_TABLE =
          "SELECT arv.art_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version arv WHERE det.transaction_id = txs.transaction_id and txs.gamma_id = arv.gamma_id and det.branch_id = ?";
    private static final String GET_ART_IDS_FOR_ATR_VER_TABLE =
-         "SELECT atr.art_id, atr.attr_id FROM  osee_tx_details det,  osee_txs txs, osee_attribute atr WHERE det.transaction_id = txs.transaction_id and txs.gamma_id = atr.gamma_id and det.branch_id = ?";
+         "SELECT /*+ ordered FIRST_ROWS */ atr.art_id, atr.attr_id FROM  osee_tx_details det,  osee_txs txs, osee_attribute atr WHERE det.transaction_id = txs.transaction_id and txs.gamma_id = atr.gamma_id and det.branch_id = ?";
    private static final String GET_ART_IDS_FOR_REL_VER_TABLE =
          "SELECT rel.a_art_id, rel.b_art_id FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.transaction_id = txs.transaction_id and txs.gamma_id = rel.gamma_id and det.branch_id = ?";
    private static final String UPDATE_ARTIFACTS =
@@ -139,7 +140,7 @@ public class UpdateMergeBranch extends DbTransaction {
       }
    }
 
-   private static Collection<Integer> getAllMergeArtifacts(Branch branch) throws OseeDataStoreException {
+   private static Collection<Integer> getAllMergeArtifacts(Branch branch) throws OseeCoreException {
       Collection<Integer> artSet = new HashSet<Integer>();
       long time = System.currentTimeMillis();
 
@@ -147,7 +148,8 @@ public class UpdateMergeBranch extends DbTransaction {
       ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
       ConnectionHandlerStatement chStmt3 = new ConnectionHandlerStatement();
       try {
-         chStmt1.runPreparedQuery(GET_ART_IDS_FOR_ART_VER_TABLE, branch.getBranchId());
+         chStmt1.runPreparedQuery(ClientSessionManager.getSQL(SqlKey.SELECT_ARTIFACTS_ON_A_BRANCH),
+               branch.getBranchId());
          while (chStmt1.next()) {
             artSet.add(chStmt1.getInt("art_id"));
          }
@@ -157,7 +159,8 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt2.runPreparedQuery(GET_ART_IDS_FOR_ATR_VER_TABLE, branch.getBranchId());
+         chStmt2.runPreparedQuery(ClientSessionManager.getSQL(SqlKey.SELECT_ATTRIBUTES_ON_A_BRANCH),
+               branch.getBranchId());
          while (chStmt2.next()) {
             artSet.add(chStmt2.getInt("art_id"));
          }
@@ -168,7 +171,8 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt3.runPreparedQuery(GET_ART_IDS_FOR_REL_VER_TABLE, branch.getBranchId());
+         chStmt3.runPreparedQuery(ClientSessionManager.getSQL(SqlKey.SELECT_REL_LINKS_ON_A_BRANCH),
+               branch.getBranchId());
          while (chStmt3.next()) {
             artSet.add(chStmt3.getInt("a_art_id"));
             artSet.add(chStmt3.getInt("b_art_id"));
