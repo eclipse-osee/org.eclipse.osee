@@ -87,7 +87,6 @@ public class SessionManagementServlet extends OseeHttpServlet {
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       String operation = request.getParameter("operation");
       try {
-         System.out.println();
          OperationType operationType = OperationType.fromString(operation);
          switch (operationType) {
             case CREATE:
