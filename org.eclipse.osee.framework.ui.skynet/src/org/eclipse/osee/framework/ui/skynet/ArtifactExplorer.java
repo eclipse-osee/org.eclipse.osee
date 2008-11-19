@@ -1046,7 +1046,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       // The upAction may be null if this viewpart has not been layed out yet
       if (upAction != null) {
          try {
-            upAction.setEnabled(exploreRoot != null && exploreRoot.getParent() != null);
+            upAction.setEnabled(exploreRoot != null && exploreRoot.hasParent());
          } catch (OseeCoreException ex) {
             upAction.setEnabled(false);
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
