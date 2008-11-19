@@ -14,9 +14,11 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.CoreException;
@@ -585,8 +587,9 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       createMenuItem.setEnabled(true);
 
       try {
-         Collection<ArtifactType> descriptors =
-               TypeValidityManager.getValidArtifactTypes(BranchManager.getDefaultBranch());
+         Collection<ArtifactType> data = TypeValidityManager.getValidArtifactTypes(BranchManager.getDefaultBranch());
+         List<ArtifactType> descriptors = new ArrayList<ArtifactType>(data);
+         Collections.sort(descriptors);
          for (ArtifactType descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {
                MenuItem item = new MenuItem(subMenu, SWT.PUSH);
