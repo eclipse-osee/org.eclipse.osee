@@ -208,7 +208,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       else {
          final String currentChangeReport = getReport(currentDbGuid, currentChangeData);
          final String fStoredChangeReport = storedChangeReport.replaceAll("\n", "");
-         if (fStoredChangeReport.equals(currentChangeReport)) {
+         if (isXmlChangeDataEqual(currentChangeReport, fStoredChangeReport)) {
             resultData.log("Change Report Valid for " + teamArt.getHumanReadableId());
          } else {
             resultData.logError("Was/Is Change Report different for " + teamArt.getHumanReadableId());
@@ -257,7 +257,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
    private static String getReport(String dbGuid, ChangeData changeData) throws OseeCoreException, ParserConfigurationException {
       StringBuffer sb = new StringBuffer();
-      sb.append(String.format("<%s %s=\"%s\" >", VCR_ROOT_ELEMENT_TAG, VCR_DB_GUID, dbGuid));
+      sb.append(String.format("<%s %s=\"%s\">", VCR_ROOT_ELEMENT_TAG, VCR_DB_GUID, dbGuid));
       for (Change change : changeData.getChanges()) {
          if (change instanceof RelationChanged) {
             sb.append(toXml((RelationChanged) change));
@@ -323,4 +323,18 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return AXml.addTagData("AttrChg", sb.toString());
    }
 
+   private static boolean isXmlChangeDataEqual(String data1, String data2) {
+      return getCheckSum(data1) == getCheckSum(data2);
+   }
+
+   private static int getCheckSum(String data) {
+      int checksum = -1;
+      for (int index = 0; index < data.length(); index++) {
+         char character = data.charAt(index);
+         if (character != '\n' && character != '\t' && character != ' ') {
+            checksum += character;
+         }
+      }
+      return checksum;
+   }
 }
