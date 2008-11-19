@@ -473,18 +473,27 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          ArtifactEditor.editArtifact(artifact);
    }
 
-   public static void editArtifact(StateMachineArtifact sma) {
+   public static void editArtifact(final StateMachineArtifact sma) {
       if (sma.isDeleted()) {
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
       }
-      IWorkbenchPage page = AWorkbench.getActivePage();
-      try {
-         page.openEditor(new SMAEditorInput(sma), EDITOR_ID);
-         VisitedItems.addVisited(sma);
-      } catch (PartInitException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+                   * @see java.lang.Runnable#run()
+                   */
+         @Override
+         public void run() {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+               page.openEditor(new SMAEditorInput(sma), EDITOR_ID);
+               VisitedItems.addVisited(sma);
+            } catch (PartInitException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      });
+
    }
 
    @Override

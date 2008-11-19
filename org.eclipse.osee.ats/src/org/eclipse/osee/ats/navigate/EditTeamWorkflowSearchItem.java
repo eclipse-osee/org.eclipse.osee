@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -252,6 +253,14 @@ public class EditTeamWorkflowSearchItem extends WorldParameterSearchItem {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return new Result("Exception: " + ex.getLocalizedMessage());
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getDynamicWidgetLayoutListener()
+    */
+   @Override
+   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
+      return null;
    }
 
 }

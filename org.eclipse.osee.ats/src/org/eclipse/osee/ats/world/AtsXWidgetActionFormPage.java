@@ -20,8 +20,11 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -101,28 +104,34 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       parametersContainer = toolkit.createClientContainer(parameterSection, 1);
       parameterSection.setExpanded(true);
 
-      Composite mainComp = new Composite(parametersContainer, SWT.NONE);
-      mainComp.setLayout(new GridLayout(2, false));
-      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
+      Composite mainComp = toolkit.createComposite(parametersContainer, SWT.NONE);
+      mainComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      mainComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
 
-      Button runButton = toolkit.createButton(parametersContainer, "Search", SWT.PUSH);
+      Button runButton = toolkit.createButton(mainComp, "Search", SWT.PUSH);
+      GridData gridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+      runButton.setLayoutData(gridData);
       runButton.addSelectionListener(new SelectionAdapter() {
          /* (non-Javadoc)
           * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
           */
          @Override
          public void widgetSelected(SelectionEvent e) {
-            System.out.println("Run it");
+            handleSearchButtonPressed();
          }
       });
 
+      Composite paramComp = new Composite(mainComp, SWT.NONE);
+      paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      paramComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
+
       List<DynamicXWidgetLayoutData> layoutDatas = null;
-      dynamicXWidgetLayout = new DynamicXWidgetLayout();
+      dynamicXWidgetLayout = new DynamicXWidgetLayout(getDynamicWidgetLayoutListener(), getXWidgetOptionResolver());
       try {
          layoutDatas = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, getXWidgetsXml());
          if (layoutDatas != null && !layoutDatas.isEmpty()) {
             dynamicXWidgetLayout.addWorkLayoutDatas(layoutDatas);
-            dynamicXWidgetLayout.createBody(toolkit, parametersContainer, null, null, true);
+            dynamicXWidgetLayout.createBody(toolkit, paramComp, null, null, true);
             parametersContainer.layout();
             parametersContainer.getParent().layout();
          }
@@ -133,6 +142,16 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
       return parameterSection;
    }
+
+   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
+      return null;
+   }
+
+   public IXWidgetOptionResolver getXWidgetOptionResolver() {
+      return new DefaultXWidgetOptionResolver();
+   }
+
+   public abstract void handleSearchButtonPressed();
 
    public void setTableTitle(final String title, final boolean warning) {
       Displays.ensureInDisplayThread(new Runnable() {

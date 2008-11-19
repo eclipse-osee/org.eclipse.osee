@@ -8,12 +8,14 @@ package org.eclipse.osee.ats.world;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class WorldParameterSearchItem extends WorldSearchItem implements IWorldEditorParameterProvider, IDynamicWidgetLayoutListener {
+public abstract class WorldParameterSearchItem extends WorldSearchItem implements IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
 
    /**
     * @param name
@@ -54,6 +56,14 @@ public abstract class WorldParameterSearchItem extends WorldSearchItem implement
     */
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getWidgetOptions(org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData)
+    */
+   @Override
+   public String[] getWidgetOptions(DynamicXWidgetLayoutData widgetData) {
+      return null;
    }
 
 }

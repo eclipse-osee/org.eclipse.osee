@@ -11,6 +11,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -70,6 +71,17 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       }
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.AtsXWidgetActionFormPage#getDynamicWidgetLayoutListener()
+    */
+   @Override
+   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
+      if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
+         return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getDynamicWidgetLayoutListener();
+      }
+      return null;
+   }
+
    public void reSearch() throws OseeCoreException {
       worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, false);
    }
@@ -83,6 +95,18 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getParameterXWidgetXml();
       }
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.AtsXWidgetActionFormPage#handleSearchButtonPressed()
+    */
+   @Override
+   public void handleSearchButtonPressed() {
+      try {
+         reSearch();
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
    }
 
 }
