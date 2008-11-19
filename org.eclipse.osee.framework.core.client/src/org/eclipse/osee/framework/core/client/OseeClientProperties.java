@@ -239,27 +239,29 @@ public class OseeClientProperties extends OseeProperties {
 
    private void processInitializer(Bundle bundle, String resourcePath, InitializerFlag flag) {
       URL url = bundle.getResource(resourcePath);
-      Properties properties = new Properties();
-      try {
-         properties.loadFromXML(url.openStream());
-      } catch (Exception ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex.toString(), ex);
-      }
-      if (!properties.isEmpty()) {
-         OseeLog.log(CoreClientActivator.class, Level.INFO, String.format("Initializing properties [%s]", flag));
-
-         Properties itemToSet = null;
-         switch (flag) {
-            case client_defaults:
-               itemToSet = defaultProperties;
-               break;
-            case overwrite_settings:
-               itemToSet = overwriteProperties;
-               break;
+      if (url != null) {
+         Properties properties = new Properties();
+         try {
+            properties.loadFromXML(url.openStream());
+         } catch (Exception ex) {
+            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex.toString(), ex);
          }
+         if (!properties.isEmpty()) {
+            OseeLog.log(CoreClientActivator.class, Level.INFO, String.format("Initializing properties [%s]", flag));
 
-         if (itemToSet != null) {
-            itemToSet.putAll(properties);
+            Properties itemToSet = null;
+            switch (flag) {
+               case client_defaults:
+                  itemToSet = defaultProperties;
+                  break;
+               case overwrite_settings:
+                  itemToSet = overwriteProperties;
+                  break;
+            }
+
+            if (itemToSet != null) {
+               itemToSet.putAll(properties);
+            }
          }
       }
    }
