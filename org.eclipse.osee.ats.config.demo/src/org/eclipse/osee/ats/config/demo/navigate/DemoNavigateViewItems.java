@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -49,7 +50,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       super();
    }
 
-   public List<XNavigateItem> getNavigateItems() {
+   public List<XNavigateItem> getNavigateItems() throws OseeCoreException {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
       if (AtsPlugin.areOSEEServicesAvailable().isFalse()) return items;
