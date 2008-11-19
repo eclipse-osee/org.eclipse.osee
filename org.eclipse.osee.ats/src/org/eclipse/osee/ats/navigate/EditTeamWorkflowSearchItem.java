@@ -42,7 +42,7 @@ public class EditTeamWorkflowSearchItem extends WorldEditorParameterSearchItem {
    private XCheckBox includeCompletedCancelledCheckbox;
 
    public EditTeamWorkflowSearchItem() {
-      super("Team Workflows Search - New");
+      super("Team Workflows Search");
    }
 
    public EditTeamWorkflowSearchItem(EditTeamWorkflowSearchItem editTeamWorkflowSearchItem) {

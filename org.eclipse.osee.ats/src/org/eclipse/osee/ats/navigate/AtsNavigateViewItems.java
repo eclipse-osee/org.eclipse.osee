@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.operation.EditTasksNavigateItem;
-import org.eclipse.osee.ats.operation.EditTeamsNavigateItem;
 import org.eclipse.osee.ats.util.DoesNotWorkItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtIdSearchItem;
@@ -140,7 +139,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(otherItems);
 
          items.add(new SearchNavigateItem(null, new EditTeamWorkflowSearchItem()));
-         items.add(new EditTeamsNavigateItem(null));
          items.add(new EditTasksNavigateItem(null));
          items.add(new SearchNavigateItem(null, new GroupWorldSearchItem()));
          items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));
