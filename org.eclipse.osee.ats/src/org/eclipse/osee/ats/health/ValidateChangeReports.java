@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.health;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -164,8 +165,12 @@ public class ValidateChangeReports extends XNavigateItemAction {
       }
       sbFull.append(AHTML.endMultiColumnTable());
       xResultData.addRaw(sbFull.toString().replaceAll("\n", ""));
-      for (IHealthStatus stat : monitorLog.getSevereLogs()) {
-         xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
+      List<IHealthStatus> stats = new ArrayList<IHealthStatus>(monitorLog.getSevereLogs());
+      for (IHealthStatus stat : stats) {
+         Throwable tr = stat.getException();
+         if (tr != null) {
+            xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
+         }
       }
    }
 

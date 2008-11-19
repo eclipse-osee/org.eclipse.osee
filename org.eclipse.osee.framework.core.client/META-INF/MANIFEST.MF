@@ -20,4 +20,5 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.logging
 Service-Component: OSGI-INF/application.db.provider.xml
 Export-Package: org.eclipse.osee.framework.core.client,
- org.eclipse.osee.framework.core.client.server
+ org.eclipse.osee.framework.core.client.server,
+ org.eclipse.osee.framework.core.client.task
