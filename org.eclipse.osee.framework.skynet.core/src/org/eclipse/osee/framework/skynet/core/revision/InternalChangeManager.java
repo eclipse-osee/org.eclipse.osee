@@ -41,30 +41,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Jeff C. Phillips
  */
 public class InternalChangeManager {
-//   private static final String BRANCH_ATTRIBUTE_WAS_CHANGE =
-//         "SELECT t3.attr_id, t3.value as was_value, t1.mod_type FROM osee_txs t1, osee_tx_details t2, osee_attribute t3, osee_artifact t8, osee_join_artifact t9 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 1 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id AND t3.art_id = t9.art_id AND t2.branch_id = t9.branch_id AND t9.query_id = ?";
-
-//   private static final String TRANSACTION_ATTRIBUTE_WAS_CHANGE =
-//         "SELECT att1.attr_id, att1.value as was_value, txs1.mod_type FROM osee_join_artifact al1, osee_attribute att1, osee_txs txs1, osee_tx_details txd1 WHERE  al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id < ? AND al1.query_id = ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by txd1.branch_id, att1.art_id, att1.attr_id, txd1.transaction_id desc";
-
-//   private static final String BRANCH_ATTRIBUTE_IS_CHANGES =
-//         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_txs t1, osee_tx_details t2, osee_attribute t3, osee_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current in (" + TxChange.DELETED.getValue() + ", " + TxChange.CURRENT.getValue() + ", " + TxChange.ARTIFACT_DELETED.getValue() + ") AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
-
-//   private static final String TRANSACTION_ATTRIBUTE_CHANGES =
-//         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_txs t1, osee_tx_details t2, osee_attribute t3, osee_artifact t8 WHERE t2.transaction_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
-
-//   private static final String BRANCH_REL_CHANGES =
-//         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order, rl3.b_order, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_txs tx1, osee_tx_details td2, osee_relation_link rl3 where tx1.tx_current in (" + TxChange.DELETED.getValue() + ", " + TxChange.CURRENT.getValue() + ", " + TxChange.ARTIFACT_DELETED.getValue() + ") AND td2.tx_type = 0 AND td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
-
-//   private static final String TRANSACTION_REL_CHANGES =
-//         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order, rl3.b_order, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_txs tx1, osee_tx_details td2, osee_relation_link rl3 where td2.tx_type = 0 AND td2.transaction_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
-
-//   private static final String BRANCH_ARTIFACT_CHANGES =
-//         "select af4.art_id, af4.art_type_id, av3.gamma_id, tx1.mod_type FROM osee_txs tx1, osee_tx_details td2, osee_artifact_version av3, osee_artifact af4 WHERE td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND (tx1.tx_current = " + TxChange.DELETED.getValue() + " OR tx1.mod_type = " + ModificationType.NEW.getValue() + ")  AND av3.art_id = af4.art_id";
-
-//   private static final String TRANSACTION_ARTIFACT_CHANGES =
-//         "select af4.art_id, af4.art_type_id, av3.gamma_id, tx1.mod_type FROM osee_txs tx1, osee_tx_details td2, osee_artifact_version av3, osee_artifact af4 WHERE td2.transaction_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND (tx1.mod_type = " + ModificationType.DELETED.getValue() + " OR tx1.mod_type = " + ModificationType.NEW.getValue() + ")  AND av3.art_id = af4.art_id";
-
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Change"));
 
