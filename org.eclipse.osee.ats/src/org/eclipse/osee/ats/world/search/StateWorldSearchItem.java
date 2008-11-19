@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 /**
  * @author Donald G. Dunne
  */
-public class StateWorldSearchItem extends WorldSearchItem {
+public class StateWorldSearchItem extends WorldUISearchItem {
 
    private final String stateClass;
    private String selectedStateClass;
@@ -48,7 +48,7 @@ public class StateWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return String.format("%s - %s", super.getSelectedName(searchType), getStateSearchName());
    }
 
@@ -92,10 +92,10 @@ public class StateWorldSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new StateWorldSearchItem(this);
    }
 

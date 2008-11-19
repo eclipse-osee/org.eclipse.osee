@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 /**
  * @author Donald G. Dunne
  */
-public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
+public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
 
    private final String artifactTypeName;
    private final boolean showFinished;
@@ -72,10 +72,10 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new ShowOpenWorkflowsByArtifactType(this);
    }
 

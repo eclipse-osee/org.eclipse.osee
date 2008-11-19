@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.world;
 import java.util.Collection;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
@@ -35,58 +34,29 @@ public class WorldEditorSimpleProvider implements IWorldEditorProvider {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTableLoadOptions()
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#run(org.eclipse.osee.ats.world.WorldEditor)
     */
    @Override
-   public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException {
-      return Collections.getAggregate(tableLoadOption);
+   public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) throws OseeCoreException {
+      worldEditor.getWorldComposite().load(name, artifacts, tableLoadOption);
+      if (customizeData != null) {
+         worldEditor.getWorldComposite().setCustomizeData(customizeData);
+      }
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorLabel(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getSelectedName(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
     */
    @Override
-   public String getWorldEditorLabel(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+      return getName();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getName()
+    */
+   @Override
+   public String getName() throws OseeCoreException {
       return name;
    }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorTaskArtifacts()
-    */
-   @Override
-   public Collection<? extends Artifact> getWorldEditorArtifacts(SearchType searchType) throws OseeCoreException {
-      return artifacts;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getCustomizeData()
-    */
-   @Override
-   public CustomizeData getCustomizeData() throws OseeCoreException {
-      return customizeData;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getParameterXWidgetXml()
-    */
-   @Override
-   public String getParameterXWidgetXml() throws OseeCoreException {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#isCancelled()
-    */
-   @Override
-   public boolean isCancelled() throws OseeCoreException {
-      return false;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#performUI(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
-   @Override
-   public void performUI(SearchType searchType) throws OseeCoreException {
-   }
-
 }

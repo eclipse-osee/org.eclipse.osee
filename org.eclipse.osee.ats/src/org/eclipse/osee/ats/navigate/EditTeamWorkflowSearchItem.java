@@ -6,22 +6,19 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.world.IWorldEditorProvider;
+import org.eclipse.osee.ats.world.WorldParameterSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem;
-import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -30,15 +27,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Donald G. Dunne
  */
-public class EditTeamWorkflowSearchItem extends WorldSearchItem implements IWorldEditorProvider, IDynamicWidgetLayoutListener {
+public class EditTeamWorkflowSearchItem extends WorldParameterSearchItem {
 
    private XHyperlabelTeamDefinitionSelection teamCombo = null;
    private XCombo releasedCombo = null;
@@ -47,7 +41,7 @@ public class EditTeamWorkflowSearchItem extends WorldSearchItem implements IWorl
    private XCheckBox includeCompletedCancelledCheckbox;
 
    public EditTeamWorkflowSearchItem() {
-      super("Edit Team Workflows");
+      super("Team Workflows Search - New");
    }
 
    public EditTeamWorkflowSearchItem(EditTeamWorkflowSearchItem editTeamWorkflowSearchItem) {
@@ -63,32 +57,7 @@ public class EditTeamWorkflowSearchItem extends WorldSearchItem implements IWorl
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#performUI(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
-   @Override
-   public void performUI(SearchType searchType) throws OseeCoreException {
-      super.performUI(searchType);
-
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#performSearch(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
-   @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      return Collections.emptyList();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getCustomizeData()
-    */
-   @Override
-   public CustomizeData getCustomizeData() throws OseeCoreException {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getParameterXWidgetXml()
+    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getParameterXWidgetXml()
     */
    @Override
    public String getParameterXWidgetXml() throws OseeCoreException {
@@ -108,56 +77,10 @@ public class EditTeamWorkflowSearchItem extends WorldSearchItem implements IWorl
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getTableLoadOptions()
+    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#performSearchGetResults(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
     */
    @Override
-   public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getWorldEditorArtifacts(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
-   @Override
-   public Collection<? extends Artifact> getWorldEditorArtifacts(SearchType searchType) throws OseeCoreException {
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         @Override
-         public void run() {
-            try {
-               boolean selected = false;
-               Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
-               if (teamDefs.size() > 0) {
-                  selected = true;
-               }
-               VersionArtifact verArt = getSelectedVersionArtifact();
-               if (verArt != null) {
-                  selected = true;
-               }
-               User user = getSelectedUser();
-               if (user != null) {
-                  selected = true;
-               }
-               boolean includeCompleted = isIncludeCompletedCancelledCheckbox();
-               if (!selected) {
-                  AWorkbench.popup("ERROR", "You must select at least Team, Version or Assignee.");
-                  return;
-               }
-               if (user != null && includeCompleted) {
-                  AWorkbench.popup("ERROR", "Assignee and Include Completed are not compatible selections.");
-                  return;
-               }
-               if (user != null && includeCompleted && verArt == null && teamDefs.size() == 0) {
-                  AWorkbench.popup("ERROR", "You must select at least Team or Version with Include Completed.");
-                  return;
-               }
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
-            }
-         }
-      }, true);
+   public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
       return new TeamWorldNewSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false,
             false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReleased()).performSearchGetResults(false);
    }
@@ -166,7 +89,7 @@ public class EditTeamWorkflowSearchItem extends WorldSearchItem implements IWorl
     * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getWorldEditorLabel(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
     */
    @Override
-   public String getWorldEditorLabel(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
@@ -243,14 +166,17 @@ public class EditTeamWorkflowSearchItem extends WorldSearchItem implements IWorl
    }
 
    private User getSelectedUser() {
+      if (assigneeCombo == null) return null;
       return assigneeCombo.getUser();
    }
 
    private boolean isIncludeCompletedCancelledCheckbox() {
+      if (includeCompletedCancelledCheckbox == null) return false;
       return includeCompletedCancelledCheckbox.isSelected();
    }
 
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
+      if (versionCombo == null) return null;
       String versionStr = versionCombo.get();
       if (versionStr == null || versionStr.equals("")) return null;
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
@@ -267,11 +193,12 @@ public class EditTeamWorkflowSearchItem extends WorldSearchItem implements IWorl
    }
 
    private Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
+      if (teamCombo == null) return java.util.Collections.emptyList();
       return teamCombo.getSelectedTeamDefintions();
    }
 
    private ReleasedOption getSelectedReleased() throws OseeCoreException {
-      if (releasedCombo.get() == null || releasedCombo.get().equals("")) {
+      if (releasedCombo == null || releasedCombo.get() == null || releasedCombo.get().equals("")) {
          return ReleasedOption.Released;
       }
       return ReleasedOption.valueOf(releasedCombo.get());
@@ -290,4 +217,41 @@ public class EditTeamWorkflowSearchItem extends WorldSearchItem implements IWorl
    @Override
    public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.WorldParameterSearchItem#isParameterSelectionValid()
+    */
+   @Override
+   public Result isParameterSelectionValid() throws OseeCoreException {
+      try {
+         boolean selected = false;
+         Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
+         if (teamDefs.size() > 0) {
+            selected = true;
+         }
+         VersionArtifact verArt = getSelectedVersionArtifact();
+         if (verArt != null) {
+            selected = true;
+         }
+         User user = getSelectedUser();
+         if (user != null) {
+            selected = true;
+         }
+         boolean includeCompleted = isIncludeCompletedCancelledCheckbox();
+         if (!selected) {
+            return new Result("You must select at least Team, Version or Assignee.");
+         }
+         if (user != null && includeCompleted) {
+            return new Result("Assignee and Include Completed are not compatible selections.");
+         }
+         if (user != null && includeCompleted && verArt == null && teamDefs.size() == 0) {
+            return new Result("You must select at least Team or Version with Include Completed.");
+         }
+         return Result.TrueResult;
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+         return new Result("Exception: " + ex.getLocalizedMessage());
+      }
+   }
+
 }

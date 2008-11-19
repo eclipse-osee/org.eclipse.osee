@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class ArtIdSearchItem extends WorldSearchItem {
+public class ArtIdSearchItem extends WorldUISearchItem {
    private String enteredIds = "";
 
    public ArtIdSearchItem() {
@@ -81,10 +81,10 @@ public class ArtIdSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new ArtIdSearchItem(this);
    }
 

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactTypeSearchItem extends WorldSearchItem {
+public class ArtifactTypeSearchItem extends WorldUISearchItem {
 
    private final String artifactTypeName;
 
@@ -40,10 +40,10 @@ public class ArtifactTypeSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new ArtifactTypeSearchItem(this);
    }
 

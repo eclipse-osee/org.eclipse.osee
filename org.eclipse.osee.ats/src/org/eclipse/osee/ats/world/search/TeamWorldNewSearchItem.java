@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorldNewSearchItem extends WorldSearchItem {
+public class TeamWorldNewSearchItem extends WorldUISearchItem {
 
    public enum ReleasedOption {
       Released, UnReleased, Both
@@ -84,17 +84,17 @@ public class TeamWorldNewSearchItem extends WorldSearchItem {
       this.changeType = null;
    }
 
-   public TeamWorldNewSearchItem(TeamWorldNewSearchItem teamWorldSearchItem) {
-      super(teamWorldSearchItem);
+   public TeamWorldNewSearchItem(TeamWorldNewSearchItem teamWorldUISearchItem) {
+      super(teamWorldUISearchItem);
       this.versionArt = null;
       this.userArt = null;
       this.releasedOption = null;
-      this.recurseChildren = teamWorldSearchItem.recurseChildren;
-      this.teamDefNames = teamWorldSearchItem.teamDefNames;
-      this.teamDefs = teamWorldSearchItem.teamDefs;
-      this.showFinished = teamWorldSearchItem.showFinished;
-      this.showAction = teamWorldSearchItem.showAction;
-      this.changeType = teamWorldSearchItem.changeType;
+      this.recurseChildren = teamWorldUISearchItem.recurseChildren;
+      this.teamDefNames = teamWorldUISearchItem.teamDefNames;
+      this.teamDefs = teamWorldUISearchItem.teamDefs;
+      this.showFinished = teamWorldUISearchItem.showFinished;
+      this.showAction = teamWorldUISearchItem.showAction;
+      this.changeType = teamWorldUISearchItem.changeType;
    }
 
    public Collection<String> getProductSearchName() {
@@ -105,7 +105,7 @@ public class TeamWorldNewSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
@@ -208,10 +208,10 @@ public class TeamWorldNewSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new TeamWorldNewSearchItem(this);
    }
 

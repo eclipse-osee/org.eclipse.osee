@@ -13,30 +13,29 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
-import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
+public class WorldEditorParameterSearchItemProvider implements IWorldEditorParameterProvider {
 
-   private final WorldUISearchItem worldUISearchItem;
+   private final WorldParameterSearchItem worldParameterSearchItem;
    private final TableLoadOption[] tableLoadOptions;
    private final CustomizeData customizeData;
 
-   public WorldEditorSearchItemProvider(WorldUISearchItem worldUISearchItem) {
-      this(worldUISearchItem, null, TableLoadOption.None);
+   public WorldEditorParameterSearchItemProvider(WorldParameterSearchItem worldParameterSearchItem) {
+      this(worldParameterSearchItem, null, TableLoadOption.None);
    }
 
-   public WorldEditorSearchItemProvider(WorldUISearchItem worldUISearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
-      this.worldUISearchItem = worldUISearchItem;
+   public WorldEditorParameterSearchItemProvider(WorldParameterSearchItem worldParameterSearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
+      this.worldParameterSearchItem = worldParameterSearchItem;
       this.customizeData = customizeData;
       this.tableLoadOptions = tableLoadOptions;
    }
@@ -45,7 +44,7 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
     * @return the worldSearchItem
     */
    public WorldSearchItem getWorldSearchItem() {
-      return worldUISearchItem;
+      return worldParameterSearchItem;
    }
 
    /* (non-Javadoc)
@@ -53,16 +52,10 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
     */
    @Override
    public String getName() throws OseeCoreException {
-      return worldUISearchItem.getName();
+      return worldParameterSearchItem.getName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getSelectedName(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
-   @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
-      return worldUISearchItem.getSelectedName(searchType);
-   }
+   private boolean firstTime = true;
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldEditorProvider#run(org.eclipse.osee.ats.world.WorldEditor)
@@ -70,18 +63,24 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
 
-      Collection<TableLoadOption> options = Collections.getAggregate(tableLoadOptions);
-      if (!options.contains(TableLoadOption.NoUI) && searchType == SearchType.Search) {
-         worldUISearchItem.performUI(searchType);
+      if (firstTime) {
+         firstTime = false;
+         return;
       }
-      if (worldUISearchItem.isCancelled()) return;
+      if (worldParameterSearchItem.isCancelled()) return;
+
+      Result result = worldParameterSearchItem.isParameterSelectionValid();
+      if (result.isFalse()) {
+         result.popup();
+         return;
+      }
 
       LoadTableJob job = null;
-      job = new LoadTableJob(worldEditor, worldUISearchItem, searchType);
+      job = new LoadTableJob(worldEditor, worldParameterSearchItem, searchType, tableLoadOptions);
       job.setUser(false);
       job.setPriority(Job.LONG);
       job.schedule();
-      if (options.contains(TableLoadOption.ForcePend)) {
+      if (forcePend) {
          try {
             job.join();
          } catch (InterruptedException ex) {
@@ -89,19 +88,20 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
          }
       }
    }
-
    private class LoadTableJob extends Job {
 
-      private final WorldUISearchItem worldUISearchItem;
+      private final WorldParameterSearchItem worldParameterSearchItem;
       private boolean cancel = false;
       private final SearchType searchType;
       private final WorldEditor worldEditor;
+      private final TableLoadOption[] tableLoadOptions;
 
-      public LoadTableJob(WorldEditor worldEditor, WorldUISearchItem worldUISearchItem, SearchType searchType) throws OseeCoreException {
-         super("Loading \"" + worldUISearchItem.getSelectedName(searchType) + "\"...");
+      public LoadTableJob(WorldEditor worldEditor, WorldParameterSearchItem worldParameterSearchItem, SearchType searchType, TableLoadOption[] tableLoadOptions) throws OseeCoreException {
+         super("Loading \"" + worldParameterSearchItem.getSelectedName(searchType) + "\"...");
          this.worldEditor = worldEditor;
-         this.worldUISearchItem = worldUISearchItem;
+         this.worldParameterSearchItem = worldParameterSearchItem;
          this.searchType = searchType;
+         this.tableLoadOptions = tableLoadOptions;
       }
 
       /*
@@ -114,15 +114,15 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
 
          String selectedName = "";
          try {
-            selectedName = worldUISearchItem.getSelectedName(searchType);
+            selectedName = worldParameterSearchItem.getSelectedName(searchType);
             worldEditor.setTableTitle("Loading \"" + (selectedName != null ? selectedName : "") + "\"...", false);
             cancel = false;
-            worldUISearchItem.setCancelled(cancel);
-            final Collection<Artifact> artifacts;
+            worldParameterSearchItem.setCancelled(cancel);
+            final Collection<? extends Artifact> artifacts;
             worldEditor.getWorldComposite().getXViewer().clear();
-            artifacts = worldUISearchItem.performSearchGetResults(false, searchType);
+            artifacts = worldParameterSearchItem.performSearchGetResults(searchType);
             if (artifacts.size() == 0) {
-               if (worldUISearchItem.isCancelled()) {
+               if (worldParameterSearchItem.isCancelled()) {
                   monitor.done();
                   worldEditor.setTableTitle("CANCELLED - " + selectedName, false);
                   return Status.CANCEL_STATUS;
@@ -132,8 +132,8 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
                   return Status.OK_STATUS;
                }
             }
-            worldEditor.getWorldComposite().load(
-                  (worldUISearchItem.getSelectedName(searchType) != null ? selectedName : ""), artifacts, customizeData);
+            worldEditor.getWorldComposite().load((selectedName != null ? selectedName : ""), artifacts, customizeData,
+                  tableLoadOptions);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
@@ -146,6 +146,30 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
          monitor.done();
          return Status.OK_STATUS;
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getSelectedName(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
+    */
+   @Override
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+      return worldParameterSearchItem.getSelectedName(searchType);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getParameterXWidgetXml()
+    */
+   @Override
+   public String getParameterXWidgetXml() throws OseeCoreException {
+      return worldParameterSearchItem.getParameterXWidgetXml();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#performSearchGetResults(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
+    */
+   @Override
+   public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
+      return worldParameterSearchItem.performSearchGetResults(searchType);
    }
 
 }

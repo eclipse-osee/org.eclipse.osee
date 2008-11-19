@@ -83,7 +83,7 @@ public class WorldEditorInput implements IEditorInput {
    @Override
    public String getName() {
       try {
-         return iWorldEditorProvider.getWorldEditorLabel(null);
+         return iWorldEditorProvider.getName();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "Exception getting name: " + ex.getLocalizedMessage();

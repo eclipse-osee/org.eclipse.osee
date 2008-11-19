@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 /**
  * @author Donald G. Dunne
  */
-public class NextVersionSearchItem extends WorldSearchItem {
+public class NextVersionSearchItem extends WorldUISearchItem {
 
    private final TeamDefinitionArtifact teamDefHoldingVersions;
    private TeamDefinitionArtifact selectedTeamDef;
@@ -52,7 +52,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       String name = super.getName();
       TeamDefinitionArtifact teamDef = getTeamDefinition(searchType);
       try {
@@ -76,7 +76,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#performSearch()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#performSearch()
     */
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
@@ -120,10 +120,10 @@ public class NextVersionSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new NextVersionSearchItem(this);
    }
 

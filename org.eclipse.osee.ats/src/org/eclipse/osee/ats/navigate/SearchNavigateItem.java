@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 
 /**
@@ -23,8 +24,9 @@ public class SearchNavigateItem extends XNavigateItem {
    /**
     * @param parent
     * @param wsi
+    * @throws OseeCoreException 
     */
-   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi) {
+   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi) throws OseeCoreException {
       super(parent, wsi.getName());
       this.wsi = wsi;
    }

@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 /**
  * @author Donald G. Dunne
  */
-public class UserCommunitySearchItem extends WorldSearchItem {
+public class UserCommunitySearchItem extends WorldUISearchItem {
 
    private String userComm;
    private String selectedUserComm;
@@ -60,7 +60,7 @@ public class UserCommunitySearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return String.format("%s - %s", super.getSelectedName(searchType), getGroupSearchName());
    }
 
@@ -121,10 +121,10 @@ public class UserCommunitySearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new UserCommunitySearchItem(this);
    }
 

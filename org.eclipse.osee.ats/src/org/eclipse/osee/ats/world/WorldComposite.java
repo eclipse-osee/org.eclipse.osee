@@ -6,7 +6,6 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -178,15 +177,10 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    }
 
    public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
-      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
-      if (tableLoadOption != null) {
-         options.addAll(Arrays.asList(tableLoadOption));
-      }
-      options.add(TableLoadOption.ClearLastSearchItem);
-      load(null, name, arts, options.toArray(new TableLoadOption[options.size()]));
+      load(name, arts, null, tableLoadOption);
    }
 
-   public void load(final WorldSearchItem searchItem, final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
+   public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, TableLoadOption... tableLoadOption) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -201,6 +195,10 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                   otherArts.add(art);
             }
             worldXViewer.set(worldArts);
+            if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
+                  customizeData)) {
+               setCustomizeData(customizeData);
+            }
             if (arts.size() == 0)
                setTableTitle("No Results Found - " + name, true);
             else
@@ -224,7 +222,11 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       }
 
       public String getText(Object arg0) {
-         return ((WorldSearchItem) arg0).getSelectedName(SearchType.Search);
+         try {
+            return ((WorldSearchItem) arg0).getSelectedName(SearchType.Search);
+         } catch (OseeCoreException ex) {
+            return ex.getLocalizedMessage();
+         }
       }
 
       public void addListener(ILabelProviderListener arg0) {

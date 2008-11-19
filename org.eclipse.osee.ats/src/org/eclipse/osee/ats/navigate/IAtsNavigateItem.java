@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 
 /**
@@ -18,6 +19,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
  */
 public interface IAtsNavigateItem {
 
-   public List<XNavigateItem> getNavigateItems();
+   public List<XNavigateItem> getNavigateItems() throws OseeCoreException;
 
 }

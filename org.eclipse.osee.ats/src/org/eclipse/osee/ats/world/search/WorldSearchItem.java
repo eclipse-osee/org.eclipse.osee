@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -65,7 +64,7 @@ public abstract class WorldSearchItem {
 
    public abstract WorldSearchItem copy();
 
-   public String getName() {
+   public String getName() throws OseeCoreException {
       return name;
    }
 
@@ -75,52 +74,10 @@ public abstract class WorldSearchItem {
     * 
     * @param searchType TODO
     * @return selected name
+    * @throws OseeCoreException
     */
-   public String getSelectedName(SearchType searchType) {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return getName();
-   }
-
-   public abstract Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException;
-
-   public Collection<Artifact> performReSearch() {
-      return EMPTY_SET;
-   }
-
-   public Collection<Artifact> performSearchGetResults() throws OseeCoreException {
-      return performSearchGetResults(false, SearchType.Search);
-   }
-
-   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      return performSearchGetResults(false, searchType);
-   }
-
-   public Collection<Artifact> performSearchGetResults(boolean performUi) throws OseeCoreException {
-      return performSearchGetResults(performUi, SearchType.Search);
-   }
-
-   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws OseeCoreException {
-      cancelled = false;
-      if (performUi) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            public void run() {
-               try {
-                  performUI(searchType);
-               } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
-               }
-            }
-         }, true);
-
-      }
-      if (cancelled) return EMPTY_SET;
-      return performSearch(searchType);
-   }
-
-   public void performUI(SearchType searchType) throws OseeCoreException {
-      cancelled = false;
    }
 
    public boolean isCancelled() {
@@ -147,7 +104,12 @@ public abstract class WorldSearchItem {
 
    @Override
    public String toString() {
-      return getName();
+      try {
+         return getName();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return ex.getLocalizedMessage();
+      }
    }
 
 }

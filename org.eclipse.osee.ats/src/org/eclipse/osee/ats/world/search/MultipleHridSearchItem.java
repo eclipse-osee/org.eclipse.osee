@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class MultipleHridSearchItem extends WorldSearchItem {
+public class MultipleHridSearchItem extends WorldUISearchItem {
    private String enteredIds = "";
    Pattern numberPattern = Pattern.compile("^[0-9]+$");
 
@@ -121,10 +121,10 @@ public class MultipleHridSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new MultipleHridSearchItem(this);
    }
 

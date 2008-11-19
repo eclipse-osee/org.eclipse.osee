@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -55,6 +54,10 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    }
 
    public static void open(final IWorldEditorProvider provider) throws OseeCoreException {
+      open(provider, false);
+   }
+
+   public static void open(final IWorldEditorProvider provider, boolean forcePend) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -67,7 +70,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
-      }, provider.getTableLoadOptions().contains(TableLoadOption.ForcePend));
+      }, forcePend);
    }
 
    @Override
@@ -113,18 +116,12 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       try {
          OseeContributionItem.addTo(this, true);
 
-         IEditorInput editorInput = getEditorInput();
-         if (!(editorInput instanceof WorldEditorInput)) {
-            throw new IllegalArgumentException("Editor Input not WorldEditorInput");
-         }
-         WorldEditorInput worldEditorInput = (WorldEditorInput) editorInput;
-         IWorldEditorProvider provider = worldEditorInput.getIWorldEditorProvider();
-
-         setPartName(provider.getWorldEditorLabel(SearchType.Search));
+         IWorldEditorProvider provider = getWorldEditorProvider();
 
          createMainTab();
          createMetricsTab();
 
+         setPartName(provider.getSelectedName(SearchType.Search));
          setActivePage(mainPageIndex);
 
          // Until WorldEditor has different help, just use WorldView's help
@@ -132,6 +129,15 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   public IWorldEditorProvider getWorldEditorProvider() {
+      IEditorInput editorInput = getEditorInput();
+      if (!(editorInput instanceof WorldEditorInput)) {
+         throw new IllegalArgumentException("Editor Input not WorldEditorInput");
+      }
+      WorldEditorInput worldEditorInput = (WorldEditorInput) editorInput;
+      return worldEditorInput.getIWorldEditorProvider();
    }
 
    public void reSearch() throws OseeCoreException {
@@ -174,4 +180,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       return null;
    }
 
+   public WorldComposite getWorldComposite() {
+      return actionPage.getWorldComposite();
+   }
 }

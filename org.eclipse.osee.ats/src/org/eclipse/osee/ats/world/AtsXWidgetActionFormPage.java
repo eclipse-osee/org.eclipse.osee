@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -55,7 +56,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       this.toolkit = editor.getToolkit();
    }
 
-   public abstract String getXWidgetsXml();
+   public abstract String getXWidgetsXml() throws OseeCoreException;
 
    @Override
    protected void createFormContent(IManagedForm managedForm) {
@@ -82,8 +83,12 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       searchNameLabel = new Label(headerComp, SWT.NONE);
       toolkit.adapt(searchNameLabel, true, true);
 
-      if (getXWidgetsXml() != null && !getXWidgetsXml().equals("")) {
-         managedForm.addPart(new SectionPart(createParametersSection(body)));
+      try {
+         if (getXWidgetsXml() != null && !getXWidgetsXml().equals("")) {
+            managedForm.addPart(new SectionPart(createParametersSection(body)));
+         }
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
       managedForm.addPart(new SectionPart(createResultsSection(body)));
    }

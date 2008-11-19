@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemWorldSearchItem extends WorldSearchItem {
+public class ActionableItemWorldSearchItem extends WorldUISearchItem {
 
    private Collection<ActionableItemArtifact> actionItems;
    private Set<ActionableItemArtifact> selectedActionItems;
@@ -87,7 +87,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
@@ -208,10 +208,10 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new ActionableItemWorldSearchItem(this);
    }
 

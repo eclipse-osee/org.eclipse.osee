@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public abstract class UserSearchItem extends WorldSearchItem {
+public abstract class UserSearchItem extends WorldUISearchItem {
 
    protected final User user;
    protected User selectedUser;
@@ -41,7 +41,7 @@ public abstract class UserSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return String.format("%s - %s", super.getSelectedName(searchType), getUserSearchName());
    }
 
@@ -111,7 +111,11 @@ public abstract class UserSearchItem extends WorldSearchItem {
    public boolean equals(Object obj) {
       if (obj instanceof UserSearchItem) {
          UserSearchItem wsi = (UserSearchItem) obj;
-         if (!getClass().equals(obj.getClass()) || !wsi.getName().equals(getName()) || wsi.getLoadView() != getLoadView()) {
+         try {
+            if (!getClass().equals(obj.getClass()) || !wsi.getName().equals(getName()) || wsi.getLoadView() != getLoadView()) {
+               return false;
+            }
+         } catch (OseeCoreException ex) {
             return false;
          }
          if (getDefaultUser() != null && wsi.getDefaultUser() != null) {
@@ -127,7 +131,11 @@ public abstract class UserSearchItem extends WorldSearchItem {
     */
    @Override
    public int hashCode() {
-      return getName().hashCode() + (getDefaultUser() != null ? getDefaultUser().hashCode() : 0) * 13;
+      try {
+         return getName().hashCode() + (getDefaultUser() != null ? getDefaultUser().hashCode() : 0) * 13;
+      } catch (OseeCoreException ex) {
+         return 0;
+      }
    }
 
 }

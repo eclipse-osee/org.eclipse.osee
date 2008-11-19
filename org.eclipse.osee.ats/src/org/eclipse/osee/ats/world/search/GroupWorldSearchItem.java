@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class GroupWorldSearchItem extends WorldSearchItem {
+public class GroupWorldSearchItem extends WorldUISearchItem {
 
    private Artifact group;
    private Artifact selectedGroup;
@@ -53,15 +53,16 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return String.format("%s - %s", super.getSelectedName(searchType), getGroupSearchName());
    }
 
-   public void getProduct() {
+   public void getProduct() throws OseeCoreException {
       if (groupName == null) return;
       if (group == null) group =
             UniversalGroup.getGroups(groupName, BranchManager.getDefaultBranch()).iterator().next();
-      if (group == null) throw new IllegalArgumentException("Can't Find Universal Group for " + getName());
+      if (group == null) throw new IllegalArgumentException(
+            "Can't Find Universal Group for " + getName());
    }
 
    @Override
@@ -105,10 +106,10 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new GroupWorldSearchItem(this);
    }
 

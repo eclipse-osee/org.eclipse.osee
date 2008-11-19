@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttributeSearchItem extends WorldSearchItem {
+public class AtsAttributeSearchItem extends WorldUISearchItem {
 
    private String searchStr;
    private final String attributeName;
@@ -57,7 +57,7 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) {
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return String.format("%s - %s", super.getSelectedName(searchType), searchStr);
    }
 
@@ -100,10 +100,10 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new AtsAttributeSearchItem(this);
    }
 

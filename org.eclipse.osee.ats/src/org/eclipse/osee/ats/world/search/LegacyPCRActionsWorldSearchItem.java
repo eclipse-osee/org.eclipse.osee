@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
 /**
  * @author Donald G. Dunne
  */
-public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
+public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
    private final boolean returnActions;
    private final Collection<String> pcrIds;
    private final Collection<TeamDefinitionArtifact> teamDefs;
@@ -76,10 +76,10 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
     */
    @Override
-   public WorldSearchItem copy() {
+   public WorldUISearchItem copy() {
       return new LegacyPCRActionsWorldSearchItem(this);
    }
 
