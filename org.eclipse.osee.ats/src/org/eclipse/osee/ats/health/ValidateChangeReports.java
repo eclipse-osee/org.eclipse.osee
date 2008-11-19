@@ -324,14 +324,22 @@ public class ValidateChangeReports extends XNavigateItemAction {
    }
 
    private static boolean isXmlChangeDataEqual(String data1, String data2) {
-      return getCheckSum(data1) == getCheckSum(data2);
+      int checkSum1 = getCheckSum(data1);
+      int checkSum2 = getCheckSum(data2);
+
+      boolean result = checkSum1 == checkSum2;
+      if (!result) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("Checksums not equal - stored:[%s] current:[%s]",
+               checkSum1, checkSum2));
+      }
+      return result;
    }
 
    private static int getCheckSum(String data) {
       int checksum = -1;
       for (int index = 0; index < data.length(); index++) {
          char character = data.charAt(index);
-         if (character != '\n' && character != '\t' && character != ' ') {
+         if (character != '\n' && character != '\t' && character != '\r' && character != ' ') {
             checksum += character;
          }
       }
