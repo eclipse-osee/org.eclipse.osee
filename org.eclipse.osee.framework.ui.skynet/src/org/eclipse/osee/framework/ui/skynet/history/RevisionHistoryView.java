@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.history;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.ITreeViewerListener;
-import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -41,7 +39,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -101,7 +98,6 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
       treeViewer.setLabelProvider(new RevisionHistoryLabelProvider());
 
       createColumns();
-      createTreeExpandListener();
       treeViewer.addDoubleClickListener(new Transaction2ClickListener());
 
       Menu popupMenu = new Menu(parent);
@@ -144,27 +140,6 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
 
    }
 
-   private void createTreeExpandListener() {
-      treeViewer.addTreeListener(new ITreeViewerListener() {
-
-         public void treeCollapsed(TreeExpansionEvent event) {
-            Display.getCurrent().asyncExec(new Runnable() {
-               public void run() {
-                  packColumnData();
-               }
-            });
-         }
-
-         public void treeExpanded(TreeExpansionEvent event) {
-            Display.getCurrent().asyncExec(new Runnable() {
-               public void run() {
-                  packColumnData();
-               }
-            });
-         }
-      });
-   }
-
    private void createColumns() {
       Tree tree = treeViewer.getTree();
 
@@ -205,19 +180,11 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
          //         historyTable.setInput(new ArtifactChange(ChangeType.OUTGOING, ModificationType.CHANGE, artifact, null, null, points.getKey(), points.getValue(),0));
          treeViewer.setInput(artifact);
          setContentDescription("Artifact: " + artifact.getDescriptiveName());
-         packColumnData();
       }
    }
 
    public String getActionDescription() {
       return "";
-   }
-
-   private void packColumnData() {
-      TreeColumn[] columns = treeViewer.getTree().getColumns();
-      for (TreeColumn column : columns) {
-         column.pack();
-      }
    }
 
    private void setHelpContexts() {
