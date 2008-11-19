@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.sql.Timestamp;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -46,7 +47,13 @@ public class TransactionData {
       this.branch = branch;
 
       try {
-         User user = UserManager.getUserByArtId(authorId);
+         User user = null;
+         if (authorId == 0) {
+            user = UserManager.getUser(SystemUser.NoOne);
+            authorId = user.getArtId();
+         } else {
+            user = UserManager.getUserByArtId(authorId);
+         }
          name = user.getDescriptiveName();
       } catch (UserNotInDatabase ex) {
          name = "Could not resolve artId: " + authorId;
