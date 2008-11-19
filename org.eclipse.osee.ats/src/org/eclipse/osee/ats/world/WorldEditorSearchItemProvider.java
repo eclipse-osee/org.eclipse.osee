@@ -111,7 +111,6 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
        */
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-
          String selectedName = "";
          try {
             selectedName = worldUISearchItem.getSelectedName(searchType);
@@ -123,28 +122,23 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
             artifacts = worldUISearchItem.performSearchGetResults(false, searchType);
             if (artifacts.size() == 0) {
                if (worldUISearchItem.isCancelled()) {
-                  monitor.done();
                   worldEditor.setTableTitle("CANCELLED - " + selectedName, false);
                   return Status.CANCEL_STATUS;
                } else {
-                  monitor.done();
                   worldEditor.setTableTitle("No Results Found - " + selectedName, true);
                   return Status.OK_STATUS;
                }
             }
             worldEditor.getWorldComposite().load((selectedName != null ? selectedName : ""), artifacts, customizeData);
          } catch (final Exception ex) {
-            String str = "Exception occurred. Network may be down.";
-            if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
-                  " => " + ex.getLocalizedMessage();
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+         } finally {
             monitor.done();
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
          }
-         monitor.done();
+
          return Status.OK_STATUS;
       }
    }
-
 }
