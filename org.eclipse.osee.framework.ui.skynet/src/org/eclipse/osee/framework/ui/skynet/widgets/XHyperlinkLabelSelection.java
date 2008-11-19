@@ -29,7 +29,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public abstract class XHyperlinkLabelSelection extends XWidget {
 
    Label valueLabel;
-   Label hyperLinkLabel;
+   HyperLinkLabel hyperLinkLabel;
 
    /**
     * @param label
@@ -88,13 +88,8 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
       });
       valueLabel = new Label(comp, SWT.NONE);
       valueLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-   }
-
-   @Override
-   public void createWidgets(FormToolkit toolkit, Composite parent, int horizontalSpan) {
-      this.createWidgets(parent, horizontalSpan);
-      toolkit.adapt(valueLabel, false, false);
       valueLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+
       refresh();
    }
 
@@ -105,10 +100,12 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
     */
    @Override
    public void refresh() {
+      hyperLinkLabel.refresh();
       hyperLinkLabel.setText(getHyperlinkLabelString());
       valueLabel.setText(getCurrentValue());
       valueLabel.getParent().layout();
       setLabelError();
+
    }
 
    /*
@@ -119,6 +116,16 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
    @Override
    public Control getControl() {
       return valueLabel;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#adaptControls(org.eclipse.ui.forms.widgets.FormToolkit)
+    */
+   @Override
+   public void adaptControls(FormToolkit toolkit) {
+      super.adaptControls(toolkit);
+      toolkit.adapt(hyperLinkLabel, true, true);
+      hyperLinkLabel.refresh();
    }
 
    /*

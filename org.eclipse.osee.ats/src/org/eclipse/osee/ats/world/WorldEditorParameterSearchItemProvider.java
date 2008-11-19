@@ -65,6 +65,7 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
 
       if (firstTime) {
          firstTime = false;
+         worldEditor.setTableTitle("Enter options and select \"Search\"", false);
          return;
       }
       if (worldParameterSearchItem.isCancelled()) return;
@@ -132,8 +133,8 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
                   return Status.OK_STATUS;
                }
             }
-            worldEditor.getWorldComposite().load((selectedName != null ? selectedName : ""), artifacts, customizeData,
-                  tableLoadOptions);
+            worldEditor.getWorldComposite().load(worldParameterSearchItem.getSelectedName(searchType), artifacts,
+                  customizeData, tableLoadOptions);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=

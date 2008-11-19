@@ -65,7 +65,7 @@ public class EditTeamWorkflowSearchItem extends WorldParameterSearchItem {
       //
       "<XWidget xwidgetType=\"XHyperlabelTeamDefinitionSelection\" displayName=\"Team Definitions(s)\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XCombo()\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
+      "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"8\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget xwidgetType=\"XCombo(Both,Released,UnReleased)\" displayName=\"Released\" horizontalLabel=\"true\"/>" +
       //
@@ -199,7 +199,7 @@ public class EditTeamWorkflowSearchItem extends WorldParameterSearchItem {
 
    private ReleasedOption getSelectedReleased() throws OseeCoreException {
       if (releasedCombo == null || releasedCombo.get() == null || releasedCombo.get().equals("")) {
-         return ReleasedOption.Released;
+         return ReleasedOption.Both;
       }
       return ReleasedOption.valueOf(releasedCombo.get());
    }

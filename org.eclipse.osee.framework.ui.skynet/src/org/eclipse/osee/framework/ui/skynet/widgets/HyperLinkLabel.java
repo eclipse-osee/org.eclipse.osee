@@ -89,6 +89,7 @@ public class HyperLinkLabel extends Label {
    public void refresh() {
       if (hyperEnabled) {
          setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+         removeMouseTrackListener(listener);
          addMouseTrackListener(listener);
       } else {
          setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));

@@ -101,7 +101,11 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       parametersContainer = toolkit.createClientContainer(parameterSection, 1);
       parameterSection.setExpanded(true);
 
-      Button runButton = toolkit.createButton(parameterSection, "Search", SWT.PUSH);
+      Composite mainComp = new Composite(parametersContainer, SWT.NONE);
+      mainComp.setLayout(new GridLayout(2, false));
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
+
+      Button runButton = toolkit.createButton(parametersContainer, "Search", SWT.PUSH);
       runButton.addSelectionListener(new SelectionAdapter() {
          /* (non-Javadoc)
           * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
