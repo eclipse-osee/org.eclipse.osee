@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -61,7 +62,7 @@ public class XChangeViewer extends XWidget implements IActionable {
    public final static String normalColor = "#EEEEEE";
    private static final String LOADING = "Loading ...";
    private static final String NOT_CHANGES = "No changes were found";
-   private Label extraInfoLabel;
+   protected Label extraInfoLabel;
    private Branch branch;
    private TransactionId transactionId;
 
@@ -145,7 +146,7 @@ public class XChangeViewer extends XWidget implements IActionable {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            setInputData(branch, transactionId);
+            setInputData(branch, transactionId, true);
          }
       });
 
@@ -228,7 +229,7 @@ public class XChangeViewer extends XWidget implements IActionable {
       return xChangeViewer.getInput();
    }
 
-   public void setInputData(final Branch branch, final TransactionId transactionId) {
+   public void setInputData(final Branch branch, final TransactionId transactionId, final boolean loadChangeReport) {
       this.branch = branch;
       this.transactionId = transactionId;
 
@@ -238,34 +239,36 @@ public class XChangeViewer extends XWidget implements IActionable {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            final Collection<Change> changes;
             final boolean hasBranch = branch != null;
+            final Collection<Change> changes = new ArrayList<Change>() ;
             SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
 
             try {
-               if (hasBranch) {
-                  changes = ChangeManager.getChangesPerBranch(branch, swtMonitor);
-               } else {
-                  changes = ChangeManager.getChangesPerTransaction(transactionId, swtMonitor);
+               if(loadChangeReport){	
+            	   changes.addAll((hasBranch ? ChangeManager.getChangesPerBranch(branch, swtMonitor) : ChangeManager.getChangesPerTransaction(transactionId, swtMonitor)));
                }
-
-               Displays.ensureInDisplayThread(new Runnable() {
-                  public void run() {
-                     if (changes.size() == 0) {
-                        extraInfoLabel.setText(NOT_CHANGES);
-                        xChangeViewer.setInput(changes);
-                     } else {
-                        String infoLabel =
-                              String.format(
-                                    "Changes %s to branch: %s\n%s",
-                                    hasBranch ? "made" : "committed",
-                                    hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
-                                    hasBranch ? "" : "Comment: " + transactionId.getComment());
-                        extraInfoLabel.setText(infoLabel);
-                        xChangeViewer.setInput(changes);
-                     }
-                  }
-               });
+	
+	               Displays.ensureInDisplayThread(new Runnable() {
+	                  public void run() {
+	                	 if(loadChangeReport){ 
+		                     if (changes.size() == 0) {
+		                        extraInfoLabel.setText(NOT_CHANGES);
+		                        xChangeViewer.setInput(changes);
+		                     } else {
+		                        String infoLabel =
+		                              String.format(
+		                                    "Changes %s to branch: %s\n%s",
+		                                    hasBranch ? "made" : "committed",
+		                                    hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
+		                                    hasBranch ? "" : "Comment: " + transactionId.getComment());
+		                        extraInfoLabel.setText(infoLabel);
+		                        xChangeViewer.setInput(changes);
+		                     }
+	                	 }else{              	
+	                	  extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
+	                	 }
+	               }
+	               });
             } catch (OseeCoreException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }

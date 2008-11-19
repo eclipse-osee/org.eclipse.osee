@@ -13,6 +13,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -62,15 +63,15 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
 
    public static void open(Branch branch) {
       if (branch == null) throw new IllegalArgumentException("Branch can't be null");
-      ChangeView.openViewUpon(branch, null);
+      ChangeView.openViewUpon(branch, null, true);
    }
 
    public static void open(TransactionId transactionId) {
       if (transactionId == null) throw new IllegalArgumentException("TransactionId can't be null");
-      ChangeView.openViewUpon(null, transactionId);
+      ChangeView.openViewUpon(null, transactionId, true);
    }
 
-   private static void openViewUpon(final Branch branch, final TransactionId transactionId) {
+   private static void openViewUpon(final Branch branch, final TransactionId transactionId, final Boolean loadChangeReport) {
       Job job = new Job("Open Change View") {
 
          @Override
@@ -84,7 +85,8 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
                                  VIEW_ID,
                                  String.valueOf(branch != null ? branch.getBranchId() : transactionId.getTransactionNumber()),
                                  IWorkbenchPage.VIEW_VISIBLE);
-                     changeView.explore(branch, transactionId);
+                     
+                	 changeView.explore(branch, transactionId, loadChangeReport);
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }
@@ -145,16 +147,18 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
    }
 
-   private void explore(final Branch branch, final TransactionId transactionId) {
+   private void explore(final Branch branch, final TransactionId transactionId, boolean loadChangeReport) {
       if (xChangeViewer != null) {
          this.branch = branch;
          this.transactionId = transactionId;
+         
          if (branch == null) {
             setPartName("Change Report: " + transactionId.getBranch().getBranchShortName() + " - " + transactionId.getComment());
          } else {
             setPartName("Change Report: " + branch.getBranchShortName());
          }
-         xChangeViewer.setInputData(branch, transactionId);
+         
+         xChangeViewer.setInputData(branch, transactionId, loadChangeReport);
       }
    }
 
@@ -196,11 +200,11 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
             if (memento != null) {
                branchId = memento.getInteger(BRANCH_ID);
                if (branchId != null) {
-                  openViewUpon(BranchManager.getBranch(branchId), null);
+                  openViewUpon(BranchManager.getBranch(branchId), null, false);
                } else {
                   Integer transactionNumber = memento.getInteger(TRANSACTION_NUMBER);
                   if (transactionNumber != null && transactionNumber > -1) {
-                     openViewUpon(null, TransactionIdManager.getTransactionId(transactionNumber));
+                     openViewUpon(null, TransactionIdManager.getTransactionId(transactionNumber), false);
                   }
                }
             }
@@ -226,7 +230,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                try {
-                  explore(branch, transactionId);
+                  explore(branch, transactionId, true);
                } catch (Exception ex) {
                   OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                }
