@@ -11,7 +11,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.world.WorldParameterSearchItem;
+import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -33,7 +33,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public class EditTeamWorkflowSearchItem extends WorldParameterSearchItem {
+public class EditTeamWorkflowSearchItem extends WorldEditorParameterSearchItem {
 
    private XHyperlabelTeamDefinitionSelection teamCombo = null;
    private XCombo releasedCombo = null;
@@ -94,23 +94,22 @@ public class EditTeamWorkflowSearchItem extends WorldParameterSearchItem {
       StringBuffer sb = new StringBuffer();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
-         sb.append("Team Definitions(s): " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",",
-               teamDefs) + " - ");
+         sb.append(" - Teams: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
       }
       if (getSelectedVersionArtifact() != null) {
-         sb.append("Version: " + getSelectedVersionArtifact() + " - ");
+         sb.append(" - Version: " + getSelectedVersionArtifact());
       }
       ReleasedOption releaseOption = getSelectedReleased();
       if (releaseOption != null && releaseOption != ReleasedOption.Both) {
-         sb.append("ReleasedOption: " + releaseOption + " - ");
+         sb.append(" - ReleasedOption: " + releaseOption);
       }
       if (getSelectedUser() != null) {
-         sb.append("Assignee: " + getSelectedUser() + " - ");
+         sb.append(" - Assignee: " + getSelectedUser());
       }
       if (isIncludeCompletedCancelledCheckbox()) {
-         sb.append("Include Completed/Cancelled");
+         sb.append(" - Include Completed/Cancelled");
       }
-      return "Team Workflows - " + sb.toString();
+      return "Team Workflows" + sb.toString();
    }
 
    /* (non-Javadoc)

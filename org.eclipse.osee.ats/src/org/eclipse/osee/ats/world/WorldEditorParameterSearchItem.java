@@ -15,12 +15,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResol
 /**
  * @author Donald G. Dunne
  */
-public abstract class WorldParameterSearchItem extends WorldSearchItem implements IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
+public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
 
    /**
     * @param name
     */
-   public WorldParameterSearchItem(String name) {
+   public WorldEditorParameterSearchItem(String name) {
       super(name);
    }
 
@@ -28,14 +28,14 @@ public abstract class WorldParameterSearchItem extends WorldSearchItem implement
     * @param name
     * @param loadView
     */
-   public WorldParameterSearchItem(String name, LoadView loadView) {
+   public WorldEditorParameterSearchItem(String name, LoadView loadView) {
       super(name, loadView);
    }
 
    /**
     * @param worldSearchItem
     */
-   public WorldParameterSearchItem(WorldSearchItem worldSearchItem) {
+   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem) {
       super(worldSearchItem);
    }
 

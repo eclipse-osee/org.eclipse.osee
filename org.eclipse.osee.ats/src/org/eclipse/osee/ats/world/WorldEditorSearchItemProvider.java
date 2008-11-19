@@ -132,8 +132,7 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
                   return Status.OK_STATUS;
                }
             }
-            worldEditor.getWorldComposite().load(
-                  (worldUISearchItem.getSelectedName(searchType) != null ? selectedName : ""), artifacts, customizeData);
+            worldEditor.getWorldComposite().load((selectedName != null ? selectedName : ""), artifacts, customizeData);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=

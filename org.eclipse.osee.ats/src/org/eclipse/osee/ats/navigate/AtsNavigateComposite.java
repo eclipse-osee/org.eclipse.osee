@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.task.TaskEditorSearchItemProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.WorldEditorSearchItemProvider;
-import org.eclipse.osee.ats.world.WorldParameterSearchItem;
+import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
@@ -64,8 +64,8 @@ public class AtsNavigateComposite extends XNavigateComposite {
             if (worldSearchItem instanceof WorldUISearchItem) {
                WorldEditor.open(new WorldEditorSearchItemProvider((WorldUISearchItem) worldSearchItem.copy(), null,
                      tableLoadOptions));
-            } else if (worldSearchItem instanceof WorldParameterSearchItem) {
-               WorldEditor.open(new WorldEditorParameterSearchItemProvider((WorldParameterSearchItem) worldSearchItem.copy(),
+            } else if (worldSearchItem instanceof WorldEditorParameterSearchItem) {
+               WorldEditor.open(new WorldEditorParameterSearchItemProvider((WorldEditorParameterSearchItem) worldSearchItem.copy(),
                      null, tableLoadOptions));
             }
          } else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) {

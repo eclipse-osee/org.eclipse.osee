@@ -131,6 +131,10 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       }
    }
 
+   public void setEditorTitle(String str) {
+      setPartName(str);
+   }
+
    public IWorldEditorProvider getWorldEditorProvider() {
       IEditorInput editorInput = getEditorInput();
       if (!(editorInput instanceof WorldEditorInput)) {

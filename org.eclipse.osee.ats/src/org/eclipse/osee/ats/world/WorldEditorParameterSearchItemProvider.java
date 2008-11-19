@@ -28,15 +28,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeD
  */
 public class WorldEditorParameterSearchItemProvider implements IWorldEditorParameterProvider {
 
-   private final WorldParameterSearchItem worldParameterSearchItem;
+   private final WorldEditorParameterSearchItem worldParameterSearchItem;
    private final TableLoadOption[] tableLoadOptions;
    private final CustomizeData customizeData;
 
-   public WorldEditorParameterSearchItemProvider(WorldParameterSearchItem worldParameterSearchItem) {
+   public WorldEditorParameterSearchItemProvider(WorldEditorParameterSearchItem worldParameterSearchItem) {
       this(worldParameterSearchItem, null, TableLoadOption.None);
    }
 
-   public WorldEditorParameterSearchItemProvider(WorldParameterSearchItem worldParameterSearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
+   public WorldEditorParameterSearchItemProvider(WorldEditorParameterSearchItem worldParameterSearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
       this.worldParameterSearchItem = worldParameterSearchItem;
       this.customizeData = customizeData;
       this.tableLoadOptions = tableLoadOptions;
@@ -93,13 +93,13 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
    }
    private class LoadTableJob extends Job {
 
-      private final WorldParameterSearchItem worldParameterSearchItem;
+      private final WorldEditorParameterSearchItem worldParameterSearchItem;
       private boolean cancel = false;
       private final SearchType searchType;
       private final WorldEditor worldEditor;
       private final TableLoadOption[] tableLoadOptions;
 
-      public LoadTableJob(WorldEditor worldEditor, WorldParameterSearchItem worldParameterSearchItem, SearchType searchType, TableLoadOption[] tableLoadOptions) throws OseeCoreException {
+      public LoadTableJob(WorldEditor worldEditor, WorldEditorParameterSearchItem worldParameterSearchItem, SearchType searchType, TableLoadOption[] tableLoadOptions) throws OseeCoreException {
          super("Loading \"" + worldParameterSearchItem.getSelectedName(searchType) + "\"...");
          this.worldEditor = worldEditor;
          this.worldParameterSearchItem = worldParameterSearchItem;
@@ -135,8 +135,8 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
                   return Status.OK_STATUS;
                }
             }
-            worldEditor.getWorldComposite().load(worldParameterSearchItem.getSelectedName(searchType), artifacts,
-                  customizeData, tableLoadOptions);
+            worldEditor.getWorldComposite().load(selectedName, artifacts, customizeData, tableLoadOptions);
+            worldEditor.setEditorTitle(selectedName);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
