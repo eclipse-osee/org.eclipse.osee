@@ -307,6 +307,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    //TODO should not return null but currently application code expects it to
+   /**
+    * The method should be used when the caller expects this artifact to have exactly one parent. Otherwise use
+    * hasParent() to safely determine whether
+    */
    public Artifact getParent() throws OseeCoreException {
       try {
          return RelationManager.getRelatedArtifact(this, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT);
@@ -318,6 +322,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return null;
    }
 
+   /**
+    * @return whether this artifact has at least one parent artifact related by a relation of type default hierarchical
+    * @throws OseeCoreException
+    */
    public boolean hasParent() throws OseeCoreException {
       return getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT) > 0;
    }
