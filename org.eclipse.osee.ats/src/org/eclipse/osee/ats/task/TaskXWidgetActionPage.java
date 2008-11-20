@@ -72,16 +72,16 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage {
     */
    @Override
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
-      if (taskEditor.getTaskEditorProvider() instanceof TaskEditorSearchItemProvider) {
-         if (((TaskEditorSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem() instanceof TaskEditorParameterSearchItem) {
-            return ((TaskEditorParameterSearchItem) ((TaskEditorSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem());
+      if (taskEditor.getTaskEditorProvider() instanceof TaskEditorParameterSearchItemProvider) {
+         if (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem() instanceof TaskEditorParameterSearchItem) {
+            return (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem());
          }
       }
       return null;
    }
 
    public void reSearch() throws OseeCoreException {
-      taskEditor.getTaskActionPage().getTaskComposite().loadTable();
+      taskEditor.handleRefreshAction();
    }
 
    /* (non-Javadoc)
@@ -91,7 +91,7 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage {
    public String getXWidgetsXml() throws OseeCoreException {
       if (taskEditor.getTaskEditorProvider() instanceof TaskEditorParameterSearchItemProvider) {
          if (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem() instanceof TaskEditorParameterSearchItem) {
-            return ((TaskEditorParameterSearchItem) ((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem()).getParameterXWidgetXml();
+            return (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem()).getParameterXWidgetXml();
          }
       }
       return null;
