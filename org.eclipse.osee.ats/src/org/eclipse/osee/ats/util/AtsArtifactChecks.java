@@ -16,9 +16,9 @@ import java.util.Set;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
-import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem.ReleasedOption;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -80,8 +80,8 @@ public class AtsArtifactChecks extends ArtifactCheck {
       }
       if (teamDefs.size() > 0) {
 
-         TeamWorldNewSearchItem srch =
-               new TeamWorldNewSearchItem("Team Def search", teamDefs, true, false, true, null, null,
+         TeamWorldSearchItem srch =
+               new TeamWorldSearchItem("Team Def search", teamDefs, true, false, true, null, null,
                      ReleasedOption.Both);
          if (srch.performSearchGetResults(false).size() > 0) {
             return new Result(

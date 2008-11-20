@@ -90,10 +90,10 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
          if (getXWidgetsXml() != null && !getXWidgetsXml().equals("")) {
             managedForm.addPart(new SectionPart(createParametersSection(body)));
          }
+         managedForm.addPart(new SectionPart(createResultsSection(body)));
       } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
-      managedForm.addPart(new SectionPart(createResultsSection(body)));
    }
 
    private Section createParametersSection(Composite body) {
@@ -173,5 +173,5 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
          return WorldEditor.EDITOR_ID;
    }
 
-   public abstract Section createResultsSection(Composite body);
+   public abstract Section createResultsSection(Composite body) throws OseeCoreException;
 }

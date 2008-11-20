@@ -6,11 +6,8 @@
 package org.eclipse.osee.ats.task;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.world.search.WorldSearchItem;
-import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -18,17 +15,17 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditorSearchItemProvider implements ITaskEditorProvider {
+public class TaskEditorParameterSearchItemProvider implements ITaskEditorProvider {
 
-   private final WorldSearchItem worldSearchItem;
+   private final TaskEditorParameterSearchItem worldParameterSearchItem;
    private final TableLoadOption[] tableLoadOptions;
 
-   public TaskEditorSearchItemProvider(WorldSearchItem worldSearchItem) {
-      this(worldSearchItem, TableLoadOption.None);
+   public TaskEditorParameterSearchItemProvider(TaskEditorParameterSearchItem worldParameterSearchItem) {
+      this(worldParameterSearchItem, TableLoadOption.None);
    }
 
-   public TaskEditorSearchItemProvider(WorldSearchItem worldSearchItem, TableLoadOption... tableLoadOptions) {
-      this.worldSearchItem = worldSearchItem;
+   public TaskEditorParameterSearchItemProvider(TaskEditorParameterSearchItem worldParameterSearchItem, TableLoadOption... tableLoadOptions) {
+      this.worldParameterSearchItem = worldParameterSearchItem;
       this.tableLoadOptions = tableLoadOptions;
    }
 
@@ -45,7 +42,7 @@ public class TaskEditorSearchItemProvider implements ITaskEditorProvider {
     */
    @Override
    public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
-      return worldSearchItem.getSelectedName(searchType);
+      return worldParameterSearchItem.getSelectedName(searchType);
    }
 
    /* (non-Javadoc)
@@ -53,17 +50,11 @@ public class TaskEditorSearchItemProvider implements ITaskEditorProvider {
     */
    @Override
    public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
-      if (worldSearchItem instanceof WorldUISearchItem) {
-         return ((WorldUISearchItem) worldSearchItem).performSearchGetResults(false, SearchType.ReSearch);
-      } else
-         throw new OseeStateException("Unsupported WorldSearchItem");
+      return worldParameterSearchItem.getTaskEditorTaskArtifacts();
    }
 
-   /**
-    * @return the worldSearchItem
-    */
-   public WorldSearchItem getWorldSearchItem() {
-      return worldSearchItem;
+   public boolean isFirstTime() {
+      return worldParameterSearchItem.isFirstTime();
    }
 
    /* (non-Javadoc)
@@ -71,7 +62,14 @@ public class TaskEditorSearchItemProvider implements ITaskEditorProvider {
     */
    @Override
    public String getName() throws OseeCoreException {
-      return worldSearchItem.getName();
+      return worldParameterSearchItem.getName();
+   }
+
+   /**
+    * @return the worldSearchItem
+    */
+   public TaskEditorParameterSearchItem getWorldSearchItem() {
+      return worldParameterSearchItem;
    }
 
 }

@@ -13,15 +13,18 @@ package org.eclipse.osee.ats.navigate;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
+import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
+import org.eclipse.osee.ats.task.TaskEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.task.TaskEditorSearchItemProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.WorldEditorSearchItemProvider;
-import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -65,11 +68,18 @@ public class AtsNavigateComposite extends XNavigateComposite {
                WorldEditor.open(new WorldEditorSearchItemProvider((WorldUISearchItem) worldSearchItem.copy(), null,
                      tableLoadOptions));
             } else if (worldSearchItem instanceof WorldEditorParameterSearchItem) {
-               WorldEditor.open(new WorldEditorParameterSearchItemProvider((WorldEditorParameterSearchItem) worldSearchItem.copy(),
-                     null, tableLoadOptions));
+               WorldEditor.open(new WorldEditorParameterSearchItemProvider(
+                     (WorldEditorParameterSearchItem) worldSearchItem.copy(), null, tableLoadOptions));
             }
          } else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) {
-            TaskEditor.open(new TaskEditorSearchItemProvider(worldSearchItem.copy(), tableLoadOptions));
+            if (worldSearchItem instanceof WorldUISearchItem) {
+               TaskEditor.open(new TaskEditorSearchItemProvider(worldSearchItem.copy(), tableLoadOptions));
+            } else if (worldSearchItem instanceof TaskEditorParameterSearchItem) {
+               TaskEditor.open(new TaskEditorParameterSearchItemProvider(
+                     (TaskEditorParameterSearchItem) worldSearchItem.copy()));
+            }
+         } else {
+            AWorkbench.popup("ERROR", "Unhandled navigate item");
          }
       } else
          super.handleDoubleClick(item, tableLoadOptions);

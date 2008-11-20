@@ -12,8 +12,8 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem.ReleasedOption;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -82,7 +82,7 @@ public class EditTeamWorkflowSearchItem extends WorldEditorParameterSearchItem {
     */
    @Override
    public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      return new TeamWorldNewSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false,
+      return new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false,
             false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReleased()).performSearchGetResults(false);
    }
 
@@ -123,6 +123,14 @@ public class EditTeamWorkflowSearchItem extends WorldEditorParameterSearchItem {
       if (widget.getLabel().equals("Include Completed/Cancelled")) {
          includeCompletedCancelledCheckbox = (XCheckBox) widget;
       }
+      if (widget.getLabel().equals("Version")) {
+         versionCombo = (XCombo) widget;
+         versionCombo.getComboBox().setVisibleItemCount(25);
+         widget.getLabelWidget().setToolTipText("Select Team to populate Version list");
+      }
+      if (widget.getLabel().equals("Released")) {
+         releasedCombo = (XCombo) widget;
+      }
       if (widget.getLabel().equals("Team Definitions(s)")) {
          teamCombo = (XHyperlabelTeamDefinitionSelection) widget;
          teamCombo.addXModifiedListener(new XModifiedListener() {
@@ -154,14 +162,6 @@ public class EditTeamWorkflowSearchItem extends WorldEditorParameterSearchItem {
                }
             }
          });
-      }
-      if (widget.getLabel().equals("Version")) {
-         versionCombo = (XCombo) widget;
-         versionCombo.getComboBox().setVisibleItemCount(25);
-         widget.getLabelWidget().setToolTipText("Select Team to populate Version list");
-      }
-      if (widget.getLabel().equals("Released")) {
-         releasedCombo = (XCombo) widget;
       }
    }
 

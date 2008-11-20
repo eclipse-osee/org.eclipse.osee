@@ -20,6 +20,8 @@ public interface ITaskEditorProvider {
 
    public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException;
 
+   public String getName() throws OseeCoreException;
+
    public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException;
 
 }

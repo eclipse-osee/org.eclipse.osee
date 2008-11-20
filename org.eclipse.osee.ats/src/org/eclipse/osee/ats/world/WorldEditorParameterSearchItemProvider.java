@@ -31,6 +31,7 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
    private final WorldEditorParameterSearchItem worldParameterSearchItem;
    private final TableLoadOption[] tableLoadOptions;
    private final CustomizeData customizeData;
+   public static String ENTER_OPTIONS_AND_SELECT_SEARCH = "Enter options and select \"Search\"";
 
    public WorldEditorParameterSearchItemProvider(WorldEditorParameterSearchItem worldParameterSearchItem) {
       this(worldParameterSearchItem, null, TableLoadOption.None);
@@ -67,7 +68,7 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
 
       if (firstTime) {
          firstTime = false;
-         worldEditor.setTableTitle("Enter options and select \"Search\"", false);
+         worldEditor.setTableTitle(ENTER_OPTIONS_AND_SELECT_SEARCH, false);
          return;
       }
       if (worldParameterSearchItem.isCancelled()) return;

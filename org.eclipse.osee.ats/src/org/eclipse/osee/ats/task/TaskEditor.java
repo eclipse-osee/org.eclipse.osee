@@ -23,10 +23,10 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMATaskComposite;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
+import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,11 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -54,11 +50,10 @@ import org.eclipse.ui.PartInitException;
  */
 public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
-   private int taskPageIndex, metricsPageIndex;
-   private SMATaskComposite taskComposite;
+   private int mainPageIndex, metricsPageIndex;
+   private TaskXWidgetActionPage taskActionPage;
    private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
    private AtsMetricsComposite metricsComposite;
-   private Label warningLabel, searchNameLabel;
 
    /*
     * (non-Javadoc)
@@ -80,7 +75,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {
-      return taskComposite.getTaskComposite().getTaskXViewer().getLoadedArtifacts();
+      return taskActionPage.getTaskComposite().getTaskXViewer().getLoadedArtifacts();
    }
 
    @Override
@@ -89,23 +84,14 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    }
 
    public void setTableTitle(final String title, final boolean warning) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (warning)
-               warningLabel.setImage(AtsPlugin.getInstance().getImage("warn.gif"));
-            else
-               warningLabel.setImage(null);
-            searchNameLabel.setText(title);
-            searchNameLabel.getParent().layout();
-         };
-      });
+      taskActionPage.setTableTitle(title, warning);
    }
 
    @Override
    public void dispose() {
       for (TaskArtifact taskArt : tasks)
          if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMAEditorDirty().isTrue()) taskArt.revertSMA();
-      if (taskComposite != null) taskComposite.disposeTaskComposite();
+      if (taskActionPage.getTaskComposite() != null) taskActionPage.getTaskComposite().dispose();
       if (metricsComposite != null) metricsComposite.disposeComposite();
 
       super.dispose();
@@ -131,6 +117,13 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return "TaskEditor";
    }
 
+   /**
+    * @return the taskActionPage
+    */
+   public TaskXWidgetActionPage getTaskActionPage() {
+      return taskActionPage;
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -147,53 +140,56 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
             throw new IllegalArgumentException("Editor Input not TaskEditorInput");
          }
 
-         createTaskTab();
+         createMainTab();
+         createMetricsTab();
 
-         metricsComposite = new AtsMetricsComposite(this, getContainer(), SWT.NONE);
-         metricsPageIndex = addPage(metricsComposite);
-         setPageText(metricsPageIndex, "Metrics");
-
-         setActivePage(taskPageIndex);
+         setActivePage(mainPageIndex);
          loadTable();
 
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      } catch (PartInitException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   private void createTaskTab() throws OseeCoreException {
-      // Create Tasks tab
+   private void createMainTab() throws OseeCoreException, PartInitException {
+      taskActionPage = new TaskXWidgetActionPage(this);
+      mainPageIndex = addPage(taskActionPage);
+   }
+
+   private void createMetricsTab() throws OseeCoreException {
       Composite comp = AtsLib.createCommonPageComposite(getContainer());
-      ToolBar toolBar = AtsLib.createCommonToolBar(comp);
+      AtsLib.createCommonToolBar(comp);
+      metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
+      metricsPageIndex = addPage(comp);
+      setPageText(metricsPageIndex, "Metrics");
+   }
 
-      Composite headerComp = new Composite(comp, SWT.NONE);
-      headerComp.setLayout(new GridLayout(2, false));
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      headerComp.setLayoutData(gd);
-
-      warningLabel = new Label(headerComp, SWT.NONE);
-      searchNameLabel = new Label(headerComp, SWT.NONE);
-
-      taskComposite = new SMATaskComposite(this, comp, SWT.NONE, toolBar);
-      taskPageIndex = addPage(comp);
-      setPageText(taskPageIndex, "Tasks");
+   public ITaskEditorProvider getTaskEditorProvider() {
+      TaskEditorInput aei = (TaskEditorInput) getEditorInput();
+      return aei.getItaskEditorProvider();
    }
 
    private void loadTable() throws OseeCoreException {
-      TaskEditorInput aei = (TaskEditorInput) getEditorInput();
-      ITaskEditorProvider provider = aei.getItaskEditorProvider();
+      ITaskEditorProvider provider = getTaskEditorProvider();
       setPartName(provider.getTaskEditorLabel(SearchType.Search));
 
-      LoadTableJob job = null;
-      job = new LoadTableJob(provider, SearchType.ReSearch, this);
-      job.setUser(false);
-      job.setPriority(Job.LONG);
-      job.schedule();
-      if (provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)) {
-         try {
-            job.join();
-         } catch (InterruptedException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      if (provider instanceof TaskEditorParameterSearchItemProvider && ((TaskEditorParameterSearchItemProvider) provider).isFirstTime()) {
+         setPartName(provider.getName());
+         setTableTitle(WorldEditorParameterSearchItemProvider.ENTER_OPTIONS_AND_SELECT_SEARCH, false);
+      } else {
+         LoadTableJob job = null;
+         job = new LoadTableJob(provider, SearchType.ReSearch, this);
+         job.setUser(false);
+         job.setPriority(Job.LONG);
+         job.schedule();
+         if (provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)) {
+            try {
+               job.join();
+            } catch (InterruptedException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
          }
       }
    }
@@ -268,7 +264,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                      } else {
                         taskEditor.setTableTitle(itaskEditorProvider.getTaskEditorLabel(searchType), false);
                      }
-                     taskEditor.taskComposite.getTaskComposite().loadTable();
+                     taskEditor.getTaskActionPage().getTaskComposite().loadTable();
                   } catch (OseeCoreException ex) {
                      OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                   }

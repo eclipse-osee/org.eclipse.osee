@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem.ReleasedOption;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -187,8 +187,8 @@ public class EditTasks extends AbstractBlam {
          }
          // Else, get workflows from teamdefs
          else if (teamDefs.size() > 0) {
-            TeamWorldNewSearchItem teamWorldSearchItem =
-                  new TeamWorldNewSearchItem("", teamDefs, true, false, false, null, null, ReleasedOption.UnReleased);
+            TeamWorldSearchItem teamWorldSearchItem =
+                  new TeamWorldSearchItem("", teamDefs, true, false, false, null, null, ReleasedOption.UnReleased);
             workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
          } else if (groups.size() > 0) {
             Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
@@ -246,6 +246,14 @@ public class EditTasks extends AbstractBlam {
             tasks.add(taskArt);
          }
          return tasks;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.ats.task.ITaskEditorProvider#getName()
+       */
+      @Override
+      public String getName() throws OseeCoreException {
+         return getClassSimpleName();
       }
    }
 

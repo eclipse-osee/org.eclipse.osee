@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.world.search.ArtIdSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
 import org.eclipse.osee.ats.world.search.AtsAttributeSearchItem;
+import org.eclipse.osee.ats.world.search.EditTasksWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyCompletedSearchItem;
@@ -139,6 +140,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(otherItems);
 
          items.add(new SearchNavigateItem(null, new EditTeamWorkflowSearchItem()));
+         items.add(new SearchNavigateItem(null, new EditTasksWorldSearchItem()));
          items.add(new EditTasksNavigateItem(null));
          items.add(new SearchNavigateItem(null, new GroupWorldSearchItem()));
          items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));

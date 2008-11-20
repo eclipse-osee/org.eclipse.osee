@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorldNewSearchItem extends WorldUISearchItem {
+public class TeamWorldSearchItem extends WorldUISearchItem {
 
    public enum ReleasedOption {
       Released, UnReleased, Both
@@ -55,7 +55,7 @@ public class TeamWorldNewSearchItem extends WorldUISearchItem {
    private final User userArt;
    private final ReleasedOption releasedOption;
 
-   public TeamWorldNewSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
+   public TeamWorldSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
       super(displayName);
       this.versionArt = versionArt;
       this.userArt = userArt;
@@ -71,7 +71,7 @@ public class TeamWorldNewSearchItem extends WorldUISearchItem {
       this.changeType = changeType;
    }
 
-   public TeamWorldNewSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean showFinished, boolean showAction, boolean recurseChildren, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
+   public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean showFinished, boolean showAction, boolean recurseChildren, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
       super(displayName);
       this.versionArt = versionArt;
       this.userArt = userArt;
@@ -84,7 +84,7 @@ public class TeamWorldNewSearchItem extends WorldUISearchItem {
       this.changeType = null;
    }
 
-   public TeamWorldNewSearchItem(TeamWorldNewSearchItem teamWorldUISearchItem) {
+   public TeamWorldSearchItem(TeamWorldSearchItem teamWorldUISearchItem) {
       super(teamWorldUISearchItem);
       this.versionArt = null;
       this.userArt = null;
@@ -212,7 +212,7 @@ public class TeamWorldNewSearchItem extends WorldUISearchItem {
     */
    @Override
    public WorldUISearchItem copy() {
-      return new TeamWorldNewSearchItem(this);
+      return new TeamWorldSearchItem(this);
    }
 
 }

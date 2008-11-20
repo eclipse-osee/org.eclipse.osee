@@ -10,7 +10,7 @@ import java.util.Collection;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -39,8 +39,8 @@ public class AtsQueryPerformanceTests extends TestCase {
    }
 
    public void testTeamWorldSearchItem() throws Exception {
-      TeamWorldNewSearchItem searchItem =
-            new TeamWorldNewSearchItem("Show Open OSEE Actions", new String[] {"ATS", "Define", "OTE"}, false, true,
+      TeamWorldSearchItem searchItem =
+            new TeamWorldSearchItem("Show Open OSEE Actions", new String[] {"ATS", "Define", "OTE"}, false, true,
                   false, null, null, null, null);
       long startTime = System.currentTimeMillis();
       Collection<Artifact> artifacts = searchItem.performSearch(SearchType.Search);

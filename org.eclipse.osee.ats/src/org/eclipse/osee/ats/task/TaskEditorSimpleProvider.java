@@ -51,4 +51,12 @@ public class TaskEditorSimpleProvider implements ITaskEditorProvider {
       return artifacts;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#getName()
+    */
+   @Override
+   public String getName() throws OseeCoreException {
+      return name;
+   }
+
 }
