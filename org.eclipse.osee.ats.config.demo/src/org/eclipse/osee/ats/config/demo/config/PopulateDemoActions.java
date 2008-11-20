@@ -404,13 +404,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
                }
                // Transition to desired state
                dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false, transaction);
-               teamWf.persistAttributesAndRelations();
+               teamWf.persistAttributesAndRelations(transaction);
                if (versionStr != null && !versionStr.equals("")) {
                   VersionArtifact verArt =
                         (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
                               versionStr, AtsPlugin.getAtsBranch());
                   teamWf.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, verArt);
-                  teamWf.persistAttributesAndRelations();
+                  teamWf.persistAttributesAndRelations(transaction);
                }
             }
          }
