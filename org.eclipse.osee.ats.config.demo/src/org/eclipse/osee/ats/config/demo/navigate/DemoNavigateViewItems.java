@@ -29,9 +29,9 @@ import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldNewSearchItem.ReleasedOption;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -79,16 +79,16 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
          try {
             TeamDefinitionArtifact teamDef = DemoTeams.getInstance().getTeamDef(team);
             XNavigateItem teamItems = new XNavigateItem(jhuItem, "JHU " + team.name().replaceAll("_", " "));
-            new SearchNavigateItem(teamItems, new TeamWorldNewSearchItem("Show Open " + teamDef + " Actions",
+            new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Actions",
                   Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, true, true, null, null,
                   ReleasedOption.Both));
-            new SearchNavigateItem(teamItems, new TeamWorldNewSearchItem("Show Open " + teamDef + " Workflows",
+            new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Workflows",
                   Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, false, true, null, null,
                   ReleasedOption.Both));
             // Handle all children teams
             for (TeamDefinitionArtifact childTeamDef : Artifacts.getChildrenOfTypeSet(
                   DemoTeams.getInstance().getTeamDef(team), TeamDefinitionArtifact.class, true)) {
-               new SearchNavigateItem(teamItems, new TeamWorldNewSearchItem("Show Open " + childTeamDef + " Workflows",
+               new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + childTeamDef + " Workflows",
                      Arrays.asList(childTeamDef), false, false, false, null, null, ReleasedOption.Both));
             }
             if (teamDef.isTeamUsesVersions()) {
@@ -100,7 +100,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                new SearchNavigateItem(teamItems, new NextVersionSearchItem(teamDef, LoadView.WorldEditor));
                new SearchNavigateItem(teamItems, new VersionTargetedForTeamSearchItem(teamDef, null, false,
                      LoadView.WorldEditor));
-               new SearchNavigateItem(teamItems, new TeamWorldNewSearchItem("Show Un-Released Team Workflows",
+               new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Un-Released Team Workflows",
                      Arrays.asList(teamDef), true, false, true, null, null, ReleasedOption.UnReleased));
                new ReleaseVersionItem(teamItems, teamDef);
                new CreateNewVersionItem(teamItems, teamDef);
