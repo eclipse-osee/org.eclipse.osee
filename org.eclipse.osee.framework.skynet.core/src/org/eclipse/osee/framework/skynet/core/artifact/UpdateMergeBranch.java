@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  */
 public class UpdateMergeBranch extends DbTransaction {
    private static final String UPDATE_ARTIFACTS =
-         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, txs.gamma_id, txs.mod_type, CASE WHEN txs.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " WHEN txs.mod_type = 5 THEN " + TxChange.ARTIFACT_DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_tx_details det, osee_txs txs, osee_attribute attr WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = attr.gamma_id AND attr.art_id = ? AND not exists (SELECT 'x' FROM osee_txs txs1, osee_attribute attr1 WHERE txs1.transaction_id = ? AND txs1.gamma_id = attr1.gamma_id AND attr1.attr_id = attr.attr_id)";
+         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT  ?, txs.gamma_id, txs.mod_type, CASE WHEN txs.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " WHEN txs.mod_type = 5 THEN " + TxChange.ARTIFACT_DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_attribute attr, osee_txs txs, osee_tx_details det WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = attr.gamma_id AND attr.art_id = ? AND not exists (SELECT 'x' FROM osee_txs txs1, osee_attribute attr1 WHERE txs1.transaction_id = ? AND txs1.gamma_id = attr1.gamma_id AND attr1.attr_id = attr.attr_id)";
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
@@ -66,6 +66,7 @@ public class UpdateMergeBranch extends DbTransaction {
 
       if (DEBUG) {
          System.out.println(String.format("        Get artifacts on branch took %s", Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
          System.out.println("            Need the following Artifacts on the Merge Branch");
          System.out.print("            ");
          for (Integer integer : expectedArtIds) {
@@ -73,7 +74,6 @@ public class UpdateMergeBranch extends DbTransaction {
          }
          System.out.print("\n");
       }
-      time = System.currentTimeMillis();
       int count = 0;
       //Delete any damaged artifacts (from a source revert) on the merge branch
       for (Artifact artifact : goodMergeBranchArtifacts) {
@@ -143,14 +143,12 @@ public class UpdateMergeBranch extends DbTransaction {
       Collection<Integer> artSet = new HashSet<Integer>();
       long time = System.currentTimeMillis();
 
-      ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
-      ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
-      ConnectionHandlerStatement chStmt3 = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt1.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Merge.SELECT_ARTIFACTS_ON_A_BRANCH),
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Merge.SELECT_ARTIFACTS_ON_A_BRANCH),
                branch.getBranchId());
-         while (chStmt1.next()) {
-            artSet.add(chStmt1.getInt("art_id"));
+         while (chStmt.next()) {
+            artSet.add(chStmt.getInt("art_id"));
          }
          if (DEBUG) {
             System.out.println(String.format(
@@ -158,10 +156,10 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt2.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Merge.SELECT_ATTRIBUTES_ON_A_BRANCH),
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Merge.SELECT_ATTRIBUTES_ON_A_BRANCH),
                branch.getBranchId());
-         while (chStmt2.next()) {
-            artSet.add(chStmt2.getInt("art_id"));
+         while (chStmt.next()) {
+            artSet.add(chStmt.getInt("art_id"));
          }
          if (DEBUG) {
             System.out.println(String.format(
@@ -170,16 +168,14 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt3.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Merge.SELECT_REL_LINKS_ON_A_BRANCH),
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Merge.SELECT_REL_LINKS_ON_A_BRANCH),
                branch.getBranchId());
-         while (chStmt3.next()) {
-            artSet.add(chStmt3.getInt("a_art_id"));
-            artSet.add(chStmt3.getInt("b_art_id"));
+         while (chStmt.next()) {
+            artSet.add(chStmt.getInt("a_art_id"));
+            artSet.add(chStmt.getInt("b_art_id"));
          }
       } finally {
-         chStmt1.close();
-         chStmt2.close();
-         chStmt3.close();
+         chStmt.close();
       }
       if (DEBUG) {
          System.out.println(String.format("          Getting Relations that are on the Merge Branch Completed in %s",

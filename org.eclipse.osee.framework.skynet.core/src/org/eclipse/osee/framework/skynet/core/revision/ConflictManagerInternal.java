@@ -155,6 +155,9 @@ public class ConflictManagerInternal {
       }
       if (artIdSet.isEmpty()) return conflicts;
 
+      if (DEBUG) {
+         System.out.println(String.format(" Conflicts found in %s", Lib.getElapseString(totalTime)));
+      }
       monitor.setSubtaskName("Creating and/or maintaining the Merge Branch");
       Branch mergeBranch =
             BranchManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<Integer>(artIdSet));
@@ -166,6 +169,7 @@ public class ConflictManagerInternal {
 
       preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet, monitor);
 
+      long time = System.currentTimeMillis();
       //Don't create the conflicts for attributes on an artifact that is deleted etc.
       for (ConflictBuilder conflictBuilder : conflictBuilders) {
          Conflict conflict = conflictBuilder.getConflict(mergeBranch, artIdSetDontShow);
@@ -175,9 +179,13 @@ public class ConflictManagerInternal {
          }
       }
       if (DEBUG) {
-         debugDump(conflicts, totalTime);
+         System.out.println(String.format("    Creating conflict objects and setting theri status completed in %s",
+               Lib.getElapseString(time)));
       }
       cleanUpConflictDB(conflicts, mergeBranch.getBranchId(), monitor);
+      if (DEBUG) {
+         debugDump(conflicts, totalTime);
+      }
       return conflicts;
    }
 
@@ -349,8 +357,8 @@ public class ConflictManagerInternal {
          count = ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP + createData(conflicts), branchId);
       }
       if (DEBUG) {
-         System.out.println(String.format("       Cleaned up %d conflicts that are no longer conflicting in %s ",
-               count, Lib.getElapseString(time)));
+         System.out.println(String.format("    Cleaned up %d conflicts that are no longer conflicting in %s ", count,
+               Lib.getElapseString(time)));
       }
       monitor.updateWork(10);
    }

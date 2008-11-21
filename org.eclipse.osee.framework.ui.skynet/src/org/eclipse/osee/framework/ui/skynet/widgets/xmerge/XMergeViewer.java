@@ -74,6 +74,7 @@ public class XMergeViewer extends XWidget implements IActionable {
    public final static String normalColor = "#EEEEEE";
    private static final String LOADING = "Loading ...";
    private static final String NO_CONFLICTS = "No conflicts were found";
+   private static final String CONFLICTS_NOT_LOADED = "Cleared on shutdown.  Refresh to Reload.";
    private Label extraInfoLabel;
    private Conflict[] conflicts;
    private String displayLabelText;
@@ -252,7 +253,7 @@ public class XMergeViewer extends XWidget implements IActionable {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans);
+            setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, true);
          }
       });
 
@@ -300,7 +301,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                                     conflicts[0].getSourceBranch().getBranchId(), branchIds.get(dialog.getSelection())));
                            }
                            setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans,
-                                 " Aplying Previous Merge");
+                                 " Aplying Previous Merge", true);
                         }
                      }
                      if (selections.size() == 0) {
@@ -468,14 +469,14 @@ public class XMergeViewer extends XWidget implements IActionable {
       this.editable = editable;
    }
 
-   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans) {
-      setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, "");
+   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, boolean showConflicts) {
+      setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, "", showConflicts);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
     */
-   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, String loadingText) {
+   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, String loadingText, final boolean showConflicts) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.tranId = tranId;
@@ -487,23 +488,30 @@ public class XMergeViewer extends XWidget implements IActionable {
          protected IStatus run(IProgressMonitor monitor) {
             SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
             try {
-               if (commitTrans == null) {
-                  conflicts =
-                        ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId, swtMonitor).toArray(
-                              new Conflict[0]);
-               } else {
-                  conflicts =
-                        ConflictManagerInternal.getConflictsPerBranch(commitTrans, swtMonitor).toArray(new Conflict[0]);
+               if (showConflicts) {
+                  if (commitTrans == null) {
+                     conflicts =
+                           ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId, swtMonitor).toArray(
+                                 new Conflict[0]);
+                  } else {
+                     conflicts =
+                           ConflictManagerInternal.getConflictsPerBranch(commitTrans, swtMonitor).toArray(
+                                 new Conflict[0]);
+                  }
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
-                     if (conflicts.length == 0) {
-                        extraInfoLabel.setText(NO_CONFLICTS);
+                     if (showConflicts) {
+                        if (conflicts.length == 0) {
+                           extraInfoLabel.setText(NO_CONFLICTS);
+                        } else {
+                           setConflicts(conflicts);
+                           mergeView.setConflicts(conflicts);
+                           refresh();
+                        }
                      } else {
-                        setConflicts(conflicts);
-                        mergeView.setConflicts(conflicts);
-                        refresh();
+                        extraInfoLabel.setText(CONFLICTS_NOT_LOADED);
                      }
                   }
                });

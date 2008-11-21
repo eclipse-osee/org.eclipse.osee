@@ -88,6 +88,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    private Branch destBranch;
    private TransactionId transactionId;
    private TransactionId commitTrans;
+   private boolean showConflicts;
 
    /**
     * @author Donald G. Dunne
@@ -98,11 +99,11 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    public static void openView(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId) {
       if (sourceBranch == null && destBranch == null && tranId == null) throw new IllegalArgumentException(
             "Branch's and Transaction ID can't be null");
-      if (DEBUG) {
+      if (DEBUG && sourceBranch != null && destBranch != null) {
          System.out.println(String.format("Openeing Merge View with Source Branch: %s and Destination Branch: %s",
                sourceBranch.getBranchName(), destBranch.getBranchName()));
       }
-      openViewUpon(sourceBranch, destBranch, tranId, null);
+      openViewUpon(sourceBranch, destBranch, tranId, null, true);
    }
 
    public static void openView(final TransactionId commitTrans) {
@@ -111,10 +112,10 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          System.out.println(String.format("Openeing Merge View with Transaction ID: %d ",
                commitTrans.getTransactionNumber()));
       }
-      openViewUpon(null, null, null, commitTrans);
+      openViewUpon(null, null, null, commitTrans, true);
    }
 
-   private static void openViewUpon(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final TransactionId commitTrans) {
+   private static void openViewUpon(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final TransactionId commitTrans, final boolean showConflicts) {
       Job job = new Job("Open Merge View") {
 
          @Override
@@ -128,7 +129,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                                  MergeView.VIEW_ID,
                                  String.valueOf(sourceBranch != null ? sourceBranch.getBranchId() * 100000 + destBranch.getBranchId() : commitTrans.getTransactionNumber()),
                                  IWorkbenchPage.VIEW_VISIBLE);
-                     mergeView.explore(sourceBranch, destBranch, tranId, commitTrans);
+                     mergeView.showConflicts = showConflicts;
+                     mergeView.explore(sourceBranch, destBranch, tranId, commitTrans, showConflicts);
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
@@ -494,13 +496,13 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       });
    }
 
-   public void explore(final Branch sourceBranch, final Branch destBranch, final TransactionId transactionId, final TransactionId commitTrans) {
+   public void explore(final Branch sourceBranch, final Branch destBranch, final TransactionId transactionId, final TransactionId commitTrans, boolean showConflicts) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.transactionId = transactionId;
       this.commitTrans = commitTrans;
       try {
-         xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans);
+         xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans, showConflicts);
          if (sourceBranch != null) {
             setPartName("Merge Manager: " + sourceBranch.getBranchShortName() + " <=> " + destBranch.getBranchShortName());
          } else if (commitTrans != null) {
@@ -534,7 +536,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (memento != null) {
                Integer commitTransaction = memento.getInteger(COMMIT_NUMBER);
                if (commitTransaction != null) {
-                  openViewUpon(null, null, null, TransactionIdManager.getTransactionId(commitTransaction));
+                  openViewUpon(null, null, null, TransactionIdManager.getTransactionId(commitTransaction), false);
                   return;
                }
                sourceBranchId = memento.getInteger(SOURCE_BRANCH_ID);
@@ -556,7 +558,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                try {
                   TransactionId transactionId =
                         TransactionIdManager.getTransactionId(memento.getInteger(TRANSACTION_NUMBER));
-                  openViewUpon(sourceBranch, destBranch, transactionId, null);
+                  openViewUpon(sourceBranch, destBranch, transactionId, null, false);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
                         "Merge View can't init due to invalid transaction id " + transactionId);
@@ -846,7 +848,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    @Override
    public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       try {
-         if (ConflictManagerInternal.getMergeBranchId(sourceBranch.getBranchId(), destBranch.getBranchId()) != transData.getBranchId() && sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId()) {
+         if (sourceBranch == null || destBranch == null || (sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId() && ConflictManagerInternal.getMergeBranchId(
+               sourceBranch.getBranchId(), destBranch.getBranchId()) != transData.getBranchId())) {
             return;
          }
       } catch (OseeCoreException ex) {
@@ -867,7 +870,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   for (Conflict conflict : conflicts) {
                      if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
                         xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
-                              "Source Artifact Changed");
+                              "Source Artifact Changed", showConflicts);
                         if (artifact.equals(conflict.getSourceArtifact()) & sender.isLocal()) {
                            new MessageDialog(
                                  Display.getDefault().getActiveShell().getShell(),
@@ -888,7 +891,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                            transactionId,
                            mergeView,
                            commitTrans,
-                           branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed");
+                           branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
+                           showConflicts);
                   }
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -903,7 +907,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                         transactionId,
                         mergeView,
                         commitTrans,
-                        branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed");
+                        branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
+                        showConflicts);
                }
             }
          }

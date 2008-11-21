@@ -33,7 +33,6 @@ public class OseeSql {
    private static final String HINTS__ORDERED__FIRST_ROWS = " /*+ ordered FIRST_ROWS */";
    private static final String HINTS__ORDERED__INDEX__ARTIFACT_CONFLICT =
          " /*+ ordered index(atr1) index(atr2) index(txs2) */";
-   // " /*+ ordered index(arv1) index(arv2) index(txs2) */";
    private static final String HINTS__ORDERED__INDEX__ATTRIBUTE_CONFLICT =
          " /*+ ordered index(atr1) index(atr2) index(txs2) */";
 
@@ -230,9 +229,12 @@ public class OseeSql {
       public static final String SELECT_ARTIFACTS_ON_A_BRANCH = "SELECT_ARTIFACT_BRANCH";
       public static final String SELECT_ATTRIBUTES_ON_A_BRANCH = "SELECT_ATTRIBUTE_BRANCH";
       public static final String SELECT_REL_LINKS_ON_A_BRANCH = "SELECT_RELATIONS_BRANCH";
+      public static final String UPDATE_ARTIFACT_MERGE_BRANCH = "UPDATE_MERGE_BRANCH_ARTIFACT";
 
       private Merge() {
       }
+      public static final String UPDATE_MERGE_BRANCH_ARTIFACT_DEFINITION =
+            "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT %s ?, txs.gamma_id, txs.mod_type, CASE WHEN txs.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " WHEN txs.mod_type = 5 THEN " + TxChange.ARTIFACT_DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_attribute attr, osee_txs txs, osee_tx_details det WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = attr.gamma_id AND attr.art_id = ? AND not exists (SELECT 'x' FROM osee_txs txs1, osee_attribute attr1 WHERE txs1.transaction_id = ? AND txs1.gamma_id = attr1.gamma_id AND attr1.attr_id = attr.attr_id)";
 
       private static final String GET_ART_IDS_FOR_BRANCH_DEFINITION =
             "SELECT%s arv.art_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version arv WHERE det.transaction_id = txs.transaction_id and txs.gamma_id = arv.gamma_id and det.branch_id = ?";
@@ -251,6 +253,9 @@ public class OseeSql {
                HINTS__ORDERED__FIRST_ROWS));
 
          sqlProperties.put(SELECT_REL_LINKS_ON_A_BRANCH, getFormattedSql(GET_RELATIONS_FOR_BRANCH_DEFINITION,
+               HINTS__ORDERED__FIRST_ROWS));
+
+         sqlProperties.put(UPDATE_MERGE_BRANCH_ARTIFACT_DEFINITION, getFormattedSql(UPDATE_ARTIFACT_MERGE_BRANCH,
                HINTS__ORDERED__FIRST_ROWS));
       }
    }

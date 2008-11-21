@@ -18,7 +18,49 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.Image;
 
-public class ArtifactLabelProvider extends LabelProvider {
+public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProvider {
+//   /* (non-Javadoc)
+//    * @see org.eclipse.jface.viewers.StyledCellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
+//    */
+//   @Override
+//   public void update(ViewerCell cell) {
+//      Object element = cell.getElement();
+//      if (element instanceof Match) {
+//         element = ((Match) element).getElement();
+//      }
+//
+//      if (element instanceof Artifact) {
+//         Artifact artifact = (Artifact) element;
+//
+//         String name = artifact.getDescriptiveName();
+//         if (artifact.isDeleted()) {
+//            name += " <Deleted>";
+//         }
+//         if (artifactExplorer != null) {
+//            if (artifactExplorer.showArtVersion()) {
+//               name += " -" + artifact.getGammaId() + "- ";
+//            }
+//
+//            if (artifactExplorer.showArtIds()) {
+//               name += " (" + artifact.getArtId() + ") ";
+//            }
+//            try {
+//               if (artifactExplorer.showArtType()) {
+//                  name += " <" + artifact.getArtifactTypeName() + "> ";
+//               }
+//
+//               name += artifactExplorer.getSelectedAttributeData(artifact);
+//            } catch (Exception ex) {
+//               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+//               name += ex.getLocalizedMessage();
+//            }
+//         }
+//         cell.setText(name);
+//      } else {
+//         cell.setText(element.toString());
+//      }
+//   }
+
    private static final OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
    private final ArtifactExplorer artifactExplorer;
 

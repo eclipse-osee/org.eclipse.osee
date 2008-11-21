@@ -34,7 +34,8 @@ public class ConflictedBranchCommitingTest extends TestCase {
       OseeLog.registerLoggerListener(monitorLog);
       try {
          ConflictManagerExternal conflictManager =
-               new ConflictManagerExternal(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
+               new ConflictManagerExternal(ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch());
+         conflictManager.getRemainingConflicts();
          BranchManager.commitBranch(conflictManager, false);
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
       } catch (Exception ex) {

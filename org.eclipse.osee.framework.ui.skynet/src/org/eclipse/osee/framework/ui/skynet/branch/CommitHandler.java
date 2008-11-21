@@ -156,7 +156,7 @@ public class CommitHandler extends AbstractSelectionEnabledHandler {
        * @param destinationBranch
        * @param sourceBranch
        */
-      public CommitJob(Branch destinationBranch, Branch sourceBranch) {
+      public CommitJob(Branch sourceBranch, Branch destinationBranch) {
          super("Commit Branch");
          this.destinationBranch = destinationBranch;
          this.sourceBranch = sourceBranch;
