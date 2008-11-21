@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
 public class BranchExportWorker extends BaseCmdWorker {
 
    private static final String ALL_BRANCHES_QUERY =
-         "SELECT x1.branch_id FROM (SELECT br1.branch_id FROM osee_branch br1%s br1.branch_type <> 3 UNION SELECT om1.merge_branch_id FROM osee_merge om1, osee_branch ob1 WHERE om1.source_branch_id = ob1.branch_id%s) x1 ORDER BY x1.branch_id";
+         "SELECT x1.branch_id FROM (SELECT br1.branch_id FROM osee_branch br1%s br1.branch_type <> 3 UNION SELECT om1.merge_branch_id FROM osee_merge om1, osee_branch ob1 WHERE om1.dest_branch_id = ob1.branch_id%s) x1 ORDER BY x1.branch_id";
 
    private boolean isValidArg(String arg) {
       return arg != null && arg.length() > 0;
