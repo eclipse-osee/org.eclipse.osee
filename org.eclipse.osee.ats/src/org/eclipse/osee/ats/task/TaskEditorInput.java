@@ -84,7 +84,7 @@ public class TaskEditorInput implements IEditorInput {
    @Override
    public String getName() {
       try {
-         return itaskEditorProvider.getTaskEditorLabel(null);
+         return itaskEditorProvider.getName();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "Exception getting name: " + ex.getLocalizedMessage();
