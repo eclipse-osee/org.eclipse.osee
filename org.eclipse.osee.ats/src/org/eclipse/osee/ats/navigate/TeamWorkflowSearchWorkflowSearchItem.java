@@ -33,7 +33,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public class EditTeamWorkflowSearchItem extends WorldEditorParameterSearchItem {
+public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSearchItem {
 
    private XHyperlabelTeamDefinitionSelection teamCombo = null;
    private XCombo releasedCombo = null;
@@ -41,11 +41,11 @@ public class EditTeamWorkflowSearchItem extends WorldEditorParameterSearchItem {
    private XMembersCombo assigneeCombo;
    private XCheckBox includeCompletedCancelledCheckbox;
 
-   public EditTeamWorkflowSearchItem() {
-      super("Team Workflows Search");
+   public TeamWorkflowSearchWorkflowSearchItem() {
+      super("Team Workflow Search");
    }
 
-   public EditTeamWorkflowSearchItem(EditTeamWorkflowSearchItem editTeamWorkflowSearchItem) {
+   public TeamWorkflowSearchWorkflowSearchItem(TeamWorkflowSearchWorkflowSearchItem editTeamWorkflowSearchItem) {
       super(editTeamWorkflowSearchItem);
    }
 
@@ -53,8 +53,8 @@ public class EditTeamWorkflowSearchItem extends WorldEditorParameterSearchItem {
     * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
     */
    @Override
-   public EditTeamWorkflowSearchItem copy() {
-      return new EditTeamWorkflowSearchItem(this);
+   public TeamWorkflowSearchWorkflowSearchItem copy() {
+      return new TeamWorkflowSearchWorkflowSearchItem(this);
    }
 
    /* (non-Javadoc)

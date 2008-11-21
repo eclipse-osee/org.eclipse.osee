@@ -137,7 +137,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
     * 
     * @param teamDef
     * @param monitor
-    * @return
+    * @return report
     */
    public static String getTeamWorkflowReport(String title, TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();

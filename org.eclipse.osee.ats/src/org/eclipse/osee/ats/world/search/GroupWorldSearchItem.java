@@ -34,7 +34,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    public GroupWorldSearchItem() {
-      this("Groups Search", null);
+      this("Group Search", null);
    }
 
    public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem) {
@@ -61,8 +61,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       if (groupName == null) return;
       if (group == null) group =
             UniversalGroup.getGroups(groupName, BranchManager.getDefaultBranch()).iterator().next();
-      if (group == null) throw new IllegalArgumentException(
-            "Can't Find Universal Group for " + getName());
+      if (group == null) throw new IllegalArgumentException("Can't Find Universal Group for " + getName());
    }
 
    @Override

@@ -65,7 +65,7 @@ public class OpenInAtsWorldOperation extends WorkPageService {
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("world.gif"));
+      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("globe.gif"));
       return action;
    }
 

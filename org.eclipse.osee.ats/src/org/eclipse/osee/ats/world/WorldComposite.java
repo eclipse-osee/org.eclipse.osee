@@ -325,7 +325,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             }
          }
       };
-      newWorldEditor.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newWorld.gif"));
+      newWorldEditor.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("globe.gif"));
       newWorldEditor.setToolTipText("Open in ATS World Editor");
 
       Action newWorldEditorSelected = new Action("Open Selected in ATS World Editor") {
@@ -350,7 +350,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             }
          }
       };
-      newWorldEditorSelected.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newWorldSelected.gif"));
+      newWorldEditorSelected.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("globeSelect.gif"));
       newWorldEditorSelected.setToolTipText("Open Selected in ATS World Editor");
 
       Action expandAllAction = new Action("Expand All") {

@@ -23,7 +23,7 @@
          <editor
                class="org.eclipse.osee.ats.world.WorldEditor"
                default="false"
-               icon="images/world.gif"
+               icon="images/globe.gif"
                id="org.eclipse.osee.ats.world.WorldEditor"
                name="World Editor">
          </editor>

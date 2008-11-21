@@ -45,7 +45,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public class EditTasksWorldSearchItem extends TaskEditorParameterSearchItem {
+public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
    private XMembersCombo assigneeCombo;
    private XCheckBox includeCompletedCancelledCheckbox;
@@ -56,7 +56,7 @@ public class EditTasksWorldSearchItem extends TaskEditorParameterSearchItem {
    /**
     * @param worldSearchItem
     */
-   public EditTasksWorldSearchItem(WorldSearchItem worldSearchItem) {
+   public TaskSearchWorldSearchItem(WorldSearchItem worldSearchItem) {
       super(worldSearchItem);
    }
 
@@ -64,7 +64,7 @@ public class EditTasksWorldSearchItem extends TaskEditorParameterSearchItem {
     * @param name
     * @param loadView
     */
-   public EditTasksWorldSearchItem() {
+   public TaskSearchWorldSearchItem() {
       super("Task Search");
    }
 
@@ -339,8 +339,8 @@ public class EditTasksWorldSearchItem extends TaskEditorParameterSearchItem {
     * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
     */
    @Override
-   public EditTasksWorldSearchItem copy() {
-      return new EditTasksWorldSearchItem(this);
+   public TaskSearchWorldSearchItem copy() {
+      return new TaskSearchWorldSearchItem(this);
    }
 
 }
