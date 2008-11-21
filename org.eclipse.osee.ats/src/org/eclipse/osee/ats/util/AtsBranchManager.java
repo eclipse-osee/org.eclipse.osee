@@ -524,7 +524,7 @@ public class AtsBranchManager {
          if (commitPopup) {
             branchCommitted = CommitHandler.commitBranch(conflictManager, true);
          } else {
-            BranchManager.commitBranch(conflictManager, true);
+            BranchManager.commitBranch(conflictManager, true, true);
             branchCommitted = true;
          }
          if (branchCommitted) {
