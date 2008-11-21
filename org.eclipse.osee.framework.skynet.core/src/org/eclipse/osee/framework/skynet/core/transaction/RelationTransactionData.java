@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 /**
@@ -20,9 +20,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 public class RelationTransactionData extends BaseTransactionData {
    private static final String INSERT_INTO_RELATION_TABLE =
          "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, a_order, b_order, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
-
-   private static final String GET_PREVIOUS_TX_NOT_CURRENT =
-         "SELECT txs1.transaction_id, txs1.gamma_id FROM osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1 WHERE rel1.rel_link_id = ? AND rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs1.tx_current = " + TxChange.CURRENT.getValue();
 
    private final RelationLink link;
 
@@ -36,7 +33,7 @@ public class RelationTransactionData extends BaseTransactionData {
     */
    @Override
    public String getSelectTxNotCurrentSql() {
-      return GET_PREVIOUS_TX_NOT_CURRENT;
+      return OseeSql.Transaction.SELECT_PREVIOUS_TX_NOT_CURRENT_RELATIONS;
    }
 
    /* (non-Javadoc)

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
+import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class ArtifactTransactionData extends BaseTransactionData {
    private static final String INSERT_SQL =
          "INSERT INTO " + ARTIFACT_VERSION_TABLE + "(art_id, gamma_id, modification_id) VALUES (?,?,?)";
-
-   private static final String SELECT_PREVIOUS_TX_NOT_CURRENT =
-         "SELECT txs1.transaction_id, txs1.gamma_id FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE arv1.art_id = ? AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs1.tx_current = " + TxChange.CURRENT.getValue();
 
    private final Artifact artifact;
 
@@ -61,7 +58,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
     */
    @Override
    public String getSelectTxNotCurrentSql() {
-      return SELECT_PREVIOUS_TX_NOT_CURRENT;
+      return OseeSql.Transaction.SELECT_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS;
    }
 
    /* (non-Javadoc)

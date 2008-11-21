@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.SqlKey;
+import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
@@ -139,12 +139,14 @@ public class InternalChangeManager {
             fromTransactionId = branchStartEndTransaction.getKey();
             toTransactionId = branchStartEndTransaction.getValue();
 
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(SqlKey.SELECT_BRANCH_ARTIFACT_CHANGES), sourceBranch.getBranchId());
+            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Changes.SELECT_BRANCH_ARTIFACT_CHANGES),
+                  sourceBranch.getBranchId());
          } else { //Changes per a transaction
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
 
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(SqlKey.SELECT_TRANSACTION_ARTIFACT_CHANGES), toTransactionId.getTransactionNumber());
+            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Changes.SELECT_TRANSACTION_ARTIFACT_CHANGES),
+                  toTransactionId.getTransactionNumber());
          }
          int count = 0;
          while (chStmt.next()) {
@@ -197,7 +199,8 @@ public class InternalChangeManager {
          }
          //Changes per a branch
          if (hasBranch) {
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(SqlKey.SELECT_BRANCH_REL_CHANGES), sourceBranch.getBranchId());
+            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Changes.SELECT_BRANCH_REL_CHANGES),
+                  sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
                   TransactionIdManager.getStartEndPoint(sourceBranch);
@@ -206,7 +209,8 @@ public class InternalChangeManager {
             toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per a transaction
          else {
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(SqlKey.SELECT_TRANSACTION_REL_CHANGES), transactionId.getTransactionNumber());
+            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Changes.SELECT_TRANSACTION_REL_CHANGES),
+                  transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
@@ -271,7 +275,8 @@ public class InternalChangeManager {
       try {
          //Changes per a branch
          if (hasBranch) {
-            chStmt1.runPreparedQuery(ClientSessionManager.getSQL(SqlKey.SELECT_BRANCH_ATTRIBUTE_IS_CHANGES), sourceBranch.getBranchId());
+            chStmt1.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Changes.SELECT_BRANCH_ATTRIBUTE_IS_CHANGES),
+                  sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
                   TransactionIdManager.getStartEndPoint(sourceBranch);
@@ -280,7 +285,9 @@ public class InternalChangeManager {
             toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per transaction number
          else {
-            chStmt1.runPreparedQuery(ClientSessionManager.getSQL(SqlKey.SELECT_TRANSACTION_ATTRIBUTE_CHANGES), transactionId.getTransactionNumber());
+            chStmt1.runPreparedQuery(
+                  ClientSessionManager.getSQL(OseeSql.Changes.SELECT_TRANSACTION_ATTRIBUTE_CHANGES),
+                  transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
@@ -345,11 +352,11 @@ public class InternalChangeManager {
 
             if (hasBranch) {
                wasValueBranch = sourceBranch;
-               sql = ClientSessionManager.getSQL(SqlKey.SELECT_BRANCH_ATTRIBUTE_WAS_CHANGE);
+               sql = ClientSessionManager.getSQL(OseeSql.Changes.SELECT_BRANCH_ATTRIBUTE_WAS_CHANGE);
                sqlParamter = wasValueBranch.getBranchId();
             } else {
                wasValueBranch = transactionId.getBranch();
-               sql = ClientSessionManager.getSQL(SqlKey.SELECT_TRANSACTION_ATTRIBUTE_WAS_CHANGE);
+               sql = ClientSessionManager.getSQL(OseeSql.Changes.SELECT_TRANSACTION_ATTRIBUTE_WAS_CHANGE);
                sqlParamter = transactionId.getTransactionNumber();
             }
 

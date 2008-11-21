@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.data.SqlKey;
+import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -85,7 +85,7 @@ public class SessionManager implements ISessionManager {
          sessionGrant.setCreationRequired(oseeUserInfo.isCreationRequired());
          sessionGrant.setOseeUserInfo(oseeUserInfo);
          sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
-         sessionGrant.setSqlProperties(SqlKey.getSqlProperties());
+         sessionGrant.setSqlProperties(OseeSql.getSqlProperties());
       }
       return sessionGrant;
    }

@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.SqlKey;
+import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
@@ -305,7 +305,7 @@ public class ArtifactQueryBuilder {
       addParameter(branch.getBranchId());
 
       List<String> paramList = new ArrayList<String>();
-      paramList.add(SqlKey.isHintsAllowed() ? ClientSessionManager.getSQL(SqlKey.QUERY_BUILDER_HINT) : "");
+      paramList.add(OseeSql.isHintsAllowed() ? ClientSessionManager.getSQL(OseeSql.QUERY_BUILDER_HINT) : "");
       if (count) {
          paramList.add(artAlias);
       } else {

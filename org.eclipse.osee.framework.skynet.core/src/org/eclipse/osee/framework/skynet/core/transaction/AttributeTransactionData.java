@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -25,9 +25,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 public class AttributeTransactionData extends BaseTransactionData {
    private static final String INSERT_ATTRIBUTE =
          "INSERT INTO osee_attribute (art_id, attr_id, attr_type_id, value, gamma_id, uri, modification_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-   private static final String GET_PREVIOUS_TX_NOT_CURRENT =
-         "SELECT txs1.transaction_id, txs1.gamma_id FROM osee_attribute atr1, osee_txs txs1, osee_tx_details txd1 WHERE atr1.attr_id = ? AND atr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs1.tx_current = " + TxChange.CURRENT.getValue();
 
    private final int artId;
    private final int attrTypeId;
@@ -58,7 +55,7 @@ public class AttributeTransactionData extends BaseTransactionData {
     */
    @Override
    public String getSelectTxNotCurrentSql() {
-      return GET_PREVIOUS_TX_NOT_CURRENT;
+      return OseeSql.Transaction.SELECT_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES;
    }
 
    /* (non-Javadoc)

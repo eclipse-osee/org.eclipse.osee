@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.SqlKey;
+import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -120,10 +120,10 @@ public final class ArtifactLoader {
          try {
             String sql;
             if (historical) {
-               sql = ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ARTIFACTS);
+               sql = ClientSessionManager.getSQL(OseeSql.Load.SELECT_HISTORICAL_ARTIFACTS);
             } else {
                sql =
-                     allowDeleted ? ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ARTIFACTS_WITH_DELETED) : ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ARTIFACTS);
+                     allowDeleted ? ClientSessionManager.getSQL(OseeSql.Load.SELECT_CURRENT_ARTIFACTS_WITH_DELETED) : ClientSessionManager.getSQL(OseeSql.Load.SELECT_CURRENT_ARTIFACTS);
             }
             chStmt.runPreparedQuery(fetchSize, sql, queryId);
 
@@ -345,7 +345,8 @@ public final class ArtifactLoader {
       }
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(artifacts.size() * 8, ClientSessionManager.getSQL(SqlKey.SELECT_RELATIONS), queryId);
+         chStmt.runPreparedQuery(artifacts.size() * 8,
+               ClientSessionManager.getSQL(OseeSql.Load.SELECT_RELATIONS), queryId);
          while (chStmt.next()) {
             int relationId = chStmt.getInt("rel_link_id");
             int aArtifactId = chStmt.getInt("a_art_id");
@@ -387,10 +388,10 @@ public final class ArtifactLoader {
       try {
          if (historical) {
             chStmt.runPreparedQuery(artifacts.size() * 8,
-                  ClientSessionManager.getSQL(SqlKey.SELECT_HISTORICAL_ATTRIBUTES), queryId);
+                  ClientSessionManager.getSQL(OseeSql.Load.SELECT_HISTORICAL_ATTRIBUTES), queryId);
          } else {
             String sql =
-                  allowDeletedArtifacts ? ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED) : ClientSessionManager.getSQL(SqlKey.SELECT_CURRENT_ATTRIBUTES);
+                  allowDeletedArtifacts ? ClientSessionManager.getSQL(OseeSql.Load.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED) : ClientSessionManager.getSQL(OseeSql.Load.SELECT_CURRENT_ATTRIBUTES);
             chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
          }
 

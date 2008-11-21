@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -18,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -38,25 +39,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * @author Jeff C. Phillips
  */
 public class TransactionIdManager {
-   private static final String largestTransIdSql =
-         "SELECT max(transaction_id) as largest_transaction_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?";
-   private static final String SELECT_MAX_MIN_TX =
-         "SELECT max(transaction_id) AS max_id, min(transaction_id) AS min_id FROM osee_tx_details WHERE branch_id = ?";
-   private static final String SELECT_TX_GAMMAS =
-         "SELECT " + TRANSACTIONS_TABLE.columns("transaction_id", "gamma_id") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.join(
-               TRANSACTIONS_TABLE, "transaction_id") + " ORDER BY " + TRANSACTIONS_TABLE.columns("transaction_id",
-               "gamma_id");
-   private static final String SELECT_TX_GAMMAS_RANGE =
-         "SELECT " + TRANSACTIONS_TABLE.columns("transaction_id", "gamma_id") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
-               TRANSACTIONS_TABLE, "transaction_id") + " ORDER BY " + TRANSACTIONS_TABLE.columns("transaction_id",
-               "gamma_id");
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
          "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
+
    private final Map<Integer, TransactionId> nonEditableTransactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
-
-   private static final String SELECT_TRANSACTION = "SELECT * FROM osee_tx_details WHERE transaction_id = ?";
 
    public static TransactionIdManager getInstance() {
       return instance;
@@ -77,8 +65,10 @@ public class TransactionIdManager {
       return getTransactionId(getlatestTransactionForBranch(branch));
    }
 
-   private int getlatestTransactionForBranch(Branch branch) throws TransactionDoesNotExist, OseeDataStoreException {
-      int transactionNumber = ConnectionHandler.runPreparedQueryFetchInt(-1, largestTransIdSql, branch.getBranchId());
+   private int getlatestTransactionForBranch(Branch branch) throws OseeCoreException {
+      int transactionNumber =
+            ConnectionHandler.runPreparedQueryFetchInt(-1,
+                  ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_MAX_AS_LARGEST_TX), branch.getBranchId());
       if (transactionNumber == -1) {
          throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branch);
       }
@@ -107,7 +97,8 @@ public class TransactionIdManager {
    public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_MAX_MIN_TX, branch.getBranchId());
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_MAX_AND_MIN_TX),
+               branch.getBranchId());
 
          // the max, min query will return exactly 1 row by definition (even if there is no max or min)
          chStmt.next();
@@ -198,7 +189,7 @@ public class TransactionIdManager {
    }
 
    @Deprecated
-   public static Checksum getTransactionRangeChecksum(TransactionId startTransactionId, TransactionId endTransactionId) throws OseeDataStoreException {
+   public static Checksum getTransactionRangeChecksum(TransactionId startTransactionId, TransactionId endTransactionId) throws OseeCoreException {
       if (startTransactionId == null) throw new IllegalArgumentException("startTransactionId can not be null");
       if (endTransactionId == null) throw new IllegalArgumentException("endTransactionId can not be null");
       if (startTransactionId.getBranch() != endTransactionId.getBranch()) throw new IllegalArgumentException(
@@ -212,11 +203,12 @@ public class TransactionIdManager {
 
       try {
          if (startTransactionId.getTransactionNumber() == endTransactionId.getTransactionNumber()) {
-            chStmt.runPreparedQuery(SELECT_TX_GAMMAS, startTransactionId.getBranchId(),
-                  startTransactionId.getTransactionNumber());
+            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_TX_GAMMAS),
+                  startTransactionId.getBranchId(), startTransactionId.getTransactionNumber());
          } else {
-            chStmt.runPreparedQuery(SELECT_TX_GAMMAS_RANGE, startTransactionId.getBranchId(),
-                  startTransactionId.getTransactionNumber(), endTransactionId.getTransactionNumber());
+            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_TX_GAMMAS_RANGE),
+                  startTransactionId.getBranchId(), startTransactionId.getTransactionNumber(),
+                  endTransactionId.getTransactionNumber());
          }
          while (chStmt.next()) {
             checksum.update(toBytes(chStmt.getLong("transaction_id")), 0, 8);
@@ -266,7 +258,8 @@ public class TransactionIdManager {
          try {
             if (useLocalConnection) {
                chStmt = new ConnectionHandlerStatement();
-               chStmt.runPreparedQuery(SELECT_TRANSACTION, transactionNumber);
+               chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_ALL_TRANSACTIONS),
+                     transactionNumber);
                if (!chStmt.next()) {
                   throw new TransactionDoesNotExist(
                         "The transaction id " + transactionNumber + " does not exist in the databse.");

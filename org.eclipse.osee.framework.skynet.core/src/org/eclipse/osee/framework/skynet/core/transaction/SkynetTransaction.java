@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -142,10 +143,11 @@ public final class SkynetTransaction extends DbTransaction {
       statementData.add(data);
    }
 
-   private void fetchTxNotCurrent(Connection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeDataStoreException {
+   private void fetchTxNotCurrent(Connection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
-         chStmt.runPreparedQuery(transactionData.getSelectTxNotCurrentSql(), transactionData.getSelectData());
+         String query = ClientSessionManager.getSQL(transactionData.getSelectTxNotCurrentSql());
+         chStmt.runPreparedQuery(query, transactionData.getSelectData());
          while (chStmt.next()) {
             results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }
@@ -154,7 +156,7 @@ public final class SkynetTransaction extends DbTransaction {
       }
    }
 
-   private void executeTransactionDataItems(Connection connection) throws OseeDataStoreException {
+   private void executeTransactionDataItems(Connection connection) throws OseeCoreException {
       if (transactionItems.isEmpty()) {
          return;
       }
