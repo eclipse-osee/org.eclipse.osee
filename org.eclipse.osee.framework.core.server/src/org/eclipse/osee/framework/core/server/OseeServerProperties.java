@@ -12,6 +12,8 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
  */
 public class OseeServerProperties {
 
+   public static final String CHECK_TAG_QUEUE_ON_START_UP = "osee.check.tag.queue.on.startup";
+
    private OseeServerProperties() {
       super();
    }
@@ -32,5 +34,14 @@ public class OseeServerProperties {
     */
    public static int getOseeApplicationServerPort() {
       return OseeProperties.getOseeApplicationServerPort();
+   }
+
+   /**
+    * Check Tag Queue on start up. Entries found in the tag queue are tagged by the server on start up.
+    * 
+    * @return whether tag queue should be checked upon server start-up.
+    */
+   public static boolean isCheckTagQueueOnStartupAllowed() {
+      return Boolean.valueOf(System.getProperty(CHECK_TAG_QUEUE_ON_START_UP, "false"));
    }
 }
