@@ -331,7 +331,10 @@ public class BranchManager {
     * @param archiveSourceBranch
     * @throws OseeCoreException
     */
-   public static void commitBranch(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
+   public static void commitBranch(ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) throws OseeCoreException {
+      if (conflictManager.remainingConflictsExist() && !overwriteUnresolvedConflicts) {
+         throw new OseeCoreException("Commit failed due to unresolved conflicts");
+      }
       new CommitDbTx(conflictManager, archiveSourceBranch).execute();
    }
 

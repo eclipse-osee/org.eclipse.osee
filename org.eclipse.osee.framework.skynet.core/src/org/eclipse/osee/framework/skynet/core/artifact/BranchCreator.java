@@ -399,10 +399,10 @@ public class BranchCreator {
       return createMergeBranchTx.getMergeBranch();
    }
 
-   public void addArtifactsToBranch(Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
-      CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, destBranch, artIds, mergeBranch);
-      createMergeBranchTx.execute();
-   }
+   private final static String attributeGammas =
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, atr1.gamma_id, txs1.mod_type, ? FROM osee_attribute atr1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
+   private final static String artifactVersionGammas =
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, arv1.gamma_id, txs1.mod_type, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
 
    private final class CreateMergeBranchTx extends DbTransaction {
       private Branch sourceBranch;
@@ -438,25 +438,18 @@ public class BranchCreator {
        */
       @Override
       protected void handleTxWork(Connection connection) throws OseeCoreException {
-         boolean createBranch = (mergeBranch == null);
 
          if (artIds == null || artIds.isEmpty()) {
             throw new IllegalArgumentException("Artifact IDs can not be null or empty");
          }
 
          Pair<Branch, Integer> branchWithTransactionNumber;
-         if (createBranch) {
-            branchWithTransactionNumber =
-                  createMergeBranchWithBaselineTransactionNumber(connection, UserManager.getUser(),
-                        TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
-                        "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
-                        "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
-                        BranchType.MERGE, destBranch);
-         } else {
-            TransactionId startTransactionId = TransactionIdManager.getStartEndPoint(mergeBranch).getKey();
-            branchWithTransactionNumber =
-                  new Pair<Branch, Integer>(mergeBranch, startTransactionId.getTransactionNumber());
-         }
+         branchWithTransactionNumber =
+               createMergeBranchWithBaselineTransactionNumber(connection, UserManager.getUser(),
+                     TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
+                     "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
+                     "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
+                     BranchType.MERGE, destBranch);
 
          List<Object[]> datas = new LinkedList<Object[]>();
          int queryId = ArtifactLoader.getNewQueryId();
@@ -467,32 +460,52 @@ public class BranchCreator {
          }
          try {
             ArtifactLoader.selectArtifacts(datas);
-            String attributeGammas =
-                  "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, atr1.gamma_id, txs1.mod_type, ? FROM osee_attribute atr1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
-            String artifactVersionGammas =
-                  "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, arv1.gamma_id, txs1.mod_type, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
-
-            insertGammas(connection, attributeGammas, branchWithTransactionNumber.getValue(), queryId);
-            insertGammas(connection, artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId);
+            insertGammas(connection, attributeGammas, branchWithTransactionNumber.getValue(), queryId, sourceBranch);
+            insertGammas(connection, artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId,
+                  sourceBranch);
          } finally {
             ArtifactLoader.clearQuery(connection, queryId);
          }
 
          mergeBranch = branchWithTransactionNumber.getKey();
 
-         if (createBranch) {
-            ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
-                  destBranch.getBranchId(), mergeBranch.getBranchId(), -1);
-         }
+         ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
+               destBranch.getBranchId(), mergeBranch.getBranchId(), -1);
       }
 
       public Branch getMergeBranch() {
          return mergeBranch;
       }
+   }
 
-      private void insertGammas(Connection connection, String sql, int baselineTransactionNumber, int queryId) throws OseeDataStoreException {
-         ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
-               sourceBranch.getBranchId(), queryId);
+   public void addArtifactsToBranch(Connection connection, Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
+      if (artIds == null || artIds.isEmpty()) {
+         throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
+
+      Pair<Branch, Integer> branchWithTransactionNumber;
+      TransactionId startTransactionId = TransactionIdManager.getStartEndPoint(mergeBranch).getKey();
+      branchWithTransactionNumber = new Pair<Branch, Integer>(mergeBranch, startTransactionId.getTransactionNumber());
+
+      List<Object[]> datas = new LinkedList<Object[]>();
+      int queryId = ArtifactLoader.getNewQueryId();
+      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+
+      for (int artId : artIds) {
+         datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), SQL3DataType.INTEGER});
+      }
+      try {
+         ArtifactLoader.selectArtifacts(datas);
+         insertGammas(connection, attributeGammas, branchWithTransactionNumber.getValue(), queryId, sourceBranch);
+         insertGammas(connection, artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId, sourceBranch);
+      } finally {
+         ArtifactLoader.clearQuery(connection, queryId);
+      }
+      mergeBranch = branchWithTransactionNumber.getKey();
+   }
+
+   private static void insertGammas(Connection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
+            sourceBranch.getBranchId(), queryId);
    }
 }

@@ -1,8 +1,14 @@
-/*
- * Created on Nov 15, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.Connection;
@@ -39,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
  * Commits gammaIds from a Source branch into a destination branch.
  * 
  * @author Jeff C. Phillips
+ * @author Theron Virgin
  */
 public class CommitDbTx extends DbTransaction {
    //destination branch id, source branch id
@@ -107,7 +114,7 @@ public class CommitDbTx extends DbTransaction {
    private List<Object[]> relLinks = new ArrayList<Object[]>();
    private long startTime;
 
-   public CommitDbTx(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
+   protected CommitDbTx(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
       this.conflictManager = conflictManager;
       this.toBranch = conflictManager.getToBranch();
       this.fromBranch = conflictManager.getFromBranch();

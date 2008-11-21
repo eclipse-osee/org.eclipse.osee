@@ -129,7 +129,8 @@ public class UpdateMergeBranch extends DbTransaction {
          expectedArtIds.remove(new Integer(artifact.getArtId()));
       }
       if (!expectedArtIds.isEmpty()) {
-         BranchCreator.getInstance().addArtifactsToBranch(sourceBranch, destBranch, mergeBranch, expectedArtIds);
+         BranchCreator.getInstance().addArtifactsToBranch(connection, sourceBranch, destBranch, mergeBranch,
+               expectedArtIds);
       }
 
       if (DEBUG) {
