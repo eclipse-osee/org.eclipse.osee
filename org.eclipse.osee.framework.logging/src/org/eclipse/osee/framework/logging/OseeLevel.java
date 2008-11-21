@@ -17,9 +17,11 @@ import java.util.logging.Level;
  * @author osee
  */
 public class OseeLevel extends Level {
-	private static final long serialVersionUID = 4699966771242634396L;
+   private static final long serialVersionUID = 4699966771242634396L;
 
-	public static final Level SEVERE_POPUP = new OseeLevel("SEVERE_POPUP", SEVERE.intValue() + 100);
+   public static final String SPLIT = "##split##";
+
+   public static final Level SEVERE_POPUP = new OseeLevel("SEVERE_POPUP", SEVERE.intValue() + 100);
 
    /**
     * @param name

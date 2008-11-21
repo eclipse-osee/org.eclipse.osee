@@ -68,6 +68,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
       packageAdminTracker.open();
       OseeEventManager.addListener(this);
+      OseeLog.registerLoggerListener(new DialogPopupLoggerListener());
    }
 
    /**
