@@ -35,8 +35,7 @@ public class ConflictedBranchCommitingTest extends TestCase {
       try {
          ConflictManagerExternal conflictManager =
                new ConflictManagerExternal(ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch());
-         conflictManager.getRemainingConflicts();
-         BranchManager.commitBranch(conflictManager, false);
+         BranchManager.commitBranch(conflictManager, false, false);
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
       } catch (Exception ex) {
          fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");
