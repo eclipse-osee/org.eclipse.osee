@@ -230,7 +230,7 @@ public class EditTasksWorldSearchItem extends TaskEditorParameterSearchItem {
       if (isIncludeCompletedCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
       }
-      return "Team Workflows" + sb.toString();
+      return "Tasks" + sb.toString();
    }
 
    /* (non-Javadoc)

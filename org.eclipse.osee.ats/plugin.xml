@@ -287,27 +287,12 @@
       </Operation>
    </extension>
    <extension
-         id="EditTasks"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.operation.EditTasks">
-      </Operation>
-   </extension>
-   <extension
          id="AtsWidgetProvider"
          name="AtsWidgetProvider"
          point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
       <XWidgetProvider
             classname="org.eclipse.osee.ats.util.widgets.AtsWidgetProvider">
       </XWidgetProvider>
-   </extension>
-   <extension
-         id="EditTeamWorkflows"
-         name="EditTeamWorkflows"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.operation.EditTeamWorkflows">
-      </Operation>
    </extension>
    <extension
          id="TranslateImportedValidateChangeReports"

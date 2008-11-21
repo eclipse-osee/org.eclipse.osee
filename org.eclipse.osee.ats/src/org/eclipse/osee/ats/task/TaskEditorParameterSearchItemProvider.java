@@ -42,7 +42,7 @@ public class TaskEditorParameterSearchItemProvider implements ITaskEditorProvide
     */
    @Override
    public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
-      return worldParameterSearchItem.getSelectedName(searchType);
+      return worldParameterSearchItem.getTaskEditorLabel(searchType);
    }
 
    /* (non-Javadoc)
