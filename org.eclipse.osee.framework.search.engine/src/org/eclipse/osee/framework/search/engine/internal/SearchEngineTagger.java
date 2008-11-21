@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
-import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
@@ -43,10 +42,8 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       this.futureTasks = Collections.synchronizedMap(new HashMap<Integer, FutureTask<?>>());
       this.executor = Executors.newFixedThreadPool(3, CoreServerActivator.createNewThreadFactory("tagger.worker"));
 
-      if (OseeServerProperties.isCheckTagQueueOnStartupAllowed()) {
-         Timer timer = new Timer("Start-Up Tagger");
-         timer.schedule(new StartUpRunnable(this), 1000);
-      }
+      Timer timer = new Timer("Start-Up Tagger");
+      timer.schedule(new StartUpRunnable(this), 1000);
    }
 
    /* (non-Javadoc)

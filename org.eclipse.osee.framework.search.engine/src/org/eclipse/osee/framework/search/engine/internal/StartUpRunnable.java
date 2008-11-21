@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.JoinUtility;
+import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 
@@ -33,13 +34,15 @@ final class StartUpRunnable extends TimerTask {
    @Override
    public void run() {
       try {
-         List<Integer> queries = JoinUtility.getAllTagQueueQueryIds();
-         if (queries.isEmpty() != true) {
+         if (OseeServerProperties.isCheckTagQueueOnStartupAllowed()) {
+            List<Integer> queries = JoinUtility.getAllTagQueueQueryIds();
             OseeLog.log(SearchEngineTagger.class, Level.INFO, String.format(
-                  "Tagging [%d] left-over items from tag queue.", queries.size()));
-         }
-         for (Integer queryId : queries) {
-            tagger.tagByQueueQueryId(queryId);
+                  "On Start-Up Tagging - [%d] tag queue items.", queries.size()));
+            for (Integer queryId : queries) {
+               tagger.tagByQueueQueryId(queryId);
+            }
+         } else {
+            OseeLog.log(SearchEngineTagger.class, Level.INFO, "Tagging on Server Startup was not run.");
          }
       } catch (Exception ex) {
          OseeLog.log(SearchEngineTagger.class, Level.INFO, "Tagging on Server Startup was not run.");
