@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.skynet.core.internal;
+package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -29,11 +29,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
