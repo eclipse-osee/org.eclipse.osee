@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 
@@ -112,7 +111,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                      }
                   }
                   if (arts.size() > 0) {
-                     worldComposite.load(name, arts, TableLoadOption.None);
+                     WorldEditor.open(new WorldEditorSimpleProvider(name, arts));
                   }
                } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
