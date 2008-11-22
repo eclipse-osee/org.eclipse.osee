@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -58,5 +59,13 @@ public class WorldEditorSimpleProvider implements IWorldEditorProvider {
    @Override
    public String getName() throws OseeCoreException {
       return name;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getTargetedVersionArtifact()
+    */
+   @Override
+   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
+      return null;
    }
 }

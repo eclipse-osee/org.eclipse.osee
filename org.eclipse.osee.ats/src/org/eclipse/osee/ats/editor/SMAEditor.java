@@ -762,7 +762,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsArtifacts()
     */
    @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() {
+   public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
       return Arrays.asList(smaMgr.getSma());
    }
 
@@ -770,7 +770,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
     */
    @Override
-   public VersionArtifact getMetricsVersionArtifact() {
+   public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
       return null;
    }
 

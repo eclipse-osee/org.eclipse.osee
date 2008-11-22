@@ -187,23 +187,27 @@ public class AtsMetricsComposite extends ScrolledComposite {
       lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f", sMet.getHrsSpent())));
       lines.add(XBarGraphLine.getTextLine("Man Days Needed: ", String.format("%5.2f", sMet.getManDaysNeeded())));
 
-      if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
-         double hoursTillRelease = sMet.getHoursTillRel();
-         double hoursRemaining = sMet.getHrsRemain();
-         int percent = 0;
-         if (hoursTillRelease != 0) {
-            percent = (int) (hoursRemaining / hoursTillRelease);
+      try {
+         if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
+            double hoursTillRelease = sMet.getHoursTillRel();
+            double hoursRemaining = sMet.getHrsRemain();
+            int percent = 0;
+            if (hoursTillRelease != 0) {
+               percent = (int) (hoursRemaining / hoursTillRelease);
+            }
+            if (percent == 0 || hoursRemaining > hoursTillRelease) {
+               lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
+                     XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
+                           "%5.2f hours exceeds remaining release hours %5.2f", hoursRemaining, hoursTillRelease)));
+            } else {
+               lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
+                     XBarGraphLine.DEFAULT_GREEN_BACKGROUND, SWT.COLOR_WHITE, SWT.COLOR_WHITE, percent, String.format(
+                           "%5.2f remaining work hours", hoursRemaining), String.format(
+                           "%5.2f release remaining hours", hoursRemaining)));
+            }
          }
-         if (percent == 0 || hoursRemaining > hoursTillRelease) {
-            lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
-                  XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
-                        "%5.2f hours exceeds remaining release hours %5.2f", hoursRemaining, hoursTillRelease)));
-         } else {
-            lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
-                  XBarGraphLine.DEFAULT_GREEN_BACKGROUND, SWT.COLOR_WHITE, SWT.COLOR_WHITE, percent, String.format(
-                        "%5.2f remaining work hours", hoursRemaining), String.format("%5.2f release remaining hours",
-                        hoursRemaining)));
-         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
       XBarGraphTable table = new XBarGraphTable("Overview", "", "", lines);
@@ -236,7 +240,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(table);
    }
 
-   public void createHoursRemainingByAssigneesChart(SMAMetrics sMet, Composite parent) {
+   public void createHoursRemainingByAssigneesChart(SMAMetrics sMet, Composite parent) throws OseeCoreException {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
       Double versionHoursRemain = null;
       if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {

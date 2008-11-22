@@ -12,6 +12,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -140,5 +142,16 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
 
          return Status.OK_STATUS;
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getTargetedVersionArtifact()
+    */
+   @Override
+   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
+      if (worldUISearchItem instanceof VersionTargetedForTeamSearchItem) {
+         return ((VersionTargetedForTeamSearchItem) worldUISearchItem).getSearchVersionArtifact();
+      }
+      return null;
    }
 }

@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -169,7 +168,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
     * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getArtifacts()
     */
    @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() {
+   public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
       return getLoadedArtifacts();
    }
 
@@ -177,11 +176,8 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
     * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
     */
    @Override
-   public VersionArtifact getMetricsVersionArtifact() {
-      if (actionPage.getWorldComposite().getLastSearchItem() instanceof VersionTargetedForTeamSearchItem) {
-         return ((VersionTargetedForTeamSearchItem) actionPage.getWorldComposite().getLastSearchItem()).getSearchVersionArtifact();
-      }
-      return null;
+   public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
+      return getWorldEditorProvider().getTargetedVersionArtifact();
    }
 
    public WorldComposite getWorldComposite() {

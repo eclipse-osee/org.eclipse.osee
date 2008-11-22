@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.world;
 
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
@@ -18,4 +19,6 @@ public interface IWorldEditorProvider {
    public String getSelectedName(SearchType searchType) throws OseeCoreException;
 
    public String getName() throws OseeCoreException;
+
+   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException;
 }

@@ -283,7 +283,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsArtifacts()
     */
    @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() {
+   public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
       return tasks;
    }
 
@@ -291,7 +291,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
     */
    @Override
-   public VersionArtifact getMetricsVersionArtifact() {
+   public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
       return null;
    }
 

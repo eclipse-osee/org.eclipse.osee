@@ -76,7 +76,6 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
    private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toWorkFlow, toTask;
    private Label extraInfoLabel;
-   private WorldSearchItem lastSearchItem;
    private final WorldXViewer worldXViewer;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
@@ -383,9 +382,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          @Override
          public void run() {
             try {
-               if (lastSearchItem != null) {
-                  worldEditor.reSearch();
-               }
+               worldEditor.reSearch();
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -632,13 +629,6 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             }
          });
       }
-   }
-
-   /**
-    * @return the lastSearchItem
-    */
-   public WorldSearchItem getLastSearchItem() {
-      return lastSearchItem;
    }
 
 }

@@ -262,4 +262,13 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return null;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getTargetedVersionArtifact()
+    */
+   @Override
+   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
+      if (versionCombo == null) return null;
+      return getSelectedVersionArtifact();
+   }
+
 }

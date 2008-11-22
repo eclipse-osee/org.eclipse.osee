@@ -46,15 +46,15 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    public String getGroupSearchName() {
       if (group != null)
          return group.getDescriptiveName();
-      else {
-         if (selectedGroup != null) return selectedGroup.getDescriptiveName();
-      }
+      else if (selectedGroup != null)
+         return selectedGroup.getDescriptiveName();
+      else if (groupName != null) return groupName;
       return "";
    }
 
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
-      return String.format("%s - %s", super.getSelectedName(searchType), getGroupSearchName());
+      return String.format("Group Search - %s", getGroupSearchName());
    }
 
    public void getProduct() throws OseeCoreException {

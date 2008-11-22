@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -189,6 +190,14 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
     */
    @Override
    public String[] getWidgetOptions(DynamicXWidgetLayoutData widgetData) {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getTargetedVersionArtifact()
+    */
+   @Override
+   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
       return null;
    }
 
