@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -331,9 +333,12 @@ public class ValidateChangeReports extends XNavigateItemAction {
    private static boolean isXmlChangeDataEqual(String data1, String data2) {
       int checkSum1 = getCheckSum(data1);
       int checkSum2 = getCheckSum(data2);
-
+      
       boolean result = checkSum1 == checkSum2;
       if (!result) {
+         ChangeReportComparer comparer = new ChangeReportComparer();
+         comparer.compare(data1, data2);
+         
          OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("Checksums not equal - stored:[%s] current:[%s]",
                checkSum1, checkSum2));
       }
