@@ -66,8 +66,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 
 /**
  * @author Donald G. Dunne
@@ -202,6 +200,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                setTableTitle("No Results Found - " + name, true);
             else
                setTableTitle(name, false);
+            worldXViewer.refresh();
             if (otherArts.size() > 0) {
                if (MessageDialog.openConfirm(
                      Display.getCurrent().getActiveShell(),
@@ -318,7 +317,11 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          @Override
          public void run() {
             try {
-               WorldEditor.open(((WorldEditorInput) worldEditor.getEditorInput()).getIWorldEditorProvider());
+               IWorldEditorProvider provider =
+                     ((WorldEditorInput) worldEditor.getEditorInput()).getIWorldEditorProvider().copyProvider();
+               provider.setCustomizeData(worldXViewer.getCustomizeMgr().generateCustDataFromTable());
+               provider.setTableLoadOptions(TableLoadOption.NoUI);
+               WorldEditor.open(provider);
             } catch (OseeCoreException ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -336,16 +339,11 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                AWorkbench.popup("ERROR", "Select items to open");
                return;
             }
-            WorldEditorInput worldEditorInput =
-                  new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", worldXViewer.getSelectedArtifacts(),
-                        worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions));
-            if (worldEditorInput != null) {
-               IWorkbenchPage page = AWorkbench.getActivePage();
-               try {
-                  page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
-               } catch (PartInitException ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
-               }
+            try {
+               WorldEditor.open(new WorldEditorSimpleProvider("ATS World", worldXViewer.getSelectedArtifacts(),
+                     worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions));
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };

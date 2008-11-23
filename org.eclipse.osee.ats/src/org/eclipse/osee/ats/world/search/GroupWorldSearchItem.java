@@ -41,6 +41,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       super(groupWorldSearchItem);
       this.group = groupWorldSearchItem.group;
       this.groupName = groupWorldSearchItem.groupName;
+      this.selectedGroup = groupWorldSearchItem.selectedGroup;
    }
 
    public String getGroupSearchName() {

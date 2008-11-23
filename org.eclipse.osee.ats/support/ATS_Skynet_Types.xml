@@ -96,10 +96,10 @@
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R210C1:R235C5"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R211C1:R236C5"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="239" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="240" x:FullColumns="1"
    x:FullRows="1">
    <Column ss:AutoFitWidth="0" ss:Width="286.5"/>
    <Column ss:AutoFitWidth="0" ss:Width="339.75"/>
@@ -762,6 +762,10 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String">Decision Review</Data></Cell>
     <Cell><Data ss:Type="String">ats.Description</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Decision Review</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Estimated Hours</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String">Decision Review</Data></Cell>
@@ -1687,12 +1691,11 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>72</TopRowVisible>
+   <TopRowVisible>65</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>82</ActiveRow>
-     <RangeSelection>R83C1:R85C1</RangeSelection>
+     <ActiveRow>98</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

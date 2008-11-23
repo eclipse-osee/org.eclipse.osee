@@ -12,7 +12,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -27,21 +26,28 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeD
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditorParameterSearchItemProvider implements IWorldEditorParameterProvider {
+public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider implements IWorldEditorParameterProvider {
 
    private final WorldEditorParameterSearchItem worldParameterSearchItem;
-   private final TableLoadOption[] tableLoadOptions;
-   private final CustomizeData customizeData;
    public static String ENTER_OPTIONS_AND_SELECT_SEARCH = "Enter options and select \"Search\"";
+   private boolean firstTime = true;
 
    public WorldEditorParameterSearchItemProvider(WorldEditorParameterSearchItem worldParameterSearchItem) {
       this(worldParameterSearchItem, null, TableLoadOption.None);
    }
 
    public WorldEditorParameterSearchItemProvider(WorldEditorParameterSearchItem worldParameterSearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
+      super(customizeData, tableLoadOptions);
       this.worldParameterSearchItem = worldParameterSearchItem;
-      this.customizeData = customizeData;
-      this.tableLoadOptions = tableLoadOptions;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#copy(org.eclipse.osee.ats.world.IWorldEditorProvider)
+    */
+   @Override
+   public IWorldEditorProvider copyProvider() {
+      return new WorldEditorParameterSearchItemProvider(
+            (WorldEditorParameterSearchItem) worldParameterSearchItem.copy(), customizeData, tableLoadOptions);
    }
 
    /**
@@ -58,8 +64,6 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
    public String getName() throws OseeCoreException {
       return worldParameterSearchItem.getName();
    }
-
-   private boolean firstTime = true;
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldEditorProvider#run(org.eclipse.osee.ats.world.WorldEditor)
@@ -137,8 +141,8 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
                   return Status.OK_STATUS;
                }
             }
+            worldEditor.setEditorTitle(selectedName != null ? selectedName : worldParameterSearchItem.getName());
             worldEditor.getWorldComposite().load(selectedName, artifacts, customizeData, tableLoadOptions);
-            worldEditor.setEditorTitle(selectedName);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
@@ -190,14 +194,6 @@ public class WorldEditorParameterSearchItemProvider implements IWorldEditorParam
     */
    @Override
    public String[] getWidgetOptions(DynamicXWidgetLayoutData widgetData) {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getTargetedVersionArtifact()
-    */
-   @Override
-   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
       return null;
    }
 

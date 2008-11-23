@@ -57,6 +57,10 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return new TeamWorkflowSearchWorkflowSearchItem(this);
    }
 
+   public TeamWorkflowSearchWorkflowSearchItem copyProvider() {
+      return new TeamWorkflowSearchWorkflowSearchItem(this);
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getParameterXWidgetXml()
     */

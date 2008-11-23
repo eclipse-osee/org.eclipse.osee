@@ -11,11 +11,16 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements IWorldEditorParameterProvider, IDynamicWidgetLayoutListener, IXWidgetOptionResolver {
+
+   private CustomizeData customizeData;
+   private TableLoadOption[] tableLoadOptions;
 
    /**
     * @param name
@@ -39,14 +44,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       super(worldSearchItem);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
-    */
-   @Override
-   public WorldSearchItem copy() {
-      return null;
-   }
-
    public abstract String getParameterXWidgetXml() throws OseeCoreException;
 
    public abstract Result isParameterSelectionValid() throws OseeCoreException;
@@ -64,6 +61,28 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    @Override
    public String[] getWidgetOptions(DynamicXWidgetLayoutData widgetData) {
       return null;
+   }
+
+   public void setCustomizeData(CustomizeData customizeData) {
+      this.customizeData = customizeData;
+   }
+
+   public void setTableLoadOptions(TableLoadOption... tableLoadOptions) {
+      this.tableLoadOptions = tableLoadOptions;
+   }
+
+   /**
+    * @return the customizeData
+    */
+   public CustomizeData getCustomizeData() {
+      return customizeData;
+   }
+
+   /**
+    * @return the tableLoadOptions
+    */
+   public TableLoadOption[] getTableLoadOptions() {
+      return tableLoadOptions;
    }
 
 }

@@ -27,20 +27,26 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeD
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
+public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
 
    private final WorldUISearchItem worldUISearchItem;
-   private final TableLoadOption[] tableLoadOptions;
-   private final CustomizeData customizeData;
 
-   public WorldEditorSearchItemProvider(WorldUISearchItem worldUISearchItem) {
+   public WorldEditorUISearchItemProvider(WorldUISearchItem worldUISearchItem) {
       this(worldUISearchItem, null, TableLoadOption.None);
    }
 
-   public WorldEditorSearchItemProvider(WorldUISearchItem worldUISearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
+   public WorldEditorUISearchItemProvider(WorldUISearchItem worldUISearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
+      super(customizeData, tableLoadOptions);
       this.worldUISearchItem = worldUISearchItem;
-      this.customizeData = customizeData;
-      this.tableLoadOptions = tableLoadOptions;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#copy(org.eclipse.osee.ats.world.IWorldEditorProvider)
+    */
+   @Override
+   public IWorldEditorProvider copyProvider() {
+      return new WorldEditorUISearchItemProvider((WorldUISearchItem) worldUISearchItem.copy(), customizeData,
+            tableLoadOptions);
    }
 
    /**
@@ -131,6 +137,7 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
                   return Status.OK_STATUS;
                }
             }
+            worldEditor.setEditorTitle(selectedName != null ? selectedName : worldUISearchItem.getName());
             worldEditor.getWorldComposite().load((selectedName != null ? selectedName : ""), artifacts, customizeData);
          } catch (final Exception ex) {
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);
@@ -154,4 +161,5 @@ public class WorldEditorSearchItemProvider implements IWorldEditorProvider {
       }
       return null;
    }
+
 }

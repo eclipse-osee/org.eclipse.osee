@@ -8,6 +8,8 @@ package org.eclipse.osee.ats.world;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 
 /**
  * @author Donald G. Dunne
@@ -21,4 +23,10 @@ public interface IWorldEditorProvider {
    public String getName() throws OseeCoreException;
 
    public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException;
+
+   public IWorldEditorProvider copyProvider();
+
+   public void setCustomizeData(CustomizeData customizeData);
+
+   public void setTableLoadOptions(TableLoadOption... tableLoadOptions);
 }
