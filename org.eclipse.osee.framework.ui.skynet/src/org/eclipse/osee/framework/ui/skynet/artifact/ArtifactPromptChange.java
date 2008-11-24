@@ -170,6 +170,7 @@ public class ArtifactPromptChange {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
+      ed.setFillVertically(true);
       if (smas.size() == 1) {
          try {
             Object obj = smas.iterator().next().getSoleAttributeValue(attributeName);
