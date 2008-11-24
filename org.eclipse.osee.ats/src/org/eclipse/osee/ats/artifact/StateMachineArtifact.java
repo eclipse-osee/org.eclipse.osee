@@ -492,7 +492,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public String getWorldViewActivePoc() throws OseeCoreException {
       if (smaMgr.isCancelledOrCompleted()) {
-         return "(" + Artifacts.toString("; ", smaMgr.getSma().getImplementers()) + ")";
+         if (smaMgr.getSma().getImplementers().size() > 0) {
+            return "(" + Artifacts.toString("; ", smaMgr.getSma().getImplementers()) + ")";
+         }
+         return "";
       }
       return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
    }
