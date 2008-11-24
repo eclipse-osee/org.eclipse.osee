@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -69,7 +70,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          }
          transaction.execute();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       onDirtied();
    }
