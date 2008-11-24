@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.task;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
@@ -52,8 +53,9 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
       registerAllAttributeColumns();
    }
 
+   @Override
    public XViewerSorter createNewXSorter(XViewer xViewer) {
-      return new TaskXViewerSorter(xViewer);
+      return new WorldXViewerSorter(xViewer);
    }
 
 }
