@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.util;
 
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 
 /**
  * @author Donald G. Dunne
@@ -48,16 +50,17 @@ public class AtsPriority {
          return priorities;
       }
 
+      @Override
       public String toString() {
          return shortName;
       }
 
-      public static PriorityType getPriority(String type) {
+      public static PriorityType getPriority(String type) throws OseeCoreException {
          if (type == null || type.equals("")) return PriorityType.None;
          for (PriorityType pri : PriorityType.values()) {
             if (type.equals(pri.getShortName())) return pri;
          }
-         throw new IllegalStateException("Invalid priority => " + type);
+         throw new OseeStateException("Invalid priority => " + type);
       }
 
    };

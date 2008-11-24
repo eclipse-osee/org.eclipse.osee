@@ -163,7 +163,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
             continue;
          }
          // If include completed and task is such and user not implementer, skip this task
-         if (isIncludeCompletedCancelledCheckbox() && taskArt.getSmaMgr().isCompleted() && getSelectedUser() != null && taskArt.getImplementers().contains(
+         if (isIncludeCompletedCancelledCheckbox() && taskArt.getSmaMgr().isCancelledOrCompleted() && getSelectedUser() != null && taskArt.getImplementers().contains(
                getSelectedUser())) {
             tasks.add(taskArt);
             continue;
@@ -183,14 +183,14 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
     */
    @Override
    public Result isParameterSelectionValid() throws OseeCoreException {
-      // If only user selected, handle that case separately
-      if (getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().size() == 0 && getSelectedUser() != null) {
-         return Result.TrueResult;
-      }
-
       if (getSelectedUser() != null && isIncludeCompletedCancelledCheckbox() && getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().size() == 0) {
          // This case is unsupported  and should be filtered out prior to this point
          throw new OseeArgumentException("Unsupported User and Include Completed selected.");
+      }
+
+      // If only user selected, handle that case separately
+      if (getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().size() == 0 && getSelectedUser() != null) {
+         return Result.TrueResult;
       }
 
       if (getSelectedGroups().size() > 0 && (getSelectedVersionArtifact() != null || getSelectedTeamDefinitions().size() > 0)) {

@@ -107,11 +107,11 @@ public class VersionArtifact extends BasicArtifact {
       }
    }
 
-   public Date getEstimatedReleaseDate() throws IllegalStateException, OseeCoreException {
+   public Date getEstimatedReleaseDate() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
    }
 
-   public Date getReleaseDate() throws IllegalStateException, OseeCoreException {
+   public Date getReleaseDate() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
    }
 

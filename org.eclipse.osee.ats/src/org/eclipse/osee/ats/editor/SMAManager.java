@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -506,7 +507,7 @@ public class SMAManager {
                return true;
             }
          }
-      } catch (IllegalStateException ex) {
+      } catch (OseeStateException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
 

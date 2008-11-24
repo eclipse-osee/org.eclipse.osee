@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -181,10 +182,11 @@ public class UserRoleXViewer extends XViewer {
                }
             }
          } else
-            throw new IllegalStateException("Unhandled user role column");
+            throw new OseeStateException("Unhandled user role column");
 
          if (modified) {
-            SkynetTransaction transaction = new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch());
+            SkynetTransaction transaction =
+                  new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch());
             xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false, transaction);
             transaction.execute();
             xUserRoleViewer.refresh();

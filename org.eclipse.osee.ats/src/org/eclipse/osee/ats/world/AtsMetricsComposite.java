@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -189,13 +190,20 @@ public class AtsMetricsComposite extends ScrolledComposite {
 
       try {
          if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
+            lines.add(new XBarGraphLine("Targeted Version", 0,
+                  iAtsMetricsProvider.getMetricsVersionArtifact().toString()));
+            lines.add(new XBarGraphLine("Estimated Release Date", 0,
+                  iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValueAsString(
+                        ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), "Not Set")));
             double hoursTillRelease = sMet.getHoursTillRel();
             double hoursRemaining = sMet.getHrsRemain();
             int percent = 0;
             if (hoursTillRelease != 0) {
                percent = (int) (hoursRemaining / hoursTillRelease);
             }
-            if (percent == 0 || hoursRemaining > hoursTillRelease) {
+            if (sMet.getEstRelDate() == null) {
+               lines.add(new XBarGraphLine("Release Effort Remaining", 0, "Estimated Release Date Not Set"));
+            } else if (percent == 0 || hoursRemaining > hoursTillRelease) {
                lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
                      XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
                            "%5.2f hours exceeds remaining release hours %5.2f", hoursRemaining, hoursTillRelease)));
@@ -234,7 +242,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
          }
          lines.add(XBarGraphLine.getPercentLine(user.getName() + " (" + completed + "/" + total + ")", percentComplete));
       }
-      XBarGraphTable table = new XBarGraphTable("Completed by Assignee", "User", "Percent Complete", lines);
+      XBarGraphTable table =
+            new XBarGraphTable("Completed by Assignee per Assigned Workflow", "User", "Percent Complete", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
@@ -258,7 +267,9 @@ public class AtsMetricsComposite extends ScrolledComposite {
                   }
                }
             }
-            if (versionHoursRemain == null) {
+            if (sMet.getEstRelDate() == null) {
+               lines.add(new XBarGraphLine(user.getName(), 0, "Estimated Release Date Not Set"));
+            } else if (versionHoursRemain == null) {
                lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format("%5.2f",
                      userHoursRemain)));
             } else {

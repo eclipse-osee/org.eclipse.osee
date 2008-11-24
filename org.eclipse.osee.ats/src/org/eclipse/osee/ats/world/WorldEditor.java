@@ -31,6 +31,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 
 /**
@@ -75,6 +76,10 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    @Override
    public boolean isSaveOnCloseNeeded() {
       return isDirty();
+   }
+
+   public void refreshTitle() {
+      firePropertyChange(IWorkbenchPart.PROP_TITLE);
    }
 
    @Override
@@ -132,6 +137,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
 
    public void setEditorTitle(String str) {
       setPartName(str);
+      firePropertyChange(IWorkbenchPart.PROP_TITLE);
    }
 
    public IWorldEditorProvider getWorldEditorProvider() {

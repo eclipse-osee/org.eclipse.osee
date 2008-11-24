@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -816,11 +817,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    /**
-    * Set teamworkflowartifact attributes off given action artifact
+    * Set Team Workflow attributes off given action artifact
     * 
     * @param fromAction
     * @param toTeam
-    * @throws IllegalStateException
+    * @throws OseeArgumentException
     */
    public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
       String priorityStr = fromAction.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "");
@@ -830,7 +831,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       else if (!priorityStr.equals(""))
          priType = PriorityType.getPriority(priorityStr);
       else
-         throw new IllegalArgumentException("Invalid priority => " + priorityStr);
+         throw new OseeArgumentException("Invalid priority => " + priorityStr);
       setArtifactIdentifyData(toTeam, fromAction.getDescriptiveName(), fromAction.getSoleAttributeValue(
             ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""),
             ChangeType.getChangeType(fromAction.getSoleAttributeValue(

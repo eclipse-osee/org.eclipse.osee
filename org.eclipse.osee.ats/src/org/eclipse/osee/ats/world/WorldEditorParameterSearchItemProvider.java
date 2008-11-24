@@ -124,6 +124,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
          String selectedName = "";
          try {
             selectedName = worldParameterSearchItem.getSelectedName(searchType);
+            worldEditor.setEditorTitle(selectedName != null ? selectedName : worldParameterSearchItem.getName());
             worldEditor.setTableTitle("Loading \"" + (selectedName != null ? selectedName : "") + "\"...", false);
             cancel = false;
             worldParameterSearchItem.setCancelled(cancel);
@@ -141,7 +142,6 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
                   return Status.OK_STATUS;
                }
             }
-            worldEditor.setEditorTitle(selectedName != null ? selectedName : worldParameterSearchItem.getName());
             worldEditor.getWorldComposite().load(selectedName, artifacts, customizeData, tableLoadOptions);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";

@@ -10,6 +10,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -27,10 +31,8 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
@@ -38,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -65,7 +68,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
@@ -282,32 +284,9 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          SMAMetrics sMet = new SMAMetrics(getXViewer().getSelectedSMAArtifacts(), null);
          str = sMet.toString();
       }
-      if (str.equals("")) {
-         str = getWhoAmI();
-         if (AtsPlugin.isAtsAdmin()) str += " - Admin";
-         if (AtsPlugin.isAtsDisableEmail()) str += " - Email Disabled";
-         if (AtsPlugin.isAtsAlwaysEmailMe()) str += " - AtsAlwaysEmailMe";
-         if (!str.equals("")) {
-            if (AtsPlugin.isAtsAdmin()) {
-               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            } else {
-               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-            }
-         }
-      }
+
       extraInfoLabel.setText(str);
       extraInfoLabel.getParent().layout();
-   }
-
-   private String getWhoAmI() {
-      try {
-         String userName = UserManager.getUser().getName();
-         return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
-               ClientSessionManager.getDataStoreLoginName());
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return "Exception: " + ex.getLocalizedMessage();
-      }
    }
 
    protected void createActions() {
@@ -528,72 +507,107 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    }
 
    public void redisplayAsAction() {
-      try {
-         TreeItem treeItem[] = worldXViewer.getTree().getItems();
-         Set<Artifact> arts = new HashSet<Artifact>();
-         for (TreeItem item : treeItem) {
-            Object obj = item.getData();
-            if (obj instanceof Artifact) {
-               Artifact art = (Artifact) obj;
-               if (art instanceof ActionArtifact) {
-                  arts.add(art);
-               } else if (art instanceof StateMachineArtifact) {
-                  Artifact parentArt = ((StateMachineArtifact) art).getParentActionArtifact();
-                  if (parentArt != null) {
-                     arts.add(parentArt);
+      final ArrayList<Artifact> artifacts = worldXViewer.getLoadedArtifacts();
+      Job job = new Job("Re-display as Actions") {
+         /* (non-Javadoc)
+          * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+          */
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> arts = new HashSet<Artifact>();
+               for (Artifact art : artifacts) {
+                  if (art instanceof ActionArtifact) {
+                     arts.add(art);
+                  } else if (art instanceof StateMachineArtifact) {
+                     Artifact parentArt = ((StateMachineArtifact) art).getParentActionArtifact();
+                     if (parentArt != null) {
+                        arts.add(parentArt);
+                     }
                   }
                }
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     load(worldEditor.getCurrentTitleLabel(), arts);
+                  }
+               });
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
+            return Status.OK_STATUS;
          }
-         load(worldEditor.getCurrentTitleLabel(), arts);
-      } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
+      };
+      Jobs.startJob(job, true);
    }
 
    public void redisplayAsWorkFlow() {
-      try {
-         TreeItem treeItem[] = worldXViewer.getTree().getItems();
-         Set<Artifact> arts = new HashSet<Artifact>();
-         for (TreeItem item : treeItem) {
-            if (item.getData() instanceof Artifact) {
-               Artifact art = (Artifact) item.getData();
-               if (art instanceof ActionArtifact) {
-                  arts.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
-               } else if (art instanceof StateMachineArtifact) {
-                  Artifact parentArt = ((StateMachineArtifact) art).getParentTeamWorkflow();
-                  if (parentArt != null) {
-                     arts.add(parentArt);
+      final ArrayList<Artifact> artifacts = worldXViewer.getLoadedArtifacts();
+      Job job = new Job("Re-display as Workflows") {
+         /* (non-Javadoc)
+          * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+          */
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> arts = new HashSet<Artifact>();
+               for (Artifact art : artifacts) {
+                  if (art instanceof ActionArtifact) {
+                     arts.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
+                  } else if (art instanceof StateMachineArtifact) {
+                     Artifact parentArt = ((StateMachineArtifact) art).getParentTeamWorkflow();
+                     if (parentArt != null) {
+                        arts.add(parentArt);
+                     }
                   }
                }
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     load(worldEditor.getCurrentTitleLabel(), arts);
+                  }
+               });
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
+            return Status.OK_STATUS;
          }
-         load(worldEditor.getCurrentTitleLabel(), arts);
-      } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
+      };
+      Jobs.startJob(job, true);
    }
 
    public void redisplayAsTask() {
-      try {
-         TreeItem treeItem[] = worldXViewer.getTree().getItems();
-         Set<Artifact> arts = new HashSet<Artifact>();
-         for (TreeItem item : treeItem) {
-            if (item.getData() instanceof Artifact) {
-               Artifact art = (Artifact) item.getData();
-               if (art instanceof ActionArtifact) {
-                  for (TeamWorkFlowArtifact team : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
-                     arts.addAll(team.getSmaMgr().getTaskMgr().getTaskArtifacts());
+      final ArrayList<Artifact> artifacts = worldXViewer.getLoadedArtifacts();
+      Job job = new Job("Re-display as Tasks") {
+         /* (non-Javadoc)
+          * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+          */
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> arts = new HashSet<Artifact>();
+               for (Artifact art : artifacts) {
+                  if (art instanceof ActionArtifact) {
+                     for (TeamWorkFlowArtifact team : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
+                        arts.addAll(team.getSmaMgr().getTaskMgr().getTaskArtifacts());
+                     }
+                  } else if (art instanceof StateMachineArtifact) {
+                     arts.addAll(((StateMachineArtifact) art).getSmaMgr().getTaskMgr().getTaskArtifacts());
                   }
-               } else if (art instanceof StateMachineArtifact) {
-                  arts.addAll(((StateMachineArtifact) art).getSmaMgr().getTaskMgr().getTaskArtifacts());
                }
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     load(worldEditor.getCurrentTitleLabel(), arts);
+                  }
+               });
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
+            return Status.OK_STATUS;
          }
-         load(worldEditor.getCurrentTitleLabel(), arts);
-      } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
+      };
+      Jobs.startJob(job, true);
    }
 
    public void disposeComposite() {

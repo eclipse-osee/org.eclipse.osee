@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -32,7 +33,10 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -81,6 +85,35 @@ public class NavigateView extends ViewPart implements IActionable {
       }
       xNavComp.refresh();
       xNavComp.getFilteredTree().getFilterControl().setFocus();
+
+      Label label = new Label(xNavComp, SWT.None);
+      String str = getWhoAmI();
+      if (AtsPlugin.isAtsAdmin()) str += " - Admin";
+      if (AtsPlugin.isAtsDisableEmail()) str += " - Email Disabled";
+      if (AtsPlugin.isAtsAlwaysEmailMe()) str += " - AtsAlwaysEmailMe";
+      if (!str.equals("")) {
+         if (AtsPlugin.isAtsAdmin()) {
+            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         } else {
+            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+         }
+      }
+      label.setText(str);
+      label.setToolTipText(str);
+      GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
+      gridData.heightHint = 15;
+      label.setLayoutData(gridData);
+   }
+
+   private String getWhoAmI() {
+      try {
+         String userName = UserManager.getUser().getName();
+         return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
+               ClientSessionManager.getDataStoreLoginName());
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return "Exception: " + ex.getLocalizedMessage();
+      }
    }
 
    protected void createActions() {

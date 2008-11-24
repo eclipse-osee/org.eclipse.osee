@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,9 +55,9 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       Collection<TeamWorkFlowArtifact> teamArts =
             getRelatedArtifacts(AtsRelation.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
-      if (teamArts.size() == 0) throw new IllegalStateException(
+      if (teamArts.size() == 0) throw new OseeStateException(
             "Decision Review " + getHumanReadableId() + " has no parent workflow");
-      if (teamArts.size() > 1) throw new IllegalStateException(
+      if (teamArts.size() > 1) throw new OseeStateException(
             "Decision Review " + getHumanReadableId() + " has multiple parent workflows");
       return teamArts.iterator().next();
    }

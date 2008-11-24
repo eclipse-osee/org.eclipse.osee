@@ -27,6 +27,8 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.task.TaskEditor;
+import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
@@ -264,7 +266,16 @@ public class AtsLib implements IAtsLib {
    }
 
    @Override
-   public void openInAtsWorld(String name, Collection<Artifact> artifacts) throws OseeCoreException {
+   public void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
       WorldEditor.open(new WorldEditorSimpleProvider(name, artifacts));
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.ats.IAtsLib#openInAtsTaskEditor(java.lang.String, java.util.Collection)
+    */
+   @Override
+   public void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
+      TaskEditor.open(new TaskEditorSimpleProvider(name, artifacts));
+   }
+
 }

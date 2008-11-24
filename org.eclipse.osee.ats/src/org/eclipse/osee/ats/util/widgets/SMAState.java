@@ -86,7 +86,7 @@ public class SMAState {
       if (assignees.size() > 1 && assignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
          throw new OseeArgumentException("Can not assign to user and UnAssigned");
       }
-      if (assignees.size() > 0 && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) throw new IllegalStateException(
+      if (assignees.size() > 0 && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) throw new OseeStateException(
             "Can't assign completed/cancelled states.");
       this.assignees.clear();
       if (assignees != null) this.assignees.addAll(assignees);

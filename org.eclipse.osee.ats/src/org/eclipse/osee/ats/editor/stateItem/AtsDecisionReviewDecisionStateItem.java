@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -40,6 +41,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
     * 
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
     */
+   @Override
    public String getId() {
       return "osee.ats.decisionReview.Decision";
    }
@@ -51,9 +53,10 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
     *      org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage,
     *      org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
+   @Override
    public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       if (xWidget.getLabel().equals(ATSAttributes.DECISION_ATTRIBUTE.getDisplayName())) {
-         if (xWidget == null) throw new IllegalStateException("Can't retrieve decision review combo widget to set.");
+         if (xWidget == null) throw new OseeStateException("Can't retrieve decision review combo widget to set.");
          XComboDam decisionComboDam = (XComboDam) xWidget;
          List<String> options = new ArrayList<String>();
          XDecisionOptions xDecOptions = new XDecisionOptions((StateMachineArtifact) art);
@@ -64,6 +67,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       return Result.TrueResult;
    }
 
+   @Override
    public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException {
       DecisionOption decisionOption = getDecisionOption(section);
       if (decisionOption == null) return null;
@@ -80,6 +84,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
     * 
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getOverrideTransitionToAssignees(org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
+   @Override
    public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException {
       DecisionOption decisionOption = getDecisionOption(section);
       if (decisionOption == null) return null;

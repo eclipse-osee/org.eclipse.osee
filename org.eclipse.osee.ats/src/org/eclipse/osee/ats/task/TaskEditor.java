@@ -29,12 +29,12 @@ import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -70,7 +70,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          }
          transaction.execute();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
       onDirtied();
    }
@@ -179,18 +179,26 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       if (provider instanceof TaskEditorParameterSearchItemProvider && ((TaskEditorParameterSearchItemProvider) provider).isFirstTime()) {
          setPartName(provider.getName());
          setTableTitle(WorldEditorParameterSearchItemProvider.ENTER_OPTIONS_AND_SELECT_SEARCH, false);
-      } else {
-         LoadTableJob job = null;
-         job = new LoadTableJob(provider, SearchType.ReSearch, this);
-         job.setUser(false);
-         job.setPriority(Job.LONG);
-         job.schedule();
-         if (provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)) {
-            try {
-               job.join();
-            } catch (InterruptedException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            }
+         return;
+      }
+      if (provider instanceof TaskEditorParameterSearchItemProvider) {
+         Result result =
+               ((TaskEditorParameterSearchItemProvider) provider).getWorldSearchItem().isParameterSelectionValid();
+         if (result.isFalse()) {
+            result.popup();
+            return;
+         }
+      }
+      LoadTableJob job = null;
+      job = new LoadTableJob(provider, SearchType.ReSearch, this);
+      job.setUser(false);
+      job.setPriority(Job.LONG);
+      job.schedule();
+      if (provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)) {
+         try {
+            job.join();
+         } catch (InterruptedException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
    }

@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -275,9 +276,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       Collection<ActionArtifact> arts = getRelatedArtifacts(AtsRelation.ActionToWorkflow_Action, ActionArtifact.class);
       if (arts.size() == 0) {
-         throw new IllegalStateException("Team " + getHumanReadableId() + " has no parent Action");
+         throw new OseeStateException("Team " + getHumanReadableId() + " has no parent Action");
       } else if (arts.size() > 1) {
-         throw new IllegalStateException("Team " + getHumanReadableId() + " has multiple parent Actions");
+         throw new OseeStateException("Team " + getHumanReadableId() + " has multiple parent Actions");
       } else
          return arts.iterator().next();
    }

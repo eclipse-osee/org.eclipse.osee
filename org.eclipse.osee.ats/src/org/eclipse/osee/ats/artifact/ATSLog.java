@@ -220,7 +220,7 @@ public class ATSLog {
     * @param type
     * @param state name of state or null
     * @param msg
-    * @throws IllegalStateException
+    * @throws OseeArgumentException
     * @throws MultipleAttributesExist
     */
    public void addLog(LogType type, String state, String msg) throws OseeCoreException {

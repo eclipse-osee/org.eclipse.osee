@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -297,7 +298,7 @@ public class AtsBranchManager {
 
    private void createNecessaryBranchEventReviews(StateEventType stateEventType, SMAManager smaMgr, SkynetTransaction transaction) throws OseeCoreException {
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
-         throw new IllegalStateException("Invalid stateEventType = " + stateEventType);
+         throw new OseeStateException("Invalid stateEventType = " + stateEventType);
       }
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
       for (String ruleId : Arrays.asList(AtsAddDecisionReviewRule.ID, AtsAddPeerToPeerReviewRule.ID)) {
@@ -419,8 +420,8 @@ public class AtsBranchManager {
    }
 
    private final class AtsCommitJob extends Job {
-      private boolean commitPopup;
-      private boolean overrideStateValidation;
+      private final boolean commitPopup;
+      private final boolean overrideStateValidation;
 
       /**
        * @param name

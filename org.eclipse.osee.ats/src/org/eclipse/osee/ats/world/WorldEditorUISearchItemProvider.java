@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
@@ -122,6 +123,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
          String selectedName = "";
          try {
             selectedName = worldUISearchItem.getSelectedName(searchType);
+            worldEditor.setEditorTitle(selectedName != null ? selectedName : worldUISearchItem.getName());
             worldEditor.setTableTitle("Loading \"" + (selectedName != null ? selectedName : "") + "\"...", false);
             cancel = false;
             worldUISearchItem.setCancelled(cancel);
@@ -137,7 +139,6 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
                   return Status.OK_STATUS;
                }
             }
-            worldEditor.setEditorTitle(selectedName != null ? selectedName : worldUISearchItem.getName());
             worldEditor.getWorldComposite().load((selectedName != null ? selectedName : ""), artifacts, customizeData);
          } catch (final Exception ex) {
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);
@@ -158,6 +159,8 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
    public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
       if (worldUISearchItem instanceof VersionTargetedForTeamSearchItem) {
          return ((VersionTargetedForTeamSearchItem) worldUISearchItem).getSearchVersionArtifact();
+      } else if (worldUISearchItem instanceof NextVersionSearchItem) {
+         return ((NextVersionSearchItem) worldUISearchItem).getSelectedVersionArt();
       }
       return null;
    }

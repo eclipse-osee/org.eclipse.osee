@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsEndorseWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsSimpleInWorkWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
@@ -37,7 +38,7 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
 
    public SimpleWorkflowDefinition(Artifact artifact) throws OseeCoreException {
       super(artifact);
-      throw new IllegalStateException("This constructor should never be used.");
+      throw new OseeStateException("This constructor should never be used.");
    }
 
    public SimpleWorkflowDefinition() {

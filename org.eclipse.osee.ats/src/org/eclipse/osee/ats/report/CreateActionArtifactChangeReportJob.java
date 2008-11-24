@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -62,7 +62,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
    public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute) {
       XResultData rd = new XResultData();
       try {
-         if (teamArts.size() == 0) throw new IllegalStateException("No Actions/Workflows Specified");
+         if (teamArts.size() == 0) throw new OseeStateException("No Actions/Workflows Specified");
          retrieveData(monitor, teamArts, byAttribute, rd);
          if (rd.toString().equals("")) rd.log("No Problems Found");
          final String html = rd.getReport(jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));

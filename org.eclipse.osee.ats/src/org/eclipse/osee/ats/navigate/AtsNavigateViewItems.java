@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.world.search.ArtIdSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
 import org.eclipse.osee.ats.world.search.AtsAttributeSearchItem;
-import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyCompletedSearchItem;
@@ -45,12 +44,11 @@ import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyOrigSearchItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MySubscribedSearchItem;
-import org.eclipse.osee.ats.world.search.MyTaskSearchItem;
-import org.eclipse.osee.ats.world.search.MyTeamWFSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
 import org.eclipse.osee.ats.world.search.StateWorldSearchItem;
+import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
@@ -105,8 +103,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("User's World")));
 
          XNavigateItem otherItems = new XNavigateItem(null, "Other My Searches");
-         new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("My Team Workflows", user));
-         new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks", user, LoadView.TaskEditor));
          new SearchNavigateItem(otherItems, new MySubscribedSearchItem("My Subscribed", user));
          new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - InWork", user,
                MyOrigSearchItem.OriginatedState.InWork));
@@ -122,8 +118,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
                MyOrigSearchItem.OriginatedState.InWork));
          new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - All", null,
                MyOrigSearchItem.OriginatedState.All));
-         new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("User's Team Workflows"));
-         new SearchNavigateItem(otherItems, new MyTaskSearchItem("User's Tasks", LoadView.TaskEditor));
          new SearchNavigateItem(otherItems, new MyCompletedSearchItem("User's Completed"));
          new SearchNavigateItem(otherItems, new MyFavoritesSearchItem("User's Favorites"));
          new SearchNavigateItem(otherItems, new MySubscribedSearchItem("User's Subscribed"));

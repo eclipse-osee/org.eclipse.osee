@@ -19,6 +19,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -71,6 +72,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
    /**
     * (non-Javadoc) Method declared on Wizard.
     */
+   @Override
    public void addPages() {
       page1 = new NewActionPage1(this);
       addPage(page1);
@@ -114,7 +116,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return items;
    }
 
-   public PriorityType getPriority() {
+   public PriorityType getPriority() throws OseeCoreException {
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
       return PriorityType.getPriority(((XCombo) page2.getXWidget("ats.Priority")).get());
    }

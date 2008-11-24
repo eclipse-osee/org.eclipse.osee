@@ -74,7 +74,7 @@ public class OpenInAtsWorldOperation extends WorkPageService {
     */
    @Override
    public String getName() {
-      return "Open in ATS World";
+      return "Open in ATS World Editor";
    }
 
 }

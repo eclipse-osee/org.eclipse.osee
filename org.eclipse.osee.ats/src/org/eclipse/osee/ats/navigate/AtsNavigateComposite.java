@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItemProvider;
-import org.eclipse.osee.ats.task.TaskEditorSearchItemProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
@@ -70,13 +69,15 @@ public class AtsNavigateComposite extends XNavigateComposite {
             } else if (worldSearchItem instanceof WorldEditorParameterSearchItem) {
                WorldEditor.open(new WorldEditorParameterSearchItemProvider(
                      (WorldEditorParameterSearchItem) worldSearchItem.copy(), null, tableLoadOptions));
+            } else {
+               AWorkbench.popup("ERROR", "Unhandled WorldEditor navigate item");
             }
          } else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) {
-            if (worldSearchItem instanceof WorldUISearchItem) {
-               TaskEditor.open(new TaskEditorSearchItemProvider(worldSearchItem.copy(), tableLoadOptions));
-            } else if (worldSearchItem instanceof TaskEditorParameterSearchItem) {
+            if (worldSearchItem instanceof TaskEditorParameterSearchItem) {
                TaskEditor.open(new TaskEditorParameterSearchItemProvider(
                      (TaskEditorParameterSearchItem) worldSearchItem.copy()));
+            } else {
+               AWorkbench.popup("ERROR", "Unhandled TaskEditor navigate item");
             }
          } else {
             AWorkbench.popup("ERROR", "Unhandled navigate item");

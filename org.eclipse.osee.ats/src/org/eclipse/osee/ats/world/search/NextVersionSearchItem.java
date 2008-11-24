@@ -33,6 +33,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
 
    private final TeamDefinitionArtifact teamDefHoldingVersions;
    private TeamDefinitionArtifact selectedTeamDef;
+   private VersionArtifact selectedVersionArt;
 
    /**
     * @param name
@@ -49,6 +50,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    public NextVersionSearchItem(NextVersionSearchItem nextVersionSearchItem) {
       super(nextVersionSearchItem);
       this.teamDefHoldingVersions = nextVersionSearchItem.teamDefHoldingVersions;
+      this.selectedTeamDef = nextVersionSearchItem.selectedTeamDef;
    }
 
    @Override
@@ -58,8 +60,8 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       try {
          if (teamDef != null) {
             name += (teamDef != null ? " - " + teamDef.getDescriptiveName() : "");
-            VersionArtifact verArt = teamDef.getNextReleaseVersion();
-            name += (verArt != null ? " - " + verArt.getDescriptiveName() : "");
+            selectedVersionArt = teamDef.getNextReleaseVersion();
+            name += (selectedVersionArt != null ? " - " + selectedVersionArt.getDescriptiveName() : "");
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -125,6 +127,13 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    @Override
    public WorldUISearchItem copy() {
       return new NextVersionSearchItem(this);
+   }
+
+   /**
+    * @return the selectedVersionArt
+    */
+   public VersionArtifact getSelectedVersionArt() {
+      return selectedVersionArt;
    }
 
 }
