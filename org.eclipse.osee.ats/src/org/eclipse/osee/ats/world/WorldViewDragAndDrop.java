@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 
@@ -95,7 +97,11 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                         if (art instanceof IWorldViewArtifact) {
                            name = art.getDescriptiveName();
                         } else if (art.getArtifactTypeName().equals(UniversalGroup.ARTIFACT_TYPE_NAME)) {
-                           name = "Group \"" + art.getDescriptiveName() + "\"";
+                           GroupWorldSearchItem groupWorldSearchItem = new GroupWorldSearchItem();
+                           groupWorldSearchItem.setSelectedGroup(art);
+                           WorldEditor.open(new WorldEditorUISearchItemProvider(groupWorldSearchItem, null,
+                                 TableLoadOption.NoUI));
+                           return Status.OK_STATUS;
                         }
                      }
                      for (Artifact art : artifacts) {
