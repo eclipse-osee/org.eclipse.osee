@@ -9,12 +9,8 @@ import java.util.Collection;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
-import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.navigate.NavigateView;
-import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.task.TaskEditor;
-import org.eclipse.osee.ats.world.search.MyTaskSearchItem;
-import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -36,22 +32,6 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       closeTaskEditors();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("My Tasks (Editor)");
       handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getNumTasks());
-   }
-
-   public void testUsersTasksEditor() throws Exception {
-      closeTaskEditors();
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User's Tasks (Editor)");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof MyTaskSearchItem);
-      ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
-      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getTaskTitles(true).size());
-   }
-
-   public void testEditTasksByUser() throws Exception {
-      closeTaskEditors();
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Edit Tasks by User");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof MyTaskSearchItem);
-      ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
-      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getTaskTitles(true).size());
    }
 
    public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) throws OseeCoreException {
