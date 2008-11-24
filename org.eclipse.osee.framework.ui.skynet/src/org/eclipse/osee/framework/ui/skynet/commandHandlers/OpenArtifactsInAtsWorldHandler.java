@@ -35,7 +35,7 @@ public class OpenArtifactsInAtsWorldHandler extends AbstractHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       try {
-         if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsWorld("", artifacts);
+         if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsWorldEditor("", artifacts);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

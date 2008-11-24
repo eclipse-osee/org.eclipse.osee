@@ -53,7 +53,11 @@ public class XBarGraphLine {
    }
 
    public static XBarGraphLine getPercentLine(String name, int value) {
-      return new XBarGraphLine(name, DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value, value + "%");
+      if (value == 100.0) {
+         return new XBarGraphLine(name, DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value, value + "%");
+      } else {
+         return new XBarGraphLine(name, DEFAULT_RED_FOREGROUND, DEFAULT_RED_BACKGROUND, value, value + "%");
+      }
    }
 
    public static XBarGraphLine getTextLine(String name, String value) {

@@ -167,6 +167,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       menuManager.add(new Separator());
       createOpenArtifactHandler(menuManager, viewer);
       createOpenInAtsWorldHandler(menuManager, viewer);
+      createOpenInAtsTaskHandler(menuManager, viewer);
       createEditArtifactHandler(menuManager, viewer);
       createPreviewArtifactHandler(menuManager, viewer);
       createOpenInMassArtifactEditorHandler(menuManager, viewer);
@@ -191,6 +192,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       menuManager.add(new Separator());
       addOpenArtifactHandler(menuManager, viewer);
       addOpenInAtsWorldHandler(menuManager, viewer);
+      addOpenInAtsTaskHandler(menuManager, viewer);
       addEditArtifactHandler(menuManager, viewer);
       addPreviewArtifactHandler(menuManager, viewer);
       addOpenInMassArtifactEditorHandler(menuManager, viewer);
@@ -642,8 +644,8 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
    private String addOpenInAtsWorldHandler(MenuManager menuManager, final TableViewer viewer) {
       CommandContributionItem openInAtsWorldCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.openInAtsWorld", getSite(),
-                  null, null, null, null, null, null, null, null);
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.openInAtsWorldEditor",
+                  getSite(), null, null, null, null, null, null, null, null);
       menuManager.add(openInAtsWorldCommand);
 
       return openInAtsWorldCommand.getId();
@@ -656,7 +658,39 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             try {
-               if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsWorld("", getSelectedArtifacts(viewer));
+               if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsWorldEditor("ATS",
+                     getSelectedArtifacts(viewer));
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabledWithException() throws OseeCoreException {
+            return true;
+         }
+      });
+   }
+
+   private String addOpenInAtsTaskHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem openInAtsTaskCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.openInAtsTaskEditor", getSite(),
+                  null, null, null, null, null, null, null, null);
+      menuManager.add(openInAtsTaskCommand);
+
+      return openInAtsTaskCommand.getId();
+   }
+
+   private void createOpenInAtsTaskHandler(MenuManager menuManager, final TableViewer viewer) {
+      handlerService.activateHandler(addOpenInAtsTaskHandler(menuManager, viewer),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            try {
+               if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsTaskEditor("Tasks",
+                     getSelectedArtifacts(viewer));
             } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }

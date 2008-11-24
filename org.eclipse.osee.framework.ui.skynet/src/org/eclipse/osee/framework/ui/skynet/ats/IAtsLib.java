@@ -27,7 +27,9 @@ public interface IAtsLib {
 
    public void openArtifact(String guidOrHrid, Integer branchId, OseeAts.OpenView view);
 
-   public void openInAtsWorld(String name, Collection<Artifact> artifacts) throws OseeCoreException;
+   public void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException;
+
+   public void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException;
 
    public boolean isAtsAdmin();
 }

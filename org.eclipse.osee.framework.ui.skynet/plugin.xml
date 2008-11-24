@@ -71,8 +71,12 @@
           name="Preview with child recursion">
     </command>
     <command
-          id="org.eclipse.osee.framework.ui.skynet.openInAtsWorld"
-          name="Open in ATS World">
+          id="org.eclipse.osee.framework.ui.skynet.openInAtsWorldEditor"
+          name="Open in ATS World Editor">
+    </command>
+    <command
+          id="org.eclipse.osee.framework.ui.skynet.openInAtsTaskEditor"
+          name="Open in ATS Task Editor">
     </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.viewerReport"
