@@ -130,6 +130,8 @@ public class XViewer extends TreeViewer {
       comp.setLayout(ALayout.getZeroMarginLayout(4, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+      filterDataUI.createWidgets(comp);
+
       statusLabel = new Label(comp, SWT.NONE);
       statusLabel.setText(" ");
       statusLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -177,7 +179,6 @@ public class XViewer extends TreeViewer {
       });
 
       getTree().setMenu(getMenuManager().getMenu());
-      filterDataUI.createWidgets(comp);
       columnFilterDataUI.createWidgets(comp);
 
       customizeMgr.loadCustomization();
