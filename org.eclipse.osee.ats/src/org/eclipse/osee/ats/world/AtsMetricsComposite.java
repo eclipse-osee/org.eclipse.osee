@@ -50,6 +50,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    private boolean refreshedOnce = true;
 
    /**
+    * @param iAtsMetricsProvider
     * @param parent
     * @param style
     */
