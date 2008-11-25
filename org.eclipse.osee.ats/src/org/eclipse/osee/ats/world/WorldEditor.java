@@ -135,9 +135,17 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       }
    }
 
-   public void setEditorTitle(String str) {
-      setPartName(str);
-      firePropertyChange(IWorkbenchPart.PROP_TITLE);
+   public void setEditorTitle(final String str) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            setPartName(str);
+            firePropertyChange(IWorkbenchPart.PROP_TITLE);
+         }
+      });
    }
 
    public IWorldEditorProvider getWorldEditorProvider() {

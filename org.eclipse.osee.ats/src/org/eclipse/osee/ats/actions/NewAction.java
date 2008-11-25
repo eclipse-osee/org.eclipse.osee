@@ -36,10 +36,10 @@ public class NewAction extends Action {
    }
 
    public NewAction(String actionableItem) {
-      super("New Action");
+      super("Create New Action");
       this.actionableItem = actionableItem;
       setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newAction.gif"));
-      setToolTipText("New Action");
+      setToolTipText("Create New Action");
    }
 
    /*
