@@ -65,7 +65,7 @@ public class SkynetDbInit implements IDbInitializationTask {
    private static boolean isInDbInit;
 
    public void run(OseeConnection connection) throws OseeCoreException {
-      setIsInDbInit(true);
+      isInDbInit = true;
       DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(connection, getSchemaFiles());
       Map<String, SchemaData> userSpecifiedConfig = databaseConfigurationData.getUserSpecifiedSchemas();
       DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(connection, userSpecifiedConfig.keySet());
@@ -91,10 +91,6 @@ public class SkynetDbInit implements IDbInitializationTask {
 
    public static boolean isDbInit() {
       return isInDbInit;
-   }
-
-   public static void setIsInDbInit(boolean isInDbInit) {
-      SkynetDbInit.isInDbInit = isInDbInit;
    }
 
    private static void initializeApplicationServer() throws OseeCoreException {
