@@ -66,6 +66,7 @@ public class GroupSelection {
       List<String> initTasks = new ArrayList<String>();
       initTasks.add("org.eclipse.osee.framework.skynet.core.SkynetDbInit");
       dbInitTasks.addAll(0, initTasks);
+      dbInitTasks.add("org.eclipse.osee.framework.skynet.core.PostDbUserCleanUp");
       dbInitTasks.add("org.eclipse.osee.framework.skynet.core.SkynetDbBranchDataImport");
       dbInitTasks.add("org.eclipse.osee.framework.database.PostDbInitializationProcess");
    }
@@ -74,32 +75,6 @@ public class GroupSelection {
       addCommonChoices(dbInitTasks, bareBones);
       initGroups.put(listName, dbInitTasks);
    }
-
-   //   /**
-   //    * Call to get DB initialization Tasks from choice made by User
-   //    * 
-   //    * @return initialization task list
-   //    */
-   //   public List<String> getDbInitTasks() {
-   //      String choice = null;
-   //      if (initGroups.keySet().size() == 1) {
-   //         String[] keys = initGroups.keySet().toArray(new String[1]);
-   //         choice = keys[0];
-   //      } else {
-   //         List<String> choices = new ArrayList<String>(initGroups.keySet());
-   //         Collections.sort(choices);
-   //         int selection = -1;
-   //         String configChoice = OseeProperties.getDbConfigInitChoice();
-   //         if (false != Strings.isValid(configChoice)) {
-   //            selection = choices.indexOf(configChoice);
-   //         }
-   //         if (selection <= -1) {
-   //            choice = getSelectionFromUser("Select Init Group To Run.", choices);
-   //         }
-   //      }
-   //      OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("DB Config Choice Selected: [%s]", choice));
-   //      return initGroups.get(choice);
-   //   }
 
    public List<String> getChoices() {
       List<String> choices = new ArrayList<String>(initGroups.keySet());
@@ -110,15 +85,4 @@ public class GroupSelection {
    public List<String> getDbInitTasksByChoiceEntry(String choice) {
       return initGroups.get(choice);
    }
-
-   //   /**
-   //    * Call get get DB initialization Tasks from specified taskId
-   //    * 
-   //    * @param dbInitTaskId
-   //    * @return initialization task list
-   //    */
-   //   public List<String> getDbInitTasks(String dbInitTaskId) {
-   //      populateDbInitChoices();
-   //      return initGroups.get(dbInitTaskId);
-   //   }
 }

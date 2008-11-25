@@ -43,7 +43,7 @@ final class ClientUser {
    }
 
    static synchronized User getMainUser() throws OseeCoreException {
-      if (instance.currentUser == null) {
+      if (!ClientSessionManager.isSessionValid() || instance.currentUser == null) {
          instance.populateCurrentUser();
       }
       return instance.currentUser;

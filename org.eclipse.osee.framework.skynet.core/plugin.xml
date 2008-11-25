@@ -348,5 +348,13 @@
                class="org.eclipse.osee.framework.skynet.core.attribute.providers.ClobAttributeDataProvider">
          </CharacterAttributeDataProvider>
       </extension>
+      <extension
+            id="PostDbUserCleanUp"
+            name="PostDbUserCleanUp"
+            point="org.eclipse.osee.framework.database.IDbInitializationTask">
+         <DatabaseTask
+               classname="org.eclipse.osee.framework.skynet.core.dbinit.PostDbUserCleanUp">
+         </DatabaseTask>
+      </extension>
    
 </plugin>

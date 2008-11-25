@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -45,11 +46,19 @@ public final class Artifacts {
    }
 
    public static Artifact getOrCreateArtifact(Branch branch, String artifactTypeName, String name) throws OseeCoreException {
+      Artifact artifact = null;
+      String cacheKey = artifactTypeName + "." + name;
       try {
-         return ArtifactQuery.getArtifactFromTypeAndName(artifactTypeName, name, branch);
+         artifact = ArtifactCache.getByTextId(cacheKey, branch);
+         if (artifact == null) {
+            artifact = ArtifactQuery.getArtifactFromTypeAndName(artifactTypeName, name, branch);
+            ArtifactCache.putByTextId(cacheKey, artifact);
+         }
       } catch (ArtifactDoesNotExist ex) {
-         return ArtifactTypeManager.addArtifact(artifactTypeName, branch, name);
+         artifact = ArtifactTypeManager.addArtifact(artifactTypeName, branch, name);
+         ArtifactCache.putByTextId(cacheKey, artifact);
       }
+      return artifact;
    }
 
    public static String toTextList(Collection<? extends Artifact> artifacts, String separator) {

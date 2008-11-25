@@ -1,0 +1,69 @@
+/*
+ * Created on Nov 25, 2008
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.framework.skynet.core.dbinit;
+
+import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.database.IDbInitializationTask;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class PostDbUserCleanUp implements IDbInitializationTask {
+   private static final String UPDATE_BOOTSTRAP_USER_ID = "UPDATE osee_tx_details SET author = ? where author = 0";
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.database.IDbInitializationTask#run(org.eclipse.osee.framework.db.connection.OseeConnection)
+    */
+   @Override
+   public void run(OseeConnection connection) throws OseeCoreException {
+      OseeLog.log(SkynetActivator.class, Level.INFO, "Post Initialization User Clean-up");
+
+      int authorArtId = 0;
+      boolean isUserAuthenticationAllowed = false;
+      try {
+         // Check that this is a normal initialization
+         Artifact root =
+               ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch(), false);
+         if (root != null) {
+            isUserAuthenticationAllowed = true;
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // Do Nothing -- failure expected during base initialization
+      }
+
+      if (isUserAuthenticationAllowed) {
+         // This is a regular initialization - users have been created.
+
+         // Release bootstrap session session
+         ClientSessionManager.releaseSession();
+
+         // Acquire session
+         User user = UserManager.getUser();
+         authorArtId = user.getArtId();
+      } else {
+         // This is an initialization for base import -- users are not available
+         OseeLog.log(SkynetActivator.class, Level.INFO,
+               "Post Initialization User Clean-up - Base Initialization - unable to set tx author id");
+      }
+
+      if (authorArtId > 0) {
+         // Set author to current authenticated user art id
+         ConnectionHandler.runPreparedUpdate(connection, UPDATE_BOOTSTRAP_USER_ID, authorArtId);
+      }
+   }
+}
