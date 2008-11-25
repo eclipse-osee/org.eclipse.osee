@@ -61,6 +61,7 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
       if (OseeAts.isAtsAdmin()) {
          AdminContributionItem.addTo(manager);
       }
+      SkynetServiceContributionItem.addTo(manager);
       OseeServicesStatusContributionItem.addTo(manager);
       SessionContributionItem.addTo(manager);
    }
