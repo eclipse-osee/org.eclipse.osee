@@ -175,7 +175,7 @@ public class ClassServer extends Thread {
                return bytes;
             }
          }
-         OseeLog.log(PluginCoreActivator.class, Level.WARNING, "requested file: '" + path + "' was not found.");
+         OseeLog.log(PluginCoreActivator.class, Level.INFO, "requested file: '" + path + "' was not found.");
          return null;
       }
 
