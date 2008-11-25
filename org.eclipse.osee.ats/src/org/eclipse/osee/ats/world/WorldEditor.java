@@ -129,7 +129,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
          setActivePage(mainPageIndex);
 
          // Until WorldEditor has different help, just use WorldView's help
-         //         AtsPlugin.getInstance().setHelp(worldComposite.getControl(), HELP_CONTEXT_ID);
+         AtsPlugin.getInstance().setHelp(actionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
