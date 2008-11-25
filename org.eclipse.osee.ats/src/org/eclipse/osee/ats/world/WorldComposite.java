@@ -86,7 +86,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    private final Composite mainComp;
 
    public WorldComposite(WorldEditor editor, Composite parent, int style, ToolBar toolBar) {
-      super(parent, style | SWT.V_SCROLL | SWT.H_SCROLL);
+      super(parent, style);
       this.worldEditor = editor;
       this.toolBar = toolBar;
 
