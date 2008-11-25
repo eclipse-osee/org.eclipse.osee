@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.core.client;
 import java.net.URL;
 import java.util.Dictionary;
 import java.util.Properties;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -256,6 +257,10 @@ public class OseeClientProperties extends OseeProperties {
                   break;
                case overwrite_settings:
                   itemToSet = overwriteProperties;
+                  // Set System properties. Also cache the values to prevent application overwrites.
+                  for (Entry<Object, Object> entry : properties.entrySet()) {
+                     System.setProperty((String) entry.getKey(), (String) entry.getValue());
+                  }
                   break;
             }
 

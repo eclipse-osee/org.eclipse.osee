@@ -42,7 +42,7 @@ public abstract class BaseCredentialProvider implements ICredentialProvider {
       try {
          credential.setClientMachineName(InetAddress.getLocalHost().getHostName());
       } catch (Exception ex) {
-         credential.setClientMachineName(ex.getLocalizedMessage());
+         credential.setClientMachineName("Unknown");
          OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
       }
       return credential;
