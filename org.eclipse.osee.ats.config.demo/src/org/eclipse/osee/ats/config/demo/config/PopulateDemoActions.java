@@ -100,7 +100,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (SkynetDbInit.isDbInit() || (!SkynetDbInit.isDbInit() && (!prompt || (prompt && MessageDialog.openConfirm(
             Display.getCurrent().getActiveShell(), getName(), getName()))))) {
 
-         DemoDbUtil.setDefaultBranch(BranchManager.getKeyedBranch(SawBuilds.SAW_Bld_1.name()));
+         Branch saw1Branch = BranchManager.getKeyedBranch(SawBuilds.SAW_Bld_1.name());
+         DemoDbUtil.setDefaultBranch(saw1Branch);
 
          // Import all requirements on SAW_Bld_1 Branch
          demoDbImportReqsTx();
@@ -108,16 +109,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
          DemoDbUtil.sleep(5000);
 
          // Create traceability between System, Subsystem and Software requirements
-         SkynetTransaction demoDbTraceability = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction demoDbTraceability = new SkynetTransaction(saw1Branch);
          demoDbTraceabilityTx(demoDbTraceability);
          demoDbTraceability.execute();
 
          DemoDbUtil.sleep(5000);
 
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
-         SkynetTransaction createMainWorkingBranch = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         createMainWorkingBranchTx(createMainWorkingBranch, !SkynetDbInit.isDbInit());
-         createMainWorkingBranch.execute();
+         createMainWorkingBranchTx();
 
          // Create SAW_Bld_2 Actions 
          SkynetTransaction sawActionsTransaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
@@ -172,15 +171,17 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private void createMainWorkingBranchTx(SkynetTransaction createMainWorkingBranch, boolean b) throws OseeCoreException {
+   private void createMainWorkingBranchTx() throws OseeCoreException {
       try {
          OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          // Create SAW_Bld_2 branch off SAW_Bld_1
          createChildMainWorkingBranch(SawBuilds.SAW_Bld_1.name(), SawBuilds.SAW_Bld_2.name());
          DemoDbUtil.sleep(5000);
          // Map team definitions versions to their related branches
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
-               SawBuilds.SAW_Bld_2.name(), SawBuilds.SAW_Bld_2.name(), createMainWorkingBranch);
+               SawBuilds.SAW_Bld_2.name(), SawBuilds.SAW_Bld_2.name(), transaction);
+         transaction.execute();
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
       }
@@ -379,6 +380,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             DefaultTeamState.Completed, transaction);
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "createNonReqChangeDemoActions - getGenericActionData");
       createActions(DemoDbActionData.getGenericActionData(), null, null, transaction);
+      transaction.execute();
    }
 
    private Set<ActionArtifact> createActions(Set<DemoDbActionData> actionDatas, String versionStr, DefaultTeamState toStateOverride, SkynetTransaction transaction) throws Exception {
