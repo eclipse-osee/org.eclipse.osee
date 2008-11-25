@@ -92,15 +92,19 @@ public class AtsPlugin extends OseeUiActivator {
    }
 
    public static boolean isAtsAdmin() {
-      if (atsAdminGroup == null) {
-         atsAdminGroup = new OseeGroup("AtsAdmin");
-      }
       try {
-         return atsAdminGroup.isCurrentUserMember();
+         return getAtsAdminGroup().isCurrentUserMember();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return false;
       }
+   }
+
+   public static OseeGroup getAtsAdminGroup() {
+      if (atsAdminGroup == null) {
+         atsAdminGroup = new OseeGroup("AtsAdmin");
+      }
+      return atsAdminGroup;
    }
 
    public static boolean isAtsIgnoreConfigUpgrades() {
