@@ -316,7 +316,7 @@ public class InternalChangeManager {
                // NEW or DELETED
                if (artModType == ModificationType.CHANGE && !modifiedArtifacts.contains(artId)) {
                   ArtifactChanged artifactChanged =
-                        new ArtifactChanged(sourceBranch, artTypeId, sourceGamma, artId, toTransactionId,
+                        new ArtifactChanged(sourceBranch, artTypeId, -1, artId, toTransactionId,
                               fromTransactionId, ModificationType.CHANGE, ChangeType.OUTGOING, !hasBranch);
 
                   changes.add(artifactChanged);
