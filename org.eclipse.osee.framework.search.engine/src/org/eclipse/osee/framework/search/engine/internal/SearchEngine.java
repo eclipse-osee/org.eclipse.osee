@@ -11,8 +11,10 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.ArtifactJoinQuery;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.Options;
@@ -50,8 +52,12 @@ public class SearchEngine implements ISearchEngine {
          }
       } else {
          for (AttributeData attributeData : tagMatches) {
-            if (manager.find(attributeData, searchString)) {
-               joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
+            try {
+               if (manager.find(attributeData, searchString)) {
+                  joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing: [%s]", attributeData));
             }
          }
       }
