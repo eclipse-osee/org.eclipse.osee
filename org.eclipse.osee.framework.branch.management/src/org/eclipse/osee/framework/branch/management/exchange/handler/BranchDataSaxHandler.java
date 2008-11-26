@@ -117,7 +117,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       for (BranchData branchData : branchesToStore) {
          toReturn[index] = branchData.getBranchId();
          if (getOptions().getBoolean(ImportOptions.ALL_AS_ROOT_BRANCHES.name())) {
-            branchData.setParentBranchId(-1);
+            branchData.setParentBranchId(1);
             branchData.setBranchType(BranchType.TOP_LEVEL);
          }
          branchData.setBranchId(translateId(BranchData.BRANCH_ID, branchData.getBranchId()));
