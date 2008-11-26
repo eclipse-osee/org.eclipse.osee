@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -37,10 +38,11 @@ public class RelationDeletionTest extends TestCase {
       SevereLoggingMonitor monitor = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitor);
       try {
-         Artifact parent = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
-         Artifact child1 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
-         Artifact child2 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
-         Artifact child3 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(BranchManager.getDefaultBranch());
+         Branch branch = BranchManager.getCommonBranch();
+         Artifact parent = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(branch);
+         Artifact child1 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(branch);
+         Artifact child2 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(branch);
+         Artifact child3 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(branch);
          parent.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child1);
          parent.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child2);
          parent.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child3);
