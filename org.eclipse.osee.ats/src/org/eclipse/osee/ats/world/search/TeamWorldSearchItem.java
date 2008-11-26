@@ -128,6 +128,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+      getTeamDefs();
       List<String> teamDefinitionGuids = new ArrayList<String>(teamDefs.size());
       for (TeamDefinitionArtifact art : teamDefs) {
          teamDefinitionGuids.add(art.getGuid());
