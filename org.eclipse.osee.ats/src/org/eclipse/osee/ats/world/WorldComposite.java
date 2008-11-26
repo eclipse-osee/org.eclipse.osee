@@ -114,6 +114,8 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
       Tree tree = worldXViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
+      gridData.heightHint = 500;
+      gridData.widthHint = 500;
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
