@@ -37,8 +37,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * @author Theron Virgin
@@ -65,7 +63,6 @@ public class ConflictTestManager {
    private static List<ArtifactModification> modifications = new LinkedList<ArtifactModification>();
 
    private static ConflictDefinition[] conflictDefs = new ConflictDefinition[NUMBER_OF_ARTIFACTS];
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    public static int DELETION_TEST_QUERY = 1;
    public static int DELETION_ATTRIBUTE_TEST_QUERY = 2;
    public static int REVERT_ARTIFACT_QUERY = 3;
@@ -201,15 +198,13 @@ public class ConflictTestManager {
       // Create a new destination branch from the Branch with BranchID = 2
       cleanUpConflictTest();
       createConflictDefinitions();
-      TransactionId parentTransactionId;
       Branch branch;
       try {
          branch = BranchManager.getBranch("Block III Main");
       } catch (Exception ex) {
          branch = BranchManager.getBranch("SAW_Bld_1");
       }
-      parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
-      destBranch = BranchManager.createWorkingBranch(parentTransactionId, null, DEST_BRANCH, null);
+      destBranch = BranchManager.createWorkingBranch(branch, null, DEST_BRANCH, null);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);
 
@@ -229,9 +224,7 @@ public class ConflictTestManager {
          }
       }
       // Create the source branch
-
-      parentTransactionId = transactionIdManager.getEditableTransactionId(destBranch);
-      sourceBranch = BranchManager.createWorkingBranch(parentTransactionId, null, SOURCE_BRANCH, null);
+      sourceBranch = BranchManager.createWorkingBranch(destBranch, null, SOURCE_BRANCH, null);
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          sourceArtifacts[i] = ArtifactQuery.getArtifactFromId(destArtifacts[i].getArtId(), sourceBranch);

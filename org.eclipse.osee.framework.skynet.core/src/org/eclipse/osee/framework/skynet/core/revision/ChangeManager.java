@@ -2,6 +2,8 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
@@ -73,7 +75,29 @@ public class ChangeManager {
     * @return true changes exist
     * @throws OseeCoreException
     */
-   public static Boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {
+   public static boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {
       return InternalChangeManager.getInstance().isChangesOnWorkingBranch(workingBranch);
+   }
+
+   /**
+    * For the given list of artifacts determine which transactions (on that artifact's branch) affected that artifact.
+    * The branch's baseline transaction is excluded.
+    * 
+    * @param artifacts
+    * @return a map of artifact to collection of TransactionIds which affected the given artifact
+    */
+   public HashCollection<Artifact, TransactionId> getModifingTransactions(Collection<Artifact> artifacts) {
+      return null;
+   }
+
+   /**
+    * For the given list of artifacts determine which branches (in the branch hierarchy for that artifact) affected that
+    * artifact.
+    * 
+    * @param artifacts
+    * @return a map of artifact to collection of branches which affected the given artifact
+    */
+   public HashCollection<Artifact, Branch> getModifingBranches(Collection<Artifact> artifacts) {
+      return null;
    }
 }

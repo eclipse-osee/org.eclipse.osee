@@ -34,13 +34,14 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
  */
 public class HttpBranchCreation {
 
-   public static Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
+   public static Branch createChildBranch(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("branchName", childBranchName);
       parameters.put("function", "createChildBranch");
       parameters.put("authorId", getAuthorId());
       parameters.put("parentBranchId", Integer.toString(parentTransactionId.getBranchId()));
+      parameters.put("parentTransactionId", Integer.toString(parentTransactionId.getTransactionNumber()));
       parameters.put("associatedArtifactId", getAssociatedArtifactId(associatedArtifact));
 
       if (compressArtTypeIds != null && !compressArtTypeIds.isEmpty()) {
@@ -68,18 +69,20 @@ public class HttpBranchCreation {
     * @param shortBranchName
     * @param branchName
     * @param staticBranchName null if no static key is desired
+    * @param parentTransactionId TODO
     * @return branch object
     * @throws OseeCoreException
     * @see BranchManager#createRootBranch(String, String, int)
     * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, int parentBranchId, boolean systemRootBranch) throws OseeCoreException {
+   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, int parentBranchId, int parentTransactionId, boolean systemRootBranch) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("branchName", branchName);
       parameters.put("function", "createRootBranch");
       parameters.put("authorId", getAuthorId());
       parameters.put("parentBranchId", Integer.toString(parentBranchId));
+      parameters.put("parentTransactionId", Integer.toString(parentTransactionId));
       parameters.put("associatedArtifactId", getAssociatedArtifactId(null));
       parameters.put("creationComment", String.format("Root Branch [%s] Creation", branchName));
       if (shortBranchName != null && shortBranchName.length() > 0) {

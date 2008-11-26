@@ -44,7 +44,7 @@ public class AddCommonBranch implements IDbInitializationTask {
    public void run(OseeConnection connection) throws OseeCoreException {
       BranchManager.createSystemRootBranch();
 
-      // Create branch, import skynet types and initialize
+      // Create branch, import OSEE types and initialize
       BranchManager.createRootBranch(null, Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID,
             getSkynetDbTypeExtensionIds(), initializeArtifacts);
    }

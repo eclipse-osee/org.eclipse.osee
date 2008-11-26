@@ -11,12 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.Adler32;
-import java.util.zip.Checksum;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -46,33 +43,22 @@ public class TransactionIdManager {
    private final Map<Integer, TransactionId> nonEditableTransactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
 
-   public static TransactionIdManager getInstance() {
-      return instance;
-   }
-
    private TransactionIdManager() {
    }
 
    /**
-    * Returns the transaction corresponding to current head of the given branch
-    * 
     * @param branch
-    * @throws BranchDoesNotExist
-    * @throws TransactionDoesNotExist
-    * @throws OseeDataStoreException
+    * @return the largest (most recent) transaction on the given branch
+    * @throws OseeCoreException
     */
-   public TransactionId getEditableTransactionId(Branch branch) throws OseeCoreException {
-      return getTransactionId(getlatestTransactionForBranch(branch));
-   }
-
-   private int getlatestTransactionForBranch(Branch branch) throws OseeCoreException {
+   public static TransactionId getlatestTransactionForBranch(Branch branch) throws OseeCoreException {
       int transactionNumber =
             ConnectionHandler.runPreparedQueryFetchInt(-1,
                   ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_MAX_AS_LARGEST_TX), branch.getBranchId());
       if (transactionNumber == -1) {
          throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branch);
       }
-      return transactionNumber;
+      return getTransactionId(transactionNumber);
    }
 
    public static synchronized TransactionId createNextTransactionId(Branch branch, User userToBlame, String comment) throws OseeDataStoreException {
@@ -117,35 +103,6 @@ public class TransactionIdManager {
    }
 
    /**
-    * @param time
-    * @param branch
-    * @return The prior transactionId, or null if there is no prior.
-    * @throws BranchDoesNotExist
-    * @throws TransactionDoesNotExist
-    * @throws OseeDataStoreException
-    */
-   public TransactionId getPriorTransaction(Timestamp time, Branch branch) throws OseeCoreException {
-      TransactionId priorTransactionId = null;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-
-      try {
-         chStmt.runPreparedQuery(
-               "SELECT max(transaction_id) as prior_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("time") + " < ?",
-               branch.getBranchId(), time);
-
-         if (chStmt.next()) {
-            int priorId = chStmt.getInt("prior_id");
-            if (!chStmt.wasNull()) {
-               priorTransactionId = getTransactionId(priorId);
-            }
-         }
-      } finally {
-         chStmt.close();
-      }
-      return priorTransactionId;
-   }
-
-   /**
     * @param transactionId
     * @return The prior transactionId, or null if there is no prior.
     * @throws BranchDoesNotExist
@@ -172,75 +129,6 @@ public class TransactionIdManager {
          chStmt.close();
       }
       return priorTransactionId;
-   }
-
-   public static int getParentBaseTransactionNumber(String comment) {
-      if (comment != null) {
-         String[] vals = comment.split("(\\(|\\))", 3);
-         if (vals.length == 3) {
-            try {
-               return Integer.parseInt(vals[1]);
-            } catch (NumberFormatException ex) {
-               // not able to get the parent transaction number
-            }
-         }
-      }
-      return -1;
-   }
-
-   @Deprecated
-   public static Checksum getTransactionRangeChecksum(TransactionId startTransactionId, TransactionId endTransactionId) throws OseeCoreException {
-      if (startTransactionId == null) throw new IllegalArgumentException("startTransactionId can not be null");
-      if (endTransactionId == null) throw new IllegalArgumentException("endTransactionId can not be null");
-      if (startTransactionId.getBranch() != endTransactionId.getBranch()) throw new IllegalArgumentException(
-            "transactions must be on the same branch");
-      if (startTransactionId.getTransactionNumber() > endTransactionId.getTransactionNumber()) throw new IllegalArgumentException(
-            "startTransactionId can not be after endTransactionId");
-
-      Checksum checksum = new Adler32();
-
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-
-      try {
-         if (startTransactionId.getTransactionNumber() == endTransactionId.getTransactionNumber()) {
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_TX_GAMMAS),
-                  startTransactionId.getBranchId(), startTransactionId.getTransactionNumber());
-         } else {
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_TX_GAMMAS_RANGE),
-                  startTransactionId.getBranchId(), startTransactionId.getTransactionNumber(),
-                  endTransactionId.getTransactionNumber());
-         }
-         while (chStmt.next()) {
-            checksum.update(toBytes(chStmt.getLong("transaction_id")), 0, 8);
-            checksum.update(toBytes(chStmt.getLong("gamma_id")), 0, 8);
-         }
-      } finally {
-         chStmt.close();
-      }
-
-      return checksum;
-   }
-
-   @Deprecated
-   private static byte[] toBytes(long val) {
-      byte[] bytes = new byte[8];
-      bytes[7] = (byte) (val);
-      val >>>= 8;
-      bytes[6] = (byte) (val);
-      val >>>= 8;
-      bytes[5] = (byte) (val);
-      val >>>= 8;
-      bytes[4] = (byte) (val);
-      val >>>= 8;
-      bytes[3] = (byte) (val);
-      val >>>= 8;
-      bytes[2] = (byte) (val);
-      val >>>= 8;
-      bytes[1] = (byte) (val);
-      val >>>= 8;
-      bytes[0] = (byte) (val);
-
-      return bytes;
    }
 
    public static TransactionId getTransactionId(int transactionNumber) throws OseeCoreException {

@@ -39,17 +39,17 @@ public class BranchManagerServlet extends OseeHttpServlet {
          switch (info.getFunction()) {
             case createChildBranch:
                branchId =
-                     Activator.getInstance().getBranchCreation().createChildBranch(info.getParentBranchId(),
-                           info.getBranchShortName(), info.getBranchName(), info.getCreationComment(),
-                           info.getAssociatedArtifactId(), info.getAuthorId(), info.branchWithFiltering(),
-                           info.getCompressArtTypeIds(), info.getPreserveArtTypeIds());
+                     Activator.getInstance().getBranchCreation().createChildBranch(info.getParentTransactionId(),
+                           info.getParentBranchId(), info.getBranchShortName(), info.getBranchName(),
+                           info.getCreationComment(), info.getAssociatedArtifactId(), info.getAuthorId(),
+                           info.branchWithFiltering(), info.getCompressArtTypeIds(), info.getPreserveArtTypeIds());
                break;
             case createRootBranch:
                branchId =
-                     Activator.getInstance().getBranchCreation().createTopLevelBranch(info.getParentBranchId(),
-                           info.getBranchShortName(), info.getBranchName(), info.getCreationComment(),
-                           info.getAssociatedArtifactId(), info.getAuthorId(), info.getStaticBranchName(),
-                           info.isSystemRootBranch());
+                     Activator.getInstance().getBranchCreation().createTopLevelBranch(info.getParentTransactionId(),
+                           info.getParentBranchId(), info.getBranchShortName(), info.getBranchName(),
+                           info.getCreationComment(), info.getAssociatedArtifactId(), info.getAuthorId(),
+                           info.getStaticBranchName(), info.isSystemRootBranch());
                break;
          }
          if (branchId != -1) {

@@ -285,8 +285,7 @@ public class InternalChangeManager {
             toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per transaction number
          else {
-            chStmt1.runPreparedQuery(
-                  ClientSessionManager.getSQL(OseeSql.Changes.SELECT_TRANSACTION_ATTRIBUTE_CHANGES),
+            chStmt1.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Changes.SELECT_TRANSACTION_ATTRIBUTE_CHANGES),
                   transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
@@ -405,7 +404,7 @@ public class InternalChangeManager {
       }
    }
 
-   public Boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {
+   public boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {
       Pair<TransactionId, TransactionId> transactionToFrom = TransactionIdManager.getStartEndPoint(workingBranch);
       if (transactionToFrom.getKey().equals(transactionToFrom.getValue())) {
          return false;

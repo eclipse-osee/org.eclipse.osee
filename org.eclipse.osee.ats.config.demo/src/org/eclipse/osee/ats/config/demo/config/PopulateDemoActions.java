@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor;
@@ -191,9 +190,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Branch parentBranch = BranchManager.getKeyedBranch(parentBrachName);
 
       Branch childBranch =
-            BranchManager.createWorkingBranch(
-                  TransactionIdManager.getInstance().getEditableTransactionId(parentBranch), childBranchName,
-                  childBranchName, UserManager.getUser(SystemUser.NoOne));
+            BranchManager.createWorkingBranch(parentBranch, childBranchName, childBranchName,
+                  UserManager.getUser(SystemUser.NoOne));
       return childBranch;
    }
 

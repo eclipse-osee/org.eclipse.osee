@@ -362,7 +362,6 @@ public class BranchView extends ViewPart implements IActionable {
          menuManager.add(new Separator());
          createSetDefaultCommand(menuManager);
          createBranchCommand(menuManager);
-         createSelectivelyBranchCommand(menuManager);
          createCommitCommand(menuManager);
          createCommitIntoCommand(menuManager);
          menuManager.add(new Separator());
@@ -919,8 +918,7 @@ public class BranchView extends ViewPart implements IActionable {
    }
 
    private void createBranchCommand(MenuManager menuManager) {
-      handlerService.activateHandler(addBranchCommand(menuManager), new BranchCreationHandler(menuManager, branchTable,
-            false));
+      handlerService.activateHandler(addBranchCommand(menuManager), new BranchCreationHandler(menuManager, branchTable));
    }
 
    private String addSelectivelyBranchCommand(MenuManager menuManager) {
@@ -929,11 +927,6 @@ public class BranchView extends ViewPart implements IActionable {
                   null, null, "S", null, null);
       menuManager.add(createSelectiveBranchCommand);
       return createSelectiveBranchCommand.getId();
-   }
-
-   private void createSelectivelyBranchCommand(MenuManager menuManager) {
-      handlerService.activateHandler(addSelectivelyBranchCommand(menuManager), new BranchCreationHandler(menuManager,
-            branchTable, true));
    }
 
    private String addViewTableMenuItem(MenuManager menuManager) {

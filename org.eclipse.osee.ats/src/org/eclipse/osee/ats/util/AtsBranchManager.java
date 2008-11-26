@@ -366,7 +366,7 @@ public class AtsBranchManager {
     * @param parentBranch
     * @throws Exception
     */
-   public void createWorkingBranch(String pageId, Branch parentBranch) throws OseeCoreException {
+   public void createWorkingBranch(String pageId, final Branch parentBranch) throws OseeCoreException {
       final Artifact stateMachineArtifact = smaMgr.getSma();
       String title = stateMachineArtifact.getDescriptiveName();
       if (title.length() > 40) title = title.substring(0, 39) + "...";
@@ -381,14 +381,10 @@ public class AtsBranchManager {
          }
       }
       final String finalBranchShortName = branchShortName;
-      // TODO Move this into createWorkingBranch
-      final TransactionId parentTransactionId =
-            TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws OseeCoreException {
-            BranchManager.createWorkingBranch(parentTransactionId, finalBranchShortName, branchName,
-                  stateMachineArtifact);
+            BranchManager.createWorkingBranch(parentBranch, finalBranchShortName, branchName, stateMachineArtifact);
             // Create reviews as necessary
             SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr, transaction);

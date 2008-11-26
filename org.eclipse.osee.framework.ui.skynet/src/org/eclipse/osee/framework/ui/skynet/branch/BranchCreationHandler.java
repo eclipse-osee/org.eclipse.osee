@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,22 +18,21 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetSelections;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
@@ -46,15 +43,13 @@ import org.eclipse.swt.widgets.Display;
  */
 public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
    private TreeViewer branchTable;
-   private boolean selective;
 
    /**
     * @param branchTable
     */
-   public BranchCreationHandler(MenuManager menuManager, TreeViewer branchTable, boolean selective) {
+   public BranchCreationHandler(MenuManager menuManager, TreeViewer branchTable) {
       super(menuManager);
       this.branchTable = branchTable;
-      this.selective = selective;
    }
 
    @Override
@@ -66,17 +61,17 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
       try {
          if (backingData instanceof Branch) {
             Branch branch = (Branch) backingData;
-            parentTransactionId = TransactionIdManager.getInstance().getEditableTransactionId(branch);
+            parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(branch);
          } else if (backingData instanceof TransactionData) {
 
             parentTransactionId = ((TransactionData) backingData).getTransactionId();
 
          } else {
-            throw new IllegalStateException(
+            throw new OseeStateException(
                   "Backing data for the jobbed node in the branchview was not of the expected type");
          }
       } catch (OseeCoreException ex) {
-         OSEELog.logException(getClass(), ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return null;
       }
       final EntryDialog dialog =
@@ -88,24 +83,7 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
 
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
             public void run(IProgressMonitor monitor) throws Exception {
-               if (selective) {
-                  Set<String> allArtifactTypes = new HashSet<String>();
-                  for (ArtifactType artifactType : TypeValidityManager.getValidArtifactTypes(parentTransactionId.getBranch())) {
-                     allArtifactTypes.add(artifactType.getName());
-                  }
-
-                  // Compress all but software requirements
-                  Set<String> compressTypes = new HashSet<String>();
-                  compressTypes.addAll(allArtifactTypes);
-                  compressTypes.remove(Requirements.SOFTWARE_REQUIREMENT);
-
-                  // Preserve software reqts
-                  String[] preserveTypes = new String[] {Requirements.SOFTWARE_REQUIREMENT};
-                  BranchManager.createBranchWithFiltering(parentTransactionId, null, dialog.getEntry(), null,
-                        compressTypes.toArray(new String[compressTypes.size()]), preserveTypes);
-               } else {
-                  BranchManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
-               }
+               BranchManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
             }
          };
 
@@ -119,9 +97,9 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
    public boolean isEnabledWithException() throws OseeCoreException {
       IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
-      return (!selective || AccessControlManager.isOseeAdmin()) && ((SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
+      return (SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
             SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(selection) && AccessControlManager.checkObjectPermission(
             ((TransactionData) SkynetSelections.boilDownObject(selection.getFirstElement())).getTransactionId().getBranch(),
-            PermissionEnum.READ)));
+            PermissionEnum.READ));
    }
 }

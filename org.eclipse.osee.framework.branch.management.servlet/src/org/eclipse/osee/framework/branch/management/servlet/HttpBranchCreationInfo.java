@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.servlet;
 
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 
 /**
@@ -24,6 +25,7 @@ class HttpBranchCreationInfo {
 
    private BranchCreationFunction function;
    private int parentBranchId;
+   private int parentTransactionId;
    private String branchShortName;
    private String branchName;
    private String creationComment;
@@ -34,18 +36,28 @@ class HttpBranchCreationInfo {
    private String[] preserveArtTypeIds;
    private boolean systemRootBranch;
 
-   public HttpBranchCreationInfo(HttpServletRequest req) throws Exception {
-      isFunctionValid(req.getParameter("function"));
+   public HttpBranchCreationInfo(HttpServletRequest req) throws OseeArgumentException {
+      ensureFunctionValid(req.getParameter("function"));
 
       String parentBranchIdStr = req.getParameter("parentBranchId");
-      if (parentBranchIdStr != null) {
-         parentBranchId = Integer.parseInt(parentBranchIdStr);
+      if (parentBranchIdStr == null) {
+         throw new OseeArgumentException("A 'parentBranchId' parameter must be specified");
       } else {
-         throw new IllegalArgumentException("A 'parentBranchId' parameter must be specified");
+         parentBranchId = Integer.parseInt(parentBranchIdStr);
       }
+
+      if (function == BranchCreationFunction.createChildBranch) {
+         String parentTransactionIdStr = req.getParameter("parentTransactionId");
+         if (parentTransactionIdStr == null) {
+            throw new OseeArgumentException("A 'parentTransactionId' parameter must be specified");
+         } else {
+            parentTransactionId = Integer.parseInt(parentTransactionIdStr);
+         }
+      }
+
       branchName = req.getParameter("branchName");//required
       if (branchName == null || branchName.length() == 0) {
-         throw new IllegalArgumentException("A 'branchName' parameter must be specified");
+         throw new OseeArgumentException("A 'branchName' parameter must be specified");
       }
       branchShortName = req.getParameter("branchShortName");
       if (branchShortName == null) {
@@ -54,16 +66,16 @@ class HttpBranchCreationInfo {
       branchShortName = StringFormat.truncate(branchShortName, 25);
       creationComment = req.getParameter("creationComment");//required
       if (creationComment == null || creationComment.length() == 0) {
-         throw new IllegalArgumentException("A 'creationComment' parameter must be specified");
+         throw new OseeArgumentException("A 'creationComment' parameter must be specified");
       }
       String associatedArtifactIdStr = req.getParameter("associatedArtifactId");
       if (associatedArtifactIdStr == null) {
-         throw new IllegalArgumentException("A 'associatedArtifactId' parameter must be specified");
+         throw new OseeArgumentException("A 'associatedArtifactId' parameter must be specified");
       }
       associatedArtifactId = Integer.parseInt(associatedArtifactIdStr);
       String authorIdStr = req.getParameter("authorId");
       if (authorIdStr == null) {
-         throw new IllegalArgumentException("A 'authorIdStr' parameter must be specified");
+         throw new OseeArgumentException("A 'authorIdStr' parameter must be specified");
       }
       authorId = Integer.parseInt(authorIdStr);
       staticBranchName = req.getParameter("staticBranchName");
@@ -80,14 +92,14 @@ class HttpBranchCreationInfo {
       systemRootBranch = Boolean.parseBoolean(req.getParameter("systemRootBranch"));
    }
 
-   private void isFunctionValid(String function) throws Exception {
+   private void ensureFunctionValid(String function) throws OseeArgumentException {
       if (function == null) {
-         throw new Exception("A 'function' parameter must be defined.");
+         throw new OseeArgumentException("A 'function' parameter must be defined.");
       }
       try {
          this.function = BranchCreationFunction.valueOf(function);
       } catch (IllegalArgumentException ex) {
-         throw new Exception(String.format("[%s] is not a valid function.", function), ex);
+         throw new OseeArgumentException(String.format("[%s] is not a valid function.", function));
       }
    }
 
@@ -170,5 +182,12 @@ class HttpBranchCreationInfo {
     */
    public boolean isSystemRootBranch() {
       return systemRootBranch;
+   }
+
+   /**
+    * @return the parentTransactionId
+    */
+   public int getParentTransactionId() {
+      return parentTransactionId;
    }
 }

@@ -44,6 +44,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private static final String UPDATE_BRANCH_SHORT_NAME = "UPDATE osee_branch SET short_name = ? WHERE branch_id = ?";
    private final int branchId;
    private final int parentBranchId;
+   private final int parentTransactionId;
    private String branchName;
    private String branchShortName;
    private boolean archived;
@@ -57,11 +58,12 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private Branch destBranch;
    private boolean deleted;
 
-   public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
+   public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
       this.branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
       this.branchId = branchId;
       this.branchName = branchName;
       this.parentBranchId = parentBranchId;
+      this.parentTransactionId = parentTransactionId;
       this.archived = archived;
       this.authorId = authorId;
       this.creationDate = creationDate;
@@ -392,5 +394,12 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    public boolean isDeleted() {
       return deleted;
+   }
+
+   /**
+    * @return the parentTransactionId
+    */
+   public int getParentTransactionId() {
+      return parentTransactionId;
    }
 }
