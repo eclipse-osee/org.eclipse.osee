@@ -134,7 +134,7 @@ public class RelationLink {
          try {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Deleted, this,
                   getABranch(), relationType.getTypeName());
-         } catch (Exception ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
       }
@@ -330,9 +330,8 @@ public class RelationLink {
       return relationSide == RelationSide.SIDE_A ? aBranch : bBranch;
    }
 
-   public void setPersistenceIds(int relationId, int gammaId) {
+   public void internalSetRelationId(int relationId) {
       this.relationId = relationId;
-      this.gammaId = gammaId;
    }
 
    public int getRelationId() {
@@ -344,13 +343,13 @@ public class RelationLink {
    }
 
    public boolean isInDb() {
-      return gammaId > 0;
+      return getRelationId() > 0;
    }
 
    /**
     * @param gammaId
     */
-   public void setGammaId(int gammaId) {
+   void internalSetGammaId(int gammaId) {
       this.gammaId = gammaId;
    }
 

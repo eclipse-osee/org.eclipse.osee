@@ -437,7 +437,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                            } else {
                               attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
                            }
-                           attribute.setGammaId(skynetAttributeChange.getGammaId());
+                           attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
                            attributeNeedsCreation = false;
                            attribute.setNotDirty();
                            break;

@@ -70,4 +70,8 @@ public enum ModificationType implements Serializable {
          if (modtype.getValue() == value) return modtype;
       return null;
    }
+
+   public boolean isDeleted() {
+      return this == ModificationType.DELETED || this == ModificationType.ARTIFACT_DELETED;
+   }
 }

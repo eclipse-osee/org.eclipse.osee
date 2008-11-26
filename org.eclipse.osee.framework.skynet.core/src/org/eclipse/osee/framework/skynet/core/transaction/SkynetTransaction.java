@@ -10,39 +10,37 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -51,35 +49,51 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 
 /**
  * @author Robert A. Fisher
  */
 public final class SkynetTransaction extends DbTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
-         "UPDATE osee_txs txs1 SET tx_current = 0 WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
-   private static final String INSERT_ARTIFACT =
-         "INSERT INTO osee_artifact (art_id, art_type_id, guid, human_readable_id) VALUES (?, ?, ?, ?)";
-   private static final String INSERT_INTO_TRANSACTION_TABLE =
-         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, ?)";
-   private final Map<String, List<Object[]>> preparedBatch = new HashMap<String, List<Object[]>>();
+         "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
+
    private TransactionId transactionId;
+
    private final List<ArtifactTransactionModifiedEvent> xModifiedEvents =
          new ArrayList<ArtifactTransactionModifiedEvent>();
-   private final Map<BaseTransactionData, BaseTransactionData> transactionItems =
-         new HashMap<BaseTransactionData, BaseTransactionData>();
+
+   private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData> transactionDataItems =
+         new CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData>();
+
+   private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<String, Object[]>();
+   private final Map<Integer, String> dataInsertOrder = new HashMap<Integer, String>();
+
    private final Branch branch;
    private boolean madeChanges = false;
+
+   public SkynetTransaction(Branch branch) throws OseeCoreException {
+      this.branch = branch;
+   }
+
+   /**
+    * Reset state so transaction object can be re-used
+    */
+   private void clear() {
+      madeChanges = false;
+      dataInsertOrder.clear();
+      transactionDataItems.clear();
+      dataItemInserts.clear();
+      xModifiedEvents.clear();
+      transactionId = null;
+   }
 
    /**
     * @return the branch
     */
    public Branch getBranch() {
       return branch;
-   }
-
-   public SkynetTransaction(Branch branch) throws OseeCoreException {
-      this.branch = branch;
    }
 
    private void ensureCorrectBranch(Artifact artifact) throws OseeStateException {
@@ -91,63 +105,11 @@ public final class SkynetTransaction extends DbTransaction {
       }
    }
 
-   public void addArtifactToPersist(Artifact artifact) throws OseeCoreException {
-      ensureCorrectBranch(artifact);
-      madeChanges = true;
-      ModificationType modType;
-      ArtifactModType artifactModType;
-
-      if (artifact.isInDb()) {
-         if (artifact.isDeleted()) {
-            modType = ModificationType.DELETED;
-            artifactModType = ArtifactModType.Deleted;
-         } else {
-            modType = ModificationType.CHANGE;
-            artifactModType = ArtifactModType.Changed;
-         }
-      } else {
-         modType = ModificationType.NEW;
-         artifactModType = ArtifactModType.Added;
-         addToBatch(INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(), artifact.getGuid(),
-               artifact.getHumanReadableId());
-      }
-
-      int artGamma = SequenceManager.getNextGammaId();
-      artifact.setGammaId(artGamma);
-      processTransactionForArtifact(artifact, modType, artGamma);
-
-      // Add Attributes to Transaction
-      AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, this);
-      operation.execute();
-
-      // Kick Local Event
-      addArtifactModifiedEvent("persistArtifact()", artifactModType, artifact);
-   }
-
-   private void processTransactionForArtifact(Artifact artifact, ModificationType modType, int artGamma) throws OseeCoreException {
-      addTransactionDataItem(new ArtifactTransactionData(artifact, artGamma, getTransactionId(), modType));
-   }
-
-   private void addToBatch(String sql, Object... data) throws OseeArgumentException {
-      if (sql == null) throw new OseeArgumentException("SQL can not be null.");
-
-      List<Object[]> statementData;
-
-      if (preparedBatch.containsKey(sql)) {
-         statementData = preparedBatch.get(sql);
-      } else {
-         statementData = new LinkedList<Object[]>();
-         preparedBatch.put(sql, statementData);
-      }
-
-      statementData.add(data);
-   }
-
    private void fetchTxNotCurrent(Connection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
          String query = ClientSessionManager.getSQL(transactionData.getSelectTxNotCurrentSql());
-         chStmt.runPreparedQuery(query, transactionData.getSelectData());
+         chStmt.runPreparedQuery(query, transactionData.getItemId(), this.branch.getBranchId());
          while (chStmt.next()) {
             results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }
@@ -157,60 +119,52 @@ public final class SkynetTransaction extends DbTransaction {
    }
 
    private void executeTransactionDataItems(Connection connection) throws OseeCoreException {
-      if (transactionItems.isEmpty()) {
+      if (transactionDataItems.isEmpty()) {
          return;
       }
 
       List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
-      List<Object[]> addressingInsertData = new ArrayList<Object[]>();
-      HashCollection<String, Object[]> dataItemInserts = new HashCollection<String, Object[]>();
-      for (BaseTransactionData transactionData : transactionItems.keySet()) {
+      for (BaseTransactionData transactionData : transactionDataItems.values()) {
+         // Collect inserts for attribute, relation, artifact, and artifact version tables 
+         transactionData.addInsertToBatch(this);
+
          // Collect stale tx currents for batch update
          fetchTxNotCurrent(connection, transactionData, txNotCurrentData);
-
-         // Collect addressing data for batch update into the txs table
-         ModificationType modType = transactionData.getModificationType();
-         addressingInsertData.add(new Object[] {transactionData.getTransactionId().getTransactionNumber(),
-               transactionData.getGammaId(), modType.getValue(), TxChange.getCurrent(modType).getValue()});
-
-         // Collect specific object values for their tables i.e. attribute, relation and artifact version tables
-         if (transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED) {
-            dataItemInserts.put(transactionData.getInsertSql(), transactionData.getInsertData());
-         }
       }
 
       // Insert into data tables - i.e. attribute, relation and artifact version tables
-      for (String itemInsertSql : dataItemInserts.keySet()) {
-         ConnectionHandler.runBatchUpdate(connection, itemInsertSql,
-               (List<Object[]>) dataItemInserts.getValues(itemInsertSql));
+      List<Integer> keys = new ArrayList<Integer>(dataInsertOrder.keySet());
+      Collections.sort(keys);
+      for (int priority : keys) {
+         String sqlKey = dataInsertOrder.get(priority);
+         ConnectionHandler.runBatchUpdate(connection, sqlKey, (List<Object[]>) dataItemInserts.getValues(sqlKey));
       }
-      // Insert addressing data for changes into the txs table
-      ConnectionHandler.runBatchUpdate(connection, INSERT_INTO_TRANSACTION_TABLE, addressingInsertData);
 
       // Set stale tx currents in txs table
       ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
    }
 
-   // Supports adding new artifacts to the artifact table
-   private void executeBatchToTransactions(Connection connection) throws OseeDataStoreException {
-      Collection<String> sqls = preparedBatch.keySet();
-      Iterator<String> iter = sqls.iterator();
-      while (iter.hasNext()) {
-         String sql = iter.next();
-         ConnectionHandler.runBatchUpdate(connection, sql, preparedBatch.get(sql));
+   void internalAddInsertToBatch(int insertPriority, String insertSql, Object... data) {
+      dataItemInserts.put(insertSql, data);
+      dataInsertOrder.put(insertPriority, insertSql);
+   }
+
+   private void addArtifactModifiedEvent(Object sourceObject, ModificationType modificationType, Artifact artifact) throws OseeCoreException {
+      madeChanges = true;
+      ArtifactModType artifactModType;
+      switch (modificationType) {
+         case CHANGE:
+            artifactModType = ArtifactModType.Changed;
+            break;
+         case DELETED:
+            artifactModType = ArtifactModType.Deleted;
+            break;
+         default:
+            artifactModType = ArtifactModType.Added;
+            break;
       }
-   }
-
-   public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeCoreException {
-      madeChanges = true;
       xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(sourceObject), artifactModType, artifact,
-            getTransactionId().getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
-   }
-
-   public void addRelationModifiedEvent(Object sourceObject, RelationModType relationModType, RelationLink link, Branch branch, String relationType) throws OseeAuthenticationRequiredException {
-      madeChanges = true;
-      xModifiedEvents.add(new RelationModifiedEvent(new Sender(sourceObject), relationModType, link, branch,
-            relationType));
+            internalGetTransactionId().getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
    }
 
    public void execute() throws OseeCoreException {
@@ -226,38 +180,140 @@ public final class SkynetTransaction extends DbTransaction {
     * @return Returns the transactionId.
     * @throws OseeDataStoreException
     */
-   public TransactionId getTransactionId() throws OseeCoreException {
+   TransactionId internalGetTransactionId() throws OseeCoreException {
       if (transactionId == null) {
          transactionId = TransactionIdManager.createNextTransactionId(branch, UserManager.getUser(), "");
       }
       return transactionId;
    }
 
-   public void addTransactionDataItem(BaseTransactionData dataItem) {
+   public void deleteArtifact(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
+      if (!artifact.isInDb()) return;
+      ensureCorrectBranch(artifact);
       madeChanges = true;
-      BaseTransactionData oldDataItem = transactionItems.remove(dataItem);
 
-      if (oldDataItem != null) {
-         if (oldDataItem.getModificationType() == NEW && dataItem.getModificationType() == CHANGE) {
-            dataItem.setModificationType(NEW);
-            transactionItems.put(dataItem, dataItem);
-         } else if (!(oldDataItem.getModificationType() == NEW && dataItem.getModificationType() == DELETED)) {
-            transactionItems.put(dataItem, dataItem);
+      addArtifactHelper(artifact, ModificationType.DELETED);
+      artifact.deleteAttributes();
+      RelationManager.deleteRelationsAll(artifact, reorderRelations);
+
+      artifact.persistAttributesAndRelations(this);
+
+      // Kick Local Event
+      addArtifactModifiedEvent("persistArtifact()", ModificationType.DELETED, artifact);
+   }
+
+   public void addArtifact(Artifact artifact) throws OseeCoreException {
+      ensureCorrectBranch(artifact);
+      madeChanges = true;
+
+      ModificationType modificationType;
+
+      if (!artifact.isInDb()) {
+         modificationType = ModificationType.NEW;
+      } else {
+         if (artifact.isDeleted()) {
+            modificationType = ModificationType.DELETED;
+         } else {
+            modificationType = ModificationType.CHANGE;
+         }
+      }
+
+      addArtifactHelper(artifact, modificationType);
+
+      // Add Attributes to Transaction
+      AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, this);
+      operation.execute();
+
+      // Kick Local Event
+      addArtifactModifiedEvent("persistArtifact()", modificationType, artifact);
+   }
+
+   private void addArtifactHelper(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
+      BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
+      if (txItem == null) {
+         txItem = new ArtifactTransactionData(artifact, modificationType);
+         transactionDataItems.put(ArtifactTransactionData.class, artifact.getArtId(), txItem);
+      } else {
+         updateTxItem(txItem, modificationType);
+      }
+
+   }
+
+   public void addRelation(RelationLink link) throws OseeCoreException {
+      madeChanges = true;
+
+      link.setNotDirty();
+
+      ModificationType modificationType;
+
+      if (link.isInDb()) {
+         if (link.isDeleted()) {
+            Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
+            Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
+
+            if ((aArtifact != null && aArtifact.isDeleted()) || (bArtifact != null && bArtifact.isDeleted())) {
+               modificationType = ModificationType.ARTIFACT_DELETED;
+            } else {
+               modificationType = ModificationType.DELETED;
+            }
+         } else {
+            modificationType = ModificationType.CHANGE;
          }
       } else {
-         transactionItems.put(dataItem, dataItem);
+         if (link.isDeleted()) return;
+
+         Artifact aArtifact = link.getArtifact(RelationSide.SIDE_A);
+         if (!aArtifact.isInDb()) {
+            aArtifact.persistAttributesAndRelations(this);
+         }
+         Artifact bArtifact = link.getArtifact(RelationSide.SIDE_B);
+         if (!bArtifact.isInDb()) {
+            bArtifact.persistAttributesAndRelations(this);
+         }
+
+         link.internalSetRelationId(SequenceManager.getNextRelationId());
+         modificationType = ModificationType.NEW;
+      }
+
+      BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getRelationId());
+      if (txItem == null) {
+         if (modificationType != ModificationType.ARTIFACT_DELETED) {
+            txItem = new RelationTransactionData(link, modificationType);
+            transactionDataItems.put(RelationTransactionData.class, link.getRelationId(), txItem);
+         }
+      } else {
+         updateTxItem(txItem, modificationType);
+      }
+
+      RelationModType relationModType = modificationType.isDeleted() ? RelationModType.Deleted : RelationModType.Added;
+
+      xModifiedEvents.add(new RelationModifiedEvent(new Sender("RelationManager"), relationModType, link,
+            link.getBranch(), link.getRelationType().getTypeName()));
+   }
+
+   public void addAttribute(Attribute<?> attribute, String value, String uri, ModificationType modificationType) throws OseeCoreException {
+      madeChanges = true;
+      BaseTransactionData txItem = transactionDataItems.get(AttributeTransactionData.class, attribute.getAttrId());
+      if (txItem == null) {
+         if (modificationType != ModificationType.ARTIFACT_DELETED) {
+            txItem = new AttributeTransactionData(attribute, value, uri, modificationType);
+            transactionDataItems.put(AttributeTransactionData.class, attribute.getAttrId(), txItem);
+         }
+      } else {
+         updateTxItem(txItem, modificationType);
       }
    }
 
-   public void deleteArtifact(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
-      if (!artifact.isInDb()) return;
-      madeChanges = true;
-      processTransactionForArtifact(artifact, ModificationType.DELETED, SequenceManager.getNextGammaId());
-      RelationManager.deleteRelationsAll(artifact, reorderRelations);
-      artifact.deleteAttributes();
+   boolean isInTransaction(Class<? extends BaseTransactionData> clazz, int id) {
+      return transactionDataItems.containsKey(clazz, id);
+   }
 
-      artifact.persistAttributesAndRelations(this);
-      addArtifactModifiedEvent(this, ArtifactModType.Deleted, artifact);
+   private void updateTxItem(BaseTransactionData itemToCheck, ModificationType currentModType) {
+      if (itemToCheck.getModificationType() == ModificationType.NEW && currentModType.isDeleted()) {
+         transactionDataItems.remove(itemToCheck.getClass(), itemToCheck.getItemId());
+      } else {
+         itemToCheck.setModificationType(currentModType);
+      }
    }
 
    /* (non-Javadoc)
@@ -265,12 +321,11 @@ public final class SkynetTransaction extends DbTransaction {
     */
    @Override
    protected void handleTxWork(Connection connection) throws OseeCoreException {
-      executeBatchToTransactions(connection);
       executeTransactionDataItems(connection);
 
-      for (BaseTransactionData transactionData : transactionItems.keySet()) {
+      for (BaseTransactionData transactionData : transactionDataItems.values()) {
          transactionData.internalClearDirtyState();
-         transactionData.internalUpdate();
+         transactionData.internalUpdate(internalGetTransactionId());
       }
 
       if (xModifiedEvents.size() > 0) {
@@ -283,13 +338,20 @@ public final class SkynetTransaction extends DbTransaction {
     */
    @Override
    protected void handleTxException(Exception ex) {
-      xModifiedEvents.clear();
-      for (BaseTransactionData transactionData : transactionItems.keySet()) {
+      for (BaseTransactionData transactionData : transactionDataItems.values()) {
          try {
             transactionData.internalOnRollBack();
          } catch (OseeCoreException ex1) {
             OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
          }
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.DbTransaction#handleTxFinally()
+    */
+   @Override
+   protected void handleTxFinally() throws OseeCoreException {
+      clear();
    }
 }

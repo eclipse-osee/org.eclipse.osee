@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
@@ -18,18 +19,18 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public abstract class BaseTransactionData {
+   private static final String INSERT_INTO_TRANSACTION_TABLE =
+         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, ?)";
 
    private static final int PRIME_NUMBER = 37;
-   private final int gammaId;
-   private final TransactionId transactionId;
    private final int itemId;
    private ModificationType modificationType;
+   private Integer gammaId;
 
-   public BaseTransactionData(int itemId, int gammaId, TransactionId transactionId, ModificationType modificationType) {
-      this.gammaId = gammaId;
-      this.transactionId = transactionId;
+   public BaseTransactionData(int itemId, ModificationType modificationType) {
       this.modificationType = modificationType;
       this.itemId = itemId;
+      this.gammaId = null;
    }
 
    /* (non-Javadoc)
@@ -52,54 +53,58 @@ public abstract class BaseTransactionData {
       return itemId * PRIME_NUMBER * this.getClass().hashCode();
    }
 
-   public abstract Object[] getInsertData();
-
-   public abstract String getInsertSql();
-
-   public Object[] getSelectData() {
-      return new Object[] {itemId, transactionId.getBranchId()};
+   protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
+      internalAddInsertToBatch(transaction, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE,
+            transaction.internalGetTransactionId().getTransactionNumber(), getGammaId(),
+            getModificationType().getValue(), TxChange.getCurrent(getModificationType()).getValue());
    }
 
-   public abstract String getSelectTxNotCurrentSql();
-
-   final int getItemId() {
+   protected final int getItemId() {
       return itemId;
    }
 
-   final int getGammaId() {
-      return gammaId;
-   }
-
-   final TransactionId getTransactionId() {
-      return transactionId;
-   }
-
-   final ModificationType getModificationType() {
+   protected final ModificationType getModificationType() {
       return modificationType;
    }
 
-   public final void setModificationType(ModificationType modificationType) {
+   protected final int getGammaId() throws OseeCoreException {
+      if (gammaId == null) {
+         gammaId = createGammaId();
+      }
+      return gammaId;
+   }
+
+   final void setModificationType(ModificationType modificationType) {
       this.modificationType = modificationType;
    }
 
+   protected abstract String getSelectTxNotCurrentSql();
+
    /**
-    * Should not be called by application. This should only be called once after the transaction has been committed.
+    * Should be called by child classes during their implementation of addInsertToBatch.
     */
-   void internalUpdate() {
-      // Used to update backing data - client must override to get this functionality
+   protected final void internalAddInsertToBatch(SkynetTransaction transaction, int insertPriority, String insertSql, Object... data) {
+      transaction.internalAddInsertToBatch(insertPriority, insertSql, data);
    }
 
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.
     */
-   void internalClearDirtyState() {
-      // Used to clear dirty flags from backing data - client must override to get this functionality
-   }
+   protected abstract void internalUpdate(TransactionId transactionId) throws OseeCoreException;
 
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.
     */
-   void internalOnRollBack() throws OseeCoreException {
-      // Used to perform rollback operations on backing data - client must override to get this functionality
-   }
+   protected abstract void internalClearDirtyState();
+
+   /**
+    * Should not be called by application. This should only be called once if there was an error committing the
+    * transaction.
+    */
+   protected abstract void internalOnRollBack() throws OseeCoreException;
+
+   /**
+    * Should not be called by application. This method will be called by the base class when required;
+    */
+   protected abstract int createGammaId() throws OseeCoreException;
 }

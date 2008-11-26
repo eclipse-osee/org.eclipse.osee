@@ -204,8 +204,8 @@ public abstract class Attribute<T> {
    /**
     * @return true if in datastore
     */
-   public boolean isInDatastore() {
-      return gammaId > 0;
+   public boolean isInDb() {
+      return getAttrId() > 0;
    }
 
    /**
@@ -219,13 +219,12 @@ public abstract class Attribute<T> {
       return gammaId;
    }
 
-   public void setGammaId(int gammaId) {
+   public void internalSetGammaId(int gammaId) {
       this.gammaId = gammaId;
    }
 
-   public void setIds(int attrId, int gammaId) {
+   void internalSetAttributeId(int attrId) {
       this.attrId = attrId;
-      this.gammaId = gammaId;
    }
 
    /**

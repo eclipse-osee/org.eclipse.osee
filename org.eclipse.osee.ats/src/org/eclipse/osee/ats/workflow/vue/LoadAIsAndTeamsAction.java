@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.swt.widgets.Display;
@@ -229,34 +230,33 @@ public class LoadAIsAndTeamsAction {
                         "Can't retrieve Actionable Item \"" + childPage.getName() + "\" with id " + childPage.getId());
             }
          }
-         // If getOrCreate has been specified, search to see if team already exists to reuse
+
          if (getOrCreate) {
-            try {
-               teamDefArt =
-                     (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
-                           TeamDefinitionArtifact.ARTIFACT_NAME, page.getName(), AtsPlugin.getAtsBranch());
-            } catch (ArtifactDoesNotExist ex) {
-               // do nothing; artifact created below
-            }
-
-            if (teamDefArt != null) {
-               for (Artifact actionableItem : actionableItems) {
-                  teamDefArt.addRelation(AtsRelation.TeamActionableItem_ActionableItem, actionableItem);
-               }
-            }
-         }
-         if (teamDefArt == null) {
             teamDefArt =
-                  TeamDefinitionArtifact.createNewTeamDefinition(page.getName(), fullName, desc, leads, members,
-                        actionableItems, parent, transaction,
-                        teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
+                  (TeamDefinitionArtifact) Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(),
+                        TeamDefinitionArtifact.ARTIFACT_NAME, page.getName());
+         } else {
+            teamDefArt =
+                  (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
+                        AtsPlugin.getAtsBranch(), page.getName());
          }
-         for (String staticId : staticIds) {
-            teamDefArt.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, staticId);
+         if (!teamDefArt.isInDb()) {
+            teamDefArt.initialize(fullName, desc, leads, members, actionableItems,
+                  teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
+            if (parent == null) {
+               // Relate to team heading
+               parent = AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction);
+            }
+            parent.addChild(teamDefArt);
+
+            for (Artifact actionableItem : actionableItems) {
+               teamDefArt.addRelation(AtsRelation.TeamActionableItem_ActionableItem, actionableItem);
+            }
+            for (String staticId : staticIds) {
+               teamDefArt.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, staticId);
+            }
+            teamDefArt.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
          }
-
-         teamDefArt.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
-
          if (!workflowId.equals("")) {
             try {
                Artifact workflowArt =
@@ -274,9 +274,11 @@ public class LoadAIsAndTeamsAction {
       }
 
       // Handle all team children
-      for (DiagramNode childPage : page.getToPages())
-         if (childPage.getPageType() == PageType.Team) addTeam(teamDefArt, (DiagramNode) childPage, transaction);
-
+      for (DiagramNode childPage : page.getToPages()) {
+         if (childPage.getPageType() == PageType.Team) {
+            addTeam(teamDefArt, (DiagramNode) childPage, transaction);
+         }
+      }
       return teamDefArt;
    }
 

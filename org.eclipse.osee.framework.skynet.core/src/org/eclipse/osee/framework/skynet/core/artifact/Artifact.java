@@ -113,7 +113,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean isInDb() {
-      return gammaId > 0;
+      return transactionId != null;
    }
 
    /**
@@ -991,7 +991,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
 
       if (isDirty()) {
-         transaction.addArtifactToPersist(this);
+         transaction.addArtifact(this);
          onAttributePersist();
       }
    }
@@ -1356,13 +1356,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * @param gammaId
-    */
-   public void setGammaId(int gammaId) {
-      this.gammaId = gammaId;
-   }
-
-   /**
     * @return the transaction number for this artifact if it is historical, otherwise 0
     */
    public int getTransactionNumber() {
@@ -1586,7 +1579,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param lastModified
     * @param historical
     */
-   public void internalSetPersistenceData(int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) {
+   void internalSetPersistenceData(int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) {
       this.deleted = modType == ModificationType.DELETED;
       this.gammaId = gammaId;
       this.transactionId = transactionId;

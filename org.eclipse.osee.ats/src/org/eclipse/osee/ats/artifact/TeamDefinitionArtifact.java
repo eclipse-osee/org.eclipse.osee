@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCache;
-import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -39,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
@@ -68,47 +66,32 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef, SkynetTransaction transaction, TeamDefinitionOptions... teamDefinitionOptions) throws OseeCoreException {
+   public void initialize(String fullname, String description, Collection<User> leads, Collection<User> members, Collection<ActionableItemArtifact> actionableItems, TeamDefinitionOptions... teamDefinitionOptions) throws OseeCoreException {
       List<Object> teamDefOptions = Collections.getAggregate((Object[]) teamDefinitionOptions);
-      TeamDefinitionArtifact tda = null;
-      tda =
-            (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
-                  AtsPlugin.getAtsBranch(), name);
-      tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
-      tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
+
+      setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
+      setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
-         tda.addRelation(AtsRelation.TeamLead_Lead, user);
+         addRelation(AtsRelation.TeamLead_Lead, user);
          // All leads are members
-         tda.addRelation(AtsRelation.TeamMember_Member, user);
+         addRelation(AtsRelation.TeamMember_Member, user);
       }
       for (User user : members) {
-         tda.addRelation(AtsRelation.TeamMember_Member, user);
+         addRelation(AtsRelation.TeamMember_Member, user);
       }
 
       if (teamDefOptions.contains(TeamDefinitionOptions.TeamUsesVersions)) {
-         tda.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
+         setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
       }
       if (teamDefOptions.contains(TeamDefinitionOptions.RequireTargetedVersion)) {
-         tda.addWorkRule(RuleWorkItemId.atsRequireTargetedVersion.name());
+         addWorkRule(RuleWorkItemId.atsRequireTargetedVersion.name());
       }
-      tda.persistAttributesAndRelations(transaction);
-
-      Artifact parentTeamDefinition = parentTeamDef;
-      if (parentTeamDefinition == null) {
-         // Relate to team heading
-         parentTeamDef = AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction);
-      }
-      parentTeamDef.addChild(tda);
-      parentTeamDef.persistAttributesAndRelations(transaction);
 
       // Relate to actionable items
       for (ActionableItemArtifact aia : actionableItems) {
-         tda.addRelation(AtsRelation.TeamActionableItem_ActionableItem, aia);
+         addRelation(AtsRelation.TeamActionableItem_ActionableItem, aia);
       }
-
-      tda.persistAttributesAndRelations(transaction);
-      AtsCache.cache(tda);
-      return tda;
+      AtsCache.cache(this);
    }
 
    /**
@@ -358,8 +341,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public VersionArtifact createVersion(String name) throws OseeCoreException {
       VersionArtifact versionArt =
-            (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                  AtsPlugin.getAtsBranch(), name);
+            (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch(),
+                  name);
       addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
       versionArt.persistAttributesAndRelations();
       AtsCache.cache(versionArt);

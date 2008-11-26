@@ -40,7 +40,7 @@ public abstract class ArtifactFactory {
     * @param guid
     * @param humandReadableId
     * @param earlyArtifactInitialization TODO
-    * @return
+    * @return the new artifact instance
     */
    public Artifact makeNewArtifact(Branch branch, ArtifactType artifactType, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
       if (!compatibleWith(artifactType)) {

@@ -127,18 +127,18 @@ public class AtsConfig {
       return art;
    }
 
-   public Artifact getOrCreateMsaToolsHeadingArtifact(SkynetTransaction transaction) throws OseeCoreException {
-      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, MSA_TOOLS_HEADING);
-      if (art.getParent() == null) {
-         try {
-            Artifact rootArt = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
-            rootArt.addChild(art);
-            art.persistAttributesAndRelations(transaction);
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
-      }
-      return art;
-   }
+   //   public Artifact getOrCreateMsaToolsHeadingArtifact(SkynetTransaction transaction) throws OseeCoreException {
+   //      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, MSA_TOOLS_HEADING);
+   //      if (art.getParent() == null) {
+   //         try {
+   //            Artifact rootArt = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
+   //            rootArt.addChild(art);
+   //            art.persistAttributesAndRelations(transaction);
+   //         } catch (Exception ex) {
+   //            OSEELog.logException(AtsPlugin.class, ex, true);
+   //         }
+   //      }
+   //      return art;
+   //   }
 
 }

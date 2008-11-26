@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -20,8 +19,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.transaction.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -44,51 +41,68 @@ public class AttributeToTransactionOperation {
 
    public void execute() throws OseeCoreException {
       for (Attribute<?> attribute : artifact.internalGetAttributes()) {
-         if (attribute.isDirty()) {
-            if (attribute.isDeleted()) {
-               deleteAttribute(attribute, transaction, artifact);
-            } else {
-               versionControlled(artifact, attribute, transaction);
-            }
+         if (attribute != null && attribute.isDirty()) {
+            persistAttribute(artifact, attribute, transaction);
          }
       }
    }
 
-   private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException {
-      ModificationType attrModType = null;
-      if (attribute.isInDatastore()) {
-         attribute.setGammaId(SequenceManager.getNextGammaId());
+   private void persistAttribute(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException {
+      DAOToSQL daoToSql = new DAOToSQL();
+      ModificationType modificationType;
 
-         attrModType = ModificationType.CHANGE;
+      if (attribute.isInDb()) {
+         if (attribute.isDeleted()) {
+            if (artifact.isDeleted()) {
+               modificationType = ModificationType.ARTIFACT_DELETED;
+            } else {
+               modificationType = ModificationType.DELETED;
+            }
+         } else {
+            modificationType = ModificationType.CHANGE;
+         }
       } else {
-         createNewAttributeMemo(attribute);
-         attrModType = ModificationType.NEW;
-
+         if (attribute.isDeleted()) {
+            if (artifact.isDeleted()) {
+               modificationType = ModificationType.ARTIFACT_DELETED;
+            } else {
+               modificationType = ModificationType.DELETED;
+            }
+         } else {
+            modificationType = ModificationType.NEW;
+            attribute.getAttributeDataProvider().persist();
+            daoToSql.setData(attribute.getAttributeDataProvider().getData());
+         }
+         attribute.internalSetAttributeId(getNewAttributeId(attribute));
       }
-      attribute.getAttributeDataProvider().persist();
-      DAOToSQL daoToSql = new DAOToSQL(attribute.getAttributeDataProvider().getData());
-      transaction.addTransactionDataItem(createAttributeTxData(artifact, attribute, daoToSql, transaction, attrModType));
 
-      // Kick Local Event
-      try {
-         transaction.addArtifactModifiedEvent(this, ArtifactModType.Changed, artifact);
-      } catch (Exception ex) {
-         // do nothing
-      }
+      //      if (attribute.isDeleted()) {
+      //         if (!attribute.isInDb()) {
+      //            return;
+      //         } else {
+      //            if (artifact.isDeleted()) {
+      //               modificationType = ModificationType.ARTIFACT_DELETED;
+      //            } else {
+      //               modificationType = ModificationType.DELETED;
+      //            }
+      //         }
+      //      } else {
+      //         if (attribute.isInDb()) {
+      //            modificationType = ModificationType.CHANGE;
+      //         } else {
+      //            createNewAttributeMemo(attribute);
+      //            modificationType = ModificationType.NEW;
+      //         }
+      //         attribute.getAttributeDataProvider().persist();
+      //         daoToSql.setData(attribute.getAttributeDataProvider().getData());
+      //      }
+      transaction.addAttribute(attribute, daoToSql.getValue(), daoToSql.getUri(), modificationType);
    }
 
-   private AttributeTransactionData createAttributeTxData(Artifact artifact, Attribute<?> attribute, DAOToSQL dao, SkynetTransaction transaction, ModificationType attrModType) throws OseeCoreException {
-      return new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
-            attribute.getAttributeType().getAttrTypeId(), dao.getValue(), attribute.getGammaId(),
-            transaction.getTransactionId(), dao.getUri(), attrModType);
-   }
-
-   private void createNewAttributeMemo(Attribute<?> attribute) throws OseeDataStoreException {
-      if (attribute == null) return;
+   private int getNewAttributeId(Attribute<?> attribute) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       AttributeType attributeType = attribute.getAttributeType();
       int attrId = -1;
-
       // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch 
       if (attributeType.getMaxOccurrences() == 1) {
          try {
@@ -102,45 +116,10 @@ public class AttributeToTransactionOperation {
             chStmt.close();
          }
       }
-      int gammaId = SequenceManager.getNextGammaId();
       if (attrId < 1) {
          attrId = SequenceManager.getNextAttributeId();
       }
-      attribute.setIds(attrId, gammaId);
-   }
-
-   /**
-    * Remove an attribute from the database that is represented by a particular persistence memo that the persistence
-    * layer marked it with. The persistence memo is used for this since it is the identifying information the
-    * persistence layer needs, allowing the attribute to be destroyed and released back to the system.
-    * 
-    * @throws OseeDataStoreException
-    * @throws OseeAuthenticationRequiredException
-    */
-   private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws OseeCoreException {
-      if (!attribute.isInDatastore()) return;
-
-      int attrGammaId;
-      ModificationType modificationType;
-
-      if (artifact.isDeleted()) {
-         attrGammaId = attribute.getGammaId();
-         modificationType = ModificationType.ARTIFACT_DELETED;
-      } else {
-         attrGammaId = SequenceManager.getNextGammaId();
-         modificationType = ModificationType.DELETED;
-      }
-
-      transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
-            attribute.getAttributeType().getAttrTypeId(), null, attrGammaId, transaction.getTransactionId(), null,
-            modificationType));
-
-      // Kick Local Event
-      try {
-         transaction.addArtifactModifiedEvent(this, ArtifactModType.Changed, artifact);
-      } catch (OseeDataStoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
+      return attrId;
    }
 
    public static void meetMinimumAttributeCounts(Artifact artifact, boolean isNewArtifact) throws OseeCoreException {
@@ -158,10 +137,19 @@ public class AttributeToTransactionOperation {
    }
 
    private final class DAOToSQL {
-      private final String uri;
-      private final String value;
+      private String uri;
+      private String value;
 
       public DAOToSQL(Object... data) {
+         if (data != null) {
+            setData(data);
+         } else {
+            uri = null;
+            value = null;
+         }
+      }
+
+      public void setData(Object... data) {
          this.uri = getItemAt(1, data);
          this.value = getItemAt(0, data);
       }
@@ -186,14 +174,15 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gamma_id, Object... data) throws OseeDataStoreException {
+   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, Object... data) throws OseeDataStoreException {
       try {
          AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
          attributeType = AttributeTypeManager.getType(attributeType.getName());
 
          Attribute<?> attribute = artifact.createAttribute(attributeType, false);
          attribute.getAttributeDataProvider().loadData(data);
-         attribute.setIds(attributeId, gamma_id);
+         attribute.internalSetAttributeId(attributeId);
+         attribute.internalSetGammaId(gammaId);
          return attribute;
       } catch (Exception ex) {
          throw new OseeDataStoreException(ex);

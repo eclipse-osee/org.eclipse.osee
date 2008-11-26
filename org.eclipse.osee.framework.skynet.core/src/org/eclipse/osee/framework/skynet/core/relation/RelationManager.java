@@ -21,9 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -41,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.transaction.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -361,7 +358,7 @@ public class RelationManager {
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relation.isDirty()) {
-               persistRelation(transaction, relation);
+               transaction.addRelation(relation);
 
                try {
                   Artifact artifactOnOtherSide = relation.getArtifactOnOtherSide(artifact);
@@ -372,7 +369,7 @@ public class RelationManager {
                         if (i + 1 < otherSideRelations.size()) {
                            RelationLink nextRelation = otherSideRelations.get(i + 1);
                            if (nextRelation.isDirty()) {
-                              persistRelation(transaction, nextRelation);
+                              transaction.addRelation(nextRelation);
                            }
                         }
                      }
@@ -385,7 +382,6 @@ public class RelationManager {
                               "Unable to to persist other side relation order because the artifact on the other side of [%s, %s] doesn't exist. ",
                               artifact.toString(), relation.toString()), ex);
                }
-
             }
          }
       }
@@ -767,61 +763,5 @@ public class RelationManager {
             }
          }
       }
-   }
-
-   private static void persistRelation(SkynetTransaction transaction, RelationLink link) throws OseeCoreException {
-      // The relation will be clean by the end of this, so mark it early so that this relation won't be
-      // persisted by its other artifact
-      link.setNotDirty();
-
-      int gammaId = SequenceManager.getNextGammaId();
-      ModificationType modId;
-
-      if (link.isInDb()) {
-         if (link.isDeleted()) {
-            Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
-            Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
-
-            if ((aArtifact != null && aArtifact.isDeleted()) || (bArtifact != null && bArtifact.isDeleted())) {
-               modId = ModificationType.ARTIFACT_DELETED;
-            } else {
-               modId = ModificationType.DELETED;
-               link.setGammaId(gammaId);
-            }
-
-            transaction.addRelationModifiedEvent("RelationManager.persistRelation()", RelationModType.Deleted, link,
-                  link.getBranch(), link.getRelationType().getTypeName());
-
-         } else {
-            link.setGammaId(gammaId);
-            modId = ModificationType.CHANGE;
-
-            transaction.addRelationModifiedEvent("RelationManager.persistRelation()", RelationModType.Added, link,
-                  link.getBranch(), link.getRelationType().getTypeName());
-
-         }
-      } else {
-         if (link.isDeleted()) return;
-
-         Artifact aArtifact = link.getArtifact(RelationSide.SIDE_A);
-         if (!aArtifact.isInDb()) {
-            aArtifact.persistAttributes(transaction);
-         }
-         Artifact bArtifact = link.getArtifact(RelationSide.SIDE_B);
-         if (!bArtifact.isInDb()) {
-            bArtifact.persistAttributes(transaction);
-         }
-
-         int relationId = SequenceManager.getNextRelationId();
-         link.setPersistenceIds(relationId, gammaId);
-         modId = ModificationType.NEW;
-
-         transaction.addRelationModifiedEvent("RelationManager.persistRelation()", RelationModType.Added, link,
-               link.getBranch(), link.getRelationType().getTypeName());
-
-      }
-
-      transaction.addTransactionDataItem(new RelationTransactionData(link, link.getGammaId(),
-            transaction.getTransactionId(), modId));
    }
 }
