@@ -12,18 +12,17 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -35,12 +34,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Paul K. Waldfogel
+ * @author Jeff C. Phillips
  */
 public class ViewWordChangeReportHandler extends AbstractHandler {
    private Map<Integer, ArtifactChange> artifactChangeMap = new HashMap<Integer, ArtifactChange>();
@@ -54,6 +55,8 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
    public Object execute(ExecutionEvent event) {
       ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(artifactChangeMap.size());
       ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(artifactChangeMap.size());
+      VariableMap variableMap = new VariableMap();
+      String fileName = null;
 
       for (ArtifactChange artifactChange : artifactChangeMap.values()) {
          try {
@@ -66,6 +69,16 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
             baseArtifacts.add(baseArtifact);
             newerArtifacts.add(newerArtifact);
+            
+            if(fileName == null){
+            	if(artifactChangeMap.values().size() == 1){
+            		fileName = baseArtifact != null? baseArtifact.getSafeName() : newerArtifact.getSafeName();
+            	}else{
+                	fileName = baseArtifact != null? baseArtifact.getBranch().getBranchName() : newerArtifact.getBranch().getBranchName();
+            	}
+                variableMap.setValue("fileName", fileName + (new Date()).toString().replaceAll(":", ";") + ".xml");
+            }
+            
          } catch (OseeCoreException ex1) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex1);
          }
@@ -76,7 +89,8 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                "base artifacts size: " + baseArtifacts.size() + " must match newer artifacts size: " + newerArtifacts.size() + ".");
       }
 
-      RendererManager.diffInJob(baseArtifacts, newerArtifacts);
+      
+      RendererManager.diffInJob(baseArtifacts, newerArtifacts, variableMap);
       return null;
    }
 
@@ -110,43 +124,5 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
       }
 
       return isEnabled;
-   }
-
-   public class JobFamily extends Job {
-      private String lastName;
-      private Artifact firstArtifact;
-      private Artifact secondArtifact;;
-      private IProgressMonitor monitor;
-      private List<String> JournalList = new ArrayList<String>();
-
-      public JobFamily(Artifact firstArtifact, Artifact secondArtifact, String firstName, String lastName) {
-         super(firstName + " " + lastName);
-         this.lastName = lastName;
-         this.firstArtifact = firstArtifact;
-         this.secondArtifact = secondArtifact;
-      }
-
-      protected IStatus run(IProgressMonitor monitor) {
-         this.monitor = monitor;
-         try {
-            RendererManager.diff(firstArtifact, secondArtifact, monitor, true);
-         } catch (Exception ex) {
-            OSEELog.logException(getClass(), ex, true);
-            JournalList.add(ex.getMessage());
-         }
-         return Status.OK_STATUS;
-      }
-
-      public IProgressMonitor getIProgressMonitor() {
-         return monitor;
-      }
-
-      public boolean belongsTo(Object family) {
-         return lastName.equals(family);
-      }
-
-      public List<String> getJounalList() {
-         return JournalList;
-      }
    }
 }

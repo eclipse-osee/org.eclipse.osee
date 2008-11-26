@@ -21,7 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.xml.namespace.QName;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.w3c.dom.Element;
+
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
@@ -115,18 +118,13 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               String file = getStringOption("fileName");
-               if (file == null) {
-                  if (baseArtifacts.size() == 1) {
-                     file =
-                           (newerArtifact.get(0) != null ? newerArtifact.get(0).getSafeName() : baseArtifacts.get(0).getSafeName()) + (new Date()).toString().replaceAll(
-                                 ":", ";") + ".xml";
-                  } else {
-                     file =
-                           "Word_Change_Report_" + baseArtifacts.size() + "_Items_" + (new Date()).toString().replaceAll(
-                                 ":", ";") + ".xml";
-                  }
+               String fileName = getStringOption("fileName");
+               
+               //if the file name is null we will give it a GUID
+               if (fileName == null) {
+                     fileName = GUID.generateGuidStr() + ".xml";
                }
+               
                monitor.beginTask("Word Change Report ", newerArtifact.size() * 2);
                ArrayList<String> fileNames = new ArrayList<String>(newerArtifact.size());
                IFolder baseFolder = getRenderFolder(branch, PresentationType.DIFF);
@@ -166,7 +164,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                //if (fileNames.size() == 1) {
                //   getAssociatedProgram(null).execute(baseFileStr + fileName);
                // } else {
-               createAggregateArtifactDiffReport(fileNames, baseFileStr, null, baseFileStr + "/" + file, monitor);
+               createAggregateArtifactDiffReport(fileNames, baseFileStr, null, baseFileStr + "/" + fileName, monitor);
                // }
             } catch (OseeCoreException ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
