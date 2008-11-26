@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -386,7 +387,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
          if (smaMgr.isAssigneeMe())
             return AtsPlugin.getInstance().getImage("red_user_sm.gif");
          else
-            return AtsPlugin.getInstance().getImage("user_sm.gif");
+            return ArtifactTypeManager.getType("User").getImage();
       }
       return null;
    }

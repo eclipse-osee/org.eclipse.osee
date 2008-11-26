@@ -295,7 +295,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
    protected void createActions() {
 
-      Action newWorldEditor = new Action("Open in ATS World Editor") {
+      Action newWorldEditor = new Action("Open New ATS World Editor") {
 
          @Override
          public void run() {

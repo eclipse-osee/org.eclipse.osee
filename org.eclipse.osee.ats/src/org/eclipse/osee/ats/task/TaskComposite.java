@@ -234,7 +234,7 @@ public class TaskComposite extends Composite implements IActionable {
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(AtsPlugin.getInstance().getImage("task.gif"));
-      item.setToolTipText("Open in ATS Task Editor");
+      item.setToolTipText("Open New ATS Task Editor");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {

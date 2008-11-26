@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -50,7 +51,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          if (defectItem.getUser().equals(UserManager.getUser()))
             return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
          else
-            return SkynetGuiPlugin.getInstance().getImage("user_sm.gif");
+            return ArtifactTypeManager.getType("User").getImage();
       }
       return null;
    }
