@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
@@ -44,7 +45,7 @@ public class DuplicateAttributes extends DatabaseHealthTask {
          "SELECT attr1.art_id, aty1.NAME, attr1.attr_id as attr_id_1, attr2.attr_id as attr_id_2, attr1.value as value_1, attr2.value as value_2, attr1.uri as uri_1, attr2.uri as uri_2, attr1.gamma_id as gamma_id_1, attr2.gamma_id as gamma_id_2 FROM osee_attribute attr1, osee_attribute attr2, osee_attribute_type  aty1 WHERE attr1.art_id = attr2.art_id AND attr1.attr_id < attr2.attr_id AND attr1.attr_type_id = attr2.attr_type_id AND attr1.attr_type_id = aty1.attr_type_id AND aty1.max_occurence = 1  AND EXISTS (SELECT 'x' FROM osee_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id) AND EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.gamma_id = attr2.gamma_id) order by aty1.NAME, attr1.art_id";
 
    private static final String BRANCHES_WITH_ONLY_ATTR =
-         "SELECT DISTINCT branch_id FROM osee_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_txs txs, osee_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?) MINUS (SELECT DISTINCT branch_id FROM osee_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_txs txs, osee_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?))";
+         "SELECT DISTINCT branch_id FROM osee_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_txs txs, osee_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?) %s (SELECT DISTINCT branch_id FROM osee_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_txs txs, osee_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?))";
 
    private static final String DELETE_ATTR = "DELETE FROM osee_attribute WHERE attr_id = ?";
 
@@ -194,7 +195,8 @@ public class DuplicateAttributes extends DatabaseHealthTask {
    private void findProminentAttribute(int attrId1, int attrId2, LinkedList<Integer> branches) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, attrId1, attrId2);
+         chStmt.runPreparedQuery(String.format(BRANCHES_WITH_ONLY_ATTR, SupportedDatabase.getComplementSql()), attrId1,
+               attrId2);
          while (chStmt.next()) {
             branches.add(new Integer(chStmt.getInt("branch_id")));
          }

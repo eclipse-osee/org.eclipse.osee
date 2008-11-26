@@ -12,11 +12,11 @@
 package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
 
 import junit.framework.TestCase;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 /**
  * @author Theron Virgin
@@ -33,7 +33,7 @@ public class CommitTest extends TestCase {
          {
                "SELECT distinct t1.",
                ", det.branch_id FROM osee_tx_details det, osee_txs txs, ",
-               " t1 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t1.gamma_id AND txs.tx_current = 0 MINUS SELECT distinct t2.",
+               " t1 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t1.gamma_id AND txs.tx_current = 0 %s SELECT distinct t2.",
                ", det.branch_id FROM osee_tx_details det, osee_txs txs, ",
                " t2 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t2.gamma_id AND txs.tx_current != 0"};
 
@@ -98,16 +98,15 @@ public class CommitTest extends TestCase {
       } finally {
          chStmt.close();
       }
-      //      checkNoTxCurrent("art_id", "osee_artifact_version");
-      //      checkNoTxCurrent("attr_id", "osee_attribute");
-      //      checkNoTxCurrent("rel_link_id", "osee_relation_link");
+      checkNoTxCurrent("art_id", "osee_artifact_version");
+      checkNoTxCurrent("attr_id", "osee_attribute");
+      checkNoTxCurrent("rel_link_id", "osee_relation_link");
       checkMultipleTxCurrent("art_id", "osee_artifact_version");
       checkMultipleTxCurrent("attr_id", "osee_attribute");
       checkMultipleTxCurrent("rel_link_id", "osee_relation_link");
 
    }
 
-   //Doesn't work on postgres because uses Minus.  Need to update for postrges.
    private void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       StringBuilder builder = new StringBuilder();
@@ -115,7 +114,7 @@ public class CommitTest extends TestCase {
       builder.append(dataId);
       builder.append(NO_TX_CURRENT_SET[1]);
       builder.append(dataTable);
-      builder.append(NO_TX_CURRENT_SET[2]);
+      builder.append(String.format(NO_TX_CURRENT_SET[2], SupportedDatabase.getComplementSql()));
       builder.append(dataId);
       builder.append(NO_TX_CURRENT_SET[3]);
       builder.append(dataTable);

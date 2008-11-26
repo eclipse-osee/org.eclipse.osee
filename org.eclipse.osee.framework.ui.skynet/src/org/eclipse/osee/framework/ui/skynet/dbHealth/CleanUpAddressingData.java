@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -24,9 +25,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 public class CleanUpAddressingData extends DatabaseHealthTask {
 
    private static final String NOT_BACKED_GAMMAS =
-         "SELECT gamma_id from osee_txs MINUS " + HealthHelper.ALL_BACKING_GAMMAS;
+         "SELECT gamma_id from osee_txs %s " + HealthHelper.ALL_BACKING_GAMMAS;
    private static final String NOT_BACKED_TRANSACTIONS =
-         "SELECT transaction_id from osee_txs MINUS SELECT transaction_id from osee_tx_details";
+         "SELECT transaction_id from osee_txs %s SELECT transaction_id from osee_tx_details";
    private static final String REMOVE_NOT_ADDRESSED_GAMMAS = "DELETE FROM osee_txs WHERE gamma_id = ?";
    private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS = "DELETE FROM osee_txs WHERE transaction_id = ?";
 
@@ -51,12 +52,16 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
             fix ? "Deleting TXS Entries with No Backing Data" : "Checking For TXS Entries with No Backing Data", 100);
 
       if (verify || gammas == null) {
-         gammas = HealthHelper.runSingleResultQuery(NOT_BACKED_GAMMAS, "gamma_id");
+         gammas =
+               HealthHelper.runSingleResultQuery(
+                     String.format(NOT_BACKED_GAMMAS, SupportedDatabase.getComplementSql()), "gamma_id");
          monitor.worked(25);
          if (monitor.isCanceled()) return;
       }
       if (verify || transactions == null) {
-         transactions = HealthHelper.runSingleResultQuery(NOT_BACKED_TRANSACTIONS, "transaction_id");
+         transactions =
+               HealthHelper.runSingleResultQuery(String.format(NOT_BACKED_TRANSACTIONS,
+                     SupportedDatabase.getComplementSql()), "transaction_id");
          monitor.worked(25);
          if (monitor.isCanceled()) return;
       }

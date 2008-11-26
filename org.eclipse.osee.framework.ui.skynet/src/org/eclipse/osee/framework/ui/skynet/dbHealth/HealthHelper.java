@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -29,11 +30,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
 public class HealthHelper {
    public static final String ALL_BACKING_GAMMAS =
          "(SELECT gamma_id FROM osee_artifact_version UNION SELECT gamma_id FROM osee_attribute UNION SELECT gamma_id FROM osee_relation_link)";
+
    private static final String[] NO_TX_CURRENT_SET =
          {
                "SELECT distinct t1.",
                ", det.branch_id FROM osee_tx_details det, osee_txs txs, ",
-               " t1 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t1.gamma_id AND txs.tx_current = 0 MINUS SELECT distinct t2.",
+               " t1 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t1.gamma_id AND txs.tx_current = 0 %s SELECT distinct t2.",
                ", det.branch_id FROM osee_tx_details det, osee_txs txs, ",
                " t2 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t2.gamma_id AND txs.tx_current != 0"};
 
@@ -103,7 +105,8 @@ public class HealthHelper {
 
    public static HashSet<Pair<Integer, Integer>> getNoTxCurrentSet(String dataId, String dataTable, StringBuilder builder, String data) throws OseeCoreException {
       String sql =
-            NO_TX_CURRENT_SET[0] + dataId + NO_TX_CURRENT_SET[1] + dataTable + NO_TX_CURRENT_SET[2] + dataId + NO_TX_CURRENT_SET[3] + dataTable + NO_TX_CURRENT_SET[4];
+            NO_TX_CURRENT_SET[0] + dataId + NO_TX_CURRENT_SET[1] + dataTable + String.format(NO_TX_CURRENT_SET[2],
+                  SupportedDatabase.getComplementSql()) + dataId + NO_TX_CURRENT_SET[3] + dataTable + NO_TX_CURRENT_SET[4];
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       HashSet<Pair<Integer, Integer>> noneSet = new HashSet<Pair<Integer, Integer>>();
 

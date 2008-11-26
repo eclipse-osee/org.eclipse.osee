@@ -55,4 +55,8 @@ public enum SupportedDatabase {
    public static boolean areHintsSupported() throws OseeDataStoreException {
       return getDatabaseType() == oracle;
    }
+
+   public static String getComplementSql() throws OseeDataStoreException {
+      return getDatabaseType() == oracle ? "MINUS" : "EXCEPT";
+   }
 }

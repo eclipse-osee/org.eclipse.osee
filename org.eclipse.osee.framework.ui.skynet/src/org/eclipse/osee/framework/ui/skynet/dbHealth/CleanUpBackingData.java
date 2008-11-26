@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -24,9 +25,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 public class CleanUpBackingData extends DatabaseHealthTask {
 
    private static final String NOT_ADDRESSESED_GAMMAS =
-         HealthHelper.ALL_BACKING_GAMMAS + " MINUS SELECT gamma_id FROM osee_txs";
+         HealthHelper.ALL_BACKING_GAMMAS + " %s SELECT gamma_id FROM osee_txs";
    private static final String NOT_ADDRESSESED_TRANSACTIONS =
-         "SELECT transaction_id FROM osee_tx_details WHERE tx_type != 1 MINUS SELECT transaction_id FROM osee_txs";
+         "SELECT transaction_id FROM osee_tx_details WHERE tx_type != 1 %s SELECT transaction_id FROM osee_txs";
    private static final String REMOVE_GAMMAS_ARTIFACT = "DELETE FROM osee_artifact_version WHERE gamma_id = ?";
    private static final String REMOVE_GAMMAS_ATTRIBUTE = "DELETE FROM osee_attribute WHERE gamma_id = ?";
    private static final String REMOVE_GAMMAS_RELATIONS = "DELETE FROM osee_relation_link WHERE gamma_id = ?";
@@ -54,12 +55,16 @@ public class CleanUpBackingData extends DatabaseHealthTask {
       monitor.worked(5);
 
       if (verify || gammas == null) {
-         gammas = HealthHelper.runSingleResultQuery(NOT_ADDRESSESED_GAMMAS, "gamma_id");
+         gammas =
+               HealthHelper.runSingleResultQuery(String.format(NOT_ADDRESSESED_GAMMAS,
+                     SupportedDatabase.getComplementSql()), "gamma_id");
          monitor.worked(25);
          if (monitor.isCanceled()) return;
       }
       if (verify || transactions == null) {
-         transactions = HealthHelper.runSingleResultQuery(NOT_ADDRESSESED_TRANSACTIONS, "transaction_id");
+         transactions =
+               HealthHelper.runSingleResultQuery(String.format(NOT_ADDRESSESED_TRANSACTIONS,
+                     SupportedDatabase.getComplementSql()), "transaction_id");
          monitor.worked(25);
          if (monitor.isCanceled()) return;
       }
