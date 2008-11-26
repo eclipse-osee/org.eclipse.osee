@@ -90,7 +90,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       this.worldEditor = editor;
       this.toolBar = toolBar;
 
-      setLayout(new GridLayout(1, false));
+      setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
       mainComp = new Composite(this, SWT.NONE);
@@ -213,6 +213,8 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             }
          }
       }, true);
+      // Need to reflow the managed page based on the results.  Don't put this in the above thread.
+      worldEditor.getActionPage().reflow();
    }
 
    public class FilterLabelProvider implements ILabelProvider {

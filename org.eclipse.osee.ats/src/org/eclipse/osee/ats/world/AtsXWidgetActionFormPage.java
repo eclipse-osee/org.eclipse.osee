@@ -67,6 +67,18 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       managedForm.refresh();
    }
 
+   public void reflow() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            getManagedForm().reflow(true);
+         }
+      });
+   }
+
    private void fillBody(IManagedForm managedForm) {
       ScrolledForm scrolledForm = managedForm.getForm();
       Composite body = scrolledForm.getBody();

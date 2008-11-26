@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboBooleanDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -52,9 +53,12 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
       super.xWidgetCreated(widget, toolkit, page, art, modListener, isEditable);
       try {
          if ((art instanceof ReviewSMArtifact) && ((ReviewSMArtifact) art).getParentSMA() == null) {
-            if (widget.getLabel().equals(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getDisplayName()) || widget.getLabel().equals(
-                  ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getDisplayName())) {
+            if (widget.getLabel().equals(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getDisplayName())) {
                XComboBooleanDam decisionComboDam = (XComboBooleanDam) widget;
+               decisionComboDam.setEnabled(false);
+               decisionComboDam.setRequiredEntry(false);
+            } else if (widget.getLabel().equals(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getDisplayName())) {
+               XComboDam decisionComboDam = (XComboDam) widget;
                decisionComboDam.setEnabled(false);
                decisionComboDam.setRequiredEntry(false);
             }

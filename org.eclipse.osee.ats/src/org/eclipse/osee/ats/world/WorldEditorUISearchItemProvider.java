@@ -83,7 +83,10 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
       if (!options.contains(TableLoadOption.NoUI) && searchType == SearchType.Search) {
          worldUISearchItem.performUI(searchType);
       }
-      if (worldUISearchItem.isCancelled()) return;
+      if (worldUISearchItem.isCancelled()) {
+         worldEditor.close(false);
+         return;
+      }
 
       LoadTableJob job = null;
       job = new LoadTableJob(worldEditor, worldUISearchItem, searchType);

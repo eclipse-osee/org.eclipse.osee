@@ -43,10 +43,7 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
     */
    @Override
    public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) throws OseeCoreException {
-      worldEditor.getWorldComposite().load(name, artifacts, getTableLoadOptions());
-      if (customizeData != null) {
-         worldEditor.getWorldComposite().setCustomizeData(customizeData);
-      }
+      worldEditor.getWorldComposite().load(name, artifacts, customizeData, getTableLoadOptions());
    }
 
    /* (non-Javadoc)

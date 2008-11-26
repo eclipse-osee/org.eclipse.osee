@@ -135,6 +135,13 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
       }
    }
 
+   /**
+    * @return the actionPage
+    */
+   public WorldXWidgetActionPage getActionPage() {
+      return actionPage;
+   }
+
    public void setEditorTitle(final String str) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
