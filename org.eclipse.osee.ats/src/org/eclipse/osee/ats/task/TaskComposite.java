@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -230,6 +231,44 @@ public class TaskComposite extends Composite implements IActionable {
          });
 
       }
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(AtsPlugin.getInstance().getImage("task.gif"));
+      item.setToolTipText("Open in ATS Task Editor");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            try {
+               ITaskEditorProvider provider =
+                     ((TaskEditorInput) ((TaskEditor) iXTaskViewer.getEditor()).getEditorInput()).getItaskEditorProvider().copyProvider();
+               provider.setCustomizeData(taskXViewer.getCustomizeMgr().generateCustDataFromTable());
+               provider.setTableLoadOptions(TableLoadOption.NoUI);
+               TaskEditor.open(provider);
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(AtsPlugin.getInstance().getImage("taskSelected.gif"));
+      item.setToolTipText("Open Selected in ATS Task Editor");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (taskXViewer.getSelectedArtifacts().size() == 0) {
+               AWorkbench.popup("ERROR", "Select items to open");
+               return;
+            }
+            try {
+               TaskEditor.open(new TaskEditorSimpleProvider("Tasks", taskXViewer.getSelectedArtifacts(),
+                     taskXViewer.getCustomizeMgr().generateCustDataFromTable()));
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      });
+
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
       item.setToolTipText("Refresh Tasks");

@@ -11,33 +11,24 @@ import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditorSearchItemProvider implements ITaskEditorProvider {
+public class TaskEditorSearchItemProvider extends TaskEditorProvider {
 
    private final WorldSearchItem worldSearchItem;
-   private final TableLoadOption[] tableLoadOptions;
 
    public TaskEditorSearchItemProvider(WorldSearchItem worldSearchItem) {
-      this(worldSearchItem, TableLoadOption.None);
+      this(worldSearchItem, null, TableLoadOption.None);
    }
 
-   public TaskEditorSearchItemProvider(WorldSearchItem worldSearchItem, TableLoadOption... tableLoadOptions) {
+   public TaskEditorSearchItemProvider(WorldSearchItem worldSearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
+      super(customizeData, tableLoadOptions);
       this.worldSearchItem = worldSearchItem;
-      this.tableLoadOptions = tableLoadOptions;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTableLoadOptions()
-    */
-   @Override
-   public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException {
-      return Collections.getAggregate(tableLoadOptions);
    }
 
    /* (non-Javadoc)
@@ -72,6 +63,14 @@ public class TaskEditorSearchItemProvider implements ITaskEditorProvider {
    @Override
    public String getName() throws OseeCoreException {
       return worldSearchItem.getName();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#copyProvider()
+    */
+   @Override
+   public ITaskEditorProvider copyProvider() {
+      return new TaskEditorSearchItemProvider(worldSearchItem.copy(), customizeData, tableLoadOptions);
    }
 
 }

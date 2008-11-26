@@ -57,7 +57,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
    /**
     * @param tableLoadOptions the tableLoadOptions to set
     */
-   public void setTableLoadOptions(TableLoadOption[] tableLoadOptions) {
+   public void setTableLoadOptions(TableLoadOption... tableLoadOptions) {
       this.tableLoadOptions = tableLoadOptions;
    }
 

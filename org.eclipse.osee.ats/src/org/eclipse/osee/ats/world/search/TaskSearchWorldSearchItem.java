@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -341,6 +343,28 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    @Override
    public TaskSearchWorldSearchItem copy() {
       return new TaskSearchWorldSearchItem(this);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#copyProvider()
+    */
+   @Override
+   public ITaskEditorProvider copyProvider() {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#setCustomizeData(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData)
+    */
+   @Override
+   public void setCustomizeData(CustomizeData customizeData) {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#setTableLoadOptions(org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption[])
+    */
+   @Override
+   public void setTableLoadOptions(TableLoadOption... tableLoadOptions) {
    }
 
 }
