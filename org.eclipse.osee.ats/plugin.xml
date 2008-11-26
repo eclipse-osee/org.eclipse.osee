@@ -25,7 +25,7 @@
                default="false"
                icon="images/globe.gif"
                id="org.eclipse.osee.ats.world.WorldEditor"
-               name="World Editor">
+               name="ATS World Editor">
          </editor>
    </extension>
    <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
