@@ -120,17 +120,11 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
             branchData.setParentBranchId(-1);
             branchData.setBranchType(BranchType.TOP_LEVEL);
          }
-         Long original = new Long(branchData.getBranchId());
-         Long newValue = (Long) getTranslator().translate(BranchData.BRANCH_ID, original);
-         branchData.setBranchId(newValue.intValue());
-
-         original = new Long(branchData.getAssociatedArtId());
-         newValue = (Long) getTranslator().translate(BranchData.COMMIT_ART_ID, original);
-         branchData.setAssociatedBranchId(newValue.intValue());
-
-         original = new Long(branchData.getParentBranchId());
-         newValue = (Long) getTranslator().translate(BranchData.PARENT_BRANCH_ID, original);
-         branchData.setParentBranchId(newValue.intValue());
+         branchData.setBranchId(translateId(BranchData.BRANCH_ID, branchData.getBranchId()));
+         branchData.setAssociatedBranchId(translateId(BranchData.COMMIT_ART_ID, branchData.getAssociatedArtId()));
+         branchData.setParentBranchId(translateId(BranchData.PARENT_BRANCH_ID, branchData.getParentBranchId()));
+         branchData.setParentTransactionId(translateId(BranchData.PARENT_TRANSACTION_ID,
+               branchData.getParentTransactionId()));
 
          Object[] data = branchData.toArray(getMetaData());
          if (data != null) {
@@ -142,6 +136,12 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          super.store(getConnection());
       }
       return toReturn;
+   }
+
+   private int translateId(String id, int originalValue) throws OseeDataStoreException {
+      Long original = new Long(originalValue);
+      Long newValue = (Long) getTranslator().translate(id, original);
+      return newValue.intValue();
    }
 
    private Collection<BranchData> checkTargetDbBranches(Collection<BranchData> selectedBranches) throws OseeDataStoreException {

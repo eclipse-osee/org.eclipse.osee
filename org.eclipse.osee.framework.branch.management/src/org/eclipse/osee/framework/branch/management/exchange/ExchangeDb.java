@@ -56,6 +56,7 @@ public class ExchangeDb {
 
    private static final String[] GAMMA_ID_REG_ALIASES = new String[] {"source_gamma_id", "dest_gamma_id"};
 
+   private static final String[] TRANSACTION_ID_REG_ALIASES = new String[] {"parent_transaction_id"};
    private static final String[] TRANSACTION_ID_NEG_ONE_ALIASES = new String[] {"commit_transaction_id"};
 
    private static final String[] ARTIFACT_ID_ALIASES;
@@ -82,6 +83,7 @@ public class ExchangeDb {
 
       Set<String> txIdAliases = new HashSet<String>();
       txIdAliases.add(TRANSACTION_ID);
+      txIdAliases.addAll(Arrays.asList(TRANSACTION_ID_REG_ALIASES));
       txIdAliases.addAll(Arrays.asList(TRANSACTION_ID_NEG_ONE_ALIASES));
       TRANSACTION_ID_ALIASES = txIdAliases.toArray(new String[txIdAliases.size()]);
    }
@@ -173,7 +175,7 @@ public class ExchangeDb {
    static List<IndexCollector> createCheckList() {
       List<IndexCollector> items = new ArrayList<IndexCollector>();
       items.add(new IndexCollector("osee.txs.data", GAMMA_ID, GAMMA_ID_REG_ALIASES));
-      items.add(new IndexCollector("osee.tx.details.data", TRANSACTION_ID, new String[0],
+      items.add(new IndexCollector("osee.tx.details.data", TRANSACTION_ID, TRANSACTION_ID_REG_ALIASES,
             TRANSACTION_ID_NEG_ONE_ALIASES));
       items.add(new IndexCollector("osee.artifact.data", ARTIFACT_ID, ARTIFACT_ID_REG_ALIASES,
             ARTIFACT_ID_NEG_ONE_ALIASES));
