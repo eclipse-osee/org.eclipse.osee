@@ -48,7 +48,7 @@ public class BranchCreator {
 
    private static final String BRANCH_TABLE_INSERT =
          "INSERT INTO " + BRANCH_TABLE.columnsForInsert("branch_id", "short_name", "branch_name", "parent_branch_id",
-               "archived", "associated_art_id", "branch_type");
+               "parent_transaction_id", "archived", "associated_art_id", "branch_type");
    private static final String SELECT_BRANCH_BY_NAME = "SELECT count(1) FROM osee_branch WHERE branch_name = ?";
 
    private static final String MERGE_BRANCH_INSERT =
@@ -72,8 +72,8 @@ public class BranchCreator {
             NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       Branch childBranch =
-            initializeBranch(connection, childBranchShortName, childBranchName, userId, timestamp, comment,
-                  associatedArtifact, branchType);
+            initializeBranch(connection, sourceTransactionId, childBranchShortName, childBranchName, userId, timestamp,
+                  comment, associatedArtifact, branchType);
 
       // insert the new transaction data first.
       int newTransactionNumber = SequenceManager.getNextTransactionId();
@@ -101,7 +101,7 @@ public class BranchCreator {
     * @return branch object that represents the newly created branch
     * @throws OseeCoreException
     */
-   private Branch initializeBranch(Connection connection, String branchShortName, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
+   private Branch initializeBranch(Connection connection, TransactionId sourceTransactionId, String branchShortName, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
       if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, SELECT_BRANCH_BY_NAME, branchName) > 0) {
@@ -109,8 +109,8 @@ public class BranchCreator {
       }
 
       int branchId = SequenceManager.getNextBranchId();
-      int parentBranchNumber = BranchManager.getSystemRootBranch().getBranchId();
-      int parentTransactionId = BranchManager.getSystemRootBranch().getParentTransactionId();
+      int parentBranchNumber = sourceTransactionId.getBranchId();
+      int parentTransactionId = sourceTransactionId.getTransactionNumber();
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
@@ -122,7 +122,7 @@ public class BranchCreator {
       }
 
       ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchShortName, branchName,
-            parentBranchNumber, 0, associatedArtifactId, branchType.getValue());
+            parentBranchNumber, parentTransactionId, 0, associatedArtifactId, branchType.getValue());
 
       // this needs to be after the insert in case there is an exception on insert
       Branch branch =
