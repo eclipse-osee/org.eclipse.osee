@@ -50,21 +50,6 @@ public class AtsAdminStat extends WorkPageService {
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
 
-      if (AtsPlugin.isAtsIgnoreConfigUpgrades()) {
-         label = toolkit.createLabel(workGroup, "AtsIgnoreConfigUpgrades");
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-      }
-
-      if (AtsPlugin.isAtsDisableEmail()) {
-         label = toolkit.createLabel(workGroup, "AtsDisableEmail");
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-      }
-
-      if (AtsPlugin.isAtsAlwaysEmailMe()) {
-         label = toolkit.createLabel(workGroup, "AtsAlwaysEmailMe");
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-      }
-
       refresh();
    }
 

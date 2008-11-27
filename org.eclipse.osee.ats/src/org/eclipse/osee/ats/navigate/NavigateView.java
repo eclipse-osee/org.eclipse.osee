@@ -89,8 +89,6 @@ public class NavigateView extends ViewPart implements IActionable {
       Label label = new Label(xNavComp, SWT.None);
       String str = getWhoAmI();
       if (AtsPlugin.isAtsAdmin()) str += " - Admin";
-      if (AtsPlugin.isAtsDisableEmail()) str += " - Email Disabled";
-      if (AtsPlugin.isAtsAlwaysEmailMe()) str += " - AtsAlwaysEmailMe";
       if (!str.equals("")) {
          if (AtsPlugin.isAtsAdmin()) {
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));

@@ -107,18 +107,6 @@ public class AtsPlugin extends OseeUiActivator {
       return atsAdminGroup;
    }
 
-   public static boolean isAtsIgnoreConfigUpgrades() {
-      return AtsProperties.isAtsIgnoreConfigUpgrades();
-   }
-
-   public static boolean isAtsDisableEmail() {
-      return AtsProperties.isAtsDisableEmail();
-   }
-
-   public static boolean isAtsAlwaysEmailMe() {
-      return AtsProperties.isAtsAlwaysEmailMe();
-   }
-
    public static Branch getAtsBranch() throws OseeCoreException {
       return BranchManager.getCommonBranch();
    }
