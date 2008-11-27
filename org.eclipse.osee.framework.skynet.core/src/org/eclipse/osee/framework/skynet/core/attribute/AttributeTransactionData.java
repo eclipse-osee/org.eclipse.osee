@@ -56,9 +56,11 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
-      internalAddInsertToBatch(transaction, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),
-            attribute.getAttributeType().getAttrTypeId(), value == null ? SQL3DataType.VARCHAR : value, getGammaId(),
-            uri == null ? SQL3DataType.VARCHAR : uri, getModificationType().getValue());
+      if (getModificationType() != ModificationType.ARTIFACT_DELETED) {
+         internalAddInsertToBatch(transaction, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),
+               attribute.getAttributeType().getAttrTypeId(), value == null ? SQL3DataType.VARCHAR : value,
+               getGammaId(), uri == null ? SQL3DataType.VARCHAR : uri, getModificationType().getValue());
+      }
    }
 
    /* (non-Javadoc)

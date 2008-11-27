@@ -47,10 +47,12 @@ public class RelationTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
-      internalAddInsertToBatch(transaction, 4, INSERT_INTO_RELATION_TABLE, relation.getRelationId(),
-            relation.getRelationType().getRelationTypeId(), relation.getAArtifactId(), relation.getBArtifactId(),
-            relation.getRationale(), relation.getAOrder(), relation.getBOrder(), getGammaId(),
-            getModificationType().getValue());
+      if (getModificationType() != ModificationType.ARTIFACT_DELETED) {
+         internalAddInsertToBatch(transaction, 4, INSERT_INTO_RELATION_TABLE, relation.getRelationId(),
+               relation.getRelationType().getRelationTypeId(), relation.getAArtifactId(), relation.getBArtifactId(),
+               relation.getRationale(), relation.getAOrder(), relation.getBOrder(), getGammaId(),
+               getModificationType().getValue());
+      }
    }
 
    /* (non-Javadoc)
