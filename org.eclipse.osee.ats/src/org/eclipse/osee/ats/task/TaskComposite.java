@@ -209,7 +209,7 @@ public class TaskComposite extends Composite implements IActionable {
       if (iXTaskViewer.isTaskable()) {
 
          item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(AtsPlugin.getInstance().getImage("task.gif"));
+         item.setImage(AtsPlugin.getInstance().getImage("newTask.gif"));
          item.setToolTipText("New Task");
          item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
          item.addSelectionListener(new SelectionAdapter() {
