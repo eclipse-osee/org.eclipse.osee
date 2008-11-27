@@ -21,6 +21,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -66,8 +67,8 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       ChangeView.openViewUpon(branch, null, true);
    }
 
-   public static void open(TransactionId transactionId) {
-      if (transactionId == null) throw new IllegalArgumentException("TransactionId can't be null");
+   public static void open(TransactionId transactionId) throws OseeArgumentException {
+      if (transactionId == null) throw new OseeArgumentException("TransactionId can't be null");
       ChangeView.openViewUpon(null, transactionId, true);
    }
 
