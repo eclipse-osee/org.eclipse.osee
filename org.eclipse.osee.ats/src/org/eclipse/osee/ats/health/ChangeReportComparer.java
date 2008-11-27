@@ -28,13 +28,13 @@ public class ChangeReportComparer {
 		ArrayList<ArrayList<String>> data1List = parse(changeReport1);
 		ArrayList<ArrayList<String>> data2List = parse(changeReport2);
 		
-		if(data1List.size() != data2List.size() && data1List.get(0).size() != data2List.get(0).size() && data1List.get(1).size() != data2List.get(1).size()
-				&& data1List.get(2).size() != data2List.get(2).size()){
+		if(data1List.size() != data2List.size() || data1List.get(0).size() != data2List.get(0).size() || data1List.get(1).size() != data2List.get(1).size()
+				|| data1List.get(2).size() != data2List.get(2).size()){
 			throw new IllegalArgumentException("The change reports must have the same number of items");
 		}
-		
+		try{
 		for(int i = 0; i < data1List.size() ; i++){
-			for(int j = 0; j < data1List.get(i).size(); j++){
+			for(int j = 0; j < data1List.get(i).size() ; j++){
 				if(! data1List.get(i).get(j).equals(data2List.get(i).get(j))){
 					success = false;
 					System.err.println(data1List.get(i).get(j));
@@ -42,6 +42,9 @@ public class ChangeReportComparer {
 					System.err.println("---------------------------------------------------");
 				}
 			}
+		}}
+		catch(Exception ex){
+			ex.getLocalizedMessage();
 		}
 		return success;
 	}
