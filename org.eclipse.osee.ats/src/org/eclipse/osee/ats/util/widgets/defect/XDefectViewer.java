@@ -164,7 +164,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       ToolItem item = null;
 
       newDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      newDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("newTask.gif"));
+      newDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("greenPlus.gif"));
       newDefectItem.setToolTipText("New Defect");
       newDefectItem.addSelectionListener(new SelectionAdapter() {
          @Override

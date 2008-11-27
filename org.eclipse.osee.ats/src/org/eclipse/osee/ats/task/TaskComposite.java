@@ -232,23 +232,25 @@ public class TaskComposite extends Composite implements IActionable {
 
       }
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(AtsPlugin.getInstance().getImage("task.gif"));
-      item.setToolTipText("Open New ATS Task Editor");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               ITaskEditorProvider provider =
-                     ((TaskEditorInput) ((TaskEditor) iXTaskViewer.getEditor()).getEditorInput()).getItaskEditorProvider().copyProvider();
-               provider.setCustomizeData(taskXViewer.getCustomizeMgr().generateCustDataFromTable());
-               provider.setTableLoadOptions(TableLoadOption.NoUI);
-               TaskEditor.open(provider);
-            } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+      if (iXTaskViewer.getEditor() != null && (iXTaskViewer.getEditor() instanceof TaskEditor)) {
+         item = new ToolItem(toolBar, SWT.PUSH);
+         item.setImage(AtsPlugin.getInstance().getImage("task.gif"));
+         item.setToolTipText("Open New ATS Task Editor");
+         item.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               try {
+                  ITaskEditorProvider provider =
+                        ((TaskEditorInput) ((TaskEditor) iXTaskViewer.getEditor()).getEditorInput()).getItaskEditorProvider().copyProvider();
+                  provider.setCustomizeData(taskXViewer.getCustomizeMgr().generateCustDataFromTable());
+                  provider.setTableLoadOptions(TableLoadOption.NoUI);
+                  TaskEditor.open(provider);
+               } catch (OseeCoreException ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+               }
             }
-         }
-      });
+         });
+      }
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(AtsPlugin.getInstance().getImage("taskSelected.gif"));
