@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -69,16 +67,17 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
             baseArtifacts.add(baseArtifact);
             newerArtifacts.add(newerArtifact);
-            
-            if(fileName == null){
-            	if(artifactChangeMap.values().size() == 1){
-            		fileName = baseArtifact != null? baseArtifact.getSafeName() : newerArtifact.getSafeName();
-            	}else{
-                	fileName = baseArtifact != null? baseArtifact.getBranch().getBranchName() : newerArtifact.getBranch().getBranchName();
-            	}
-                variableMap.setValue("fileName", fileName + (new Date()).toString().replaceAll(":", ";") + ".xml");
+
+            if (fileName == null) {
+               if (artifactChangeMap.values().size() == 1) {
+                  fileName = baseArtifact != null ? baseArtifact.getSafeName() : newerArtifact.getSafeName();
+               } else {
+                  fileName =
+                        baseArtifact != null ? baseArtifact.getBranch().getBranchShortName() : newerArtifact.getBranch().getBranchShortName();
+               }
+               variableMap.setValue("fileName", fileName + "_" + (new Date()).toString().replaceAll(":", ";") + ".xml");
             }
-            
+
          } catch (OseeCoreException ex1) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex1);
          }
@@ -89,7 +88,6 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                "base artifacts size: " + baseArtifacts.size() + " must match newer artifacts size: " + newerArtifacts.size() + ".");
       }
 
-      
       RendererManager.diffInJob(baseArtifacts, newerArtifacts, variableMap);
       return null;
    }
