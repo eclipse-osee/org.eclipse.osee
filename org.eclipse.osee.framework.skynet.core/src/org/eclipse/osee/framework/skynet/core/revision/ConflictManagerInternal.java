@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -129,19 +130,21 @@ public class ConflictManagerInternal {
          } catch (TransactionDoesNotExist ex) {
          }
       }
-
-      monitor.startJob(String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getBranchId(),
-            destinationBranch.getBranchId()), 100);
-      monitor.setSubtaskName("Finding Database stored conflicts");
       long totalTime = 0;
-      if (DEBUG) {
-         System.out.println(String.format("\nDiscovering Conflicts based on Source Branch: %d Destination Branch: %d",
-               sourceBranch.getBranchId(), destinationBranch.getBranchId()));
-         totalTime = System.currentTimeMillis();
-      }
+      if (sourceBranch != null && destinationBranch != null) {
+         monitor.startJob(String.format("Loading Merge Manager for Branch %d into Branch %d",
+               sourceBranch.getBranchId(), destinationBranch.getBranchId()), 100);
+         monitor.setSubtaskName("Finding Database stored conflicts");
 
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "\nDiscovering Conflicts based on Source Branch: %d Destination Branch: %d",
+                  sourceBranch.getBranchId(), destinationBranch.getBranchId()));
+            totalTime = System.currentTimeMillis();
+         }
+      }
       if ((sourceBranch == null) || (destinationBranch == null)) {
-         throw new IllegalArgumentException(String.format("Source Branch = %s Destination Branch = %s",
+         throw new OseeArgumentException(String.format("Source Branch = %s Destination Branch = %s",
                sourceBranch == null ? "NULL" : sourceBranch.getBranchId(),
                destinationBranch == null ? "NULL" : destinationBranch.getBranchId()));
       }
