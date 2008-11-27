@@ -50,7 +50,7 @@ public class AttributeToTransactionOperation {
    private void persistAttribute(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException {
       DAOToSQL daoToSql = new DAOToSQL();
       ModificationType modificationType;
-
+      boolean isProviderPersistNeeded = false;
       if (attribute.isInDb()) {
          if (attribute.isDeleted()) {
             if (artifact.isDeleted()) {
@@ -60,6 +60,7 @@ public class AttributeToTransactionOperation {
             }
          } else {
             modificationType = ModificationType.CHANGE;
+            isProviderPersistNeeded = true;
          }
       } else {
          if (attribute.isDeleted()) {
@@ -70,32 +71,15 @@ public class AttributeToTransactionOperation {
             }
          } else {
             modificationType = ModificationType.NEW;
-            attribute.getAttributeDataProvider().persist();
-            daoToSql.setData(attribute.getAttributeDataProvider().getData());
+            isProviderPersistNeeded = true;
          }
          attribute.internalSetAttributeId(getNewAttributeId(attribute));
       }
 
-      //      if (attribute.isDeleted()) {
-      //         if (!attribute.isInDb()) {
-      //            return;
-      //         } else {
-      //            if (artifact.isDeleted()) {
-      //               modificationType = ModificationType.ARTIFACT_DELETED;
-      //            } else {
-      //               modificationType = ModificationType.DELETED;
-      //            }
-      //         }
-      //      } else {
-      //         if (attribute.isInDb()) {
-      //            modificationType = ModificationType.CHANGE;
-      //         } else {
-      //            createNewAttributeMemo(attribute);
-      //            modificationType = ModificationType.NEW;
-      //         }
-      //         attribute.getAttributeDataProvider().persist();
-      //         daoToSql.setData(attribute.getAttributeDataProvider().getData());
-      //      }
+      if (isProviderPersistNeeded) {
+         attribute.getAttributeDataProvider().persist();
+         daoToSql.setData(attribute.getAttributeDataProvider().getData());
+      }
       transaction.addAttribute(attribute, daoToSql.getValue(), daoToSql.getUri(), modificationType);
    }
 
