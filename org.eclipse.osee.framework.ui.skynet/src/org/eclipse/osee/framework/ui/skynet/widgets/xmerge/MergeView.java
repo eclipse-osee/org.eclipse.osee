@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -534,36 +535,41 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          if (memento != null) {
             memento = memento.getChild(INPUT);
             if (memento != null) {
-               Integer commitTransaction = memento.getInteger(COMMIT_NUMBER);
-               if (commitTransaction != null) {
-                  openViewUpon(null, null, null, TransactionIdManager.getTransactionId(commitTransaction), false);
-                  return;
-               }
-               sourceBranchId = memento.getInteger(SOURCE_BRANCH_ID);
-               final Branch sourceBranch = BranchManager.getBranch(sourceBranchId);
-               if (sourceBranch == null) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-                        "Merge View can't init due to invalid source branch id " + sourceBranchId);
-                  xMergeViewer.setLabel("Could not restore this Merge View");
-                  return;
-               }
-               destBranchId = memento.getInteger(DEST_BRANCH_ID);
-               final Branch destBranch = BranchManager.getBranch(destBranchId);
-               if (destBranch == null) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-                        "Merge View can't init due to invalid destination branch id " + sourceBranchId);
-                  xMergeViewer.setLabel("Could not restore this Merge View");
-                  return;
-               }
-               try {
-                  TransactionId transactionId =
-                        TransactionIdManager.getTransactionId(memento.getInteger(TRANSACTION_NUMBER));
-                  openViewUpon(sourceBranch, destBranch, transactionId, null, false);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-                        "Merge View can't init due to invalid transaction id " + transactionId);
-                  xMergeViewer.setLabel("Could not restore this Merge View due to invalid transaction id " + transactionId);
-                  return;
+               if (SkynetViews.isSourceValid(memento)) {
+
+                  Integer commitTransaction = memento.getInteger(COMMIT_NUMBER);
+                  if (commitTransaction != null) {
+                     openViewUpon(null, null, null, TransactionIdManager.getTransactionId(commitTransaction), false);
+                     return;
+                  }
+                  sourceBranchId = memento.getInteger(SOURCE_BRANCH_ID);
+                  final Branch sourceBranch = BranchManager.getBranch(sourceBranchId);
+                  if (sourceBranch == null) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                           "Merge View can't init due to invalid source branch id " + sourceBranchId);
+                     xMergeViewer.setLabel("Could not restore this Merge View");
+                     return;
+                  }
+                  destBranchId = memento.getInteger(DEST_BRANCH_ID);
+                  final Branch destBranch = BranchManager.getBranch(destBranchId);
+                  if (destBranch == null) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                           "Merge View can't init due to invalid destination branch id " + sourceBranchId);
+                     xMergeViewer.setLabel("Could not restore this Merge View");
+                     return;
+                  }
+                  try {
+                     TransactionId transactionId =
+                           TransactionIdManager.getTransactionId(memento.getInteger(TRANSACTION_NUMBER));
+                     openViewUpon(sourceBranch, destBranch, transactionId, null, false);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                           "Merge View can't init due to invalid transaction id " + transactionId);
+                     xMergeViewer.setLabel("Could not restore this Merge View due to invalid transaction id " + transactionId);
+                     return;
+                  }
+               } else {
+                  SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
                }
             }
          }
@@ -571,6 +577,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Merge View error on init", ex);
       }
    }
+
    private static final String INPUT = "input";
    private static final String SOURCE_BRANCH_ID = "sourceBranchId";
    private static final String DEST_BRANCH_ID = "destBranchId";
@@ -586,13 +593,16 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    public void saveState(IMemento memento) {
       super.saveState(memento);
       memento = memento.createChild(INPUT);
-
       if (sourceBranch != null) {
          memento.putInteger(SOURCE_BRANCH_ID, sourceBranch.getBranchId());
          memento.putInteger(DEST_BRANCH_ID, destBranch.getBranchId());
          memento.putInteger(TRANSACTION_NUMBER, transactionId.getTransactionNumber());
-      } else {
+      } else if (commitTrans != null) {
          memento.putInteger(COMMIT_NUMBER, commitTrans.getTransactionNumber());
+      }
+
+      if (sourceBranch != null || commitTrans != null) {
+         SkynetViews.addDatabaseSourceId(memento);
       }
    }
 

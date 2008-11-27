@@ -13,7 +13,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -36,6 +35,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -85,8 +85,8 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
                                  VIEW_ID,
                                  String.valueOf(branch != null ? branch.getBranchId() : transactionId.getTransactionNumber()),
                                  IWorkbenchPage.VIEW_VISIBLE);
-                     
-                	 changeView.explore(branch, transactionId, loadChangeReport);
+
+                     changeView.explore(branch, transactionId, loadChangeReport);
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }
@@ -151,13 +151,13 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       if (xChangeViewer != null) {
          this.branch = branch;
          this.transactionId = transactionId;
-         
+
          if (branch == null) {
             setPartName("Change Report: " + transactionId.getBranch().getBranchShortName() + " - " + transactionId.getComment());
          } else {
             setPartName("Change Report: " + branch.getBranchShortName());
          }
-         
+
          xChangeViewer.setInputData(branch, transactionId, loadChangeReport);
       }
    }
@@ -179,13 +179,14 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    public void saveState(IMemento memento) {
       super.saveState(memento);
       memento = memento.createChild(INPUT);
-
       if (branch != null) {
          memento.putInteger(BRANCH_ID, branch.getBranchId());
-
       }
       if (transactionId != null) {
          memento.putInteger(TRANSACTION_NUMBER, transactionId.getTransactionNumber());
+      }
+      if (branch != null || transactionId != null) {
+         SkynetViews.addDatabaseSourceId(memento);
       }
    }
 
@@ -198,14 +199,18 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
          if (memento != null) {
             memento = memento.getChild(INPUT);
             if (memento != null) {
-               branchId = memento.getInteger(BRANCH_ID);
-               if (branchId != null) {
-                  openViewUpon(BranchManager.getBranch(branchId), null, false);
-               } else {
-                  Integer transactionNumber = memento.getInteger(TRANSACTION_NUMBER);
-                  if (transactionNumber != null && transactionNumber > -1) {
-                     openViewUpon(null, TransactionIdManager.getTransactionId(transactionNumber), false);
+               if (SkynetViews.isSourceValid(memento)) {
+                  branchId = memento.getInteger(BRANCH_ID);
+                  if (branchId != null) {
+                     openViewUpon(BranchManager.getBranch(branchId), null, false);
+                  } else {
+                     Integer transactionNumber = memento.getInteger(TRANSACTION_NUMBER);
+                     if (transactionNumber != null && transactionNumber > -1) {
+                        openViewUpon(null, TransactionIdManager.getTransactionId(transactionNumber), false);
+                     }
                   }
+               } else {
+                  closeView();
                }
             }
          }
@@ -259,15 +264,6 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    private void closeView() {
-      final ChangeView changeView = this;
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         @Override
-         public void run() {
-            getViewSite().getPage().hideView(changeView);
-         }
-      });
+      SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
    }
 }
