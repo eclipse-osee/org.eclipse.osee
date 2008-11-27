@@ -277,10 +277,8 @@ public final class SkynetTransaction extends DbTransaction {
 
       BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getRelationId());
       if (txItem == null) {
-         if (modificationType != ModificationType.ARTIFACT_DELETED) {
-            txItem = new RelationTransactionData(link, modificationType);
-            transactionDataItems.put(RelationTransactionData.class, link.getRelationId(), txItem);
-         }
+         txItem = new RelationTransactionData(link, modificationType);
+         transactionDataItems.put(RelationTransactionData.class, link.getRelationId(), txItem);
       } else {
          updateTxItem(txItem, modificationType);
       }
@@ -295,10 +293,8 @@ public final class SkynetTransaction extends DbTransaction {
       madeChanges = true;
       BaseTransactionData txItem = transactionDataItems.get(AttributeTransactionData.class, attribute.getAttrId());
       if (txItem == null) {
-         if (modificationType != ModificationType.ARTIFACT_DELETED) {
-            txItem = new AttributeTransactionData(attribute, value, uri, modificationType);
-            transactionDataItems.put(AttributeTransactionData.class, attribute.getAttrId(), txItem);
-         }
+         txItem = new AttributeTransactionData(attribute, value, uri, modificationType);
+         transactionDataItems.put(AttributeTransactionData.class, attribute.getAttrId(), txItem);
       } else {
          updateTxItem(txItem, modificationType);
       }

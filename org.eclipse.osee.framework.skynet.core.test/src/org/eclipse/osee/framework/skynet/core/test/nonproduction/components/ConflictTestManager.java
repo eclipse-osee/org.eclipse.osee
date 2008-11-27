@@ -220,8 +220,8 @@ public class ConflictTestManager {
          }
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeName, stringToObject(value.clas, value.sourceValue));
-            destArtifacts[i].persistAttributes();
          }
+         destArtifacts[i].persistAttributesAndRelations();
       }
       // Create the source branch
       sourceBranch = BranchManager.createWorkingBranch(destBranch, null, SOURCE_BRANCH, null);
@@ -342,7 +342,9 @@ public class ConflictTestManager {
             rootArtifact = sourceArtifacts[rootArtifactId];
          }
       }
-      return rootArtifact.addNewChild(ArtifactTypeManager.getType(type), name);
+      Artifact child = rootArtifact.addNewChild(ArtifactTypeManager.getType(type), name);
+      child.persistAttributesAndRelations();
+      return child;
    }
 
    protected static Attribute<?> createAttribute(Artifact artifact, String name, Class<?> clas, String value) throws OseeCoreException {
@@ -508,7 +510,7 @@ public class ConflictTestManager {
                      destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, " "))) {
                   System.err.println("Expected the " + value.attributeName + " attribute to have a value of " + stringToObject(
                         value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
-                        value.attributeName, " ") + " for Artifact " + destArtifacts[i].getArtId() + " " + i);
+                        value.attributeName, " ") + " for Artifact " + destArtifacts[i].getArtId() + " conflict index: " + i);
                   return false;
                }
             }

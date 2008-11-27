@@ -406,7 +406,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       Artifact child = artifactType.makeNewArtifact(branch);
       child.setDescriptiveName(name);
       addChild(child);
-      child.persistAttributesAndRelations();
       return child;
    }
 
