@@ -775,10 +775,6 @@ public class SMAManager {
       return transition(toStateName, toAssignees, persist, null, overrideTransitionCheck, transaction);
    }
 
-   public Result transition(String toStateName, User toAssignee, boolean persist, boolean overrideTransitionCheck, SkynetTransaction transaction) {
-      return transition(toStateName, Arrays.asList(toAssignee), persist, null, overrideTransitionCheck, transaction);
-   }
-
    private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck, SkynetTransaction transaction) {
       try {
          // Validate assignees
