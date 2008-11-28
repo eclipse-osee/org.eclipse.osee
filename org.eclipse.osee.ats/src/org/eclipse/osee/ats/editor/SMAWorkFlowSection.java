@@ -640,12 +640,10 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          // Persist must be done prior and separate from transition 
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         smaMgr.getSma().persistAttributesAndRelations(transaction);
-         transaction.execute();
+         smaMgr.getSma().persistAttributesAndRelations();
 
          // Perform transition separate from persist of previous changes to state machine artifact
-         transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          Result result = smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true, false, transaction);
          transaction.execute();
          if (result.isFalse()) {

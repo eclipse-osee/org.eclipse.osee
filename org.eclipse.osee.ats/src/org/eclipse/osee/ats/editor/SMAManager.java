@@ -455,6 +455,22 @@ public class SMAManager {
 
    public static boolean promptChangeStatus(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
       try {
+         // If task status is being changed, make sure tasks belong to current state
+         for (StateMachineArtifact sma : smas) {
+            if (sma instanceof TaskArtifact) {
+               if (!((TaskArtifact) sma).getWorldViewRelatedToState().equals(
+                     ((TaskArtifact) sma).getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName())) {
+                  AWorkbench.popup(
+                        "ERROR",
+                        String.format(
+                              "Task work must be done in \"Related to State\" of parent workflow for Task titled: \"%s\".\n\nTask work configured to be done in parent's \"%s\" state.\nParent workflow in \"%s\" state.\n\nEither transition parent workflow or change Task's \"Related to State\".",
+                              sma.getDescriptiveName(), ((TaskArtifact) sma).getWorldViewRelatedToState(),
+                              ((TaskArtifact) sma).getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName()));
+                  return false;
+               }
+            }
+         }
+         // Access resolution options if object is task
          List<TaskResOptionDefinition> options = null;
          if (smas.iterator().next() instanceof TaskArtifact) {
             if (((TaskArtifact) smas.iterator().next()).isUsingTaskResolutionOptions()) {
