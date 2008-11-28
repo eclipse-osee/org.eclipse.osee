@@ -195,7 +195,8 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          @Override
          public void run() {
             try {
-               if (SMAManager.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, getSelectedSMAArtifacts(), true)) {
+               if (SMAManager.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, getSelectedSMAArtifacts(), true,
+                     true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
             } catch (OseeCoreException ex) {
@@ -924,7 +925,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   smaMgr.promptChangeVersion(
                         AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
          else if (xCol.equals(WorldXViewerFactory.Notes_Col))
-            modified = smaMgr.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, persist);
+            modified = smaMgr.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, persist, true);
          else if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col))
             modified = smaMgr.promptChangePercentAttribute(ATSAttributes.PERCENT_REWORK_ATTRIBUTE, persist);
          else if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col))
@@ -947,13 +948,13 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          } else if (xCol.equals(WorldXViewerFactory.Release_Date_Col))
             modified = smaMgr.promptChangeReleaseDate();
          else if (xCol.equals(WorldXViewerFactory.Work_Package_Col))
-            modified = smaMgr.promptChangeAttribute(ATSAttributes.WORK_PACKAGE_ATTRIBUTE, persist);
+            modified = smaMgr.promptChangeAttribute(ATSAttributes.WORK_PACKAGE_ATTRIBUTE, persist, false);
          else if (xCol.equals(WorldXViewerFactory.Category_Col))
-            modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY_ATTRIBUTE, persist);
+            modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY_ATTRIBUTE, persist, true);
          else if (xCol.equals(WorldXViewerFactory.Category2_Col))
-            modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY2_ATTRIBUTE, persist);
+            modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY2_ATTRIBUTE, persist, true);
          else if (xCol.equals(WorldXViewerFactory.Category3_Col))
-            modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY3_ATTRIBUTE, persist);
+            modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY3_ATTRIBUTE, persist, true);
          else if (xCol.equals(WorldXViewerFactory.Change_Type_Col))
             modified = smaMgr.promptChangeType(persist);
          else if (xCol.equals(WorldXViewerFactory.Priority_Col)) modified = smaMgr.promptChangePriority(persist);

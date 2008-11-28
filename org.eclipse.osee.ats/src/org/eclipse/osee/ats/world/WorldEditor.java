@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -37,7 +38,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEditor, IAtsMetricsProvider {
+public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEditor, IAtsMetricsProvider, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
    private int mainPageIndex, metricsPageIndex;
    private WorldXWidgetActionPage actionPage;
@@ -203,5 +204,13 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
 
    public WorldComposite getWorldComposite() {
       return actionPage.getWorldComposite();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
+    */
+   @Override
+   public String getActionDescription() {
+      return null;
    }
 }

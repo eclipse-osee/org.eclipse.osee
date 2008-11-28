@@ -570,25 +570,25 @@ public class SMAManager {
       return false;
    }
 
-   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Collection<? extends StateMachineArtifact> smas, boolean persist, boolean multiLine) throws OseeCoreException {
       return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(), null,
-            smas, persist);
+            smas, persist, multiLine);
    }
 
-   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Artifact sma, boolean persist) {
+   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Artifact sma, boolean persist, boolean multiLine) {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(new Artifact[] {sma}), persist);
+               Arrays.asList(new Artifact[] {sma}), persist, multiLine);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return false;
    }
 
-   public boolean promptChangeAttribute(ATSAttributes atsAttr, final boolean persist) {
+   public boolean promptChangeAttribute(ATSAttributes atsAttr, final boolean persist, boolean multiLine) {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(sma), persist);
+               Arrays.asList(sma), persist, multiLine);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }

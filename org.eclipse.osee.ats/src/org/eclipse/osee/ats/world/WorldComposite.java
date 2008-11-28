@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -437,6 +438,9 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          actionToToolItem(toolBar, newWorldEditorSelected);
          new ToolItem(toolBar, SWT.SEPARATOR);
          actionToToolItem(toolBar, new NewAction());
+
+         OseeAts.addButtonToEditorToolBar(worldEditor, AtsPlugin.getInstance(), toolBar, WorldEditor.EDITOR_ID,
+               "ATS World");
          new ToolItem(toolBar, SWT.SEPARATOR);
 
          createToolBarPulldown(toolBar, toolBar.getParent());

@@ -157,7 +157,7 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                SMAManager taskSmaMgr = new SMAManager(getSelectedTaskArtifact());
-               boolean success = taskSmaMgr.promptChangeAttribute(ATSAttributes.TITLE_ATTRIBUTE, false);
+               boolean success = taskSmaMgr.promptChangeAttribute(ATSAttributes.TITLE_ATTRIBUTE, false, false);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -231,7 +231,7 @@ public class TaskXViewer extends WorldXViewer {
             try {
                boolean success =
                      SMAManager.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE,
-                           getSelectedTaskArtifacts(), false);
+                           getSelectedTaskArtifacts(), false, true);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -248,7 +248,7 @@ public class TaskXViewer extends WorldXViewer {
             try {
                boolean success =
                      SMAManager.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, getSelectedTaskArtifacts(),
-                           false);
+                           false, true);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -330,7 +330,8 @@ public class TaskXViewer extends WorldXViewer {
             update(getSelectedTaskArtifacts().toArray(), null);
             return true;
          }
-      } else if (SMAManager.promptChangeAttribute(ATSAttributes.RESOLUTION_ATTRIBUTE, getSelectedTaskArtifacts(), false)) {
+      } else if (SMAManager.promptChangeAttribute(ATSAttributes.RESOLUTION_ATTRIBUTE, getSelectedTaskArtifacts(),
+            false, false)) {
          editor.onDirtied();
          update(getSelectedTaskArtifacts().toArray(), null);
          return true;
@@ -351,9 +352,9 @@ public class TaskXViewer extends WorldXViewer {
          if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified = taskSmaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
-            modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.TITLE_ATTRIBUTE, false);
+            modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.TITLE_ATTRIBUTE, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
-            modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false);
+            modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             modified = taskSmaMgr.promptChangeAssignees();
          } else if (isUsingTaskResolutionOptions() && (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col))) {
