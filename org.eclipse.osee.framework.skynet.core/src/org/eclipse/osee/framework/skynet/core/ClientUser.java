@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
@@ -17,12 +18,12 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 
@@ -81,9 +82,8 @@ final class ClientUser {
       } else {
          if (isGuestNotificationAllowed && newUser.getName().equals(SystemUser.Guest.getName())) {
             isGuestNotificationAllowed = false;
-            AWorkbench.popup(
-                  "OSEE Guest Login",
-                  "You are logged into OSEE as \"Guest\".\n\nIf you do not expect to be logged in as Guest, please report this immediately.");
+            OseeLog.log(SkynetActivator.class, Level.INFO,
+                  "You are logged into OSEE as \"Guest\".  If this is unexpected notify your OSEE admin");
          }
       }
       if (ClientSessionManager.isSessionValid()) {

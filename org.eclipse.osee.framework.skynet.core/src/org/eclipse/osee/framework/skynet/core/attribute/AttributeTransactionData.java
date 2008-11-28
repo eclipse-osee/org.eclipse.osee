@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
@@ -32,14 +31,12 @@ public class AttributeTransactionData extends BaseTransactionData {
          "INSERT INTO osee_attribute (art_id, attr_id, attr_type_id, value, gamma_id, uri, modification_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private final Attribute<?> attribute;
-   private final String value;
-   private final String uri;
+   private final DAOToSQL daoToSql;
 
-   public AttributeTransactionData(Attribute<?> attribute, String value, String uri, ModificationType modificationType) throws OseeDataStoreException {
+   public AttributeTransactionData(Attribute<?> attribute, ModificationType modificationType) throws OseeDataStoreException {
       super(attribute.getAttrId(), modificationType);
       this.attribute = attribute;
-      this.value = value;
-      this.uri = uri;
+      this.daoToSql = new DAOToSQL();
    }
 
    /* (non-Javadoc)
@@ -57,9 +54,13 @@ public class AttributeTransactionData extends BaseTransactionData {
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
       if (getModificationType() != ModificationType.ARTIFACT_DELETED) {
+         if (getModificationType() == ModificationType.CHANGE || getModificationType() == ModificationType.NEW) {
+            attribute.getAttributeDataProvider().persist();
+            daoToSql.setData(attribute.getAttributeDataProvider().getData());
+         }
          internalAddInsertToBatch(transaction, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),
-               attribute.getAttributeType().getAttrTypeId(), value == null ? SQL3DataType.VARCHAR : value,
-               getGammaId(), uri == null ? SQL3DataType.VARCHAR : uri, getModificationType().getValue());
+               attribute.getAttributeType().getAttrTypeId(), daoToSql.getValue(), getGammaId(), daoToSql.getUri(),
+               getModificationType().getValue());
       }
    }
 
@@ -83,9 +84,9 @@ public class AttributeTransactionData extends BaseTransactionData {
     */
    @Override
    protected void internalOnRollBack() throws OseeCoreException {
-      if (Strings.isValid(uri)) {
+      if (Strings.isValid(daoToSql.getUri())) {
          try {
-            HttpProcessor.delete(AttributeURL.getDeleteURL(uri));
+            HttpProcessor.delete(AttributeURL.getDeleteURL(daoToSql.getUri()));
          } catch (Exception ex) {
             throw new OseeWrappedException(ex);
          }
@@ -104,5 +105,44 @@ public class AttributeTransactionData extends BaseTransactionData {
          newGammaId = SequenceManager.getNextGammaId();
       }
       return newGammaId;
+   }
+
+   private final class DAOToSQL {
+      private String uri;
+      private String value;
+
+      public DAOToSQL(Object... data) {
+         if (data != null) {
+            setData(data);
+         } else {
+            uri = null;
+            value = null;
+         }
+      }
+
+      public void setData(Object... data) {
+         this.uri = getItemAt(1, data);
+         this.value = getItemAt(0, data);
+      }
+
+      private String getItemAt(int index, Object... data) {
+         String toReturn = null;
+         if (data != null && data.length > index) {
+            Object obj = data[index];
+            if (obj != null) {
+               toReturn = obj.toString();
+            }
+         }
+         return toReturn;
+      }
+
+      public String getUri() {
+         return uri != null ? uri : "";
+      }
+
+      public String getValue() {
+         return value != null ? value : "";
+      }
+
    }
 }

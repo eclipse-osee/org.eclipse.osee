@@ -16,6 +16,8 @@ import java.sql.Connection;
 import java.util.Arrays;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
@@ -223,7 +225,7 @@ public abstract class Attribute<T> {
       this.gammaId = gammaId;
    }
 
-   void internalSetAttributeId(int attrId) {
+   public void internalSetAttributeId(int attrId) {
       this.attrId = attrId;
    }
 
@@ -250,5 +252,16 @@ public abstract class Attribute<T> {
          }
       };
       dbTransaction.execute();
+   }
+
+   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, Object... data) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
+      attributeType = AttributeTypeManager.getType(attributeType.getName());
+
+      Attribute<?> attribute = artifact.createAttribute(attributeType, false);
+      attribute.getAttributeDataProvider().loadData(data);
+      attribute.internalSetAttributeId(attributeId);
+      attribute.internalSetGammaId(gammaId);
+      return attribute;
    }
 }

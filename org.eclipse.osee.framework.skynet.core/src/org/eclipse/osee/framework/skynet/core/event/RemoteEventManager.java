@@ -66,7 +66,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -445,13 +444,11 @@ public class RemoteEventManager implements IServiceLookupListener {
                      }
                      if (attributeNeedsCreation) {
                         Attribute<?> attribute =
-                              AttributeToTransactionOperation.initializeAttribute(artifact,
-                                    AttributeTypeManager.getType(skynetAttributeChange.getTypeId()).getAttrTypeId(),
+                              Attribute.initializeAttribute(artifact, AttributeTypeManager.getType(
+                                    skynetAttributeChange.getTypeId()).getAttrTypeId(),
                                     skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
                                     skynetAttributeChange.getData());
-                        if (attribute != null) {
-                           attribute.setNotDirty();
-                        }
+                        attribute.setNotDirty();
                      }
                   }
                }

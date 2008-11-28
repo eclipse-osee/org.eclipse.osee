@@ -1592,4 +1592,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public User getLastModifiedBy() throws OseeCoreException {
       return UserManager.getUserByArtId(transactionId.getAuthorArtId());
    }
+
+   void meetMinimumAttributeCounts(boolean isNewArtifact) throws OseeCoreException {
+      for (AttributeType attributeType : getAttributeTypes()) {
+         int missingCount = attributeType.getMinOccurrences() - getAttributeCount(attributeType.getName());
+         for (int i = 0; i < missingCount; i++) {
+            Attribute<?> attribute = createAttribute(attributeType, true);
+            if (!isNewArtifact) {
+               attribute.setNotDirty();
+               OseeLog.log(SkynetActivator.class, Level.FINER, String.format(
+                     "artId [%d] - an attribute of type %s was created", getArtId(), attributeType.toString()));
+            }
+         }
+      }
+   }
 }

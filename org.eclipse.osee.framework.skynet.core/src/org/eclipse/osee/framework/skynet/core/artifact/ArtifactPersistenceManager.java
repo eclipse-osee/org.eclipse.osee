@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -357,15 +356,14 @@ public class ArtifactPersistenceManager {
                ModificationType.DELETED.getValue(), artifact.getTransactionNumber(), artifact.getBranch().getBranchId());
 
          while (chStmt.next()) {
-            AttributeToTransactionOperation.initializeAttribute(artifact, chStmt.getInt("attr_type_id"),
-                  chStmt.getInt("attr_id"), chStmt.getInt("gamma_id"), chStmt.getString("value"),
-                  chStmt.getString("uri"));
+            Attribute.initializeAttribute(artifact, chStmt.getInt("attr_type_id"), chStmt.getInt("attr_id"),
+                  chStmt.getInt("gamma_id"), chStmt.getString("value"), chStmt.getString("uri"));
          }
       } finally {
          chStmt.close();
       }
 
-      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
+      artifact.meetMinimumAttributeCounts(false);
    }
 
    /**

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 public abstract class ArtifactFactory {
@@ -54,7 +53,7 @@ public abstract class ArtifactFactory {
       if (earlyArtifactInitialization != null) {
          earlyArtifactInitialization.run(artifact);
       }
-      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, true);
+      artifact.meetMinimumAttributeCounts(true);
       ArtifactCache.cache(artifact);
       artifact.setLinksLoaded();
       artifact.onBirth();

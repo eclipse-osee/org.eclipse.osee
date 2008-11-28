@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -345,8 +345,8 @@ public final class ArtifactLoader {
       }
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(artifacts.size() * 8,
-               ClientSessionManager.getSQL(OseeSql.Load.SELECT_RELATIONS), queryId);
+         chStmt.runPreparedQuery(artifacts.size() * 8, ClientSessionManager.getSQL(OseeSql.Load.SELECT_RELATIONS),
+               queryId);
          while (chStmt.next()) {
             int relationId = chStmt.getInt("rel_link_id");
             int aArtifactId = chStmt.getInt("a_art_id");
@@ -409,7 +409,7 @@ public final class ArtifactLoader {
             if (branchId != previousBranchId || artifactId != previousArtifactId) {
                if (artifact != null) { // exclude the first pass because there is no previous artifact
                   // meet minimum attributes for the previous artifact since its existing attributes have already been loaded
-                  AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
+                  artifact.meetMinimumAttributeCounts(false);
                   ArtifactCache.cachePostAttributeLoad(artifact);
                }
 
@@ -429,7 +429,7 @@ public final class ArtifactLoader {
 
             // if a different attribute than the previous iteration and its attribute had not already been loaded and this attribute is not deleted
             if ((attrId != previousAttrId || branchId != previousBranchId) && artifact != null && chStmt.getInt("mod_type") != ModificationType.DELETED.getValue()) {
-               AttributeToTransactionOperation.initializeAttribute(artifact, chStmt.getInt("attr_type_id"), attrId,
+               Attribute.initializeAttribute(artifact, chStmt.getInt("attr_type_id"), attrId,
                      chStmt.getInt("gamma_id"), chStmt.getString("value"), chStmt.getString("uri"));
             }
             previousArtifactId = artifactId;

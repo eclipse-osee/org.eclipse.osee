@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -58,6 +58,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 public final class SkynetTransaction extends DbTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
          "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
+   private static final String GET_EXISTING_ATTRIBUTE_IDS =
+         "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id <> ?";
 
    private TransactionId transactionId;
 
@@ -221,8 +223,11 @@ public final class SkynetTransaction extends DbTransaction {
       addArtifactHelper(artifact, modificationType);
 
       // Add Attributes to Transaction
-      AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, this);
-      operation.execute();
+      for (Attribute<?> attribute : artifact.internalGetAttributes()) {
+         if (attribute != null && attribute.isDirty()) {
+            addAttribute(artifact, attribute);
+         }
+      }
 
       // Kick Local Event
       addArtifactModifiedEvent("persistArtifact()", modificationType, artifact);
@@ -237,6 +242,58 @@ public final class SkynetTransaction extends DbTransaction {
          updateTxItem(txItem, modificationType);
       }
 
+   }
+
+   private void addAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
+      ModificationType modificationType;
+      if (attribute.isDeleted()) {
+         if (artifact.isDeleted()) {
+            modificationType = ModificationType.ARTIFACT_DELETED;
+         } else {
+            modificationType = ModificationType.DELETED;
+         }
+      } else {
+         if (attribute.isInDb()) {
+            modificationType = ModificationType.CHANGE;
+         } else {
+            modificationType = ModificationType.NEW;
+         }
+      }
+
+      if (!attribute.isInDb()) {
+         attribute.internalSetAttributeId(getNewAttributeId(artifact, attribute));
+      }
+
+      BaseTransactionData txItem = transactionDataItems.get(AttributeTransactionData.class, attribute.getAttrId());
+      if (txItem == null) {
+         txItem = new AttributeTransactionData(attribute, modificationType);
+         transactionDataItems.put(AttributeTransactionData.class, attribute.getAttrId(), txItem);
+      } else {
+         updateTxItem(txItem, modificationType);
+      }
+   }
+
+   private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      AttributeType attributeType = attribute.getAttributeType();
+      int attrId = -1;
+      // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch 
+      if (attributeType.getMaxOccurrences() == 1) {
+         try {
+            chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getAttrTypeId(), artifact.getArtId(),
+                  artifact.getBranch().getBranchId());
+
+            if (chStmt.next()) {
+               attrId = chStmt.getInt("attr_id");
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
+      if (attrId < 1) {
+         attrId = SequenceManager.getNextAttributeId();
+      }
+      return attrId;
    }
 
    public void addRelation(RelationLink link) throws OseeCoreException {
@@ -287,17 +344,6 @@ public final class SkynetTransaction extends DbTransaction {
 
       xModifiedEvents.add(new RelationModifiedEvent(new Sender("RelationManager"), relationModType, link,
             link.getBranch(), link.getRelationType().getTypeName()));
-   }
-
-   public void addAttribute(Attribute<?> attribute, String value, String uri, ModificationType modificationType) throws OseeCoreException {
-      madeChanges = true;
-      BaseTransactionData txItem = transactionDataItems.get(AttributeTransactionData.class, attribute.getAttrId());
-      if (txItem == null) {
-         txItem = new AttributeTransactionData(attribute, value, uri, modificationType);
-         transactionDataItems.put(AttributeTransactionData.class, attribute.getAttrId(), txItem);
-      } else {
-         updateTxItem(txItem, modificationType);
-      }
    }
 
    boolean isInTransaction(Class<? extends BaseTransactionData> clazz, int id) {
