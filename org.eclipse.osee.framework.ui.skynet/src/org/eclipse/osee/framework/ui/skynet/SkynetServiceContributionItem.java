@@ -65,17 +65,15 @@ public class SkynetServiceContributionItem extends OseeContributionItem implemen
     */
    @Override
    public void handleRemoteEventManagerEvent(Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
-      if (remoteEventServiceEventType == RemoteEventServiceEventType.Connected || remoteEventServiceEventType == RemoteEventServiceEventType.DisConnected) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            @Override
-            public void run() {
-               updateStatus(remoteEventServiceEventType == RemoteEventServiceEventType.Connected);
-            }
-         });
-      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            updateStatus(remoteEventServiceEventType == RemoteEventServiceEventType.Connected);
+         }
+      });
    }
 
    /* (non-Javadoc)
