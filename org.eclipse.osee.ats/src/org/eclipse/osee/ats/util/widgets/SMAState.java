@@ -167,7 +167,7 @@ public class SMAState {
          if (!m.group(4).equals("")) percentComplete = new Integer(m.group(4)).intValue();
          assignees = UsersByIds.getUsers(m.group(2));
       } else
-         throw new IllegalArgumentException("Can't unpack state data => " + xml);
+         throw new OseeArgumentException("Can't unpack state data => " + xml);
    }
 
    /**
