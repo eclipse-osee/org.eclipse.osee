@@ -99,7 +99,7 @@ public class AttributeCellModifier implements ICellModifier {
             dateValue.setValue((Date) object);
             return dateValue;
          } else {
-            stringValue.setValue(attribute.getDisplayableString());
+            stringValue.setValue(attribute.getDisplayableString() != null ? attribute.getDisplayableString() : "" );
             return stringValue;
          }
       } catch (OseeCoreException ex) {
