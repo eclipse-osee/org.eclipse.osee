@@ -254,8 +254,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          setTitleImage(smaMgr.getSma().getImage());
 
          // Create WorkFlow tab
-         workFlowTab = new SMAWorkFlowTab(smaMgr);
-         workFlowPageIndex = addPage(workFlowTab);
+         try {
+            workFlowTab = new SMAWorkFlowTab(smaMgr);
+            workFlowPageIndex = addPage(workFlowTab);
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
 
          // Create Tasks tab
          if (smaMgr.showTaskTab()) {
@@ -276,106 +280,130 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       enableGlobalPrint();
    }
 
-   private void createHistoryTab() throws OseeCoreException {
-      Composite composite = AtsLib.createCommonPageComposite(getContainer());
-      createToolBar(composite);
-      historyComposite = new SMAHistoryComposite(smaMgr, composite, SWT.NONE);
-      historyPageIndex = addPage(composite);
-      setPageText(historyPageIndex, "History");
+   private void createHistoryTab() {
+      try {
+         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         createToolBar(composite);
+         historyComposite = new SMAHistoryComposite(smaMgr, composite, SWT.NONE);
+         historyPageIndex = addPage(composite);
+         setPageText(historyPageIndex, "History");
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
-   private void createTaskTab() throws OseeCoreException {
-      Composite composite = AtsLib.createCommonPageComposite(getContainer());
-      ToolBar toolBar = createToolBar(composite);
-      taskComposite = new SMATaskComposite(this, composite, SWT.NONE, toolBar);
-      taskPageIndex = addPage(composite);
-      setPageText(taskPageIndex, "Tasks");
+   private void createTaskTab() {
+      try {
+         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         ToolBar toolBar = createToolBar(composite);
+         taskComposite = new SMATaskComposite(this, composite, SWT.NONE, toolBar);
+         taskPageIndex = addPage(composite);
+         setPageText(taskPageIndex, "Tasks");
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    private void createDetailsTab() {
-      Composite composite = AtsLib.createCommonPageComposite(getContainer());
-      createToolBar(composite);
-      new DetailsBrowserComposite(smaMgr.getSma(), composite, SWT.NONE, null);
-      detailsPageIndex = addPage(composite);
-      setPageText(detailsPageIndex, "Details");
+      try {
+         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         createToolBar(composite);
+         new DetailsBrowserComposite(smaMgr.getSma(), composite, SWT.NONE, null);
+         detailsPageIndex = addPage(composite);
+         setPageText(detailsPageIndex, "Details");
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    private void createMetricsTab() {
-      Composite composite = AtsLib.createCommonPageComposite(getContainer());
-      createToolBar(composite);
-      metricsComposite = new AtsMetricsComposite(this, composite, SWT.NONE);
-      metricsPageIndex = addPage(composite);
-      setPageText(metricsPageIndex, "Metrics");
+      try {
+         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         createToolBar(composite);
+         metricsComposite = new AtsMetricsComposite(this, composite, SWT.NONE);
+         metricsPageIndex = addPage(composite);
+         setPageText(metricsPageIndex, "Metrics");
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
 
    }
 
    private void createAttributesTab() {
-      if (!AtsPlugin.isAtsAdmin()) return;
+      try {
+         if (!AtsPlugin.isAtsAdmin()) return;
 
-      // Create Attributes tab
-      Composite composite = AtsLib.createCommonPageComposite(getContainer());
-      ToolBar toolBar = createToolBar(composite);
+         // Create Attributes tab
+         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         ToolBar toolBar = createToolBar(composite);
 
-      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("save.gif"));
-      item.setToolTipText("Save attributes changes only");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               smaMgr.getSma().persistAttributes();
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+         ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+         item.setImage(SkynetGuiPlugin.getInstance().getImage("save.gif"));
+         item.setToolTipText("Save attributes changes only");
+         item.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               try {
+                  smaMgr.getSma().persistAttributes();
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+               }
             }
-         }
-      });
+         });
 
-      Label label = new Label(composite, SWT.NONE);
-      label.setText("  NOTE: Changes made on this page MUST be saved through save icon on this page");
-      label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         Label label = new Label(composite, SWT.NONE);
+         label.setText("  NOTE: Changes made on this page MUST be saved through save icon on this page");
+         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
-      attributesComposite = new AttributesComposite(this, composite, SWT.NONE, smaMgr.getSma());
-      attributesPageIndex = addPage(composite);
-      setPageText(attributesPageIndex, "Attributes");
+         attributesComposite = new AttributesComposite(this, composite, SWT.NONE, smaMgr.getSma());
+         attributesPageIndex = addPage(composite);
+         setPageText(attributesPageIndex, "Attributes");
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    private void createRelationsTab() {
-      // Create Relations tab
-      Composite composite = AtsLib.createCommonPageComposite(getContainer());
-      ToolBar toolBar = createToolBar(composite);
+      try {
+         // Create Relations tab
+         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         ToolBar toolBar = createToolBar(composite);
 
-      if (AtsPlugin.isAtsAdmin()) {
-         final ToolItem showAllRelationsItem = new ToolItem(toolBar, SWT.CHECK);
-         showAllRelationsItem.setImage(AtsPlugin.getInstance().getImage("relate.gif"));
-         showAllRelationsItem.setToolTipText("Shows all relations - AtsAdmin only");
-         showAllRelationsItem.addSelectionListener(new SelectionAdapter() {
+         if (AtsPlugin.isAtsAdmin()) {
+            final ToolItem showAllRelationsItem = new ToolItem(toolBar, SWT.CHECK);
+            showAllRelationsItem.setImage(AtsPlugin.getInstance().getImage("relate.gif"));
+            showAllRelationsItem.setToolTipText("Shows all relations - AtsAdmin only");
+            showAllRelationsItem.addSelectionListener(new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  if (showAllRelationsItem.getSelection()) {
+                     relationsComposite.getTreeViewer().removeFilter(userRelationsFilter);
+                     relationsComposite.refreshArtifact(smaMgr.getSma());
+                  } else {
+                     relationsComposite.getTreeViewer().addFilter(userRelationsFilter);
+                  }
+                  relationsComposite.refresh();
+               }
+            });
+         }
+
+         ToolItem item = new ToolItem(toolBar, SWT.CHECK);
+         item.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
+         item.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-               if (showAllRelationsItem.getSelection()) {
-                  relationsComposite.getTreeViewer().removeFilter(userRelationsFilter);
-                  relationsComposite.refreshArtifact(smaMgr.getSma());
-               } else {
-                  relationsComposite.getTreeViewer().addFilter(userRelationsFilter);
-               }
-               relationsComposite.refresh();
+               relationsComposite.refreshArtifact(smaMgr.getSma());
             }
          });
+
+         relationsComposite = new RelationsComposite(this, composite, SWT.NONE, smaMgr.getSma());
+         relationPageIndex = addPage(composite);
+         setPageText(relationPageIndex, "Relations");
+         // Don't allow users to see all relations
+         relationsComposite.getTreeViewer().addFilter(userRelationsFilter);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-
-      ToolItem item = new ToolItem(toolBar, SWT.CHECK);
-      item.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            relationsComposite.refreshArtifact(smaMgr.getSma());
-         }
-      });
-
-      relationsComposite = new RelationsComposite(this, composite, SWT.NONE, smaMgr.getSma());
-      relationPageIndex = addPage(composite);
-      setPageText(relationPageIndex, "Relations");
-      // Don't allow users to see all relations
-      relationsComposite.getTreeViewer().addFilter(userRelationsFilter);
 
    }
 
