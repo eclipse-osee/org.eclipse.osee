@@ -65,6 +65,12 @@
          </perspectiveExtension>
       </extension>
       <extension
+            point="org.eclipse.help.toc">
+         <toc
+               file="reference/toc.xml"
+               primary="true"/>
+      </extension>
+      <extension
             id="PublishSrs"
             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
          <Operation className="org.eclipse.osee.define.blam.operation.PublishSrs"/>
@@ -101,12 +107,6 @@
             className="org.eclipse.osee.define.blam.operation.PublishRequirements">
       </Operation>
    </extension>
-      <extension
-            point="org.eclipse.help.toc">
-         <toc
-               file="reference/toc.xml"
-               primary="true"/>
-      </extension>
    <extension
       id="org.eclipse.osee.ats"
       name="OSEE"
