@@ -74,21 +74,21 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX, artifacts, persist);
+      return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX, artifacts, persist, false);
    }
 
    public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX, Arrays.asList(artifact),
-            persist);
+            persist, false);
    }
 
    public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, VALID_PERCENT_REG_EX, Arrays.asList(artifact),
-            persist);
+            persist, false);
    }
 
    public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, VALID_PERCENT_REG_EX, artifacts, persist);
+      return promptChangeStringAttribute(attributeName, displayName, VALID_PERCENT_REG_EX, artifacts, persist, false);
    }
 
    public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
@@ -96,15 +96,15 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, VALID_FLOAT_REG_EX, smas, persist);
+      return promptChangeStringAttribute(attributeName, displayName, VALID_FLOAT_REG_EX, smas, persist, false);
    }
 
    public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, null, Arrays.asList(artifact), persist);
+      return promptChangeStringAttribute(attributeName, displayName, null, Arrays.asList(artifact), persist, true);
    }
 
    public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, null, smas, persist);
+      return promptChangeStringAttribute(attributeName, displayName, null, smas, persist, true);
    }
 
    public static boolean promptChangeDate(String attributeName, String displayName, Artifact artifact, boolean persist) throws Exception {
@@ -166,11 +166,11 @@ public class ArtifactPromptChange {
       return true;
    }
 
-   public static boolean promptChangeStringAttribute(String attributeName, String displayName, String validationRegEx, final Collection<? extends Artifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeStringAttribute(String attributeName, String displayName, String validationRegEx, final Collection<? extends Artifact> smas, boolean persist, boolean multiLine) throws OseeCoreException {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
-      ed.setFillVertically(true);
+      ed.setFillVertically(multiLine);
       if (smas.size() == 1) {
          try {
             Object obj = smas.iterator().next().getSoleAttributeValue(attributeName);
