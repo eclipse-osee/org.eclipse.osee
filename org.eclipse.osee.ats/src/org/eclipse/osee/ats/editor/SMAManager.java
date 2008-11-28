@@ -685,23 +685,23 @@ public class SMAManager {
       return sma.getWorkFlowDefinition();
    }
 
-   public boolean isCompleted() {
+   public boolean isCompleted() throws OseeCoreException {
       return (stateMgr.getCurrentStateName().equals(DefaultTeamState.Completed.name()));
    }
 
-   public boolean isCancelled() {
+   public boolean isCancelled() throws OseeCoreException {
       return (stateMgr.getCurrentStateName().equals(DefaultTeamState.Cancelled.name()));
    }
 
-   public boolean isCancelledOrCompleted() {
+   public boolean isCancelledOrCompleted() throws OseeCoreException {
       return isCompleted() || isCancelled();
    }
 
-   public boolean isCurrentSectionExpanded(String stateName) {
+   public boolean isCurrentSectionExpanded(String stateName) throws OseeCoreException {
       return sma.isCurrentSectionExpanded(stateName);
    }
 
-   public boolean isCurrentState(String stateName) {
+   public boolean isCurrentState(String stateName) throws OseeCoreException {
       return stateName.equals(stateMgr.getCurrentStateName());
    }
 
@@ -739,7 +739,7 @@ public class SMAManager {
       return sb.toString().replaceFirst(SEPERATOR + "$", "");
    }
 
-   public String getAssigneesWasIsStr() {
+   public String getAssigneesWasIsStr() throws OseeCoreException {
       if (isCompleted() || isCancelled()) return "(" + Artifacts.toString("; ",
             stateMgr.getAssignees(TaskStates.InWork.name())) + ")";
       return Artifacts.toString("; ", stateMgr.getAssignees());
@@ -758,12 +758,13 @@ public class SMAManager {
 
    /**
     * @return true if SMA is allowed to have tasks
+    * @throws OseeCoreException
     */
-   public boolean isTaskable() {
+   public boolean isTaskable() throws OseeCoreException {
       return sma.isTaskable();
    }
 
-   public boolean showTaskTab() {
+   public boolean showTaskTab() throws OseeCoreException {
       return sma.showTaskTab();
    }
 

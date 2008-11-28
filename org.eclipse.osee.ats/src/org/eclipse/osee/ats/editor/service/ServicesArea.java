@@ -162,7 +162,7 @@ public class ServicesArea {
       }
    }
 
-   private void createSidebarServicesArea(Composite comp, String category, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+   private void createSidebarServicesArea(Composite comp, String category, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
 
       // Determine services that are in this category and confirm that they should be displayed
       List<WorkPageService> displayServices = new ArrayList<WorkPageService>();

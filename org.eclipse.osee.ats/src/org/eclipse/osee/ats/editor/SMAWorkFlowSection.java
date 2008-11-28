@@ -308,27 +308,27 @@ public class SMAWorkFlowSection extends SectionPart {
    public void refresh() {
       super.refresh();
       if (isEditable) {
-         if (currentAssigneesLabel != null && !currentAssigneesLabel.isDisposed()) {
-            currentAssigneesLabel.setText(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
-            currentAssigneesLabel.getParent().layout();
-         }
-         if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
-            WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
-            if (toWorkPage == null)
-               transitionAssigneesLabel.setText("");
-            else
-               try {
+         try {
+            if (currentAssigneesLabel != null && !currentAssigneesLabel.isDisposed()) {
+               currentAssigneesLabel.setText(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
+               currentAssigneesLabel.getParent().layout();
+            }
+            if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
+               WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
+               if (toWorkPage == null)
+                  transitionAssigneesLabel.setText("");
+               else
                   transitionAssigneesLabel.setText(smaMgr.getTransitionAssigneesStr());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex.toString(), ex);
-               }
-            transitionAssigneesLabel.getParent().layout();
+               transitionAssigneesLabel.getParent().layout();
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex.toString(), ex);
          }
       }
       refreshStateServices();
    }
 
-   private void createCurrentPageHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) {
+   private void createCurrentPageHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
       Composite comp = toolkit.createContainer(parent, 3);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 

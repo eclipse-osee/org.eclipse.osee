@@ -280,7 +280,7 @@ public class SMAMetrics {
       return percentCompleteByTeamPercents;
    }
 
-   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() {
+   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() throws OseeCoreException {
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (TeamWorkFlowArtifact team : getTeamArts()) {
          if (team.getSmaMgr().isCancelledOrCompleted()) {
@@ -290,14 +290,14 @@ public class SMAMetrics {
       return teams;
    }
 
-   public double getPercentCompleteByTeamWorkflow() {
+   public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
       if (getTeamArts().size() == 0) return 0;
       double completed = getCompletedTeamWorkflows().size();
       if (completed == 0) return 0;
       return completed / getTeamArts().size() * 100;
    }
 
-   public Collection<TaskArtifact> getCompletedTaskWorkflows() {
+   public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
       for (TaskArtifact team : getTaskArts()) {
          if (team.getSmaMgr().isCancelledOrCompleted()) {
@@ -307,7 +307,7 @@ public class SMAMetrics {
       return tasks;
    }
 
-   public double getPercentCompleteByTaskWorkflow() {
+   public double getPercentCompleteByTaskWorkflow() throws OseeCoreException {
       if (getTaskArts().size() == 0) return 0;
       double completed = getCompletedTaskWorkflows().size();
       if (completed == 0) return 0;

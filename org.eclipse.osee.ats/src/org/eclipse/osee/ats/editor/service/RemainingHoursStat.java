@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -39,7 +40,7 @@ public class RemainingHoursStat extends WorkPageService {
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public boolean isShowSidebarService(AtsWorkPage page) {
+   public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
       return isCurrentNonCompleteCancelledState(page);
    }
 
@@ -47,7 +48,7 @@ public class RemainingHoursStat extends WorkPageService {
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
    @Override
-   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
       label = toolkit.createLabel(workGroup, "", SWT.NONE);
       label.setToolTipText(WorldXViewerFactory.Remaining_Hours_Col.getDescription());
       refresh();

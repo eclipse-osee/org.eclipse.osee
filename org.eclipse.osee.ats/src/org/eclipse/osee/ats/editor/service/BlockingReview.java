@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -37,7 +38,7 @@ public class BlockingReview extends WorkPageService {
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public boolean isShowSidebarService(AtsWorkPage page) {
+   public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
       return AtsPlugin.isAtsAdmin() && (smaMgr.getSma() instanceof ReviewSMArtifact);
    }
 
@@ -45,7 +46,7 @@ public class BlockingReview extends WorkPageService {
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
    @Override
-   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
       label = toolkit.createLabel(workGroup, "");
       label.setToolTipText("A blocking review requires the review be completed before the parent workflow has satisfied option.");
       refresh();

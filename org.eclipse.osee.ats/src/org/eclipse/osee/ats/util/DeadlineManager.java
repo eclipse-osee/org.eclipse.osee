@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -42,7 +43,7 @@ public class DeadlineManager {
       return getDeadlineDate() != null;
    }
 
-   public Result isDeadlineDateOverdue() {
+   public Result isDeadlineDateOverdue() throws OseeCoreException {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return Result.FalseResult;
       if ((new Date()).after(getDeadlineDate())) return new Result(true, "Deadline Date has past.");
       return Result.FalseResult;
@@ -62,7 +63,7 @@ public class DeadlineManager {
       return Result.FalseResult;
    }
 
-   public Result isDeadlineDateAlerting() {
+   public Result isDeadlineDateAlerting() throws OseeCoreException {
       if (!isDeadlineDateSet()) return Result.FalseResult;
       Result r = isDeadlineDateOverdue();
       if (r.isTrue()) return r;

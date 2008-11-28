@@ -160,15 +160,15 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return null;
    }
 
-   public Boolean isCancelled() {
+   public Boolean isCancelled() throws OseeCoreException {
       return smaMgr.isCancelled();
    }
 
-   public Boolean isInWork() {
+   public Boolean isInWork() throws OseeCoreException {
       return (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name()));
    }
 
-   public Boolean isCompleted() {
+   public Boolean isCompleted() throws OseeCoreException {
       return smaMgr.isCompleted();
    }
 
@@ -179,7 +179,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (result.isFalse()) result.popup();
    }
 
-   public void transitionToCompleted(boolean persist, SkynetTransaction transaction) {
+   public void transitionToCompleted(boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Completed.name())) return;
       // Assign current user if unassigned
       try {
@@ -364,7 +364,5 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (sma != null) return sma.getWorldViewSWEnhancement();
       return "";
    }
-
-
 
 }

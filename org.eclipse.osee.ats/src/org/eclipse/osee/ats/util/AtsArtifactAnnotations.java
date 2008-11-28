@@ -11,8 +11,12 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Set;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
@@ -29,11 +33,15 @@ public class AtsArtifactAnnotations implements IArtifactAnnotation {
     * @see org.eclipse.osee.framework.skynet.core.artifact.IArtifactAnnotation#getAnnotations(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
-      if (artifact instanceof StateMachineArtifact) {
-         SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
-         Result result = smaMgr.getDeadlineMgr().isDeadlineDateAlerting();
-         if (result.isTrue()) annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.deadline",
-               result.getText()));
+      try {
+         if (artifact instanceof StateMachineArtifact) {
+            SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
+            Result result = smaMgr.getDeadlineMgr().isDeadlineDateAlerting();
+            if (result.isTrue()) annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.deadline",
+                  result.getText()));
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 

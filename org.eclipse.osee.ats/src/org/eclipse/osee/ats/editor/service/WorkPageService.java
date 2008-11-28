@@ -15,6 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.swt.widgets.Group;
@@ -33,11 +34,11 @@ public abstract class WorkPageService {
       this.smaMgr = smaMgr;
    }
 
-   public boolean isCurrentState(AtsWorkPage page) {
+   public boolean isCurrentState(AtsWorkPage page) throws OseeCoreException {
       return smaMgr.isCurrentState(page.getName());
    }
 
-   public boolean isCurrentNonCompleteCancelledState(AtsWorkPage page) {
+   public boolean isCurrentNonCompleteCancelledState(AtsWorkPage page) throws OseeCoreException {
       return smaMgr.isCurrentState(page.getName()) && !isCompleteCancelledState(page);
    }
 
@@ -45,7 +46,7 @@ public abstract class WorkPageService {
       return page.isCancelledPage() || page.isCompletePage();
    }
 
-   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
    }
 
    public Action createToolbarService() {
@@ -89,8 +90,9 @@ public abstract class WorkPageService {
     * overridden to determine if it should be called.
     * 
     * @return the showSidebarService
+    * @throws OseeCoreException TODO
     */
-   public boolean isShowSidebarService(AtsWorkPage page) {
+   public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
       return showSidebarService;
    }
 

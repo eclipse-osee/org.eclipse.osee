@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -41,7 +42,7 @@ public class DebugOperations extends WorkPageService {
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public boolean isShowSidebarService(AtsWorkPage page) {
+   public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
       return page.getId().equals(AtsDebugWorkPage.PAGE_ID);
    }
 
@@ -49,7 +50,7 @@ public class DebugOperations extends WorkPageService {
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
    @Override
-   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
       Hyperlink link = toolkit.createHyperlink(workGroup, "Dirty Report", SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 

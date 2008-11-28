@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class StateManager {
 
-   private XCurrentStateDam currentStateDam;
-   private XStateDam stateDam;
+   private final XCurrentStateDam currentStateDam;
+   private final XStateDam stateDam;
    private static Collection<User> EMPTY_USER_ARRAY = new ArrayList<User>(0);
 
    public StateManager(SMAManager smaMgr) {
@@ -47,7 +47,7 @@ public class StateManager {
     * @param create TODO
     * @return state matching name
     */
-   private SMAState getSMAState(String name, boolean create) {
+   private SMAState getSMAState(String name, boolean create) throws OseeCoreException {
       if (currentStateDam.getState().getName().equals(name))
          return currentStateDam.getState();
       else
@@ -88,15 +88,15 @@ public class StateManager {
       return getPercentComplete(getCurrentStateName());
    }
 
-   public String getCurrentStateName() {
+   public String getCurrentStateName() throws OseeCoreException {
       return currentStateDam.getState().getName();
    }
 
-   public Collection<User> getAssignees() {
+   public Collection<User> getAssignees() throws OseeCoreException {
       return getAssignees(getCurrentStateName());
    }
 
-   public Collection<User> getAssignees(String stateName) {
+   public Collection<User> getAssignees(String stateName) throws OseeCoreException {
       SMAState state = getSMAState(stateName, false);
       if (state != null)
          return state.getAssignees();
@@ -206,7 +206,7 @@ public class StateManager {
       putState(state);
    }
 
-   public boolean isStateVisited(String name) {
+   public boolean isStateVisited(String name) throws OseeCoreException {
       return getVisitedStateNames().contains(name);
    }
 
@@ -262,7 +262,7 @@ public class StateManager {
          stateDam.setState(state);
    }
 
-   public Collection<String> getVisitedStateNames() {
+   public Collection<String> getVisitedStateNames() throws OseeCoreException {
       Set<String> names = new HashSet<String>();
       for (SMAState state : stateDam.getStates()) {
          names.add(state.getName());

@@ -244,12 +244,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @param page
     * @return true if section should be expanded
+    * @throws OseeCoreException
     */
-   public boolean isCurrentSectionExpanded(String stateName) {
+   public boolean isCurrentSectionExpanded(String stateName) throws OseeCoreException {
       return smaMgr.getStateMgr().getCurrentStateName().equals(stateName);
    }
 
-   public void notifyNewAssigneesAndReset() {
+   public void notifyNewAssigneesAndReset() throws OseeCoreException {
       Set<User> newAssignees = new HashSet<User>();
       for (User user : smaMgr.getStateMgr().getAssignees()) {
          if (!preSaveStateAssignees.contains(user)) {
@@ -328,11 +329,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return super.getArtifactType().getImage(subscribed, favorite, getMainAnnotationType());
    }
 
-   public boolean isDefaultShowAllTasks() {
-      if (smaMgr.isCompleted() || smaMgr.isCancelled()) return true;
-      return false;
-   }
-
    public boolean isUnCancellable() {
       try {
          LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
@@ -346,12 +342,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return false;
    }
 
-   public boolean isTaskable() {
+   public boolean isTaskable() throws OseeCoreException {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return false;
       return true;
    }
 
-   public boolean showTaskTab() {
+   public boolean showTaskTab() throws OseeCoreException {
       return isTaskable();
    }
 
@@ -876,7 +872,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperState()
     */
    public String getHyperState() {
-      return smaMgr.getStateMgr().getCurrentStateName();
+      try {
+         return smaMgr.getStateMgr().getCurrentStateName();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return "";
    }
 
    /*
@@ -885,7 +886,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssignee()
     */
    public String getHyperAssignee() {
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
+      try {
+         return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return "";
    }
 
    /*

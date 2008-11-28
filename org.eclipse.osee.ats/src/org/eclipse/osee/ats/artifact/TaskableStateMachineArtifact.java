@@ -68,7 +68,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    }
 
    @Override
-   public boolean showTaskTab() {
+   public boolean showTaskTab() throws OseeCoreException {
       return (isTaskable() || smaMgr.isCompleted());
    }
 

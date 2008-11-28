@@ -131,12 +131,17 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    public boolean isSelectedTaskArtifactsAreInWork() {
-      Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
-      while (i.hasNext()) {
-         Object obj = i.next();
-         if (obj instanceof TaskArtifact) if (!((TaskArtifact) obj).isInWork()) return false;
+      try {
+         Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
+         while (i.hasNext()) {
+            Object obj = i.next();
+            if (obj instanceof TaskArtifact) if (!((TaskArtifact) obj).isInWork()) return false;
+         }
+         return true;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      return true;
+      return false;
    }
 
    Action editTaskTitleAction, editTaskAssigneesAction, editTaskStatusAction, editTaskResolutionAction,

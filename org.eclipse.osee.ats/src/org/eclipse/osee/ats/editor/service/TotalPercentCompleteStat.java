@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.swt.SWT;
@@ -36,7 +37,7 @@ public class TotalPercentCompleteStat extends WorkPageService {
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public boolean isShowSidebarService(AtsWorkPage page) {
+   public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
       return smaMgr.isCurrentState(page.getName());
    }
 
@@ -44,7 +45,7 @@ public class TotalPercentCompleteStat extends WorkPageService {
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
    @Override
-   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
       label = toolkit.createLabel(workGroup, "", SWT.NONE);
       label.setToolTipText("Calculation: sum of percent for all states (including all tasks and reviews) / # statusable states");
       refresh();

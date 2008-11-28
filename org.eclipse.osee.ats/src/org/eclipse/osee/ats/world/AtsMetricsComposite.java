@@ -148,7 +148,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(label);
    }
 
-   public void createOverviewChart(SMAMetrics sMet, Composite parent) {
+   public void createOverviewChart(SMAMetrics sMet, Composite parent) throws OseeCoreException {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
 
       List<XBarGraphLineSegment> segments = new ArrayList<XBarGraphLineSegment>();

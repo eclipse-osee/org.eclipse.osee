@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -30,9 +31,9 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       super(sma, ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName());
    }
 
-   public SMAState getState() {
+   public SMAState getState() throws OseeCoreException {
       Set<SMAState> states = getStates();
-      if (states.size() != 1) throw new IllegalArgumentException(
+      if (states.size() != 1) throw new OseeArgumentException(
             "Must be one current state.  Found " + states.size() + " for " + sma.getHumanReadableId());
       return states.iterator().next();
    }

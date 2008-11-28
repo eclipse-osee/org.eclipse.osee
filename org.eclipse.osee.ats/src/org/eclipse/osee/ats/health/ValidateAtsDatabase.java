@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ValidateAtsDatabase extends XNavigateItemAction {
 
-   private final boolean fixAssignees = true;
+   private final boolean fixAssignees = false;
    private final boolean fixAttributeValues = false;
 
    /**
@@ -302,49 +302,37 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       User noOneUser = UserManager.getUser(SystemUser.NoOne);
       for (Artifact art : artifacts) {
          if (art instanceof StateMachineArtifact) {
-            StateMachineArtifact sma = (StateMachineArtifact) art;
-            SMAManager smaMgr = new SMAManager(sma);
-            if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() > 0) {
-               xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with attribute assignees");
-               if (fixAssignees) {
-                  smaMgr.getStateMgr().clearAssignees();
-                  smaMgr.getSma().persistAttributesAndRelations();
-                  xResultData.log(monitor, "Fixed");
-               }
-            }
-            if (smaMgr.getStateMgr().getAssignees().size() > 1 && smaMgr.getStateMgr().getAssignees().contains(
-                  unAssignedUser)) {
-               xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " is unassigned and assigned => " + Artifacts.toString(
-                     "; ", smaMgr.getStateMgr().getAssignees()));
-               if (fixAssignees) {
-                  smaMgr.getStateMgr().removeAssignee(unAssignedUser);
-                  xResultData.log(monitor, "Fixed");
-               }
-            }
-            if (smaMgr.getStateMgr().getAssignees().contains(noOneUser)) {
-               xResultData.logError(art.getHumanReadableId() + " is assigned to NoOne; invalid assignment - MANUAL FIX REQUIRED");
-            }
-            if ((!smaMgr.isCompleted() && !smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() == 0) {
-               xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " In Work without assignees");
-            }
-            if (art instanceof StateMachineArtifact) {
-               List<Artifact> relationAssigned =
-                     art.getRelatedArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
-               if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && relationAssigned.size() > 0) {
-                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with related assignees");
+            try {
+               StateMachineArtifact sma = (StateMachineArtifact) art;
+               SMAManager smaMgr = new SMAManager(sma);
+               if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() > 0) {
+                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with attribute assignees");
                   if (fixAssignees) {
-                     try {
-                        ((StateMachineArtifact) art).updateAssigneeRelations();
-                        art.persistAttributesAndRelations();
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-                     }
+                     smaMgr.getStateMgr().clearAssignees();
+                     smaMgr.getSma().persistAttributesAndRelations();
                      xResultData.log(monitor, "Fixed");
                   }
-               } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
-                  // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
-                  if (!(smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
-                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " attribute assignees doesn't match related assignees");
+               }
+               if (smaMgr.getStateMgr().getAssignees().size() > 1 && smaMgr.getStateMgr().getAssignees().contains(
+                     unAssignedUser)) {
+                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " is unassigned and assigned => " + Artifacts.toString(
+                        "; ", smaMgr.getStateMgr().getAssignees()));
+                  if (fixAssignees) {
+                     smaMgr.getStateMgr().removeAssignee(unAssignedUser);
+                     xResultData.log(monitor, "Fixed");
+                  }
+               }
+               if (smaMgr.getStateMgr().getAssignees().contains(noOneUser)) {
+                  xResultData.logError(art.getHumanReadableId() + " is assigned to NoOne; invalid assignment - MANUAL FIX REQUIRED");
+               }
+               if ((!smaMgr.isCompleted() && !smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() == 0) {
+                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " In Work without assignees");
+               }
+               if (art instanceof StateMachineArtifact) {
+                  List<Artifact> relationAssigned =
+                        art.getRelatedArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
+                  if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && relationAssigned.size() > 0) {
+                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with related assignees");
                      if (fixAssignees) {
                         try {
                            ((StateMachineArtifact) art).updateAssigneeRelations();
@@ -354,8 +342,25 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                         }
                         xResultData.log(monitor, "Fixed");
                      }
+                  } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
+                     // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
+                     if (!(smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
+                        xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " attribute assignees doesn't match related assignees");
+                        if (fixAssignees) {
+                           try {
+                              ((StateMachineArtifact) art).updateAssigneeRelations();
+                              art.persistAttributesAndRelations();
+                           } catch (OseeCoreException ex) {
+                              OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                           }
+                           xResultData.log(monitor, "Fixed");
+                        }
+                     }
                   }
                }
+            } catch (OseeCoreException ex) {
+               xResultData.logError("Exception testing assignees: " + ex.getLocalizedMessage());
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       }

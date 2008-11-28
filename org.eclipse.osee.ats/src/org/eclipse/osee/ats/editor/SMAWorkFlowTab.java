@@ -181,7 +181,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    public final static String normalColor = "#EEEEEE";
    private final static String activeColor = "#9CCCFF";
 
-   public String getHtml() {
+   public String getHtml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (WorkPage wPage : pages) {
          AtsWorkPage page = (AtsWorkPage) wPage;
@@ -429,7 +429,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createAssigneesLineHeader(Composite comp, XFormToolkit toolkit) {
+   private void createAssigneesLineHeader(Composite comp, XFormToolkit toolkit) throws OseeCoreException {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       topLineComp.setLayout(ALayout.getZeroMarginLayout(1, false));
