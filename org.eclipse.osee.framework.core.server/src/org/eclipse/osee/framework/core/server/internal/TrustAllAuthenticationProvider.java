@@ -15,6 +15,8 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
+import org.eclipse.osee.framework.core.server.UserDataStore;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -42,7 +44,15 @@ public class TrustAllAuthenticationProvider implements IAuthenticationProvider {
     */
    @Override
    public IOseeUserInfo asOseeUserId(OseeCredential credential) throws OseeAuthenticationException {
-      return SystemUser.Guest;
+      IOseeUserInfo oseeUserId = SystemUser.Guest;
+      String userName = credential.getUserName();
+      if (Strings.isValid(userName)) {
+         oseeUserId = UserDataStore.getOseeUserFromOseeDb(userName);
+         if (oseeUserId == null) {
+            oseeUserId = UserDataStore.createUser(true, userName, userName, "", true);
+         }
+      }
+      return oseeUserId;
    }
 
 }
