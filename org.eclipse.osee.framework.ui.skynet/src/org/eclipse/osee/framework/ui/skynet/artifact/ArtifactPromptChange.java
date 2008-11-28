@@ -64,7 +64,8 @@ public class ArtifactPromptChange {
          } else if (attributeBaseType.equals(EnumeratedAttribute.class)) {
             return ArtifactPromptChange.promptChangeEnumeratedAttribute(attributeName, displayName, artifacts, persist);
          } else if (attributeBaseType.equals(StringAttribute.class)) {
-            return ArtifactPromptChange.promptChangeStringAttribute(attributeName, displayName, artifacts, persist);
+            return ArtifactPromptChange.promptChangeStringAttribute(attributeName, displayName, artifacts, persist,
+                  true);
          } else
             AWorkbench.popup("ERROR", "Unhandled attribute type.  Can't edit through this view");
       } catch (Exception ex) {
@@ -99,12 +100,12 @@ public class ArtifactPromptChange {
       return promptChangeStringAttribute(attributeName, displayName, VALID_FLOAT_REG_EX, smas, persist, false);
    }
 
-   public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, null, Arrays.asList(artifact), persist, true);
+   public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist, boolean multiLine) throws Exception {
+      return promptChangeStringAttribute(attributeName, displayName, null, Arrays.asList(artifact), persist, multiLine);
    }
 
-   public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, null, smas, persist, true);
+   public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist, boolean multiLine) throws Exception {
+      return promptChangeStringAttribute(attributeName, displayName, null, smas, persist, multiLine);
    }
 
    public static boolean promptChangeDate(String attributeName, String displayName, Artifact artifact, boolean persist) throws Exception {

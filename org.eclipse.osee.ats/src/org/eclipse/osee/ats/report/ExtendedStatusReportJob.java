@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.report;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -42,32 +43,31 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ExtendedStatusReportJob extends Job {
    private final ArrayList<Artifact> arts;
-   private IProgressMonitor monitor;
-   private final String title;
 
    public ExtendedStatusReportJob(String title, ArrayList<Artifact> arts) {
       super("Creating " + title);
-      this.title = title;
       this.arts = arts;
-
    }
 
    @Override
    public IStatus run(IProgressMonitor monitor) {
-      this.monitor = monitor;
-      if (arts.size() == 0) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,  "No Artifacts Returned");
+      return runIt(monitor, getName(), arts);
+   }
+
+   public static IStatus runIt(IProgressMonitor monitor, final String jobName, Collection<? extends Artifact> teamArts) {
+      if (teamArts.size() == 0) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "No Artifacts Returned");
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "No Artifacts Returned", null);
       }
       try {
 
-         final String html = AHTML.simplePage(getStatusReport());
+         final String html = AHTML.simplePage(getStatusReport(monitor, jobName, teamArts));
          Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                XResultView.getResultView().addResultPage(
-                     new XResultPage(title + " - " + XDate.getDateNow(XDate.MMDDYYHHMM), html,
+                     new XResultPage(jobName + " - " + XDate.getDateNow(XDate.MMDDYYHHMM), html,
                            Manipulations.HTML_MANIPULATIONS));
-               AWorkbench.popup("Complete", title + " Complete...Results in ATS Results");
+               AWorkbench.popup("Complete", jobName + " Complete...Results in ATS Results");
             }
          });
          monitor.done();
@@ -78,10 +78,10 @@ public class ExtendedStatusReportJob extends Job {
       }
    }
 
-   public String getStatusReport() throws OseeCoreException {
+   private static String getStatusReport(IProgressMonitor monitor, String title, Collection<? extends Artifact> teamArts) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
-      sb.append(getStatusReportBody());
+      sb.append(getStatusReportBody(monitor, title, teamArts));
       return sb.toString();
    }
 
@@ -115,7 +115,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    };
 
-   public String getStatusReportBody() throws OseeCoreException {
+   private static String getStatusReportBody(IProgressMonitor monitor, String title, Collection<? extends Artifact> arts) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Columns.getColumnNames()));
@@ -140,7 +140,7 @@ public class ExtendedStatusReportJob extends Job {
       return sb.toString();
    }
 
-   public void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws OseeCoreException {
+   private static void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws OseeCoreException {
       List<String> values = new ArrayList<String>();
       SMAManager smaMgr = new SMAManager(sma);
       for (Columns col : Columns.values()) {
