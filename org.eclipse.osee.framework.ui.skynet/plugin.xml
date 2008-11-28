@@ -474,12 +474,12 @@
   </image>
 	</extension>
 	<extension point="org.eclipse.ui.importWizards">
-		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/WordMlImport.bmp" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="MS Office Documentation">
+		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/WordMlImport.bmp" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
 			<description>
             Import WordML documents into an existing Define project.
          </description>
 		</wizard>
-		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ImportMetaWizard" icon="images/gears.gif" id="osee.define.artifact.Import.ImportMetaWizard" name="Skynet Types">
+		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ImportMetaWizard" icon="images/gears.gif" id="osee.define.artifact.Import.ImportMetaWizard" name="OSEE Types">
 			<description>
             Import Skynet configuration information.
          </description>
