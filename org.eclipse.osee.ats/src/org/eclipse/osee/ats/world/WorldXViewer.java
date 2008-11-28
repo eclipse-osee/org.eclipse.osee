@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
+import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.Favorites;
@@ -100,6 +101,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    public static final String REMOVE_FAVORITE = "Remove Favorite";
    public static final String SUBSCRIBE = "Subscribe for Notifications";
    public static final String UN_SUBSCRIBE = "Un-Subscribe for Notifications";
+   public final WorldXViewer thisXViewer = this;
 
    /**
     * @param parent
@@ -338,9 +340,16 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                AWorkbench.popup("Error", "No items selected");
                return;
             }
-            WorldEditorInput worldEditorInput =
-                  new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(),
-                        getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None));
+            WorldEditorInput worldEditorInput = null;
+            if (thisXViewer instanceof TaskXViewer) {
+               worldEditorInput =
+                     new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(), null,
+                           TableLoadOption.None));
+            } else {
+               worldEditorInput =
+                     new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(),
+                           getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None));
+            }
             if (worldEditorInput != null) {
                IWorkbenchPage page = AWorkbench.getActivePage();
                try {
