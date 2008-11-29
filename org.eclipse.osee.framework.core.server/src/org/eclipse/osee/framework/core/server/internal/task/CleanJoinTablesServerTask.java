@@ -22,7 +22,7 @@ public class CleanJoinTablesServerTask implements IServerTask {
 
    private final static String DELETE_JOIN_TIME = "DELETE FROM %s WHERE insert_time < ?";
    private final static long TEN_MINUTES = 10;
-   private final static long TWENTY_MINUTES = 1000 * 60 * 20;
+   private final static long TWENTY_MINUTES = 1000 * 60 * 60;
 
    private static final String NAME = "Clean up join tables";
 
