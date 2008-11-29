@@ -53,7 +53,17 @@ public enum SupportedDatabase {
    }
 
    public static boolean areHintsSupported() throws OseeDataStoreException {
-      return getDatabaseType() == oracle;
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         if (oracle == SupportedDatabase.getDatabaseType(connection)) {
+            return connection.getMetaData().getDatabaseMajorVersion() > 10;
+         }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      } finally {
+         connection.close();
+      }
+      return false;
    }
 
    public static String getComplementSql() throws OseeDataStoreException {
