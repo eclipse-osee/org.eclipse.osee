@@ -147,7 +147,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          data.add(new Object[] {branchId, parentTransactionId});
       }
       String query = "update osee_branch set parent_transaction_id = ? where branch_id = ?";
-      ConnectionHandler.runPreparedUpdate(query, data);
+      ConnectionHandler.runBatchUpdate(query, data);
    }
 
    private int translateId(String id, int originalValue) throws OseeDataStoreException {
