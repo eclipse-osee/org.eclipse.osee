@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
+import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -123,8 +125,6 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          branchData.setBranchId(translateId(BranchData.BRANCH_ID, branchData.getBranchId()));
          branchData.setAssociatedBranchId(translateId(BranchData.COMMIT_ART_ID, branchData.getAssociatedArtId()));
          branchData.setParentBranchId(translateId(BranchData.PARENT_BRANCH_ID, branchData.getParentBranchId()));
-         branchData.setParentTransactionId(translateId(BranchData.PARENT_TRANSACTION_ID,
-               branchData.getParentTransactionId()));
 
          Object[] data = branchData.toArray(getMetaData());
          if (data != null) {
@@ -136,6 +136,18 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          super.store(getConnection());
       }
       return toReturn;
+   }
+
+   public void updateParentTransactionId(int[] branchesStored) throws OseeDataStoreException {
+      List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
+      List<Object[]> data = new ArrayList<Object[]>();
+      for (BranchData branchData : branches) {
+         int branchId = branchData.getBranchId();
+         int parentTransactionId = translateId(ExchangeDb.TRANSACTION_ID, branchData.getParentTransactionId());
+         data.add(new Object[] {branchId, parentTransactionId});
+      }
+      String query = "update osee_branch set parent_transaction_id = ? where branch_id = ?";
+      ConnectionHandler.runPreparedUpdate(query, data);
    }
 
    private int translateId(String id, int originalValue) throws OseeDataStoreException {

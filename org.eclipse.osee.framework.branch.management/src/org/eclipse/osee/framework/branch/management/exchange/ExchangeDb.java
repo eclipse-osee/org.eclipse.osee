@@ -36,7 +36,7 @@ public class ExchangeDb {
    private static final String ATTRIBUTE_TYPE_ID = "attr_type_id";
    private static final String RELATION_TYPE_ID = "rel_link_type_id";
    public static final String GAMMA_ID = "gamma_id";
-   private static final String TRANSACTION_ID = "transaction_id";
+   public static final String TRANSACTION_ID = "transaction_id";
    public static final String ATTRIBUTE_ID = "attr_id";
    public static final String ARTIFACT_ID = "art_id";
    public static final String RELATION_ID = "rel_link_id";
@@ -56,7 +56,7 @@ public class ExchangeDb {
 
    private static final String[] GAMMA_ID_REG_ALIASES = new String[] {"source_gamma_id", "dest_gamma_id"};
 
-   private static final String[] TRANSACTION_ID_REG_ALIASES = new String[] {"parent_transaction_id"};
+   private static final String[] TRANSACTION_ID_REG_ALIASES = new String[0];
    private static final String[] TRANSACTION_ID_NEG_ONE_ALIASES = new String[] {"commit_transaction_id"};
 
    private static final String[] ARTIFACT_ID_ALIASES;

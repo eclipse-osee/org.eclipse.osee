@@ -156,6 +156,8 @@ final class ImportController {
          processImportFiles(manifestHandler.getTypeFiles(), typeCheckHandler);
          processImportFiles(manifestHandler.getImportFiles(), relationalSaxHandler);
 
+         importBranchesTx.updateBranchParentTransactionId();
+
          currentSavePoint = "stop";
          addSavePoint(currentSavePoint);
       } catch (Throwable ex) {
@@ -264,11 +266,28 @@ final class ImportController {
 
    private final class ImportBranchesTx extends DbTransaction {
 
+      private final BranchDataSaxHandler branchHandler;
+      private int[] branchesStored;
+
       /**
        * @throws OseeStateException
        */
       public ImportBranchesTx() throws OseeCoreException {
          super();
+         branchHandler = BranchDataSaxHandler.createWithCacheAll();
+         branchesStored = new int[0];
+      }
+
+      public void updateBranchParentTransactionId() throws OseeDataStoreException {
+         currentSavePoint = "update branch parent transaction id";
+         if (!doesSavePointExist(currentSavePoint)) {
+            if (branchesStored.length > 0) {
+               branchHandler.updateParentTransactionId(branchesStored);
+            }
+         } else {
+            OseeLog.log(this.getClass(), Level.INFO, String.format("Save point found for: [%s] - skipping",
+                  currentSavePoint));
+         }
       }
 
       /* (non-Javadoc)
@@ -278,9 +297,6 @@ final class ImportController {
       protected void handleTxWork(Connection connection) throws OseeCoreException {
          // Import Branches
          currentSavePoint = manifestHandler.getBranchFile().getSource();
-
-         int[] branchesStored = new int[0];
-         BranchDataSaxHandler branchHandler = BranchDataSaxHandler.createWithCacheAll();
          process(branchHandler, connection, manifestHandler.getBranchFile());
 
          if (!doesSavePointExist(currentSavePoint)) {
