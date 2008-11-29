@@ -25,6 +25,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
@@ -66,6 +68,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.branch.CommitHandler;
+import org.eclipse.osee.framework.ui.skynet.dialogs.ListDialogSortable;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
@@ -75,7 +78,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ListDialog;
 
 /**
  * BranchManager contains methods necessary for ATS objects to interact with creation, view and commit of branches.
@@ -204,9 +206,21 @@ public class AtsBranchManager {
       if (transactionIds.size() == 1) {
          return transactionIds.iterator().next();
       }
-      ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell());
+      ListDialogSortable ld = new ListDialogSortable(Display.getCurrent().getActiveShell());
       ld.setContentProvider(new ArrayContentProvider());
       ld.setLabelProvider(new TransactionIdLabelProvider());
+      ld.setSorter(new ViewerSorter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+          */
+         @Override
+         public int compare(Viewer viewer, Object e1, Object e2) {
+            if (((TransactionId) e1).getTransactionNumber() < ((TransactionId) e2).getTransactionNumber()) {
+               return -1;
+            }
+            return super.compare(viewer, e1, e2);
+         }
+      });
       ld.setTitle("Select Transaction");
       ld.setMessage("Select Transaction");
       ld.setInput(transactionIds);
