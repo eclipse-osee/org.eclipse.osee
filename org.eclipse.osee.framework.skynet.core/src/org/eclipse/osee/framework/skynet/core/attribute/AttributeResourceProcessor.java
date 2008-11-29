@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -33,7 +34,19 @@ public class AttributeResourceProcessor extends AbstractResourceProcessor {
       return AttributeURL.getDeleteURL(dataToStore.getLocator());
    }
 
-   protected URL getStorageURL(DataStore dataToStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
-      return AttributeURL.getStorageURL(attribute, dataToStore.getExtension());
+   protected URL getStorageURL(int seed, String name, String extension) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+      try {
+         return AttributeURL.getStorageURL(seed, name, extension);
+      } catch (MalformedURLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor#getStorageName()
+    */
+   @Override
+   public String getStorageName() {
+      return attribute.getArtifact().getHumanReadableId();
    }
 }

@@ -55,7 +55,7 @@ public class AttributeTransactionData extends BaseTransactionData {
       super.addInsertToBatch(transaction);
       if (getModificationType() != ModificationType.ARTIFACT_DELETED) {
          if (getModificationType() == ModificationType.CHANGE || getModificationType() == ModificationType.NEW) {
-            attribute.getAttributeDataProvider().persist();
+            attribute.getAttributeDataProvider().persist(getGammaId());
             daoToSql.setData(attribute.getAttributeDataProvider().getData());
          }
          internalAddInsertToBatch(transaction, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),

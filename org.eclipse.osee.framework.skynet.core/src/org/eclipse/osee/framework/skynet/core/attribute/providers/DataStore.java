@@ -77,9 +77,9 @@ public class DataStore {
       other.encoding = this.encoding;
    }
 
-   public void persist() throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   public void persist(int storageId) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       if (this.rawContent != null && this.rawContent.length > 0) {
-         resourceProcessor.saveResource(this);
+         resourceProcessor.saveResource(storageId, resourceProcessor.getStorageName(), this);
       }
    }
 

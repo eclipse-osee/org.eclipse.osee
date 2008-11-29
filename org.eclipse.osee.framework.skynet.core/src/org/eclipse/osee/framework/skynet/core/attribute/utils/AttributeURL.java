@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 
 /**
  * @author Roberto E. Escobar
@@ -29,14 +28,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 public class AttributeURL {
 
    private AttributeURL() {
-   }
-
-   public static URL getStorageURL(Attribute<?> attribute, String extension) throws OseeDataStoreException, OseeAuthenticationRequiredException {
-      try {
-         return getStorageURL(attribute.getGammaId(), attribute.getArtifact().getHumanReadableId(), extension);
-      } catch (MalformedURLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
    }
 
    public static URL getStorageURL(int gammaId, String artifactHrid, String extension) throws OseeDataStoreException, MalformedURLException, OseeAuthenticationRequiredException {

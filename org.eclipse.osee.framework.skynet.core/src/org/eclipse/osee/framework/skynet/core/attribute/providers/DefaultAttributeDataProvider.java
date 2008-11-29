@@ -90,7 +90,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
     */
    @Override
-   public void persist() throws OseeDataStoreException {
+   public void persist(int storageId) throws OseeDataStoreException {
       // Do Nothing
    }
 

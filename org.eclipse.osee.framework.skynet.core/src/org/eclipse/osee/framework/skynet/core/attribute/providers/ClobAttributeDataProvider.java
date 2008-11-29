@@ -134,8 +134,8 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
     */
    @Override
-   public void persist() throws OseeDataStoreException, OseeAuthenticationRequiredException {
-      dataStore.persist();
+   public void persist(int storageId) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+      dataStore.persist(storageId);
    }
 
    /* (non-Javadoc)

@@ -160,8 +160,8 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
     */
    @Override
-   public void persist() throws OseeDataStoreException, OseeAuthenticationRequiredException {
-      dataStore.persist();
+   public void persist(int storageId) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+      dataStore.persist(storageId);
    }
 
    /* (non-Javadoc)

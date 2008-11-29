@@ -30,10 +30,12 @@ public abstract class AbstractResourceProcessor {
 
    protected abstract URL getDeleteURL(DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException;
 
-   protected abstract URL getStorageURL(DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException;
+   protected abstract URL getStorageURL(int seed, String name, String extension) throws OseeDataStoreException, OseeAuthenticationRequiredException;
 
-   public void saveResource(DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
-      URL url = getStorageURL(dataStore);
+   public abstract String getStorageName();
+
+   public void saveResource(int seed, String name, DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+      URL url = getStorageURL(seed, name, dataStore.getExtension());
       InputStream inputStream = dataStore.getInputStream();
       try {
          URI uri = HttpProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
@@ -81,4 +83,5 @@ public abstract class AbstractResourceProcessor {
                dataStore.getLocator(), code), ex);
       }
    }
+
 }
