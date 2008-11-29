@@ -7,10 +7,10 @@
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>Robert Fisher</Author>
-  <LastAuthor>Donald G. Dunne</LastAuthor>
+  <LastAuthor>Ryan Brooks</LastAuthor>
   <LastPrinted>2006-03-15T03:49:16Z</LastPrinted>
   <Created>2005-07-01T21:31:12Z</Created>
-  <LastSaved>2008-06-16T19:04:02Z</LastSaved>
+  <LastSaved>2008-11-29T20:07:41Z</LastSaved>
   <Company>The Boeing Company</Company>
   <Version>11.9999</Version>
  </DocumentProperties>
@@ -918,15 +918,18 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s40"><Data ss:Type="String">Supercedes</Data></Cell>
-    <Cell ss:StyleID="s40"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="Default"><Data ss:Type="String">supercedes</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">supercedes</Data></Cell>
-    <Cell ss:StyleID="s40"><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell ss:StyleID="s40"><Data ss:Type="String">is superceeded by</Data></Cell>
+    <Cell ss:StyleID="Default"><Data ss:Type="String">superceded by</Data></Cell>
+    <Cell ss:StyleID="Default"><Data ss:Type="String">is superceded by</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">Sprcds</Data></Cell>
     <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
-   <Row ss:Index="105" ss:AutoFitHeight="0" ss:Height="13.5">
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:Index="5" ss:StyleID="Default"/>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s42"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -1029,12 +1032,10 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
-   <TopRowVisible>48</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>22</ActiveRow>
-     <ActiveCol>2</ActiveCol>
+     <RangeSelection>R1C1:R1C2</RangeSelection>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

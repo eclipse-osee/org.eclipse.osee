@@ -6,9 +6,9 @@
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
-  <LastAuthor>Donald G. Dunne</LastAuthor>
+  <LastAuthor>Ryan Brooks</LastAuthor>
   <Created>2006-03-10T14:37:59Z</Created>
-  <LastSaved>2007-10-01T19:46:21Z</LastSaved>
+  <LastSaved>2008-11-29T20:19:36Z</LastSaved>
   <Version>11.9999</Version>
  </DocumentProperties>
  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
@@ -93,6 +93,9 @@
    <NumberFormat/>
    <Protection/>
   </Style>
+  <Style ss:ID="s32">
+   <NumberFormat ss:Format="@"/>
+  </Style>
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
@@ -104,7 +107,7 @@
    <Column ss:AutoFitWidth="0" ss:Width="286.5"/>
    <Column ss:AutoFitWidth="0" ss:Width="339.75"/>
    <Column ss:AutoFitWidth="0" ss:Width="186.75"/>
-   <Column ss:AutoFitWidth="0" ss:Width="25.5"/>
+   <Column ss:AutoFitWidth="0" ss:Width="132.75"/>
    <Column ss:Width="147.75"/>
    <Column ss:Index="7" ss:AutoFitWidth="0" ss:Width="91.5"/>
    <Column ss:Index="9" ss:Width="63.75"/>
@@ -233,7 +236,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Released</Data></Cell>
     <Cell ss:Index="6"><Data ss:Type="String">no</Data></Cell>
-    <Cell ss:Index="8"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
    </Row>
@@ -363,7 +366,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.FloatingPointAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Estimated Hours</Data></Cell>
-    <Cell ss:Index="6"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:Index="6" ss:StyleID="s32"><Data ss:Type="String">0.0</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -381,7 +384,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.FloatingPointAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Man Days Needed</Data></Cell>
-    <Cell ss:Index="6"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:Index="6" ss:StyleID="s32"><Data ss:Type="String">0.0</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -1324,7 +1327,7 @@
     <Cell><Data ss:Type="String">TeamWorkflowToReview</Data></Cell>
     <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
     <Cell><Data ss:Type="String">is reviewed by </Data></Cell>
-    <Cell><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell><Data ss:Type="String">Decision Review</Data></Cell>
     <Cell><Data ss:Type="String">is review of</Data></Cell>
     <Cell><Data ss:Type="String">TWtDR</Data></Cell>
     <Cell><Data ss:Type="String">No</Data></Cell>
@@ -1691,11 +1694,12 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>65</TopRowVisible>
+   <TopRowVisible>9</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>98</ActiveRow>
+     <ActiveRow>36</ActiveRow>
+     <ActiveCol>5</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
