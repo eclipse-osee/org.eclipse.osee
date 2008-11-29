@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
@@ -72,7 +71,8 @@ class TaggerRunnable implements Runnable {
       this.waitTime = System.currentTimeMillis() - this.waitStart;
       long processStart = System.currentTimeMillis();
       try {
-         new AttributeToTagTx().execute();
+         AttributeToTagTx attributeToTagTx = new AttributeToTagTx();
+         attributeToTagTx.execute();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - tagQueueQueryId [%d]",
                getTagQueueQueryId()), ex);
@@ -117,14 +117,15 @@ class TaggerRunnable implements Runnable {
    }
 
    private final class AttributeToTagTx extends DbTransaction implements ITagCollector {
-      /**
-       * @throws OseeStateException
-       */
-      public AttributeToTagTx() throws OseeCoreException {
-      }
 
-      private final Deque<SearchTag> searchTags = new LinkedList<SearchTag>();
+      private final Deque<SearchTag> searchTags;
       private SearchTag currentTag;
+
+      public AttributeToTagTx() throws OseeCoreException {
+         super();
+         this.searchTags = new LinkedList<SearchTag>();
+         this.currentTag = null;
+      }
 
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
