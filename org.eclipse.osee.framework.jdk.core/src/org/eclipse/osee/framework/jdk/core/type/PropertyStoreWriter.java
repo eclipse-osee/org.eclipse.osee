@@ -12,7 +12,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -38,11 +41,9 @@ public class PropertyStoreWriter {
    private static final String TAG_LIST = "list";
    private static final String TAG_ITEM = "item";
 
-   public void load(PropertyStore store, InputStream inputStream) throws IOException {
-      BufferedReader reader = null;
+   public void load(PropertyStore store, Reader reader) throws IOException, SAXException, ParserConfigurationException {
       Document document = null;
       try {
-         reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));//$NON-NLS-1$
          DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
          document = parser.parse(new InputSource(reader));
 
@@ -53,12 +54,6 @@ public class PropertyStoreWriter {
             root = document.getFirstChild();
          }
          load(store, document, (Element) root);
-      } catch (ParserConfigurationException e) {
-         // ignore
-      } catch (IOException e) {
-         // ignore
-      } catch (SAXException e) {
-         // ignore
       } finally {
          if (reader != null) {
             reader.close();
@@ -66,10 +61,18 @@ public class PropertyStoreWriter {
       }
    }
 
+   public void load(PropertyStore store, InputStream inputStream) throws IOException, SAXException, ParserConfigurationException {
+      load(store, new BufferedReader(new InputStreamReader(inputStream, "utf-8")));
+   }
+
    public void save(PropertyStore store, OutputStream stream) throws IOException {
       XMLWriter writer = new XMLWriter(stream);
-      save(store, writer);
-      writer.close();
+      internalSave(store, writer);
+   }
+
+   public void save(PropertyStore store, StringWriter stringWriter) throws IOException {
+      XMLWriter writer = new XMLWriter(stringWriter);
+      internalSave(store, writer);
    }
 
    @SuppressWarnings("unchecked")
@@ -106,7 +109,7 @@ public class PropertyStoreWriter {
    }
 
    @SuppressWarnings("unchecked")
-   private void save(PropertyStore store, XMLWriter out) {
+   private void internalSave(PropertyStore store, XMLWriter out) {
       HashMap attributes = new HashMap(2);
       String name = store.getId();
       attributes.put(TAG_NAME, name == null ? "" : name); //$NON-NLS-1$
@@ -140,6 +143,7 @@ public class PropertyStoreWriter {
          attributes.clear();
       }
       out.endTag(TAG_SECTION);
+      out.close();
    }
 
    private static class XMLWriter extends PrintWriter {
@@ -149,10 +153,14 @@ public class PropertyStoreWriter {
       /** the xml header */
       protected static final String XML_VERSION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"; //$NON-NLS-1$
 
-      public XMLWriter(OutputStream output) throws UnsupportedEncodingException {
-         super(new OutputStreamWriter(output, "UTF8")); //$NON-NLS-1$
+      public XMLWriter(Writer writer) {
+         super(writer);
          tab = 0;
          println(XML_VERSION);
+      }
+
+      public XMLWriter(OutputStream output) throws UnsupportedEncodingException {
+         this(new OutputStreamWriter(output, "UTF8")); //$NON-NLS-1$
       }
 
       /**

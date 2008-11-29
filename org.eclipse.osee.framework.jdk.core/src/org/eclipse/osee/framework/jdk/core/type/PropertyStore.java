@@ -7,13 +7,17 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.xml.sax.SAXException;
 
 /**
  * @author Roberto E. Escobar
@@ -31,6 +35,12 @@ public class PropertyStore implements IPropertyStore, Serializable {
       this.storeId = storeId;
       this.storageData = new Properties();
       this.storageArrays = new Properties();
+   }
+
+   public PropertyStore(Reader properties) throws IOException, SAXException, ParserConfigurationException {
+      this((String) null);
+      PropertyStoreWriter writer = new PropertyStoreWriter();
+      writer.load(this, properties);
    }
 
    public PropertyStore(Properties properties) {
