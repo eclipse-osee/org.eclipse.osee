@@ -264,7 +264,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
             toPageIds = new HashSet<String>();
          }
          if (transTypes.contains(TransitionType.ToPageAsDefault) && toPageIds.size() > 0) {
-            throw new IllegalArgumentException("Only allowed ONE DefaultToPage");
+            throw new IllegalArgumentException("Only allowed ONE DefaultToPage from " + fromPageId);
          }
          toPageIds.add(toPageId);
 
