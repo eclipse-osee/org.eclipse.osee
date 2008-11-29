@@ -378,14 +378,18 @@ public class InternalChangeManager {
                while (chStmt2.next()) {
                   count++;
                   int attrId = chStmt2.getInt("attr_id");
+                  
                   if (previousAttrId != attrId) {
                      String wasValue = chStmt2.getString("was_value");
                      if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChanged) {
                         AttributeChanged changed = (AttributeChanged) attributesWasValueCache.get(attrId);
-                        if (changed.getModificationType() != ModificationType.DELETED && changed.getModificationType() != ModificationType.ARTIFACT_DELETED) {
-                           changed.setModType(ModificationType.CHANGE);
+                        
+                        if(changed.getArtModType() != ModificationType.NEW){
+                        	if (changed.getModificationType() != ModificationType.DELETED && changed.getModificationType() != ModificationType.ARTIFACT_DELETED) {
+                        	changed.setModType(ModificationType.CHANGE);
+                        	}
+                        	changed.setWasValue(wasValue);
                         }
-                        changed.setWasValue(wasValue);
                      }
                      previousAttrId = attrId;
                   }
