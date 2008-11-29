@@ -57,7 +57,7 @@ public class BranchTaggerRunnable implements Runnable {
       protected void convertInput(Connection connection) throws OseeDataStoreException, Exception {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
          try {
-            String sql = AttributeDataStore.getAllTaggableGammasByBranchQuery(connection, branchId);
+            String sql = AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId);
             chStmt.runPreparedQuery(sql, AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
             while (chStmt.next()) {
                addEntry(connection, chStmt.getLong("gamma_id"));

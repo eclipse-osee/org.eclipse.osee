@@ -15,14 +15,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbTransaction;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.server.admin.Activator;
@@ -44,7 +41,7 @@ class TaggerAllWorker extends BaseCmdWorker {
    private void fetchAndProcessGammas(Connection connection, int branchId, TagProcessListener processor) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
-         chStmt.runPreparedQuery(AttributeDataStore.getAllTaggableGammasByBranchQuery(connection, branchId),
+         chStmt.runPreparedQuery(AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId),
                AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
          TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
          while (chStmt.next() && isExecutionAllowed()) {
@@ -62,35 +59,35 @@ class TaggerAllWorker extends BaseCmdWorker {
    }
 
    protected void doWork(final long startTime) throws Exception {
-      new DbTransaction() {
-         @Override
-         protected void handleTxWork(Connection connection) throws OseeCoreException {
-            String arg = getCommandInterpreter().nextArgument();
-            int branchId = -1;
-            if (arg != null && arg.length() > 0) {
-               branchId = Integer.parseInt(arg);
-            }
-            println(String.format("Tagging Attributes For: [%s]", branchId > -1 ? "Branch " + branchId : "All Branches"));
-
-            int totalAttributes = AttributeDataStore.getTotalTaggableItems(branchId);
-            processor = new TagProcessListener(startTime, totalAttributes);
-            fetchAndProcessGammas(connection, branchId, processor);
-            if (!processor.isProcessingDone()) {
-               synchronized (processor) {
-                  try {
-                     processor.wait();
-                  } catch (InterruptedException ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-               }
-            }
-
-            if (!isExecutionAllowed() && !processor.isProcessingDone()) {
-               processor.cancelProcessing(connection);
-            }
-            processor.printStats();
+      Connection connection = null;
+      try {
+         String arg = getCommandInterpreter().nextArgument();
+         int branchId = -1;
+         if (arg != null && arg.length() > 0) {
+            branchId = Integer.parseInt(arg);
          }
-      }.execute();
+         println(String.format("Tagging Attributes For: [%s]", branchId > -1 ? "Branch " + branchId : "All Branches"));
+         connection = OseeDbConnection.getConnection();
+
+         int totalAttributes = AttributeDataStore.getTotalTaggableItems(connection, branchId);
+         processor = new TagProcessListener(startTime, totalAttributes);
+         fetchAndProcessGammas(connection, branchId, processor);
+         if (!processor.isProcessingDone()) {
+            synchronized (processor) {
+               processor.wait();
+            }
+         }
+
+         if (!isExecutionAllowed() && !processor.isProcessingDone()) {
+            processor.cancelProcessing(connection);
+         }
+         processor.printStats();
+      } finally {
+         processor = null;
+         if (connection != null) {
+            connection.close();
+         }
+      }
    }
 
    /*

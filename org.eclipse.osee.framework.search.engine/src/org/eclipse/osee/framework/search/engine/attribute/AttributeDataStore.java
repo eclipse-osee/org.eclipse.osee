@@ -189,7 +189,7 @@ public class AttributeDataStore {
       return toReturn;
    }
 
-   public static String getAllTaggableGammasByBranchQuery(final Connection connection, final int branchId) throws OseeDataStoreException {
+   public static String getAllTaggableGammasByBranchQuery(final int branchId) throws OseeDataStoreException {
       return getBranchTaggingQueries(branchId, false);
    }
 
@@ -210,8 +210,8 @@ public class AttributeDataStore {
       return builder.toString();
    }
 
-   public static int getTotalTaggableItems(final int branchId) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, getBranchTaggingQueries(branchId, true),
+   public static int getTotalTaggableItems(Connection connection, final int branchId) throws OseeDataStoreException {
+      return ConnectionHandler.runPreparedQueryFetchInt(connection, -1, getBranchTaggingQueries(branchId, true),
             getAllTaggableGammasByBranchQueryData(branchId));
    }
 }
