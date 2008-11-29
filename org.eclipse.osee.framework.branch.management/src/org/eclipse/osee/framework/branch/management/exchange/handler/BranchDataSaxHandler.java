@@ -144,7 +144,10 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       for (BranchData branchData : branches) {
          int branchId = branchData.getBranchId();
          int parentTransactionId = translateId(ExchangeDb.TRANSACTION_ID, branchData.getParentTransactionId());
-         data.add(new Object[] {branchId, parentTransactionId});
+         if (parentTransactionId == 0) {
+            parentTransactionId = 1;
+         }
+         data.add(new Object[] {parentTransactionId, branchId});
       }
       String query = "update osee_branch set parent_transaction_id = ? where branch_id = ?";
       ConnectionHandler.runBatchUpdate(query, data);
