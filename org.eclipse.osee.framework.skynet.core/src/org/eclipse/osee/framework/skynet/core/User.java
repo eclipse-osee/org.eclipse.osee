@@ -174,7 +174,7 @@ public class User extends Artifact implements Serializable {
 
    }
 
-   public void saveSettins() throws OseeCoreException, IOException {
+   public void saveSettings() throws OseeCoreException, IOException {
       StringWriter stringWriter = new StringWriter();
       PropertyStoreWriter storeWriter = new PropertyStoreWriter();
       storeWriter.save(userSettings, stringWriter);

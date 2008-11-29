@@ -83,7 +83,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
             @Override
             public boolean preShutdown(IWorkbench workbench, boolean forced) {
                try {
-                  UserManager.getUser().saveSettins();
+                  UserManager.getUser().saveSettings();
                } catch (Throwable th) {
                   th.printStackTrace();
                }
