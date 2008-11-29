@@ -62,8 +62,8 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    public ChangeView() {
    }
 
-   public static void open(Branch branch) {
-      if (branch == null) throw new IllegalArgumentException("Branch can't be null");
+   public static void open(Branch branch) throws OseeArgumentException {
+      if (branch == null) throw new OseeArgumentException("Branch can't be null");
       ChangeView.openViewUpon(branch, null, true);
    }
 
