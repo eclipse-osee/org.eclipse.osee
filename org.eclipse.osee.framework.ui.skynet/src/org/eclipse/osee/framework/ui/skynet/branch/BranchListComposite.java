@@ -415,7 +415,7 @@ public class BranchListComposite implements IBranchEventListener {
       return sorter.isFavoritesFirst();
    }
 
-   public void setDefaultBranch(Branch newDefaultBranch) {
+   public void setDefaultBranch(Branch newDefaultBranch) throws OseeCoreException {
       Branch oldDefaultBranch = BranchManager.getDefaultBranch();
       BranchManager.setDefaultBranch(newDefaultBranch);
       branchTable.update(new Object[] {oldDefaultBranch, newDefaultBranch}, null);

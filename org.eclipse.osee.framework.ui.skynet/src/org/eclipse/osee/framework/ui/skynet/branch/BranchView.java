@@ -51,6 +51,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -803,7 +804,11 @@ public class BranchView extends ViewPart implements IActionable {
    }
 
    public void setDefaultBranch(Branch newDefaultBranch) {
-      branchListComposite.setDefaultBranch(newDefaultBranch);
+      try {
+         branchListComposite.setDefaultBranch(newDefaultBranch);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    private void addMarkAsFavoriteCommand(MenuManager menuManager) {

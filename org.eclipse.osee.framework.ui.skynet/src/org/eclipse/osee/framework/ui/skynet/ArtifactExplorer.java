@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -443,7 +444,11 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch", false);
             int result = branchSelection.open();
             if (result == Window.OK) {
-               BranchManager.setDefaultBranch(branchSelection.getSelection());
+               try {
+                  BranchManager.setDefaultBranch(branchSelection.getSelection());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
             }
          }
       };

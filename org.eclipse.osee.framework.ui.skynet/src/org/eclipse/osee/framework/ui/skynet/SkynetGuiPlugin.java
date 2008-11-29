@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -69,6 +71,26 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       packageAdminTracker.open();
       OseeEventManager.addListener(this);
       OseeLog.registerLoggerListener(new DialogPopupLoggerListener());
+
+      if (PlatformUI.isWorkbenchRunning()) {
+         IWorkbench workbench = PlatformUI.getWorkbench();
+         workbench.addWorkbenchListener(new IWorkbenchListener() {
+
+            @Override
+            public void postShutdown(IWorkbench workbench) {
+            }
+
+            @Override
+            public boolean preShutdown(IWorkbench workbench, boolean forced) {
+               try {
+                  UserManager.getUser().saveSettins();
+               } catch (Throwable th) {
+                  th.printStackTrace();
+               }
+               return true;
+            }
+         });
+      }
    }
 
    /**

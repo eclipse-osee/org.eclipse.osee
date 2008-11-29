@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -46,7 +47,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
          OseeLog.log(TeamBasedDefaultBranchProvider.class, Level.WARNING, ex);
       }
 
-      return null;
+      return Collections.emptyList();
    }
 
 }

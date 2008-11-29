@@ -28,6 +28,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -345,7 +346,11 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (branchView != null) {
                branchView.setDefaultBranch(conflicts[0].getDestBranch());
             } else {
-               BranchManager.setDefaultBranch(conflicts[0].getDestBranch());
+               try {
+                  BranchManager.setDefaultBranch(conflicts[0].getDestBranch());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
             }
             return null;
          }
@@ -484,7 +489,11 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (branchView != null) {
                branchView.setDefaultBranch(conflicts[0].getSourceBranch());
             } else {
-               BranchManager.setDefaultBranch(conflicts[0].getSourceBranch());
+               try {
+                  BranchManager.setDefaultBranch(conflicts[0].getSourceBranch());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
             }
             return null;
          }

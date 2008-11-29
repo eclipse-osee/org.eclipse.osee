@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
@@ -491,12 +493,12 @@ public class BranchManager {
             BranchType.BASELINE);
    }
 
-   public static void setDefaultBranch(Branch branch) {
-      if (branch == null) throw new IllegalArgumentException("The branch argument can not be null");
+   public static void setDefaultBranch(Branch branch) throws OseeCoreException {
+      if (branch == null) throw new OseeArgumentException("The branch argument can not be null");
 
       if (branch != instance.defaultBranch.get()) {
          instance.defaultBranch.set(branch);
-         preferenceStore.setValue(LAST_DEFAULT_BRANCH, getDefaultBranch().getBranchId());
+         UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, String.valueOf(branch.getBranchId()));
          try {
             OseeEventManager.kickBranchEvent(instance, BranchEventType.DefaultBranchChanged, branch.getBranchId());
          } catch (Exception ex) {
@@ -505,35 +507,35 @@ public class BranchManager {
       }
    }
 
+   private static final String SELECT_MAPPED_ID =
+         "SELECT mapped_id FROM osee_import_map oim, osee_import_index_map oiim WHERE oim.sequence_id = oiim.sequence_id AND oiim.sequence_id = oiim.sequence_id AND oim.sequence_name = 'SKYNET_BRANCH_ID_SEQ' AND oiim.original_id = ?";
    private final WindowLocal<Branch> defaultBranch = new WindowLocal<Branch>() {
       @Override
       protected Branch initialValue() {
          Branch initialBranch = null;
-         int branchId = preferenceStore.getInt(LAST_DEFAULT_BRANCH);
 
-         if (branchId > 0) {
-            try {
-               initialBranch = getBranch(branchId);
-            }
-            // if the branch id could not be acquired from the preferenceStore set the default
-            // branch to the common branch.
-            catch (BranchDoesNotExist ex) {
-               try {
-                  OseeLog.log(SkynetActivator.class, Level.WARNING,
-                        "Could not use default branch id from the preference store: " + ex);
-                  initialBranch = getCommonBranch();
-                  preferenceStore.setValue(LAST_DEFAULT_BRANCH, initialBranch.getBranchId());
-               } catch (OseeCoreException ex1) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
+         try {
+            String branchIdStr = UserManager.getUser().getSetting(LAST_DEFAULT_BRANCH);
+            if (branchIdStr == null) {
+               int branchId = preferenceStore.getInt(LAST_DEFAULT_BRANCH);
+               if (branchId > 0) {
+                  branchId = ConnectionHandler.runPreparedQueryFetchInt(0, SELECT_MAPPED_ID, branchId);
+                  if (branchId > 0) {
+                     initialBranch = getBranch(branchId);
+                     UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, String.valueOf(branchId));
+                  }
                }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            } else {
+               initialBranch = getBranch(Integer.parseInt(branchIdStr));
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
 
          if (initialBranch == null) {
             try {
                initialBranch = getDefaultInitialBranch();
+               UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, String.valueOf(initialBranch.getBranchId()));
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
@@ -563,17 +565,12 @@ public class BranchManager {
          }
       }
 
-      Collection<Branch> branches;
       for (IDefaultInitialBranchesProvider provider : defaultBranchProviders) {
          try {
-            branches = provider.getDefaultInitialBranches();
-
             // Guard against problematic extensions
-            if (branches != null) {
-               for (Branch branch : branches) {
-                  if (branch != null) {
-                     return branch;
-                  }
+            for (Branch branch : provider.getDefaultInitialBranches()) {
+               if (branch != null) {
+                  return branch;
                }
             }
          } catch (Exception ex) {

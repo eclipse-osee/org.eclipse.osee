@@ -11,12 +11,16 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -36,6 +40,8 @@ public class User extends Artifact implements Serializable {
    };
 
    public static final String ARTIFACT_NAME = "User";
+
+   private PropertyStore userSettings;
 
    /*
     * (non-Javadoc)
@@ -147,18 +153,47 @@ public class User extends Artifact implements Serializable {
       }
    }
 
-   public boolean isFavoriteBranch(Branch branch) {
-      try {
-         Collection<Attribute<Integer>> attributes = getAttributes(favoriteBranchAttributeName);
-         for (Attribute<Integer> attribute : attributes) {
-            if (branch.getBranchId() == attribute.getValue()) {
-               return true;
-            }
+   public boolean isFavoriteBranch(Branch branch) throws OseeCoreException {
+      Collection<Attribute<Integer>> attributes = getAttributes(favoriteBranchAttributeName);
+      for (Attribute<Integer> attribute : attributes) {
+         if (branch.getBranchId() == attribute.getValue()) {
+            return true;
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
-
       return false;
+   }
+
+   public String getSetting(String key) throws OseeCoreException {
+      ensureUserSettingsAreLoaded();
+      return userSettings.get(key);
+   }
+
+   public void setSetting(String key, String value) throws OseeCoreException {
+      ensureUserSettingsAreLoaded();
+      userSettings.put(key, value);
+
+   }
+
+   public void saveSettins() throws OseeCoreException, IOException {
+      StringWriter stringWriter = new StringWriter();
+      PropertyStoreWriter storeWriter = new PropertyStoreWriter();
+      storeWriter.save(userSettings, stringWriter);
+      setSoleAttributeFromString("User Settings", stringWriter.toString());
+      persistAttributes();
+   }
+
+   private void ensureUserSettingsAreLoaded() throws OseeWrappedException {
+      if (userSettings == null) {
+         try {
+            String settings = getSoleAttributeValue("User Settings", null);
+            if (settings == null) {
+               userSettings = new PropertyStore(getGuid());
+            } else {
+               userSettings = new PropertyStore(new StringReader(settings));
+            }
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex);
+         }
+      }
    }
 }

@@ -334,7 +334,7 @@
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s35"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s35"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Preferences</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User Settings</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">xml</Data></Cell>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s35"/>
@@ -806,7 +806,7 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Preferences</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User Settings</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
@@ -1029,12 +1029,12 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
-   <TopRowVisible>36</TopRowVisible>
+   <TopRowVisible>48</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>77</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>22</ActiveRow>
+     <ActiveCol>2</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

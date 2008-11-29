@@ -94,7 +94,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             } else {
                return isDefault ? defaultBranchImage : branchImage;
             }
-         } catch (Exception ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
 
