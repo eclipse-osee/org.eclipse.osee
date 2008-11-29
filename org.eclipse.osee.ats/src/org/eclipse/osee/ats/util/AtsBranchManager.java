@@ -217,8 +217,10 @@ public class AtsBranchManager {
          public int compare(Viewer viewer, Object e1, Object e2) {
             if (((TransactionId) e1).getTransactionNumber() < ((TransactionId) e2).getTransactionNumber()) {
                return -1;
+            } else if (((TransactionId) e1).getTransactionNumber() > ((TransactionId) e2).getTransactionNumber()) {
+               return 1;
             }
-            return super.compare(viewer, e1, e2);
+            return 0;
          }
       });
       ld.setTitle("Select Transaction");
