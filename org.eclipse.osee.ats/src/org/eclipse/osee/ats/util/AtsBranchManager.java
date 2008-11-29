@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
@@ -65,6 +67,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.branch.CommitHandler;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
@@ -72,6 +75,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.ListDialog;
 
 /**
  * BranchManager contains methods necessary for ATS objects to interact with creation, view and commit of branches.
@@ -114,7 +118,9 @@ public class AtsBranchManager {
                   TransactionIdManager.getStartEndPoint(getWorkingBranch()).getKey());
 
          } else if (isCommittedBranch()) {
-            MergeView.openView(getTransactionId());
+            TransactionId transactionId = getTransactionIdOrPopupChoose();
+            if (transactionId == null) return;
+            MergeView.openView(transactionId);
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -168,20 +174,44 @@ public class AtsBranchManager {
    /**
     * @return TransactionId associated with this state machine artifact
     */
-   public TransactionId getTransactionId() throws OseeCoreException {
+   public Collection<TransactionId> getTransactionIds() throws OseeCoreException {
+      List<TransactionId> transactionIds = new ArrayList<TransactionId>();
       try {
-         Set<Integer> tranSet = RevisionManager.getInstance().getTransactionDataPerCommitArtifact(smaMgr.getSma());
-         // Cache null transactionId so don't re-search for every call
-         if (tranSet.size() == 0) {
-            return null;
-         } else if (tranSet.size() > 1) {
-            OseeLog.log(AtsPlugin.class, Level.WARNING,
-                  "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId());
+         for (Integer transIdInt : RevisionManager.getInstance().getTransactionDataPerCommitArtifact(smaMgr.getSma())) {
+            transactionIds.add(TransactionIdManager.getTransactionId(transIdInt));
          }
-         return TransactionIdManager.getTransactionId(tranSet.iterator().next());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          // there may be times where the transaction id cache is not up-to-date yet; don't throw error
+      }
+      return transactionIds;
+   }
+
+   public TransactionId getEarliestTransactionId() throws OseeCoreException {
+      Collection<TransactionId> transactionIds = getTransactionIds();
+      if (transactionIds.size() == 1) return transactionIds.iterator().next();
+      TransactionId earliestTransactionId = transactionIds.iterator().next();
+      for (TransactionId transactionId : transactionIds) {
+         if (transactionId.getTransactionNumber() < earliestTransactionId.getTransactionNumber()) {
+            earliestTransactionId = transactionId;
+         }
+      }
+      return earliestTransactionId;
+   }
+
+   public TransactionId getTransactionIdOrPopupChoose() throws OseeCoreException {
+      Collection<TransactionId> transactionIds = getTransactionIds();
+      if (transactionIds.size() == 1) {
+         return transactionIds.iterator().next();
+      }
+      ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell());
+      ld.setContentProvider(new ArrayContentProvider());
+      ld.setLabelProvider(new TransactionIdLabelProvider());
+      ld.setTitle("Select Transaction");
+      ld.setMessage("Select Transaction");
+      ld.setInput(transactionIds);
+      if (ld.open() == 0) {
+         return (TransactionId) ld.getResult()[0];
       }
       return null;
    }
@@ -194,7 +224,9 @@ public class AtsBranchManager {
          if (isWorkingBranch()) {
             ChangeView.open(getWorkingBranch());
          } else if (isCommittedBranch()) {
-            ChangeView.open(getTransactionId());
+            TransactionId transactionId = getTransactionIdOrPopupChoose();
+            if (transactionId == null) return;
+            ChangeView.open(transactionId);
          } else {
             AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
          }
@@ -248,7 +280,7 @@ public class AtsBranchManager {
     * @return true if there are committed changes associated with this state machine artifact
     */
    public boolean isCommittedBranch() throws OseeCoreException {
-      return (getTransactionId() != null);
+      return (getTransactionIds().size() > 0);
    }
 
    /**
@@ -553,7 +585,7 @@ public class AtsBranchManager {
       if (smaMgr.getBranchMgr().isWorkingBranch()) {
          changeData = ChangeManager.getChangeDataPerBranch(getWorkingBranch(), null);
       } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
-         TransactionId transactionId = getTransactionId();
+         TransactionId transactionId = getEarliestTransactionId();
          if (changeDataCacheForCommittedBranch.get(transactionId) == null) {
             changeDataCacheForCommittedBranch.put(transactionId, ChangeManager.getChangeDataPerTransaction(
                   transactionId, null));
