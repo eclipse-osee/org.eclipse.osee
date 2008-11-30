@@ -105,7 +105,7 @@ public class OseeSql {
             "select%s art1.art_id, art1.art_type_id, atv1.gamma_id, txs1.mod_type FROM osee_tx_details txd1, osee_txs txs1, osee_artifact_version atv1, osee_artifact art1 WHERE txd1.transaction_id = ? AND txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atv1.gamma_id AND (txs1.mod_type = " + ModificationType.DELETED.getValue() + " OR txs1.mod_type = " + ModificationType.NEW.getValue() + ")  AND atv1.art_id = art1.art_id";
 
       private static final String MODIFYING_TRANSACTION =
-            "SELECT art_id, branch_id, transaction_id from osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id AND txd.transaction_id <= arj.transaction_id AND txd.tx _type = " + TransactionDetailsType.NonBaselined.getId();
+            "SELECT arj.art_id, arj.arjbranch_id, arj.transaction_id from osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id AND txd.transaction_id <= arj.transaction_id AND txd.tx_type = " + TransactionDetailsType.NonBaselined.getId();
 
       private static void addSql(Properties sqlProperties) throws OseeDataStoreException {
          sqlProperties.put(SELECT_BRANCH_ATTRIBUTE_WAS_CHANGE, getFormattedSql(BRANCH_ATTRIBUTE_WAS_CHANGE,
