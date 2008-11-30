@@ -11,13 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
  * @author Ryan D. Brooks
  */
 public class FilterArtifactSearchQuery extends AbstractArtifactSearchQuery {
-   private FilterModelList filterList;
-   private Branch branch;
+   private final FilterModelList filterList;
+   private final Branch branch;
    private String criteriaLabel = "";
 
    /**
@@ -61,11 +61,17 @@ public class FilterArtifactSearchQuery extends AbstractArtifactSearchQuery {
          firstTime = false;
       }
 
-      ISearchConfirmer confirmer = new MaxMatchCountConfirmer();
-      return ArtifactPersistenceManager.getInstance().getArtifacts(criteria, filterList.isAllSelected(), branch,
-            confirmer);
+      MaxMatchCountConfirmer confirmer = new MaxMatchCountConfirmer();
+      Collection<Artifact> artifacts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(criteria, filterList.isAllSelected(), branch,
+                  confirmer);
+      if (confirmer.isConfirmed()) {
+         return artifacts;
+      }
+      return Collections.emptyList();
    }
 
+   @Override
    public String getCriteriaLabel() {
       return criteriaLabel;
    }

@@ -21,20 +21,24 @@ import org.eclipse.swt.widgets.Display;
  */
 public class MaxMatchCountConfirmer implements ISearchConfirmer {
    private static final int MAX_RESULTS = 2000;
+   final MutableBoolean result = new MutableBoolean(false);
 
    public boolean canProceed(final int count) {
       if (count < MAX_RESULTS) {
          return true;
       }
 
-      final MutableBoolean result = new MutableBoolean(false);
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             result.setValue(MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Search",
                   "The search returned " + count + " results and may take a long time to load, continue?"));
          }
-      });
+      }, true);
 
+      return result.getValue();
+   }
+
+   public boolean isConfirmed() {
       return result.getValue();
    }
 }
