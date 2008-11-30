@@ -444,8 +444,8 @@ public class ConflictManagerInternal {
     * should provide the reference for detecting conflicts based on the gamma at that point.
     */
    public static int findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
-      List<Branch> sourceBranches = getBranchHierarchy(sourceBranch);
-      List<Branch> destBranches = getBranchHierarchy(destBranch);
+      List<Branch> sourceBranches = sourceBranch.getBranchHierarchy();
+      List<Branch> destBranches = destBranch.getBranchHierarchy();
       Branch commonBranch = null;
       for (Branch branch : sourceBranches) {
          if (destBranches.contains(branch)) {
@@ -477,16 +477,6 @@ public class ConflictManagerInternal {
          }
       }
       return sourceTransaction <= destTransaction ? sourceTransaction : destTransaction;
-   }
-
-   private static List<Branch> getBranchHierarchy(Branch branch) throws OseeCoreException {
-      List<Branch> ancestors = new LinkedList<Branch>();
-      ancestors.add(branch);
-      while (branch.getParentBranch() != BranchManager.getSystemRootBranch()) {
-         ancestors.add(branch.getParentBranch());
-         branch = branch.getParentBranch();
-      }
-      return ancestors;
    }
 
 }

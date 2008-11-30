@@ -15,6 +15,8 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
@@ -401,5 +403,16 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    public int getParentTransactionId() {
       return parentTransactionId;
+   }
+
+   public List<Branch> getBranchHierarchy() throws OseeCoreException {
+      List<Branch> ancestors = new LinkedList<Branch>();
+      Branch branchCursor = this;
+      ancestors.add(branchCursor);
+      while (branchCursor.hasParentBranch()) {
+         ancestors.add(branchCursor.getParentBranch());
+         branchCursor = branchCursor.getParentBranch();
+      }
+      return ancestors;
    }
 }

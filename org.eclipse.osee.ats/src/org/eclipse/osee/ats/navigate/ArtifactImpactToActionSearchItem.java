@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -29,8 +30,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -120,6 +122,8 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          }
          int x = 1;
          rd.log("Artifact Impact to Action for artifact(s) on default branch \"" + BranchManager.getDefaultBranch().getBranchName() + "\"");
+
+         HashCollection<Artifact, TransactionId> transactionMap = ChangeManager.getModifingTransactions(processArts);
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getDescriptiveName());
             System.out.println(str);
@@ -146,15 +150,14 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             }
             // Add committed changes
             boolean committedChanges = false;
-            Collection<TransactionData> transactions =
-                  RevisionManager.getInstance().getTransactionsPerArtifact(srchArt, true);
-            for (TransactionData transData : transactions) {
+            Collection<TransactionId> transactions = transactionMap.getValues(srchArt);
+            for (TransactionId transactionId : transactions) {
                String transStr = String.format("Tranaction %d/%d", y++, transactions.size());
                System.out.println(transStr);
                monitor.subTask(transStr);
-               if (transData.getCommitArtId() > 0) {
+               if (transactionId.getCommitArtId() > 0) {
                   Artifact assocArt =
-                        ArtifactQuery.getArtifactFromId(transData.getCommitArtId(), BranchManager.getCommonBranch());
+                        ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), BranchManager.getCommonBranch());
                   if (assocArt instanceof TeamWorkFlowArtifact) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Committed",
                            assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
