@@ -69,7 +69,9 @@ public class OseeAts {
             String desc = String.format("Found in \"%s\" version %s.", editorId, version);
             if (editorPart instanceof IActionable) {
                String moreDesc = ((IActionable) editorPart).getActionDescription();
-               if (!moreDesc.equals("")) desc += "\n" + moreDesc;
+               if (moreDesc != null && !moreDesc.equals("")) {
+                  desc += "\n" + moreDesc;
+               }
             }
             createActionViaBug(desc, actionableItem);
          }
