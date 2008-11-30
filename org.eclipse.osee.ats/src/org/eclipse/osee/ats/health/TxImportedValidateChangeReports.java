@@ -63,6 +63,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    private void setup(String databaseTargetId) throws OseeDataStoreException {
       List<ImportedId> importtedIds = getImportedIds();
       for (ImportedId importedId : importtedIds) {
+         appendResultLine(importedId.getSequence() + "\n");
          importedId.load(databaseTargetId);
       }
 
@@ -279,7 +280,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             originalToMapped.clear();
-            chStmt.runPreparedQuery(SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequence());
+            chStmt.runPreparedQuery(10000, SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequence());
             while (chStmt.next()) {
                originalToMapped.put(chStmt.getLong("original_id"), chStmt.getLong("mapped_id"));
             }
