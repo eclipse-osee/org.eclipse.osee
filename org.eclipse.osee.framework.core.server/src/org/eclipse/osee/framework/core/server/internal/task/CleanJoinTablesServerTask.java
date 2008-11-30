@@ -22,13 +22,13 @@ public class CleanJoinTablesServerTask implements IServerTask {
 
    private final static String DELETE_JOIN_TIME = "DELETE FROM %s WHERE insert_time < ?";
    private final static long TEN_MINUTES = 10;
-   private final static long TWENTY_MINUTES = 1000 * 60 * 60;
+   private final static long TWENTY_MINUTES = 1000 * 60 * 20;
 
    private static final String NAME = "Clean up join tables";
 
    private static final String[] TABLES =
          new String[] {"osee_join_artifact", "osee_join_attribute", "osee_join_transaction", "osee_join_export_import",
-               "osee_join_search_tags", "osee_tag_gamma_queue"};
+               "osee_join_search_tags"};
 
    public String getName() {
       return NAME;
