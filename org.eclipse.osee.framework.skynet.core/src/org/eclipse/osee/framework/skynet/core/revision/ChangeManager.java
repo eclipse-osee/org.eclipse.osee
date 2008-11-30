@@ -106,7 +106,7 @@ public class ChangeManager {
 
       for (Artifact artifact : artifacts) {
          Branch branch = artifact.getBranch();
-         int transactionNumber = Integer.MAX_VALUE;
+         int transactionNumber = TransactionIdManager.getlatestTransactionForBranch(branch).getTransactionNumber();
          insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getBranchId(),
                transactionNumber});
 
