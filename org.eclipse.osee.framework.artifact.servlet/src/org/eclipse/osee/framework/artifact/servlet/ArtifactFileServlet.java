@@ -17,7 +17,9 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -100,4 +102,20 @@ public class ArtifactFileServlet extends OseeHttpServlet {
       OseeLog.log(Activator.class, Level.SEVERE, message, ex);
       response.getWriter().write(Lib.exceptionToString(ex));
    }
+   
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet#checkAccessControl()
+    */
+   @Override
+   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+//      String sessionId = request.getParameter("sessionId");
+//      if(sessionId == null){
+//         request.g
+//         CoreServerActivator.getSessionManager().createSession(credential)
+//      }
+//      String interaction =
+//            String.format("%s %s %s", request.getMethod(), request.getRequestURI(), request.getQueryString());
+//      CoreServerActivator.getSessionManager().updateSessionActivity(sessionId, interaction);
+   }
+   
 }
