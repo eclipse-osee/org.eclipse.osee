@@ -95,7 +95,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Priority_Col)) return wva.getWorldViewPriority();
          if (xCol.equals(WorldXViewerFactory.Actionable_Items_Col)) return wva.getWorldViewActionableItems();
          if (xCol.equals(WorldXViewerFactory.User_Community_Col)) return wva.getWorldViewUserCommunity();
-         if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) return wva.getWorldViewVersion();
+         if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) return wva.getWorldViewTargetedVersionStr();
          if (xCol.equals(WorldXViewerFactory.Notes_Col)) return wva.getWorldViewNotes();
 
          if (xCol.equals(WorldXViewerFactory.Resolution_Col)) return wva.getWorldViewResolution();

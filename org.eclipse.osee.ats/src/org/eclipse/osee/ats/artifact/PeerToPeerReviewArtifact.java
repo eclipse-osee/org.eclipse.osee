@@ -94,11 +94,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    }
 
    @Override
-   public String getWorldViewVersion() throws OseeCoreException {
-      return "";
-   }
-
-   @Override
    public Set<User> getPrivilegedUsers() throws OseeCoreException {
       Set<User> users = new HashSet<User>();
       if (getParentTeamWorkflow() != null)
@@ -167,9 +162,9 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    }
 
    @Override
-   public VersionArtifact getTargetedForVersion() throws OseeCoreException {
+   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
       if (getParentSMA() == null) return null;
-      return getParentSMA().getTargetedForVersion();
+      return getParentSMA().getWorldViewTargetedVersion();
    }
 
    @Override

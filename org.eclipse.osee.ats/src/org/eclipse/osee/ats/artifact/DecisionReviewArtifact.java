@@ -68,11 +68,6 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    }
 
    @Override
-   public String getWorldViewVersion() throws OseeCoreException {
-      return "";
-   }
-
-   @Override
    public Set<User> getPrivilegedUsers() throws OseeCoreException {
       Set<User> users = new HashSet<User>();
       if (getParentTeamWorkflow() != null)
@@ -151,8 +146,9 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    }
 
    @Override
-   public VersionArtifact getTargetedForVersion() throws OseeCoreException {
-      return getParentSMA().getTargetedForVersion();
+   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
+      if (getParentSMA() == null) return null;
+      return getParentSMA().getWorldViewTargetedVersion();
    }
 
    @Override
@@ -249,4 +245,5 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    public String getWorldViewReviewReviewer() throws OseeCoreException {
       return "";
    }
+
 }

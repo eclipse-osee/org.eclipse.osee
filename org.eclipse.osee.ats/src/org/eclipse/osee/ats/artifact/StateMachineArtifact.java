@@ -557,7 +557,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return null;
    }
 
-   public abstract VersionArtifact getTargetedForVersion() throws OseeCoreException;
+   public abstract VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
 
    public ChangeType getWorldViewChangeType() throws OseeCoreException {
       return ChangeType.None;
@@ -734,7 +734,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return "";
    }
 
-   public abstract String getWorldViewVersion() throws OseeCoreException;
+   @Override
+   public String getWorldViewTargetedVersionStr() throws OseeCoreException {
+      if (getWorldViewTargetedVersion() == null) {
+         return "";
+      }
+      return getWorldViewTargetedVersion().toString();
+   }
 
    /**
     * Return true if this artifact, it's ATS relations and any of the other side artifacts are dirty

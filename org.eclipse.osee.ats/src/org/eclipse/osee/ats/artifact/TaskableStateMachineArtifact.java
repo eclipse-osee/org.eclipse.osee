@@ -63,8 +63,10 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    }
 
    @Override
-   public String getWorldViewVersion() throws OseeCoreException {
-      return null;
+   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
+      TeamWorkFlowArtifact teamArt = getParentTeamWorkflow();
+      if (teamArt == null) return null;
+      return teamArt.getWorldViewTargetedVersion();
    }
 
    @Override

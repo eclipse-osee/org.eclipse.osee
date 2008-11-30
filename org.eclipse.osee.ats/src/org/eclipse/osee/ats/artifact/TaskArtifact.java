@@ -231,16 +231,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewVersion()
-    */
-   @Override
-   public String getWorldViewVersion() throws OseeCoreException {
-      return null;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    @Override
@@ -260,8 +250,8 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
-   public VersionArtifact getTargetedForVersion() throws OseeCoreException {
-      return getParentSMA().getTargetedForVersion();
+   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
+      return getParentSMA().getWorldViewTargetedVersion();
    }
 
    @Override

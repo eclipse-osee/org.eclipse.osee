@@ -284,7 +284,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public String getWorldViewVersion() throws OseeCoreException {
+   public String getWorldViewTargetedVersionStr() throws OseeCoreException {
       Collection<VersionArtifact> verArts =
             getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       if (verArts.size() == 0) return "";
@@ -306,7 +306,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public VersionArtifact getTargetedForVersion() throws OseeCoreException {
+   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
       try {
          return (VersionArtifact) getRelatedArtifact(AtsRelation.TeamWorkflowTargetedForVersion_Version);
       } catch (ArtifactDoesNotExist ex) {

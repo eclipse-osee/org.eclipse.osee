@@ -41,7 +41,7 @@ public class OpenVersionArtifact extends WorkPageService {
 
    private void performOpen() {
       try {
-         if (((TeamWorkFlowArtifact) smaMgr.getSma()).getTargetedForVersion() != null) ArtifactEditor.editArtifact(((TeamWorkFlowArtifact) smaMgr.getSma()).getTargetedForVersion());
+         if (((TeamWorkFlowArtifact) smaMgr.getSma()).getWorldViewTargetedVersion() != null) ArtifactEditor.editArtifact(((TeamWorkFlowArtifact) smaMgr.getSma()).getWorldViewTargetedVersion());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -71,7 +71,7 @@ public class OpenVersionArtifact extends WorkPageService {
       if (action == null) return;
       boolean enabled = false;
       try {
-         enabled = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTargetedForVersion() != null;
+         enabled = ((TeamWorkFlowArtifact) smaMgr.getSma()).getWorldViewTargetedVersion() != null;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }

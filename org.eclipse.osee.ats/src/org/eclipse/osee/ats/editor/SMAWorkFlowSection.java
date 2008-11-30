@@ -603,7 +603,7 @@ public class SMAWorkFlowSection extends SectionPart {
             // Don't transition without targeted version if so configured
             if (smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || smaMgr.getWorkPageDefinition().hasWorkRule(
                   AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name())) {
-               if (smaMgr.getSma().getTargetedForVersion() == null && !toWorkPageDefinition.isCancelledPage()) {
+               if (smaMgr.getSma().getWorldViewTargetedVersion() == null && !toWorkPageDefinition.isCancelledPage()) {
                   AWorkbench.popup("Error",
                         "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
                   return;

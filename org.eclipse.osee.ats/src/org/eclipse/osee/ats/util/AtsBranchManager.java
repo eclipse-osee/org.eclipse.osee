@@ -498,7 +498,7 @@ public class AtsBranchManager {
                if (team.getTeamDefinition().isTeamUsesVersions()) {
 
                   // Confirm that team is targeted for version
-                  if (team.getTargetedForVersion() == null) {
+                  if (team.getWorldViewTargetedVersion() == null) {
                      return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, String.format(
                            "Commit Branch Failed: Workflow \"%s\" must be targeted for a version.",
                            smaMgr.getSma().getHumanReadableId()));
@@ -527,7 +527,7 @@ public class AtsBranchManager {
                            String.format(
                                  "Commit Branch Failed: Workflow \"%s\" targeted version \"%s\" branch id \"%s\" does not match branch's " + "parent branch id \"%s\"",
                                  smaMgr.getSma().getHumanReadableId(),
-                                 team.getTargetedForVersion().getDescriptiveName(),
+                                 team.getWorldViewTargetedVersion().getDescriptiveName(),
                                  String.valueOf(targetedVersionBranchId),
                                  String.valueOf(workflowWorkingBranchParentBranchId)));
                   }

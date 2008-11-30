@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Date;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -144,7 +145,9 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewValidationRequiredStr() throws OseeCoreException;
 
-   public String getWorldViewVersion() throws OseeCoreException;
+   public String getWorldViewTargetedVersionStr() throws OseeCoreException;
+
+   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
 
    public double getWorldViewWeeklyBenefit() throws OseeCoreException;
 

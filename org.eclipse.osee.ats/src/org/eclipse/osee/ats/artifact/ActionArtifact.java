@@ -596,12 +596,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewVersion()
     */
-   public String getWorldViewVersion() {
+   public String getWorldViewTargetedVersionStr() {
       Set<String> versions = new HashSet<String>();
       try {
          // Roll up version if same for all children
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (!team.getWorldViewVersion().equals("")) versions.add(team.getWorldViewVersion());
+            if (!team.getWorldViewTargetedVersionStr().equals("")) versions.add(team.getWorldViewTargetedVersionStr());
          }
          return Collections.toString(",", versions);
       } catch (OseeCoreException ex) {
@@ -1428,6 +1428,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewTargetedVersion()
+    */
+   @Override
+   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
+      return null;
    }
 
 }

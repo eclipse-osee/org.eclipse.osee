@@ -281,7 +281,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          VersionArtifact verArt = null;
          Set<StateMachineArtifact> smaArts = getXViewer().getSelectedSMAArtifacts();
          if (smaArts.size() != 0) {
-            verArt = smaArts.iterator().next().getTargetedForVersion();
+            verArt = smaArts.iterator().next().getWorldViewTargetedVersion();
             SMAMetrics sMet = new SMAMetrics(smaArts, verArt);
             str = sMet.toString();
          }

@@ -799,7 +799,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
-      return null;
+      return smaMgr.getSma().getWorldViewTargetedVersion();
    }
 
    /* (non-Javadoc)

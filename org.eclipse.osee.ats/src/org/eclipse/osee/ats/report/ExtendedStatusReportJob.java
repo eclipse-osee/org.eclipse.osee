@@ -195,7 +195,7 @@ public class ExtendedStatusReportJob extends Job {
          else if (col == Columns.Date_Created)
             values.add(sma.getWorldViewCreatedDateStr());
          else if (col == Columns.Version) {
-            values.add((sma.getWorldViewVersion() == null || sma.getWorldViewVersion().equals("") ? "." : sma.getWorldViewVersion()));
+            values.add((sma.getWorldViewTargetedVersionStr() == null || sma.getWorldViewTargetedVersionStr().equals("") ? "." : sma.getWorldViewTargetedVersionStr()));
          }
       }
       sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));

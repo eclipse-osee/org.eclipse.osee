@@ -252,7 +252,7 @@ public class SMAManager {
    }
 
    public VersionArtifact getTargetedForVersion() throws OseeCoreException {
-      return sma.getTargetedForVersion();
+      return sma.getWorldViewTargetedVersion();
    }
 
    public boolean promptChangeAssignees() throws OseeCoreException {
@@ -348,9 +348,9 @@ public class SMAManager {
       final VersionListDialog vld =
             new VersionListDialog("Select Version", "Select Version",
                   teamDefHoldingVersions.getVersionsArtifacts(versionReleaseType));
-      if (smas.size() == 1 && smas.iterator().next().getTargetedForVersion() != null) {
+      if (smas.size() == 1 && smas.iterator().next().getWorldViewTargetedVersion() != null) {
          Object[] objs = new Object[1];
-         objs[0] = smas.iterator().next().getTargetedForVersion();
+         objs[0] = smas.iterator().next().getWorldViewTargetedVersion();
          vld.setInitialSelections(objs);
       }
       int result = vld.open();
