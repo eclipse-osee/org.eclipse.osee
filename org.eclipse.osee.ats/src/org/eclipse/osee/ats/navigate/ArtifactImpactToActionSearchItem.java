@@ -151,17 +151,20 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             // Add committed changes
             boolean committedChanges = false;
             Collection<TransactionId> transactions = transactionMap.getValues(srchArt);
-            for (TransactionId transactionId : transactions) {
-               String transStr = String.format("Tranaction %d/%d", y++, transactions.size());
-               System.out.println(transStr);
-               monitor.subTask(transStr);
-               if (transactionId.getCommitArtId() > 0) {
-                  Artifact assocArt =
-                        ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), BranchManager.getCommonBranch());
-                  if (assocArt instanceof TeamWorkFlowArtifact) {
-                     rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Committed",
-                           assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
-                     committedChanges = true;
+            if (transactions != null) {
+               for (TransactionId transactionId : transactions) {
+                  String transStr = String.format("Tranaction %d/%d", y++, transactions.size());
+                  System.out.println(transStr);
+                  monitor.subTask(transStr);
+                  if (transactionId.getCommitArtId() > 0) {
+                     Artifact assocArt =
+                           ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(),
+                                 BranchManager.getCommonBranch());
+                     if (assocArt instanceof TeamWorkFlowArtifact) {
+                        rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(),
+                              "Committed", assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
+                        committedChanges = true;
+                     }
                   }
                }
             }

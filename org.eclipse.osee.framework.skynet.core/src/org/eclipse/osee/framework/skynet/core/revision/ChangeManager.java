@@ -127,11 +127,9 @@ public class ChangeManager {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
                   ClientSessionManager.getSQL(OseeSql.Changes.SELECT_MODIFYING_TRANSACTION), queryId);
             while (chStmt.next()) {
-               int artifactId = chStmt.getInt("art_id");
-               int branchId = chStmt.getInt("branch_id");
-               int transactionNumber = chStmt.getInt("transaction_id");
-               Artifact artifact = ArtifactCache.getActive(artifactId, BranchManager.getBranch(branchId));
-               transactionMap.put(artifact, TransactionIdManager.getTransactionId(transactionNumber));
+               Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
+               Artifact artifact = ArtifactCache.getActive(chStmt.getInt("art_id"), branch);
+               transactionMap.put(artifact, TransactionIdManager.getTransactionId(chStmt.getInt("transaction_id")));
             }
          } finally {
             chStmt.close();
