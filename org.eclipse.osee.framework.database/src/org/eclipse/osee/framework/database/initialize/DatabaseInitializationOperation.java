@@ -140,6 +140,8 @@ public class DatabaseInitializationOperation {
          }
          if (selection <= -1) {
             selectedChoice = getInitChoiceFromUser("Select Init Group To Run.", choices);
+         } else {
+            selectedChoice = choices.get(selection);
          }
       }
       OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("DB Config Choice Selected: [%s]", selectedChoice));
@@ -253,7 +255,7 @@ public class DatabaseInitializationOperation {
       if (dbInfo.isProduction()) {
          System.err.println(String.format(
                "You are not allowed to run config client against production: [%s].\nExiting.", dbInfo.getDatabaseName()));
-         return true;
+         return false;
       }
 
       boolean serverOk = isApplicationServerAlive(serverUrl);
