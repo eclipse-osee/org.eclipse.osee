@@ -52,7 +52,8 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact art = super.toArtifact(writeType);
       try {
-         art.setSoleAttributeFromString(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), XWidgetParser.toXml(get()));
+         art.setSoleAttributeFromString(WorkItemAttributes.WORK_DATA.getAttributeTypeName(),
+               tagName + "=" + XWidgetParser.toXml(get()));
       } catch (ParserConfigurationException ex) {
          throw new OseeCoreException(ex);
       } catch (TransformerException ex) {
