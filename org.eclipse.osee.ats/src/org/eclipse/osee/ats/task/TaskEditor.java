@@ -194,7 +194,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       job.setUser(false);
       job.setPriority(Job.LONG);
       job.schedule();
-      if (provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)) {
+      if (provider.getTableLoadOptions() != null && provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)) {
          try {
             job.join();
          } catch (InterruptedException ex) {
@@ -225,7 +225,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
-      }, provider.getTableLoadOptions().contains(TableLoadOption.ForcePend));
+      }, (provider.getTableLoadOptions() != null && provider.getTableLoadOptions().contains(TableLoadOption.ForcePend)));
    }
 
    private static class LoadTableJob extends Job {
