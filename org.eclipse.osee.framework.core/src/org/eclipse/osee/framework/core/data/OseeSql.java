@@ -76,6 +76,7 @@ public class OseeSql {
       public static final String SELECT_BRANCH_ARTIFACT_CHANGES = "BRANCH_ARTIFACT_CHANGES";
       public static final String SELECT_TRANSACTION_ARTIFACT_CHANGES = "TRANSACTION_ARTIFACT_CHANGES";
       public static final String SELECT_MODIFYING_TRANSACTION = "SELECT_MODIFYING_TRANSACTION";
+      public static final String SELECT_MODIFYING_BRANCHES = "SELECT_MODIFYING_BRANCHES";
 
       private Changes() {
       }
@@ -107,6 +108,9 @@ public class OseeSql {
       private static final String MODIFYING_TRANSACTION =
             "SELECT arj.art_id, arj.branch_id, txd.transaction_id from osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id AND txd.transaction_id <= arj.transaction_id AND txd.tx_type = " + TransactionDetailsType.NonBaselined.getId();
 
+      private static final String MODIFYING_BRANCHES =
+            "SELECT count(txd.transaction_id), arj.branch_id, arj.art_id FROM osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND tx_type = 0 group by arj.art_id,  arj.branch_id";
+
       private static void addSql(Properties sqlProperties) throws OseeDataStoreException {
          sqlProperties.put(SELECT_BRANCH_ATTRIBUTE_WAS_CHANGE, getFormattedSql(BRANCH_ATTRIBUTE_WAS_CHANGE,
                HINTS__ORDERED__FIRST_ROWS));
@@ -133,6 +137,8 @@ public class OseeSql {
 
          sqlProperties.put(SELECT_MODIFYING_TRANSACTION, getFormattedSql(MODIFYING_TRANSACTION,
                HINTS__ORDERED__FIRST_ROWS));
+
+         sqlProperties.put(SELECT_MODIFYING_BRANCHES, getFormattedSql(MODIFYING_BRANCHES, HINTS__ORDERED__FIRST_ROWS));
       }
    }
 

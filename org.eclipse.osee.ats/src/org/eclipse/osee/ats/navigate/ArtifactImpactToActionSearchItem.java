@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
@@ -124,6 +123,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          rd.log("Artifact Impact to Action for artifact(s) on default branch \"" + BranchManager.getDefaultBranch().getBranchName() + "\"");
 
          HashCollection<Artifact, TransactionId> transactionMap = ChangeManager.getModifingTransactions(processArts);
+         HashCollection<Artifact, Branch> branchMap = ChangeManager.getModifingBranches(processArts);
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getDescriptiveName());
             System.out.println(str);
@@ -135,15 +135,19 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
             // Check for changes on working branches
             boolean workingBranchesFound = false;
-            for (Branch branch : RevisionManager.getInstance().getOtherEdittedBranches(srchArt)) {
-               Artifact assocArt = branch.getAssociatedArtifact();
-               if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.NoOne))) {
-                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
-                        assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
-               } else {
-                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getBranchName()}));
+
+            Collection<Branch> branches = branchMap.getValues(srchArt);
+            if (branches != null) {
+               for (Branch branch : branches) {
+                  Artifact assocArt = branch.getAssociatedArtifact();
+                  if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.NoOne))) {
+                     rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
+                           assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
+                  } else {
+                     rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getBranchName()}));
+                  }
+                  workingBranchesFound = true;
                }
-               workingBranchesFound = true;
             }
             if (!workingBranchesFound) {
                rd.addRaw(AHTML.addRowSpanMultiColumnTable("No Impacting Working Branches Found", 3));
