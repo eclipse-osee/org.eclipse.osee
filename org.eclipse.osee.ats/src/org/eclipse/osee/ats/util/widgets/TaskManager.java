@@ -78,8 +78,7 @@ public class TaskManager {
    public TaskArtifact createNewTask(Collection<User> assignees, String title, boolean persist) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt =
-            (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME,
-                  AtsPlugin.getAtsBranch(), title);
+            (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch(), title);
       taskArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
 
       // Initialize state machine
@@ -99,17 +98,15 @@ public class TaskManager {
    }
 
    public Result areTasksComplete() {
-      return areTasksComplete(true);
-   }
-
-   public Result areTasksComplete(boolean popup) {
       try {
          for (TaskArtifact taskArt : getTaskArtifacts()) {
-            if (!taskArt.isCompleted() && taskArt.isCancelled()) return new Result("Not Complete");
+            if (taskArt.isInWork()) {
+               return new Result(false, "Task " + taskArt.getHumanReadableId() + " Not Complete");
+            }
          }
-         return Result.TrueResult;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return new Result(false, "Exception " + ex.getLocalizedMessage());
       }
       return Result.TrueResult;
    }
@@ -130,7 +127,7 @@ public class TaskManager {
    /**
     * Return Estimated Hours for all tasks
     * 
-    * @return
+    * @return hours
     * @throws Exception
     */
    public double getEstimatedHours() throws OseeCoreException {
@@ -157,7 +154,7 @@ public class TaskManager {
    /**
     * Return Remain Hours for all tasks
     * 
-    * @return
+    * @return hours
     * @throws Exception
     */
    public double getRemainHours() throws OseeCoreException {
