@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ValidateAtsDatabase extends XNavigateItemAction {
 
-   private final boolean fixAssignees = false;
+   private final boolean fixAssignees = true;
    private final boolean fixAttributeValues = false;
 
    /**

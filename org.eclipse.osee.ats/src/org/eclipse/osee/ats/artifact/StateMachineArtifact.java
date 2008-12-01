@@ -230,9 +230,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       if (isDeleted()) {
          return;
       }
-      notifyNewAssigneesAndReset();
-      notifyOriginatorAndReset();
       try {
+         notifyNewAssigneesAndReset();
+         notifyOriginatorAndReset();
          updateAssigneeRelations();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -251,6 +251,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public void notifyNewAssigneesAndReset() throws OseeCoreException {
+      if (preSaveStateAssignees == null) {
+         preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
+         return;
+      }
       Set<User> newAssignees = new HashSet<User>();
       for (User user : smaMgr.getStateMgr().getAssignees()) {
          if (!preSaveStateAssignees.contains(user)) {
