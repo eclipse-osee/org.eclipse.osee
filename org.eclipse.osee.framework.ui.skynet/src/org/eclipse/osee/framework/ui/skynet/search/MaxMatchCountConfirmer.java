@@ -25,16 +25,15 @@ public class MaxMatchCountConfirmer implements ISearchConfirmer {
 
    public boolean canProceed(final int count) {
       if (count < MAX_RESULTS) {
-         return true;
+         result.setValue(true);
+      } else {
+         Displays.ensureInDisplayThread(new Runnable() {
+            public void run() {
+               result.setValue(MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Search",
+                     "The search returned " + count + " results and may take a long time to load, continue?"));
+            }
+         }, true);
       }
-
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            result.setValue(MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Search",
-                  "The search returned " + count + " results and may take a long time to load, continue?"));
-         }
-      }, true);
-
       return result.getValue();
    }
 
