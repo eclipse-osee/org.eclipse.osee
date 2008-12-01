@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -207,19 +208,11 @@ public abstract class WorkItemDefinition {
 
    public void loadWorkDataKeyValueMap(Artifact artifact) throws OseeCoreException {
       for (String value : artifact.getAttributesToStringList(WorkItemAttributes.WORK_DATA.getAttributeTypeName())) {
-         // TODO Remove this check once production WorkData has been changed to XWidget=; for backwards compatibility
-         if (value.contains(DynamicXWidgetLayout.XWIDGET)) {
-            addWorkDataKeyValue(DynamicXWidgetLayout.XWIDGET,
-                  value.replaceFirst(DynamicXWidgetLayout.XWIDGET + "=", ""));
-         }
-         // TODO Remove this check once product WorkData has been changed to AtsTaskOptions=; for backwards compatibility
-         else if (value.contains("AtsTaskOptions")) {
-            addWorkDataKeyValue("AtsTaskOptions", value.replaceFirst("AtsTaskOptions=", ""));
+         Matcher m = keyValuePattern.matcher(value);
+         if (m.find()) {
+            addWorkDataKeyValue(m.group(1), m.group(2));
          } else {
-            Matcher m = keyValuePattern.matcher(value);
-            if (m.find()) {
-               addWorkDataKeyValue(m.group(1), m.group(2));
-            }
+            throw new OseeStateException("Illegal value for WorkData; must be key=value");
          }
       }
    }
