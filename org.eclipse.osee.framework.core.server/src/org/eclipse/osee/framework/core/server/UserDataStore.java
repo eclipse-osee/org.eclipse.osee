@@ -29,8 +29,8 @@ public class UserDataStore {
 
    public static IOseeUserInfo getOseeUserFromOseeDb(String userId) {
       IOseeUserInfo toReturn = null;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          chStmt.runPreparedQuery(LOAD_OSEE_USER, userId);
          if (chStmt.next()) {
             // Only need the userId all other fields will be loaded by the client
@@ -39,6 +39,8 @@ public class UserDataStore {
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.SEVERE, String.format(
                "Unable to find userId [%s] in OSEE database.", userId), ex);
+      } finally {
+         chStmt.close();
       }
       return toReturn;
    }

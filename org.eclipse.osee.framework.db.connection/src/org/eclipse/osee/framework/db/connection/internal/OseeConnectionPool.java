@@ -66,6 +66,8 @@ public class OseeConnectionPool {
 
    private synchronized void removeConnection(OseeConnection conn) {
       connections.removeElement(conn);
+      OseeLog.log(InternalActivator.class, Level.INFO, String.format("removeConnection - %s - connections [%s]", dbUrl,
+            connections.size()));
    }
 
    public synchronized OseeConnection getConnection() throws OseeDataStoreException {
@@ -80,13 +82,15 @@ public class OseeConnectionPool {
          c = getOseeConnection();
          c.lease();
          connections.addElement(c);
+         OseeLog.log(InternalActivator.class, Level.INFO, String.format("getConnection - %s - connections [%s]", dbUrl,
+               connections.size()));
          return c;
       } catch (Throwable th) {
          throw new OseeDataStoreException("Unable to get a database connection: ", th);
       }
    }
 
-   public OseeConnection getOseeConnection() throws Exception {
+   private OseeConnection getOseeConnection() throws Exception {
       IConnection connectionFactory = InternalActivator.getConnectionFactory().get(dbDriver);
       OseeLog.log(InternalActivator.class, Level.INFO, "Getting new connection: " + dbUrl);
       Connection connection = connectionFactory.getConnection(properties, dbUrl);
