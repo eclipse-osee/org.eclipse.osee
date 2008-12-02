@@ -128,6 +128,19 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return null;
    }
 
+   public List<TaskResOptionDefinition> getTaskResolutionOptionDefintions(String stateName) throws OseeCoreException {
+      TeamWorkFlowArtifact team = getParentTeamWorkflow();
+      if (team == null) return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
+      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getSmaMgr().getWorkPageDefinitionByName(stateName));
+   }
+
+   public TaskResOptionDefinition getTaskResolutionOptionDefinition(String stateName, String optionName) throws OseeCoreException {
+      for (TaskResOptionDefinition def : getTaskResolutionOptionDefintions(stateName)) {
+         if (def.getName().equals(optionName)) return def;
+      }
+      return null;
+   }
+
    @Override
    public String getDescription() {
       try {
