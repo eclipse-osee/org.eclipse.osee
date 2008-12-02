@@ -269,21 +269,31 @@ public class AtsMetricsComposite extends ScrolledComposite {
                }
             }
             if (sMet.getEstRelDate() == null) {
-               lines.add(new XBarGraphLine(user.getName(), 0, "Estimated Release Date Not Set"));
+               lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format(
+                     "%5.2f - (Estimated release date not set)", userHoursRemain)));
             } else if (versionHoursRemain == null) {
                lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format("%5.2f",
                      userHoursRemain)));
             } else {
-               lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_RED_FOREGROUND,
-                     XBarGraphLine.DEFAULT_RED_BACKGROUND, (int) userHoursRemain, String.format(
-                           "%5.2f - Exceeds release remaining hours %5.2f.", userHoursRemain, versionHoursRemain)));
+               if (userHoursRemain > versionHoursRemain) {
+                  lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_RED_FOREGROUND,
+                        XBarGraphLine.DEFAULT_RED_BACKGROUND, (int) userHoursRemain, String.format(
+                              "%5.2f - Exceeds release remaining hours %5.2f.", userHoursRemain, versionHoursRemain)));
+               } else {
+                  lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
+                        XBarGraphLine.DEFAULT_GREEN_BACKGROUND, (int) userHoursRemain, String.format(
+                              "%5.2f - Within remaining hours %5.2f.", userHoursRemain, versionHoursRemain)));
+               }
             }
          } catch (OseeCoreException ex) {
             lines.add(new XBarGraphLine(user.getName(), 0, "Exception: " + ex.getLocalizedMessage()));
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
-      XBarGraphTable table = new XBarGraphTable("Hours Remaining by Assignee", "User", "Hours Remaining", lines);
+      XBarGraphTable table =
+            new XBarGraphTable(
+                  "Hours Remaining by Assignee (green = within remaining hours; red = exceeds remaining hours till release)",
+                  "User", "Hours Remaining", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
