@@ -11,11 +11,13 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -172,48 +174,52 @@ public class AtsMetricsComposite extends ScrolledComposite {
       lines.add(new XBarGraphLine(sMet.toStringObjectBreakout(), segments));
 
       lines.add(XBarGraphLine.getPercentLine(
-            "By Team Percents (" + sMet.getCummulativeTeamPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
+            "By Team Workflow Percents (" + sMet.getCummulativeTeamPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
             (int) sMet.getPercentCompleteByTeamPercents()));
       lines.add(XBarGraphLine.getPercentLine(
-            "By Team Workflow (" + sMet.getCompletedTeamWorkflows().size() + "/" + sMet.getNumTeamWfs() + ")",
+            "By Number of Team Workflows (" + sMet.getCompletedTeamWorkflows().size() + "/" + sMet.getNumTeamWfs() + ")",
             (int) sMet.getPercentCompleteByTeamWorkflow()));
       lines.add(XBarGraphLine.getPercentLine(
             "By Task Percents (" + sMet.getCummulativeTaskPercentComplete() + "/" + sMet.getNumTasks() + ")",
             (int) sMet.getPercentCompleteByTaskPercents()));
       lines.add(XBarGraphLine.getPercentLine(
-            "By Task (" + sMet.getCompletedTaskWorkflows().size() + "/" + sMet.getNumTasks() + ")",
+            "By Number of Tasks (" + sMet.getCompletedTaskWorkflows().size() + "/" + sMet.getNumTasks() + ")",
             (int) sMet.getPercentCompleteByTaskWorkflow()));
 
       lines.add(XBarGraphLine.getTextLine("Estimated Hours: ", String.format("%5.2f", sMet.getEstHours())));
-      lines.add(XBarGraphLine.getTextLine("Remaining Hours: ", String.format("%5.2f", sMet.getHrsRemain())));
+      lines.add(XBarGraphLine.getTextLine("Remaining Hours: ", String.format(
+            "%5.2f = (Estimated hours - (Estimated hours * Percent Complete))", sMet.getHrsRemain())));
       lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f", sMet.getHrsSpent())));
-      lines.add(XBarGraphLine.getTextLine("Man Days Needed: ", String.format("%5.2f", sMet.getManDaysNeeded())));
+      lines.add(XBarGraphLine.getTextLine("Man Days Needed: ", String.format(
+            "%5.2f = Remaining Hours / Hours Per Day of " + SMAMetrics.MAN_DAY_HOURS, sMet.getManDaysNeeded())));
 
       try {
-         if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
-            lines.add(new XBarGraphLine("Targeted Version", 0,
-                  iAtsMetricsProvider.getMetricsVersionArtifact().toString()));
-            lines.add(new XBarGraphLine("Estimated Release Date", 0,
-                  iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValueAsString(
-                        ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), "Not Set")));
-            double hoursTillRelease = sMet.getHoursTillRel();
-            double hoursRemaining = sMet.getHrsRemain();
-            int percent = 0;
-            if (hoursTillRelease != 0) {
-               percent = (int) (hoursRemaining / hoursTillRelease);
-            }
-            if (sMet.getEstRelDate() == null) {
-               lines.add(new XBarGraphLine("Release Effort Remaining", 0, "Estimated Release Date Not Set"));
-            } else if (percent == 0 || hoursRemaining > hoursTillRelease) {
-               lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
-                     XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
-                           "%5.2f hours exceeds remaining release hours %5.2f", hoursRemaining, hoursTillRelease)));
-            } else {
-               lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
-                     XBarGraphLine.DEFAULT_GREEN_BACKGROUND, SWT.COLOR_WHITE, SWT.COLOR_WHITE, percent, String.format(
-                           "%5.2f remaining work hours", hoursRemaining), String.format(
-                           "%5.2f release remaining hours", hoursRemaining)));
-            }
+         lines.add(new XBarGraphLine(
+               "Targeted Version",
+               0,
+               iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().toString()));
+         lines.add(new XBarGraphLine(
+               "Estimated Release Date",
+               0,
+               iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValueAsString(
+                     ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), "Not Set")));
+         double hoursTillRelease = sMet.getHoursTillRel();
+         double hoursRemaining = sMet.getHrsRemain();
+         int percent = 0;
+         if (hoursTillRelease != 0) {
+            percent = (int) (hoursRemaining / hoursTillRelease);
+         }
+         if (sMet.getEstRelDate() == null) {
+            lines.add(new XBarGraphLine("Release Effort Remaining", 0, "Estimated Release Date Not Set"));
+         } else if (percent == 0 || hoursRemaining > hoursTillRelease) {
+            lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
+                  XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
+                        "%5.2f hours exceeds remaining release hours %5.2f", hoursRemaining, hoursTillRelease)));
+         } else {
+            lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
+                  XBarGraphLine.DEFAULT_GREEN_BACKGROUND, SWT.COLOR_WHITE, SWT.COLOR_WHITE, percent, String.format(
+                        "%5.2f remaining work hours", hoursRemaining), String.format("%5.2f release remaining hours",
+                        hoursRemaining)));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -229,22 +235,43 @@ public class AtsMetricsComposite extends ScrolledComposite {
    public void createCompletedByAssigneesChart(SMAMetrics sMet, Composite parent) {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
       for (User user : sMet.getAssigneesAssignedOrCompleted()) {
-         int completed =
-               sMet.getUserToCompletedSmas().containsKey(user) ? sMet.getUserToCompletedSmas().getValues(user).size() : 0;
-         int inWork =
-               sMet.getUserToAssignedSmas().containsKey(user) ? sMet.getUserToAssignedSmas().getValues(user).size() : 0;
-         int total = completed + inWork;
-         int percentComplete = 0;
-         if (completed == total) {
-            percentComplete = 100;
-         } else if (completed != 0 && total != 0) {
-            double percent = new Double(completed) / total * 100.0;
-            percentComplete = (int) percent;
+         try {
+            int numCompleted =
+                  sMet.getUserToCompletedSmas().containsKey(user) ? sMet.getUserToCompletedSmas().getValues(user).size() : 0;
+            double cummulativePercentComplete = numCompleted * 100;
+            int numInWork =
+                  sMet.getUserToAssignedSmas().containsKey(user) ? sMet.getUserToAssignedSmas().getValues(user).size() : 0;
+            for (Artifact sma : sMet.getUserToAssignedSmas().getValues()) {
+               cummulativePercentComplete += ((StateMachineArtifact) sma).getWorldViewPercentCompleteTotal();
+            }
+            int numTotal = numCompleted + numInWork;
+            int percentCompleteByNumber = 0;
+            if (numCompleted == numTotal) {
+               percentCompleteByNumber = 100;
+            } else if (numCompleted != 0 && numTotal != 0) {
+               double percent = new Double(numCompleted) / numTotal * 100.0;
+               percentCompleteByNumber = (int) percent;
+            }
+            int percentCompleteByPercents = 0;
+            if (cummulativePercentComplete == 0 || numTotal == 0) {
+               percentCompleteByPercents = 100;
+            } else {
+               double percent = cummulativePercentComplete / numTotal;
+               percentCompleteByPercents = (int) percent;
+            }
+            lines.add(XBarGraphLine.getPercentLine(
+                  user.getName() + " by Percents (" + cummulativePercentComplete + "/" + numTotal + ")",
+                  percentCompleteByPercents));
+            lines.add(XBarGraphLine.getPercentLine(
+                  user.getName() + " by Number of Workflows (" + numCompleted + "/" + numTotal + ")",
+                  percentCompleteByNumber));
+         } catch (Exception ex) {
+            lines.add(XBarGraphLine.getTextLine(user.getName(), "Exception: " + ex.getLocalizedMessage()));
          }
-         lines.add(XBarGraphLine.getPercentLine(user.getName() + " (" + completed + "/" + total + ")", percentComplete));
       }
       XBarGraphTable table =
-            new XBarGraphTable("Completed by Assignee per Assigned Workflow", "User", "Percent Complete", lines);
+            new XBarGraphTable("Completed by Assignee per Assigned Workflow (red = not complete; green = complete)",
+                  "User", "Percent Complete", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);

@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class SMAMetrics {
 
-   private static double manDayHrs = 7.2;
+   public static double MAN_DAY_HOURS = 7.2;
    private static int MILLISECS_PER_DAY = (1000 * 60 * 60 * 24);
 
    double estHours = 0;
@@ -74,7 +74,7 @@ public class SMAMetrics {
     * @return the manDayHrs
     */
    public static double getManDayHrs() {
-      return manDayHrs;
+      return MAN_DAY_HOURS;
    }
 
    /**
@@ -137,7 +137,7 @@ public class SMAMetrics {
     * @return the hours till release
     */
    public double getHoursTillRel() {
-      return daysTillRel * manDayHrs;
+      return daysTillRel * MAN_DAY_HOURS;
    }
 
    /**
@@ -377,7 +377,7 @@ public class SMAMetrics {
          manDaysNeeded += team.getWorldViewManDaysNeeded();
          cummulativeTeamPercentComplete += team.getWorldViewPercentCompleteTotal();
       }
-      if (hrsRemain != 0) manDaysNeeded = hrsRemain / manDayHrs;
+      if (hrsRemain != 0) manDaysNeeded = hrsRemain / MAN_DAY_HOURS;
       percentCompleteByTeamPercents = 0;
       if (getNumTeamWfs() > 0 && cummulativeTeamPercentComplete > 0) {
          percentCompleteByTeamPercents = cummulativeTeamPercentComplete / getNumTeamWfs();
@@ -431,7 +431,7 @@ public class SMAMetrics {
    }
 
    public String toStringObjectBreakout() {
-      return String.format("Actions: %s  - Team Workflows: %s - Tasks: %s - Reviews: %s ", getNumActions(),
+      return String.format("Breakout: Actions: %s  - Team Workflows: %s - Tasks: %s - Reviews: %s ", getNumActions(),
             getNumTeamWfs(), getNumTasks(), getNumReviews());
    }
 
