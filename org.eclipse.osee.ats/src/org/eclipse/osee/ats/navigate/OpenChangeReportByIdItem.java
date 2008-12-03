@@ -91,6 +91,14 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                            }
                         }
                      });
+                  } else {
+                     Displays.ensureInDisplayThread(new Runnable() {
+                        @Override
+                        public void run() {
+                           MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Open Change Reports",
+                                 "No change report exists for " + srch.getEnteredIds());
+                        }
+                     });
                   }
                } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, false);
@@ -105,5 +113,4 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
       }
 
    }
-
 }
