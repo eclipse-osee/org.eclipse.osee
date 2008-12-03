@@ -277,8 +277,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
          }
       }
       XBarGraphTable table =
-            new XBarGraphTable("Completed by Assignee per Assigned Workflow (red = not complete; green = complete)",
-                  "User", "Percent Complete", lines);
+            new XBarGraphTable("Completed by Assignee per Assigned Workflow", "User", "Percent Complete", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
