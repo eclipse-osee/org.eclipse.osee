@@ -7,7 +7,9 @@ package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -241,8 +243,13 @@ public class AtsMetricsComposite extends ScrolledComposite {
             double cummulativePercentComplete = numCompleted * 100;
             int numInWork =
                   sMet.getUserToAssignedSmas().containsKey(user) ? sMet.getUserToAssignedSmas().getValues(user).size() : 0;
+            // Since table is loaded with arts and also shows children, don't want to count artifacts twice
+            Set<Artifact> processedArts = new HashSet<Artifact>();
             for (Artifact sma : sMet.getUserToAssignedSmas().getValues()) {
-               cummulativePercentComplete += ((StateMachineArtifact) sma).getWorldViewPercentCompleteTotal();
+               if (!processedArts.contains(sma) && !sMet.getUserToCompletedSmas().containsValue(sma)) {
+                  cummulativePercentComplete += ((StateMachineArtifact) sma).getWorldViewPercentCompleteTotal();
+                  processedArts.add(sma);
+               }
             }
             int numTotal = numCompleted + numInWork;
             int percentCompleteByNumber = 0;
@@ -259,10 +266,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
                double percent = cummulativePercentComplete / numTotal;
                percentCompleteByPercents = (int) percent;
             }
-            lines.add(XBarGraphLine.getPercentLine(
+            lines.add(XBarGraphLine.getPercentLineBlueGreen(
                   user.getName() + " by Percents (" + cummulativePercentComplete + "/" + numTotal + ")",
                   percentCompleteByPercents));
-            lines.add(XBarGraphLine.getPercentLine(
+            lines.add(XBarGraphLine.getPercentLineBlueGreen(
                   user.getName() + " by Number of Workflows (" + numCompleted + "/" + numTotal + ")",
                   percentCompleteByNumber));
          } catch (Exception ex) {

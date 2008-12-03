@@ -1160,6 +1160,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @throws Exception
     */
    public int getPercentCompleteSMATotal() throws OseeCoreException {
+      if (smaMgr.isCancelledOrCompleted()) return 100;
       Map<String, Double> stateToWeightMap = getStatePercentCompleteWeight();
       if (stateToWeightMap.size() > 0) {
          // Calculate total percent using configured weighting

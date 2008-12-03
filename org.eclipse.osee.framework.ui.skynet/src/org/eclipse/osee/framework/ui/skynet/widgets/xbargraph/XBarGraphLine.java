@@ -17,6 +17,8 @@ public class XBarGraphLine {
    public static int DEFAULT_RED_BACKGROUND = SWT.COLOR_YELLOW;
    public static int DEFAULT_GREEN_FOREGROUND = SWT.COLOR_GREEN;
    public static int DEFAULT_GREEN_BACKGROUND = SWT.COLOR_YELLOW;
+   public static int DEFAULT_BLUE_FOREGROUND = SWT.COLOR_BLUE;
+   public static int DEFAULT_BLUE_BACKGROUND = SWT.COLOR_YELLOW;
    public String name;
    List<XBarGraphLineSegment> segments = new ArrayList<XBarGraphLineSegment>();
 
@@ -57,6 +59,14 @@ public class XBarGraphLine {
          return new XBarGraphLine(name, DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value, value + "%");
       } else {
          return new XBarGraphLine(name, DEFAULT_RED_FOREGROUND, DEFAULT_RED_BACKGROUND, value, value + "%");
+      }
+   }
+
+   public static XBarGraphLine getPercentLineBlueGreen(String name, int value) {
+      if (value == 100.0) {
+         return new XBarGraphLine(name, DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value, value + "%");
+      } else {
+         return new XBarGraphLine(name, SWT.COLOR_YELLOW, SWT.COLOR_GREEN, value, value + "%");
       }
    }
 
