@@ -431,6 +431,16 @@ public class Jaxp {
    }
 
    /**
+    * Adds an XML comment to a document
+    * 
+    * @param d
+    * @param comment
+    */
+   public static void addComment(Document d, String comment) {
+      d.appendChild(d.createComment(comment));
+   }
+
+   /**
     * Writes the XML document 'document' to the 'file'.
     * 
     * @param document The XML document to output
