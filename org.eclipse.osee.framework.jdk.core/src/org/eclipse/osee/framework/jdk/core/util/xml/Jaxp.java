@@ -444,7 +444,7 @@ public class Jaxp {
    public static void prependComment(Document d, String comment) {
 	      Node commentNode = d.createComment(comment);
 	      Node firstNode = d.getChildNodes().item(0);
-	      d.insertBefore(firstNode, commentNode);
+	      d.insertBefore(commentNode, firstNode);
 	   }
 
    /**
