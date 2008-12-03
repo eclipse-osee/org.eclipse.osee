@@ -438,7 +438,14 @@ public class Jaxp {
     */
    public static void addComment(Document d, String comment) {
       d.appendChild(d.createComment(comment));
+      d.getChildNodes().item(0);
    }
+   
+   public static void prependComment(Document d, String comment) {
+	      Node commentNode = d.createComment(comment);
+	      Node firstNode = d.getChildNodes().item(0);
+	      d.insertBefore(firstNode, commentNode);
+	   }
 
    /**
     * Writes the XML document 'document' to the 'file'.
