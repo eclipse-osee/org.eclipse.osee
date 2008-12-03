@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
@@ -24,11 +27,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Favorites {
 
-   private final StateMachineArtifact sma;
+   private final Collection<StateMachineArtifact> smas;
 
    public Favorites(StateMachineArtifact sma) {
+      this(Arrays.asList(sma));
+   }
+
+   public Favorites(Collection<StateMachineArtifact> smas) {
       super();
-      this.sma = sma;
+      this.smas = smas;
    }
 
    public void toggleFavorite() {
@@ -37,22 +44,33 @@ public class Favorites {
 
    public void toggleFavorite(boolean prompt) {
       try {
-         if (((IFavoriteableArtifact) sma).amIFavorite()) {
+         if (((IFavoriteableArtifact) smas.iterator().next()).amIFavorite()) {
             boolean result = true;
             if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
-            if (result) ((IFavoriteableArtifact) sma).removeFavorite(UserManager.getUser());
+            if (result) {
+               SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+               for (StateMachineArtifact sma : smas) {
+                  ((IFavoriteableArtifact) sma).removeFavorite(UserManager.getUser(), transaction);
+               }
+               transaction.execute();
+            }
          } else {
             boolean result = true;
             if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Favorite", "Are you sure you wish add this as a Favorite?");
-            if (result) ((IFavoriteableArtifact) sma).addFavorite(UserManager.getUser());
+            if (result) {
+               SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+               for (StateMachineArtifact sma : smas) {
+                  ((IFavoriteableArtifact) sma).addFavorite(UserManager.getUser(), transaction);
+               }
+               transaction.execute();
+            }
          }
       } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
-
 }

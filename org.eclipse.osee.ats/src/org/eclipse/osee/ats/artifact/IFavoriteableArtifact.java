@@ -13,15 +13,16 @@ package org.eclipse.osee.ats.artifact;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IFavoriteableArtifact {
 
-   public void addFavorite(User u) throws OseeCoreException;
+   public void addFavorite(User u, SkynetTransaction transaction) throws OseeCoreException;
 
-   public void removeFavorite(User u) throws OseeCoreException;
+   public void removeFavorite(User u, SkynetTransaction transaction) throws OseeCoreException;
 
    public boolean isFavorite(User u) throws OseeCoreException;
 

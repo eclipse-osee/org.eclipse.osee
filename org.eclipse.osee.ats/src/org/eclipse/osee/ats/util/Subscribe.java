@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
@@ -24,11 +27,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Subscribe {
 
-   private final StateMachineArtifact sma;
+   private final Collection<StateMachineArtifact> smas;
 
    public Subscribe(StateMachineArtifact sma) {
+      this(Arrays.asList(sma));
+   }
+
+   public Subscribe(Collection<StateMachineArtifact> smas) {
       super();
-      this.sma = sma;
+      this.smas = smas;
    }
 
    public void toggleSubscribe() {
@@ -37,7 +44,7 @@ public class Subscribe {
 
    public void toggleSubscribe(boolean prompt) {
       try {
-         if (((ISubscribableArtifact) sma).amISubscribed()) {
+         if (((ISubscribableArtifact) smas.iterator().next()).amISubscribed()) {
             boolean result = true;
             if (prompt) result =
                   MessageDialog.openQuestion(
@@ -45,7 +52,11 @@ public class Subscribe {
                         "Un-Subscribe",
                         "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
             if (result) {
-               ((ISubscribableArtifact) sma).removeSubscribed(UserManager.getUser());
+               SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+               for (StateMachineArtifact sma : smas) {
+                  ((ISubscribableArtifact) sma).removeSubscribed(UserManager.getUser(), transaction);
+               }
+               transaction.execute();
             }
          } else {
             boolean result = true;
@@ -54,7 +65,11 @@ public class Subscribe {
                         "Subscribe",
                         "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
             if (result) {
-               ((ISubscribableArtifact) sma).addSubscribed(UserManager.getUser());
+               SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+               for (StateMachineArtifact sma : smas) {
+                  ((ISubscribableArtifact) sma).addSubscribed(UserManager.getUser(), transaction);
+               }
+               transaction.execute();
             }
 
          }

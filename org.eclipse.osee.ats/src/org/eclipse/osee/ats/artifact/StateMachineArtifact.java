@@ -406,17 +406,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return workFlowDefinition;
    }
 
-   public void addSubscribed(User user) throws OseeCoreException {
+   public void addSubscribed(User user, SkynetTransaction transaction) throws OseeCoreException {
       if (!getRelatedArtifacts(AtsRelation.SubscribedUser_User).contains(user)) {
          addRelation(AtsRelation.SubscribedUser_User, user);
-         persistRelations();
+         persistRelations(transaction);
       }
 
    }
 
-   public void removeSubscribed(User user) throws OseeCoreException {
+   public void removeSubscribed(User user, SkynetTransaction transaction) throws OseeCoreException {
       deleteRelation(AtsRelation.SubscribedUser_User, user);
-      persistRelations();
+      persistRelations(transaction);
    }
 
    public boolean isSubscribed(User user) throws OseeCoreException {
@@ -430,15 +430,16 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return arts;
    }
 
-   public void addFavorite(User user) throws OseeCoreException {
-      if (!getRelatedArtifacts(AtsRelation.FavoriteUser_User).contains(user)) addRelation(
-            AtsRelation.FavoriteUser_User, user);
-      persistRelations();
+   public void addFavorite(User user, SkynetTransaction transaction) throws OseeCoreException {
+      if (!getRelatedArtifacts(AtsRelation.FavoriteUser_User).contains(user)) {
+         addRelation(AtsRelation.FavoriteUser_User, user);
+         persistRelations(transaction);
+      }
    }
 
-   public void removeFavorite(User user) throws OseeCoreException {
+   public void removeFavorite(User user, SkynetTransaction transaction) throws OseeCoreException {
       deleteRelation(AtsRelation.FavoriteUser_User, user);
-      persistRelations();
+      persistRelations(transaction);
    }
 
    public boolean isFavorite(User user) throws OseeCoreException {

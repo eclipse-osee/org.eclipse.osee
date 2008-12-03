@@ -13,15 +13,16 @@ package org.eclipse.osee.ats.artifact;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
  */
 public interface ISubscribableArtifact {
 
-   public void addSubscribed(User u) throws OseeCoreException;
+   public void addSubscribed(User u, SkynetTransaction transaction) throws OseeCoreException;
 
-   public void removeSubscribed(User u) throws OseeCoreException;
+   public void removeSubscribed(User u, SkynetTransaction transaction) throws OseeCoreException;
 
    public boolean isSubscribed(User u) throws OseeCoreException;
 

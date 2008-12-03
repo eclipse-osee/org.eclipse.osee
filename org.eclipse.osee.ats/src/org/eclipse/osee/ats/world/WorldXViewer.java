@@ -379,14 +379,14 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       favoritesAction = new Action("Add as Favorite", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (getSelectedSMA() != null) (new Favorites(getSelectedSMA())).toggleFavorite();
+            if (getSelectedSMA() != null) (new Favorites(getSelectedSMAArtifacts())).toggleFavorite();
          }
       };
 
       subscribedAction = new Action("Subscribe for Notifications", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (getSelectedSMA() != null) (new Subscribe(getSelectedSMA())).toggleSubscribe();
+            if (getSelectedSMA() != null) (new Subscribe(getSelectedSMAArtifacts())).toggleSubscribe();
          }
       };
 
@@ -600,14 +600,14 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
       // OTHER MENU BLOCK
       mm.insertBefore(MENU_GROUP_PRE, favoritesAction);
-      favoritesAction.setEnabled(getSelectedSMAArtifacts().size() == 1 && (getSelectedSMA() instanceof IFavoriteableArtifact));
+      favoritesAction.setEnabled(enableFavoritesAction());
       if (getSelectedSMA() == null)
          favoritesAction.setText(ADD_AS_FAVORITE);
       else
          favoritesAction.setText(((IFavoriteableArtifact) getSelectedSMA()).amIFavorite() ? REMOVE_FAVORITE : ADD_AS_FAVORITE);
 
       mm.insertBefore(MENU_GROUP_PRE, subscribedAction);
-      subscribedAction.setEnabled(getSelectedSMAArtifacts().size() == 1 && (getSelectedSMA() instanceof ISubscribableArtifact));
+      subscribedAction.setEnabled(enableSubscribedAction());
       if (getSelectedSMA() == null)
          subscribedAction.setText(SUBSCRIBE);
       else
@@ -623,6 +623,22 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       mm.insertAfter(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OTHER));
       mm.insertAfter(MENU_GROUP_PRE, new Separator());
 
+   }
+
+   private boolean enableFavoritesAction() {
+      if (getSelectedSMAArtifacts().size() == 0) return false;
+      for (StateMachineArtifact sma : getSelectedSMAArtifacts()) {
+         if (!(sma instanceof IFavoriteableArtifact)) return false;
+      }
+      return true;
+   }
+
+   private boolean enableSubscribedAction() {
+      if (getSelectedSMAArtifacts().size() == 0) return false;
+      for (StateMachineArtifact sma : getSelectedSMAArtifacts()) {
+         if (!(sma instanceof ISubscribableArtifact)) return false;
+      }
+      return true;
    }
 
    public void handleDoubleClick() {
