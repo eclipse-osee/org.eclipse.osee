@@ -443,7 +443,8 @@ public class Jaxp {
    
    public static void prependComment(Document d, String comment) {
 	      Node commentNode = d.createComment(comment);
-	      Node firstNode = d.getChildNodes().item(0);
+	      
+	      Node firstNode = getChild(d.getDocumentElement(), "TestScript");
 	      d.insertBefore(commentNode, firstNode);
 	   }
 
