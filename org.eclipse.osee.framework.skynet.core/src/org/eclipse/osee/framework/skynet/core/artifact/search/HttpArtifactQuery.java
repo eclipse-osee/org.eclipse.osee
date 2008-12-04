@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,15 +36,15 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 final class HttpArtifactQuery {
    private final String queryString;
    private final boolean matchWordOrder;
-   private final boolean nameOnly;
+   private final String[] attributeTypes;
    private final boolean includeDeleted;
    private final Branch branch;
 
-   protected HttpArtifactQuery(String queryString, boolean matchWordOrder, boolean nameOnly, boolean includeDeleted, Branch branch) {
+   protected HttpArtifactQuery(Branch branch, String queryString, boolean matchWordOrder, boolean includeDeleted, String... attributeTypes) {
       this.branch = branch;
       this.matchWordOrder = matchWordOrder;
       this.includeDeleted = includeDeleted;
-      this.nameOnly = nameOnly;
+      this.attributeTypes = attributeTypes;
       this.queryString = queryString;
    }
 
@@ -55,12 +56,18 @@ final class HttpArtifactQuery {
       if (includeDeleted) {
          parameters.put("include deleted", "true");
       }
-      if (nameOnly) {
-         parameters.put("name only", "true");
-      }
       if (matchWordOrder) {
          parameters.put("match word order", "true");
       }
+      // TODO: Add Attribute type names
+      boolean nameOnly = false;
+      if (attributeTypes != null && Arrays.deepToString(attributeTypes).contains("Name")) {
+         nameOnly = true;
+      }
+      if (nameOnly) {
+         parameters.put("name only", "true");
+      }
+
       return HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_CONTEXT, parameters);
    }
 

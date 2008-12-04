@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
@@ -23,15 +24,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    private final String queryString;
-   private final boolean nameOnly;
+   private final String[] attributeTypeNames;
    private final boolean includeDeleted;
    private final boolean matchWordOrder;
    private final Branch branch;
 
-   RemoteArtifactSearch(String queryString, Branch branch, boolean nameOnly, boolean includeDeleted, boolean matchWordOrder) {
+   RemoteArtifactSearch(String queryString, Branch branch, boolean includeDeleted, boolean matchWordOrder, String... attributeTypeNames) {
       this.branch = branch;
       this.includeDeleted = includeDeleted;
-      this.nameOnly = nameOnly;
+      this.attributeTypeNames = attributeTypeNames;
       this.queryString = queryString;
       this.matchWordOrder = matchWordOrder;
    }
@@ -41,8 +42,8 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
     */
    @Override
    public Collection<Artifact> getArtifacts() throws Exception {
-      return ArtifactQuery.getArtifactsFromAttributeWithKeywords(queryString, matchWordOrder, nameOnly, includeDeleted,
-            branch);
+      return ArtifactQuery.getArtifactsFromAttributeWithKeywords(branch, queryString, matchWordOrder, includeDeleted,
+            attributeTypeNames);
    }
 
    /* (non-Javadoc)
@@ -51,10 +52,6 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    @Override
    public String getCriteriaLabel() {
       List<String> optionsList = new ArrayList<String>();
-      if (nameOnly) {
-         optionsList.add("Name Only");
-      }
-
       if (includeDeleted) {
          optionsList.add("Include Deleted");
       }
@@ -62,6 +59,11 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       if (matchWordOrder) {
          optionsList.add("Match Word Order");
       }
+
+      if (attributeTypeNames != null && attributeTypeNames.length > 0) {
+         optionsList.add(String.format("Attribute Type Filter:%s", Arrays.deepToString(attributeTypeNames)));
+      }
+
       String options = String.format(" - Options:[%s]", StringFormat.listToValueSeparatedString(optionsList, "& "));
       return String.format("%s%s", queryString, optionsList.size() > 0 ? options : "");
    }

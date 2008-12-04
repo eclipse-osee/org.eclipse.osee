@@ -37,23 +37,26 @@ public class ArtifactQueryTest extends TestCase {
    public void testQuickSearch() throws Exception {
       Branch branch = BranchManager.getKeyedBranch("V13 FTB0");
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactsFromAttributeWithKeywords("[.PRE_RETRIES]", true, false, false, branch);
+            ArtifactQuery.getArtifactsFromAttributeWithKeywords(branch, "[.PRE_RETRIES]", true, false);
       Collections.sort(artifacts);
       Artifact[] results = artifacts.toArray(new Artifact[artifacts.size()]);
       assertEquals(
             "[PRESET_DATABASE Local Data Definition, {MODEM_PARAMETER_SELECTION} Procedure, {RETRIES} Display Logic]",
             Arrays.deepToString(results));
 
-      artifacts = ArtifactQuery.getArtifactsFromAttributeWithKeywords("[.PRE_RETRIES]", true, false, true, branch);
+      artifacts = ArtifactQuery.getArtifactsFromAttributeWithKeywords(branch, "[.PRE_RETRIES]", true, true);
       Collections.sort(artifacts);
       results = artifacts.toArray(new Artifact[artifacts.size()]);
       assertEquals(
             "[PRESET_DATABASE Local Data Definition, {MODEM_PARAMETER_SELECTION} Procedure, {RETRIES} Display Logic, {UPDATE_LONGBOW_NET_PARAMETERS} Procedure]",
             Arrays.deepToString(results));
 
-      artifacts = ArtifactQuery.getArtifactsFromAttributeWithKeywords("edit_ale_net_sel", true, false, false, branch);
+      artifacts = ArtifactQuery.getArtifactsFromAttributeWithKeywords(branch, "edit_ale_net_sel", true, false);
       Collections.sort(artifacts);
       results = artifacts.toArray(new Artifact[artifacts.size()]);
       assertEquals("[{EDIT_ALE_NET_SEL} Display Logic, {EDIT_FREQ_UIG} Display Logic]", Arrays.deepToString(results));
+
+      // Filter Tests
+
    }
 }

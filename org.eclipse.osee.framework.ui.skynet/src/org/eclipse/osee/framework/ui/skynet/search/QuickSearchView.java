@@ -14,10 +14,20 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -28,7 +38,9 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
+import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -53,25 +65,33 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    private static final String LAST_QUERY_KEY_ID = "lastQuery";
    private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
    private static final String OPTIONS_KEY_ID = "searchOption";
+   private static final String OPTION_CONFIGS_KEY_ID = "optionConfigs";
 
    private static final String MAIN_HELP_CONTEXT = "quick_search_text";
 
    private enum SearchOption {
-      Name_Only("quick_search_name_option", "When selected, searches only through the artifact's name attribute field.", true),
+      Attribute_Type_Filter("quick_search_attribute_type_filter", "When selected, searches only through the artifact's containing the selected attribute types.", true, new AttributeTypeFilterConfigHandler()),
       By_Id("quick_search_by_id_option", "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.", true),
       Match_Word_Order("quick_search_word_order_option", "When selected, match search string word order.", false),
       Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.", false);
 
       private static String[] labels = null;
       private static String[] mutuallyExclusive = null;
+      private static Map<String, IOptionConfigurationHandler> configurable = null;
       private final String helpContext;
       private final String toolTip;
       private final boolean isRadio;
+      private final IOptionConfigurationHandler configHandler;
 
       SearchOption(String helpContext, String toolTip, boolean isRadio) {
+         this(helpContext, toolTip, isRadio, null);
+      }
+
+      SearchOption(String helpContext, String toolTip, boolean isRadio, IOptionConfigurationHandler configHandler) {
          this.helpContext = "";
          this.toolTip = toolTip;
          this.isRadio = isRadio;
+         this.configHandler = configHandler;
       }
 
       public String asLabel() {
@@ -86,6 +106,14 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
          return toolTip;
       }
 
+      public boolean isConfigurable() {
+         return configHandler != null;
+      }
+
+      public IOptionConfigurationHandler getConfigHandler() {
+         return configHandler;
+      }
+
       public static String[] getMutuallyExclusiveOptions() {
          if (mutuallyExclusive == null) {
             List<String> exclusiveOptions = new ArrayList<String>();
@@ -97,6 +125,18 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
             mutuallyExclusive = exclusiveOptions.toArray(new String[exclusiveOptions.size()]);
          }
          return mutuallyExclusive;
+      }
+
+      public static Map<String, IOptionConfigurationHandler> getConfigurableOptions() {
+         if (configurable == null) {
+            configurable = new HashMap<String, IOptionConfigurationHandler>();
+            for (SearchOption option : SearchOption.values()) {
+               if (option.isConfigurable()) {
+                  configurable.put(option.asLabel(), option.getConfigHandler());
+               }
+            }
+         }
+         return configurable;
       }
 
       public static String[] asLabels() {
@@ -144,6 +184,15 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
             }
          }
          memento.putString(QUERY_HISTORY_KEY_ID, builder.toString());
+
+         Map<String, String[]> data = searchComposite.getConfigurations();
+         for (String key : data.keySet()) {
+            String[] config = data.get(key);
+            if (config != null && config.length > 0) {
+               memento.putString(OPTION_CONFIGS_KEY_ID + key.replaceAll(" ", "_"), StringFormat.separateWith(config,
+                     ENTRY_SEPARATOR));
+            }
+         }
       }
    }
 
@@ -152,8 +201,18 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
          String lastQuery = memento.getString(LAST_QUERY_KEY_ID);
 
          Map<String, Boolean> options = new HashMap<String, Boolean>();
+         Map<String, String[]> configs = new HashMap<String, String[]>();
+
          for (SearchOption option : SearchOption.values()) {
             options.put(option.asLabel(), new Boolean(memento.getString(OPTIONS_KEY_ID + option.name())));
+
+            if (option.isConfigurable()) {
+               String configuration = memento.getString(OPTION_CONFIGS_KEY_ID + option.name());
+               if (Strings.isValid(configuration)) {
+                  String[] values = configuration.split(ENTRY_SEPARATOR);
+                  configs.put(option.asLabel(), values);
+               }
+            }
          }
 
          List<String> queries = new ArrayList<String>();
@@ -168,7 +227,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
                }
             }
          }
-         searchComposite.restoreWidgetValues(queries, lastQuery, options);
+         searchComposite.restoreWidgetValues(queries, lastQuery, options, configs);
       }
    }
 
@@ -197,7 +256,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       searchComposite =
-            new SearchComposite(panel, SWT.NONE, SearchOption.asLabels(), SearchOption.getMutuallyExclusiveOptions());
+            new SearchComposite(panel, SWT.NONE, SearchOption.asLabels(), SearchOption.getMutuallyExclusiveOptions(),
+                  SearchOption.getConfigurableOptions());
       searchComposite.addListener(this);
 
       loadState();
@@ -238,11 +298,12 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
                      BranchManager.getDefaultBranch(),
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel())));
             } else {
-               NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
+               NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(
+                     searchComposite.getQuery(),
                      BranchManager.getDefaultBranch(),
-                     searchComposite.isOptionSelected(SearchOption.Name_Only.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel()),
-                     searchComposite.isOptionSelected(SearchOption.Match_Word_Order.asLabel())));
+                     searchComposite.isOptionSelected(SearchOption.Match_Word_Order.asLabel()),
+                     searchComposite.isOptionSelected(SearchOption.Attribute_Type_Filter.asLabel()) ? searchComposite.getConfiguration(SearchOption.Attribute_Type_Filter.asLabel()) : null));
             }
          }
       }
@@ -277,5 +338,99 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
     */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   private final static class AttributeTypeFilterConfigHandler implements IOptionConfigurationHandler {
+      private List<String> configuration;
+
+      public AttributeTypeFilterConfigHandler() {
+         this.configuration = new ArrayList<String>();
+         this.configuration.add(getDefault());
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler#configure()
+       */
+      @Override
+      public void configure() {
+         try {
+            Collection<AttributeType> taggableItems = AttributeTypeManager.getTaggableTypes();
+            AttributeTypeCheckTreeDialog dialog = new AttributeTypeCheckTreeDialog(taggableItems);
+            dialog.setTitle("Attribute Type Filter Selection");
+            dialog.setMessage("Select attribute types to search in.");
+
+            List<AttributeType> selectedElements = new ArrayList<AttributeType>();
+            if (configuration.contains("All")) {
+               selectedElements.addAll(taggableItems);
+            } else {
+               for (AttributeType type : taggableItems) {
+                  if (configuration.contains(type.getName())) {
+                     selectedElements.add(type);
+                  }
+               }
+            }
+            dialog.setInitialElementSelections(selectedElements);
+
+            int result = dialog.open();
+            if (result == Window.OK) {
+               configuration.clear();
+               Collection<AttributeType> results = dialog.getSelection();
+               if (org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(taggableItems, results).isEmpty()) {
+                  // All were selected
+                  configuration.add("All");
+               } else {
+                  for (AttributeType selected : results) {
+                     configuration.add(selected.getName());
+                  }
+                  if (configuration.isEmpty()) {
+                     configuration.add(getDefault());
+                  }
+               }
+            }
+            Collections.sort(configuration);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler#getConfigToolTip()
+       */
+      @Override
+      public String getConfigToolTip() {
+         return "Select to configure attribute type filter.";
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler#getConfiguration()
+       */
+      @Override
+      public String[] getConfiguration() {
+         if (configuration.isEmpty()) {
+            configuration.add(getDefault());
+         }
+         return configuration.toArray(new String[configuration.size()]);
+      }
+
+      public String getDefault() {
+         return "Name";
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler#setConfiguration(java.lang.String[])
+       */
+      @Override
+      public void setConfiguration(String[] items) {
+         if (items != null) {
+            configuration.clear();
+            for (String entry : items) {
+               configuration.add(entry);
+            }
+         }
+         if (configuration.isEmpty()) {
+            configuration.add(getDefault());
+         }
+      }
+
    }
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_BASE_TYPE_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_PROVIDER_TYPE_TABLE;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,6 +97,17 @@ public class AttributeTypeManager {
    public static Collection<AttributeType> getAllTypes() throws OseeDataStoreException {
       ensurePopulated();
       return instance.idToTypeMap.values();
+   }
+
+   public static Collection<AttributeType> getTaggableTypes() throws OseeDataStoreException {
+      ensurePopulated();
+      Collection<AttributeType> taggableTypes = new ArrayList<AttributeType>();
+      for (AttributeType type : instance.idToTypeMap.values()) {
+         if (type.isTaggable()) {
+            taggableTypes.add(type);
+         }
+      }
+      return taggableTypes;
    }
 
    public static boolean typeExists(String namespace, String name) throws Exception {

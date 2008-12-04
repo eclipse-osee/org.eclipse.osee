@@ -322,9 +322,9 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws Exception
     */
-   public static List<Artifact> getArtifactsFromAttributeWithKeywords(String queryString, boolean matchWordOrder, boolean nameOnly, boolean allowDeleted, Branch branch) throws Exception {
-      return new HttpArtifactQuery(queryString, matchWordOrder, nameOnly, allowDeleted, branch).getArtifacts(FULL,
-            null, false, false, allowDeleted);
+   public static List<Artifact> getArtifactsFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, String... attributeTypes) throws Exception {
+      return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, attributeTypes).getArtifacts(
+            FULL, null, false, false, allowDeleted);
    }
 
    /**

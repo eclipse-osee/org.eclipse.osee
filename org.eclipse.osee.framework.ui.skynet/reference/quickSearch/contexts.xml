@@ -2,9 +2,9 @@
 	<context id="quick_search_text" title="Quick Search">
 		<description>Provides quick access to search for artifacts</description>
 		<topic label="Quick Search" href="reference/quickSearch/quick_search_view.html"/>
+		<topic label="Attribute Type Filter Search Option" href="reference/quickSearch/attribute_type_filter_option.html"/>
 		<topic label="By Id Search Option" href="reference/quickSearch/by_id_option.html"/>
 		<topic label="Include Deleted Search Option" href="reference/quickSearch/include_deleted_option.html"/>
-		<topic label="Name Only Search Option" href="reference/quickSearch/name_search.html"/>
 		<topic label="Match Word Order Search Option" href="reference/quickSearch/word_order_match_option.html"/>
 		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
 	</context>
@@ -18,10 +18,10 @@
 		<topic label="Quick Search" href="reference/quickSearch/quick_search_view.html"/>
 		<topic label="Include Deleted Search Option" href="reference/quickSearch/include_deleted_option.html"/>
 	</context>
-	<context id="quick_search_name_option" title="Quick Search">
+	<context id="quick_search_attribute_type_filter" title="Quick Search">
 		<description>Provides quick access to search for artifacts</description>
 		<topic label="Quick Search" href="reference/quickSearch/quick_search_view.html"/>
-		<topic label="Name Only Search Option" href="reference/quickSearch/in_name_option.html"/>
+		<topic label="Attribute Type Filter Search Option" href="reference/quickSearch/attribute_type_filter_option.html"/>
 	</context>
  	<context id="quick_search_word_order_option" title="Quick Search">
     	<description>Provides quick access to search for artifacts</description>

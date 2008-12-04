@@ -13,11 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.panels;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -27,6 +29,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -35,18 +38,21 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
 /**
  * @author Roberto E. Escobar
  */
 public class SearchComposite extends Composite implements Listener {
-
+   private static final Image CONFIG_IMAGE = SkynetGuiPlugin.getInstance().getImage("gear.gif");
    private static final String CLEAR_HISTORY_TOOLTIP = "Clears search history";
    private static final String SEARCH_BUTTON_TOOLTIP = "Executes search";
    private static final String SEARCH_COMBO_TOOLTIP =
          "Enter word(s) to search for or select historical value from pull-down on the right.";
+   private static final String CONFIG_BUTTON_TOOLTIP = "Select to configure option.";
 
    private Set<Listener> listeners;
    private Combo searchArea;
@@ -54,16 +60,20 @@ public class SearchComposite extends Composite implements Listener {
    private Button clear;
    private Map<String, Boolean> optionsMap;
    private Map<String, Button> optionsButtons;
+   private Map<String, Text> textAreas;
    private Set<String> mutuallyExclusiveOptionSet;
+   private Map<String, IOptionConfigurationHandler> configurableOptionSet;
    private boolean entryChanged;
    private Group optionGroup;
 
-   public SearchComposite(Composite parent, int style, String[] options, String[] mutuallyExclusiveOptions) {
+   public SearchComposite(Composite parent, int style, String[] options, String[] mutuallyExclusiveOptions, Map<String, IOptionConfigurationHandler> configurableOptions) {
       super(parent, style);
       this.listeners = new HashSet<Listener>();
       this.optionsMap = new LinkedHashMap<String, Boolean>();
       this.optionsButtons = new LinkedHashMap<String, Button>();
+      this.textAreas = new HashMap<String, Text>();
       this.mutuallyExclusiveOptionSet = new HashSet<String>();
+      this.configurableOptionSet = new HashMap<String, IOptionConfigurationHandler>();
       if (options != null) {
          for (String option : options) {
             this.optionsMap.put(option, false);
@@ -73,6 +83,13 @@ public class SearchComposite extends Composite implements Listener {
          for (String option : mutuallyExclusiveOptions) {
             this.optionsMap.put(option, false);
             this.mutuallyExclusiveOptionSet.add(option);
+         }
+      }
+
+      if (configurableOptions != null) {
+         for (String option : configurableOptions.keySet()) {
+            this.optionsMap.put(option, false);
+            this.configurableOptionSet.put(option, configurableOptions.get(option));
          }
       }
       this.entryChanged = false;
@@ -189,36 +206,83 @@ public class SearchComposite extends Composite implements Listener {
    private Button getOrCreateOptionsButton(String option) {
       Button toReturn = this.optionsButtons.get(option);
       if (toReturn == null) {
-         toReturn = new Button(this.optionGroup, SWT.CHECK);
-         toReturn.setText(option);
-         toReturn.setData(option);
-         toReturn.setFont(getFont());
-         toReturn.addListener(SWT.Selection, this);
-         toReturn.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               Object object = e.getSource();
-               if (object instanceof Button) {
-                  Button button = (Button) object;
-                  if (mutuallyExclusiveOptionSet.contains((String) button.getData())) {
-                     if (button.getSelection()) {
-                        for (String entry : mutuallyExclusiveOptionSet) {
-                           Button other = optionsButtons.get(entry);
-                           if (!other.equals(button)) {
-                              other.setSelection(false);
-                           }
-                           optionsMap.put((String) other.getData(), other.getSelection());
-                        }
-                     }
-                  }
-                  optionsMap.put((String) button.getData(), button.getSelection());
-               }
-            }
-         });
+         toReturn = createButton(this.optionGroup, option);
          this.optionsButtons.put(option, toReturn);
       }
       return toReturn;
+   }
+
+   private Button createButton(Composite parent, String option) {
+      final IOptionConfigurationHandler configHandler = configurableOptionSet.get(option);
+      Composite mainComposite = parent;
+      if (configHandler != null) {
+         mainComposite = new Composite(parent, SWT.NONE);
+         GridLayout layout = new GridLayout(4, false);
+         layout.marginHeight = 0;
+         layout.marginWidth = 0;
+         mainComposite.setLayout(layout);
+         mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      }
+
+      Button toReturn = new Button(mainComposite, SWT.CHECK);
+      toReturn.setData(option);
+      toReturn.setFont(getFont());
+      toReturn.addListener(SWT.Selection, this);
+      toReturn.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Object object = e.getSource();
+            if (object instanceof Button) {
+               Button button = (Button) object;
+               if (mutuallyExclusiveOptionSet.contains((String) button.getData())) {
+                  if (button.getSelection()) {
+                     for (String entry : mutuallyExclusiveOptionSet) {
+                        Button other = optionsButtons.get(entry);
+                        if (!other.equals(button)) {
+                           other.setSelection(false);
+                        }
+                        optionsMap.put((String) other.getData(), other.getSelection());
+                     }
+                  }
+               }
+               optionsMap.put((String) button.getData(), button.getSelection());
+            }
+         }
+      });
+
+      if (configHandler != null) {
+         Label label = new Label(mainComposite, SWT.NONE);
+         label.setText(option + ":");
+
+         final Text text = new Text(mainComposite, SWT.READ_ONLY | SWT.BORDER);
+         text.setText(StringFormat.separateWith(configHandler.getConfiguration(), ", "));
+         GridData data = new GridData(SWT.FILL, SWT.FILL, true, false);
+         data.minimumWidth = 100;
+         text.setLayoutData(data);
+         textAreas.put(option, text);
+
+         Button filterConfig = new Button(mainComposite, SWT.PUSH);
+         String configToolTip = configHandler.getConfigToolTip();
+         filterConfig.setToolTipText(Strings.isValid(configToolTip) ? configToolTip : CONFIG_BUTTON_TOOLTIP);
+         filterConfig.setImage(CONFIG_IMAGE);
+         filterConfig.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               if (configHandler != null) {
+                  configHandler.configure();
+                  updateTextArea(text, configHandler.getConfiguration());
+               }
+            }
+         });
+      } else {
+         toReturn.setText(option);
+      }
+      return toReturn;
+   }
+
+   private void updateTextArea(Text text, String[] data) {
+      text.setText(StringFormat.separateWith(data, ", "));
    }
 
    private void updateFromSourceField() {
@@ -279,8 +343,8 @@ public class SearchComposite extends Composite implements Listener {
 
    private void initializeOptions(Map<String, Boolean> options) {
       for (String option : options.keySet()) {
-         Button button = getOrCreateOptionsButton(option);
          Boolean isSelected = options.get(option);
+         Button button = getOrCreateOptionsButton(option);
          button.setSelection(isSelected);
          this.optionsMap.put(option, isSelected);
       }
@@ -290,9 +354,26 @@ public class SearchComposite extends Composite implements Listener {
       return optionsMap;
    }
 
+   public Map<String, String[]> getConfigurations() {
+      Map<String, String[]> toReturn = new HashMap<String, String[]>();
+      for (String key : configurableOptionSet.keySet()) {
+         toReturn.put(key, configurableOptionSet.get(key).getConfiguration());
+      }
+      return toReturn;
+   }
+
    public boolean isOptionSelected(String key) {
       Boolean value = optionsMap.get(key);
       return value != null ? value.booleanValue() : false;
+   }
+
+   public String[] getConfiguration(String key) {
+      IOptionConfigurationHandler handler = this.configurableOptionSet.get(key);
+      if (handler != null) {
+         return handler.getConfiguration();
+      } else {
+         return new String[0];
+      }
    }
 
    public void handleEvent(Event event) {
@@ -338,7 +419,7 @@ public class SearchComposite extends Composite implements Listener {
       }
    }
 
-   public void restoreWidgetValues(List<String> querySearches, String lastSelected, Map<String, Boolean> options) {
+   public void restoreWidgetValues(List<String> querySearches, String lastSelected, Map<String, Boolean> options, Map<String, String[]> configs) {
       String currentSearch = getQuery();
 
       // Add stored directories into selector
@@ -357,6 +438,20 @@ public class SearchComposite extends Composite implements Listener {
       setCombo(querySearches, lastSelected);
 
       initializeOptions(options);
+      initializeConfigurations(configs);
+   }
+
+   private void initializeConfigurations(Map<String, String[]> items) {
+      for (String key : items.keySet()) {
+         IOptionConfigurationHandler handler = configurableOptionSet.get(key);
+         if (handler != null) {
+            handler.setConfiguration(items.get(key));
+            Text text = textAreas.get(key);
+            if (text != null) {
+               updateTextArea(text, handler.getConfiguration());
+            }
+         }
+      }
    }
 
    public boolean isExecuteSearchEvent(Event event) {
@@ -398,5 +493,17 @@ public class SearchComposite extends Composite implements Listener {
       if (isWidgetAccessible(control)) {
          control.setToolTipText(toolTip);
       }
+   }
+
+   public interface IOptionConfigurationHandler {
+
+      public void setConfiguration(String[] strings);
+
+      public void configure();
+
+      public String[] getConfiguration();
+
+      public String getConfigToolTip();
+
    }
 }
