@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
-<title>Quick Search Name Only Search Option</title>
+<title>Quick Search Attribute Type Filter Search Option</title>
 <script language="JavaScript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"> </script>
 
 <link rel="stylesheet" href="../content/PLUGINS_ROOT/org.eclipse.help.webapp/advanced/breadcrumbs.css" charset="ISO-8859-1" type="text/css"></link>
@@ -22,15 +22,18 @@ if (parent.ContentToolbarFrame && parent.ContentToolbarFrame.setButtonState) par
 </script>
 </head>
 	<body>	
-		<h1>Quick Search Name Only Search Option</h1>
+		<h1>Quick Search Attribute Type Filter Search Option</h1>
 		
 		<h2>What it is</h2>
-		<p>An option to search for artifacts with a particular name on the default branch.</p>
+		<p>An option to search in a specific set of attribute types for artifacts on the default branch.</p>
 		
 		<h2>How to do it</h2>
-		<p>Type the name of the artifact(s) to search for. Make sure the <i>Name Only</i> option is selected
-		under <i>Options</i>, then press the <i>Search</i> button.</p>
-		<p><b>Note: When <i>Name Only</i> option is selected, <i>By Id</i> option is not allowed. Therefore, selecting <i>Name Only</i> option disables the <i>By Id</i> option by setting its state to not selected.</b></p>
+		<p>Type in the desired words to search for. Make sure the <i>Attribute Type Filter</i> option is selected
+		under <i>Options</i>. By default, the filter is set to filter by attributes of type <i>Name</i>. 
+		If you wish to change the filter, select the button to the right of the configuration text area. When this is performed, 
+		a dialog displaying all the different tagged attribute types will be displayed. Check the items to include in the filter and select <i>Ok</i>.  
+		Press the <i>Search</i> button to execute the search.</p>
+		<p><b>Note: When <i>Attribute Type Filter</i> option is selected, <i>By Id</i> option is not allowed. Therefore, selecting <i>Attribute Type Filter</i> option disables the <i>By Id</i> option by setting its state to not selected.</b></p>
 		
 		<h2>Shortcuts</h2>
 		<p>Pressing enter in the text entry box is equivalent to pressing the <i>Search</i> button.</p>
