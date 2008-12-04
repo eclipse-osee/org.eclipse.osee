@@ -137,6 +137,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       setPageComplete(determinePageCompletion());
 
       setControl(composite);
+      setDefaultBranch();
    }
 
    /**
@@ -155,6 +156,16 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       createImportSource(parent);
       createImportMethodSelection(parent);
       setPageComplete(determinePageCompletion());
+   }
+
+   /**
+    * For DND the branch selected should be set from destination artifact.
+    */
+   private void setDefaultBranch() {
+	   if(destinationArtifact != null){
+		   Branch branch = destinationArtifact.getBranch();
+		   branchSelectComposite.setSelected(branch);
+	   }
    }
 
    private void createImportSource(Composite parent) {
