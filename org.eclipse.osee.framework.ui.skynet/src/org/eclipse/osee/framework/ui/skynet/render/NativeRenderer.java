@@ -11,11 +11,17 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -52,6 +58,14 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
+       Attribute<?> attribute = artifact.getSoleAttribute(NativeArtifact.EXTENSION);  
+	   //If the native artifact has been created without an extension make it XML
+       if (attribute == null) {
+	          attribute =
+	                artifact.createAttribute(AttributeTypeManager.getType(NativeArtifact.EXTENSION), true);
+	          attribute.setFromString("xml");
+	          artifact.persistAttributes();
+	       }
       return artifact.getSoleAttributeValue(NativeArtifact.EXTENSION, "");
    }
 
@@ -82,6 +96,17 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      return artifact.getSoleAttributeValue(NativeArtifact.CONTENT_NAME);
-   }
+		Attribute<?> attribute = artifact.getSoleAttribute(NativeArtifact.CONTENT_NAME);
+		   //If the native artifact has been created without content create empty XML content.
+		if (attribute == null) {
+			attribute = artifact.createAttribute(AttributeTypeManager.getType(NativeArtifact.CONTENT_NAME), true);
+			try {
+				attribute.setValueFromInputStream(Streams.
+						convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				throw new OseeCoreException(e);
+			}
+		}
+		return artifact.getSoleAttributeValue(NativeArtifact.CONTENT_NAME);
+	}
 }
