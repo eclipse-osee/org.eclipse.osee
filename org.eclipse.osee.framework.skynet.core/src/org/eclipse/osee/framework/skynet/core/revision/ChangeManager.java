@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeSql;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -16,9 +15,7 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.status.IStatusMonitor;
@@ -162,10 +159,9 @@ public class ChangeManager {
 
       CompositeKeyHashMap<Integer, Branch, Artifact> artifactMap = new CompositeKeyHashMap<Integer, Branch, Artifact>();
       for (Artifact artifact : artifacts) {
+         artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
          // for each combination of artifact and all working branches in its hierarchy
-         for (Branch workingBranch : BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.ALL,
-               BranchType.WORKING)) {
-            artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
+         for (Branch workingBranch : artifact.getBranch().getWorkingBranches()) {
             insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), workingBranch.getBranchId(),
                   SQL3DataType.INTEGER});
          }
@@ -179,9 +175,11 @@ public class ChangeManager {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
                   ClientSessionManager.getSQL(OseeSql.Changes.SELECT_MODIFYING_BRANCHES), queryId);
             while (chStmt.next()) {
-               Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
-               Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
-               branchMap.put(artifact, branch);
+               if (chStmt.getInt("tx_count") > 0) {
+                  Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
+                  Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch.getParentBranch());
+                  branchMap.put(artifact, branch);
+               }
             }
          } finally {
             chStmt.close();

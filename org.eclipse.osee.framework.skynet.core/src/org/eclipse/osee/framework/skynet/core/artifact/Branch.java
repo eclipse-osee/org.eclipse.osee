@@ -415,4 +415,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       }
       return ancestors;
    }
+
+   public Collection<Branch> getWorkingBranches() throws OseeCoreException {
+      return BranchManager.getWorkingBranches(this);
+   }
 }

@@ -216,6 +216,18 @@ public class BranchManager {
       return null;
    }
 
+   public static Collection<Branch> getWorkingBranches(Branch parentBranch) throws OseeCoreException {
+      instance.ensurePopulatedCache(false);
+      List<Branch> branches = new ArrayList<Branch>(500);
+      for (Branch branch : instance.branchCache.values()) {
+         if (branch.matchesState(BranchState.ACTIVE) && branch.isOfType(BranchType.WORKING) && parentBranch.equals(branch.getParentBranch())) {
+            branches.add(branch);
+         }
+      }
+
+      return branches;
+   }
+
    public static Collection<Branch> getArchivedBranches() throws OseeCoreException {
       return getBranches(BranchState.ARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
             BranchType.BASELINE);

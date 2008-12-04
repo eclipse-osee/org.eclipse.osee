@@ -25,11 +25,6 @@ public class OseeSql {
 
    public static final String QUERY_BUILDER_HINT = "QUERY_BUILDER_HINT";
 
-   private static final String ORDERED_HINT = " /*+ ordered */";
-   private static final String ORDERED_HINT_AND_TXS_INDEX = " /*+ ordered INDEX(txs1) */";
-   private static final String HINTS__ORDERED__TXS_IDX__REL_IDX = " /*+ ordered INDEX(txs1) INDEX(rel1) */";
-   private static final String HINTS__ORDERED__TXS_IDX__ART_IDX__ARTV_IDX__TXD_IDX =
-         " /*+ ordered INDEX(txs1) INDEX(art1) INDEX(arv1) INDEX(txd1) */";
    private static final String HINTS__ORDERED__FIRST_ROWS = " /*+ ordered FIRST_ROWS */";
    private static final String HINTS__ORDERED__INDEX__ARTIFACT_CONFLICT =
          " /*+ ordered index(atr1) index(atr2) index(txs2) */";
@@ -109,7 +104,7 @@ public class OseeSql {
             "SELECT arj.art_id, arj.branch_id, txd.transaction_id from osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id AND txd.transaction_id <= arj.transaction_id AND txd.tx_type = " + TransactionDetailsType.NonBaselined.getId();
 
       private static final String MODIFYING_BRANCHES =
-            "SELECT count(txd.transaction_id), arj.branch_id, arj.art_id FROM osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND tx_type = 0 group by arj.art_id,  arj.branch_id";
+            "SELECT count(txd.transaction_id) as tx_count, arj.branch_id, arj.art_id FROM osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id and tx_type = 0 group by arj.art_id, arj.branch_id";
 
       private static void addSql(Properties sqlProperties) throws OseeDataStoreException {
          sqlProperties.put(SELECT_BRANCH_ATTRIBUTE_WAS_CHANGE, getFormattedSql(BRANCH_ATTRIBUTE_WAS_CHANGE,
