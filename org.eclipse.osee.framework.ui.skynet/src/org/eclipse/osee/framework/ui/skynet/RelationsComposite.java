@@ -335,7 +335,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    private void createOpenMenuItem(Menu parentMenu) {
       openMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       openMenuItem.setText("Open");
-
+      needSelectedArtifactListener.addArtifactEnabled(openMenuItem);
       openMenuItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {
@@ -417,14 +417,20 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    }
 
    public class NeedSelectedArtifactListener implements MenuListener {
-      Collection<MenuItem> items;
+      Collection<MenuItem> accessControlitems;
+      Collection<MenuItem> artEnabledOnlyitems;
 
       public NeedSelectedArtifactListener() {
-         this.items = new LinkedList<MenuItem>();
+         this.accessControlitems = new LinkedList<MenuItem>();
+         this.artEnabledOnlyitems = new LinkedList<MenuItem>();
       }
 
+      public void addArtifactEnabled(MenuItem item){
+    	  artEnabledOnlyitems.add(item);
+    	  
+      }
       public void add(MenuItem item) {
-         items.add(item);
+         accessControlitems.add(item);
       }
 
       public void menuHidden(MenuEvent e) {
@@ -432,9 +438,13 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
       public void menuShown(MenuEvent e) {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         boolean valid = (selection.getFirstElement() instanceof Artifact);
-         for (MenuItem item : items)
+         boolean valid = (selection.getFirstElement() instanceof RelationLink);
+         
+         for (MenuItem item : accessControlitems)
             item.setEnabled(valid && !artifact.isReadOnly());
+         
+         for (MenuItem item : artEnabledOnlyitems)
+             item.setEnabled(valid);
       }
    }
 
