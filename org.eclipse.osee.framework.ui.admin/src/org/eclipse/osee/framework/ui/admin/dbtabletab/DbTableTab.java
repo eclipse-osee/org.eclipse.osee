@@ -12,12 +12,12 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.admin.AdminView;
-import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -38,7 +38,6 @@ import org.eclipse.swt.widgets.TabItem;
 public class DbTableTab {
    protected Browser browser;
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.admin.AdminView";
-   protected static final OseeSecurityManager sm = OseeSecurityManager.getInstance();
    public static User person;
    public static DbTableViewer dbTableViewer;
    private static XCombo filterCombo;

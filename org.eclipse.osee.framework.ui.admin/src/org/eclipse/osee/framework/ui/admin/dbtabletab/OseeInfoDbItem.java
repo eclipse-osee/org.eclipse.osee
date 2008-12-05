@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -86,9 +85,4 @@ public class OseeInfoDbItem extends DbItem {
       return dbModel;
    }
 
-   @Override
-   public PermissionList getPermission() {
-      PermissionList permissionList = new PermissionList();
-      return permissionList;
-   }
 }

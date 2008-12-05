@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.swt.widgets.Item;
 
 /**
@@ -25,15 +22,12 @@ import org.eclipse.swt.widgets.Item;
 public class RelationCellModifier implements ICellModifier {
    private TreeViewer treeViewer;
 
-   private PermissionList pList;
-
    /**
     * 
     */
    public RelationCellModifier(TreeViewer treeViewer) {
       super();
       this.treeViewer = treeViewer;
-      pList = new PermissionList();
       //      pList.addPermission(Permission.PermPermissionEnum.EDITREQUIREMENT);
    }
 
@@ -43,13 +37,12 @@ public class RelationCellModifier implements ICellModifier {
     * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
     */
    public boolean canModify(Object element, String property) {
-      try {
-         SkynetGuiPlugin.securityManager.checkPermission(UserManager.getUser(), pList);
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         return false;
-      }
-      return element instanceof RelationLink;
+	   boolean isModifiable = true;
+	   
+	   if(element instanceof RelationTypeSide){
+		  isModifiable = !((RelationTypeSide)element).getArtifact().isReadOnly(); 
+	   }
+	   return isModifiable;
    }
 
    /*

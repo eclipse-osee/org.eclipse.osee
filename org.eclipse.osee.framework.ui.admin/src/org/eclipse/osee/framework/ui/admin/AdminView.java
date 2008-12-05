@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.admin;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -52,7 +52,6 @@ import org.eclipse.ui.part.ViewPart;
 public class AdminView extends ViewPart implements IActionable {
    public static final OseeUiActivator plugin = AdminPlugin.getInstance();
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.admin.AdminView";
-   public static OseeSecurityManager sm;
    private static Action saveAction;
    private TabFolder tabFolder;
    private final ArrayList<DbItem> dbItems;
@@ -62,7 +61,6 @@ public class AdminView extends ViewPart implements IActionable {
     * The constructor.
     */
    public AdminView() {
-      sm = OseeSecurityManager.getInstance();
       dbItems = new ArrayList<DbItem>();
       dbItems.add(new SiteGssflRpcr());
       handCursor = new Cursor(null, SWT.CURSOR_HAND);

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
-import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 
 /**
  * @author Roberto E. Escobar
@@ -42,15 +41,6 @@ public class SkynetUsageDbItem extends DbItem {
    @Override
    public int getColumnWidth(String columnName) {
       return 100;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem#getPermission()
-    */
-   @Override
-   public PermissionList getPermission() {
-      PermissionList permissionList = new PermissionList();
-      return permissionList;
    }
 
    /* (non-Javadoc)

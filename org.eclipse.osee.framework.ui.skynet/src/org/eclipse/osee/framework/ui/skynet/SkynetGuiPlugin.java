@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.logging.Level;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListneer;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
-import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
@@ -43,13 +43,11 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
          "org.eclipse.osee.framework.ui.skynet.changeReportAttributes";
    public static final String ARTIFACT_EXPLORER_ATTRIBUTES_PREF =
          "org.eclipse.osee.framework.ui.skynet.artifactExplorerAttributes";
-   public static OseeSecurityManager securityManager;
    private ServiceTracker packageAdminTracker;
 
    public SkynetGuiPlugin() {
       super();
       pluginInstance = this;
-      securityManager = OseeSecurityManager.getInstance();
    }
 
    /* (non-Javadoc)

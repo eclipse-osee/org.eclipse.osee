@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 
 public class SiteGssflRpcr extends DbItem {
@@ -83,10 +83,4 @@ public class SiteGssflRpcr extends DbItem {
       return dbModel;
    }
 
-   @Override
-   public PermissionList getPermission() {
-      PermissionList permissionList = new PermissionList();
-      //      permissionList.addPermission(Permission.PermPermissionEnum.GSSFLWRITE);
-      return permissionList;
-   }
 }
