@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerDeadlineColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerEstimatedHoursColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCreatedDateColumn;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -123,10 +124,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".relatedToState", ATSAttributes.RELATED_TO_STATE_ATTRIBUTE,
                80, SWT.LEFT, false, SortDataType.String, true,
                "State of the parent State Machine that this object is related to.");
-   public static final XViewerColumn Estimated_Hours_Col =
-         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".estimatedHours", ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE,
-               40, SWT.CENTER, false, SortDataType.Float, true,
-               "Hours estimated to implement the changes associated with this Action.");
+   public static final XViewerColumn Estimated_Hours_Col = new XViewerEstimatedHoursColumn();
    public static final XViewerColumn Weekly_Benefit_Hrs_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".weeklyBenefitHrs", ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE,
                40, SWT.CENTER, false, SortDataType.Float, true,

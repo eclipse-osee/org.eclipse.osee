@@ -446,11 +446,18 @@ public class CustomizeManager {
          TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
          column.setMoveable(true);
          column.setData(xCol);
-         if (xCol.getToolTip() == null || xCol.getToolTip().equals("") || xCol.getToolTip().equals(xCol.getName())) {
-            column.setToolTipText(xCol.getName() + "\n" + xCol.getId());
-         } else {
-            column.setToolTipText(xCol.getToolTip() + xCol.getName() + "\n" + xCol.getId());
+         StringBuffer sb = new StringBuffer();
+         sb.append(xCol.getName());
+         if (xCol.getDescription() != null && !xCol.getDescription().equals("") && !xCol.getDescription().equals(
+               xCol.getName())) {
+            sb.append("\n" + xCol.getDescription());
          }
+         if (xCol.getToolTip() != null && !xCol.getToolTip().equals("") && !xCol.getToolTip().equals(xCol.getName()) && !xCol.getToolTip().equals(
+               xCol.getDescription())) {
+            sb.append("\n" + xCol.getToolTip());
+         }
+         sb.append("\n" + xCol.getId());
+         column.setToolTipText(sb.toString());
          column.setText(xCol.getName());
          column.setWidth(xCol.getWidth());
          column.addSelectionListener(new SelectionAdapter() {
@@ -493,5 +500,4 @@ public class CustomizeManager {
          });
       }
    }
-
 }
