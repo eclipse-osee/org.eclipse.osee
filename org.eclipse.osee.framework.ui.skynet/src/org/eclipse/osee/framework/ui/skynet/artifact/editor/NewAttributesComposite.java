@@ -11,7 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -35,12 +38,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class NewAttributesComposite extends Composite {
-   private Artifact artifact;
+   private final Artifact artifact;
    private Label warningLabel;
-   private ToolBar toolBar;
-   private FormToolkit toolkit;
-   private ScrolledForm scrolledForm;
-   private Composite mainComp;
+   private final ToolBar toolBar;
+   private final FormToolkit toolkit;
+   private final ScrolledForm scrolledForm;
+   private final Composite mainComp;
    private WorkPage workPage;
 
    public static final int NAME_COLUMN_INDEX = 0;
@@ -68,7 +71,7 @@ public class NewAttributesComposite extends Composite {
 
       try {
          List<DynamicXWidgetLayoutData> widgets = new ArrayList<DynamicXWidgetLayoutData>();
-         for (AttributeType attrType : getOrderedArtifactTypes()) {
+         for (AttributeType attrType : getOrderedAttributeTypes()) {
             widgets.add(AttributeXWidgetFactory.getAttributeXWidgetProvider(attrType).getDynamicXWidgetLayoutData(
                   attrType));
          }
@@ -101,29 +104,35 @@ public class NewAttributesComposite extends Composite {
       return Result.FalseResult;
    }
 
-   private List<AttributeType> getOrderedArtifactTypes() throws Exception {
+   private List<AttributeType> getOrderedAttributeTypes() throws Exception {
       List<AttributeType> allTypes = new ArrayList<AttributeType>(artifact.getAttributeTypes());
       List<AttributeType> types = new ArrayList<AttributeType>();
+      Map<String, AttributeType> attrMap = new HashMap<String, AttributeType>();
 
       // Name attribute first
       for (AttributeType type : artifact.getAttributeTypes()) {
          if (type.getName().equals("Name")) {
             types.add(type);
             allTypes.remove(type);
-            break;
+         } else {
+            attrMap.put(type.getName(), type);
          }
       }
 
-      // All all attributes that have a value
-      for (AttributeType attributeType : artifact.getAttributeTypes()) {
-         if (artifact.getAttributes(attributeType.getName()).size() > 0 && !attributeType.getName().equals("Name")) {
-            types.add(attributeType);
-            allTypes.remove(attributeType);
-         }
-      }
+      //      // All all attributes that have a value
+      //      for (AttributeType attributeType : artifact.getAttributeTypes()) {
+      //         if (artifact.getAttributes(attributeType.getName()).size() > 0 && !attributeType.getName().equals("Name")) {
+      //            types.add(attributeType);
+      //            allTypes.remove(attributeType);
+      //         }
+      //      }
 
-      // Add all remaining
-      types.addAll(allTypes);
+      // Add in alpha order
+      String[] names = attrMap.keySet().toArray(new String[attrMap.size()]);
+      Arrays.sort(names);
+      for (String name : names) {
+         types.add(attrMap.get(name));
+      }
 
       return types;
    }
