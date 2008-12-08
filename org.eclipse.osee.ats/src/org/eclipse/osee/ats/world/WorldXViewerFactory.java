@@ -10,10 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerDeadlineColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCreatedDateColumn;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
@@ -245,7 +250,27 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public WorldXViewerFactory() {
       super(NAMESPACE);
       registerColumn(WorldViewColumns);
-      registerAllAttributeColumns();
+      // Register all ats.* attribute columns
+      try {
+         for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
+            if (attributeType.getName().startsWith("ats.")) {
+               registerColumn(getAttributeColumn(attributeType));
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+
+      // Register any columns from other plugins
+      try {
+         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+            for (XViewerColumn xCol : item.getXViewerColumns()) {
+               registerColumn(xCol);
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    @Override
