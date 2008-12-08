@@ -253,6 +253,17 @@ public class XViewer extends TreeViewer {
          ctrlKeyListenersSet = true;
          Display.getCurrent().addFilter(SWT.KeyDown, displayKeysListener);
          Display.getCurrent().addFilter(SWT.KeyUp, displayKeysListener);
+         Display.getCurrent().addFilter(SWT.FocusOut, new Listener() {
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+             */
+            @Override
+            public void handleEvent(Event event) {
+               // Clear when focus is lost
+               ctrlKeyDown = false;
+               altKeyDown = false;
+            }
+         });
       }
    }
    Listener displayKeysListener = new Listener() {
