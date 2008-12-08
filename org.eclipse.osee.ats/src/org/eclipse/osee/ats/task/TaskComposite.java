@@ -167,6 +167,8 @@ public class TaskComposite extends Composite implements IActionable {
 
          Tree tree = taskXViewer.getTree();
          GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
+         gridData.heightHint = 100;
+         gridData.widthHint = 100;
          tree.setLayoutData(gridData);
          tree.setHeaderVisible(true);
          tree.setLinesVisible(true);

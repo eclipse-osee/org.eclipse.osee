@@ -48,6 +48,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
       resultsContainer = toolkit.createClientContainer(resultsSection, 1);
       worldComposite = new WorldComposite(worldEditor, resultsContainer, SWT.BORDER, toolBar);
+      toolkit.adapt(worldComposite);
       return resultsSection;
    }
 
