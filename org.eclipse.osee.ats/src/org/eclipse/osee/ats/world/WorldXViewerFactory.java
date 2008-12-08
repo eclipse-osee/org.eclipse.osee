@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerDeadlineColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCreatedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -57,11 +58,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(COLUMN_NAMESPACE + ".team", "Team", 50, SWT.LEFT, true, SortDataType.String, false,
                "Team that has been assigned to work this Action.");
    public static final XViewerColumn Notes_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".notes", "Notes", 80, SWT.LEFT, true, SortDataType.String, true,
-               "Team that has been assigned to work this Action.");
-   public static final XViewerColumn Deadline_Col =
-         new XViewerAtsAttributeColumn(ATSAttributes.DEADLINE_ATTRIBUTE, 80, SWT.LEFT, true, SortDataType.String, true,
-               null);
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".notes", ATSAttributes.SMA_NOTE_ATTRIBUTE, 80, SWT.LEFT,
+               true, SortDataType.String, true, "Team that has been assigned to work this Action.");
+   public static final XViewerColumn Deadline_Col = new XViewerDeadlineColumn();
 
    // Aren't shown by default
    public static final XViewerColumn Annual_Cost_Avoidance_Col =
@@ -124,8 +123,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                40, SWT.CENTER, false, SortDataType.Float, true,
                "Hours estimated to implement the changes associated with this Action.");
    public static final XViewerColumn Weekly_Benefit_Hrs_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".weeklyBenefitHrs", "Weekly Benefit Hrs", 40, SWT.CENTER, false,
-               SortDataType.Float, false,
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".weeklyBenefitHrs", ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE,
+               40, SWT.CENTER, false, SortDataType.Float, false,
                "Estimated number of hours that will be saved over a single year if this change is completed.");
    public static final XViewerColumn Remaining_Hours_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".remainingHours", "Remaining Hours", 40, SWT.CENTER, false,

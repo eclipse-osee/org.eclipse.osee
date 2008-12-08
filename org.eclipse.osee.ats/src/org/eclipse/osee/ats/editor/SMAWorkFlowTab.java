@@ -478,7 +478,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createAnnotationsHeader(Composite comp, XFormToolkit toolkit) {
+   private void createAnnotationsHeader(Composite comp, XFormToolkit toolkit) throws OseeCoreException {
       if (smaMgr.getSma().getAnnotations().size() > 0) {
          new AnnotationComposite(toolkit, comp, SWT.None, smaMgr.getSma());
       }

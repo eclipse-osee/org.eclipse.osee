@@ -27,11 +27,10 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class XViewerLabelProvider implements ITableLabelProvider, ITableColorProvider {
 
-
-private final XViewer viewer;
+   private final XViewer viewer;
 
    // Store index of columnIndex to XViewerColumns to speed up label providing
-   private Map<Integer, XViewerColumn> indexToXViewerColumnMap = new HashMap<Integer, XViewerColumn>();
+   private final Map<Integer, XViewerColumn> indexToXViewerColumnMap = new HashMap<Integer, XViewerColumn>();
 
    private XViewerColumn getTreeColumnOffIndex(int columnIndex) {
       if (!indexToXViewerColumnMap.containsKey(columnIndex)) {
@@ -79,9 +78,12 @@ private final XViewer viewer;
          XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return "";
+         // First check value column's methods
          if (xViewerColumn instanceof XViewerValueColumn) {
-            return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn, columnIndex);
+            String str = ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn, columnIndex);
+            if (str != null && !str.equals("")) return str;
          }
+         // Return label provider's value
          return getColumnText(element, xViewerColumn, columnIndex);
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
@@ -95,10 +97,10 @@ private final XViewer viewer;
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return null;
          if (xViewerColumn instanceof XViewerValueColumn) {
-            return ((XViewerValueColumn) xViewerColumn).getBackground(element, xViewerColumn, columnIndex);
-         } else {
-            return getBackground(element, xViewerColumn, columnIndex);
+            Color color = ((XViewerValueColumn) xViewerColumn).getBackground(element, xViewerColumn, columnIndex);
+            if (color != null) return color;
          }
+         return getBackground(element, xViewerColumn, columnIndex);
       } catch (Exception ex) {
          // do nothing
       }
@@ -112,10 +114,10 @@ private final XViewer viewer;
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return null;
          if (xViewerColumn instanceof XViewerValueColumn) {
-            return ((XViewerValueColumn) xViewerColumn).getForeground(element, xViewerColumn, columnIndex);
-         } else {
-            return getForeground(element, xViewerColumn, columnIndex);
+            Color color = ((XViewerValueColumn) xViewerColumn).getForeground(element, xViewerColumn, columnIndex);
+            if (color != null) return color;
          }
+         return getForeground(element, xViewerColumn, columnIndex);
       } catch (Exception ex) {
          // do nothing
       }

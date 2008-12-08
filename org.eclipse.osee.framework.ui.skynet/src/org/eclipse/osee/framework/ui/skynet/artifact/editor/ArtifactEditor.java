@@ -277,8 +277,12 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       if (previewComposite == null) {
          Composite composite = createCommonPageComposite();
          previewComposite = new BrowserComposite(composite, SWT.BORDER, createPreviewToolBar(composite));
-         if (artifact.getAnnotations().size() > 0) {
-            new AnnotationComposite(previewComposite, SWT.BORDER, artifact);
+         try {
+            if (artifact.getAnnotations().size() > 0) {
+               new AnnotationComposite(previewComposite, SWT.BORDER, artifact);
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          previewComposite.addProgressListener(new BrowserProgressListener(previewComposite, back, forward));
       }

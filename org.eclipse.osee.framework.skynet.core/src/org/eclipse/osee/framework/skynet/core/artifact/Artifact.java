@@ -125,14 +125,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return historical;
    }
 
-   public boolean isAnnotation(ArtifactAnnotation.Type type) {
+   public boolean isAnnotation(ArtifactAnnotation.Type type) throws OseeCoreException {
       for (ArtifactAnnotation notify : getAnnotations()) {
          if (notify.getType() == type) return true;
       }
       return false;
    }
 
-   public Set<ArtifactAnnotation> getAnnotations() {
+   public Set<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
       Set<ArtifactAnnotation> annotations = new HashSet<ArtifactAnnotation>();
       for (IArtifactAnnotation annotation : getAnnotationExtensions()) {
          annotation.getAnnotations(this, annotations);
@@ -140,7 +140,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return annotations;
    }
 
-   public ArtifactAnnotation.Type getMainAnnotationType() {
+   public ArtifactAnnotation.Type getMainAnnotationType() throws OseeCoreException {
       if (isAnnotation(ArtifactAnnotation.Type.Error))
          return ArtifactAnnotation.Type.Error;
       else if (isAnnotation(ArtifactAnnotation.Type.Warning))
@@ -160,10 +160,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             boolean released = getSoleAttributeValue("ats.Released", false);
             return artifactType.getImage(next, released);
          }
+         return artifactType.getAnnotationImage(getMainAnnotationType());
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
-      return artifactType.getAnnotationImage(getMainAnnotationType());
+      return null;
    }
 
    /**

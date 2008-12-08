@@ -12,6 +12,12 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 /**
+ * This class provides XViewerColumns another mechanism to providing text, background color and foreground color instead
+ * of through the XViewerLabelProvider. XViewerLabelProvider will call the provided routines to try to populate the
+ * column and only if null/empty string will default to the normal label provider methods. This allows for XViwerColumns
+ * to be shared between XViewers and/or have XViewerColumns provide their own values through the same class that defines
+ * the column.
+ * 
  * @author Donald G. Dunne
  */
 public class XViewerValueColumn extends XViewerColumn {
@@ -22,6 +28,7 @@ public class XViewerValueColumn extends XViewerColumn {
     * 
     * @param col
     */
+   @Override
    public XViewerValueColumn copy() {
       return new XViewerValueColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
             isMultiColumnEditable(), getDescription());

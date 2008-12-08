@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
@@ -327,10 +328,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       try {
          subscribed = isSubscribed(UserManager.getUser());
          favorite = isFavorite(UserManager.getUser());
+         return super.getArtifactType().getImage(subscribed, favorite, getMainAnnotationType());
       } catch (OseeCoreException ex) {
-         // Do nothing
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      return super.getArtifactType().getImage(subscribed, favorite, getMainAnnotationType());
+      return null;
    }
 
    public boolean isUnCancellable() {

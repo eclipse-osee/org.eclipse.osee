@@ -499,7 +499,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public String getWorldViewDeadlineDateStr() throws OseeCoreException {
       Date date = getWorldViewDeadlineDate();
-      if (date != null) return new XDate(date).getMMDDYY();
+      if (date != null) {
+         return XDate.getDateStr(date, XDate.MMDDYY);
+      }
       return "";
    }
 

@@ -236,65 +236,51 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
     */
    public String getWorldViewBranchStatus() throws OseeCoreException {
-      try {
-         StringBuffer sb = new StringBuffer();
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (!team.getWorldViewBranchStatus().equals("")) sb.append(team.getWorldViewBranchStatus() + ", ");
-         }
-         return sb.toString().replaceFirst(", $", "");
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      StringBuffer sb = new StringBuffer();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getWorldViewBranchStatus().equals("")) sb.append(team.getWorldViewBranchStatus() + ", ");
       }
+      return sb.toString().replaceFirst(", $", "");
    }
 
    public String getWorldViewNumberOfTasks() throws OseeCoreException {
-      try {
-         StringBuffer sb = new StringBuffer();
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (!team.getWorldViewNumberOfTasks().equals("")) sb.append(team.getWorldViewNumberOfTasks() + ", ");
+      StringBuffer sb = new StringBuffer();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getWorldViewNumberOfTasks().equals("")) {
+            sb.append(team.getWorldViewNumberOfTasks() + ", ");
          }
-         return sb.toString().replaceFirst(", $", "");
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
       }
+      return sb.toString().replaceFirst(", $", "");
    }
 
    public String getWorldViewState() throws OseeCoreException {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewState();
-            else if (!str.equals(team.getWorldViewState())) return "";
-         }
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewState());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
    public String getWorldViewActivePoc() throws OseeCoreException {
       Set<User> pocs = new HashSet<User>();
-      try {
-         // Roll up all assignees
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            pocs.addAll(team.getSmaMgr().getStateMgr().getAssignees());
-         }
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      // Roll up all assignees
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         pocs.addAll(team.getSmaMgr().getStateMgr().getAssignees());
       }
       return Artifacts.toString("; ", pocs);
    }
 
    public String getWorldViewCreatedDateStr() throws OseeCoreException {
-      try {
-         Date date = getWorldViewCreatedDate();
-         if (date == null) return XViewerCells.getCellExceptionString("No Creation Date Found");
-         return XDate.getDateStr(date, XDate.MMDDYYHHMM);
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         Date date = team.getWorldViewCreatedDate();
+         if (date == null) {
+            strs.add("");
+         } else {
+            strs.add(XDate.getDateStr(team.getWorldViewCreatedDate(), XDate.MMDDYYHHMM));
+         }
       }
+      return Collections.toString(";", strs);
    }
 
    public Date getWorldViewCreatedDate() throws OseeCoreException {
@@ -306,12 +292,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public String getWorldViewPriority() throws OseeCoreException {
-      try {
-         return PriorityType.getPriority(
-               getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "")).getShortName();
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+      return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "")).getShortName();
    }
 
    public Image getAssigneeImage() throws OseeCoreException {
@@ -327,15 +308,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public String getWorldViewActionableItems() throws OseeCoreException {
-      try {
-         StringBuffer sb = new StringBuffer();
-         for (ActionableItemArtifact aia : getActionableItemsDam().getActionableItems()) {
-            sb.append(aia.getDescriptiveName() + ", ");
-         }
-         return sb.toString().replaceFirst(", $", "");
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      StringBuffer sb = new StringBuffer();
+      for (ActionableItemArtifact aia : getActionableItemsDam().getActionableItems()) {
+         sb.append(aia.getDescriptiveName() + ", ");
       }
+      return sb.toString().replaceFirst(", $", "");
    }
 
    @Override
@@ -349,73 +326,58 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public String getWorldViewTeam() throws OseeCoreException {
       Set<TeamDefinitionArtifact> teams = new HashSet<TeamDefinitionArtifact>();
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            teams.add(team.getTeamDefinition());
-         }
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      // Roll up if same for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         teams.add(team.getTeamDefinition());
       }
       return Artifacts.commaArts(teams);
    }
 
-   public String getWorldViewOriginator() {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewOriginator();
-            else if (!str.equals(team.getWorldViewOriginator())) return "";
-         }
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+   public String getWorldViewOriginator() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewOriginator());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
-   public Date getWorldViewCompletedDate() throws OseeCoreException {
-      Date date = null;
-      // Roll up date if same for all children
+   @Override
+   public String getWorldViewCompletedDateStr() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (date == null)
-            date = team.getWorldViewCompletedDate();
-         else {
-            if (!XDate.getDateStr(date, XDate.MMDDYY).equals(
-                  XDate.getDateStr(team.getWorldViewCompletedDate(), XDate.MMDDYY))) return null;
-         }
+         strs.add(team.getWorldViewCompletedDateStr());
       }
-      return date;
+      return Collections.toString(";", strs);
+   }
+
+   @Override
+   public Date getWorldViewCompletedDate() throws OseeCoreException {
+      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewCompletedDate();
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewCancelledDateStr()
+    */
+   public String getWorldViewCancelledDateStr() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewCancelledDateStr());
+      }
+      return Collections.toString(";", strs);
    }
 
    public Date getWorldViewCancelledDate() throws OseeCoreException {
-      Date date = null;
-      // Roll up date if same for all children
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (date == null)
-            date = team.getWorldViewCancelledDate();
-         else {
-            if (!XDate.getDateStr(date, XDate.MMDDYY).equals(
-                  XDate.getDateStr(team.getWorldViewCancelledDate(), XDate.MMDDYY))) return null;
-         }
-      }
-      return date;
+      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewCancelledDate();
    }
 
-   public String getWorldViewResolution() {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewResolution();
-            else if (!str.equals(team.getWorldViewResolution())) return "";
-         }
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+   public String getWorldViewResolution() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewResolution());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
    /*
@@ -502,14 +464,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     */
    @Override
    public String getWorldViewNotes() throws OseeCoreException {
-      String str = "";
-      // Roll up if same for all children
+      Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (str.equals(""))
-            str = team.getWorldViewNotes();
-         else if (!str.equals(team.getWorldViewNotes())) return "";
+         strs.add(team.getWorldViewNotes());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
    /* (non-Javadoc)
@@ -532,63 +491,35 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewCategory()
     */
    public String getWorldViewCategory() throws OseeCoreException {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewWorkPackage();
-            else if (!str.equals(team.getWorldViewWorkPackage())) return "";
-         }
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewCategory());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
    public String getWorldViewWorkPackage() throws OseeCoreException {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewWorkPackage();
-            else if (!str.equals(team.getWorldViewWorkPackage())) return "";
-         }
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewWorkPackage());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
-   public String getWorldViewCategory2() {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewCategory2();
-            else if (!str.equals(team.getWorldViewCategory2())) return "";
-         }
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+   public String getWorldViewCategory2() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewCategory2());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
    public String getWorldViewCategory3() throws OseeCoreException {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewCategory3();
-            else if (!str.equals(team.getWorldViewCategory3())) return "";
-         }
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewCategory3());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
    /*
@@ -596,17 +527,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewVersion()
     */
-   public String getWorldViewTargetedVersionStr() {
-      Set<String> versions = new HashSet<String>();
-      try {
-         // Roll up version if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (!team.getWorldViewTargetedVersionStr().equals("")) versions.add(team.getWorldViewTargetedVersionStr());
-         }
-         return Collections.toString(",", versions);
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+   public String getWorldViewTargetedVersionStr() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewTargetedVersionStr());
       }
+      return Collections.toString(";", strs);
    }
 
    /*
@@ -638,7 +564,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     */
    public String getHyperState() {
       try {
-         if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts().iterator().next().getHyperState();
+         if (getTeamWorkFlowArtifacts().size() == 1) {
+            return getTeamWorkFlowArtifacts().iterator().next().getHyperState();
+         }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -652,7 +580,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     */
    public String getHyperAssignee() {
       try {
-         if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts().iterator().next().getHyperAssignee();
+         if (getTeamWorkFlowArtifacts().size() == 1) {
+            return getTeamWorkFlowArtifacts().iterator().next().getHyperAssignee();
+         }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -904,99 +834,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    @Override
    public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts().iterator().next().getWorldViewEstimatedReleaseDate();
-      return null;
-   }
-
-   @Override
-   public String getWorldViewReleaseDateStr() throws OseeCoreException {
-      try {
-         Date date = getWorldViewReleaseDate();
-         if (date == null) return "";
-         return XDate.getDateStr(date, XDate.MMDDYY);
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
-   }
-
-   @Override
-   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
-      if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts().iterator().next().getWorldViewEstimatedReleaseDate();
-      return null;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewCancelledDateStr()
-    */
-   public String getWorldViewCancelledDateStr() {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewState();
-            else if (!str.equals(team.getWorldViewCancelledDateStr())) return "";
-         }
-         return str;
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
-   }
-
-   public Date getWorldViewReleaseDate() throws OseeCoreException {
-      Date date = null;
-      // Roll up date if same for all children
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (date == null)
-            date = team.getWorldViewReleaseDate();
-         else {
-            if (!XDate.getDateStr(date, XDate.MMDDYY).equals(
-                  XDate.getDateStr(team.getWorldViewReleaseDate(), XDate.MMDDYY))) return null;
-         }
-      }
-      return date;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewCompletedDateStr()
-    */
-   public String getWorldViewCompletedDateStr() {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewCompletedDateStr();
-            else if (!str.equals(team.getWorldViewCompletedDateStr())) return "";
-         }
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
-      return str;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewEstimatedReleaseDateStr()
-    */
-   public String getWorldViewEstimatedReleaseDateStr() {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewEstimatedReleaseDateStr();
-            else if (!str.equals(team.getWorldViewEstimatedReleaseDateStr())) return "";
-         }
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
-      return str;
+      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewEstimatedReleaseDate();
    }
 
    /*
@@ -1004,19 +842,43 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewEstimatedCompletionDateStr()
     */
-   public String getWorldViewEstimatedCompletionDateStr() {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewEstimatedCompletionDateStr();
-            else if (!str.equals(team.getWorldViewEstimatedCompletionDateStr())) return "";
-         }
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+   public String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewEstimatedCompletionDateStr());
       }
-      return str;
+      return Collections.toString(";", strs);
+   }
+
+   @Override
+   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
+      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewEstimatedCompletionDate();
+   }
+
+   @Override
+   public String getWorldViewReleaseDateStr() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewReleaseDateStr());
+      }
+      return Collections.toString(";", strs);
+   }
+
+   public Date getWorldViewReleaseDate() throws OseeCoreException {
+      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewReleaseDate();
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewEstimatedReleaseDateStr()
+    */
+   public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewEstimatedReleaseDateStr());
+      }
+      return Collections.toString(";", strs);
    }
 
    /*
@@ -1053,19 +915,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewChangeTypeStr()
     */
-   public String getWorldViewChangeTypeStr() {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewChangeTypeStr();
-            else if (!str.equals(team.getWorldViewChangeTypeStr())) return "";
-         }
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+   public String getWorldViewChangeTypeStr() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewChangeTypeStr());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
    /*
@@ -1073,19 +928,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
-   public String getWorldViewImplementer() {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewImplementer();
-            else if (!str.equals(team.getWorldViewImplementer())) return "";
-         }
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+   public String getWorldViewImplementer() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewImplementer());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
    /*
@@ -1094,17 +942,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
    public Date getWorldViewDeadlineDate() throws OseeCoreException {
-      Date date = null;
-      // Roll up date if same for all children
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (date == null)
-            date = team.getWorldViewDeadlineDate();
-         else {
-            if (!XDate.getDateStr(date, XDate.MMDDYY).equals(
-                  XDate.getDateStr(team.getWorldViewDeadlineDate(), XDate.MMDDYY))) return null;
-         }
-      }
-      return date;
+      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewDeadlineDate();
    }
 
    /*
@@ -1113,13 +951,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
    public String getWorldViewDeadlineDateStr() throws OseeCoreException {
-      try {
-         Date date = getWorldViewDeadlineDate();
-         if (date == null) return "";
-         return XDate.getDateStr(date, XDate.MMDDYY);
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewDeadlineDateStr());
       }
+      return Collections.toString(";", strs);
    }
 
    /*
@@ -1132,7 +968,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       // Add up hours for all children
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          SMAManager smaMgr = new SMAManager(team);
-         if (!smaMgr.isCompleted() && !smaMgr.isCancelled()) hours += team.getWorldViewWeeklyBenefit();
+         if (!smaMgr.isCompleted() && !smaMgr.isCancelled()) {
+            hours += team.getWorldViewWeeklyBenefit();
+         }
       }
       return hours;
    }
@@ -1147,7 +985,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       // Add up hours for all children
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          SMAManager smaMgr = new SMAManager(team);
-         if (!smaMgr.isCompleted() && !smaMgr.isCancelled()) hours += team.getWorldViewAnnualCostAvoidance();
+         if (!smaMgr.isCompleted() && !smaMgr.isCancelled()) {
+            hours += team.getWorldViewAnnualCostAvoidance();
+         }
       }
       return hours;
    }
@@ -1157,27 +997,19 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewAnnualCostAvoidanceValid()
     */
-   public Result isWorldViewAnnualCostAvoidanceValid() {
-      try {
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            Result result = team.isWorldViewAnnualCostAvoidanceValid();
-            if (result.isFalse()) return result;
-         }
-      } catch (OseeCoreException ex) {
-         // Do nothing
+   public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         Result result = team.isWorldViewAnnualCostAvoidanceValid();
+         if (result.isFalse()) return result;
       }
       return Result.TrueResult;
    }
 
    @Override
-   public Set<ArtifactAnnotation> getAnnotations() {
+   public Set<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
       Set<ArtifactAnnotation> notifications = super.getAnnotations();
-      try {
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            notifications.addAll(team.getAnnotations());
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         notifications.addAll(team.getAnnotations());
       }
       return notifications;
    }
@@ -1187,14 +1019,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewDeadlineAlerting()
     */
-   public Result isWorldViewDeadlineAlerting() {
-      try {
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            Result result = team.isWorldViewDeadlineAlerting();
-            if (result.isTrue()) return result;
-         }
-      } catch (OseeCoreException ex) {
-         // Do nothing
+   public Result isWorldViewDeadlineAlerting() throws OseeCoreException {
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         Result result = team.isWorldViewDeadlineAlerting();
+         if (result.isTrue()) return result;
       }
       return Result.FalseResult;
    }
@@ -1205,18 +1033,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewLegacyPCR()
     */
    public String getWorldViewLegacyPCR() throws OseeCoreException {
-      String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewLegacyPCR();
-            else if (!str.equals(team.getWorldViewLegacyPCR())) return "";
-         }
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewLegacyPCR());
       }
-      return str;
+      return Collections.toString(";", strs);
    }
 
    /*
@@ -1224,17 +1045,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentReworkStr()
     */
-   public String getWorldViewPercentReworkStr() {
-      Set<String> reworks = new HashSet<String>();
-      try {
-         // Roll up version if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (team.getWorldViewPercentRework() > 0) reworks.add(String.valueOf(team.getWorldViewPercentRework()));
-         }
-         return Collections.toString(",", reworks);
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+   public String getWorldViewPercentReworkStr() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewPercentReworkStr());
       }
+      return Collections.toString(";", strs);
    }
 
    /*
@@ -1417,17 +1233,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewSWEnhancement()
     */
    @Override
-   public String getWorldViewSWEnhancement() {
+   public String getWorldViewSWEnhancement() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
-      try {
-         // Roll up version if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (team.getWorldViewPercentRework() > 0) strs.add(team.getWorldViewSWEnhancement());
-         }
-         return Collections.toString(",", strs);
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewSWEnhancement());
       }
+      return Collections.toString(";", strs);
    }
 
    /* (non-Javadoc)

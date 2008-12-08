@@ -22,7 +22,7 @@ public interface IXViewerFactory {
     * Returns the default sorter to use for this xviewer
     * 
     * @param viewer
-    * @return
+    * @return XViewerSorter
     */
    XViewerSorter createNewXSorter(XViewer viewer);
 
@@ -30,7 +30,7 @@ public interface IXViewerFactory {
     * Returns the default table customization for this viewer including column definitions, sorting and filtering (if
     * any)
     * 
-    * @return
+    * @return CustomizeData
     */
    CustomizeData getDefaultTableCustomizeData();
 
@@ -38,28 +38,28 @@ public interface IXViewerFactory {
     * Returns the default column definition for the given id
     * 
     * @param id
-    * @return
+    * @return XViewerColumn
     */
    XViewerColumn getDefaultXViewerColumn(String id);
 
    /**
     * Provides the storage mechanism for save/load of personal/global customizations
     * 
-    * @return
+    * @return IXViewerCustomizations
     */
    IXViewerCustomizations getXViewerCustomizations();
 
    /**
     * Provides custom menu for XViewer
     * 
-    * @return
+    * @return XViewerCustomMenu
     */
    XViewerCustomMenu getXViewerCustomMenu();
 
    /**
     * Unique namespace for this viewer
     * 
-    * @return
+    * @return String
     */
    String getNamespace();
 }
