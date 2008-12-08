@@ -80,8 +80,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(COLUMN_NAMESPACE + ".legacyPcr", ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getDisplayName(), 40,
                SWT.LEFT, false, SortDataType.String, false, null);
    public static XViewerColumn SW_Enhancement_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".swEnhancement", "SW Enhancement", 150, SWT.LEFT, false,
-               SortDataType.String, false, null);
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".swEnhancement", ATSAttributes.SW_ENHANCEMENT_ATTRIBUTE,
+               150, SWT.LEFT, false, SortDataType.String, true, null);
    public static final XViewerColumn Decision_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".decision", "Decision", 150, SWT.LEFT, false, SortDataType.String,
                false, null);
@@ -100,8 +100,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(COLUMN_NAMESPACE + ".releaseDate", ATSAttributes.RELEASE_DATE_ATTRIBUTE.getDisplayName(),
                80, SWT.LEFT, false, SortDataType.Date, false, "Date the changes were made available to the users.");
    public static final XViewerColumn Work_Package_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".workPackage", "Work Package", 80, SWT.LEFT, false, SortDataType.String,
-               true, null);
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".workPackage", ATSAttributes.WORK_PACKAGE_ATTRIBUTE, 80,
+               SWT.LEFT, false, SortDataType.String, true, null);
    public static final XViewerColumn Category_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".category", ATSAttributes.CATEGORY_ATTRIBUTE, 80, SWT.LEFT,
                false, SortDataType.String, true,
@@ -124,7 +124,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                "Hours estimated to implement the changes associated with this Action.");
    public static final XViewerColumn Weekly_Benefit_Hrs_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".weeklyBenefitHrs", ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE,
-               40, SWT.CENTER, false, SortDataType.Float, false,
+               40, SWT.CENTER, false, SortDataType.Float, true,
                "Estimated number of hours that will be saved over a single year if this change is completed.");
    public static final XViewerColumn Remaining_Hours_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".remainingHours", "Remaining Hours", 40, SWT.CENTER, false,

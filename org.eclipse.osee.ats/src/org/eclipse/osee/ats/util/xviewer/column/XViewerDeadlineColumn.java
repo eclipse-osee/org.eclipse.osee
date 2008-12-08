@@ -9,13 +9,12 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
-public class XViewerDeadlineColumn extends XViewerValueColumn {
+public class XViewerDeadlineColumn extends XViewerAtsAttributeColumn {
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
@@ -25,17 +24,17 @@ public class XViewerDeadlineColumn extends XViewerValueColumn {
     */
    @Override
    public XViewerDeadlineColumn copy() {
-      return new XViewerDeadlineColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
+      return new XViewerDeadlineColumn(getId(), getWidth(), getAlign(), isShow(), getSortDataType(),
             isMultiColumnEditable(), getDescription());
    }
 
-   public XViewerDeadlineColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
+   public XViewerDeadlineColumn(String id, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, ATSAttributes.DEADLINE_ATTRIBUTE, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    public XViewerDeadlineColumn() {
-      super("ats.column.deadline", ATSAttributes.DEADLINE_ATTRIBUTE.getDisplayName(), 75, SWT.LEFT, true,
-            SortDataType.String, false, null);
+      super("ats.column.deadline", ATSAttributes.DEADLINE_ATTRIBUTE, 75, SWT.LEFT, true, SortDataType.String, true,
+            null);
    }
 
    /* (non-Javadoc)
