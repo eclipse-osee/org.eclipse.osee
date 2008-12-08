@@ -272,7 +272,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          public void run() {
             try {
                Set<StateMachineArtifact> artifacts = getSelectedSMAArtifacts();
-               if (SMAManager.promptChangeAssignees(artifacts)) {
+               if (SMAManager.promptChangeAssignees(artifacts, false)) {
                   Artifacts.persistInTransaction(artifacts);
                   update(getSelectedArtifactItems().toArray(), null);
                }
@@ -959,8 +959,12 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             modified = smaMgr.promptChangeFloatAttribute(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE, persist);
          else if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col))
             modified = smaMgr.promptChangeEstimatedReleaseDate();
+         else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col))
+            modified = smaMgr.promptChangeDate(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, persist);
          else if (xCol.equals(WorldXViewerFactory.Deadline_Col))
             modified = smaMgr.promptChangeDate(ATSAttributes.DEADLINE_ATTRIBUTE, persist);
+         else if (xCol.equals(WorldXViewerFactory.Assignees_Col))
+            modified = smaMgr.promptChangeAssignees(persist);
          else if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
             AWorkbench.popup("Calculated Field",
                   "Hours Remaining field is calculated.\nHour Estimate - (Hour Estimate * Percent Complete)");

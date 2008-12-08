@@ -369,7 +369,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void handleChangeCurrentAssignees() throws OseeCoreException {
-      if (smaMgr.promptChangeAssignees()) {
+      if (smaMgr.promptChangeAssignees(false)) {
          refresh();
          smaMgr.getEditor().onDirtied();
       }

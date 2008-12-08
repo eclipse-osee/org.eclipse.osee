@@ -255,11 +255,11 @@ public class SMAManager {
       return sma.getWorldViewTargetedVersion();
    }
 
-   public boolean promptChangeAssignees() throws OseeCoreException {
-      return promptChangeAssignees(Arrays.asList(sma));
+   public boolean promptChangeAssignees(boolean persist) throws OseeCoreException {
+      return promptChangeAssignees(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas) throws OseeCoreException {
+   public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
       for (StateMachineArtifact sma : smas) {
          SMAManager smaMgr = new SMAManager(sma);
          if (smaMgr.isCompleted()) {
@@ -290,6 +290,9 @@ public class SMAManager {
       }
       for (StateMachineArtifact sma : smas) {
          sma.getSmaMgr().getStateMgr().setAssignees(users);
+      }
+      if (persist) {
+         Artifacts.persistInTransaction(smas);
       }
       return true;
    }
