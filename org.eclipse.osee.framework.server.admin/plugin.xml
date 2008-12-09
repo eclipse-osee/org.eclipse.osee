@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="OseeBackup"
+         name="OseeBackup"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.osee.framework.server.admin.app.DataStoreBackupApplication">
+         </run>
+      </application>
+   </extension>
+
+</plugin>
