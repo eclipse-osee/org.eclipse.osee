@@ -68,7 +68,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
       //      }
 
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-            //            convertAtsLogUserIds();
+      //      convertAtsLogUserIds(transaction);
       transaction.execute();
 
       //      deleteUnAssignedUserRelations();
@@ -87,17 +87,18 @@ public class DoesNotWorkItem extends XNavigateItemAction {
       AWorkbench.popup("Completed", "Complete");
    }
 
-   private void convertAtsLogUserIds() throws OseeCoreException {
+   private void convertAtsLogUserIds(SkynetTransaction transaction) throws OseeCoreException {
       List<String> hrids =
-            Arrays.asList("PJDYM", "PMFNE", "1L94Y", "XV5XA", "TLP5H", "PXJ16", "M01RT", "YQ8P1", "2JDND", "XVM2A",
-                  "V3XW6", "JDNP5", "3BKPH", "L9VM4", "AR3RE", "W36HM", "2DW26", "M2W9Y", "WWSPY", "64TP4", "WN457",
-                  "Q3WLG", "MW57B", "Z9TYH", "U0JHV", "3LHN0", "PBC3S", "4B08D", "KKHLF", "7DRQP", "UP4LB", "KZ25J",
-                  "2GJ71", "FVRCC", "YP2BF", "W9D1C", "P7VGE", "WC39K");
+            Arrays.asList("NKYBF", "J1Z48", "ZY4W5", "U9H58", "9713S", "83XVW", "59B9X", "TQD1J", "UVM7U", "HZT73",
+                  "C49Q5", "RHCPY", "MBCXV", "YJFKC", "2F461", "AGW15", "K6ZGD", "9W45V", "GG43L", "G2VTQ", "CVWFC",
+                  "EXMT0", "W1TS8", "JM3RD", "7Q0W3", "P9DKR", "BR2RN", "Z6B0Z", "6KT6U", "HPQJX", "QN2K3", "W0VTD",
+                  "LDJMH", "6PWYH", "T8B4K", "YTNLC", "9557A", "SQQ6T", "D82X9", "2P5GC", "YK58N", "LWVT1", "KCGSQ",
+                  "5X2WL", "C8HWW");
       for (Artifact art : ArtifactQuery.getArtifactsFromIds(hrids, AtsPlugin.getAtsBranch())) {
          String str = art.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), null);
          str = str.replaceAll("rj236c", "1779483");
          art.setSoleAttributeFromString(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), str);
-         art.persistAttributes();
+         art.persistAttributes(transaction);
       }
    }
 
