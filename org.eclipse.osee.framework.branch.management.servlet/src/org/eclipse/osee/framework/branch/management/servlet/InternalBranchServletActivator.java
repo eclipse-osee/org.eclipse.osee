@@ -23,14 +23,14 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Andrew M Finkbeiner
  */
-public class Activator implements BundleActivator {
+public class InternalBranchServletActivator implements BundleActivator {
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
    private OseeHttpServiceTracker httpBranchManagementTracker;
    private OseeHttpServiceTracker httpBranchExportTracker;
    private ServiceTracker branchCreationTracker;
    private ServiceTracker branchExchangeTracker;
-   private static Activator instance;
+   private static InternalBranchServletActivator instance;
 
    /*
     * (non-Javadoc)
@@ -52,13 +52,11 @@ public class Activator implements BundleActivator {
       branchExchangeTracker.open();
 
       httpBranchManagementTracker =
-            new OseeHttpServiceTracker(context, OseeServerContext.BRANCH_CREATION_CONTEXT,
-                  BranchManagerServlet.class);
+            new OseeHttpServiceTracker(context, OseeServerContext.BRANCH_CREATION_CONTEXT, BranchManagerServlet.class);
       httpBranchManagementTracker.open();
 
       httpBranchExportTracker =
-            new OseeHttpServiceTracker(context, OseeServerContext.BRANCH_EXCHANGE_CONTEXT,
-                  BranchExchangeServlet.class);
+            new OseeHttpServiceTracker(context, OseeServerContext.BRANCH_EXCHANGE_CONTEXT, BranchExchangeServlet.class);
       httpBranchExportTracker.open();
 
    }
@@ -88,7 +86,7 @@ public class Activator implements BundleActivator {
       instance = null;
    }
 
-   public static Activator getInstance() {
+   public static InternalBranchServletActivator getInstance() {
       return instance;
    }
 

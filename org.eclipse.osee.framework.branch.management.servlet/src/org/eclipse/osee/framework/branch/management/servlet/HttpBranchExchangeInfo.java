@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.resource.management.Options;
 public class HttpBranchExchangeInfo {
 
    enum BranchExchangeFunctions {
-      exportBranch, importBranch;
+      exportBranch, importBranch, checkExchange;
    };
 
    private BranchExchangeFunctions function;

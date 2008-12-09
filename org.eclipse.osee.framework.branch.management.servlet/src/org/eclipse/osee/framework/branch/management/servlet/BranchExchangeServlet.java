@@ -45,31 +45,49 @@ public class BranchExchangeServlet extends OseeHttpServlet {
             case importBranch:
                executeImport(exchangeInfo, response);
                break;
+            case checkExchange:
+               executeCheckExchange(exchangeInfo, response);
             default:
                break;
          }
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
          response.setContentType("text/plain");
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing [%s]", req.toString()), ex);
+         OseeLog.log(InternalBranchServletActivator.class, Level.SEVERE, String.format("Error processing [%s]", req.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }
       response.getWriter().flush();
       response.getWriter().close();
    }
 
+   private void executeCheckExchange(HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
+      int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+      StringBuffer message = new StringBuffer();
+
+      String path = exchangeInfo.getPath();
+      IResourceLocator exchangeLocator = InternalBranchServletActivator.getInstance().getResourceLocatorManager().getResourceLocator(path);
+      IResourceLocator verifyLocator = InternalBranchServletActivator.getInstance().getBranchExchange().checkIntegrity(exchangeLocator);
+      status = HttpServletResponse.SC_ACCEPTED;
+      message.append(String.format("Verification at: [%s]", verifyLocator.getLocation().toASCIIString()));
+
+      response.setStatus(status);
+      response.setContentType("text/plain");
+      response.getWriter().write(message.toString());
+   }
+
    private void executeExport(HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
       int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
       StringBuffer message = new StringBuffer();
       IResourceLocator exchangeLocator =
-            Activator.getInstance().getBranchExchange().exportBranch(exchangeInfo.getExchangeFileName(),
+            InternalBranchServletActivator.getInstance().getBranchExchange().exportBranch(exchangeInfo.getExchangeFileName(),
                   exchangeInfo.getOptions(), exchangeInfo.getSelectedBranchIds());
-      message.append(String.format("Exported: [%s]", exchangeInfo.getExchangeFileName()));
+      status = HttpServletResponse.SC_ACCEPTED;
+      message.append(String.format("Exported: [%s]", exchangeLocator.getLocation().toASCIIString()));
 
       if (exchangeInfo.isSendExportFile()) {
          InputStream exportFileStream = null;
          try {
-            IResource resource = Activator.getInstance().getResourceManager().acquire(exchangeLocator, new Options());
+            IResource resource = InternalBranchServletActivator.getInstance().getResourceManager().acquire(exchangeLocator, new Options());
             exportFileStream = resource.getContent();
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentLength(exportFileStream.available());
@@ -85,7 +103,7 @@ public class BranchExchangeServlet extends OseeHttpServlet {
       }
 
       if (exchangeInfo.isDeleteExportFile()) {
-         int deleteResult = Activator.getInstance().getResourceManager().delete(exchangeLocator);
+         int deleteResult = InternalBranchServletActivator.getInstance().getResourceManager().delete(exchangeLocator);
          if (deleteResult == IResourceManager.OK) {
             status = HttpServletResponse.SC_ACCEPTED;
          } else {
@@ -101,9 +119,9 @@ public class BranchExchangeServlet extends OseeHttpServlet {
 
    private void executeImport(HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
       IResourceLocator locator =
-            Activator.getInstance().getResourceLocatorManager().getResourceLocator(exchangeInfo.getPath());
+            InternalBranchServletActivator.getInstance().getResourceLocatorManager().getResourceLocator(exchangeInfo.getPath());
 
-      Activator.getInstance().getBranchExchange().importBranch(locator, exchangeInfo.getOptions(),
+      InternalBranchServletActivator.getInstance().getBranchExchange().importBranch(locator, exchangeInfo.getOptions(),
             exchangeInfo.getSelectedBranchIds());
 
       response.setStatus(HttpServletResponse.SC_ACCEPTED);
