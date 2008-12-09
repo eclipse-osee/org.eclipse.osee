@@ -150,7 +150,7 @@ public class SMAWorkFlowSection extends SectionPart {
       workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       // workComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
 
-      if (isEditable) createCurrentPageHeader(workComp, atsWorkPage, toolkit);
+      createCurrentPageHeader(workComp, atsWorkPage, toolkit);
 
       // Add static layoutDatas to atsWorkPage
       List<DynamicXWidgetLayoutData> staticDatas = new ArrayList<DynamicXWidgetLayoutData>();
@@ -190,7 +190,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
 
-      if (isEditable) createCurrentPageTransitionLine(workComp, atsWorkPage, toolkit);
+      createCurrentPageTransitionLine(workComp, atsWorkPage, toolkit);
 
       return workComp;
    }
@@ -307,23 +307,21 @@ public class SMAWorkFlowSection extends SectionPart {
    @Override
    public void refresh() {
       super.refresh();
-      if (isEditable) {
-         try {
-            if (currentAssigneesLabel != null && !currentAssigneesLabel.isDisposed()) {
-               currentAssigneesLabel.setText(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
-               currentAssigneesLabel.getParent().layout();
-            }
-            if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
-               WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
-               if (toWorkPage == null)
-                  transitionAssigneesLabel.setText("");
-               else
-                  transitionAssigneesLabel.setText(smaMgr.getTransitionAssigneesStr());
-               transitionAssigneesLabel.getParent().layout();
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex.toString(), ex);
+      try {
+         if (currentAssigneesLabel != null && !currentAssigneesLabel.isDisposed()) {
+            currentAssigneesLabel.setText(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
+            currentAssigneesLabel.getParent().layout();
          }
+         if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
+            WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
+            if (toWorkPage == null)
+               transitionAssigneesLabel.setText("");
+            else
+               transitionAssigneesLabel.setText(smaMgr.getTransitionAssigneesStr());
+            transitionAssigneesLabel.getParent().layout();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex.toString(), ex);
       }
       refreshStateServices();
    }
@@ -332,7 +330,7 @@ public class SMAWorkFlowSection extends SectionPart {
       Composite comp = toolkit.createContainer(parent, 3);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      if (isEditable && !smaMgr.isCancelled() && !smaMgr.isCompleted()) {
+      if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
          toolkit.createLabel(comp, "\"" + page.getName() + "\" State  ");
          Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, ASSIGNEES, SWT.NONE);
          setAssigneesHyperlinkLabel.addHyperlinkListener(new IHyperlinkListener() {
@@ -352,6 +350,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
          });
+
          currentAssigneesLabel =
                toolkit.createLabel(comp, Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
          currentAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -369,6 +368,12 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void handleChangeCurrentAssignees() throws OseeCoreException {
+      if (!isEditable) {
+         AWorkbench.popup(
+               "ERROR",
+               "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
+         return;
+      }
       if (smaMgr.promptChangeAssignees(false)) {
          refresh();
          smaMgr.getEditor().onDirtied();
@@ -531,6 +536,12 @@ public class SMAWorkFlowSection extends SectionPart {
 
       try {
 
+         if (!isEditable) {
+            AWorkbench.popup(
+                  "ERROR",
+                  "You must be assigned to transition this workflow.\nContact Assignee or Select Priviledged Edit for Authorized Overriders.");
+            return;
+         }
          if (smaMgr.getBranchMgr().isWorkingBranch() && !atsWorkPage.isAllowTransitionWithWorkingBranch()) {
             AWorkbench.popup("ERROR",
                   "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
