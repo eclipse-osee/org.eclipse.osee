@@ -32,14 +32,38 @@ public class SearchEngineServlet extends OseeHttpServlet {
     */
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      HttpSearchInfo searchInfo = HttpSearchInfo.loadFromGet(request);
+      executeSearch(searchInfo, response, true);
+   }
+
+   /* (non-Javadoc)
+    * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    */
+   @Override
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
-         HttpSearchInfo searchInfo = new HttpSearchInfo(request);
+         HttpSearchInfo searchInfo = HttpSearchInfo.loadFromPost(request);
+         executeSearch(searchInfo, response, false);
+      } catch (Exception ex) {
+         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         response.setContentType("text/plain");
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
+               "Failed to respond to a search engine servlet request [%s]", request.getRequestURL()), ex);
+         response.getWriter().write(Lib.exceptionToString(ex));
+      }
+   }
+
+   private void executeSearch(HttpSearchInfo searchInfo, HttpServletResponse response, boolean wasFromGet) throws IOException {
+      try {
          ISearchEngine searchEngine = Activator.getInstance().getSearchEngine();
-         String result = searchEngine.search(searchInfo.getQuery(), searchInfo.getBranchId(), searchInfo.getOptions());
+         String result =
+               searchEngine.search(searchInfo.getQuery(), searchInfo.getBranchId(), searchInfo.getOptions(),
+                     searchInfo.getAttributeTypes());
+
          response.setCharacterEncoding("UTF-8");
          response.setContentType("text/plain");
          if (result != null && result.isEmpty() != true) {
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(wasFromGet ? HttpServletResponse.SC_OK : HttpServletResponse.SC_ACCEPTED);
             response.getWriter().write(result);
          } else {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -48,10 +72,11 @@ public class SearchEngineServlet extends OseeHttpServlet {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
          OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "Failed to respond to a search engine servlet request [%s]", request.toString()), ex);
+               "Failed to respond to a search engine servlet request [%s]", searchInfo.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }
       response.getWriter().flush();
       response.getWriter().close();
    }
+
 }
