@@ -59,6 +59,10 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewDescription() throws OseeCoreException;
 
+   /**
+    * @return estimated hours from workflow attribute, tasks and reviews
+    * @throws OseeCoreException
+    */
    public double getWorldViewEstimatedHours() throws OseeCoreException;
 
    public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException;
