@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.search.engine.servlet;
 
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 import org.eclipse.osee.framework.search.engine.Options;
 
 /**
@@ -19,25 +21,17 @@ import org.eclipse.osee.framework.search.engine.Options;
  */
 class HttpSearchInfo {
 
-   private String branchId;
-   private String queryString;
-   private Options options;
+   private final String branchId;
+   private final String queryString;
+   private final Options options;
+   private final String[] attributeTypes;
 
-   @SuppressWarnings("unchecked")
-   public HttpSearchInfo(HttpServletRequest request) {
-      this.options = new Options();
-      Enumeration<String> enumeration = request.getParameterNames();
-      while (enumeration.hasMoreElements()) {
-         String name = enumeration.nextElement();
-         String value = request.getParameter(name);
-         if (name.equalsIgnoreCase("query")) {
-            this.queryString = value;
-         } else if (name.equalsIgnoreCase("branchId")) {
-            this.branchId = value;
-         } else {
-            options.put(name.toLowerCase(), value);
-         }
-      }
+   public HttpSearchInfo(String branchId, Options options, String queryString, String... attributeTypes) {
+      super();
+      this.branchId = branchId;
+      this.options = options;
+      this.queryString = queryString;
+      this.attributeTypes = attributeTypes != null ? attributeTypes : new String[0];
    }
 
    public String getQuery() {
@@ -54,5 +48,48 @@ class HttpSearchInfo {
 
    public Options getOptions() {
       return options;
+   }
+
+   public String[] getAttributeTypes() {
+      return attributeTypes;
+   }
+
+   @SuppressWarnings("unchecked")
+   public static HttpSearchInfo loadFromGet(HttpServletRequest request) {
+      Options options = new Options();
+      String queryString = null;
+      String branchId = null;
+      String[] attributeTypes = null;
+      Enumeration<String> enumeration = request.getParameterNames();
+      while (enumeration.hasMoreElements()) {
+         String name = enumeration.nextElement();
+         String value = request.getParameter(name);
+         if (name.equalsIgnoreCase("query")) {
+            queryString = value;
+         } else if (name.equalsIgnoreCase("branchId")) {
+            branchId = value;
+         } else {
+            if (name.equalsIgnoreCase("name only")) {
+               attributeTypes = new String[] {"Name"};
+            } else {
+               options.put(name.toLowerCase(), value);
+            }
+         }
+      }
+      return new HttpSearchInfo(branchId, options, queryString, attributeTypes);
+   }
+
+   public static HttpSearchInfo loadFromPost(HttpServletRequest request) throws Exception {
+      PropertyStore propertyStore = new PropertyStore(request.getParameter("sessionId"));
+
+      PropertyStoreWriter propertyStoreWriter = new PropertyStoreWriter();
+      propertyStoreWriter.load(propertyStore, request.getInputStream());
+
+      Options options = new Options();
+      options.put("include deleted", propertyStore.get("include deleted"));
+      options.put("match word order", propertyStore.get("match word order"));
+
+      return new HttpSearchInfo(propertyStore.get("branchId"), options, propertyStore.get("query"),
+            propertyStore.getArray("attributeType"));
    }
 }
