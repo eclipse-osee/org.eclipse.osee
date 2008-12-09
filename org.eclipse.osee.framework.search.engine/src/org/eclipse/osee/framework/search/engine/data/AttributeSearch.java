@@ -25,23 +25,30 @@ import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
  * @author Roberto E. Escobar
  */
 public final class AttributeSearch implements ITagCollector {
-   private String searchString;
-   private int branchId;
-   private Options options;
-   private Set<Long> tagStore;
+   private final String searchString;
+   private final int branchId;
+   private final Options options;
+   private final Set<Long> tagStore;
+   private final Set<String> attributeTypes;
 
-   public AttributeSearch(String searchString, int branchId, Options options) {
+   public AttributeSearch(String searchString, int branchId, Options options, String... attributeTypes) {
       this.tagStore = new HashSet<Long>();
       this.branchId = branchId;
       this.searchString = searchString;
       this.options = options;
+      this.attributeTypes = new HashSet<String>();
+      if (attributeTypes != null) {
+         for (String value : attributeTypes) {
+            this.attributeTypes.add(value);
+         }
+      }
    }
 
    public Set<AttributeData> getMatchingAttributes() throws Exception {
       Set<AttributeData> toReturn = null;
       long start = System.currentTimeMillis();
       TagProcessor.collectFromString(searchString, this);
-      toReturn = AttributeDataStore.getAttributesByTags(branchId, options, this.tagStore);
+      toReturn = AttributeDataStore.getAttributesByTags(branchId, options, tagStore, attributeTypes);
       if (toReturn == null) {
          toReturn = Collections.emptySet();
       }

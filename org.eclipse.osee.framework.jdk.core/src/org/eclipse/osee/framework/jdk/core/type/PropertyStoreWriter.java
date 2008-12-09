@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -70,9 +69,9 @@ public class PropertyStoreWriter {
       internalSave(store, writer);
    }
 
-   public void save(PropertyStore store, StringWriter stringWriter) throws IOException {
-      XMLWriter writer = new XMLWriter(stringWriter);
-      internalSave(store, writer);
+   public void save(PropertyStore store, Writer writer) throws IOException {
+      XMLWriter internalWriter = new XMLWriter(writer);
+      internalSave(store, internalWriter);
    }
 
    @SuppressWarnings("unchecked")

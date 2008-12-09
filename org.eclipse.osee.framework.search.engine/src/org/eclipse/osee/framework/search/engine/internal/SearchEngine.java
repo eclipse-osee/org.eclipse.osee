@@ -36,11 +36,11 @@ public class SearchEngine implements ISearchEngine {
     * @see org.eclipse.osee.framework.search.engine.ISearchEngine#search(java.lang.String, org.eclipse.osee.framework.search.engine.Options)
     */
    @Override
-   public String search(String searchString, int branchId, Options options) throws Exception {
+   public String search(String searchString, int branchId, Options options, String... attributeTypes) throws Exception {
       long startTime = System.currentTimeMillis();
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       IAttributeTaggerProviderManager manager = Activator.getTaggerManager();
-      AttributeSearch attributeSearch = new AttributeSearch(searchString, branchId, options);
+      AttributeSearch attributeSearch = new AttributeSearch(searchString, branchId, options, attributeTypes);
       Collection<AttributeData> tagMatches = attributeSearch.getMatchingAttributes();
       long timeAfterPass1 = System.currentTimeMillis() - startTime;
       long secondPass = System.currentTimeMillis();
