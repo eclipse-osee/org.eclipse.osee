@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.util.List;
-import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeLocatorProvider;
+import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -29,7 +29,7 @@ public class BranchExchange implements IBranchExchange {
    public IResourceLocator exportBranch(String exportName, Options options, int... branchIds) throws Exception {
       ExportController controller = new ExportController(exportName, options, branchIds);
       controller.execute();
-      return Activator.getInstance().getResourceLocatorManager().generateResourceLocator(
+      return InternalBranchActivator.getResourceLocatorManager().generateResourceLocator(
             ExchangeLocatorProvider.PROTOCOL, "", controller.getExchangeFileName());
    }
 
@@ -70,8 +70,10 @@ public class BranchExchange implements IBranchExchange {
     * @see org.eclipse.osee.framework.branch.management.IBranchExchange#checkIntegrity(org.eclipse.osee.framework.resource.management.IResourceLocator)
     */
    @Override
-   public void checkIntegrity(IResourceLocator fileToCheck) throws Exception {
+   public IResourceLocator checkIntegrity(IResourceLocator fileToCheck) throws Exception {
       ExchangeIntegrity exchangeIntegrityCheck = new ExchangeIntegrity(fileToCheck);
       exchangeIntegrityCheck.execute();
+      return InternalBranchActivator.getResourceLocatorManager().generateResourceLocator(
+            ExchangeLocatorProvider.PROTOCOL, "", exchangeIntegrityCheck.getExchangeCheckFileName());
    }
 }

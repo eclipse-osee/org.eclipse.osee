@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management.impl;
+package org.eclipse.osee.framework.branch.management.internal;
 
 import java.sql.Connection;
 import java.sql.Timestamp;

@@ -8,10 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management;
+package org.eclipse.osee.framework.branch.management.internal;
 
+import org.eclipse.osee.framework.branch.management.IBranchCreation;
+import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
-import org.eclipse.osee.framework.branch.management.impl.BranchCreation;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.osgi.framework.BundleActivator;
@@ -19,20 +21,24 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class Activator implements BundleActivator {
+public class InternalBranchActivator implements BundleActivator {
 
-   private static Activator instance;
+   private static InternalBranchActivator instance;
    private ServiceRegistration serviceRegistration;
    private ServiceRegistration exchangeServiceRegistration;
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
+   private ServiceTracker branchExchangeTracker;
+   private ServiceTracker applicationServerManagerTracker;
+   private BundleContext context;
 
    /*
     * (non-Javadoc)
     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
     */
    public void start(BundleContext context) throws Exception {
-      Activator.instance = this;
+      InternalBranchActivator.instance = this;
+      this.context = context;
       serviceRegistration = context.registerService(IBranchCreation.class.getName(), new BranchCreation(), null);
 
       exchangeServiceRegistration =
@@ -43,6 +49,12 @@ public class Activator implements BundleActivator {
 
       resourceManagementTracker = new ServiceTracker(context, IResourceManager.class.getName(), null);
       resourceManagementTracker.open();
+
+      branchExchangeTracker = new ServiceTracker(context, IBranchExchange.class.getName(), null);
+      branchExchangeTracker.open();
+
+      applicationServerManagerTracker = new ServiceTracker(context, IApplicationServerManager.class.getName(), null);
+      applicationServerManagerTracker.open();
    }
 
    /*
@@ -62,18 +74,32 @@ public class Activator implements BundleActivator {
       resourceLocatorManagerTracker.close();
       resourceLocatorManagerTracker = null;
 
-      Activator.instance = null;
+      branchExchangeTracker.close();
+      branchExchangeTracker = null;
+
+      applicationServerManagerTracker.close();
+      applicationServerManagerTracker = null;
+
+      InternalBranchActivator.instance = null;
    }
 
-   public IResourceManager getResourceManager() {
-      return (IResourceManager) resourceManagementTracker.getService();
+   public static IBranchExchange getBranchExchange() {
+      return (IBranchExchange) instance.branchExchangeTracker.getService();
    }
 
-   public IResourceLocatorManager getResourceLocatorManager() {
-      return (IResourceLocatorManager) resourceLocatorManagerTracker.getService();
+   public static IResourceManager getResourceManager() {
+      return (IResourceManager) instance.resourceManagementTracker.getService();
    }
 
-   public static Activator getInstance() {
-      return instance;
+   public static IResourceLocatorManager getResourceLocatorManager() {
+      return (IResourceLocatorManager) instance.resourceLocatorManagerTracker.getService();
+   }
+
+   public static IApplicationServerManager getApplicationServerManger() {
+      return (IApplicationServerManager) instance.applicationServerManagerTracker.getService();
+   }
+
+   public static BundleContext getBundleContext() {
+      return instance.context;
    }
 }

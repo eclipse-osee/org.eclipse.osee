@@ -33,9 +33,14 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
  */
 public class ExchangeIntegrity {
    private final IResourceLocator locator;
+   private String checkExchange;
 
    public ExchangeIntegrity(IResourceLocator locator) {
       this.locator = locator;
+   }
+
+   public String getExchangeCheckFileName() {
+      return checkExchange;
    }
 
    public void execute() throws Exception {
@@ -55,7 +60,8 @@ public class ExchangeIntegrity {
             ExchangeUtil.readExchange(exchange, importFile.getFileName(), new CheckSaxHandler(checkList,
                   importFile.getFileName()));
          }
-         writeResults(exchange.getParentFile(), exchange.getName() + ".verify.xml", checkList);
+         checkExchange = exchange.getName() + ".verify.xml";
+         writeResults(exchange.getParentFile(), checkExchange, checkList);
       } finally {
          ExchangeUtil.cleanUpTempExchangeFile(exchange, tempExchange.object1);
          OseeLog.log(this.getClass(), Level.INFO, String.format("Verified [%s] in [%s]", locator.getLocation(),
@@ -160,4 +166,5 @@ public class ExchangeIntegrity {
          super.finishData();
       }
    }
+
 }

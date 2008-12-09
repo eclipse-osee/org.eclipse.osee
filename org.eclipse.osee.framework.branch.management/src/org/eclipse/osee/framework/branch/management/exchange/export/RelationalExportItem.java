@@ -18,9 +18,9 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -61,8 +61,8 @@ public class RelationalExportItem extends AbstractDbExportItem {
          tempFolder.mkdirs();
       }
 
-      IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uriTarget);
-      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
+      IResourceLocator locator = InternalBranchActivator.getResourceLocatorManager().getResourceLocator(uriTarget);
+      IResource resource = InternalBranchActivator.getResourceManager().acquire(locator, new Options());
 
       File target = new File(tempFolder, locator.getRawPath());
       if (target.getParentFile() != null) {

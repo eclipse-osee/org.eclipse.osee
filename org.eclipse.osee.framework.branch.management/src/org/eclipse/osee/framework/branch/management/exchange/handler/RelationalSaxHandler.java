@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
+import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -84,10 +84,10 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
 
             String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
             IResourceLocator locatorHint =
-                  Activator.getInstance().getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
+                  InternalBranchActivator.getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
 
             IResourceLocator locator =
-                  Activator.getInstance().getResourceManager().save(locatorHint,
+                  InternalBranchActivator.getResourceManager().save(locatorHint,
                         new ZipBinaryResource(entry, locatorHint), new Options());
             transferredBinaryContent.add(locator);
             return locator.getLocation().toASCIIString();
@@ -176,7 +176,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
 
    private void cleanUpBinaryContent() {
       StringBuilder errorMessage = new StringBuilder();
-      IResourceManager manager = Activator.getInstance().getResourceManager();
+      IResourceManager manager = InternalBranchActivator.getResourceManager();
       for (IResourceLocator locator : transferredBinaryContent) {
          try {
             manager.delete(locator);
