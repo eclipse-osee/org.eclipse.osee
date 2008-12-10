@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -87,5 +91,26 @@ public class ArtifactTransactionData extends BaseTransactionData {
    @Override
    protected int createGammaId() throws OseeCoreException {
       return SequenceManager.getNextGammaId();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalAsModifiedEvent()
+    */
+   @Override
+   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events) throws OseeCoreException {
+      ArtifactModType artifactModType;
+      switch (getModificationType()) {
+         case CHANGE:
+            artifactModType = ArtifactModType.Changed;
+            break;
+         case DELETED:
+            artifactModType = ArtifactModType.Deleted;
+            break;
+         default:
+            artifactModType = ArtifactModType.Added;
+            break;
+      }
+      events.add(new ArtifactModifiedEvent(new Sender(this.getClass().getName()), artifactModType, artifact,
+            artifact.getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
    }
 }

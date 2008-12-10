@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -19,12 +20,14 @@ import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Jeff C. Phillips
+ * @author Roberto E. Escobar
  */
 public class AttributeTransactionData extends BaseTransactionData {
    private static final String INSERT_ATTRIBUTE =
@@ -143,6 +146,13 @@ public class AttributeTransactionData extends BaseTransactionData {
       public String getValue() {
          return value != null ? value : "";
       }
+   }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalAsModifiedEvent(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
+    */
+   @Override
+   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events) throws OseeCoreException {
+      // Do Nothing - handled by artifact transaction data
    }
 }

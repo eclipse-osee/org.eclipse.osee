@@ -10,17 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Jeff C. Phillips
+ * @author Roberto E. Escobar
  */
 public class RelationTransactionData extends BaseTransactionData {
    private static final String INSERT_INTO_RELATION_TABLE =
@@ -89,5 +94,16 @@ public class RelationTransactionData extends BaseTransactionData {
          newGammaId = SequenceManager.getNextGammaId();
       }
       return newGammaId;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalUpdateEvents(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
+    */
+   @Override
+   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events) throws OseeCoreException {
+      RelationModType relationModType =
+            getModificationType().isDeleted() ? RelationModType.Deleted : RelationModType.Added;
+      events.add(new RelationModifiedEvent(new Sender(this.getClass().getName()), relationModType, relation,
+            relation.getBranch(), relation.getRelationType().getTypeName()));
    }
 }

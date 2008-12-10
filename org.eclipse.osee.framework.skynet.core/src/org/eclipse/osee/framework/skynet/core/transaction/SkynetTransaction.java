@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,20 +36,15 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 
@@ -62,9 +58,6 @@ public final class SkynetTransaction extends DbTransaction {
          "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id <> ?";
 
    private TransactionId transactionId;
-
-   private final List<ArtifactTransactionModifiedEvent> xModifiedEvents =
-         new ArrayList<ArtifactTransactionModifiedEvent>();
 
    private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData> transactionDataItems =
          new CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData>();
@@ -87,7 +80,6 @@ public final class SkynetTransaction extends DbTransaction {
       dataInsertOrder.clear();
       transactionDataItems.clear();
       dataItemInserts.clear();
-      xModifiedEvents.clear();
       transactionId = null;
    }
 
@@ -151,24 +143,6 @@ public final class SkynetTransaction extends DbTransaction {
       dataInsertOrder.put(insertPriority, insertSql);
    }
 
-   private void addArtifactModifiedEvent(Object sourceObject, ModificationType modificationType, Artifact artifact) throws OseeCoreException {
-      madeChanges = true;
-      ArtifactModType artifactModType;
-      switch (modificationType) {
-         case CHANGE:
-            artifactModType = ArtifactModType.Changed;
-            break;
-         case DELETED:
-            artifactModType = ArtifactModType.Deleted;
-            break;
-         default:
-            artifactModType = ArtifactModType.Added;
-            break;
-      }
-      xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(sourceObject), artifactModType, artifact,
-            internalGetTransactionId().getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
-   }
-
    public void execute() throws OseeCoreException {
       if (madeChanges) {
          super.execute();
@@ -176,6 +150,14 @@ public final class SkynetTransaction extends DbTransaction {
          OseeDbConnection.reportTxStart(this);
          OseeDbConnection.reportTxEnd(this);
       }
+   }
+
+   /**
+    * @return the transaction number.
+    * @throws OseeDataStoreException
+    */
+   public int getTransactionNumber() throws OseeCoreException {
+      return internalGetTransactionId().getTransactionNumber();
    }
 
    /**
@@ -199,9 +181,6 @@ public final class SkynetTransaction extends DbTransaction {
       RelationManager.deleteRelationsAll(artifact, reorderRelations);
 
       artifact.persistAttributesAndRelations(this);
-
-      // Kick Local Event
-      addArtifactModifiedEvent("persistArtifact()", ModificationType.DELETED, artifact);
    }
 
    public void addArtifact(Artifact artifact) throws OseeCoreException {
@@ -228,9 +207,6 @@ public final class SkynetTransaction extends DbTransaction {
             addAttribute(artifact, attribute);
          }
       }
-
-      // Kick Local Event
-      addArtifactModifiedEvent("persistArtifact()", modificationType, artifact);
    }
 
    private void addArtifactHelper(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
@@ -339,11 +315,6 @@ public final class SkynetTransaction extends DbTransaction {
       } else {
          updateTxItem(txItem, modificationType);
       }
-
-      RelationModType relationModType = modificationType.isDeleted() ? RelationModType.Deleted : RelationModType.Added;
-
-      xModifiedEvents.add(new RelationModifiedEvent(new Sender("RelationManager"), relationModType, link,
-            link.getBranch(), link.getRelationType().getTypeName()));
    }
 
    boolean isInTransaction(Class<? extends BaseTransactionData> clazz, int id) {
@@ -364,14 +335,21 @@ public final class SkynetTransaction extends DbTransaction {
    @Override
    protected void handleTxWork(Connection connection) throws OseeCoreException {
       executeTransactionDataItems(connection);
+      Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
+
+      // Update all transaction items before collecting events and clearing dirty state
+      for (BaseTransactionData transactionData : transactionDataItems.values()) {
+         transactionData.internalUpdate(internalGetTransactionId());
+      }
 
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
+         transactionData.internalAddToEvents(xModifiedEvents);
          transactionData.internalClearDirtyState();
-         transactionData.internalUpdate(internalGetTransactionId());
       }
 
       if (xModifiedEvents.size() > 0) {
          OseeEventManager.kickTransactionEvent(this, xModifiedEvents);
+         xModifiedEvents.clear();
       }
    }
 

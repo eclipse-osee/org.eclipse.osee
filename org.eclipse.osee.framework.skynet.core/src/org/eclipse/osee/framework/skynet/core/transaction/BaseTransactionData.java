@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 
 /**
  * @author Jeff C. Phillips
@@ -55,8 +57,8 @@ public abstract class BaseTransactionData {
 
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       internalAddInsertToBatch(transaction, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE,
-            transaction.internalGetTransactionId().getTransactionNumber(), getGammaId(),
-            getModificationType().getValue(), TxChange.getCurrent(getModificationType()).getValue());
+            transaction.getTransactionNumber(), getGammaId(), getModificationType().getValue(), TxChange.getCurrent(
+                  getModificationType()).getValue());
    }
 
    protected final int getItemId() {
@@ -107,4 +109,11 @@ public abstract class BaseTransactionData {
     * Should not be called by application. This method will be called by the base class when required;
     */
    protected abstract int createGammaId() throws OseeCoreException;
+
+   /**
+    * Should not be called by application. This should only be called once after the transaction has been committed.
+    * 
+    * @param events
+    */
+   protected abstract void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events) throws OseeCoreException;
 }
