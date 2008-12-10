@@ -107,6 +107,8 @@ public class XWidgetFactory {
          xWidget = new XMembersCombo(name);
       else if (xWidgetName.equals("XDate"))
          xWidget = new XDate(name);
+      else if (xWidgetName.equals("XMultiXWidgetTextDam"))
+         xWidget = new XMultiXWidgetTextDam(name);
       else if (xWidgetName.equals("XFileSelectionDialog"))
          xWidget = new XFileSelectionDialog(name);
       else if (xWidgetName.equals("XDateDam"))

@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
@@ -86,18 +85,6 @@ public class XMultiXWidgetTextDam extends XMultiXWidgetDam {
       for (String value : artifact.getAttributesToStringList(attributeTypeName)) {
          addXWidget("", value);
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetDam#handleUndo()
-    */
-   @Override
-   public void handleUndo() throws Exception {
-      Composite parent = group.getParent();
-      group.dispose();
-      System.err.println("dispose all widgets");
-      createXWidgets();
-      createWidgets(toolkit, parent, horizontalSpan);
    }
 
 }

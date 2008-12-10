@@ -13,11 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -78,38 +75,10 @@ public class XMultiXWidget extends XWidget {
          };
       });
 
-      // Create undo label / icon
-      Label undoLabel = new Label(group, SWT.NONE);
-      if (toolkit != null) toolkit.adapt(undoLabel, true, true);
-      image = null;
-      try {
-         image = SkynetGuiPlugin.getInstance() != null ? SkynetGuiPlugin.getInstance().getImage("undo.gif") : null;
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      if (image != null)
-         undoLabel.setImage(image);
-      else
-         undoLabel.setText("undo");
-      undoLabel.setToolTipText("Undo Changes to \"" + getLabel() + "\"");
-      undoLabel.addListener(SWT.MouseUp, new Listener() {
-         public void handleEvent(org.eclipse.swt.widgets.Event event) {
-            try {
-               handleUndo();
-            } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            }
-         };
-      });
-
       // Create xWidget lines
       for (final XWidget xWidget : xWidgets) {
          createWidgetControlComposite(xWidget, group, 2);
       }
-   }
-
-   protected void handleUndo() throws Exception {
-      System.out.println("handle undo");
    }
 
    protected void handleAddXWidget() {

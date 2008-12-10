@@ -73,10 +73,8 @@ public abstract class XMultiXWidgetDam extends XMultiXWidget implements IArtifac
     * Create new XWidget with default value in response to new attribute request
     * 
     * @param artifact
-    * @return
+    * @return XWidget
     */
    public abstract XWidget addXWidgetDam();
-
-   public abstract void handleUndo() throws Exception;
 
 }
