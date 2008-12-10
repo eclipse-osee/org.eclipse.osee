@@ -4,16 +4,15 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
@@ -66,30 +65,40 @@ public class OpenWithMenuListener implements MenuListener {
             }
          }
 
-         Map<String, IRenderer> commonRenders = new HashMap<String, IRenderer>();
-         for (IRenderer renderer : RendererManager.getApplicableRenderer(PresentationType.EDIT, artifacts.get(0), null)) {
-            commonRenders.put(renderer.getName(), renderer);
-         }
+         List<IRenderer> commonRenders =
+               RendererManager.getApplicableRenderer(PresentationType.EDIT, artifacts.get(0), null);
 
          for (Artifact artifact : artifacts) {
             List<IRenderer> applicableRenders =
                   RendererManager.getApplicableRenderer(PresentationType.EDIT, artifact, null);
 
-            for (IRenderer renderer : applicableRenders) {
-               if (!commonRenders.containsKey(renderer.getName())) {
-                  commonRenders.remove(renderer);
+            Iterator<?> commIterator = commonRenders.iterator();
+
+            while (commIterator.hasNext()) {
+               IRenderer commRenderer = (IRenderer) commIterator.next();
+               boolean found = false;
+               for (IRenderer appRenderer : applicableRenders) {
+                  if (appRenderer.getName().equals(commRenderer.getName())) {
+                     found = true;
+                     continue;
+                  }
+               }
+
+               if (!found) {
+                  commIterator.remove();
                }
             }
+
          }
 
-         for (IRenderer renderer : commonRenders.values()) {
+         for (IRenderer renderer : commonRenders) {
             MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
             menuItem.setText(renderer.getName());
             menuItem.addSelectionListener(new OpenWithSelectionListener(renderer, viewer));
          }
 
       } catch (Exception ex) {
-
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 }
