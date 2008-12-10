@@ -18,7 +18,7 @@ public enum ConflictStatus {
    UNTOUCHED(1),
    EDITED(2),
    RESOLVED(3),
-   OUT_OF_DATE_COMMITTED(4),
+   OUT_OF_DATE_RESOLVED(4),
    NOT_RESOLVABLE(5),
    COMMITTED(6),
    INFORMATIONAL(7),

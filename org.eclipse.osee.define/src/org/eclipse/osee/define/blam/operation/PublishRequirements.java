@@ -10,15 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -28,8 +39,13 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
  * @author Jeff C. Phillips
+ * @author Theron Virgin
  */
 public class PublishRequirements extends AbstractBlam {
+   private boolean includeAttributes;
+   private boolean publishAsDiff;
+   private Date date;
+   private Branch branch;
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
@@ -37,12 +53,21 @@ public class PublishRequirements extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
+      includeAttributes = variableMap.getBoolean("Publish With Attributes");
+      publishAsDiff = variableMap.getBoolean("Publish As Diff");
+      if (variableMap.getValue("Diff Starting Point") instanceof Date) {
+         date = (Date) variableMap.getValue("Diff Starting Point");
+      }
+      branch = variableMap.getBranch("Diff Branch");
+
+      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
 
       SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch());
+      String templateOption =
+            publishAsDiff ? (includeAttributes ? ITemplateRenderer.DIFF_VALUE : ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE) : (includeAttributes ? ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE : ITemplateRenderer.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE);
       VariableMap options =
             new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
-                  ITemplateRenderer.TEMPLATE_OPTION, ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE,
-                  ITemplateRenderer.TRANSACTION_OPTION, transaction);
+                  ITemplateRenderer.TEMPLATE_OPTION, templateOption, ITemplateRenderer.TRANSACTION_OPTION, transaction);
       for (Artifact artifact : artifacts) {
          try {
             publish(monitor, artifact, options);
@@ -57,8 +82,9 @@ public class PublishRequirements extends AbstractBlam {
       if (monitor.isCanceled()) {
          return;
       }
+
+      ArrayList<Artifact> nonFolderChildren = new ArrayList<Artifact>();
       if (artifact.isOfType("Folder")) {
-         List<Artifact> nonFolderChildren = new ArrayList<Artifact>();
          for (Artifact child : artifact.getChildren()) {
             if (child.isOfType("Folder")) {
                publish(monitor, child, options);
@@ -66,9 +92,23 @@ public class PublishRequirements extends AbstractBlam {
                nonFolderChildren.add(child);
             }
          }
-         RendererManager.preview(nonFolderChildren, monitor, options);
       } else {
-         RendererManager.preview(artifact, monitor, options);
+         nonFolderChildren.add(artifact);
+      }
+
+      if (publishAsDiff) {
+         if (branch == null) {
+
+         }
+         if (date == null) {
+
+         }
+         nonFolderChildren = buildRecursiveList(nonFolderChildren);
+         int transactionId = BranchManager.getBranchTransaction(date, branch.getBranchId());
+         RendererManager.diffInJob(getOlderArtifacts(nonFolderChildren, transactionId, branch.getBranchId()),
+               nonFolderChildren, options);
+      } else {
+         RendererManager.preview(nonFolderChildren, monitor, options);
       }
    }
 
@@ -83,6 +123,38 @@ public class PublishRequirements extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" /><XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" /><XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";
+   }
+
+   private ArrayList<Artifact> getOlderArtifacts(ArrayList<Artifact> artifacts, int transactionId, int branchId) throws OseeCoreException {
+      ArrayList<Artifact> historicArtifacts = new ArrayList<Artifact>(artifacts.size());
+      int queryId = ArtifactLoader.getNewQueryId();
+      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+
+      List<Object[]> insertParameters = new LinkedList<Object[]>();
+      for (Artifact artifact : artifacts) {
+         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branchId, transactionId});
+      }
+      ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, true, true);
+      for (Artifact artifact : artifacts) {
+         historicArtifacts.add(ArtifactCache.getHistorical(artifact.getArtId(), transactionId));
+      }
+      return historicArtifacts;
+   }
+
+   private ArrayList<Artifact> buildRecursiveList(ArrayList<Artifact> artifacts) throws OseeCoreException {
+      ArrayList<Artifact> artifactWithChildren = new ArrayList<Artifact>(artifacts.size());
+      for (Artifact artifact : artifacts) {
+         artifactWithChildren.add(artifact);
+         addChildren(artifactWithChildren, artifact);
+      }
+      return artifactWithChildren;
+   }
+
+   private void addChildren(ArrayList<Artifact> artifacts, Artifact artifact) throws OseeCoreException {
+      for (Artifact loopArtifact : artifact.getChildren()) {
+         artifacts.add(loopArtifact);
+         addChildren(artifacts, loopArtifact);
+      }
    }
 }

@@ -270,6 +270,7 @@ public class XMergeViewer extends XWidget implements IActionable {
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_merge.gif"));
       item.setToolTipText("Apply Merge Results From Prior Merge");
+      final XMergeViewer xMergeViewer = this;
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -296,12 +297,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                                     new String[] {"Apply", "Cancel"}, 1);
                         if (dialog.open() == 0) {
                            System.out.print("Applying the merge found for Branch " + branchIds.toArray()[dialog.getSelection()]);
-                           for (Conflict conflict : conflicts) {
-                              conflict.applyPreviousMerge(ConflictManagerInternal.getMergeBranchId(
-                                    conflicts[0].getSourceBranch().getBranchId(), branchIds.get(dialog.getSelection())));
-                           }
-                           setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans,
-                                 " Aplying Previous Merge", true);
+                           applyPreviousMerge(branchIds.get(dialog.getSelection()));
                         }
                      }
                      if (selections.size() == 0) {
@@ -318,6 +314,28 @@ public class XMergeViewer extends XWidget implements IActionable {
       });
 
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, MergeView.VIEW_ID, "Merge Manager");
+   }
+
+   private void applyPreviousMerge(final int destBranchId) {
+      Job job = new Job("Apply Previous Merge") {
+
+         @Override
+         protected IStatus run(final IProgressMonitor monitor) {
+            monitor.beginTask("ApplyingPreviousMerge", conflicts.length);
+            for (Conflict conflict : conflicts) {
+               try {
+                  conflict.applyPreviousMerge(ConflictManagerInternal.getMergeBranchId(
+                        conflict.getSourceBranch().getBranchId(), destBranchId), destBranchId);
+               } catch (OseeCoreException ex) {
+                  OSEELog.logException(XMergeViewer.class, ex, false);
+               }
+               monitor.worked(1);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+
+      Jobs.startJob(job);
    }
 
    public void refreshTable() throws InterruptedException {
@@ -390,6 +408,7 @@ public class XMergeViewer extends XWidget implements IActionable {
       mergeXViewer.refresh();
       setLabelError();
       refreshActionEnablement();
+      mergeView.showConflicts(true);
       int resolved = 0;
       int informational = 0;
       if (conflicts != null && conflicts.length != 0) {

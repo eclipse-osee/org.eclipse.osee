@@ -524,7 +524,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public void deleteAttributes() {
       for (Attribute<?> attribute : attributes.getValues()) {
-         attribute.delete();
+         if (attribute.isInDb()) {
+            attribute.delete();
+         }
       }
    }
 

@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,6 +66,8 @@ public class BranchManager {
    public static final String COMMIT_TRANSACTION =
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("tx_type", "branch_id", "transaction_id",
                TXD_COMMENT, "time", "author", "commit_art_id");
+   private static final String SELECT_BRANCH_TRANSACTION =
+         "SELECT transaction_id FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
 
    private static final String UPDATE_TRANSACTION_BRANCH =
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
@@ -605,5 +608,21 @@ public class BranchManager {
    public static Branch getSystemRootBranch() throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       return instance.systemRoot;
+   }
+
+   public static int getBranchTransaction(Date date, int branchId) throws OseeCoreException {
+      int transactionId = -1;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+
+      try {
+         chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION, branchId, new Timestamp(date.getTime()));
+
+         if (chStmt.next()) {
+            transactionId = chStmt.getInt("transaction_id");
+         }
+      } finally {
+         chStmt.close();
+      }
+      return transactionId;
    }
 }

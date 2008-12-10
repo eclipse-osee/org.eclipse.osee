@@ -225,7 +225,7 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public boolean statusOutOfDateCommitted() {
-      return status.equals(ConflictStatus.OUT_OF_DATE_COMMITTED);
+      return status.equals(ConflictStatus.OUT_OF_DATE_RESOLVED);
    }
 
    public boolean statusOutOfDate() {
@@ -257,7 +257,7 @@ public abstract class Conflict implements IAdaptable {
          setStatus(ConflictStatus.RESOLVED);
       } else if (status.equals(ConflictStatus.RESOLVED)) {
          setStatus(ConflictStatus.EDITED);
-      } else if (status.equals(ConflictStatus.OUT_OF_DATE_COMMITTED)) {
+      } else if (status.equals(ConflictStatus.OUT_OF_DATE_RESOLVED)) {
          setStatus(ConflictStatus.RESOLVED);
       } else if (status.equals(ConflictStatus.OUT_OF_DATE)) {
          setStatus(ConflictStatus.EDITED);
@@ -324,5 +324,5 @@ public abstract class Conflict implements IAdaptable {
 
    public abstract int getObjectId() throws OseeCoreException;
 
-   public abstract boolean applyPreviousMerge(int mergeBranchId) throws OseeCoreException;
+   public abstract boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException;
 }

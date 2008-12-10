@@ -232,7 +232,7 @@ public class ArtifactConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#applyPreviousMerge(int)
     */
    @Override
-   public boolean applyPreviousMerge(int mergeBranchId) throws OseeCoreException {
+   public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException {
       return false;
    }
 

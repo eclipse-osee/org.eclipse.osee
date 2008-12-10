@@ -211,6 +211,10 @@ public class RelationManager {
    }
 
    public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, IRelationEnumeration... relationEnums) throws OseeCoreException {
+      return getRelatedArtifacts(artifacts, depth, false, relationEnums);
+   }
+
+   public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, boolean allowDeleted, IRelationEnumeration... relationEnums) throws OseeCoreException {
       int queryId = ArtifactLoader.getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifacts.size() * 8);
@@ -240,7 +244,7 @@ public class RelationManager {
 
          if (insertParameters.size() > 0) {
             newArtifacts.addAll(ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, new ArrayList<Object[]>(
-                  insertParameters.values()), false, false, false));
+                  insertParameters.values()), false, false, allowDeleted));
          }
          newArtifactsToSearch.clear();
          newArtifactsToSearch.addAll(newArtifacts);

@@ -58,7 +58,7 @@ public class ConflictStatusManager {
             int intStatus = chStmt.getInt("status");
             if (((chStmt.getInt("source_gamma_id") != sourceGamma) || (chStmt.getInt("dest_gamma_id") != destGamma)) && intStatus != ConflictStatus.COMMITTED.getValue()) {
                if (intStatus == ConflictStatus.RESOLVED.getValue()) {
-                  intStatus = ConflictStatus.OUT_OF_DATE_COMMITTED.getValue();
+                  intStatus = ConflictStatus.OUT_OF_DATE_RESOLVED.getValue();
                }
                if (intStatus == ConflictStatus.EDITED.getValue()) {
                   intStatus = ConflictStatus.OUT_OF_DATE.getValue();
@@ -68,6 +68,9 @@ public class ConflictStatusManager {
                if (conflictType == ConflictType.ATTRIBUTE.getValue()) {
                   ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, sourceGamma, transactionId, objectID);
                }
+            }
+            if (intStatus == ConflictStatus.NOT_RESOLVABLE.getValue() || intStatus == ConflictStatus.INFORMATIONAL.getValue() || passedStatus == ConflictStatus.NOT_RESOLVABLE || passedStatus == ConflictStatus.INFORMATIONAL) {
+               intStatus = passedStatus.getValue();
             }
             return ConflictStatus.getStatus(intStatus);
          }

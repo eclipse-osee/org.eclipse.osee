@@ -886,32 +886,34 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             for (Artifact artifact : transData.cacheChangedArtifacts) {
                try {
                   Branch branch = artifact.getBranch();
-                  for (Conflict conflict : conflicts) {
-                     if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
-                        xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
-                              "Source Artifact Changed", showConflicts);
-                        if (artifact.equals(conflict.getSourceArtifact()) & sender.isLocal()) {
-                           new MessageDialog(
-                                 Display.getDefault().getActiveShell().getShell(),
-                                 "Modifying Source artifact while merging",
-                                 null,
-                                 "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
-                                 2, new String[] {"OK"}, 1).open();
+                  if (showConflicts) {
+                     for (Conflict conflict : conflicts) {
+                        if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
+                           xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
+                                 "Source Artifact Changed", showConflicts);
+                           if (artifact.equals(conflict.getSourceArtifact()) && sender.isLocal()) {
+                              new MessageDialog(
+                                    Display.getDefault().getActiveShell().getShell(),
+                                    "Modifying Source artifact while merging",
+                                    null,
+                                    "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
+                                    2, new String[] {"OK"}, 1).open();
+                           }
+                           return;
+                        } else if (artifact.equals(conflict.getArtifact())) {
+                           xMergeViewer.refresh();
                         }
-                        return;
-                     } else if (artifact.equals(conflict.getArtifact())) {
-                        xMergeViewer.refresh();
                      }
-                  }
-                  if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
-                     xMergeViewer.setInputData(
-                           sourceBranch,
-                           destBranch,
-                           transactionId,
-                           mergeView,
-                           commitTrans,
-                           branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
-                           showConflicts);
+                     if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
+                        xMergeViewer.setInputData(
+                              sourceBranch,
+                              destBranch,
+                              transactionId,
+                              mergeView,
+                              commitTrans,
+                              branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
+                              showConflicts);
+                     }
                   }
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -933,6 +935,10 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
       });
 
+   }
+
+   protected void showConflicts(boolean show) {
+      showConflicts = show;
    }
 
 }

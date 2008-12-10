@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
@@ -32,31 +33,31 @@ import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
-public class FixTemplateContentArtifacts extends AbstractBlam {
+public class ResourceManipulation extends AbstractBlam {
    private static final boolean DEBUG =
          Boolean.parseBoolean(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
+   //"SELECT DISTINCT uri, human_readable_id, txs.gamma_id FROM osee_txs txs, osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null AND t1.gamma_id = txs.gamma_id and txs.tx_current = 1 AND txs.gamma_id > 4211835";
+   //   private static final String GET_ATTRS =
+   //         "SELECT DISTINCT uri, human_readable_id, txs.gamma_id FROM osee_tx_details det, osee_branch brn, osee_txs txs, osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null AND t1.gamma_id = txs.gamma_id and txs.transaction_id = det.transaction_id AND det.branch_id = brn.branch_id AND  branch_type in (1,2) AND txs.gamma_id > 4211835";
+
    private static final String GET_ATTRS =
          "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null";
-   private static final String GET_ATTRS_TEST = GET_ATTRS + " AND t1.art_id = 3894";
+   private static final String GET_ATTRS_TEST = GET_ATTRS + " AND t1.gamma_id = 4259157";
+
    private Collection<String> badData = new LinkedList<String>();
    private static final String[] columnHeaders = new String[] {"Corrupted Data"};
 
@@ -68,78 +69,140 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      if (true) {
-         System.err.println("Only to be run by developer");
-         return;
-      }
       File backupFolder = createTempFolder();
       OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Backup Folder location: [%s]",
             backupFolder.getAbsolutePath()));
 
+      if (true) {
+         System.out.println("An admin must enable this operation");
+         return;
+      }
       ArrayList<AttrData> attrDatas = loadAttrData();
       monitor.beginTask("Fix word template content", attrDatas.size());
       for (AttrData attrData : attrDatas) {
          monitor.subTask(attrData.getHrid());
          Resource resource = getResource(attrData.getUri());
+         byte[] originalData = resource.data;
+         byte[] finalVersion = new byte[0];
+         int count = 0;
+         int countlast = 0;
+         System.out.println("   " + attrData.getUri() + " " + attrData.getGammaId());
+         List<Byte> badByteBuffer = new LinkedList<Byte>();
+         int byteCount = 0;
+         int initialByte = 0;
+         int startByte = 0;
+         for (byte byt : originalData) {
+            if (byt < 0) {
+               if (count == 0) {
+                  initialByte = byteCount;
+                  badByteBuffer.clear();
+               }
+               badByteBuffer.add(new Byte(byt).byteValue());
+               String value = UnicodeConverter.getValue(badByteBuffer);
+               if (value != null) {
+                  if (value.contains("GOOD")) {
+                     System.out.println(String.format("                Found the Clean Value %s", value));
+                     System.out.print("                       ");
+                     for (byte byter : badByteBuffer) {
+                        System.out.print(byter + ", ");
+                     }
+                     System.out.println();
+                  } else {
+                     byte[] goodBytes = UnicodeConverter.getGoodBytes(value);
+                     System.out.println(String.format("     Found the Value %s", value));
+                     System.out.print("     ");
+                     finalVersion = fixBytes(startByte, initialByte, goodBytes, finalVersion, originalData);
+                     startByte = finalVersion.length + 1;
+                     for (byte byter : badByteBuffer) {
+                        System.out.print(byter + ", ");
+                     }
+                     System.out.println();
+                     System.out.print("      ");
+                     for (byte byter : goodBytes) {
+                        System.out.print(byter + ", ");
+                     }
+                     System.out.println();
+                     startByte = byteCount + 1;
+                  }
+                  count = 0;
+               } else {
+                  count++;
+               }
+            } else {
+               if (count > 0) {
+                  System.out.println("Couldn't Find the Value for");
+                  for (byte byter : badByteBuffer) {
+                     System.out.print(byter + ", ");
+                  }
+                  System.out.println("");
+               }
+               count = 0;
+               badByteBuffer.clear();
+            }
+            byteCount++;
 
-         Element rootElement = null;
-         if (DEBUG) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Before Fix: %s", resource.data));
+            //Need to add on the tail if needs be
          }
 
-         final Collection<Element> elements = new LinkedList<Element>();
-         final Collection<Element> sectPr = new LinkedList<Element>();
-         boolean fixedAttribute = false;
-         try {
-            Document doc = Jaxp.readXmlDocument("<ForFix>" + resource.data + "</ForFix>");
-            rootElement = doc.getDocumentElement();
+         finalVersion = addTail(startByte, finalVersion, originalData);
+         count = 0;
+         countlast = 0;
+         System.out.println("ORIGINAL");
+         for (byte byt : originalData) {
+            count++;
+            if (byt < 0) {
+               if (countlast + 1 != count) {
+                  System.out.println("");
+               }
+               System.out.println(count + "   " + byt + " " + new String(
+                     new byte[] {originalData[count - 8], originalData[count - 7], originalData[count - 6],
+                           originalData[count - 5], originalData[count - 4], originalData[count - 3],
+                           originalData[count - 2], originalData[count - 1], originalData[count],
+                           originalData[count + 1], originalData[count + 2], originalData[count + 3],
+                           originalData[count + 4], originalData[count + 5], originalData[count + 6]}, "UTF-8"));
+               countlast = count;
+            }
+         }
 
-            NodeList nodeList = rootElement.getElementsByTagName("*");
-            for (int i = 0; i < nodeList.getLength(); i++) {
-               Element element = (Element) nodeList.item(i);
-               if (element.getNodeName().endsWith("w:p")) {
-                  elements.add(element);
+         System.out.println("FIXED");
+         count = 0;
+         countlast = 0;
+         for (byte byt : finalVersion) {
+            count++;
+            if (byt < 0) {
+               if (countlast + 1 != count) {
+                  System.out.println("");
                }
-               if (element.getNodeName().endsWith("w:sectPr")) {
-                  sectPr.add(element);
-               }
+               System.out.println(count + "   " + byt + " " + new String(new byte[] {finalVersion[count - 9],
+                     finalVersion[count - 8], finalVersion[count - 7], finalVersion[count - 6],
+                     finalVersion[count - 5], finalVersion[count - 4], finalVersion[count - 3],
+                     finalVersion[count - 2], finalVersion[count - 1], finalVersion[count], finalVersion[count + 1],
+                     finalVersion[count + 2], finalVersion[count + 3], finalVersion[count + 4],
+                     finalVersion[count + 5], finalVersion[count + 6]}, "UTF-8"));
+               countlast = count;
             }
-            for (Element paragraph : elements) {
-               boolean badParagraph = isBadParagraph(paragraph);
-               if (badParagraph) {
-                  paragraph.getParentNode().removeChild(paragraph);
-               }
-               fixedAttribute = fixedAttribute || badParagraph;
-            }
-            for (Element sect : sectPr) {
-               sect.getParentNode().removeChild(sect);
-               fixedAttribute = true;
+         }
+
+         try {
+            // Backup File
+            backupResourceLocally(backupFolder, resource);
+
+            // Perform Fix
+
+            resource.data = finalVersion;
+            //              = new String(WordTemplateRenderer.getFormattedContent(rootElement), "UTF-8");
+            //                           resource.encoding = "UTF-8";
+            //
+
+            // UploadResource
+            uploadResource(attrData.getGammaId(), resource);
+
+            if (DEBUG) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(" After Fix : %s", resource.data));
             }
          } catch (Exception ex) {
-            badData.add(attrData.gammaId);
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Skiping File %s because of exception %s",
                   attrData.getHrid(), ex));
-         }
-
-         if (fixedAttribute) {
-            try {
-               // Backup File
-               backupResourceLocally(backupFolder, resource);
-
-               // Perform Fix
-               resource.data = new String(WordTemplateRenderer.getFormattedContent(rootElement), "UTF-8");
-               resource.encoding = "UTF-8";
-
-               // UploadResource
-               uploadResource(attrData.getGammaId(), resource);
-
-               if (DEBUG) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(" After Fix : %s", resource.data));
-               }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
-                     "Skiping File %s because of exception %s", attrData.getHrid(), ex));
-            }
          }
          monitor.worked(1);
       }
@@ -156,12 +219,58 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       rd.report("Fix bad data", Manipulations.RAW_HTML);
    }
 
+   /**
+    * @param startByte
+    * @param initialByte
+    * @param goodBytes
+    * @param finalVersion
+    * @return
+    */
+   private byte[] fixBytes(int startByte, int initialByte, byte[] goodBytes, byte[] finalVersion, byte[] originalData) {
+      byte[] fixed = new byte[(initialByte - startByte) + goodBytes.length + finalVersion.length];
+      int count = 0;
+      for (byte byt : finalVersion) {
+         fixed[count] = byt;
+         count++;
+      }
+      for (int x = startByte; x < initialByte; x++) {
+         fixed[count] = originalData[x];
+         count++;
+      }
+      for (byte byt : goodBytes) {
+         fixed[count] = byt;
+         count++;
+      }
+      return fixed;
+   }
+
+   /**
+    * @param startByte
+    * @param initialByte
+    * @param goodBytes
+    * @param finalVersion
+    * @return
+    */
+   private byte[] addTail(int startByte, byte[] finalVersion, byte[] originalData) {
+      byte[] fixed = new byte[(originalData.length - startByte) + finalVersion.length];
+      int count = 0;
+      for (byte byt : finalVersion) {
+         fixed[count] = byt;
+         count++;
+      }
+      for (int x = startByte; x < originalData.length; x++) {
+         fixed[count] = originalData[x];
+         count++;
+      }
+      return fixed;
+   }
+
    private ArrayList<AttrData> loadAttrData() throws OseeDataStoreException, OseeTypeDoesNotExist {
       ArrayList<AttrData> attrData = new ArrayList<AttrData>();
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(GET_ATTRS,
+         chStmt.runPreparedQuery(GET_ATTRS_TEST,
                AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT).getAttrTypeId());
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
@@ -189,7 +298,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       }
       parameterMap.put("name", fileName);
 
-      byte[] toUpload = resource.data.getBytes(resource.encoding);
+      byte[] toUpload = resource.data;
       if (resource.wasZipped) {
          toUpload = Lib.compressStream(new ByteArrayInputStream(toUpload), resource.entryName);
       }
@@ -234,7 +343,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       private final boolean wasZipped;
       private final String sourcePath;
 
-      private String data;
+      private byte[] data;
       private String encoding;
 
       private Resource(String sourcePath, AcquireResult result, byte[] rawBytes) throws IOException {
@@ -248,9 +357,9 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             this.entryName = decompressStream(new ByteArrayInputStream(rawBytes), outputStream);
             this.encoding = "UTF-8";
-            this.data = new String(outputStream.toByteArray(), encoding);
+            this.data = outputStream.toByteArray();
          } else {
-            this.data = new String(rawBytes, result.getEncoding());
+            this.data = rawBytes;
             this.entryName = null;
             this.encoding = result.getEncoding();
          }
@@ -262,8 +371,12 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       OutputStream outputStream = null;
       try {
          String path = resource.sourcePath.replace("attr://", "");
-         path = path.replaceAll("/", File.separator);
-         outputStream = new FileOutputStream(new File(backupFolder, path));
+         //path = path.replaceAll("/", File.separator);
+
+         File file = new File(backupFolder, path);
+         file.getParentFile().mkdirs();
+
+         outputStream = new FileOutputStream(file);
 
          inputStream = new ByteArrayInputStream(resource.rawBytes);
          Lib.inputStreamToOutputStream(inputStream, outputStream);
@@ -296,17 +409,6 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          }
       }
       return zipEntryName;
-   }
-
-   //To handle the case of sub-sections
-   private boolean isBadParagraph(Element paragraph) throws OseeCoreException {
-      boolean badParagraph = false;
-      String content = paragraph.getTextContent();
-      if (content != null && content.contains("LISTNUM \"listreset\"")) {
-         badParagraph = true;
-      }
-
-      return badParagraph;
    }
 
    /*

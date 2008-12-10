@@ -456,7 +456,7 @@ public class ConflictTestManager {
 
    public static void resolveAttributeConflict(AttributeConflict conflict) throws Exception {
       int sourceArtifactId = conflict.getSourceArtifact().getArtId();
-      String attributeName = conflict.getSourceAttribute().getAttributeType().getName();
+      String attributeName = conflict.getSourceAttribute(true).getAttributeType().getName();
       AttributeValue aValue = null;
       int artNumber = -1;
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
