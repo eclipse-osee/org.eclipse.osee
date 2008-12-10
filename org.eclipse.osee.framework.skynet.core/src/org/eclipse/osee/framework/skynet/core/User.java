@@ -175,11 +175,13 @@ public class User extends Artifact implements Serializable {
    }
 
    public void saveSettings() throws OseeCoreException, IOException {
-      StringWriter stringWriter = new StringWriter();
-      PropertyStoreWriter storeWriter = new PropertyStoreWriter();
-      storeWriter.save(userSettings, stringWriter);
-      setSoleAttributeFromString("User Settings", stringWriter.toString());
-      persistAttributes();
+      if (userSettings != null) {
+         StringWriter stringWriter = new StringWriter();
+         PropertyStoreWriter storeWriter = new PropertyStoreWriter();
+         storeWriter.save(userSettings, stringWriter);
+         setSoleAttributeFromString("User Settings", stringWriter.toString());
+         persistAttributes();
+      }
    }
 
    private void ensureUserSettingsAreLoaded() throws OseeWrappedException {
