@@ -178,6 +178,15 @@ final class ImportController {
    private void process(BaseDbSaxHandler handler, Connection connection, ImportFile importSourceFile) throws OseeCoreException {
       MetaData metadata = checkMetadata(importSourceFile);
       initializeHandler(connection, handler, metadata);
+      if (importSourceFile.getPriority() > 0) {
+         boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
+         OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s",
+               importSourceFile.getSource(), cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
+         if (cleanDataTable) {
+            ConnectionHandler.runPreparedUpdate(connection, String.format("DELETE FROM %s",
+                  importSourceFile.getSource()));
+         }
+      }
       ExchangeUtil.readExchange(importSource, importSourceFile.getFileName(), handler);
    }
 
@@ -196,18 +205,7 @@ final class ImportController {
          if (!doesSavePointExist(currentSavePoint)) {
             DbTransaction importTx = new DbTransaction() {
                protected void handleTxWork(Connection connection) throws OseeCoreException {
-                  MetaData metadata = checkMetadata(item);
-                  initializeHandler(connection, handler, metadata);
-                  if (item.getPriority() > 0) {
-                     boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
-                     OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s",
-                           item.getSource(), cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
-                     if (cleanDataTable) {
-                        ConnectionHandler.runPreparedUpdate(connection, String.format("DELETE FROM %s",
-                              item.getSource()));
-                     }
-                  }
-                  ExchangeUtil.readExchange(importSource, item.getFileName(), handler);
+                  process(handler, connection, item);
                   handler.store();
                   handler.reset();
                   addSavePoint(currentSavePoint);
