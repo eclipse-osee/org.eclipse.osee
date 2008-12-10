@@ -337,13 +337,18 @@ public final class SkynetTransaction extends DbTransaction {
       executeTransactionDataItems(connection);
       Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
 
-      // Update all transaction items before collecting events and clearing dirty state
+      // Update all transaction items before collecting events
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
          transactionData.internalUpdate(internalGetTransactionId());
       }
 
+      // Collect events before clearing any dirty flags
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
          transactionData.internalAddToEvents(xModifiedEvents);
+      }
+
+      // Clear all dirty flags
+      for (BaseTransactionData transactionData : transactionDataItems.values()) {
          transactionData.internalClearDirtyState();
       }
 
