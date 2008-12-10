@@ -36,7 +36,7 @@ public class OpenWithSelectionListener extends SelectionAdapter {
       Iterator<?> iterator = selection.iterator();
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selection.size());
 
-      if (iterator.hasNext()) {
+      while (iterator.hasNext()) {
          artifacts.add((Artifact) iterator.next());
       }
 
