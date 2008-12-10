@@ -368,7 +368,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void handleChangeCurrentAssignees() throws OseeCoreException {
-      if (!isEditable) {
+      if (!isEditable && !smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
          AWorkbench.popup(
                "ERROR",
                "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
