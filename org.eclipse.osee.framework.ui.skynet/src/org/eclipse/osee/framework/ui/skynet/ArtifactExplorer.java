@@ -80,7 +80,6 @@ import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -119,7 +118,6 @@ import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -161,7 +159,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    private MenuItem skywalkerMenuItem;
    private MenuItem createMenuItem;
    private MenuItem reportMenuItem;
-   private MenuItem openMenuItem;
+   private MenuItem openWithMenuItem;
    private MenuItem accessControlMenuItem;
    private MenuItem lockMenuItem;
    private MenuItem goIntoMenuItem;
@@ -173,7 +171,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    private Tree myTree;
    private TreeEditor myTreeEditor;
    private Text myTextBeingRenamed;
-   final Color myYellowColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
    private Action showArtIds;
    private Action showArtType;
    private Action showArtVersion;
@@ -290,6 +287,11 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
          setupPopupMenu();
 
+         myTreeEditor = new TreeEditor(myTree);
+         myTreeEditor.horizontalAlignment = SWT.LEFT;
+         myTreeEditor.grabHorizontal = true;
+         myTreeEditor.minimumWidth = 50;
+
          new ArtifactExplorerDragAndDrop(tree, VIEW_ID);
          parent.layout();
 
@@ -343,7 +345,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       }
    }
 
-   private void setupPopupMenu() {
+   public void setupPopupMenu() {
 
       Menu popupMenu = new Menu(treeViewer.getTree().getParent());
       needArtifactListener = new NeedArtifactMenuListener();
@@ -380,11 +382,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createAccessControlMenuItem(popupMenu);
       treeViewer.getTree().setMenu(popupMenu);
-      myTreeEditor = new TreeEditor(myTree);
-      myTreeEditor.horizontalAlignment = SWT.LEFT;
-      myTreeEditor.grabHorizontal = true;
-      myTreeEditor.minimumWidth = 50;
-
    }
 
    protected void createUpAction() {
@@ -563,11 +560,11 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    }
 
    private void createOpenMenuItem(Menu parentMenu) {
-      openMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      openMenuItem.setText("&Open");
-
-      needArtifactListener.add(openMenuItem);
-      openMenuItem.addSelectionListener(new OpenListener());
+      openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+      openWithMenuItem.setText("&Open With");
+      final Menu submenu = new Menu(openWithMenuItem);
+      openWithMenuItem.setMenu(submenu);
+      parentMenu.addMenuListener(new OpenWithMenuListener(submenu, treeViewer, this));
    }
 
    public class OpenListener extends SelectionAdapter {
@@ -576,9 +573,12 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          Iterator<?> itemsIter = selection.iterator();
 
+         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
          while (itemsIter.hasNext()) {
-            ArtifactEditor.editArtifact((Artifact) itemsIter.next());
+            artifacts.add((Artifact) itemsIter.next());
          }
+
+         RendererManager.openInJob(artifacts);
       }
    }
 
@@ -744,7 +744,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          return;
       }
       myTextBeingRenamed = new Text(myTree, SWT.BORDER);
-      myTextBeingRenamed.setBackground(myYellowColor);
       Object myTreeItemObject = myTreeItem.getData();
       myTextBeingRenamed.setText(((Artifact) myTreeItemObject).getDescriptiveName());
       myTextBeingRenamed.addFocusListener(new FocusAdapter() {
@@ -1171,7 +1170,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
             editMenuItem.setEnabled(permiss.isWritePermission());
             createMenuItem.setEnabled(permiss.isWritePermission());
-            openMenuItem.setEnabled(permiss.isWritePermission());
+            openWithMenuItem.setEnabled(permiss.isWritePermission());
             goIntoMenuItem.setEnabled(permiss.isReadPermission());
             copyMenuItem.setEnabled(permiss.isReadPermission());
             pasteMenuItem.setEnabled(permiss.isWritePermission());

@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
 
@@ -37,10 +38,15 @@ public abstract class Renderer implements IRenderer {
       this.rendererId = rendererId;
    }
 
+   @Override
+   public void open(List<Artifact> artifacts) throws OseeCoreException {
+      ArtifactEditor.editArtifacts(artifacts);
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void edit(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+   public void edit(Artifact artifact) throws OseeCoreException {
       throw new UnsupportedOperationException();
    }
 
@@ -49,7 +55,7 @@ public abstract class Renderer implements IRenderer {
     */
    public void edit(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         edit(artifact, monitor);
+         edit(artifact);
       }
    }
 

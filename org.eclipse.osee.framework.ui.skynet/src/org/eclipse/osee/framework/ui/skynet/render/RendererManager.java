@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,6 +106,20 @@ public class RendererManager {
       return bestRendererPrototype;
    }
 
+   public static List<IRenderer> getApplicableRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
+      ArrayList<IRenderer> renderers = new ArrayList<IRenderer>();
+
+      for (IRenderer prototypeRenderer : instance.renderers.values()) {
+         int rating = prototypeRenderer.getApplicabilityRating(presentationType, artifact);
+         if (rating > IRenderer.NO_MATCH) {
+            IRenderer renderer = prototypeRenderer.newInstance();
+            renderer.setOptions(options);
+            renderers.add(renderer);
+         }
+      }
+      return renderers;
+   }
+
    private static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, List<Artifact> artifacts, VariableMap options) throws OseeCoreException {
       HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap =
             new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
@@ -121,6 +136,26 @@ public class RendererManager {
          rendererArtifactMap.put(renderer, prototypeRendererArtifactMap.getValues(prototypeRenderer));
       }
       return rendererArtifactMap;
+   }
+
+   public static void openInJob(final List<Artifact> artifacts) {
+      openInJob(artifacts, null);
+   }
+
+   public static void openInJob(final List<Artifact> artifacts, final VariableMap options) {
+      IExceptionableRunnable runnable = new IExceptionableRunnable() {
+         public void run(IProgressMonitor monitor) throws Exception {
+
+            HashCollection<IRenderer, Artifact> rendererArtifactMap =
+                  createRenderMap(PresentationType.EDIT, artifacts, options);
+
+            for (IRenderer renderer : rendererArtifactMap.keySet()) {
+               renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+            }
+         }
+      };
+
+      Jobs.run("Open ", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
    }
 
    public static void preview(Artifact artifact, IProgressMonitor monitor, VariableMap options) throws OseeCoreException {
@@ -224,7 +259,7 @@ public class RendererManager {
    public static void editInJob(final Artifact artifact, final VariableMap options) throws OseeCoreException {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
-            getBestRenderer(PresentationType.EDIT, artifact, options).edit(artifact, monitor);
+            getBestRenderer(PresentationType.EDIT, artifact, options).edit(artifact);
          }
       };
 

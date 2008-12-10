@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -57,7 +59,9 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.Renderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+
 
 /**
  * @author Robert A. Fisher
@@ -119,9 +123,9 @@ public class WordTemplateProcessor {
    final List<Artifact> nonTemplateArtifacts = new LinkedList<Artifact>();
    private Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private int previousTemplateCopyIndex;
-   private WordTemplateRenderer renderer;
+   private Renderer renderer;
 
-   public WordTemplateProcessor(WordTemplateRenderer renderer) {
+   public WordTemplateProcessor(Renderer renderer) {
       this.renderer = renderer;
       loadIgnoreAttributeExtensions();
    }
@@ -425,7 +429,7 @@ public class WordTemplateProcessor {
    }
 
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
-      if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact()) {
+      if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() || !(artifact instanceof NativeArtifact)) {
          if (outlining) {
             String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
             CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);

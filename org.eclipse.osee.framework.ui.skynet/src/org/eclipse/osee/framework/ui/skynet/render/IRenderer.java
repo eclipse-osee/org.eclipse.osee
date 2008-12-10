@@ -29,7 +29,9 @@ public interface IRenderer {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
-   public abstract void edit(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
+   public abstract void open(List<Artifact> artifacts) throws OseeCoreException;
+
+   public abstract void edit(Artifact artifact) throws OseeCoreException;
 
    public abstract void edit(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
 

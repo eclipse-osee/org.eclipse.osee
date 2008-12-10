@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
+ * @author Jeff C. Phillips
  */
 public class ChangeXViewer extends XViewer {
    private static final boolean CHANGE_DEBUG =

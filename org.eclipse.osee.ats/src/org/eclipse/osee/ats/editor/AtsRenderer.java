@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
@@ -30,6 +30,13 @@ public class AtsRenderer extends Renderer {
       super(rendererId);
    }
 
+   @Override
+   public void open(List<Artifact> artifacts) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         edit(artifact);
+      }
+   }
+
    /* (non-Javadoc)
    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
    */
@@ -42,7 +49,7 @@ public class AtsRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void edit(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+   public void edit(Artifact artifact) throws OseeCoreException {
       try {
          OseeAts.getAtsLib().openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {

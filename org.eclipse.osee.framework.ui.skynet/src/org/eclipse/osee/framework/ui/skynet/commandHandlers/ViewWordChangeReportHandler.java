@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,8 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -29,11 +32,14 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
@@ -88,7 +94,22 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                "base artifacts size: " + baseArtifacts.size() + " must match newer artifacts size: " + newerArtifacts.size() + ".");
       }
 
-      RendererManager.diffInJob(baseArtifacts, newerArtifacts, variableMap);
+      Artifact bArtifact = baseArtifacts.iterator().next();
+      Artifact nArtifact = newerArtifacts.iterator().next();
+      
+      Artifact instanceOfArtifact = bArtifact != null ? bArtifact : nArtifact;
+      
+      if(instanceOfArtifact instanceof WordArtifact && ((WordArtifact) instanceOfArtifact).isWholeWordArtifact() ){
+          RendererManager.diffInJob(baseArtifacts, newerArtifacts, variableMap);
+      } else{
+          //All other artifacts types can be rendered by the wordRenderer so the are displayed in the word change report.
+          WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION); 
+          try {
+			renderer.compareArtifacts(baseArtifacts, newerArtifacts, new NullProgressMonitor(), instanceOfArtifact.getBranch(), PresentationType.DIFF);
+		} catch (OseeCoreException e) {
+	        OSEELog.logException(getClass(), e, true);
+		}
+      }
       return null;
    }
 

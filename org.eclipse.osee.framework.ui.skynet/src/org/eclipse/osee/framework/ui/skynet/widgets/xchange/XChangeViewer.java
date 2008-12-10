@@ -55,6 +55,7 @@ import org.eclipse.swt.widgets.Tree;
 
 /**
  * @author Donald G. Dunne
+ * @author Jeff C. Phillips
  */
 public class XChangeViewer extends XWidget implements IActionable {
 

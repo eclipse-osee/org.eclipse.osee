@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -22,9 +23,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.search.ui.text.Match;
 
@@ -60,10 +59,10 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
       } else {
          try {
             if (AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
-               if (artifact instanceof IATSArtifact)
-                  OseeAts.openATSArtifact(artifact);
-               else
-                  ArtifactEditor.editArtifact(artifact);
+               ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
+               artifacts.add(artifact);
+               RendererManager.openInJob(artifacts);
+
             } else {
                OSEELog.logSevere(SkynetGuiPlugin.class,
                      "The user " + UserManager.getUser() + " does not have read access to " + artifact, true);

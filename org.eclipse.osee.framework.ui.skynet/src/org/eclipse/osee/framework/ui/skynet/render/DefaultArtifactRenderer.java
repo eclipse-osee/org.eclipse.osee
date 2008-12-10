@@ -39,7 +39,7 @@ public class DefaultArtifactRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void edit(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+   public void edit(Artifact artifact) throws OseeCoreException {
       ArtifactEditor.editArtifact(artifact);
    }
 
