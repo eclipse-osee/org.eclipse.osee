@@ -149,8 +149,8 @@ final class ImportController {
          importBranchesTx.execute();
 
          currentSavePoint = "init.relational.objects";
-         RelationalTypeCheckSaxHandler typeCheckHandler = RelationalTypeCheckSaxHandler.createWithLimitedCache(1000);
-         RelationalSaxHandler relationalSaxHandler = RelationalSaxHandler.createWithLimitedCache(1000);
+         RelationalTypeCheckSaxHandler typeCheckHandler = RelationalTypeCheckSaxHandler.createWithLimitedCache(50000);
+         RelationalSaxHandler relationalSaxHandler = RelationalSaxHandler.createWithLimitedCache(50000);
          relationalSaxHandler.setSelectedBranchIds(branchesToImport);
 
          processImportFiles(manifestHandler.getTypeFiles(), typeCheckHandler);
