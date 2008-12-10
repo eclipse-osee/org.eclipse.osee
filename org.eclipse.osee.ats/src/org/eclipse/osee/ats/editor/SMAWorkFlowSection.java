@@ -536,11 +536,16 @@ public class SMAWorkFlowSection extends SectionPart {
 
       try {
 
-         if (!isEditable) {
+         if (!isEditable && !smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
             AWorkbench.popup(
                   "ERROR",
                   "You must be assigned to transition this workflow.\nContact Assignee or Select Priviledged Edit for Authorized Overriders.");
             return;
+         }
+         // As a convenience, if assignee is UnAssigned and user selects to transition, make user current assignee
+         if (smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
+            smaMgr.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+            smaMgr.getStateMgr().addAssignee(UserManager.getUser());
          }
          if (smaMgr.getBranchMgr().isWorkingBranch() && !atsWorkPage.isAllowTransitionWithWorkingBranch()) {
             AWorkbench.popup("ERROR",
