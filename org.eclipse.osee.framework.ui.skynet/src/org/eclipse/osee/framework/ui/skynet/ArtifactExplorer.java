@@ -15,7 +15,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -84,7 +83,6 @@ import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactPreviewMenu;
@@ -682,14 +680,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          public void widgetSelected(SelectionEvent ev) {
             LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
             TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
-            VariableMap map = new VariableMap();
-
-            if (selectedItems.size() == 1) {
-               map.setValue(
-                     "fileName",
-                     selectedItems.get(0).getDescriptiveName() + "_" + (new Date()).toString().replaceAll(":", ";") + ".xml");
-            }
-            RendererManager.openInJob(selectedItems, map, PresentationType.SPECIALIZED_EDIT);
+            RendererManager.openInJob(selectedItems, PresentationType.SPECIALIZED_EDIT);
          }
       });
    }

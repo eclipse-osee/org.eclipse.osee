@@ -72,8 +72,13 @@ public abstract class FileRenderer extends FileSystemRenderer {
          }
       }
 
-      return renderToFile(baseFolder, getFilenameFromArtifact(null, presentationType), initialBranch,
-            getRenderInputStream(artifacts, presentationType), presentationType);
+      if (artifacts.size() == 1) {
+         return renderToFile(baseFolder, getFilenameFromArtifact(artifacts.iterator().next(), presentationType),
+               initialBranch, getRenderInputStream(artifacts, presentationType), presentationType);
+      } else {
+         return renderToFile(baseFolder, getFilenameFromArtifact(null, presentationType), initialBranch,
+               getRenderInputStream(artifacts, presentationType), presentationType);
+      }
    }
 
    protected IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, InputStream renderInputStream, PresentationType presentationType) throws OseeCoreException {
@@ -100,6 +105,11 @@ public abstract class FileRenderer extends FileSystemRenderer {
 
    protected String getFilenameFromArtifact(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       StringBuilder name = new StringBuilder(100);
+      String fileName = getStringOption("fileName");
+
+      if (fileName != null && !fileName.equals("")) {
+         return fileName;
+      }
 
       if (artifact != null) {
 
