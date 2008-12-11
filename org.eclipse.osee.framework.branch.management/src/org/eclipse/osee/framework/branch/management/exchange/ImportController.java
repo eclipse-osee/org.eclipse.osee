@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
@@ -180,6 +181,10 @@ final class ImportController {
       initializeHandler(connection, handler, metadata);
       if (importSourceFile.getPriority() > 0) {
          boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
+         if (importSourceFile.getSource().equalsIgnoreCase(SkynetDatabase.BRANCH_TABLE.toString())) {
+            // Never clean out the branch table -- system root + common branch cases
+            cleanDataTable = false;
+         }
          OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s",
                importSourceFile.getSource(), cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
          if (cleanDataTable) {
