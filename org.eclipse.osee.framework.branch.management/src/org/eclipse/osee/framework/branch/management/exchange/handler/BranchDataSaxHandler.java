@@ -184,4 +184,14 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
       return nameToImportFileBranchData.values();
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler#clearDataTable()
+    */
+   @Override
+   public void clearDataTable() throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(getConnection(),
+            String.format("DELETE FROM %s where NOT branch_type = " + BranchType.SYSTEM_ROOT.getValue(),
+                  getMetaData().getTableName()));
+   }
 }

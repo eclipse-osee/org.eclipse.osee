@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -190,6 +191,16 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
                this.getClass(),
                Level.SEVERE,
                "Error deleting binary data after transfer error. Please delete all content manually. " + errorMessage.toString());
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler#clearDataTable()
+    */
+   @Override
+   public void clearDataTable() throws OseeDataStoreException {
+      if (!getMetaData().getTableName().equals(SkynetDatabase.TRANSACTION_DETAIL_TABLE.toString().toLowerCase())) {
+         super.clearDataTable();
       }
    }
 }

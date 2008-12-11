@@ -96,6 +96,10 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       }
    }
 
+   public void clearDataTable() throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, String.format("DELETE FROM %s", getMetaData().getTableName()));
+   }
+
    public void reset() {
       this.connection = null;
       this.translator = null;
