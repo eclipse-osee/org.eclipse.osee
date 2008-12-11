@@ -121,8 +121,8 @@ public class User extends Artifact implements Serializable {
       return getSoleAttributeValue(Attributes.Active.toString());
    }
 
-   public void setActive(boolean required) throws OseeCoreException {
-      setSoleAttributeValue(Attributes.Active.toString(), required);
+   public void setActive(boolean active) throws OseeCoreException {
+      setSoleAttributeValue(Attributes.Active.toString(), active);
    }
 
    /**
@@ -176,12 +176,12 @@ public class User extends Artifact implements Serializable {
 
    public void saveSettings() throws OseeCoreException, IOException {
       if (userSettings != null) {
-         StringWriter stringWriter = new StringWriter();
-         PropertyStoreWriter storeWriter = new PropertyStoreWriter();
-         storeWriter.save(userSettings, stringWriter);
-         setSoleAttributeFromString("User Settings", stringWriter.toString());
-         persistAttributes();
-      }
+      StringWriter stringWriter = new StringWriter();
+      PropertyStoreWriter storeWriter = new PropertyStoreWriter();
+      storeWriter.save(userSettings, stringWriter);
+      setSoleAttributeFromString("User Settings", stringWriter.toString());
+      persistAttributes();
+   }
    }
 
    private void ensureUserSettingsAreLoaded() throws OseeWrappedException {
