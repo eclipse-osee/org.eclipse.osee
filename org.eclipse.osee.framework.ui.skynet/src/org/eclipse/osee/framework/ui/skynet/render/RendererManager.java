@@ -179,12 +179,13 @@ public class RendererManager {
    public static void previewInJob(final List<Artifact> artifacts, final VariableMap options) throws OseeCoreException {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
-            HashCollection<IRenderer, Artifact> rendererArtifactMap =
-                  createRenderMap(PresentationType.PREVIEW, artifacts, options);
-
-            for (IRenderer renderer : rendererArtifactMap.keySet()) {
-               renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
-            }
+            //            HashCollection<IRenderer, Artifact> rendererArtifactMap =
+            //                  createRenderMap(PresentationType.PREVIEW, artifacts, options);
+            //
+            //            for (IRenderer renderer : rendererArtifactMap.keySet()) {
+            //                           renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+            //   
+            preview(artifacts, new NullProgressMonitor(), options);
          }
       };
 
@@ -193,12 +194,16 @@ public class RendererManager {
    }
 
    public static void preview(final List<Artifact> artifacts, IProgressMonitor monitor, final VariableMap options) throws OseeCoreException {
-      HashCollection<IRenderer, Artifact> rendererArtifactMap =
-            createRenderMap(PresentationType.PREVIEW, artifacts, options);
+      //      HashCollection<IRenderer, Artifact> rendererArtifactMap =
+      //            createRenderMap(PresentationType.PREVIEW, artifacts, options);
+      //
+      //      for (IRenderer renderer : rendererArtifactMap.keySet()) {
+      //         renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+      //      }
 
-      for (IRenderer renderer : rendererArtifactMap.keySet()) {
-         renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
-      }
+      WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
+      renderer.setOptions(options);
+      renderer.preview(artifacts);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, String fileName, boolean show) throws OseeStateException, OseeCoreException {
