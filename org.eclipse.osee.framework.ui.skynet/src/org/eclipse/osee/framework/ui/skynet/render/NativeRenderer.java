@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
@@ -39,6 +38,14 @@ public class NativeRenderer extends FileRenderer {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
+    */
+   @Override
+   public String getName() {
+      return "Native";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
     */
    @Override
@@ -47,8 +54,8 @@ public class NativeRenderer extends FileRenderer {
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact.isOfType("Native")) {
-         return ARTIFACT_TYPE_MATCH;
+      if ((artifact.isOfType("Native") || artifact.isOfType("General Data")) && presentationType == PresentationType.SPECIALIZED_EDIT) {
+         return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
    }
@@ -58,14 +65,13 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
-       Attribute<?> attribute = artifact.getSoleAttribute(NativeArtifact.EXTENSION);  
-	   //If the native artifact has been created without an extension make it XML
-       if (attribute == null) {
-	          attribute =
-	                artifact.createAttribute(AttributeTypeManager.getType(NativeArtifact.EXTENSION), true);
-	          attribute.setFromString("xml");
-	          artifact.persistAttributes();
-	       }
+      Attribute<?> attribute = artifact.getSoleAttribute(NativeArtifact.EXTENSION);
+      //If the native artifact has been created without an extension make it XML
+      if (attribute == null) {
+         attribute = artifact.createAttribute(AttributeTypeManager.getType(NativeArtifact.EXTENSION), true);
+         attribute.setFromString("xml");
+         artifact.persistAttributes();
+      }
       return artifact.getSoleAttributeValue(NativeArtifact.EXTENSION, "");
    }
 
@@ -88,7 +94,7 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      throw new UnsupportedOperationException();
+      return getRenderInputStream(artifacts.iterator().next(), presentationType);
    }
 
    /* (non-Javadoc)
@@ -96,17 +102,17 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-		Attribute<?> attribute = artifact.getSoleAttribute(NativeArtifact.CONTENT_NAME);
-		   //If the native artifact has been created without content create empty XML content.
-		if (attribute == null) {
-			attribute = artifact.createAttribute(AttributeTypeManager.getType(NativeArtifact.CONTENT_NAME), true);
-			try {
-				attribute.setValueFromInputStream(Streams.
-						convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				throw new OseeCoreException(e);
-			}
-		}
-		return artifact.getSoleAttributeValue(NativeArtifact.CONTENT_NAME);
-	}
+      Attribute<?> attribute = artifact.getSoleAttribute(NativeArtifact.CONTENT_NAME);
+      //If the native artifact has been created without content create empty XML content.
+      if (attribute == null) {
+         attribute = artifact.createAttribute(AttributeTypeManager.getType(NativeArtifact.CONTENT_NAME), true);
+         try {
+            attribute.setValueFromInputStream(Streams.convertStringToInputStream(
+                  WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8"));
+         } catch (UnsupportedEncodingException e) {
+            throw new OseeCoreException(e);
+         }
+      }
+      return artifact.getSoleAttributeValue(NativeArtifact.CONTENT_NAME);
+   }
 }

@@ -20,9 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.namespace.QName;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -51,7 +49,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.w3c.dom.Element;
-
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
@@ -118,12 +115,12 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          protected IStatus run(IProgressMonitor monitor) {
             try {
                String fileName = getStringOption("fileName");
-               
+
                //if the file name is null we will give it a GUID
                if (fileName == null) {
-                     fileName = GUID.generateGuidStr() + ".xml";
+                  fileName = GUID.generateGuidStr() + ".xml";
                }
-               
+
                monitor.beginTask("Word Change Report ", newerArtifact.size() * 2);
                ArrayList<String> fileNames = new ArrayList<String>(newerArtifact.size());
                IFolder baseFolder = getRenderFolder(branch, PresentationType.DIFF);
@@ -265,7 +262,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          }
       } else {
          diffPath =
-               getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT).getLocation().toOSString() + '\\' + fileName;
+               getRenderFolder(baseVersion.getBranch(), PresentationType.GENERALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
@@ -273,7 +270,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             presentationType == PresentationType.MERGE_EDIT);
 
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
-         addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),
+         addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.GENERALIZED_EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
          diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs");
@@ -383,10 +380,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             }
          }
 
-         if (presentationType == PresentationType.EDIT && artifacts.size() > 1) {
+         if (presentationType == PresentationType.GENERALIZED_EDIT && artifacts.size() > 1) {
             // currently we can't support the editing of multiple artifacts with OLE data
             for (Artifact artifact : artifacts) {
-               if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("") && presentationType == PresentationType.EDIT) {
+               if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("") && presentationType == PresentationType.GENERALIZED_EDIT) {
                   notMultiEditableArtifacts.add(artifact);
                }
             }

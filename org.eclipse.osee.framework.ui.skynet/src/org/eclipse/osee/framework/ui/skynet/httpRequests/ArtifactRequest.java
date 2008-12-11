@@ -160,12 +160,12 @@ public class ArtifactRequest implements IHttpServerRequest {
 
    private void sendAsNative(Artifact artifact, HttpResponse httpResponse) throws Exception {
       try {
-         FileRenderer fileRenderer = RendererManager.getBestFileRenderer(PresentationType.EDIT, artifact);
+         FileRenderer fileRenderer = RendererManager.getBestFileRenderer(PresentationType.GENERALIZED_EDIT, artifact);
 
          Branch branch = artifact.getBranch();
-         IFolder baseFolder = fileRenderer.getRenderFolder(branch, PresentationType.EDIT);
+         IFolder baseFolder = fileRenderer.getRenderFolder(branch, PresentationType.GENERALIZED_EDIT);
          IFile iFile =
-               fileRenderer.renderToFileSystem(baseFolder, artifact, branch, PresentationType.EDIT);
+               fileRenderer.renderToFileSystem(baseFolder, artifact, branch, PresentationType.GENERALIZED_EDIT);
 
          File file = iFile.getLocation().toFile();
          String fileName = artifact.getDescriptiveName() + "." + iFile.getFileExtension();

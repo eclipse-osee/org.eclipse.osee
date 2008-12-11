@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public interface IRenderer {
 
+   public static final int PRESENTATION_SUBTYPE_MATCH = 50;
+   public static final int PRESENTATION_TYPE = 40;
    public static final int SUBTYPE_TYPE_MATCH = 30;
    public static final int ARTIFACT_TYPE_MATCH = 20;
    public static final int DEFAULT_MATCH = 10;
@@ -31,15 +33,7 @@ public interface IRenderer {
 
    public abstract void open(List<Artifact> artifacts) throws OseeCoreException;
 
-   public abstract void edit(Artifact artifact) throws OseeCoreException;
-
-   public abstract void edit(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
-
-   public boolean supportsEdit();
-
-   public abstract void preview(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
-
-   public abstract void preview(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
+   public abstract void preview(List<Artifact> artifacts) throws OseeCoreException;
 
    public abstract String generateHtml(Artifact artifact) throws OseeCoreException;
 

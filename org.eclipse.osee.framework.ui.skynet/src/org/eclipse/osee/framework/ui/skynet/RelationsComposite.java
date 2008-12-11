@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -54,6 +53,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
@@ -388,11 +388,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             Object object = selection.getFirstElement();
 
             if (object instanceof Artifact) {
-               try {
-                  RendererManager.editInJob((Artifact) object);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
+               RendererManager.openInJob((Artifact) object, PresentationType.SPECIALIZED_EDIT);
             }
          }
       });
@@ -425,10 +421,11 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          this.artEnabledOnlyitems = new LinkedList<MenuItem>();
       }
 
-      public void addArtifactEnabled(MenuItem item){
-    	  artEnabledOnlyitems.add(item);
-    	  
+      public void addArtifactEnabled(MenuItem item) {
+         artEnabledOnlyitems.add(item);
+
       }
+
       public void add(MenuItem item) {
          accessControlitems.add(item);
       }
@@ -439,12 +436,12 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       public void menuShown(MenuEvent e) {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          boolean valid = (selection.getFirstElement() instanceof RelationLink);
-         
+
          for (MenuItem item : accessControlitems)
             item.setEnabled(valid && !artifact.isReadOnly());
-         
+
          for (MenuItem item : artEnabledOnlyitems)
-             item.setEnabled(valid);
+            item.setEnabled(valid);
       }
    }
 
@@ -505,14 +502,14 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
     * @throws ArtifactDoesNotExist
     */
    private void performDeleteRelation(IStructuredSelection selection) throws ArtifactDoesNotExist {
-	  if(artifact.isReadOnly()){
-		  MessageDialog.openError(
-                  Display.getCurrent().getActiveShell(),
-                  "Delete Relation Error",
-                  "Access control has restricted this action. The current user does not have sufficient permission to delete objects on this artifact.");
-		  return;
-	  }
-	  
+      if (artifact.isReadOnly()) {
+         MessageDialog.openError(
+               Display.getCurrent().getActiveShell(),
+               "Delete Relation Error",
+               "Access control has restricted this action. The current user does not have sufficient permission to delete objects on this artifact.");
+         return;
+      }
+
       Object[] objects = selection.toArray();
       for (Object object : objects) {
          if (object instanceof RelationLink) {
@@ -629,18 +626,18 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          event.detail = DND.DROP_NONE;
 
          if (selected != null && selected.getData() instanceof RelationTypeSide) {
-        	if(artifact.isReadOnly()){
-				event.detail = DND.DROP_NONE;
-				
-		    	MessageDialog.openError(
-		                Display.getCurrent().getActiveShell(),
-		                "Create Relation Error",
-		                "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
-				return;
-			}else{
-	            event.detail = DND.DROP_COPY;
-	            tree.setInsertMark(null, false);
-			}
+            if (artifact.isReadOnly()) {
+               event.detail = DND.DROP_NONE;
+
+               MessageDialog.openError(
+                     Display.getCurrent().getActiveShell(),
+                     "Create Relation Error",
+                     "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+               return;
+            } else {
+               event.detail = DND.DROP_COPY;
+               tree.setInsertMark(null, false);
+            }
          } else if (selected != null && selected.getData() instanceof RelationLink) {
             RelationLink targetLink = (RelationLink) selected.getData();
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
@@ -648,15 +645,15 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             if (obj instanceof RelationLink) {
                RelationLink dropTarget = (RelationLink) obj;
 
-	           	if(artifact.isReadOnly()){
-					event.detail = DND.DROP_NONE;
-					
-			    	MessageDialog.openError(
-		                Display.getCurrent().getActiveShell(),
-		                "Create Relation Error",
-		                 "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
-					return;
-				}
+               if (artifact.isReadOnly()) {
+                  event.detail = DND.DROP_NONE;
+
+                  MessageDialog.openError(
+                        Display.getCurrent().getActiveShell(),
+                        "Create Relation Error",
+                        "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+                  return;
+               }
                // the links must be in the same group
 
                if (targetLink.getSide(artifact).equals(dropTarget.getSide(artifact)) && targetLink.getRelationType().equals(
@@ -673,7 +670,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             tree.setInsertMark(null, false);
          }
       }
-      
+
       @Override
       public void operationChanged(DropTargetEvent event) {
          if (!isCtrlPressed(event)) {

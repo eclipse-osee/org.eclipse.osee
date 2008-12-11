@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -450,11 +451,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            try {
-               RendererManager.editInJob(artifact);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
+            RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
          }
       });
       item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchManager.getDefaultBranch()));

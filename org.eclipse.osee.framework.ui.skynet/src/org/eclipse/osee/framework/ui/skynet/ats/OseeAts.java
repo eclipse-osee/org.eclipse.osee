@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.ats;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -18,6 +17,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -204,28 +204,32 @@ public class OseeAts {
       }
    }
 
-   public static IAtsLib getAtsLib() throws ClassNotFoundException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-      if (Platform.getExtensionRegistry() == null) return null;
-      if (atsLib == null) {
-         IExtensionPoint point =
-               Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.AtsLib");
-         IExtension[] extensions = point.getExtensions();
-         for (IExtension extension : extensions) {
-            IConfigurationElement[] elements = extension.getConfigurationElements();
-            for (IConfigurationElement el : elements) {
-               if (el.getName().equals("AtsLib")) {
-                  String className = el.getAttribute("classname");
-                  String bundleName = el.getContributor().getName();
-                  if (className != null && bundleName != null) {
-                     Bundle bundle = Platform.getBundle(bundleName);
-                     Class<?> interfaceClass = bundle.loadClass(className);
-                     atsLib = (IAtsLib) interfaceClass.getConstructor().newInstance();
+   public static IAtsLib getAtsLib() throws OseeWrappedException {
+      try {
+         if (Platform.getExtensionRegistry() == null) return null;
+         if (atsLib == null) {
+            IExtensionPoint point =
+                  Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.AtsLib");
+            IExtension[] extensions = point.getExtensions();
+            for (IExtension extension : extensions) {
+               IConfigurationElement[] elements = extension.getConfigurationElements();
+               for (IConfigurationElement el : elements) {
+                  if (el.getName().equals("AtsLib")) {
+                     String className = el.getAttribute("classname");
+                     String bundleName = el.getContributor().getName();
+                     if (className != null && bundleName != null) {
+                        Bundle bundle = Platform.getBundle(bundleName);
+                        Class<?> interfaceClass = bundle.loadClass(className);
+                        atsLib = (IAtsLib) interfaceClass.getConstructor().newInstance();
+                     }
                   }
                }
             }
          }
+         return atsLib;
+      } catch (Exception e) {
+         throw new OseeWrappedException(e);
       }
-      return atsLib;
    }
 
 }

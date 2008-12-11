@@ -15,6 +15,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
@@ -81,7 +82,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
 
          try {
             if (event.widget == editButton) {
-               RendererManager.editInJob(conflict.getArtifact());
+               RendererManager.openInJob(conflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
                conflict.markStatusToReflectEdit();
             } else if (event.widget == clearButton) {
                MergeUtility.clearValue(conflict, getShell(), true);

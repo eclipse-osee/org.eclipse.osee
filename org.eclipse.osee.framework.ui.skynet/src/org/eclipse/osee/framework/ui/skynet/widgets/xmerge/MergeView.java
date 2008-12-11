@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -391,7 +392,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                try {
                   if (MergeUtility.okToOverwriteEditedValue(attributeConflict,
                         Display.getCurrent().getActiveShell().getShell(), false)) {
-                     RendererManager.editInJob(attributeConflict.getArtifact());
+                     RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
                      attributeConflict.markStatusToReflectEdit();
                   }
                } catch (Exception ex) {

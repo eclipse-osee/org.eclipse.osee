@@ -138,16 +138,23 @@ public class RendererManager {
       return rendererArtifactMap;
    }
 
-   public static void openInJob(final List<Artifact> artifacts) {
-      openInJob(artifacts, null);
+   public static void openInJob(Artifact artifact, PresentationType presentationType) {
+      ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
+      artifacts.add(artifact);
+
+      openInJob(artifacts, null, presentationType);
    }
 
-   public static void openInJob(final List<Artifact> artifacts, final VariableMap options) {
+   public static void openInJob(final List<Artifact> artifacts, PresentationType presentationType) {
+      openInJob(artifacts, null, presentationType);
+   }
+
+   public static void openInJob(final List<Artifact> artifacts, final VariableMap options, final PresentationType presentationType) {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
 
             HashCollection<IRenderer, Artifact> rendererArtifactMap =
-                  createRenderMap(PresentationType.EDIT, artifacts, options);
+                  createRenderMap(presentationType, artifacts, options);
 
             for (IRenderer renderer : rendererArtifactMap.keySet()) {
                renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
@@ -158,27 +165,11 @@ public class RendererManager {
       Jobs.run("Open ", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
    }
 
-   public static void preview(Artifact artifact, IProgressMonitor monitor, VariableMap options) throws OseeCoreException {
-      getBestRenderer(PresentationType.PREVIEW, artifact, options).preview(artifact, monitor);
-   }
-
    public static void previewInJob(final Artifact artifact) throws OseeCoreException {
-      previewInJob(artifact, null);
-   }
+      ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
+      artifacts.add(artifact);
 
-   public static void previewInJob(final Artifact artifact, VariableMap options) throws OseeCoreException {
-      previewInJob(getBestRenderer(PresentationType.PREVIEW, artifact, options), artifact);
-   }
-
-   private static void previewInJob(final IRenderer renderer, final Artifact artifact) {
-      IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public void run(IProgressMonitor monitor) throws Exception {
-            renderer.preview(artifact, monitor);
-         }
-      };
-
-      Jobs.run("Preview " + artifact.getDescriptiveName(), runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID,
-            false);
+      previewInJob(artifacts, null);
    }
 
    public static void previewInJob(final List<Artifact> artifacts) throws OseeCoreException {
@@ -186,84 +177,28 @@ public class RendererManager {
    }
 
    public static void previewInJob(final List<Artifact> artifacts, final VariableMap options) throws OseeCoreException {
-      if (artifacts.size() == 1) {
-         previewInJob(artifacts.get(0), options);
-      } else {
-         IExceptionableRunnable runnable = new IExceptionableRunnable() {
-            public void run(IProgressMonitor monitor) throws Exception {
-               HashCollection<IRenderer, Artifact> rendererArtifactMap =
-                     createRenderMap(PresentationType.PREVIEW, artifacts, options);
-
-               for (IRenderer renderer : rendererArtifactMap.keySet()) {
-                  renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), monitor);
-               }
-            }
-         };
-
-         Jobs.run("Preview " + artifacts.size() + " artifacts", runnable, SkynetGuiPlugin.class,
-               SkynetGuiPlugin.PLUGIN_ID, false);
-      }
-   }
-
-   public static void preview(final List<Artifact> artifacts, IProgressMonitor monitor, final VariableMap options) throws OseeCoreException {
-      if (artifacts.size() == 1) {
-         preview(artifacts.get(0), monitor, options);
-      } else {
-         HashCollection<IRenderer, Artifact> rendererArtifactMap =
-               createRenderMap(PresentationType.PREVIEW, artifacts, options);
-
-         for (IRenderer renderer : rendererArtifactMap.keySet()) {
-            renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), monitor);
-         }
-      }
-   }
-
-   public static void edit(final List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
-      edit(artifacts, monitor, null);
-   }
-
-   public static void edit(final List<Artifact> artifacts, IProgressMonitor monitor, final VariableMap options) throws OseeCoreException {
-      HashCollection<IRenderer, Artifact> rendererArtifactMap =
-            createRenderMap(PresentationType.EDIT, artifacts, options);
-
-      for (IRenderer renderer : rendererArtifactMap.keySet()) {
-         renderer.edit((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), monitor);
-      }
-   }
-
-   public static void editInJob(final List<Artifact> artifacts) throws OseeCoreException {
-      editInJob(artifacts, null);
-   }
-
-   public static void editInJob(final List<Artifact> artifacts, final VariableMap options) throws OseeCoreException {
-      if (ArtifactGuis.checkOtherEdit(artifacts)) {
-         if (artifacts.size() == 1) {
-            editInJob(artifacts.get(0), options);
-         } else {
-            IExceptionableRunnable runnable = new IExceptionableRunnable() {
-               public void run(IProgressMonitor monitor) throws OseeCoreException {
-                  edit(artifacts, monitor, options);
-               }
-            };
-
-            Jobs.run("Edit " + artifacts.size() + " artifacts", runnable, SkynetGuiPlugin.class,
-                  SkynetGuiPlugin.PLUGIN_ID);
-         }
-      }
-   }
-
-   public static void editInJob(final Artifact artifact) throws OseeCoreException {
-      editInJob(artifact, null);
-   }
-
-   public static void editInJob(final Artifact artifact, final VariableMap options) throws OseeCoreException {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
-            getBestRenderer(PresentationType.EDIT, artifact, options).edit(artifact);
+            HashCollection<IRenderer, Artifact> rendererArtifactMap =
+                  createRenderMap(PresentationType.PREVIEW, artifacts, options);
+
+            for (IRenderer renderer : rendererArtifactMap.keySet()) {
+               renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+            }
          }
       };
 
-      Jobs.run("Edit " + artifact.getDescriptiveName(), runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
+      Jobs.run("Preview " + artifacts.size() + " artifacts", runnable, SkynetGuiPlugin.class,
+            SkynetGuiPlugin.PLUGIN_ID, false);
+   }
+
+   public static void preview(final List<Artifact> artifacts, IProgressMonitor monitor, final VariableMap options) throws OseeCoreException {
+      HashCollection<IRenderer, Artifact> rendererArtifactMap =
+            createRenderMap(PresentationType.PREVIEW, artifacts, options);
+
+      for (IRenderer renderer : rendererArtifactMap.keySet()) {
+         renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+      }
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, String fileName, boolean show) throws OseeStateException, OseeCoreException {

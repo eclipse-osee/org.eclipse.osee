@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -61,7 +60,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#renderToFileSystem(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.resources.IFolder, java.util.List, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public IFile renderToFileSystem(IFolder baseFolder, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       Branch initialBranch = null;
       for (Artifact artifact : artifacts) {
          if (initialBranch == null) {
@@ -82,7 +81,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
          IFile workingFile = baseFolder.getFile(fileName);
          AIFile.writeToFile(workingFile, renderInputStream);
 
-         if (presentationType == PresentationType.EDIT) {
+         if (presentationType == PresentationType.GENERALIZED_EDIT) {
             watcher.addFile(workingFile.getLocation().toFile());
          } else if (presentationType == PresentationType.PREVIEW) {
             workingFile.setResourceAttributes(readonlyfileAttributes);

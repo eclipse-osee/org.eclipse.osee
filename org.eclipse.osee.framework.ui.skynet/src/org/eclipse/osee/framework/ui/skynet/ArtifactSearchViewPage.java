@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.search.report.RelationMatrixExportJob;
@@ -273,11 +274,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            try {
-               RendererManager.editInJob(getSelectedArtifacts(viewer));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
+            RendererManager.openInJob(getSelectedArtifacts(viewer), PresentationType.GENERALIZED_EDIT);
             return null;
          }
 

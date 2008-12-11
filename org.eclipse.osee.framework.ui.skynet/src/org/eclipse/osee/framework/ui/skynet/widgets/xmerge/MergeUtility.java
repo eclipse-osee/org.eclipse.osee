@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -277,7 +278,7 @@ public class MergeUtility {
                            Thread.sleep(500);
                         }
                         monitor.done();
-                        RendererManager.editInJob(attributeConflict.getArtifact());
+                        RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
 
                      } catch (Exception ex) {
                         OSEELog.logException(MergeView.class, ex, true);
@@ -290,7 +291,7 @@ public class MergeUtility {
                Jobs.startJob(job);
 
             } else if (response == 0) {
-               RendererManager.editInJob(attributeConflict.getArtifact());
+               RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
                attributeConflict.markStatusToReflectEdit();
             }
          }

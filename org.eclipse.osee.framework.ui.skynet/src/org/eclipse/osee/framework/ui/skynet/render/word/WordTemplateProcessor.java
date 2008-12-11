@@ -235,7 +235,7 @@ public class WordTemplateProcessor {
          if (elementType.equals(ARTIFACT)) {
             extractOutliningOptions(elementValue);
 
-            if (presentationType == PresentationType.EDIT && artifacts.size() == 1) {
+            if (presentationType == PresentationType.GENERALIZED_EDIT && artifacts.size() == 1) {
                // for single edit override outlining options
                outlining = false;
             }
@@ -526,7 +526,7 @@ public class WordTemplateProcessor {
                //Change the BinData Id so images do not get overridden by the other images
                wordContent = WordUtil.reassignBinDataID(wordContent);
 
-               if (presentationType == PresentationType.EDIT) {
+               if (presentationType == PresentationType.GENERALIZED_EDIT) {
                   writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",
                         "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"", wordContent);

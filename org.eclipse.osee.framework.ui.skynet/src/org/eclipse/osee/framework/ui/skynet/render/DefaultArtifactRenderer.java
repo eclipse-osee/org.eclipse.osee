@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -19,6 +19,14 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
  * @author Ryan D. Brooks
  */
 public class DefaultArtifactRenderer extends Renderer {
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
+    */
+   @Override
+   public String getName() {
+      return "Artifact Editor";
+   }
 
    /**
     * @param rendererId
@@ -36,33 +44,27 @@ public class DefaultArtifactRenderer extends Renderer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
-    */
-   @Override
-   public void edit(Artifact artifact) throws OseeCoreException {
-      ArtifactEditor.editArtifact(artifact);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#preview(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
-    */
-   @Override
-   public void preview(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      ArtifactEditor.editArtifact(artifact);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#supportsEdit()
-    */
-   @Override
-   public boolean supportsEdit() {
-      return true;
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (presentationType == PresentationType.GENERALIZED_EDIT) {
+         return PRESENTATION_TYPE;
+      }
+
       return DEFAULT_MATCH;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(java.util.List)
+    */
+   @Override
+   public void preview(List<Artifact> artifacts) throws OseeCoreException {
+      open(artifacts);
+   }
+
+   @Override
+   public void open(List<Artifact> artifacts) throws OseeCoreException {
+      ArtifactEditor.editArtifacts(artifacts);
+   }
+
 }

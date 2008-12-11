@@ -66,11 +66,11 @@ public class OpenWithMenuListener implements MenuListener {
          }
 
          List<IRenderer> commonRenders =
-               RendererManager.getApplicableRenderer(PresentationType.EDIT, artifacts.get(0), null);
+               RendererManager.getApplicableRenderer(PresentationType.SPECIALIZED_EDIT, artifacts.get(0), null);
 
          for (Artifact artifact : artifacts) {
             List<IRenderer> applicableRenders =
-                  RendererManager.getApplicableRenderer(PresentationType.EDIT, artifact, null);
+                  RendererManager.getApplicableRenderer(PresentationType.SPECIALIZED_EDIT, artifact, null);
 
             Iterator<?> commIterator = commonRenders.iterator();
 

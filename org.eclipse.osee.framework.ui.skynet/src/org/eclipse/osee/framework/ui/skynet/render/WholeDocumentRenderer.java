@@ -59,7 +59,7 @@ public class WholeDocumentRenderer extends WordRenderer {
     */
    @Override
    public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      throw new UnsupportedOperationException();
+      return getRenderInputStream(artifacts.iterator().next(), presentationType);
    }
 
    /* (non-Javadoc)
@@ -150,7 +150,7 @@ public class WholeDocumentRenderer extends WordRenderer {
       diffGenerator.initialize(presentationType == PresentationType.DIFF,
             presentationType == PresentationType.MERGE_EDIT);
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
-         addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),
+         addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.GENERALIZED_EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
          diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs");

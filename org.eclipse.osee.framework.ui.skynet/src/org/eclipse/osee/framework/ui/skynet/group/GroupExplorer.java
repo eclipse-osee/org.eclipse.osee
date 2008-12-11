@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -125,11 +126,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    private void handleDoubleClick() {
       GroupExplorerItem item = getSelectedItem();
       if (item != null) {
-         try {
-            RendererManager.editInJob(item.getArtifact());
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
+         RendererManager.openInJob(item.getArtifact(), PresentationType.GENERALIZED_EDIT);
       }
    }
 

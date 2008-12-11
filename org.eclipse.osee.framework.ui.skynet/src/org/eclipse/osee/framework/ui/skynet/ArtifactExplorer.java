@@ -90,6 +90,7 @@ import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHel
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
@@ -578,7 +579,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             artifacts.add((Artifact) itemsIter.next());
          }
 
-         RendererManager.openInJob(artifacts);
+         RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
       }
    }
 
@@ -679,11 +680,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          public void widgetSelected(SelectionEvent ev) {
             LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
             TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
-            try {
-               RendererManager.editInJob(selectedItems);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
+            RendererManager.openInJob(selectedItems, PresentationType.SPECIALIZED_EDIT);
          }
       });
    }

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 /**
  * @author Ryan D. Brooks
  */
-public class UrlRenderer extends Renderer {
+public class UrlRenderer extends DefaultArtifactRenderer {
    private final AttributeType contentUrlType;
 
    /**

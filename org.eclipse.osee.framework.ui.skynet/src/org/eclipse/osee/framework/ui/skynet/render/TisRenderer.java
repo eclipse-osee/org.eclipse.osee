@@ -63,7 +63,7 @@ public class TisRenderer extends WordTemplateRenderer {
     */
    @Override
    public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      if (PresentationType.EDIT == presentationType) {
+      if (PresentationType.GENERALIZED_EDIT == presentationType) {
          return super.getRenderInputStream(artifacts, presentationType);
       }
       final VariableMap variableMap = new VariableMap();
