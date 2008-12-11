@@ -81,7 +81,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
          IFile workingFile = baseFolder.getFile(fileName);
          AIFile.writeToFile(workingFile, renderInputStream);
 
-         if (presentationType == PresentationType.GENERALIZED_EDIT) {
+         if (presentationType == PresentationType.SPECIALIZED_EDIT) {
             watcher.addFile(workingFile.getLocation().toFile());
          } else if (presentationType == PresentationType.PREVIEW) {
             workingFile.setResourceAttributes(readonlyfileAttributes);

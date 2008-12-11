@@ -23,6 +23,14 @@ import org.eclipse.osee.framework.ui.skynet.render.Renderer;
  * @author Ryan D. Brooks
  */
 public class AtsRenderer extends Renderer {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
+    */
+   @Override
+   public String getName() {
+      return "ATS Editor";
+   }
+
    /**
     * @param rendererId
     */

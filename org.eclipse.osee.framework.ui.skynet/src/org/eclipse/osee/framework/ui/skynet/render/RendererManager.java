@@ -152,7 +152,6 @@ public class RendererManager {
    public static void openInJob(final List<Artifact> artifacts, final VariableMap options, final PresentationType presentationType) {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
-
             HashCollection<IRenderer, Artifact> rendererArtifactMap =
                   createRenderMap(presentationType, artifacts, options);
 

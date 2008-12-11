@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -61,7 +60,6 @@ import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.Renderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
-
 
 /**
  * @author Robert A. Fisher
@@ -235,7 +233,7 @@ public class WordTemplateProcessor {
          if (elementType.equals(ARTIFACT)) {
             extractOutliningOptions(elementValue);
 
-            if (presentationType == PresentationType.GENERALIZED_EDIT && artifacts.size() == 1) {
+            if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() == 1) {
                // for single edit override outlining options
                outlining = false;
             }
@@ -503,6 +501,15 @@ public class WordTemplateProcessor {
 
       attributeTypeName = AttributeTypeManager.getType(attributeTypeName).getName();
 
+      //create wordTemplateContent for new guys
+      if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
+         Attribute<?> attribute = artifact.getSoleAttribute(attributeTypeName);
+         if (attribute == null) {
+            artifact.createAttribute(AttributeTypeManager.getType(attributeTypeName), true);
+            //            artifact.persistAttributes();
+         }
+      }
+
       Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeTypeName);
 
       if (!attributes.isEmpty()) {
@@ -526,7 +533,7 @@ public class WordTemplateProcessor {
                //Change the BinData Id so images do not get overridden by the other images
                wordContent = WordUtil.reassignBinDataID(wordContent);
 
-               if (presentationType == PresentationType.GENERALIZED_EDIT) {
+               if (presentationType == PresentationType.SPECIALIZED_EDIT) {
                   writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",
                         "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"", wordContent);

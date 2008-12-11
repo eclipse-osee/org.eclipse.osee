@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -270,7 +269,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             presentationType == PresentationType.MERGE_EDIT);
 
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
-         addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.GENERALIZED_EDIT),
+         addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
          diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs");
@@ -326,8 +325,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact()) {
-         return ARTIFACT_TYPE_MATCH;
+      if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() && presentationType != PresentationType.GENERALIZED_EDIT) {
+         return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
    }
@@ -369,10 +368,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
          for (Artifact artifact : artifacts) {
             Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-            if (attribute == null) {
-               attribute =
-                     artifact.createAttribute(AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT), true);
-            }
             if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
                throw new OseeCoreException(
                      "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
@@ -380,7 +375,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             }
          }
 
-         if (presentationType == PresentationType.GENERALIZED_EDIT && artifacts.size() > 1) {
+         if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
             // currently we can't support the editing of multiple artifacts with OLE data
             for (Artifact artifact : artifacts) {
                if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("") && presentationType == PresentationType.GENERALIZED_EDIT) {
