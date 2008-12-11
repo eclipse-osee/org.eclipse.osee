@@ -712,6 +712,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
    }
 
+   @Override
    public String getWorldViewWorkPackage() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName(), "");
    }

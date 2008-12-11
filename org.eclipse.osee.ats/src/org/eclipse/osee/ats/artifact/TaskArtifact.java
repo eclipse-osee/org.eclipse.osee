@@ -177,6 +177,13 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return smaMgr.isCancelled();
    }
 
+   @Override
+   public String getWorldViewWorkPackage() throws OseeCoreException {
+      String value = super.getWorldViewWorkPackage();
+      if (value != null && !value.equals("")) return value;
+      return getParentSMA().getWorldViewWorkPackage();
+   }
+
    public Boolean isInWork() throws OseeCoreException {
       return (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name()));
    }
