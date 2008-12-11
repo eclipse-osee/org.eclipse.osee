@@ -261,7 +261,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          }
       } else {
          diffPath =
-               getRenderFolder(baseVersion.getBranch(), PresentationType.GENERALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
+               getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();

@@ -105,11 +105,6 @@ public abstract class FileRenderer extends FileSystemRenderer {
 
    protected String getFilenameFromArtifact(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       StringBuilder name = new StringBuilder(100);
-      String fileName = getStringOption("fileName");
-
-      if (fileName != null && !fileName.equals("")) {
-         return fileName;
-      }
 
       if (artifact != null) {
 

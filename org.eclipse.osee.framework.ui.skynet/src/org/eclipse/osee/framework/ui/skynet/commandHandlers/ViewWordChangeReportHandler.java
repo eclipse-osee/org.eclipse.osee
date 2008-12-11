@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -96,19 +94,21 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
       Artifact bArtifact = baseArtifacts.iterator().next();
       Artifact nArtifact = newerArtifacts.iterator().next();
-      
+
       Artifact instanceOfArtifact = bArtifact != null ? bArtifact : nArtifact;
-      
-      if(instanceOfArtifact instanceof WordArtifact && ((WordArtifact) instanceOfArtifact).isWholeWordArtifact() ){
-          RendererManager.diffInJob(baseArtifacts, newerArtifacts, variableMap);
-      } else{
-          //All other artifacts types can be rendered by the wordRenderer so the are displayed in the word change report.
-          WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION); 
-          try {
-			renderer.compareArtifacts(baseArtifacts, newerArtifacts, new NullProgressMonitor(), instanceOfArtifact.getBranch(), PresentationType.DIFF);
-		} catch (OseeCoreException e) {
-	        OSEELog.logException(getClass(), e, true);
-		}
+
+      if (instanceOfArtifact instanceof WordArtifact && ((WordArtifact) instanceOfArtifact).isWholeWordArtifact()) {
+         RendererManager.diffInJob(baseArtifacts, newerArtifacts, variableMap);
+      } else {
+         //All other artifacts types can be rendered by the wordRenderer so the are displayed in the word change report.
+         WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
+         try {
+            renderer.setOptions(variableMap);
+            renderer.compareArtifacts(baseArtifacts, newerArtifacts, new NullProgressMonitor(),
+                  instanceOfArtifact.getBranch(), PresentationType.DIFF);
+         } catch (OseeCoreException e) {
+            OSEELog.logException(getClass(), e, true);
+         }
       }
       return null;
    }
