@@ -33,7 +33,7 @@ public class AtsRenderer extends Renderer {
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         edit(artifact);
+         OseeAts.getAtsLib().openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       }
    }
 
@@ -46,32 +46,20 @@ public class AtsRenderer extends Renderer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
-    */
-   @Override
-   public void edit(Artifact artifact) throws OseeCoreException {
-      try {
-         OseeAts.getAtsLib().openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#supportsEdit()
-    */
-   @Override
-   public boolean supportsEdit() {
-      return true;
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact instanceof IATSArtifact) {
-         return ARTIFACT_TYPE_MATCH;
+         return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(java.util.List)
+    */
+   @Override
+   public void preview(List<Artifact> artifacts) throws OseeCoreException {
+      open(artifacts);
    }
 }
