@@ -22,19 +22,19 @@ import org.eclipse.osee.framework.ui.skynet.render.Renderer;
 /**
  * @author Ryan D. Brooks
  */
-public class AtsRenderer extends Renderer {
+public class AtsWorkflowRenderer extends Renderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
     */
    @Override
    public String getName() {
-      return "ATS Editor";
+      return "ATS Workflow Editor";
    }
 
    /**
     * @param rendererId
     */
-   public AtsRenderer(String rendererId) {
+   public AtsWorkflowRenderer(String rendererId) {
       super(rendererId);
    }
 
@@ -49,8 +49,8 @@ public class AtsRenderer extends Renderer {
    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
    */
    @Override
-   public AtsRenderer newInstance() throws OseeCoreException {
-      return new AtsRenderer(getId());
+   public AtsWorkflowRenderer newInstance() throws OseeCoreException {
+      return new AtsWorkflowRenderer(getId());
    }
 
    /* (non-Javadoc)
