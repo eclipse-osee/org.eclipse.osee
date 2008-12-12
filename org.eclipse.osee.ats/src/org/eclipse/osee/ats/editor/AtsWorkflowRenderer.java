@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -69,5 +71,22 @@ public class AtsWorkflowRenderer extends Renderer {
    @Override
    public void preview(List<Artifact> artifacts) throws OseeCoreException {
       open(artifacts);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
+    */
+   @Override
+   public int minimumRanking() throws OseeCoreException {
+      if (AccessControlManager.isOseeAdmin()) {
+         return NO_MATCH;
+      } else {
+         return PRESENTATION_TYPE;
+      }
+   }
+
+   @Override
+   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      return artifact != null ? Collections.toString(", ", artifact.getAttributes(attributeTypeName)) : null;
    }
 }

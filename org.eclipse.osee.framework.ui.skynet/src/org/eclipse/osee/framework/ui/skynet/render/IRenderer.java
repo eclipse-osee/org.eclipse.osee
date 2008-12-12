@@ -24,12 +24,17 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public interface IRenderer {
 
+   public static final int WORD_PUBLICATION = 60;
    public static final int PRESENTATION_SUBTYPE_MATCH = 50;
    public static final int PRESENTATION_TYPE = 40;
    public static final int SUBTYPE_TYPE_MATCH = 30;
    public static final int ARTIFACT_TYPE_MATCH = 20;
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
+
+   public abstract String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException;
+
+   public abstract int minimumRanking() throws OseeCoreException;
 
    public abstract void open(List<Artifact> artifacts) throws OseeCoreException;
 
@@ -39,21 +44,15 @@ public interface IRenderer {
 
    public abstract String generateHtml(List<Artifact> artifacts) throws OseeCoreException;
 
-   public boolean supportsPreview();
-
    public abstract void print(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
 
    public abstract void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
-
-   public boolean supportsPrint();
 
    public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException;
 
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException;
 
    public void compareArtifacts(List<Artifact> baseArtifacts, List<Artifact> newerArtifact, IProgressMonitor monitor, Branch branch, PresentationType presentationType) throws OseeCoreException;
-
-   public boolean supportsCompare();
 
    public abstract int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException;
 

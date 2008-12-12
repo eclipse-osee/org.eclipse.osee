@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 
@@ -67,4 +68,19 @@ public class DefaultArtifactRenderer extends Renderer {
       ArtifactEditor.editArtifacts(artifacts);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
+    */
+   @Override
+   public int minimumRanking() throws OseeCoreException {
+      return NO_MATCH;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#renderAttribute(java.lang.String)
+    */
+   @Override
+   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      return artifact != null ? Collections.toString(", ", artifact.getAttributes(attributeTypeName)) : null;
+   }
 }

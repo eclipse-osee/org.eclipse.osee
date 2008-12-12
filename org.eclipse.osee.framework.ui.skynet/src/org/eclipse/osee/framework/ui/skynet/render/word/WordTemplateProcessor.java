@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -59,6 +58,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.Renderer;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
@@ -526,22 +526,15 @@ public class WordTemplateProcessor {
                wordMl.addParagraph(attributeElement.label);
             }
 
-            Object value = attribute.getValue();
-            if (value != null && value instanceof String) {
-               String data = (String) value;
-               String wordContent = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
-               //Change the BinData Id so images do not get overridden by the other images
-               wordContent = WordUtil.reassignBinDataID(wordContent);
+            String wordContent =
+                  RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact, null);
 
-               if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-                  writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
-                        "ns0:guid=\"" + artifact.getGuid() + "\"",
-                        "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"", wordContent);
-               } else {
-                  wordMl.addWordMl(wordContent);
-               }
+            if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+               writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
+                     "ns0:guid=\"" + artifact.getGuid() + "\"", "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"",
+                     wordContent);
             } else {
-               System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleAttributeValue("Name") + " : " + attributeType.getName() + " == null");
+               wordMl.addWordMl(wordContent);
             }
 
             wordMl.resetListValue();
@@ -554,7 +547,8 @@ public class WordTemplateProcessor {
                wordMl.addWordMl(attributeElement.label);
             }
 
-            String valueList = Collections.toString(", ", artifact.getAttributes(attributeTypeName));
+            String valueList =
+                  RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact, null);
             if (attributeElement.format.contains(">x<")) {
                wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
             } else {

@@ -327,8 +327,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       int rating = NO_MATCH;
 
-      if (presentationType == PresentationType.PREVIEW) {
-         rating = 100;
+      if (!(artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) && presentationType == PresentationType.PREVIEW) {
+         rating = WORD_PUBLICATION;
       }
 
       if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() && presentationType != PresentationType.GENERALIZED_EDIT) {
@@ -351,6 +351,28 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          artifacts.add(artifact);
       }
       return getRenderInputStream(artifacts, presentationType);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.WordRenderer#renderAttribute(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
+    */
+   @Override
+   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      String value = "";
+
+      if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
+         String data = (String) artifact.getSoleAttribute(attributeTypeName).getValue();
+
+         if (data != null) {
+            value = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
+            //Change the BinData Id so images do not get overridden by the other images
+            value = WordUtil.reassignBinDataID(value);
+         }
+      } else {
+         value = super.renderAttribute(attributeTypeName, artifact, presentationType);
+      }
+
+      return value;
    }
 
    /*

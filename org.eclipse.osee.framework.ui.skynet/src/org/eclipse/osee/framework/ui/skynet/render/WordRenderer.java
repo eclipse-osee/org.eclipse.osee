@@ -6,6 +6,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.InputStream;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.swt.program.Program;
@@ -22,6 +23,14 @@ public abstract class WordRenderer extends FileRenderer {
     */
    public WordRenderer(String rendererId) {
       super(rendererId);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
+    */
+   @Override
+   public int minimumRanking() throws OseeCoreException {
+      return NO_MATCH;
    }
 
    /* (non-Javadoc)
@@ -73,5 +82,10 @@ public abstract class WordRenderer extends FileRenderer {
    public String generateHtml(Artifact artifact) throws OseeCoreException {
       InputStream xml = getRenderInputStream(artifact, PresentationType.PREVIEW);
       return WordConverter.toHtml(xml);
+   }
+
+   @Override
+   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      return artifact != null ? Collections.toString(", ", artifact.getAttributes(attributeTypeName)) : null;
    }
 }

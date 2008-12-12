@@ -6,6 +6,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.InputStream;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
@@ -74,5 +75,18 @@ public class OpenOfficeWriterRenderer extends FileRenderer implements ITemplateR
    private String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       return TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION)).getSoleAttributeValue(
             NativeArtifact.CONTENT_NAME);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
+    */
+   @Override
+   public int minimumRanking() throws OseeCoreException {
+      return NO_MATCH;
+   }
+
+   @Override
+   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      return artifact != null ? Collections.toString(", ", artifact.getAttributes(attributeTypeName)) : null;
    }
 }

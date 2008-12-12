@@ -106,12 +106,16 @@ public class RendererManager {
       return bestRendererPrototype;
    }
 
+   public static String renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
+      return getBestRenderer(presentationType, artifact, options).renderAttribute(attrType, artifact, presentationType);
+   }
+
    public static List<IRenderer> getApplicableRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
       ArrayList<IRenderer> renderers = new ArrayList<IRenderer>();
 
       for (IRenderer prototypeRenderer : instance.renderers.values()) {
          int rating = prototypeRenderer.getApplicabilityRating(presentationType, artifact);
-         if (rating > IRenderer.NO_MATCH) {
+         if (rating > getBestRenderer(presentationType, artifact, options).minimumRanking()) {
             IRenderer renderer = prototypeRenderer.newInstance();
             renderer.setOptions(options);
             renderers.add(renderer);
