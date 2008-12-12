@@ -26,6 +26,13 @@ public class OseeMainDictionary implements IOseeDictionary {
 
    Set<String> dict;
 
+   /**
+    * @return the dict
+    */
+   public Set<String> getDict() {
+      return dict;
+   }
+
    /*
     * (non-Javadoc)
     * 
