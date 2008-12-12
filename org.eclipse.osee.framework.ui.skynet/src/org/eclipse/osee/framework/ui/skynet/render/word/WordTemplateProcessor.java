@@ -527,7 +527,7 @@ public class WordTemplateProcessor {
             }
 
             String wordContent =
-                  RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact, null);
+                  RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact);
 
             if (presentationType == PresentationType.SPECIALIZED_EDIT) {
                writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
@@ -548,7 +548,7 @@ public class WordTemplateProcessor {
             }
 
             String valueList =
-                  RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact, null);
+                  RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact);
             if (attributeElement.format.contains(">x<")) {
                wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
             } else {
