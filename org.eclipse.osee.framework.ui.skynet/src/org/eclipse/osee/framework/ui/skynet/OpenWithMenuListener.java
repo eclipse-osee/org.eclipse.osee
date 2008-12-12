@@ -94,6 +94,7 @@ public class OpenWithMenuListener implements MenuListener {
          for (IRenderer renderer : commonRenders) {
             MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
             menuItem.setText(renderer.getName());
+            menuItem.setImage(renderer.getImage());
             menuItem.addSelectionListener(new OpenWithSelectionListener(renderer, viewer));
          }
 

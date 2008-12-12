@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
@@ -31,6 +32,8 @@ public interface IRenderer {
    public static final int ARTIFACT_TYPE_MATCH = 20;
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
+
+   public Image getImage();
 
    public abstract String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException;
 

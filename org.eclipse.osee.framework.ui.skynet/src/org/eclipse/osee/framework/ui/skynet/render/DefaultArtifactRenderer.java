@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Ryan D. Brooks
@@ -215,59 +216,11 @@ public class DefaultArtifactRenderer implements IRenderer {
       return artifact != null ? Collections.toString(", ", artifact.getAttributes(attributeTypeName)) : null;
    }
 
-   //
-   //   /**
-   //    * @param rendererId
-   //    */
-   //   public DefaultArtifactRenderer(String rendererId) {
-   //      super(rendererId);
-   //   }
-   //
-   //   /* (non-Javadoc)
-   //    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-   //    */
-   //   @Override
-   //   public DefaultArtifactRenderer newInstance() throws OseeCoreException {
-   //      return new DefaultArtifactRenderer(getId());
-   //   }
-   //
-   //   /* (non-Javadoc)
-   //    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-   //    */
-   //   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-   //      if (presentationType == PresentationType.GENERALIZED_EDIT) {
-   //         return PRESENTATION_TYPE;
-   //      }
-   //
-   //      return DEFAULT_MATCH;
-   //   }
-   //
-   //   /* (non-Javadoc)
-   //    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(java.util.List)
-   //    */
-   //   @Override
-   //   public void preview(List<Artifact> artifacts) throws OseeCoreException {
-   //      open(artifacts);
-   //   }
-   //
-   //   @Override
-   //   public void open(List<Artifact> artifacts) throws OseeCoreException {
-   //      ArtifactEditor.editArtifacts(artifacts);
-   //   }
-   //
-   //   /* (non-Javadoc)
-   //    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
-   //    */
-   //   @Override
-   //   public int minimumRanking() throws OseeCoreException {
-   //      return NO_MATCH;
-   //   }
-   //
-   //   /* (non-Javadoc)
-   //    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#renderAttribute(java.lang.String)
-   //    */
-   //   @Override
-   //   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-   //      return artifact != null ? Collections.toString(", ", artifact.getAttributes(attributeTypeName)) : null;
-   //   }
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getImage()
+    */
+   @Override
+   public Image getImage() {
+      return null;
+   }
 }
