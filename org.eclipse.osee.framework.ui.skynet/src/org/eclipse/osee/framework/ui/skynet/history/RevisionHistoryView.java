@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
-import org.eclipse.osee.framework.ui.skynet.menu.ArtifactPreviewMenu;
+import org.eclipse.osee.framework.ui.skynet.menu.ArtifactPublishMenu;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -101,7 +101,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
       treeViewer.addDoubleClickListener(new Transaction2ClickListener());
 
       Menu popupMenu = new Menu(parent);
-      ArtifactPreviewMenu.createPreviewMenuItem(popupMenu, treeViewer);
+      ArtifactPublishMenu.createPreviewMenuItem(popupMenu, treeViewer);
       ArtifactDiffMenu.createDiffMenuItem(popupMenu, treeViewer, "Compare two Artifacts", null);
       treeViewer.getTree().setMenu(popupMenu);
       createActions();

@@ -193,16 +193,16 @@ public class RendererManager {
    }
 
    public static void preview(final List<Artifact> artifacts, IProgressMonitor monitor, final VariableMap options) throws OseeCoreException {
-      //      HashCollection<IRenderer, Artifact> rendererArtifactMap =
-      //            createRenderMap(PresentationType.PREVIEW, artifacts, options);
-      //
-      //      for (IRenderer renderer : rendererArtifactMap.keySet()) {
-      //         renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
-      //      }
+      HashCollection<IRenderer, Artifact> rendererArtifactMap =
+            createRenderMap(PresentationType.PREVIEW, artifacts, options);
 
-      WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
-      renderer.setOptions(options);
-      renderer.preview(artifacts);
+      for (IRenderer renderer : rendererArtifactMap.keySet()) {
+         renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+      }
+
+      //      WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
+      //      renderer.setOptions(options);
+      //      renderer.preview(artifacts);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, String fileName, boolean show) throws OseeStateException, OseeCoreException {

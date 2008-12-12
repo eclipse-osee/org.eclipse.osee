@@ -45,17 +45,17 @@ import org.eclipse.swt.widgets.MenuItem;
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactPreviewMenu {
+public class ArtifactPublishMenu {
 
    public static void createPreviewMenuItem(Menu parentMenu, final Viewer viewer) {
       final MenuItem previewMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      previewMenuItem.setText("&Preview");
+      previewMenuItem.setText("&Publish");
 
       final Menu submenu = new Menu(previewMenuItem);
       previewMenuItem.setMenu(submenu);
 
       final MenuItem previewArtifact = new MenuItem(submenu, SWT.PUSH);
-      previewArtifact.setText("Preview Artifact");
+      previewArtifact.setText("Artifact");
 
       previewArtifact.addSelectionListener(new SelectionAdapter() {
 
@@ -65,7 +65,7 @@ public class ArtifactPreviewMenu {
       });
 
       final MenuItem previewWithChildRecursionItem = new MenuItem(submenu, SWT.PUSH);
-      previewWithChildRecursionItem.setText("Preview with child recursion");
+      previewWithChildRecursionItem.setText("With child recursion");
 
       previewWithChildRecursionItem.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent ev) {
@@ -113,7 +113,7 @@ public class ArtifactPreviewMenu {
                   }
                }
             } catch (Exception ex) {
-               OSEELog.logException(ArtifactPreviewMenu.class, ex, true);
+               OSEELog.logException(ArtifactPublishMenu.class, ex, true);
                previewMenuItem.setEnabled(false);
             }
             previewMenuItem.setEnabled(permitted);
@@ -154,7 +154,7 @@ public class ArtifactPreviewMenu {
                   TreeViewerUtility.getPreorderSelection((TreeViewer) viewer, selectedItems);
                }
             } catch (Exception ex) {
-               OSEELog.logException(ArtifactPreviewMenu.class, ex, true);
+               OSEELog.logException(ArtifactPublishMenu.class, ex, true);
             }
          } else {
             for (Object object : selection.toArray()) {

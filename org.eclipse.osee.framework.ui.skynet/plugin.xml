@@ -63,12 +63,12 @@
           name="Resource History">
     </command>
     <command
-          id="org.eclipse.osee.framework.ui.skynet.previewArtifact.command"
-          name="Preview Artifact">
+          id="org.eclipse.osee.framework.ui.skynet.publishArtifact.command"
+          name="Artifact">
     </command>
     <command
-          id="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command"
-          name="Preview with child recursion">
+          id="org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command"
+          name="With child recursion">
     </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.openInAtsWorldEditor"
@@ -186,7 +186,7 @@
         </or>
      </activeWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactNoRecurseHandler" commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactNoRecurseHandler" commandId="org.eclipse.osee.framework.ui.skynet.publishArtifact.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -196,7 +196,7 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactWithRecurseHandler" commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactWithRecurseHandler" commandId="org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -458,9 +458,9 @@
   </menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.commandImages">
-		<image commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command" icon="images/preview_artifact.gif">
+		<image commandId="org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command" icon="images/preview_artifact.gif">
          </image>
-		<image commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command" icon="images/preview_artifact.gif">
+		<image commandId="org.eclipse.osee.framework.ui.skynet.publishArtifact.command" icon="images/preview_artifact.gif">
          </image>
 		<image commandId="org.eclipse.osee.framework.ui.skynet.edit.command" icon="images/edit_artifact.gif">
          </image>
@@ -811,7 +811,7 @@
     <menuContribution
           locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView">
        <separator
-             name="org.eclipse.osee.framework.ui.skynet.mergeView.previewArtifactRecurse.separator"
+             name="org.eclipse.osee.framework.ui.skynet.mergeView.publishArtifactRecurse.separator"
              visible="true">
        </separator>
           <command
@@ -844,20 +844,20 @@
              visible="true">
        </separator>
        <menu
-             label="Preview">
+             label="Publish">
           <command
-                commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
+                commandId="org.eclipse.osee.framework.ui.skynet.publishArtifact.command">
           </command>
           <command
-                commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
+                commandId="org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command">
           </command>
        </menu>
        <separator
-             name="org.eclipse.osee.framework.ui.skynet.changeReportView.previewArtifactRecurse.separator"
+             name="org.eclipse.osee.framework.ui.skynet.changeReportView.publishArtifactRecurse.separator"
              visible="true">
        </separator>
        <separator
-             name="org.eclipse.osee.framework.ui.skynet.changeView.previewArtifactRecurse.separator"
+             name="org.eclipse.osee.framework.ui.skynet.changeView.publishArtifactRecurse.separator"
              visible="true">
        </separator>
        <command

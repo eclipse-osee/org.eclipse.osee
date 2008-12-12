@@ -325,10 +325,16 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() && presentationType != PresentationType.GENERALIZED_EDIT) {
-         return PRESENTATION_SUBTYPE_MATCH;
+      int rating = NO_MATCH;
+
+      if (presentationType == PresentationType.PREVIEW) {
+         rating = 100;
       }
-      return NO_MATCH;
+
+      if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() && presentationType != PresentationType.GENERALIZED_EDIT) {
+         rating = PRESENTATION_SUBTYPE_MATCH;
+      }
+      return rating;
    }
 
    /*

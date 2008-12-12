@@ -301,15 +301,15 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
     */
 
    private void addPreviewArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
-      MenuManager previewMenu = new MenuManager("Preview");
+      MenuManager previewMenu = new MenuManager("Publish");
 
       CommandContributionItem previewArtifactCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.previewArtifact.command",
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.publishArtifact.command",
                   getSite(), null, null, null, null, null, null, null, null);
       previewMenu.add(previewArtifactCommand);
 
       CommandContributionItem previewArtifactRecurseCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command",
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command",
                   getSite(), null, null, null, null, null, null, null, null);
       previewMenu.add(previewArtifactRecurseCommand);
 
@@ -317,10 +317,10 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    }
 
    private void createPreviewArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
-      MenuManager previewMenu = new MenuManager("Preview");
+      MenuManager previewMenu = new MenuManager("Publish");
 
       CommandContributionItem previewArtifactCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.previewArtifact.command",
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.publishArtifact.command",
                   getSite(), null, null, null, null, null, null, null, null);
       previewMenu.add(previewArtifactCommand);
 
@@ -354,7 +354,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       });
 
       CommandContributionItem previewArtifactRecurseCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command",
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command",
                   getSite(), null, null, null, null, null, null, null, null);
       previewMenu.add(previewArtifactRecurseCommand);
 

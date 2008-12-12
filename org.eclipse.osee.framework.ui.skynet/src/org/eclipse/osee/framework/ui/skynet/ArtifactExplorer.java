@@ -85,7 +85,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
-import org.eclipse.osee.framework.ui.skynet.menu.ArtifactPreviewMenu;
+import org.eclipse.osee.framework.ui.skynet.menu.ArtifactPublishMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
@@ -360,7 +360,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       createOpenMenuItem(popupMenu);
       createEditMenuItem(popupMenu);
 
-      ArtifactPreviewMenu.createPreviewMenuItem(popupMenu, treeViewer);
+      ArtifactPublishMenu.createPreviewMenuItem(popupMenu, treeViewer);
 
       createMassEditMenuItem(popupMenu);
       createSkywalkerMenuItem(popupMenu);
