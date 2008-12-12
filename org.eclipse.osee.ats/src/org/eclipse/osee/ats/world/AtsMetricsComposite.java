@@ -238,17 +238,18 @@ public class AtsMetricsComposite extends ScrolledComposite {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
       for (User user : sMet.getAssigneesAssignedOrCompleted()) {
          try {
-            int numCompleted =
-                  sMet.getUserToCompletedSmas().containsKey(user) ? sMet.getUserToCompletedSmas().getValues(user).size() : 0;
+            int numCompleted = sMet.getUserToCompletedSmas(user, TeamWorkFlowArtifact.class).size();
             double cummulativePercentComplete = numCompleted * 100;
-            int numInWork =
-                  sMet.getUserToAssignedSmas().containsKey(user) ? sMet.getUserToAssignedSmas().getValues(user).size() : 0;
+            int numInWork = sMet.getUserToAssignedSmas(user, TeamWorkFlowArtifact.class).size();
             // Since table is loaded with arts and also shows children, don't want to count artifacts twice
             Set<Artifact> processedArts = new HashSet<Artifact>();
-            for (Artifact sma : sMet.getUserToAssignedSmas().getValues()) {
-               if (!processedArts.contains(sma) && !sMet.getUserToCompletedSmas().containsValue(sma)) {
-                  cummulativePercentComplete += ((StateMachineArtifact) sma).getWorldViewPercentCompleteTotal();
-                  processedArts.add(sma);
+            if (sMet.getUserToAssignedSmas().getValues(user) != null) {
+               for (Artifact sma : sMet.getUserToAssignedSmas().getValues(user)) {
+                  if ((sma instanceof TeamWorkFlowArtifact) && !processedArts.contains(sma) && !sMet.getUserToCompletedSmas().containsValue(
+                        sma)) {
+                     cummulativePercentComplete += ((StateMachineArtifact) sma).getWorldViewPercentCompleteTotal();
+                     processedArts.add(sma);
+                  }
                }
             }
             int numTotal = numCompleted + numInWork;

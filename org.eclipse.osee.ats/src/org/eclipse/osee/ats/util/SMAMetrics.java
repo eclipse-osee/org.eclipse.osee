@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
@@ -70,6 +73,18 @@ public class SMAMetrics {
       return userToCompletedSmas;
    }
 
+   @SuppressWarnings("unchecked")
+   public <A extends StateMachineArtifact> Collection<A> getUserToCompletedSmas(User user, Class<A> clazz) {
+      if (!userToCompletedSmas.containsKey(user)) return Collections.emptyList();
+      List<A> smas = new ArrayList<A>();
+      for (Artifact art : userToCompletedSmas.getValues(user)) {
+         if (art.getClass().equals(clazz)) {
+            smas.add((A) art);
+         }
+      }
+      return smas;
+   }
+
    /**
     * @return the manDayHrs
     */
@@ -106,10 +121,24 @@ public class SMAMetrics {
    }
 
    /**
+    * Return all SMAs including Review and Tasks
+    * 
     * @return the userToSmas
     */
    public HashCollection<User, Artifact> getUserToAssignedSmas() {
       return userToAssignedSmas;
+   }
+
+   @SuppressWarnings("unchecked")
+   public <A extends StateMachineArtifact> Collection<A> getUserToAssignedSmas(User user, Class<A> clazz) {
+      if (!userToAssignedSmas.containsKey(user)) return Collections.emptyList();
+      List<A> smas = new ArrayList<A>();
+      for (Artifact art : userToAssignedSmas.getValues(user)) {
+         if (art.getClass().equals(clazz)) {
+            smas.add((A) art);
+         }
+      }
+      return smas;
    }
 
    /**
