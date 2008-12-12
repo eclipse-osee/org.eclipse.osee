@@ -62,6 +62,9 @@ public class XNavigateItemAction extends XNavigateItem {
                }
             });
          } else
+             if (action.getStyle() == Action.AS_CHECK_BOX) {
+		action.setChecked(!action.isChecked());
+	    }
             action.run();
       }
    }
