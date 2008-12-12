@@ -106,6 +106,10 @@ public class RendererManager {
       return bestRendererPrototype;
    }
 
+   public static String renderAttribute(String attrType, PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      return renderAttribute(attrType, presentationType, artifact, null);
+   }
+
    public static String renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
       return getBestRenderer(presentationType, artifact, options).renderAttribute(attrType, artifact, presentationType);
    }
