@@ -56,8 +56,8 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.Renderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
@@ -121,9 +121,9 @@ public class WordTemplateProcessor {
    final List<Artifact> nonTemplateArtifacts = new LinkedList<Artifact>();
    private Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private int previousTemplateCopyIndex;
-   private Renderer renderer;
+   private IRenderer renderer;
 
-   public WordTemplateProcessor(Renderer renderer) {
+   public WordTemplateProcessor(IRenderer renderer) {
       this.renderer = renderer;
       loadIgnoreAttributeExtensions();
    }

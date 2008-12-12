@@ -25,7 +25,7 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class FileSystemRenderer extends Renderer {
+public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    /**
     * @param rendererId
     */
@@ -73,22 +73,6 @@ public abstract class FileSystemRenderer extends Renderer {
          IFile file = renderToFileSystem(baseFolder, artifacts, presentationType);
          getAssociatedProgram(firstArtifact).execute(file.getLocation().toFile().getAbsolutePath());
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#supportsEdit()
-    */
-   @Override
-   public boolean supportsEdit() {
-      return true;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#supportsPreview()
-    */
-   @Override
-   public boolean supportsPreview() {
-      return true;
    }
 
    public static IFolder ensureRenderFolderExists(PresentationType presentationType) throws OseeCoreException {

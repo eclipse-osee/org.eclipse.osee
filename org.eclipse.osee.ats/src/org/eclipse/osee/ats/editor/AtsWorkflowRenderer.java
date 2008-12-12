@@ -18,13 +18,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.Renderer;
 
 /**
  * @author Ryan D. Brooks
  */
-public class AtsWorkflowRenderer extends Renderer {
+public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
     */
