@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphLine;
-import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphLineSegment;
 import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphTable;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -155,25 +154,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    public void createOverviewChart(SMAMetrics sMet, Composite parent) throws OseeCoreException {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
 
-      List<XBarGraphLineSegment> segments = new ArrayList<XBarGraphLineSegment>();
-      int totalObjects = sMet.getNumActions() + sMet.getNumTeamWfs() + sMet.getNumTasks() + sMet.getNumReviews();
-      if (sMet.getNumActions() > 0) {
-         double percent = new Double(sMet.getNumActions()) / totalObjects * 100;
-         segments.add(new XBarGraphLineSegment("Actions", SWT.COLOR_DARK_YELLOW, Math.round(percent)));
-      }
-      if (sMet.getNumTeamWfs() > 0) {
-         double percent = new Double(sMet.getNumTeamWfs()) / totalObjects * 100;
-         segments.add(new XBarGraphLineSegment("Workflows", SWT.COLOR_GREEN, Math.round(percent)));
-      }
-      if (sMet.getNumTasks() > 0) {
-         double percent = new Double(sMet.getNumTasks()) / totalObjects * 100;
-         segments.add(new XBarGraphLineSegment("Tasks", SWT.COLOR_CYAN, Math.round(percent)));
-      }
-      if (sMet.getNumReviews() > 0) {
-         double percent = new Double(sMet.getNumReviews()) / totalObjects * 100;
-         segments.add(new XBarGraphLineSegment("Reviews", SWT.COLOR_MAGENTA, Math.round(percent)));
-      }
-      lines.add(new XBarGraphLine(sMet.toStringObjectBreakout(), segments));
+      lines.add(XBarGraphLine.getTextLine("Loaded", sMet.toStringObjectBreakout()));
 
       lines.add(XBarGraphLine.getPercentLine(
             "By Workflow Percents (" + sMet.getCummulativeTeamPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",

@@ -227,7 +227,7 @@ public class SMAMetrics {
    }
 
    public String toStringObjectBreakout() {
-      return String.format("Breakout: Actions: %s  - Team Workflows: %s - Tasks: %s - Reviews: %s ", getNumActions(),
+      return String.format("Actions: %s  - Team Workflows: %s - Tasks: %s - Reviews: %s ", getNumActions(),
             getNumTeamWfs(), getNumTasks(), getNumReviews());
    }
 
