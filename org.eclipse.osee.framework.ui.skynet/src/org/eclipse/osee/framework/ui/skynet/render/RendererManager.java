@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BrowserComposite;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
+import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 
 /**
  * @author Ryan D. Brooks
@@ -106,12 +108,13 @@ public class RendererManager {
       return bestRendererPrototype;
    }
 
-   public static String renderAttribute(String attrType, PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      return renderAttribute(attrType, presentationType, artifact, null);
+   public static String renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
+      return renderAttribute(attrType, presentationType, artifact, null, producer, attributeElement);
    }
 
-   public static String renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
-      return getBestRenderer(presentationType, artifact, options).renderAttribute(attrType, artifact, presentationType);
+   public static String renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, VariableMap options, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
+      return getBestRenderer(presentationType, artifact, options).renderAttribute(attrType, artifact, presentationType,
+            producer, options, attributeElement);
    }
 
    public static List<IRenderer> getApplicableRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {

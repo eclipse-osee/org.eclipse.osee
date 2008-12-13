@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
+import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -35,7 +37,7 @@ public interface IRenderer {
 
    public Image getImage();
 
-   public abstract String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException;
+   public abstract String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException;
 
    public abstract int minimumRanking() throws OseeCoreException;
 

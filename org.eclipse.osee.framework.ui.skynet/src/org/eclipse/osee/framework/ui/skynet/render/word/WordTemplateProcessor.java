@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFolder;
@@ -36,7 +35,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
@@ -53,7 +51,6 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -97,9 +94,6 @@ public class WordTemplateProcessor {
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern attributeElementsPattern =
          Pattern.compile("<((\\w+:)?(Attribute))>(.*?)</\\3>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern internalAttributeElementsPattern =
-         Pattern.compile("<((\\w+:)?(Label|Outline|Name|Format|Editable))>(.*?)</\\1>",
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    private static final Pattern outlineElementsPattern =
@@ -506,7 +500,6 @@ public class WordTemplateProcessor {
          Attribute<?> attribute = artifact.getSoleAttribute(attributeTypeName);
          if (attribute == null) {
             artifact.createAttribute(AttributeTypeManager.getType(attributeTypeName), true);
-            //            artifact.persistAttributes();
          }
       }
 
@@ -521,41 +514,10 @@ public class WordTemplateProcessor {
             return;
          }
 
-         if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
-            if (attributeElement.label.length() > 0) {
-               wordMl.addParagraph(attributeElement.label);
-            }
+         VariableMap map = new VariableMap();
+         map.setValue("allAttrs", allAttrs);
 
-            String wordContent =
-                  RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact);
-
-            if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-               writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
-                     "ns0:guid=\"" + artifact.getGuid() + "\"", "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"",
-                     wordContent);
-            } else {
-               wordMl.addWordMl(wordContent);
-            }
-
-            wordMl.resetListValue();
-         } else {
-            wordMl.startParagraph();
-            // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
-            if (allAttrs) {
-               wordMl.addWordMl("<w:r><w:t> " + attributeTypeName + ": </w:t></w:r>");
-            } else {
-               wordMl.addWordMl(attributeElement.label);
-            }
-
-            String valueList =
-                  RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact);
-            if (attributeElement.format.contains(">x<")) {
-               wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
-            } else {
-               wordMl.addTextInsideParagraph(valueList);
-            }
-            wordMl.endParagraph();
-         }
+         RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, map, wordMl, attributeElement);
       }
    }
 
@@ -597,59 +559,6 @@ public class WordTemplateProcessor {
 
       while (matcher.find()) {
          attributeElements.add(new AttributeElement(matcher.group(4)));
-      }
-   }
-
-   private static class AttributeElement {
-      private String outlineNumber;
-      private String label;
-      private String attributeName;
-      private String format;
-
-      public AttributeElement(String element) {
-         Matcher matcher = internalAttributeElementsPattern.matcher(element);
-
-         this.outlineNumber = "";
-         this.label = "";
-         this.attributeName = "";
-         this.format = "";
-
-         while (matcher.find()) {
-            String elementType = matcher.group(3);
-            String value = matcher.group(4).trim();
-            if (elementType.equals("Outline")) {
-               value = WordUtil.textOnly(value);
-               if (value.length() > 0) {
-                  outlineNumber = value;
-               } else {
-                  outlineNumber = "1.0";
-               }
-            } else if (elementType.equals("Label")) {
-               label = value;
-            } else if (elementType.equals("Name")) {
-               attributeName = WordUtil.textOnly(value);
-            } else if (elementType.equals("Format")) {
-               format = value;
-            } else {
-               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Unexpected element read in Attribute:" + elementType);
-            }
-         }
-      }
-
-      public String getAttributeName() {
-         return attributeName;
-      }
-
-      public String getFormat() {
-         return format;
-      }
-
-      public String getLabel() {
-         return label;
-      }
-
-      public String getOutlineNumber() {
-         return outlineNumber;
       }
    }
 

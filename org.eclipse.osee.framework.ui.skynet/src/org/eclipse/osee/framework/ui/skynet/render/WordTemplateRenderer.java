@@ -45,6 +45,9 @@ import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
+import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.w3c.dom.Element;
@@ -357,21 +360,55 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     * @see org.eclipse.osee.framework.ui.skynet.render.WordRenderer#renderAttribute(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    @Override
-   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
       String value = "";
+      WordMLProducer wordMl = (WordMLProducer) producer;
+      String format = attributeElement.getFormat();
+      boolean allAttrs = map.getBoolean("allAttrs");
 
       if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
-         String data = (String) artifact.getSoleAttribute(attributeTypeName).getValue();
+         Attribute<?> wordTempConAttr = artifact.getSoleAttribute(attributeTypeName);
+         String data = (String) wordTempConAttr.getValue();
+
+         if (attributeElement.getLabel().length() > 0) {
+            wordMl.addParagraph(attributeElement.getLabel());
+         }
 
          if (data != null) {
             value = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
             //Change the BinData Id so images do not get overridden by the other images
             value = WordUtil.reassignBinDataID(value);
          }
-      } else {
-         value = super.renderAttribute(attributeTypeName, artifact, presentationType);
-      }
 
+         if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+            WordTemplateProcessor.writeXMLMetaDataWrapper(wordMl,
+                  WordTemplateProcessor.elementNameFor(attributeTypeName), "ns0:guid=\"" + artifact.getGuid() + "\"",
+                  "ns0:attrId=\"" + wordTempConAttr.getAttributeType().getAttrTypeId() + "\"", value);
+         } else {
+            wordMl.addWordMl(value);
+         }
+         wordMl.resetListValue();
+
+      } else {
+         wordMl.startParagraph();
+         // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
+         if (allAttrs) {
+            wordMl.addWordMl("<w:r><w:t> " + attributeTypeName + ": </w:t></w:r>");
+         } else {
+            wordMl.addWordMl(attributeElement.getLabel());
+         }
+
+         String valueList =
+               super.renderAttribute(attributeTypeName, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, map,
+                     attributeElement);
+
+         if (attributeElement.getFormat().contains(">x<")) {
+            wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
+         } else {
+            wordMl.addTextInsideParagraph(valueList);
+         }
+         wordMl.endParagraph();
+      }
       return value;
    }
 

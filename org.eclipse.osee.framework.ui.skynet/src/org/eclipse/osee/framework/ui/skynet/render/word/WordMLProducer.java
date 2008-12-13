@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 /**
  * @author Ryan D. Brooks
  */
-public class WordMLProducer {
+public class WordMLProducer extends Producer {
    public static final String RGB_RED = "FF0000";
    public static final String RGB_GREEN = "00FF00";
    public static final String RGB_BLUE = "0000FF";

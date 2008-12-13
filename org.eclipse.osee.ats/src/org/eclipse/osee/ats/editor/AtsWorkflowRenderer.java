@@ -18,8 +18,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
+import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 
 /**
  * @author Ryan D. Brooks
@@ -86,7 +89,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
       return artifact != null ? Collections.toString(", ", artifact.getAttributes(attributeTypeName)) : null;
    }
 }
