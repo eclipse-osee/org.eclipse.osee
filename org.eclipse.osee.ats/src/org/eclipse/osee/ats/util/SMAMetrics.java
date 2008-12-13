@@ -41,12 +41,9 @@ public class SMAMetrics {
    double hrsRemain = 0;
    double hrsSpent = 0;
    double manDaysNeeded = 0;
-   double cummulativeTeamPercentComplete = 0;
-   double percentCompleteByTeamPercents = 0;
-   double percentCompleteByTeamWorkflow = 0;
-   double cummulativeTaskPercentComplete = 0;
-   double percentCompleteByTaskPercents = 0;
-   double percentCompleteByTaskWorkflow = 0;
+   double cummulativeWorkflowPercentComplete = 0;
+   double percentCompleteByWorkflowPercents = 0;
+   double percentCompleteByNumWorkflow = 0;
 
    Date estRelDate;
    long daysTillRel = 0;
@@ -73,60 +70,20 @@ public class SMAMetrics {
       return userToCompletedSmas;
    }
 
+   public <A extends StateMachineArtifact> Collection<A> getUserToCompletedSmas(User user) {
+      return getUserToCompletedSmas(user, null);
+   }
+
    @SuppressWarnings("unchecked")
    public <A extends StateMachineArtifact> Collection<A> getUserToCompletedSmas(User user, Class<A> clazz) {
       if (!userToCompletedSmas.containsKey(user)) return Collections.emptyList();
       List<A> smas = new ArrayList<A>();
       for (Artifact art : userToCompletedSmas.getValues(user)) {
-         if (art.getClass().equals(clazz)) {
+         if (clazz == null || art.getClass().isInstance(clazz)) {
             smas.add((A) art);
          }
       }
       return smas;
-   }
-
-   /**
-    * @return the manDayHrs
-    */
-   public static double getManDayHrs() {
-      return MAN_DAY_HOURS;
-   }
-
-   /**
-    * @return the teamArts
-    */
-   public Set<TeamWorkFlowArtifact> getTeamArts() {
-      return teamArts;
-   }
-
-   /**
-    * @return the actionArts
-    */
-   public Set<ActionArtifact> getActionArts() {
-      return actionArts;
-   }
-
-   /**
-    * @return the taskArts
-    */
-   public Set<TaskArtifact> getTaskArts() {
-      return taskArts;
-   }
-
-   /**
-    * @return the reviewArts
-    */
-   public Set<ReviewSMArtifact> getReviewArts() {
-      return reviewArts;
-   }
-
-   /**
-    * Return all SMAs including Review and Tasks
-    * 
-    * @return the userToSmas
-    */
-   public HashCollection<User, Artifact> getUserToAssignedSmas() {
-      return userToAssignedSmas;
    }
 
    @SuppressWarnings("unchecked")
@@ -134,11 +91,153 @@ public class SMAMetrics {
       if (!userToAssignedSmas.containsKey(user)) return Collections.emptyList();
       List<A> smas = new ArrayList<A>();
       for (Artifact art : userToAssignedSmas.getValues(user)) {
-         if (art.getClass().equals(clazz)) {
+         if (clazz == null || art.getClass().equals(clazz)) {
             smas.add((A) art);
          }
       }
       return smas;
+   }
+
+   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() throws OseeCoreException {
+      Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
+      for (TeamWorkFlowArtifact team : getTeamArts()) {
+         if (team.getSmaMgr().isCancelledOrCompleted()) {
+            teams.add(team);
+         }
+      }
+      return teams;
+   }
+
+   public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
+      if (getTeamArts().size() == 0) return 0;
+      double completed = getCompletedTeamWorkflows().size();
+      if (completed == 0) return 0;
+      return completed / getTeamArts().size() * 100;
+   }
+
+   public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
+      Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+      for (TaskArtifact team : getTaskArts()) {
+         if (team.getSmaMgr().isCancelledOrCompleted()) {
+            tasks.add(team);
+         }
+      }
+      return tasks;
+   }
+
+   public double getPercentCompleteByTaskWorkflow() throws OseeCoreException {
+      if (getTaskArts().size() == 0) return 0;
+      double completed = getCompletedTaskWorkflows().size();
+      if (completed == 0) return 0;
+      return completed / getTaskArts().size() * 100;
+   }
+
+   /**
+    * @return the str
+    */
+   @Override
+   public String toString() {
+      return str;
+   }
+
+   public static String getEstRemainMetrics(Collection<? extends Artifact> smas) throws OseeCoreException {
+      return new SMAMetrics(smas).str;
+   }
+
+   public SMAMetrics(Collection<? extends Artifact> smas) throws OseeCoreException {
+      this(smas, null);
+   }
+
+   public SMAMetrics(Collection<? extends Artifact> artifacts, VersionArtifact versionArtifact) throws OseeCoreException {
+      System.err.println("get man hrs / day from team definition if applicable");
+      this.versionArtifact = versionArtifact;
+      if (artifacts.size() == 0) return;
+      for (Artifact art : artifacts) {
+         if (art instanceof ActionArtifact) {
+            actionArts.add((ActionArtifact) art);
+         }
+      }
+      for (Artifact art : artifacts) {
+         if (art instanceof TeamWorkFlowArtifact) {
+            teamArts.add((TeamWorkFlowArtifact) art);
+         } else if (art instanceof TaskArtifact) {
+            taskArts.add((TaskArtifact) art);
+         } else if (art instanceof ReviewSMArtifact) {
+            reviewArts.add((ReviewSMArtifact) art);
+         }
+         if (art instanceof StateMachineArtifact) {
+            smas.add((StateMachineArtifact) art);
+            Collection<User> users = ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getAssignees();
+            assignees.addAll(users);
+            assigneesAssignedOrCompleted.addAll(users);
+            for (User user : users) {
+               userToAssignedSmas.put(user, art);
+            }
+            if (((StateMachineArtifact) art).getSmaMgr().isCompleted()) {
+               Collection<User> implementers = ((StateMachineArtifact) art).getImplementers();
+               assigneesAssignedOrCompleted.addAll(implementers);
+               for (User user : implementers) {
+                  userToCompletedSmas.put(user, art);
+               }
+            }
+         }
+      }
+      estHours = 0;
+      hrsRemain = 0;
+      hrsSpent = 0;
+      manDaysNeeded = 0;
+      cummulativeWorkflowPercentComplete = 0;
+      manDaysNeeded = 0;
+      for (StateMachineArtifact team : smas) {
+         hrsRemain += team.getWorldViewRemainHours();
+         estHours += team.getWorldViewEstimatedHours();
+         hrsSpent += team.getWorldViewHoursSpentTotal();
+         manDaysNeeded += team.getWorldViewManDaysNeeded();
+         cummulativeWorkflowPercentComplete += team.getWorldViewPercentCompleteTotal();
+      }
+      if (hrsRemain != 0) manDaysNeeded = hrsRemain / MAN_DAY_HOURS;
+      percentCompleteByWorkflowPercents = 0;
+      if (getNumSMAs() > 0 && cummulativeWorkflowPercentComplete > 0) {
+         percentCompleteByWorkflowPercents = cummulativeWorkflowPercentComplete / getNumSMAs();
+      }
+
+      estRelDate = null;
+      Date today = new Date();
+      daysTillRel = 0;
+      if (versionArtifact != null) {
+         estRelDate = versionArtifact.getEstimatedReleaseDate();
+         if (estRelDate != null && estRelDate.after(today)) {
+            daysTillRel = (estRelDate.getTime() - today.getTime()) / MILLISECS_PER_DAY;
+         }
+      }
+      str =
+            String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
+                  getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByWorkflowPercents, hrsRemain,
+                  hrsSpent, (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
+                  (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
+                        versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(
+                              estRelDate, XDate.MMDDYY)), daysTillRel) : ""));
+   }
+
+   /**
+    * @return the assigneesAssignedOrCompleted
+    */
+   public Set<User> getAssigneesAssignedOrCompleted() {
+      return assigneesAssignedOrCompleted;
+   }
+
+   public String toStringObjectBreakout() {
+      return String.format("Breakout: Actions: %s  - Team Workflows: %s - Tasks: %s - Reviews: %s ", getNumActions(),
+            getNumTeamWfs(), getNumTasks(), getNumReviews());
+   }
+
+   public String toStringLong() {
+      return String.format(
+            "%s\nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
+            toStringObjectBreakout(), estHours, percentCompleteByWorkflowPercents, hrsRemain, manDaysNeeded, hrsSpent,
+            (versionArtifact != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ",
+                  versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(estRelDate,
+                        XDate.MMDDYY)), daysTillRel) : ""));
    }
 
    /**
@@ -204,6 +303,10 @@ public class SMAMetrics {
       return taskArts.size();
    }
 
+   public int getNumSMAs() {
+      return smas.size();
+   }
+
    /**
     * @return the numTasks
     */
@@ -261,20 +364,6 @@ public class SMAMetrics {
    }
 
    /**
-    * @return the cummulativeTaskPercentComplete
-    */
-   public double getCummulativeTaskPercentComplete() {
-      return cummulativeTaskPercentComplete;
-   }
-
-   /**
-    * @return the percentCompleteByTaskPercents
-    */
-   public double getPercentCompleteByTaskPercents() {
-      return percentCompleteByTaskPercents;
-   }
-
-   /**
     * @return the manDaysNeeded
     */
    public double getManDaysNeeded() {
@@ -292,184 +381,69 @@ public class SMAMetrics {
     * @return the cummulativePercentComplete
     */
    public double getCummulativeTeamPercentComplete() {
-      return cummulativeTeamPercentComplete;
+      return cummulativeWorkflowPercentComplete;
    }
 
    /**
     * @param cummulativePercentComplete the cummulativePercentComplete to set
     */
    public void setCummulativePercentComplete(double cummulativePercentComplete) {
-      this.cummulativeTeamPercentComplete = cummulativePercentComplete;
+      this.cummulativeWorkflowPercentComplete = cummulativePercentComplete;
    }
 
    /**
     * @return the percentComplete
     */
    public double getPercentCompleteByTeamPercents() {
-      return percentCompleteByTeamPercents;
-   }
-
-   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() throws OseeCoreException {
-      Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
-      for (TeamWorkFlowArtifact team : getTeamArts()) {
-         if (team.getSmaMgr().isCancelledOrCompleted()) {
-            teams.add(team);
-         }
-      }
-      return teams;
-   }
-
-   public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
-      if (getTeamArts().size() == 0) return 0;
-      double completed = getCompletedTeamWorkflows().size();
-      if (completed == 0) return 0;
-      return completed / getTeamArts().size() * 100;
-   }
-
-   public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
-      Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-      for (TaskArtifact team : getTaskArts()) {
-         if (team.getSmaMgr().isCancelledOrCompleted()) {
-            tasks.add(team);
-         }
-      }
-      return tasks;
-   }
-
-   public double getPercentCompleteByTaskWorkflow() throws OseeCoreException {
-      if (getTaskArts().size() == 0) return 0;
-      double completed = getCompletedTaskWorkflows().size();
-      if (completed == 0) return 0;
-      return completed / getTaskArts().size() * 100;
+      return percentCompleteByWorkflowPercents;
    }
 
    /**
-    * @return the str
+    * @return the manDayHrs
     */
-   @Override
-   public String toString() {
-      return str;
-   }
-
-   public static String getEstRemainMetrics(Collection<? extends Artifact> smas) throws OseeCoreException {
-      return new SMAMetrics(smas).str;
-   }
-
-   public SMAMetrics(Collection<? extends Artifact> smas) throws OseeCoreException {
-      this(smas, null);
-   }
-
-   public SMAMetrics(Collection<? extends Artifact> artifacts, VersionArtifact versionArtifact) throws OseeCoreException {
-      this.versionArtifact = versionArtifact;
-      if (artifacts.size() == 0) return;
-      getInheritedSmasRecursive(artifacts, smasInherited);
-      for (Artifact art : artifacts) {
-         if (art instanceof ActionArtifact) {
-            actionArts.add((ActionArtifact) art);
-         }
-      }
-      for (Artifact art : smasInherited) {
-         if (art instanceof TeamWorkFlowArtifact) {
-            teamArts.add((TeamWorkFlowArtifact) art);
-         } else if (art instanceof TaskArtifact) {
-            taskArts.add((TaskArtifact) art);
-         } else if (art instanceof ReviewSMArtifact) {
-            reviewArts.add((ReviewSMArtifact) art);
-         }
-         if (art instanceof StateMachineArtifact) {
-            smas.add((StateMachineArtifact) art);
-            Collection<User> users = ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getAssignees();
-            assignees.addAll(users);
-            assigneesAssignedOrCompleted.addAll(users);
-            for (User user : users) {
-               userToAssignedSmas.put(user, art);
-            }
-            if (((StateMachineArtifact) art).getSmaMgr().isCompleted()) {
-               Collection<User> implementers = ((StateMachineArtifact) art).getImplementers();
-               assigneesAssignedOrCompleted.addAll(implementers);
-               for (User user : implementers) {
-                  userToCompletedSmas.put(user, art);
-               }
-            }
-         }
-      }
-      estHours = 0;
-      hrsRemain = 0;
-      hrsSpent = 0;
-      manDaysNeeded = 0;
-      cummulativeTeamPercentComplete = 0;
-      manDaysNeeded = 0;
-      for (TeamWorkFlowArtifact team : teamArts) {
-         hrsRemain += team.getWorldViewRemainHours();
-         estHours += team.getWorldViewEstimatedHours();
-         hrsSpent += team.getWorldViewHoursSpentTotal();
-         manDaysNeeded += team.getWorldViewManDaysNeeded();
-         cummulativeTeamPercentComplete += team.getWorldViewPercentCompleteTotal();
-      }
-      if (hrsRemain != 0) manDaysNeeded = hrsRemain / MAN_DAY_HOURS;
-      percentCompleteByTeamPercents = 0;
-      if (getNumTeamWfs() > 0 && cummulativeTeamPercentComplete > 0) {
-         percentCompleteByTeamPercents = cummulativeTeamPercentComplete / getNumTeamWfs();
-      }
-      for (TaskArtifact task : taskArts) {
-         cummulativeTaskPercentComplete += task.getWorldViewPercentCompleteTotal();
-      }
-      percentCompleteByTaskPercents = 0;
-      if (getNumTasks() > 0 && cummulativeTaskPercentComplete > 0) {
-         percentCompleteByTaskPercents = cummulativeTaskPercentComplete / getNumTasks();
-      }
-
-      estRelDate = null;
-      Date today = new Date();
-      daysTillRel = 0;
-      if (versionArtifact != null) {
-         estRelDate = versionArtifact.getEstimatedReleaseDate();
-         if (estRelDate != null && estRelDate.after(today)) {
-            daysTillRel = (estRelDate.getTime() - today.getTime()) / MILLISECS_PER_DAY;
-         }
-      }
-      str =
-            String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
-                  getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByTeamPercents, hrsRemain, hrsSpent,
-                  (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
-                  (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
-                        versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(
-                              estRelDate, XDate.MMDDYY)), daysTillRel) : ""));
+   public static double getManDayHrs() {
+      return MAN_DAY_HOURS;
    }
 
    /**
-    * @return the assigneesAssignedOrCompleted
+    * @return the teamArts
     */
-   public Set<User> getAssigneesAssignedOrCompleted() {
-      return assigneesAssignedOrCompleted;
+   public Set<TeamWorkFlowArtifact> getTeamArts() {
+      return teamArts;
    }
 
-   public void getInheritedSmasRecursive(Collection<? extends Artifact> artifacts, Set<StateMachineArtifact> smas) throws OseeCoreException {
-      for (Artifact art : artifacts) {
-         if (art instanceof StateMachineArtifact) {
-            StateMachineArtifact sma = (StateMachineArtifact) art;
-            smas.add(sma);
-            smas.addAll(sma.getSmaMgr().getReviewManager().getReviews());
-            getInheritedSmasRecursive(sma.getSmaMgr().getReviewManager().getReviews(), smas);
-            smas.addAll(sma.getSmaMgr().getTaskMgr().getTaskArtifacts());
-         } else if (art instanceof ActionArtifact) {
-            smas.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
-            getInheritedSmasRecursive(((ActionArtifact) art).getTeamWorkFlowArtifacts(), smas);
-         }
-      }
+   /**
+    * @return the actionArts
+    */
+   public Set<ActionArtifact> getActionArts() {
+      return actionArts;
    }
 
-   public String toStringObjectBreakout() {
-      return String.format("Breakout: Actions: %s  - Team Workflows: %s - Tasks: %s - Reviews: %s ", getNumActions(),
-            getNumTeamWfs(), getNumTasks(), getNumReviews());
+   /**
+    * @return the taskArts
+    */
+   public Set<TaskArtifact> getTaskArts() {
+      return taskArts;
    }
 
-   public String toStringLong() {
-      return String.format(
-            "%s\nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
-            toStringObjectBreakout(), estHours, percentCompleteByTeamPercents, hrsRemain, manDaysNeeded, hrsSpent,
-            (versionArtifact != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ",
-                  versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(estRelDate,
-                        XDate.MMDDYY)), daysTillRel) : ""));
+   /**
+    * @return the reviewArts
+    */
+   public Set<ReviewSMArtifact> getReviewArts() {
+      return reviewArts;
    }
+
+   /**
+    * Return all SMAs including Review and Tasks
+    * 
+    * @return the userToSmas
+    */
+   public HashCollection<User, Artifact> getUserToAssignedSmas() {
+      return userToAssignedSmas;
+   }
+
+   public <A extends StateMachineArtifact> Collection<A> getUserToAssignedSmas(User user) {
+      return getUserToAssignedSmas(user, null);
+   }
+
 }

@@ -176,17 +176,11 @@ public class AtsMetricsComposite extends ScrolledComposite {
       lines.add(new XBarGraphLine(sMet.toStringObjectBreakout(), segments));
 
       lines.add(XBarGraphLine.getPercentLine(
-            "By Team Workflow Percents (" + sMet.getCummulativeTeamPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
+            "By Workflow Percents (" + sMet.getCummulativeTeamPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
             (int) sMet.getPercentCompleteByTeamPercents()));
       lines.add(XBarGraphLine.getPercentLine(
-            "By Number of Team Workflows (" + sMet.getCompletedTeamWorkflows().size() + "/" + sMet.getNumTeamWfs() + ")",
+            "By Number of Workflows (" + sMet.getCompletedTeamWorkflows().size() + "/" + sMet.getNumTeamWfs() + ")",
             (int) sMet.getPercentCompleteByTeamWorkflow()));
-      lines.add(XBarGraphLine.getPercentLine(
-            "By Task Percents (" + sMet.getCummulativeTaskPercentComplete() + "/" + sMet.getNumTasks() + ")",
-            (int) sMet.getPercentCompleteByTaskPercents()));
-      lines.add(XBarGraphLine.getPercentLine(
-            "By Number of Tasks (" + sMet.getCompletedTaskWorkflows().size() + "/" + sMet.getNumTasks() + ")",
-            (int) sMet.getPercentCompleteByTaskWorkflow()));
 
       lines.add(XBarGraphLine.getTextLine("Estimated Hours: ", String.format("%5.2f", sMet.getEstHours())));
       lines.add(XBarGraphLine.getTextLine("Remaining Hours: ", String.format(
@@ -238,15 +232,14 @@ public class AtsMetricsComposite extends ScrolledComposite {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
       for (User user : sMet.getAssigneesAssignedOrCompleted()) {
          try {
-            int numCompleted = sMet.getUserToCompletedSmas(user, TeamWorkFlowArtifact.class).size();
+            int numCompleted = sMet.getUserToCompletedSmas(user).size();
             double cummulativePercentComplete = numCompleted * 100;
-            int numInWork = sMet.getUserToAssignedSmas(user, TeamWorkFlowArtifact.class).size();
+            int numInWork = sMet.getUserToAssignedSmas(user).size();
             // Since table is loaded with arts and also shows children, don't want to count artifacts twice
             Set<Artifact> processedArts = new HashSet<Artifact>();
             if (sMet.getUserToAssignedSmas().getValues(user) != null) {
                for (Artifact sma : sMet.getUserToAssignedSmas().getValues(user)) {
-                  if ((sma instanceof TeamWorkFlowArtifact) && !processedArts.contains(sma) && !sMet.getUserToCompletedSmas().containsValue(
-                        sma)) {
+                  if (!processedArts.contains(sma) && !sMet.getUserToCompletedSmas().containsValue(sma)) {
                      cummulativePercentComplete += ((StateMachineArtifact) sma).getWorldViewPercentCompleteTotal();
                      processedArts.add(sma);
                   }
@@ -278,7 +271,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
          }
       }
       XBarGraphTable table =
-            new XBarGraphTable("Completed by Assignee per Assigned Workflow", "User", "Percent Complete", lines);
+            new XBarGraphTable("Completed by Assignee per Assigned Workflow (Team, Task and Review)", "User",
+                  "Percent Complete", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
