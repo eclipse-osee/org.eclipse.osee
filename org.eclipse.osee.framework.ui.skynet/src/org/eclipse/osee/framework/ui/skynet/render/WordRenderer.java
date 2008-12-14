@@ -8,6 +8,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -63,5 +64,13 @@ public abstract class WordRenderer extends FileRenderer {
    public String generateHtml(Artifact artifact) throws OseeCoreException {
       InputStream xml = getRenderInputStream(artifact, PresentationType.PREVIEW);
       return WordConverter.toHtml(xml);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
+    */
+   @Override
+   public Image getImage() {
+      return null;
    }
 }

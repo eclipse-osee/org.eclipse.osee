@@ -43,7 +43,7 @@ import org.osgi.framework.BundleContext;
  * @author Ryan D. Brooks
  */
 public abstract class OseeUiActivator extends AbstractUIPlugin {
-   private static final String imagePath = "images/";
+   protected static final String imagePath = "images/";
    private ImageRegistry imageRegistry;
    private OseeUiActivator parentPlugin;
    private ActivatorHelper helper;

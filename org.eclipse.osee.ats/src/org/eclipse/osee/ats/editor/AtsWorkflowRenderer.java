@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -19,11 +20,20 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Ryan D. Brooks
  */
 public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
+    */
+   @Override
+   public Image getImage() {
+      return AtsPlugin.getInstance().getImage("action.gif");
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
     */

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
@@ -223,6 +224,6 @@ public class DefaultArtifactRenderer implements IRenderer {
     */
    @Override
    public Image getImage() {
-      return null;
+      return SkynetGuiPlugin.getInstance().getImage("laser_16_16.gif");
    }
 }
