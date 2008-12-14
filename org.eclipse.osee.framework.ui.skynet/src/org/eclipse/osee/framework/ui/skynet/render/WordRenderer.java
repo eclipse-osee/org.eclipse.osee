@@ -6,12 +6,8 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.InputStream;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
-import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -67,10 +63,5 @@ public abstract class WordRenderer extends FileRenderer {
    public String generateHtml(Artifact artifact) throws OseeCoreException {
       InputStream xml = getRenderInputStream(artifact, PresentationType.PREVIEW);
       return WordConverter.toHtml(xml);
-   }
-
-   @Override
-   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
-      return artifact != null ? Collections.toString(", ", artifact.getAttributes(attributeTypeName)) : null;
    }
 }
