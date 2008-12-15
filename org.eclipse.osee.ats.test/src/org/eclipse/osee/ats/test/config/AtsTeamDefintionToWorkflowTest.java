@@ -19,11 +19,12 @@ public class AtsTeamDefintionToWorkflowTest extends TestCase {
    /* (non-Javadoc)
     * @see junit.framework.TestCase#setUp()
     */
+   @Override
    protected void setUp() throws Exception {
       super.setUp();
    }
 
-   public void testTeamDefintionToWorkflow() throws Exception {
+   public void testTeamDefinitionToWorkflow() throws Exception {
       boolean error = false;
       for (Artifact artifact : ArtifactQuery.getArtifactsFromType(TeamDefinitionArtifact.ARTIFACT_NAME,
             AtsPlugin.getAtsBranch())) {
