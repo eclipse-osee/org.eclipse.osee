@@ -113,8 +113,8 @@ public class RendererManager {
    }
 
    public static void renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, VariableMap options, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
-      getBestRenderer(presentationType, artifact, options).renderAttribute(attrType, artifact,
-            PresentationType.PREVIEW, producer, options, attributeElement);
+      getBestRenderer(PresentationType.SPECIALIZED_EDIT, artifact, options).renderAttribute(attrType, artifact,
+            presentationType, producer, options, attributeElement);
    }
 
    public static List<IRenderer> getApplicableRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {

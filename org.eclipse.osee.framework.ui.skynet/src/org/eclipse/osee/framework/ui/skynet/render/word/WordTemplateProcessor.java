@@ -515,8 +515,7 @@ public class WordTemplateProcessor {
          VariableMap map = new VariableMap();
          map.setValue("allAttrs", allAttrs);
 
-         RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact, map, wordMl,
-               attributeElement);
+         RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, map, wordMl, attributeElement);
       }
    }
 
