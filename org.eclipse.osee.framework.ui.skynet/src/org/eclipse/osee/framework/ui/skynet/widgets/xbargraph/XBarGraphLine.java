@@ -54,11 +54,18 @@ public class XBarGraphLine {
       segments.add(new XBarGraphLineSegment(remainingValueStr, remainingForeground, remainingBackground, 100 - value));
    }
 
+   /**
+    * Shows as white until completed, then green
+    * 
+    * @param name
+    * @param value
+    * @return XBarGraphLine
+    */
    public static XBarGraphLine getPercentLine(String name, int value) {
       if (value == 100.0) {
          return new XBarGraphLine(name, DEFAULT_GREEN_FOREGROUND, DEFAULT_GREEN_BACKGROUND, value, value + "%");
       } else {
-         return new XBarGraphLine(name, DEFAULT_RED_FOREGROUND, DEFAULT_RED_BACKGROUND, value, value + "%");
+         return new XBarGraphLine(name, SWT.COLOR_WHITE, SWT.COLOR_WHITE, value, value + "%");
       }
    }
 

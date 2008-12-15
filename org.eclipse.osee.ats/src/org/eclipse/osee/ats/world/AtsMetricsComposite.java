@@ -158,16 +158,16 @@ public class AtsMetricsComposite extends ScrolledComposite {
       lines.add(XBarGraphLine.getTextLine("Loaded", sMet.toStringObjectBreakout()));
 
       lines.add(XBarGraphLine.getPercentLine(
-            "By Workflow Percents (" + sMet.getCummulativeTeamPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
-            (int) sMet.getPercentCompleteByTeamPercents()));
+            "By Workflow Percents (" + sMet.getCummulativeWorkflowPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
+            (int) sMet.getPercentCompleteByWorkflowPercents()));
       lines.add(XBarGraphLine.getPercentLine(
-            "By Number of Workflows (" + sMet.getCompletedTeamWorkflows().size() + "/" + sMet.getNumTeamWfs() + ")",
-            (int) sMet.getPercentCompleteByTeamWorkflow()));
+            "By Number of Workflows (" + sMet.getCompletedWorkflows().size() + "/" + sMet.getNumSMAs() + ")",
+            (int) sMet.getPercentCompleteByWorkflow()));
 
       lines.add(XBarGraphLine.getTextLine("Estimated Hours: ", String.format("%5.2f Hours", sMet.getEstHours())));
       lines.add(XBarGraphLine.getTextLine("Remaining Hours: ", String.format(
             "%5.2f Hours = (Estimated hours %5.2f - (Estimated hours %5.2f x Percent Complete %5.2f))",
-            sMet.getHrsRemain(), sMet.getEstHours(), sMet.getEstHours(), sMet.getPercentCompleteByTeamPercents())));
+            sMet.getHrsRemain(), sMet.getEstHours(), sMet.getEstHours(), sMet.getPercentCompleteByWorkflowPercents())));
       lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f Hours", sMet.getHrsSpent())));
       lines.add(XBarGraphLine.getTextLine("Hours Per Man Day Preference: ", String.format("%5.2f Hours per Day",
             sMet.getHoursPerManDay())));
@@ -193,7 +193,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
          }
          if (sMet.getEstRelDate() == null) {
             lines.add(new XBarGraphLine("Release Effort Remaining", 0, "Estimated Release Date Not Set"));
-         } else if (percent == 0 || hoursRemaining > hoursTillRelease) {
+         } else if (hoursRemaining > hoursTillRelease) {
             lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
                   XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
                         "%5.2f hours exceeds remaining release hours %5.2f", hoursRemaining, hoursTillRelease)));

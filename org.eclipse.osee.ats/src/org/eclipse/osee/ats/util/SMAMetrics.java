@@ -179,11 +179,28 @@ public class SMAMetrics {
       return teams;
    }
 
+   public Collection<StateMachineArtifact> getCompletedWorkflows() throws OseeCoreException {
+      Set<StateMachineArtifact> completed = new HashSet<StateMachineArtifact>();
+      for (StateMachineArtifact sma : smas) {
+         if (sma.getSmaMgr().isCancelledOrCompleted()) {
+            completed.add(sma);
+         }
+      }
+      return completed;
+   }
+
    public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
       if (getTeamArts().size() == 0) return 0;
       double completed = getCompletedTeamWorkflows().size();
       if (completed == 0) return 0;
       return completed / getTeamArts().size() * 100;
+   }
+
+   public double getPercentCompleteByWorkflow() throws OseeCoreException {
+      if (smas.size() == 0) return 0;
+      double completed = getCompletedWorkflows().size();
+      if (completed == 0) return 0;
+      return completed / smas.size() * 100;
    }
 
    public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
@@ -376,7 +393,7 @@ public class SMAMetrics {
    /**
     * @return the cummulativePercentComplete
     */
-   public double getCummulativeTeamPercentComplete() {
+   public double getCummulativeWorkflowPercentComplete() {
       return cummulativeWorkflowPercentComplete;
    }
 
@@ -390,7 +407,7 @@ public class SMAMetrics {
    /**
     * @return the percentComplete
     */
-   public double getPercentCompleteByTeamPercents() {
+   public double getPercentCompleteByWorkflowPercents() {
       return percentCompleteByWorkflowPercents;
    }
 
