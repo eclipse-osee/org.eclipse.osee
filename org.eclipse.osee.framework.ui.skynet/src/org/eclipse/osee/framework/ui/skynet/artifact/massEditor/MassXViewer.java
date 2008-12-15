@@ -35,7 +35,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -208,7 +209,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
    public void handleDoubleClick() {
       if (getSelectedArtifacts().size() == 0) return;
       Artifact art = getSelectedArtifacts().iterator().next();
-      ArtifactEditor.editArtifact(art);
+      RendererManager.openInJob(art, PresentationType.GENERALIZED_EDIT);
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {

@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -223,7 +224,7 @@ public class AtsLib implements IAtsLib {
    public void openATSAction(final Artifact art, final AtsOpenOption option) {
       try {
          if (art instanceof ActionArtifact) {
-            ActionArtifact actionArt = (ActionArtifact) art;
+            final ActionArtifact actionArt = (ActionArtifact) art;
             Collection<TeamWorkFlowArtifact> teams = actionArt.getTeamWorkFlowArtifacts();
             if (option == AtsOpenOption.OpenAll)
                for (TeamWorkFlowArtifact team : teams)
@@ -235,11 +236,23 @@ public class AtsLib implements IAtsLib {
                if (teams.size() == 1)
                   SMAEditor.editArtifact(teams.iterator().next());
                else {
-                  TeamWorkFlowArtifact teamArt = promptSelectTeamWorkflow(actionArt);
-                  if (teamArt != null)
-                     SMAEditor.editArtifact((Artifact) teamArt);
-                  else
-                     return;
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     /* (non-Javadoc)
+                      * @see java.lang.Runnable#run()
+                      */
+                     @Override
+                     public void run() {
+                        try {
+                           TeamWorkFlowArtifact teamArt = promptSelectTeamWorkflow(actionArt);
+                           if (teamArt != null)
+                              SMAEditor.editArtifact((Artifact) teamArt);
+                           else
+                              return;
+                        } catch (OseeCoreException ex) {
+                           OSEELog.logException(AtsPlugin.class, ex, true);
+                        }
+                     }
+                  });
                }
             }
          } else
