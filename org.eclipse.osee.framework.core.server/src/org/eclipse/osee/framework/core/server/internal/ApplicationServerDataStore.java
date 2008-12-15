@@ -35,7 +35,22 @@ public class ApplicationServerDataStore {
    private static final String DELETE_FROM_LOOKUP_TABLE =
          "DELETE FROM osee_server_lookup WHERE server_address = ? AND port = ? AND version_id=?";
 
+   private static final String DELETE_FROM_LOOKUP_TABLE_BY_ID = "DELETE FROM osee_server_lookup WHERE server_id = ?";
+
+   private static final String GET_NUMBER_OF_SESSIONS =
+         "SELECT count(1) FROM osee_session WHERE managed_by_server_id = ?";
+
    private static final String SELECT_FROM_LOOKUP_TABLE = "SELECT * FROM osee_server_lookup where version_id%s";
+
+   static void removeByServerId(List<OseeServerInfo> infos) throws OseeDataStoreException {
+      if (!infos.isEmpty()) {
+         List<Object[]> data = new ArrayList<Object[]>();
+         for (OseeServerInfo info : infos) {
+            data.add(new Object[] {info.getServerId()});
+         }
+         ConnectionHandler.runBatchUpdate(DELETE_FROM_LOOKUP_TABLE_BY_ID, data);
+      }
+   }
 
    static boolean deregisterWithDb(OseeServerInfo applicationServerInfo) {
       boolean status = false;
@@ -84,5 +99,9 @@ public class ApplicationServerDataStore {
          chStmt.close();
       }
       return toReturn;
+   }
+
+   static int getNumberOfSessions(String serverId) throws OseeDataStoreException {
+      return ConnectionHandler.runPreparedQueryFetchInt(0, GET_NUMBER_OF_SESSIONS, serverId);
    }
 }
