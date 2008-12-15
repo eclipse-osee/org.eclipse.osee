@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -379,6 +380,15 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    public void handleRefreshAction() throws OseeCoreException {
       loadTable();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getManDaysPerHour()
+    */
+   @Override
+   public double getManHoursPerDayPreference() throws OseeCoreException {
+      if (tasks.size() == 0) return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
+      return tasks.iterator().next().getManHrsPerDayPreference();
    }
 
 }

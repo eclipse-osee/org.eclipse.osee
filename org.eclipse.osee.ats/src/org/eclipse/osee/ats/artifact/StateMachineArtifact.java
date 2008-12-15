@@ -70,7 +70,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> preSaveStateAssignees;
    private User preSaveOriginator;
-   public static double MAN_DAY_HOURS = 8;
+   public static double DEFAULT_MAN_HOURS_PER_DAY = 8;
    protected WorkFlowDefinition workFlowDefinition;
 
    /**
@@ -663,7 +663,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public Result isWorldViewManDaysNeededValid() throws OseeCoreException {
       Result result = isWorldViewRemainHoursValid();
       if (result.isFalse()) return result;
-      if (getManDayHrsPreference() == 0) return new Result("Man Day Hours Preference is not set.");
+      if (getManHrsPerDayPreference() == 0) return new Result("Man Day Hours Preference is not set.");
 
       return Result.TrueResult;
    }
@@ -676,12 +676,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public double getWorldViewManDaysNeeded() throws OseeCoreException {
       double hrsRemain = getWorldViewRemainHours();
       double manDaysNeeded = 0;
-      if (hrsRemain != 0) manDaysNeeded = hrsRemain / getManDayHrsPreference();
+      if (hrsRemain != 0) manDaysNeeded = hrsRemain / getManHrsPerDayPreference();
       return manDaysNeeded;
    }
 
-   public double getManDayHrsPreference() {
-      return MAN_DAY_HOURS;
+   public double getManHrsPerDayPreference() {
+      return DEFAULT_MAN_HOURS_PER_DAY;
    }
 
    public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {

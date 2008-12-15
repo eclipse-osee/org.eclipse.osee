@@ -18,4 +18,6 @@ public interface IAtsMetricsProvider {
    public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException;
 
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException;
+
+   public double getManHoursPerDayPreference() throws OseeCoreException;
 }

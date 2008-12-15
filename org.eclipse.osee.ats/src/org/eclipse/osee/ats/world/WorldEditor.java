@@ -213,4 +213,12 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    public String getActionDescription() {
       return null;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getManHoursPerDayPreference()
+    */
+   @Override
+   public double getManHoursPerDayPreference() throws OseeCoreException {
+      return actionPage.getWorldComposite().getManHoursPerDayPreference();
+   }
 }

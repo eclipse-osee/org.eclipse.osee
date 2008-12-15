@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class SMAMetrics {
 
-   public static double MAN_DAY_HOURS = 7.2;
    private static int MILLISECS_PER_DAY = (1000 * 60 * 60 * 24);
 
    double estHours = 0;
@@ -62,6 +61,78 @@ public class SMAMetrics {
          new HashCollection<User, Artifact>(true, HashSet.class, 100);
    private final HashCollection<User, Artifact> userToCompletedSmas =
          new HashCollection<User, Artifact>(true, HashSet.class, 100);
+   private final double manHoursPerDay;
+
+   public SMAMetrics(Collection<? extends Artifact> artifacts, VersionArtifact versionArtifact, double manHoursPerDay) throws OseeCoreException {
+      this.manHoursPerDay = manHoursPerDay;
+      this.versionArtifact = versionArtifact;
+      if (artifacts.size() == 0) return;
+      for (Artifact art : artifacts) {
+         if (art instanceof ActionArtifact) {
+            actionArts.add((ActionArtifact) art);
+         }
+      }
+      for (Artifact art : artifacts) {
+         if (art instanceof TeamWorkFlowArtifact) {
+            teamArts.add((TeamWorkFlowArtifact) art);
+         } else if (art instanceof TaskArtifact) {
+            taskArts.add((TaskArtifact) art);
+         } else if (art instanceof ReviewSMArtifact) {
+            reviewArts.add((ReviewSMArtifact) art);
+         }
+         if (art instanceof StateMachineArtifact) {
+            smas.add((StateMachineArtifact) art);
+            Collection<User> users = ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getAssignees();
+            assignees.addAll(users);
+            assigneesAssignedOrCompleted.addAll(users);
+            for (User user : users) {
+               userToAssignedSmas.put(user, art);
+            }
+            if (((StateMachineArtifact) art).getSmaMgr().isCompleted()) {
+               Collection<User> implementers = ((StateMachineArtifact) art).getImplementers();
+               assigneesAssignedOrCompleted.addAll(implementers);
+               for (User user : implementers) {
+                  userToCompletedSmas.put(user, art);
+               }
+            }
+         }
+      }
+      estHours = 0;
+      hrsRemain = 0;
+      hrsSpent = 0;
+      manDaysNeeded = 0;
+      cummulativeWorkflowPercentComplete = 0;
+      manDaysNeeded = 0;
+      for (StateMachineArtifact team : smas) {
+         hrsRemain += team.getWorldViewRemainHours();
+         estHours += team.getWorldViewEstimatedHours();
+         hrsSpent += team.getWorldViewHoursSpentTotal();
+         manDaysNeeded += team.getWorldViewManDaysNeeded();
+         cummulativeWorkflowPercentComplete += team.getWorldViewPercentCompleteTotal();
+      }
+      if (hrsRemain != 0) manDaysNeeded = hrsRemain / manHoursPerDay;
+      percentCompleteByWorkflowPercents = 0;
+      if (getNumSMAs() > 0 && cummulativeWorkflowPercentComplete > 0) {
+         percentCompleteByWorkflowPercents = cummulativeWorkflowPercentComplete / getNumSMAs();
+      }
+
+      estRelDate = null;
+      Date today = new Date();
+      daysTillRel = 0;
+      if (versionArtifact != null) {
+         estRelDate = versionArtifact.getEstimatedReleaseDate();
+         if (estRelDate != null && estRelDate.after(today)) {
+            daysTillRel = (estRelDate.getTime() - today.getTime()) / MILLISECS_PER_DAY;
+         }
+      }
+      str =
+            String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
+                  getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByWorkflowPercents, hrsRemain,
+                  hrsSpent, (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
+                  (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
+                        versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(
+                              estRelDate, XDate.MMDDYY)), daysTillRel) : ""));
+   }
 
    /**
     * @return the userToCompletedSmas
@@ -140,83 +211,8 @@ public class SMAMetrics {
       return str;
    }
 
-   public static String getEstRemainMetrics(Collection<? extends Artifact> smas) throws OseeCoreException {
-      return new SMAMetrics(smas).str;
-   }
-
-   public SMAMetrics(Collection<? extends Artifact> smas) throws OseeCoreException {
-      this(smas, null);
-   }
-
-   public SMAMetrics(Collection<? extends Artifact> artifacts, VersionArtifact versionArtifact) throws OseeCoreException {
-      System.err.println("get man hrs / day from team definition if applicable");
-      this.versionArtifact = versionArtifact;
-      if (artifacts.size() == 0) return;
-      for (Artifact art : artifacts) {
-         if (art instanceof ActionArtifact) {
-            actionArts.add((ActionArtifact) art);
-         }
-      }
-      for (Artifact art : artifacts) {
-         if (art instanceof TeamWorkFlowArtifact) {
-            teamArts.add((TeamWorkFlowArtifact) art);
-         } else if (art instanceof TaskArtifact) {
-            taskArts.add((TaskArtifact) art);
-         } else if (art instanceof ReviewSMArtifact) {
-            reviewArts.add((ReviewSMArtifact) art);
-         }
-         if (art instanceof StateMachineArtifact) {
-            smas.add((StateMachineArtifact) art);
-            Collection<User> users = ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getAssignees();
-            assignees.addAll(users);
-            assigneesAssignedOrCompleted.addAll(users);
-            for (User user : users) {
-               userToAssignedSmas.put(user, art);
-            }
-            if (((StateMachineArtifact) art).getSmaMgr().isCompleted()) {
-               Collection<User> implementers = ((StateMachineArtifact) art).getImplementers();
-               assigneesAssignedOrCompleted.addAll(implementers);
-               for (User user : implementers) {
-                  userToCompletedSmas.put(user, art);
-               }
-            }
-         }
-      }
-      estHours = 0;
-      hrsRemain = 0;
-      hrsSpent = 0;
-      manDaysNeeded = 0;
-      cummulativeWorkflowPercentComplete = 0;
-      manDaysNeeded = 0;
-      for (StateMachineArtifact team : smas) {
-         hrsRemain += team.getWorldViewRemainHours();
-         estHours += team.getWorldViewEstimatedHours();
-         hrsSpent += team.getWorldViewHoursSpentTotal();
-         manDaysNeeded += team.getWorldViewManDaysNeeded();
-         cummulativeWorkflowPercentComplete += team.getWorldViewPercentCompleteTotal();
-      }
-      if (hrsRemain != 0) manDaysNeeded = hrsRemain / MAN_DAY_HOURS;
-      percentCompleteByWorkflowPercents = 0;
-      if (getNumSMAs() > 0 && cummulativeWorkflowPercentComplete > 0) {
-         percentCompleteByWorkflowPercents = cummulativeWorkflowPercentComplete / getNumSMAs();
-      }
-
-      estRelDate = null;
-      Date today = new Date();
-      daysTillRel = 0;
-      if (versionArtifact != null) {
-         estRelDate = versionArtifact.getEstimatedReleaseDate();
-         if (estRelDate != null && estRelDate.after(today)) {
-            daysTillRel = (estRelDate.getTime() - today.getTime()) / MILLISECS_PER_DAY;
-         }
-      }
-      str =
-            String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
-                  getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByWorkflowPercents, hrsRemain,
-                  hrsSpent, (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
-                  (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
-                        versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(
-                              estRelDate, XDate.MMDDYY)), daysTillRel) : ""));
+   public static String getEstRemainMetrics(Collection<? extends Artifact> smas, VersionArtifact versionArtifact, double manHoursPerDay) throws OseeCoreException {
+      return new SMAMetrics(smas, versionArtifact, manHoursPerDay).str;
    }
 
    /**
@@ -265,7 +261,7 @@ public class SMAMetrics {
     * @return the hours till release
     */
    public double getHoursTillRel() {
-      return daysTillRel * MAN_DAY_HOURS;
+      return daysTillRel * manHoursPerDay;
    }
 
    /**
@@ -401,8 +397,8 @@ public class SMAMetrics {
    /**
     * @return the manDayHrs
     */
-   public static double getManDayHrs() {
-      return MAN_DAY_HOURS;
+   public double getHoursPerManDay() {
+      return manHoursPerDay;
    }
 
    /**

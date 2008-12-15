@@ -126,7 +126,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
 
       addSpace();
       SMAMetrics sMet =
-            new SMAMetrics(iAtsMetricsProvider.getMetricsArtifacts(), iAtsMetricsProvider.getMetricsVersionArtifact());
+            new SMAMetrics(iAtsMetricsProvider.getMetricsArtifacts(), iAtsMetricsProvider.getMetricsVersionArtifact(),
+                  iAtsMetricsProvider.getManHoursPerDayPreference());
       createOverviewChart(sMet, metricsComposite);
       addSpace();
       createCompletedByAssigneesChart(sMet, metricsComposite);
@@ -163,12 +164,16 @@ public class AtsMetricsComposite extends ScrolledComposite {
             "By Number of Workflows (" + sMet.getCompletedTeamWorkflows().size() + "/" + sMet.getNumTeamWfs() + ")",
             (int) sMet.getPercentCompleteByTeamWorkflow()));
 
-      lines.add(XBarGraphLine.getTextLine("Estimated Hours: ", String.format("%5.2f", sMet.getEstHours())));
+      lines.add(XBarGraphLine.getTextLine("Estimated Hours: ", String.format("%5.2f Hours", sMet.getEstHours())));
       lines.add(XBarGraphLine.getTextLine("Remaining Hours: ", String.format(
-            "%5.2f = (Estimated hours - (Estimated hours * Percent Complete))", sMet.getHrsRemain())));
-      lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f", sMet.getHrsSpent())));
+            "%5.2f Hours = (Estimated hours %5.2f - (Estimated hours %5.2f x Percent Complete %5.2f))",
+            sMet.getHrsRemain(), sMet.getEstHours(), sMet.getEstHours(), sMet.getPercentCompleteByTeamPercents())));
+      lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f Hours", sMet.getHrsSpent())));
+      lines.add(XBarGraphLine.getTextLine("Hours Per Man Day Preference: ", String.format("%5.2f Hours per Day",
+            sMet.getHoursPerManDay())));
       lines.add(XBarGraphLine.getTextLine("Man Days Needed: ", String.format(
-            "%5.2f = Remaining Hours / Hours Per Day of " + SMAMetrics.MAN_DAY_HOURS, sMet.getManDaysNeeded())));
+            "%5.2f Days = Remaining Hours %5.2f / Hours Per Day of %5.2f", sMet.getManDaysNeeded(),
+            sMet.getHrsRemain(), sMet.getHoursPerManDay())));
 
       try {
          lines.add(new XBarGraphLine(

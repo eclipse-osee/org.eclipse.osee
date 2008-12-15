@@ -816,4 +816,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    public boolean isRefreshActionHandled() throws OseeCoreException {
       return false;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getManDaysPerHour()
+    */
+   @Override
+   public double getManHoursPerDayPreference() throws OseeCoreException {
+      return smaMgr.getSma().getManHrsPerDayPreference();
+   }
 }

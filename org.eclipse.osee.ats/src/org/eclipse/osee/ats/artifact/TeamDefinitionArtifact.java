@@ -279,7 +279,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          Double manDaysHrs = teamDef.getSoleAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName(), 0.0);
          if (manDaysHrs != null && manDaysHrs != 0) return manDaysHrs;
          if (teamDef.getParent() != null && (teamDef.getParent() instanceof TeamDefinitionArtifact)) return teamDef.getManDayHrsFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
-         return StateMachineArtifact.MAN_DAY_HOURS;
+         return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

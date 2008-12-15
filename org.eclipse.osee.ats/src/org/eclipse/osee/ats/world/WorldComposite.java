@@ -170,6 +170,17 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       OseeEventManager.addListener(this);
    }
 
+   public double getManHoursPerDayPreference() throws OseeCoreException {
+      if (worldArts.size() > 0) {
+         Artifact artifact = worldArts.iterator().next();
+         if (artifact instanceof ActionArtifact) {
+            artifact = ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().iterator().next();
+         }
+         return ((StateMachineArtifact) artifact).getManHrsPerDayPreference();
+      }
+      return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
+   }
+
    public void setCustomizeData(CustomizeData customizeData) {
       worldXViewer.getCustomizeMgr().loadCustomization(customizeData);
    }
@@ -282,11 +293,13 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          Set<StateMachineArtifact> smaArts = getXViewer().getSelectedSMAArtifacts();
          if (smaArts.size() != 0) {
             verArt = smaArts.iterator().next().getWorldViewTargetedVersion();
-            SMAMetrics sMet = new SMAMetrics(smaArts, verArt);
+            SMAMetrics sMet = new SMAMetrics(smaArts, verArt, smaArts.iterator().next().getManHrsPerDayPreference());
             str = sMet.toString();
          }
-      } else if (selectionMetricsAction.isChecked()) {
-         SMAMetrics sMet = new SMAMetrics(getXViewer().getSelectedSMAArtifacts(), null);
+      } else if (selectionMetricsAction.isChecked() && getXViewer().getSelectedSMAArtifacts().size() > 0) {
+         SMAMetrics sMet =
+               new SMAMetrics(getXViewer().getSelectedSMAArtifacts(), null,
+                     getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference());
          str = sMet.toString();
       }
 
