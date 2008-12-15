@@ -308,7 +308,7 @@ public class TaskComposite extends Composite implements IActionable {
 
    public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection())
-s         extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts(), null,
+         extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts(), null,
                getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference()));
       else
          extraInfoLabel.setText("");
