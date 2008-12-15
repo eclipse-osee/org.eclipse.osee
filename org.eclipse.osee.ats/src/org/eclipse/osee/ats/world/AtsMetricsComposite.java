@@ -289,7 +289,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
                lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format("%5.2f",
                      userHoursRemain)));
             } else {
-               if (userHoursRemain > versionHoursRemain) {
+               if (userHoursRemain == 0.0) {
+                  lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
+                        XBarGraphLine.DEFAULT_GREEN_BACKGROUND, 100, "No Estimated Hours Remain"));
+               } else if (userHoursRemain > versionHoursRemain) {
                   lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_RED_FOREGROUND,
                         XBarGraphLine.DEFAULT_RED_BACKGROUND, (int) userHoursRemain, String.format(
                               "%5.2f - Exceeds release remaining hours %5.2f.", userHoursRemain, versionHoursRemain)));
