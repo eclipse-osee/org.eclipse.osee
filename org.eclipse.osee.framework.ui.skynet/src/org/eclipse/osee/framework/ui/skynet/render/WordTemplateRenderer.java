@@ -60,6 +60,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  * @author Jeff C. Phillips
  */
 public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
+
    private static final Pattern pattern =
          Pattern.compile("<v:imagedata[^>]*src=\"wordml://(\\d+\\.\\w+)\"[^>]*>",
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
@@ -330,7 +331,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       int rating = NO_MATCH;
 
-      if (!(artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) && presentationType == PresentationType.PREVIEW) {
+      if (!(artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) && (presentationType == PresentationType.PREVIEW || presentationType == PresentationType.DIFF)) {
          rating = WORD_PUBLICATION;
       }
 

@@ -12,10 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.menu;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
@@ -100,15 +101,19 @@ public class ArtifactDiffMenu {
 
       if (selections[1] instanceof TransactionData && selections[0] instanceof TransactionData) {
          Artifact selectedArtifact = (Artifact) viewer.getInput();
-         valid = (selectedArtifact instanceof WordArtifact);
+         try {
+            valid = (RendererManager.getBestFileRenderer(PresentationType.DIFF, selectedArtifact).supportsCompare());
+         } catch (OseeCoreException ex) {
+
+         }
       }
       return valid;
    }
 
    private static void processSelectedArtifacts(String option, Viewer viewer, DiffTypes type) throws Exception {
       IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-      WordArtifact newerArtifact = null;
-      WordArtifact baselineArtifact = null;
+      Artifact newerArtifact = null;
+      Artifact baselineArtifact = null;
 
       if (selection.size() == 2) {
          Object[] selections = selection.toArray();
@@ -124,10 +129,10 @@ public class ArtifactDiffMenu {
                secondTransactionData = (TransactionData) firstSelection;
             }
             newerArtifact =
-                  (WordArtifact) ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                        firstTransactionData.getAssociatedArtId(), firstTransactionData.getTransactionId());
+                  ArtifactPersistenceManager.getInstance().getArtifactFromId(firstTransactionData.getAssociatedArtId(),
+                        firstTransactionData.getTransactionId());
             baselineArtifact =
-                  (WordArtifact) ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                  ArtifactPersistenceManager.getInstance().getArtifactFromId(
                         secondTransactionData.getAssociatedArtId(), secondTransactionData.getTransactionId());
          }
       }

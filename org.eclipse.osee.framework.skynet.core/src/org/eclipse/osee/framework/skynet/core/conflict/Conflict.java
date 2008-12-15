@@ -296,6 +296,9 @@ public abstract class Conflict implements IAdaptable {
       return status;
    }
 
+   public void computeEqualsValues() throws OseeCoreException {
+   }
+
    public abstract Image getImage();
 
    public abstract String getSourceDisplayData() throws OseeCoreException;

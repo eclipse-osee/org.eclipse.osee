@@ -73,4 +73,12 @@ public abstract class WordRenderer extends FileRenderer {
    public Image getImage() {
       return null;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#supportsCompare()
+    */
+   @Override
+   public boolean supportsCompare() {
+      return true;
+   }
 }

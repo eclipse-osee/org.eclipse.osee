@@ -207,7 +207,7 @@ public abstract class Attribute<T> {
     * @return true if in datastore
     */
    public boolean isInDb() {
-      return getAttrId() > 0;
+      return getGammaId() > 0;
    }
 
    /**

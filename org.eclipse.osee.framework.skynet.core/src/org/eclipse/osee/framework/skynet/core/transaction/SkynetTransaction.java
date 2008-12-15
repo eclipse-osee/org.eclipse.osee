@@ -236,7 +236,7 @@ public final class SkynetTransaction extends DbTransaction {
          }
       }
 
-      if (!attribute.isInDb()) {
+      if (!(attribute.getAttrId() > 0)) {
          attribute.internalSetAttributeId(getNewAttributeId(artifact, attribute));
       }
 

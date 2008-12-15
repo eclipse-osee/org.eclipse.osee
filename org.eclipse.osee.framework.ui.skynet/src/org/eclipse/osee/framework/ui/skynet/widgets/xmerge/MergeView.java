@@ -409,7 +409,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
                   0).statusEditable()) return false;
             attributeConflict = ((AttributeConflict) conflicts.get(0));
-            return attributeConflict.isWordAttribute();
+            return true;
          }
       });
    }
@@ -902,6 +902,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                            }
                            return;
                         } else if (artifact.equals(conflict.getArtifact())) {
+                           conflict.computeEqualsValues();
                            xMergeViewer.refresh();
                         }
                      }

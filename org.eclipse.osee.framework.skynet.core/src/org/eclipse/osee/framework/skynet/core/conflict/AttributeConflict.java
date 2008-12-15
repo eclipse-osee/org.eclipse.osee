@@ -394,7 +394,7 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   private void computeEqualsValues() throws OseeCoreException {
+   public void computeEqualsValues() throws OseeCoreException {
       if (getMergeObject() == null || getSourceObject() == null) {
          mergeEqualsSource = false;
       } else {
