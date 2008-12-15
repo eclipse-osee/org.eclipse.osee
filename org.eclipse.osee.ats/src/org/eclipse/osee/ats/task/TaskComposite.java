@@ -308,7 +308,7 @@ public class TaskComposite extends Composite implements IActionable {
 
    public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection())
-         extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts(), null,
+s         extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts(), null,
                getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference()));
       else
          extraInfoLabel.setText("");
@@ -557,12 +557,17 @@ public class TaskComposite extends Composite implements IActionable {
    private void performDrop(DropTargetEvent e) {
       if (e.data instanceof ArtifactData) {
          try {
+            if (iXTaskViewer.getParentSmaMgr() == null) return;
             if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
             SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             for (Artifact art : artsToRelate) {
                if (art instanceof TaskArtifact) {
                   TaskArtifact taskArt = (TaskArtifact) art;
+                  // task dropped on same sma as current parent; do nothing
+                  if (taskArt.getParentSMA().equals(iXTaskViewer.getParentSmaMgr().getSma())) {
+                     return;
+                  }
                   if (taskArt.getParentSMA() != null) {
                      taskArt.deleteRelation(AtsRelation.SmaToTask_Sma, taskArt.getParentSMA());
                   }
