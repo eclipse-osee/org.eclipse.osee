@@ -473,8 +473,6 @@ public class WordTemplateProcessor {
    }
 
    private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
-      String format = attributeElement.getFormat();
-
       // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && (attributeTypeName.equals(Requirements.PARTITION) || attributeTypeName.equals("Safety Criticality"))) {
          if (artifact.isAttributeTypeValid(Requirements.PARTITION)) {
@@ -496,7 +494,7 @@ public class WordTemplateProcessor {
       attributeTypeName = AttributeTypeManager.getType(attributeTypeName).getName();
 
       //create wordTemplateContent for new guys
-      if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
+      if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT) && artifact instanceof WordArtifact) {
          Attribute<?> attribute = artifact.getSoleAttribute(attributeTypeName);
          if (attribute == null) {
             artifact.createAttribute(AttributeTypeManager.getType(attributeTypeName), true);
@@ -517,7 +515,8 @@ public class WordTemplateProcessor {
          VariableMap map = new VariableMap();
          map.setValue("allAttrs", allAttrs);
 
-         RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, map, wordMl, attributeElement);
+         RendererManager.renderAttribute(attributeTypeName, PresentationType.SPECIALIZED_EDIT, artifact, map, wordMl,
+               attributeElement);
       }
    }
 

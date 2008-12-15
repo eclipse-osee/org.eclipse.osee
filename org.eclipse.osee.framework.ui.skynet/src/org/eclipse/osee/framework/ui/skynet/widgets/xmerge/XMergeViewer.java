@@ -372,7 +372,11 @@ public class XMergeViewer extends XWidget implements IActionable {
    }
 
    public void loadTable() {
-      refresh();
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            refresh();
+         }
+      });
    }
 
    @SuppressWarnings("unchecked")

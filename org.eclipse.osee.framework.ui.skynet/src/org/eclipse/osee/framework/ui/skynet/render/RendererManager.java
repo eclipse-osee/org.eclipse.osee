@@ -108,13 +108,13 @@ public class RendererManager {
       return bestRendererPrototype;
    }
 
-   public static String renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
-      return renderAttribute(attrType, presentationType, artifact, null, producer, attributeElement);
+   public static void renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
+      renderAttribute(attrType, presentationType, artifact, null, producer, attributeElement);
    }
 
-   public static String renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, VariableMap options, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
-      return getBestRenderer(presentationType, artifact, options).renderAttribute(attrType, artifact, presentationType,
-            producer, options, attributeElement);
+   public static void renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, VariableMap options, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
+      getBestRenderer(presentationType, artifact, options).renderAttribute(attrType, artifact,
+            PresentationType.PREVIEW, producer, options, attributeElement);
    }
 
    public static List<IRenderer> getApplicableRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {

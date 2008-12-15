@@ -360,7 +360,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     * @see org.eclipse.osee.framework.ui.skynet.render.WordRenderer#renderAttribute(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    @Override
-   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
+   public void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
       String value = "";
       WordMLProducer wordMl = (WordMLProducer) producer;
       String format = attributeElement.getFormat();
@@ -390,26 +390,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          wordMl.resetListValue();
 
       } else {
-         wordMl.startParagraph();
-         // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
-         if (allAttrs) {
-            wordMl.addWordMl("<w:r><w:t> " + attributeTypeName + ": </w:t></w:r>");
-         } else {
-            wordMl.addWordMl(attributeElement.getLabel());
-         }
-
-         String valueList =
-               super.renderAttribute(attributeTypeName, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, map,
-                     attributeElement);
-
-         if (attributeElement.getFormat().contains(">x<")) {
-            wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
-         } else {
-            wordMl.addTextInsideParagraph(valueList);
-         }
-         wordMl.endParagraph();
+         super.renderAttribute(attributeTypeName, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, map,
+               attributeElement);
       }
-      return value;
    }
 
    /*

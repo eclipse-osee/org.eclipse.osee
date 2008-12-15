@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -215,8 +216,27 @@ public class DefaultArtifactRenderer implements IRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#renderAttribute(java.lang.String)
     */
    @Override
-   public String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
-      return artifact != null ? Collections.toString(", ", artifact.getAttributes(attributeTypeName)) : null;
+   public void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
+      WordMLProducer wordMl = (WordMLProducer) producer;
+      String format = attributeElement.getFormat();
+      boolean allAttrs = map.getBoolean("allAttrs");
+
+      wordMl.startParagraph();
+      // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
+      if (allAttrs) {
+         wordMl.addWordMl("<w:r><w:t> " + attributeTypeName + ": </w:t></w:r>");
+      } else {
+         wordMl.addWordMl(attributeElement.getLabel());
+      }
+
+      String valueList = Collections.toString(", ", artifact.getAttributes(attributeTypeName));
+
+      if (attributeElement.getFormat().contains(">x<")) {
+         wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
+      } else {
+         wordMl.addTextInsideParagraph(valueList);
+      }
+      wordMl.endParagraph();
    }
 
    /* (non-Javadoc)

@@ -37,7 +37,7 @@ public interface IRenderer {
 
    public Image getImage();
 
-   public abstract String renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException;
+   public abstract void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException;
 
    public abstract int minimumRanking() throws OseeCoreException;
 
