@@ -309,16 +309,4 @@ public final class ConnectionHandler {
          connection.close();
       }
    }
-
-   private static boolean areHintsSupported() throws OseeDataStoreException {
-      OseeConnection connection = OseeDbConnection.getConnection();
-      try {
-         DatabaseMetaData metaData = connection.getMetaData();
-         return SupportedDatabase.getDatabaseType(connection) == SupportedDatabase.oracle && metaData.getDatabaseMajorVersion() > 8;
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      } finally {
-         connection.close();
-      }
-   }
 }
