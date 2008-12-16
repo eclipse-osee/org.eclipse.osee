@@ -837,7 +837,7 @@
           locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView">
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.openInEdit.command"
-             label="Open Final Version">
+             label="Open Final Version in Artifact Editor">
        </command>
        <separator
              name="org.eclipse.osee.framework.ui.skynet.ChangeView.wordChangesMadeTo.seperatro"
