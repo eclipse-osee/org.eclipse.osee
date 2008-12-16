@@ -30,7 +30,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
     */
    @Override
-   public Image getImage() {
+   public Image getImage(Artifact artifact) throws OseeCoreException {
       return AtsPlugin.getInstance().getImage("action.gif");
    }
 

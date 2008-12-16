@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -35,8 +36,16 @@ public class NativeRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
     */
    @Override
-   public Image getImage() {
-      return null;
+   public Image getImage(Artifact artifact) throws OseeCoreException {
+      Image image = null;
+      if (artifact instanceof NativeArtifact) {
+         image = SkynetActivator.getInstance().getImageForProgram(((NativeArtifact) artifact).getFileExtension());
+      }
+
+      if (image == null) {
+         image = super.getImage(artifact);
+      }
+      return image;
    }
 
    /**

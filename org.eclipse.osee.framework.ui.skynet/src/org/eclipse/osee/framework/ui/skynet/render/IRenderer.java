@@ -35,7 +35,7 @@ public interface IRenderer {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
-   public Image getImage();
+   public Image getImage(Artifact artifact) throws OseeCoreException;
 
    public abstract void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException;
 

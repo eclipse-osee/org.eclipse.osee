@@ -6,6 +6,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.InputStream;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.swt.graphics.Image;
@@ -15,6 +16,10 @@ import org.eclipse.swt.program.Program;
  * @author Ryan D. Brooks
  */
 public abstract class WordRenderer extends FileRenderer {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
+    */
+
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
 
@@ -23,6 +28,11 @@ public abstract class WordRenderer extends FileRenderer {
     */
    public WordRenderer(String rendererId) {
       super(rendererId);
+   }
+
+   @Override
+   public Image getImage(Artifact artifact) throws OseeCoreException {
+      return SkynetActivator.getInstance().getImageForProgram("doc");
    }
 
    /* (non-Javadoc)
@@ -64,14 +74,6 @@ public abstract class WordRenderer extends FileRenderer {
    public String generateHtml(Artifact artifact) throws OseeCoreException {
       InputStream xml = getRenderInputStream(artifact, PresentationType.PREVIEW);
       return WordConverter.toHtml(xml);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
-    */
-   @Override
-   public Image getImage() {
-      return null;
    }
 
    /* (non-Javadoc)

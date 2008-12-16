@@ -243,7 +243,7 @@ public class DefaultArtifactRenderer implements IRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getImage()
     */
    @Override
-   public Image getImage() {
+   public Image getImage(Artifact artifact) throws OseeCoreException {
       return SkynetGuiPlugin.getInstance().getImage("laser_16_16.gif");
    }
 }
