@@ -5,7 +5,10 @@
  */
 package org.eclipse.osee.framework.core.server;
 
+import java.io.File;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -13,6 +16,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 public class OseeServerProperties {
 
    public static final String CHECK_TAG_QUEUE_ON_START_UP = "osee.check.tag.queue.on.startup";
+   private static boolean wasBinaryDataChecked = false;
 
    private OseeServerProperties() {
       super();
@@ -24,7 +28,18 @@ public class OseeServerProperties {
     * @return OSEE application server binary data path
     */
    public static String getOseeApplicationServerData() {
-      return OseeProperties.getOseeApplicationServerData();
+      String toReturn = OseeProperties.getOseeApplicationServerData();
+      if (!wasBinaryDataChecked) {
+         File file = new File(toReturn);
+         if (file.exists()) {
+            OseeLog.log(CoreServerActivator.class, Level.INFO, String.format("Application Server Data: [%s]", toReturn));
+         } else {
+            OseeLog.log(CoreServerActivator.class, Level.WARNING, String.format(
+                  "Application Server Data: [%s] does not exist and will be created", toReturn));
+         }
+         wasBinaryDataChecked = true;
+      }
+      return toReturn;
    }
 
    /**
