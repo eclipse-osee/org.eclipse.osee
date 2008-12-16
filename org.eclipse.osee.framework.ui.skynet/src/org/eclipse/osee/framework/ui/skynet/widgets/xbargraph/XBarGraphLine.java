@@ -81,4 +81,8 @@ public class XBarGraphLine {
       return new XBarGraphLine(name, SWT.COLOR_WHITE, SWT.COLOR_WHITE, 0, value);
    }
 
+   public static XBarGraphLine getTextLineRedIfTrue(String name, String value, boolean isRed) {
+      return new XBarGraphLine(name, isRed ? DEFAULT_RED_FOREGROUND : SWT.COLOR_WHITE,
+            isRed ? DEFAULT_RED_BACKGROUND : SWT.COLOR_WHITE, isRed ? 100 : 0, value);
+   }
 }

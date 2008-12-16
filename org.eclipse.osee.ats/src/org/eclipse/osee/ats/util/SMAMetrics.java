@@ -240,8 +240,8 @@ public class SMAMetrics {
    }
 
    public String toStringObjectBreakout() {
-      return String.format("Actions: %s  - Team Workflows: %s - Tasks: %s - Reviews: %s ", getNumActions(),
-            getNumTeamWfs(), getNumTasks(), getNumReviews());
+      return String.format("Actions: %s  - Team Workflows: %s - Task Workflows: %s - Review Workflows: %s ",
+            getNumActions(), getNumTeamWfs(), getNumTasks(), getNumReviews());
    }
 
    public String toStringLong() {
@@ -318,6 +318,14 @@ public class SMAMetrics {
 
    public int getNumSMAs() {
       return smas.size();
+   }
+
+   public int getNumNotEstimated() throws OseeCoreException {
+      int count = 0;
+      for (StateMachineArtifact sma : smas) {
+         if (sma.getWorldViewEstimatedHours() == 0) count++;
+      }
+      return count;
    }
 
    /**

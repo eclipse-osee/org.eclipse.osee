@@ -156,6 +156,9 @@ public class AtsMetricsComposite extends ScrolledComposite {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
 
       lines.add(XBarGraphLine.getTextLine("Loaded", sMet.toStringObjectBreakout()));
+      lines.add(XBarGraphLine.getTextLineRedIfTrue("Workflows", String.format(
+            "Estimates off %d workflows with %d having 0 estimates.", sMet.getNumSMAs(), sMet.getNumNotEstimated()),
+            sMet.getNumNotEstimated() > 0));
 
       lines.add(XBarGraphLine.getPercentLine(
             "By Workflow Percents (" + sMet.getCummulativeWorkflowPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
@@ -196,7 +199,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
          } else if (hoursRemaining > hoursTillRelease) {
             lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
                   XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
-                        "%5.2f hours exceeds remaining release hours %5.2f", hoursRemaining, hoursTillRelease)));
+                        "%5.2f hours exceeds remaining release hours %5.2f;  Over by %5.2f hours.", hoursRemaining,
+                        hoursTillRelease, hoursRemaining - hoursTillRelease)));
          } else {
             lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
                   XBarGraphLine.DEFAULT_GREEN_BACKGROUND, SWT.COLOR_WHITE, SWT.COLOR_WHITE, percent, String.format(
