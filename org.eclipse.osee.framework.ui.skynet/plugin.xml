@@ -36,7 +36,7 @@
        point="org.eclipse.ui.commands">
     <command
           id="org.eclipse.osee.framework.ui.skynet.openInEdit.command"
-          name="Open">
+          name="Open in Artifact Editor">
     </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand"
