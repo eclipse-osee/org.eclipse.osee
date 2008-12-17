@@ -91,7 +91,8 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
     * (org.eclipse.osee.connection.service.IServiceConnector)
     */
    @Override
-   public void onConnectorsAdded(Collection<IServiceConnector> connectors) {
+   public synchronized void onConnectorsAdded(
+	    Collection<IServiceConnector> connectors) {
       for (IServiceConnector connector : connectors) {
          if (connector.getConnectorType().equals(JiniServiceSideConnector.TYPE)) {
             System.out.println("found jini server side connector");
