@@ -9,6 +9,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -27,13 +28,13 @@ import org.eclipse.swt.widgets.MenuItem;
 public class OpenWithMenuListener implements MenuListener {
    private Menu parentMenu;
    private Viewer viewer;
-   private ArtifactExplorer artifactExplorer;
+   private IRebuildMenuListener rebuildMenuListener;
 
-   public OpenWithMenuListener(Menu parentMenu, final Viewer viewer, ArtifactExplorer artifactExplorer) {
+   public OpenWithMenuListener(Menu parentMenu, final Viewer viewer, IRebuildMenuListener rebuildMenuListener) {
       super();
       this.parentMenu = parentMenu;
       this.viewer = viewer;
-      this.artifactExplorer = artifactExplorer;
+      this.rebuildMenuListener = rebuildMenuListener;
    }
 
    /* (non-Javadoc)
@@ -51,7 +52,7 @@ public class OpenWithMenuListener implements MenuListener {
    @Override
    public void menuShown(MenuEvent e) {
       try {
-         artifactExplorer.setupPopupMenu();
+         rebuildMenuListener.rebuildMenu();
 
          IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
          Iterator<?> iterator = selection.iterator();
