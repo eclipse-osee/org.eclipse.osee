@@ -67,6 +67,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       if (finalized) {
          return false;
       }
+      builder.append("   oWord.Visible = False\n");
       builder.append("    ver1 = \"");
       builder.append(baseFile.getLocation().toOSString());
       builder.append("\"\n");
