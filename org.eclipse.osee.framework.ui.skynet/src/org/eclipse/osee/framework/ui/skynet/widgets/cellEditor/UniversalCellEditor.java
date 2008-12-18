@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Text;
  * @author Ryan D. Brooks
  */
 public class UniversalCellEditor extends CellEditor {
-   private Combo comboBox;
-   private Text textBox;
-   private CalendarCombo datePicker;
+   private final Combo comboBox;
+   private final Text textBox;
+   private final CalendarCombo datePicker;
    private Control control;
    private boolean personCombo = false;
 
@@ -148,7 +148,7 @@ public class UniversalCellEditor extends CellEditor {
    }
 
    /**
-    * called just befor a cell is to be edited
+    * called just before a cell is to be edited
     */
    /* (non-Javadoc)
     * @see org.eclipse.jface.viewers.CellEditor#doSetValue(java.lang.Object)

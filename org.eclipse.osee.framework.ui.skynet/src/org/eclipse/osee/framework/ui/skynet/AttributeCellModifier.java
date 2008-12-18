@@ -33,13 +33,13 @@ import org.eclipse.swt.widgets.Item;
  * @author Ryan D. Brooks
  */
 public class AttributeCellModifier implements ICellModifier {
-   private TableViewer tableViewer;
-   private DateValue dateValue;
-   private EnumeratedValue enumeratedValue;
-   private StringValue stringValue;
-   private IDirtiableEditor editor;
+   private final TableViewer tableViewer;
+   private final DateValue dateValue;
+   private final EnumeratedValue enumeratedValue;
+   private final StringValue stringValue;
+   private final IDirtiableEditor editor;
 
-   private AttributesComposite attrComp;
+   private final AttributesComposite attrComp;
 
    public AttributeCellModifier(IDirtiableEditor editor, TableViewer tableViewer, AttributesComposite attrComp) {
       super();
@@ -85,8 +85,8 @@ public class AttributeCellModifier implements ICellModifier {
     */
    public Object getValue(Object element, String property) {
       try {
-      Attribute<?> attribute = (Attribute<?>) element;
-      Object object = attribute.getValue();
+         Attribute<?> attribute = (Attribute<?>) element;
+         Object object = attribute.getValue();
          if (attribute instanceof EnumeratedAttribute) {
             enumeratedValue.setValue(attribute.getDisplayableString());
             enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
@@ -95,11 +95,11 @@ public class AttributeCellModifier implements ICellModifier {
             enumeratedValue.setValue(attribute.getDisplayableString());
             enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
             return enumeratedValue;
-         } else if (object instanceof Date) {
+         } else if (attribute instanceof DateAttribute) {
             dateValue.setValue((Date) object);
             return dateValue;
          } else {
-            stringValue.setValue(attribute.getDisplayableString() != null ? attribute.getDisplayableString() : "" );
+            stringValue.setValue(attribute.getDisplayableString() != null ? attribute.getDisplayableString() : "");
             return stringValue;
          }
       } catch (OseeCoreException ex) {
