@@ -302,6 +302,9 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     */
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
+      if (tasks.size() > 0) {
+         return tasks.iterator().next().getWorldViewTargetedVersion();
+      }
       return null;
    }
 

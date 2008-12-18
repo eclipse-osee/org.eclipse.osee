@@ -320,13 +320,13 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public double getManHrsPerDayPreference() {
+   public double getManHrsPerDayPreference() throws OseeCoreException {
       try {
          return getTeamDefinition().getManDayHrsFromItemAndChildren();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
+      return super.getManHrsPerDayPreference();
    }
 
    public Result addActionableItems() {

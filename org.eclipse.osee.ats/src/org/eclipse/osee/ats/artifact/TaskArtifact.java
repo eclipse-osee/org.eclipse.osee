@@ -275,6 +275,11 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
+   public double getManHrsPerDayPreference() throws OseeCoreException {
+      return getParentSMA().getManHrsPerDayPreference();
+   }
+
+   @Override
    public double getWorldViewRemainHours() throws OseeCoreException {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return 0;
       double est = getWorldViewEstimatedHours();

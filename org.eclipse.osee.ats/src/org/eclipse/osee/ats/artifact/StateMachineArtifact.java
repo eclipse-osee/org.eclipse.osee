@@ -680,7 +680,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return manDaysNeeded;
    }
 
-   public double getManHrsPerDayPreference() {
+   public double getManHrsPerDayPreference() throws OseeCoreException {
       return DEFAULT_MAN_HOURS_PER_DAY;
    }
 
