@@ -29,13 +29,19 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public abstract class XHyperlinkLabelSelection extends XWidget {
 
    Label valueLabel;
-   HyperLinkLabel hyperLinkLabel;
+   HyperLinkLabel selectHyperLinkLabel, clearHyperLinkLabel;
+   private final boolean supportClear;
 
    /**
     * @param label
     */
    public XHyperlinkLabelSelection(String label) {
+      this(label, false);
+   }
+
+   public XHyperlinkLabelSelection(String label, boolean supportClear) {
       super(label);
+      this.supportClear = supportClear;
    }
 
    public String getCurrentValue() {
@@ -43,11 +49,26 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
    }
 
    public String getHyperlinkLabelString() {
-      return " (select) ";
+      return " (select)";
+   }
+
+   public String getClearHyperlinkLabelString() {
+      return "(clear) ";
    }
 
    public boolean handleSelection() {
       return false;
+   }
+
+   public boolean handleClear() {
+      return false;
+   }
+
+   /**
+    * @return the supportClear
+    */
+   public boolean isSupportClear() {
+      return supportClear;
    }
 
    /*
@@ -59,7 +80,7 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
    public void createWidgets(Composite parent, int horizontalSpan) {
 
       Composite comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(ALayout.getZeroMarginLayout(3, false));
+      comp.setLayout(ALayout.getZeroMarginLayout(5, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       // Create Text Widgets
@@ -71,9 +92,9 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
          }
       }
 
-      hyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
-      hyperLinkLabel.setToolTipText("Select to Modify");
-      hyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
+      selectHyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
+      selectHyperLinkLabel.setToolTipText("Select to Modify");
+      selectHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
          /*
           * (non-Javadoc)
           * 
@@ -86,6 +107,23 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
             }
          }
       });
+      if (supportClear) {
+         clearHyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
+         clearHyperLinkLabel.setToolTipText("Select to Clear");
+         clearHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+             */
+            public void handleEvent(Event event) {
+               if (handleClear()) {
+                  refresh();
+                  notifyXModifiedListeners();
+               }
+            }
+         });
+      }
       valueLabel = new Label(comp, SWT.NONE);
       valueLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       valueLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
@@ -100,8 +138,12 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
     */
    @Override
    public void refresh() {
-      hyperLinkLabel.refresh();
-      hyperLinkLabel.setText(getHyperlinkLabelString());
+      selectHyperLinkLabel.refresh();
+      selectHyperLinkLabel.setText(getHyperlinkLabelString());
+      if (supportClear) {
+         clearHyperLinkLabel.refresh();
+         clearHyperLinkLabel.setText(getClearHyperlinkLabelString());
+      }
       valueLabel.setText(getCurrentValue());
       valueLabel.getParent().layout();
       setLabelError();
@@ -124,8 +166,12 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
    @Override
    public void adaptControls(FormToolkit toolkit) {
       super.adaptControls(toolkit);
-      toolkit.adapt(hyperLinkLabel, true, true);
-      hyperLinkLabel.refresh();
+      toolkit.adapt(selectHyperLinkLabel, true, true);
+      selectHyperLinkLabel.refresh();
+      if (supportClear) {
+         toolkit.adapt(clearHyperLinkLabel, true, true);
+         clearHyperLinkLabel.refresh();
+      }
    }
 
    /*

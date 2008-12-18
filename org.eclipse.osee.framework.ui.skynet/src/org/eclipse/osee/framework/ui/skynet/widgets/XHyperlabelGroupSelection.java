@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
@@ -30,7 +31,7 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelSelection {
     * @param label
     */
    public XHyperlabelGroupSelection(String label) {
-      super(label);
+      super(label, true);
    }
 
    public Set<Artifact> getSelectedGroups() {
@@ -39,22 +40,28 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelSelection {
 
    @Override
    public String getCurrentValue() {
-      StringBuffer sb = new StringBuffer();
-      for (Artifact user : selectedGroups)
-         sb.append(user.getDescriptiveName() + ", ");
-      return sb.toString().replaceFirst(", $", "");
+      return Artifacts.commaArts(selectedGroups);
    }
 
-   public void setSelectedUsers(Set<Artifact> selectedUsers) {
+   public void setSelectedGroups(Set<Artifact> selectedUsers) {
       this.selectedGroups = selectedUsers;
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelSelection#handleClear()
+    */
+   @Override
+   public boolean handleClear() {
+      selectedGroups.clear();
+      notifyXModifiedListeners();
+      return true;
    }
 
    @Override
    public boolean handleSelection() {
       try {
          GroupListDialog dialog = new GroupListDialog(Display.getCurrent().getActiveShell());
-         dialog.setRequireSelection(false);
          int result = dialog.open();
          if (result == 0) {
             selectedGroups.clear();
