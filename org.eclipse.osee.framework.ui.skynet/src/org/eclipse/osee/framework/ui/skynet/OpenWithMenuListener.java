@@ -13,7 +13,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.PreviewRendererData;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -47,8 +46,6 @@ public class OpenWithMenuListener implements MenuListener {
     */
    @Override
    public void menuHidden(MenuEvent e) {
-      // TODO Auto-generated method stub
-
    }
 
    /* (non-Javadoc)
@@ -63,46 +60,22 @@ public class OpenWithMenuListener implements MenuListener {
          Iterator<?> iterator = selection.iterator();
          ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selection.size());
 
+         boolean validForPreview = true;
          //load artifacts in the list
+         Artifact artifact = null;
          while (iterator.hasNext()) {
             Object object = iterator.next();
             if (object instanceof Artifact) {
-               artifacts.add((Artifact) object);
+               artifact = (Artifact) object;
             } else if (object instanceof Match) {
-               artifacts.add((Artifact) ((Match) object).getElement());
+               artifact = (Artifact) ((Match) object).getElement();
             }
-         }
-
-         List<IRenderer> commonRenders =
-               RendererManager.getApplicableRenderer(PresentationType.SPECIALIZED_EDIT, artifacts.get(0), null);
-
-         boolean validForPreview = true;
-
-         for (Artifact artifact : artifacts) {
-            List<IRenderer> applicableRenders =
-                  RendererManager.getApplicableRenderer(PresentationType.SPECIALIZED_EDIT, artifact, null);
-
-            Iterator<?> commIterator = commonRenders.iterator();
-
-            while (commIterator.hasNext()) {
-               IRenderer commRenderer = (IRenderer) commIterator.next();
-               boolean found = false;
-               for (IRenderer appRenderer : applicableRenders) {
-                  if (appRenderer.getName().equals(commRenderer.getName())) {
-                     found = true;
-                     continue;
-                  }
-               }
-
-               if (!found) {
-                  commIterator.remove();
-               }
-            }
-
             validForPreview &=
                   (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() || !(artifact instanceof NativeArtifact));
-
+            artifacts.add(artifact);
          }
+
+         List<IRenderer> commonRenders = RendererManager.getCommonSpecializedEditRenders(artifacts);
 
          if (validForPreview) {
             for (IRenderer previewRenderer : RendererManager.getPreviewPresentableRenders()) {

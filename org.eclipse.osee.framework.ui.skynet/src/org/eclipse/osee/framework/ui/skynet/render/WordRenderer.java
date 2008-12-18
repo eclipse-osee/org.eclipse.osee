@@ -4,6 +4,7 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.InputStream;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -33,6 +34,10 @@ public abstract class WordRenderer extends FileRenderer {
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
       return SkynetActivator.getInstance().getImageForProgram("doc");
+   }
+
+   public static ImageDescriptor getImageDescriptor() {
+      return SkynetActivator.getInstance().getImageDescriptorForProgram("doc");
    }
 
    /* (non-Javadoc)

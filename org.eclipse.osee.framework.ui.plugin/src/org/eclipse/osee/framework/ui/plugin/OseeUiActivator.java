@@ -127,6 +127,18 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       return imageRegistry.get(imageKey);
    }
 
+   private ImageDescriptor getImageDescriptorFromRegistry(String imageKey) {
+      /*
+       * initialize here rather than the constructor since some O.S.E.E. plug-ins don't use the image
+       * registry and because some plug-ins seem to load before it is safe to construct an image
+       * registry without getting a NullPointerException
+       */
+      if (imageRegistry == null) {
+         imageRegistry = new ImageRegistry();
+      }
+      return imageRegistry.getDescriptor(imageKey);
+   }
+
    public void addImageToRegistry(String imageKey, ImageDescriptor descriptor) {
       Image previousImage = getImageFromRegistry(imageKey);
       if (previousImage == null) {
@@ -159,6 +171,21 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
          }
       }
       return image;
+   }
+
+   public ImageDescriptor getImageDescriptorForProgram(String extenstion) {
+      ImageDescriptor imageDescriptor = getImageDescriptorFromRegistry(extenstion);
+
+      if (imageDescriptor == null && extenstion != null) {
+         Program program = Program.findProgram(extenstion);
+         if (program == null || program.getImageData() == null) {
+            // provide no image (i.e. leave null)
+         } else {
+            imageDescriptor = ImageDescriptor.createFromImageData(program.getImageData());
+            imageRegistry.put(extenstion, imageDescriptor);
+         }
+      }
+      return imageDescriptor;
    }
 
    /**

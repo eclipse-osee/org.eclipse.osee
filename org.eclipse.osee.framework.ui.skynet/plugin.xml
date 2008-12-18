@@ -45,7 +45,7 @@
    </command>
    <command
          id="org.eclipse.osee.framework.ui.skynet.wordeditor.command"
-         name="Word Edit">
+         name="MS Word Edit">
    </command>
 </extension>
 <extension

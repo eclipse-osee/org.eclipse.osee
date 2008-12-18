@@ -267,7 +267,7 @@ public class DefaultArtifactRenderer implements IRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#rendererId()
     */
    @Override
-   public String rendererId() {
-      return null;
+   public String getCommandId() {
+      return "org.eclipse.osee.framework.ui.skynet.artifacteditor.command";
    }
 }

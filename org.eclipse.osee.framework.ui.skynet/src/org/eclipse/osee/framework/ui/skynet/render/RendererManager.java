@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -47,6 +48,37 @@ public class RendererManager {
 
    private RendererManager() {
       registerRendersFromExtensionPoints();
+   }
+
+   /**
+    * @param artifacts
+    * @return Returns the intersection of renderers applicable for all of the artifacts
+    * @throws OseeCoreException
+    */
+   public static List<IRenderer> getCommonSpecializedEditRenders(List<Artifact> artifacts) throws OseeCoreException {
+      List<IRenderer> commonRenders = getApplicableRenderer(PresentationType.SPECIALIZED_EDIT, artifacts.get(0), null);
+
+      for (Artifact artifact : artifacts) {
+         List<IRenderer> applicableRenders = getApplicableRenderer(PresentationType.SPECIALIZED_EDIT, artifact, null);
+
+         Iterator<?> commIterator = commonRenders.iterator();
+
+         while (commIterator.hasNext()) {
+            IRenderer commRenderer = (IRenderer) commIterator.next();
+            boolean found = false;
+            for (IRenderer appRenderer : applicableRenders) {
+               if (appRenderer.getName().equals(commRenderer.getName())) {
+                  found = true;
+                  continue;
+               }
+            }
+
+            if (!found) {
+               commIterator.remove();
+            }
+         }
+      }
+      return commonRenders;
    }
 
    /**

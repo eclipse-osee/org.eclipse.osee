@@ -35,7 +35,7 @@ public interface IRenderer {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
-   public abstract String rendererId();
+   public abstract String getCommandId();
 
    public abstract boolean isPreviewable();
 
