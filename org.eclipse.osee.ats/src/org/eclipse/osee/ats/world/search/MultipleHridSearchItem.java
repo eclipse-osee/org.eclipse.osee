@@ -23,11 +23,13 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
@@ -54,41 +56,57 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      List<String> hridGuids = new ArrayList<String>();
-      Set<String> nonHridGuids = new HashSet<String>();
+      List<String> ids = new ArrayList<String>();
       for (String str : enteredIds.split(",")) {
-         str = str.replaceAll("\\s+", "");
-         if (str.length() == 5) {
-            hridGuids.add(str);
-         } else if (GUID.isValid(str)) hridGuids.add(str);
-         nonHridGuids.add(str);
+         str = str.replaceAll("^\\s+", "");
+         str = str.replaceAll("\\s+$", "");
+         if (!str.equals("")) {
+            ids.add(str);
+         }
       }
 
       if (isCancelled()) return EMPTY_SET;
 
-      Collection<Artifact> resultArts = new HashSet<Artifact>();
+      Set<Artifact> resultAtsArts = new HashSet<Artifact>();
+      Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<Artifact>();
 
-      // If items were entered that are not HRIDs or Guids, attempt to open via legacy pcr field
-      if (nonHridGuids.size() > 0) {
-         Collection<ActionArtifact> actionArts =
-               LegacyPCRActions.getTeamsActionArtifacts(nonHridGuids, (Collection<TeamDefinitionArtifact>) null);
-         if (actionArts.size() != 0) {
-            for (ActionArtifact teamWf : actionArts) {
-               resultArts.add(teamWf);
-            }
+      Collection<ActionArtifact> actionArts =
+            LegacyPCRActions.getTeamsActionArtifacts(ids, (Collection<TeamDefinitionArtifact>) null);
+      if (actionArts.size() != 0) {
+         for (ActionArtifact teamWf : actionArts) {
+            resultAtsArts.add(teamWf);
          }
       }
 
-      if (hridGuids.size() > 0) {
-         Collection<Artifact> arts = ArtifactQuery.getArtifactsFromIds(hridGuids, AtsPlugin.getAtsBranch());
-         if (isCancelled()) return EMPTY_SET;
-         if (arts != null) resultArts.addAll(arts);
+      // This does artId search
+      for (Artifact art : ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
+            BranchManager.getDefaultBranch(), false)) {
+         artifacts.add(art);
       }
-      if (resultArts.size() == 0) {
-         OSEELog.logException(AtsPlugin.class,
-               "Invalid HRID/Guid/Legacy PCR Id(s): " + Lib.getCommaString(nonHridGuids), null, true);
+      // This does hrid/guid search
+      for (Artifact art : ArtifactQuery.getArtifactsFromIds(ids, AtsPlugin.getAtsBranch())) {
+         artifacts.add(art);
       }
-      return resultArts;
+
+      for (Artifact art : artifacts) {
+         if (art instanceof IATSArtifact) {
+            resultAtsArts.add(art);
+         } else {
+            resultNonAtsArts.add(art);
+         }
+      }
+
+      if (isCancelled()) return EMPTY_SET;
+
+      if (resultAtsArts.size() == 0 && resultNonAtsArts.size() == 0) {
+         OSEELog.logException(AtsPlugin.class, "Invalid HRID/Guid/Legacy PCR Id(s): " + Lib.getCommaString(ids), null,
+               true);
+      }
+      if (resultNonAtsArts.size() > 0) {
+         ArtifactEditor.editArtifacts(resultNonAtsArts);
+      }
+      return resultAtsArts;
    }
 
    @Override
@@ -96,7 +114,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
       super.performUI(searchType);
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), getName(), null,
-                  "Enter GUID(s) or 5 Character ID(s) (comma separated)", MessageDialog.QUESTION, new String[] {"OK",
+                  "Enter Legacy ID, Guid or HRID (comma separated)", MessageDialog.QUESTION, new String[] {"OK",
                         "Cancel"}, 0);
       int response = ed.open();
       if (response == 0) {
@@ -106,7 +124,6 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
             cancelled = true;
             return;
          }
-         enteredIds = enteredIds.replaceAll(" ", "");
          return;
       } else
          enteredIds = null;

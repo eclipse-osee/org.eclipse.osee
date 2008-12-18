@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.util.DoesNotWorkItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
-import org.eclipse.osee.ats.world.search.ArtIdSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
 import org.eclipse.osee.ats.world.search.AtsAttributeSearchItem;
@@ -176,7 +175,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          // Search Items
          items.add(new OpenChangeReportByIdItem(null));
          items.add(new SearchNavigateItem(null, new MultipleHridSearchItem()));
-         if (AtsPlugin.isAtsAdmin()) items.add(new SearchNavigateItem(null, new ArtIdSearchItem()));
          items.add(new SearchNavigateItem(null, new AtsAttributeSearchItem()));
          items.add(new SearchNavigateItem(null, new AtsAttributeSearchItem("Search ATS Titles", "Name", null)));
          items.add(new ArtifactImpactToActionSearchItem(null));
