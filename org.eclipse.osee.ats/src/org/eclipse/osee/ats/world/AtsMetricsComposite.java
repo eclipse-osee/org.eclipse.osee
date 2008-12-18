@@ -244,7 +244,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
                percentCompleteByNumber = (int) percent;
             }
             int percentCompleteByPercents = 0;
-            if (cummulativePercentComplete == 0 || numTotal == 0) {
+            if (cummulativePercentComplete == 0) {
+               percentCompleteByPercents = 0;
+
+            } else if (numTotal == 0) {
                percentCompleteByPercents = 100;
             } else {
                double percent = cummulativePercentComplete / numTotal;
