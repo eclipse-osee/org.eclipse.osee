@@ -44,6 +44,34 @@
          name="Artifact Editor">
    </command>
 </extension>
+<extension
+      id="Open With Handlers"
+      point="org.eclipse.ui.handlers">
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.ArtifactEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.RendererOpenHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.open.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+</extension>
  <extension
        point="org.eclipse.ui.commands">
     <command
@@ -65,10 +93,6 @@
     <command
           id="org.eclipse.osee.framework.ui.skynet.publishArtifact.command"
           name="Artifact">
-    </command>
-    <command
-          id="org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command"
-          name="With child recursion">
     </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.openInAtsWorldEditor"
@@ -194,37 +218,7 @@
         </or>
      </activeWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactNoRecurseHandler" commandId="org.eclipse.osee.framework.ui.skynet.publishArtifact.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactWithRecurseHandler" commandId="org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenRendererArtifactHandler" commandId="org.eclipse.osee.framework.ui.skynet.open.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.ArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -448,18 +442,6 @@
         </or>
      </activeWhen>
   </handler>
-  <handler
-        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ArtifactEditorHandler"
-        commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-  </handler>
 	</extension>
 	<extension name="The menus for the Branch View." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.osee.framework.ui.skynet.branch.BranchView">
@@ -478,10 +460,6 @@
   </menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.commandImages">
-		<image commandId="org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command" icon="images/preview_artifact.gif">
-         </image>
-		<image commandId="org.eclipse.osee.framework.ui.skynet.publishArtifact.command" icon="images/preview_artifact.gif">
-         </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
         icon="images/magnify.gif">

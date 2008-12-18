@@ -8,29 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.commandHandlers;
+package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands;
 
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.ui.PlatformUI;
 
 /**
+ * Opens an artifact editor as long as the user has Read permission
+ * 
  * @author Jeff C. Phillips
  */
-public class OpenRendererArtifactHandler extends CommandHandler {
+public class ArtifactEditorHandler extends CommandHandler {
+   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private List<Artifact> artifacts;
 
    /*
@@ -39,16 +40,8 @@ public class OpenRendererArtifactHandler extends CommandHandler {
     * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
     */
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
-      if (!artifacts.isEmpty()) {
-         try {
-            RendererManager.previewInJob(artifacts);
-            dispose();
-
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
+   public Object execute(ExecutionEvent myExecutionEvent) throws ExecutionException {
+      ArtifactEditor.editArtifacts(artifacts);
       return null;
    }
 
@@ -65,7 +58,8 @@ public class OpenRendererArtifactHandler extends CommandHandler {
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-         isEnabled = AccessControlManager.getInstance().checkObjectListPermission(artifacts, PermissionEnum.READ);
+
+         isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
       }
       return isEnabled;
    }
