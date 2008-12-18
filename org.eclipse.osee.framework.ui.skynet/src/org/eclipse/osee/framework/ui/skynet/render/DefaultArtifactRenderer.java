@@ -246,4 +246,20 @@ public class DefaultArtifactRenderer implements IRenderer {
    public Image getImage(Artifact artifact) throws OseeCoreException {
       return SkynetGuiPlugin.getInstance().getImage("laser_16_16.gif");
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isPreviewable()
+    */
+   @Override
+   public boolean isPreviewable() {
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getPreviewData()
+    */
+   @Override
+   public List<PreviewRendererData> getPreviewData() {
+      return null;
+   }
 }

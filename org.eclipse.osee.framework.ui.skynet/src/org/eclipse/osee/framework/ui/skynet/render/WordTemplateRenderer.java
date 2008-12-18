@@ -76,14 +76,19 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private static final String OLE_END = "</w:docOleData>";
    private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
    public static final String UPDATE_PARAGRAPH_NUMBER_OPTION = "updateParagraphNumber";
-
    private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this);
+   private List<PreviewRendererData> previewData;
 
    /**
     * @param rendererId
     */
    public WordTemplateRenderer(String rendererId) {
       super(rendererId);
+
+      previewData = new ArrayList<PreviewRendererData>(2);
+      previewData.add(new PreviewRendererData("MS Word Preview"));
+      previewData.add(new PreviewRendererData("MS Word Preview with children",
+            ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
    }
 
    /* (non-Javadoc)
@@ -92,6 +97,22 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    @Override
    public WordTemplateRenderer newInstance() throws OseeCoreException {
       return new WordTemplateRenderer(getId());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getPreviewData()
+    */
+   @Override
+   public List<PreviewRendererData> getPreviewData() {
+      return previewData;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#isPreviewable()
+    */
+   @Override
+   public boolean isPreviewable() {
+      return true;
    }
 
    public void publishSRS(VariableMap variableMap) throws OseeCoreException {
@@ -331,11 +352,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       int rating = NO_MATCH;
 
-      if (!(artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) && (presentationType == PresentationType.PREVIEW || presentationType == PresentationType.DIFF)) {
+      if (!(artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) && (presentationType == PresentationType.DIFF)) {
          rating = WORD_PUBLICATION;
-      }
 
-      if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() && presentationType != PresentationType.GENERALIZED_EDIT) {
+      } else if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact()) {
          rating = PRESENTATION_SUBTYPE_MATCH;
       }
       return rating;
@@ -364,8 +384,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
       String value = "";
       WordMLProducer wordMl = (WordMLProducer) producer;
-      String format = attributeElement.getFormat();
-      boolean allAttrs = map.getBoolean("allAttrs");
 
       if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
          Attribute<?> wordTempConAttr = artifact.getSoleAttribute(attributeTypeName);

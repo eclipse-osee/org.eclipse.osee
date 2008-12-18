@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -65,7 +65,9 @@ public class ChangeXViewer extends XViewer {
       Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
 
       if (artifact != null) {
-         ArtifactEditor.editArtifact(artifact);
+         ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
+         artifacts.add(artifact);
+         RendererManager.previewInJob(artifacts);
       }
    }
 

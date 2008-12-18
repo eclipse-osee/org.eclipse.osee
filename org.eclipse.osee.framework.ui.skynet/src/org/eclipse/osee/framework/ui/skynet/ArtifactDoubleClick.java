@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.search.ui.text.Match;
@@ -62,7 +61,7 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
             if (AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
                ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
                artifacts.add(artifact);
-               RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
+               RendererManager.previewInJob(artifacts);
 
             } else {
                OSEELog.logSevere(SkynetGuiPlugin.class,

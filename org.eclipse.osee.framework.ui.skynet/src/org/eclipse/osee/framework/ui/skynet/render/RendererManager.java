@@ -189,18 +189,23 @@ public class RendererManager {
    public static void previewInJob(final List<Artifact> artifacts, final VariableMap options) throws OseeCoreException {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
-            //            HashCollection<IRenderer, Artifact> rendererArtifactMap =
-            //                  createRenderMap(PresentationType.PREVIEW, artifacts, options);
-            //
-            //            for (IRenderer renderer : rendererArtifactMap.keySet()) {
-            //                           renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
-            //   
             preview(artifacts, new NullProgressMonitor(), options);
          }
       };
 
       Jobs.run("Preview " + artifacts.size() + " artifacts", runnable, SkynetGuiPlugin.class,
             SkynetGuiPlugin.PLUGIN_ID, false);
+   }
+
+   public static List<IRenderer> getPreviewPresentableRenders() throws OseeCoreException {
+      ArrayList<IRenderer> previewRenders = new ArrayList<IRenderer>(instance.renderers.size());
+
+      for (IRenderer renderer : instance.renderers.values()) {
+         if (renderer.isPreviewable()) {
+            previewRenders.add(renderer.newInstance());
+         }
+      }
+      return previewRenders;
    }
 
    public static void preview(final List<Artifact> artifacts, IProgressMonitor monitor, final VariableMap options) throws OseeCoreException {
@@ -210,10 +215,6 @@ public class RendererManager {
       for (IRenderer renderer : rendererArtifactMap.keySet()) {
          renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
       }
-
-      //      WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
-      //      renderer.setOptions(options);
-      //      renderer.preview(artifacts);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, String fileName, boolean show) throws OseeStateException, OseeCoreException {

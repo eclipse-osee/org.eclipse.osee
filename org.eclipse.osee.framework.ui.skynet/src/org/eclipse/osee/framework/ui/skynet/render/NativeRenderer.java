@@ -59,7 +59,7 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public String getName() {
-      return "Native";
+      return "Native Editor";
    }
 
    /* (non-Javadoc)

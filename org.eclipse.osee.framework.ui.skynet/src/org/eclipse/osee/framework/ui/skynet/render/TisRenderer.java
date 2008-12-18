@@ -40,6 +40,14 @@ public class TisRenderer extends WordTemplateRenderer {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer#isPreviewable()
+    */
+   @Override
+   public boolean isPreviewable() {
+      return false;
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
     */
    @Override

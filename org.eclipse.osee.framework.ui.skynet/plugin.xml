@@ -32,27 +32,31 @@
    </objectContribution>
    
 </extension>
+<extension
+      id="Open With Commands"
+      point="org.eclipse.ui.commands">
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.open.command"
+         name="Open">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.atseditor.command"
+         name="ATS Editor">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command"
+         name="Artifact Editor">
+   </command>
+</extension>
  <extension
        point="org.eclipse.ui.commands">
-    <command
-          id="org.eclipse.osee.framework.ui.skynet.openInEdit.command"
-          name="Open in Artifact Editor">
-    </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand"
           name="Mass Edit">
     </command>
     <command
-          id="org.eclipse.osee.framework.ui.skynet.openArtifactsInAtsWorld.command"
-          name="Open in ATS">
-    </command>
-    <command
           id="org.eclipse.osee.framework.ui.skynet.skywalker.command"
           name="SKy Walker">
-    </command>
-    <command
-          id="org.eclipse.osee.framework.ui.skynet.edit.command"
-          name="Edit">
     </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
@@ -206,7 +210,7 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.EditArtifactHandler" commandId="org.eclipse.osee.framework.ui.skynet.edit.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenRendererArtifactHandler" commandId="org.eclipse.osee.framework.ui.skynet.open.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -216,7 +220,7 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenInEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openInEdit.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenInEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -238,7 +242,7 @@
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenSkywalkerEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactsInAtsWorldHandler" commandId="org.eclipse.osee.framework.ui.skynet.openArtifactsInAtsWorld.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactsInAtsWorldHandler" commandId="org.eclipse.osee.framework.ui.atseditor.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -462,8 +466,6 @@
          </image>
 		<image commandId="org.eclipse.osee.framework.ui.skynet.publishArtifact.command" icon="images/preview_artifact.gif">
          </image>
-		<image commandId="org.eclipse.osee.framework.ui.skynet.edit.command" icon="images/edit_artifact.gif">
-         </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
         icon="images/magnify.gif">
@@ -471,6 +473,10 @@
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
         icon="images/edit.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command"
+        icon="images/laser_16_16.gif">
   </image>
 	</extension>
 	<extension point="org.eclipse.ui.importWizards">
@@ -784,6 +790,20 @@
 	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.ArtifactSearchView">
      <command
+           commandId="org.eclipse.osee.framework.ui.skynet.open.command">
+     </command>
+     <menu
+           label="Open with">
+        <dynamic
+              class="org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem"
+              id="org.eclipse.osee.framework.ui.open.with">
+        </dynamic>
+     </menu>
+   <separator
+         name="artifactSearchViewopenwithSeparator"
+         visible="true">
+   </separator>
+     <command
            commandId="org.eclipse.ui.edit.delete">
      </command>
      <separator
@@ -803,6 +823,10 @@
    <command
          commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
    </command>
+   <separator
+         name="artifactSearchViewPurgeEndSeparator"
+         visible="true">
+   </separator>
 		</menuContribution>
 	</extension>
  <extension
@@ -836,22 +860,19 @@
     <menuContribution
           locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView">
        <command
-             commandId="org.eclipse.osee.framework.ui.skynet.openInEdit.command"
-             label="Open Final Version in Artifact Editor">
+             commandId="org.eclipse.osee.framework.ui.skynet.open.command">
        </command>
+       <menu
+             label="Open with">
+          <dynamic
+                class="org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem"
+                id="org.eclipse.osee.framework.ui.open.with">
+          </dynamic>
+       </menu>
        <separator
              name="org.eclipse.osee.framework.ui.skynet.ChangeView.wordChangesMadeTo.seperatro"
              visible="true">
        </separator>
-       <menu
-             label="Publish">
-          <command
-                commandId="org.eclipse.osee.framework.ui.skynet.publishArtifact.command">
-          </command>
-          <command
-                commandId="org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command">
-          </command>
-       </menu>
        <separator
              name="org.eclipse.osee.framework.ui.skynet.changeReportView.publishArtifactRecurse.separator"
              visible="true">

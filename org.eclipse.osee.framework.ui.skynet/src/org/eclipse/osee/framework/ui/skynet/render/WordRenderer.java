@@ -48,7 +48,7 @@ public abstract class WordRenderer extends FileRenderer {
     */
    @Override
    public String getName() {
-      return "Word";
+      return "MS Word Edit";
    }
 
    /* (non-Javadoc)

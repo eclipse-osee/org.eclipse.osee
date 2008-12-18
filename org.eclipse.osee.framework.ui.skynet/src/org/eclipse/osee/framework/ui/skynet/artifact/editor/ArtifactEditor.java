@@ -458,7 +458,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(skynetGuiPlugin.getImage("preview_artifact.gif"));
-      item.setToolTipText("Publish artifact (read-only)");
+      item.setToolTipText("Present this artifact for preview (read-only)");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {

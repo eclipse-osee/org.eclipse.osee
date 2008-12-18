@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -86,7 +85,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
-import org.eclipse.osee.framework.ui.skynet.menu.ArtifactPublishMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
@@ -156,7 +154,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private TreeViewer treeViewer;
    private Action upAction;
    private Artifact exploreRoot;
-   private MenuItem editMenuItem;
+   private MenuItem openMenuItem;
    private MenuItem massEditMenuItem;
    private MenuItem skywalkerMenuItem;
    private MenuItem createMenuItem;
@@ -355,14 +353,11 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       popupMenu.addMenuListener(needArtifactListener);
       popupMenu.addMenuListener(needProjectListener);
 
+      createOpenMenuItem(popupMenu);
+      createOpenWithMenuItem(popupMenu);
+      new MenuItem(popupMenu, SWT.SEPARATOR);
       createNewItemMenuItem(popupMenu);
       createGoIntoMenuItem(popupMenu);
-      new MenuItem(popupMenu, SWT.SEPARATOR);
-      createOpenMenuItem(popupMenu);
-      createEditMenuItem(popupMenu);
-
-      ArtifactPublishMenu.createPreviewMenuItem(popupMenu, treeViewer);
-
       createMassEditMenuItem(popupMenu);
       createSkywalkerMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -561,7 +556,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       return attributesAction.getSelectedAttributeData(artifact);
    }
 
-   private void createOpenMenuItem(Menu parentMenu) {
+   private void createOpenWithMenuItem(Menu parentMenu) {
       openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       openWithMenuItem.setText("&Open With");
       final Menu submenu = new Menu(openWithMenuItem);
@@ -668,20 +663,24 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       });
    }
 
-   private void createEditMenuItem(Menu parentMenu) {
-      editMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      editMenuItem.setText("&Edit");
-      needArtifactListener.add(editMenuItem);
+   private void createOpenMenuItem(Menu parentMenu) {
+      openMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      openMenuItem.setText("&Open");
+      needArtifactListener.add(openMenuItem);
 
       ArtifactMenuListener listener = new ArtifactMenuListener();
       parentMenu.addMenuListener(listener);
-      editMenuItem.addSelectionListener(new SelectionAdapter() {
+      openMenuItem.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent ev) {
             LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
             TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
-            RendererManager.openInJob(selectedItems, PresentationType.SPECIALIZED_EDIT);
+            try {
+               RendererManager.previewInJob(selectedItems);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
    }
@@ -1059,17 +1058,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
-
-      setContentDescription(exploreRoot != null ? exploreRoot.getDescriptiveName() : "");
-
-      if (exploreRoot != null && exploreRoot.isInDb()) {
-         Branch branch = exploreRoot.getBranch();
-         if (editMenuItem != null) {
-            editMenuItem.setText("Edit (" + StringFormat.truncate(branch.getBranchName(), 25) + ")");
-         }
-      } else {
-         if (editMenuItem != null) editMenuItem.setText("Edit");
-      }
    }
 
    private class NeedArtifactMenuListener implements MenuListener {
@@ -1166,7 +1154,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             lockMenuItem.setText((permiss.isLocked() ? "Unlock: (" + permiss.getSubjectFromLockedObjectName() + ")" : "Lock"));
 
             lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
-            editMenuItem.setEnabled(permiss.isWritePermission());
+            openMenuItem.setEnabled(permiss.isReadPermission());
             createMenuItem.setEnabled(permiss.isWritePermission());
             openWithMenuItem.setEnabled(permiss.isWritePermission());
             goIntoMenuItem.setEnabled(permiss.isReadPermission());
