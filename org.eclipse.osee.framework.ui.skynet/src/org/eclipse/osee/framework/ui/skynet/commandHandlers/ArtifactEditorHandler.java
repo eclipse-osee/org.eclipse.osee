@@ -25,9 +25,11 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.ui.PlatformUI;
 
 /**
+ * Opens an artifact editor as long as the user has Read permission
+ * 
  * @author Jeff C. Phillips
  */
-public class OpenInEditorHandler extends CommandHandler {
+public class ArtifactEditorHandler extends CommandHandler {
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private List<Artifact> artifacts;
 

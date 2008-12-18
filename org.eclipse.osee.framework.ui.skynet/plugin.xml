@@ -40,11 +40,7 @@
          name="Open">
    </command>
    <command
-         id="org.eclipse.osee.framework.ui.atseditor.command"
-         name="ATS Editor">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command"
+         id="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
          name="Artifact Editor">
    </command>
 </extension>
@@ -89,6 +85,10 @@
     <command
           id="org.eclipse.osee.framework.ui.skynet.purge.command"
           name="Purge">
+    </command>
+    <command
+          id="org.eclipse.osee.framework.ui.atseditor.command"
+          name="ATS Editor">
     </command>
  </extension>
 	<extension name="Put commands of BranchView here (for now)" point="org.eclipse.ui.commands">
@@ -154,6 +154,10 @@
          </command>
 		<command id="org.eclipse.osee.ats.worldXView.tableCustomization.command" name="Table Customization">
          </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command"
+        name="Open Artifact Editor">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler class="org.eclipse.osee.framework.ui.skynet.branch.FlatPresentationHandler" commandId="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command">
@@ -220,7 +224,7 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenInEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -444,6 +448,18 @@
         </or>
      </activeWhen>
   </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ArtifactEditorHandler"
+        commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
+  </handler>
 	</extension>
 	<extension name="The menus for the Branch View." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.osee.framework.ui.skynet.branch.BranchView">
@@ -475,7 +491,7 @@
         icon="images/edit.gif">
   </image>
   <image
-        commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command"
+        commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
         icon="images/laser_16_16.gif">
   </image>
 	</extension>

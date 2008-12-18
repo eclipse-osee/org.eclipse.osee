@@ -235,7 +235,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
     */
    private String addOpenArtifactEditorHandler(MenuManager menuManager, final TableViewer viewer) {
       CommandContributionItem openArtifactCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.openartifacteditor.command",
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.artifacteditor.command",
                   getSite(), null, null, null, null, null, null, null, null);
       menuManager.add(openArtifactCommand);
 

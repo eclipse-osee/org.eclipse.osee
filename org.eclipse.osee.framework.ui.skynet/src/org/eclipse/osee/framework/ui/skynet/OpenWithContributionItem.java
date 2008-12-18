@@ -38,8 +38,8 @@ public class OpenWithContributionItem extends CompoundContributionItem {
 
          return new IContributionItem[] {new CommandContributionItem(
                PlatformUI.getWorkbench().getActiveWorkbenchWindow(), "org.eclipse.osee.framework.ui.open.with",
-               "org.eclipse.osee.framework.ui.skynet.openartifacteditor.command", Collections.emptyMap(), null, null,
-               null, null, null, null, SWT.NONE)};
+               "org.eclipse.osee.framework.ui.skynet.artifacteditor.command", Collections.emptyMap(), null, null, null,
+               null, null, null, SWT.NONE)};
       }
       return null;
    }
