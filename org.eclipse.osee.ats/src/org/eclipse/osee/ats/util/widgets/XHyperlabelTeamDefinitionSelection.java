@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelSelection;
@@ -31,7 +32,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection
     * @param label
     */
    public XHyperlabelTeamDefinitionSelection(String label) {
-      super(label);
+      super(label, true);
    }
 
    public Set<TeamDefinitionArtifact> getSelectedTeamDefintions() {
@@ -40,15 +41,22 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection
 
    @Override
    public String getCurrentValue() {
-      StringBuffer sb = new StringBuffer();
-      for (TeamDefinitionArtifact user : selectedTeamDefs)
-         sb.append(user.getDescriptiveName() + ", ");
-      return sb.toString().replaceFirst(", $", "");
+      return Artifacts.commaArts(selectedTeamDefs);
    }
 
-   public void setSelectedUsers(Set<TeamDefinitionArtifact> selectedUsers) {
+   public void setSelectedTeamDefs(Set<TeamDefinitionArtifact> selectedUsers) {
       this.selectedTeamDefs = selectedUsers;
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelSelection#handleClear()
+    */
+   @Override
+   public boolean handleClear() {
+      selectedTeamDefs.clear();
+      notifyXModifiedListeners();
+      return true;
    }
 
    @Override

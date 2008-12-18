@@ -81,11 +81,11 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       //
       "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"8\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
       //
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
+      //
       "<XWidget xwidgetType=\"XHyperlabelGroupSelection\" displayName=\"Group(s)\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>" +
-      //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
       "</xWidgets>";
    }
