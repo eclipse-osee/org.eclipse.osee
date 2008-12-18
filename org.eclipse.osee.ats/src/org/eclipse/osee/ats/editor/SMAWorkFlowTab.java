@@ -583,6 +583,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
          atsBody.dispose();
          createBody(body);
+         scrolledForm.setText(getEditorInput().getName());
          refreshToolbar();
       }
    }

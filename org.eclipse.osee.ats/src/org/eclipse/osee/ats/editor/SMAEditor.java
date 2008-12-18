@@ -488,6 +488,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (relationsComposite != null) relationsComposite.refreshArtifact(smaMgr.getSma());
       if (attributesComposite != null) attributesComposite.refreshArtifact(smaMgr.getSma());
       smaMgr.getEditor().onDirtied();
+      setPartName(smaMgr.getSma().getEditorTitle());
+      setTitleImage(smaMgr.getSma().getImage());
    }
 
    public static void editArtifact(Artifact artifact) {
