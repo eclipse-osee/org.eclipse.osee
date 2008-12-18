@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -52,6 +53,14 @@ public class StateManager {
          return currentStateDam.getState();
       else
          return (stateDam.getState(name, create));
+   }
+
+   /**
+    * @return true if UnAssigned user is currently an assignee
+    * @throws OseeCoreException
+    */
+   public boolean isUnAssigned() throws OseeCoreException {
+      return getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned));
    }
 
    /**

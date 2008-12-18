@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
-import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -203,8 +202,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Completed.name())) return;
       // Assign current user if unassigned
       try {
-         if (smaMgr.getStateMgr().getAssignees().size() == 1 && smaMgr.getStateMgr().getAssignees().contains(
-               UserManager.getUser(SystemUser.UnAssigned))) {
+         if (smaMgr.getStateMgr().isUnAssigned()) {
             smaMgr.getStateMgr().setAssignee(UserManager.getUser());
          }
       } catch (Exception ex) {

@@ -502,6 +502,10 @@ public class SMAManager {
                }
                for (StateMachineArtifact sma : smas) {
                   sma.getSmaMgr().getStateMgr().updateMetrics(hours, tsd.getPercent().getInt(), true);
+                  if (sma.getSmaMgr().getStateMgr().isUnAssigned()) {
+                     sma.getSmaMgr().getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+                     sma.getSmaMgr().getStateMgr().addAssignee(UserManager.getUser());
+                  }
                   sma.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
                         tsd.getSelectedOptionDef().getName());
                   sma.statusChanged();
