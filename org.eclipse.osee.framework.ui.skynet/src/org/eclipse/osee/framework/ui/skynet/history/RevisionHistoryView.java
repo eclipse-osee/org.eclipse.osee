@@ -174,8 +174,6 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
    public void explore(Artifact artifact) {
       if (treeViewer != null && artifact != null) {
          this.artifact = artifact;
-         //         Pair<TransactionId, TransactionId> points = transactionIdManager.getStartEndPoint(artifact.getBranch());
-         //         historyTable.setInput(new ArtifactChange(ChangeType.OUTGOING, ModificationType.CHANGE, artifact, null, null, points.getKey(), points.getValue(),0));
          treeViewer.setInput(artifact);
          setContentDescription("Artifact: " + artifact.getDescriptiveName());
       }

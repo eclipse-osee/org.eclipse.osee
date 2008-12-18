@@ -43,28 +43,7 @@ public class ArtifactDiffMenu {
    public static void createDiffMenuItem(Menu parentMenu, final Viewer viewer, String subMenuText, final DiffTypes diffType) {
       final MenuItem diffMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       diffMenuItem.setText(subMenuText);
-
-      final Menu submenu = new Menu(diffMenuItem);
-      diffMenuItem.setMenu(submenu);
-
-      final MenuItem stdDiffMenuItem = new MenuItem(submenu, SWT.PUSH);
-      stdDiffMenuItem.setText("Standard Diff");
-
-      stdDiffMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent ev) {
-            try {
-               processSelectedArtifacts(null, viewer, diffType);
-            } catch (Exception ex) {
-            }
-         }
-      });
-
-      final MenuItem diffArtifactMenuItem = new MenuItem(submenu, SWT.PUSH);
-      diffArtifactMenuItem.setText("Diff Artifact");
-
-      diffArtifactMenuItem.addSelectionListener(new SelectionAdapter() {
+      diffMenuItem.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent ev) {
