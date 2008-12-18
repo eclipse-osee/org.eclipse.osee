@@ -17,10 +17,14 @@ import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
  */
 public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private final static String header =
-         "Option Explicit\n\nDim oWord\nDim baseDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim diffPath\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim visible\n\nPublic Sub main()\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n\n    detectFormatChanges = True\n\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n\n";
+         "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim diffPath\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim visible\nDim mainDoc\n\nPublic Sub main()\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n\n    detectFormatChanges = True\n\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n\n";
 
    private final static String comparisonCommand =
-         "    oWord.ActiveDocument.Compare ver2, authorName, wdCompareTargetSelectedDiff, detectFormatChanges, False, False\n    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False\n    baseDoc.close()\n    If visible Then\n     Else\n         oWord.ActiveDocument.close()\n    End If\n\n";
+         "    baseDoc.Compare ver2, authorName, wdCompareTargetSelectedDiff, detectFormatChanges, False, False\n    set compareDoc = oWord.ActiveDocument\n\n";
+   private final static String comparisonCommandFirst = "    set mainDoc = compareDoc\n    baseDoc.close\n\n";
+
+   private final static String comparisonCommandOthers =
+         "    compareDoc.Content.Copy\n\n    with mainDoc\n       mainDoc.Range(.Range.End-1, .Range.End-1).Paste\n    end with\n    baseDoc.close\n\n    compareDoc.close\n\n";
 
    private final static String mergeCommand =
          "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False\n\n";
@@ -31,10 +35,12 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private StringBuilder builder;
    private boolean finalized;
    private boolean initialized;
+   private boolean first;
 
    public VbaWordDiffGenerator() {
       initialized = false;
       finalized = false;
+      first = true;
    }
 
    public boolean initialize(boolean visible, boolean detectFormatChanges) {
@@ -69,9 +75,11 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       builder.append(newerFile.getLocation().toOSString());
       builder.append("\"\n");
 
-      builder.append("    diffPath = \"");
-      builder.append(diffPath);
-      builder.append("\"\n\n");
+      if (merge) {
+         builder.append("    diffPath = \"");
+         builder.append(diffPath);
+         builder.append("\"\n\n");
+      }
 
       builder.append("    set baseDoc = oWord.Documents.Open (ver1)\n");
 
@@ -79,15 +87,24 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          builder.append(mergeCommand);
       } else {
          builder.append(comparisonCommand);
+         if (first) {
+            builder.append(comparisonCommandFirst);
+            first = false;
+         } else {
+            builder.append(comparisonCommandOthers);
+         }
       }
       return true;
    }
 
    @Override
-   public void finish(String path) throws OseeWrappedException {
+   public void finish(String vbScriptPath, boolean show) throws OseeWrappedException {
       finalized = true;
+      if (show) {
+         builder.append("    visible = True\n");
+      }
       builder.append(tail);
-      compare(getFile(path));
+      compare(getFile(vbScriptPath));
    }
 
    @Override

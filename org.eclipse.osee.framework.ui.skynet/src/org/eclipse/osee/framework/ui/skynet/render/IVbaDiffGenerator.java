@@ -17,7 +17,7 @@ public interface IVbaDiffGenerator {
 
    public boolean addComparison(IFile baseFile, IFile newerFile, String diffPath, boolean merge);
 
-   public void finish(String path) throws OseeCoreException;
+   public void finish(String vbaScriptPath, boolean show) throws OseeCoreException;
 
    public File getFile(String path) throws OseeCoreException;
 }

@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
 import org.eclipse.core.resources.IFile;
@@ -29,8 +28,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -76,6 +73,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private static final String OLE_END = "</w:docOleData>";
    private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
    public static final String UPDATE_PARAGRAPH_NUMBER_OPTION = "updateParagraphNumber";
+
    private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this);
    private List<PreviewRendererData> previewData;
 
@@ -89,14 +87,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       previewData.add(new PreviewRendererData("MS Word Preview"));
       previewData.add(new PreviewRendererData("MS Word Preview with children",
             ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#rendererId()
-    */
-   @Override
-   public String rendererId() {
-      return "org.eclipse.osee.framework.ui.skynet.wordeditor.command";
    }
 
    /* (non-Javadoc)
@@ -174,75 +164,25 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                   localFileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
                   fileNames.add(localFileName);
 
-                  monitor.setTaskName("Adding to Diff Script: " + (newerArtifact.get(i) == null ? baseArtifacts.get(i).getDescriptiveName() : newerArtifact.get(
+                  monitor.setTaskName("Adding to Diff Script: " + (newerArtifact.get(i) == null ? "Unnamed Artifact" : newerArtifact.get(
                         i).getDescriptiveName()));
                   monitor.worked(1);
 
-                  // support the cancel feature
                   if (monitor.isCanceled()) {
                      monitor.done();
                      return Status.CANCEL_STATUS;
                   }
                   generator.addComparison(baseFile, newerFile, localFileName, false);
-                  //compare(baseFile, newerFile, fileName, false, plugin.getPluginStoreFile("support/compareDocs3.vbs"));
 
                }
                monitor.setTaskName("Running Diff Script");
-               generator.finish(baseFileStr + "/compareDocs.vbs");
-               //if (fileNames.size() == 1) {
-               //   getAssociatedProgram(null).execute(baseFileStr + fileName);
-               // } else {
-               createAggregateArtifactDiffReport(fileNames, baseFileStr, null, baseFileStr + "/" + fileName, monitor);
-               // }
+               generator.finish(baseFileStr + "/compareDocs.vbs", true);
             } catch (OseeCoreException ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
             }
             return Status.OK_STATUS;
          }
       });
-   }
-
-   private void createAggregateArtifactDiffReport(ArrayList<String> fileNames, String baseFileStr, Artifact artifact, String fileName, IProgressMonitor monitor) throws OseeCoreException {
-      monitor.setTaskName("Writing final document");
-      ArrayList<String> datas = new ArrayList<String>(fileNames.size());
-      int startIndex;
-      int endIndex;
-
-      for (String filename : fileNames) {
-         String data = AFile.readFile(filename);
-         startIndex = data.indexOf("<w:body>") + 8;
-         endIndex = data.indexOf("</w:body>");
-
-         data = data.substring(startIndex, endIndex);
-
-         Matcher m = pattern.matcher(data);
-         while (m.find()) {
-            String name = m.group(1);
-            data = data.replace(name, GUID.generateGuidStr() + name);
-         }
-
-         datas.add(data);
-      }
-
-      String firstFileName = fileNames.get(0);
-      String file = AFile.readFile(firstFileName);
-      datas.remove(0);
-      file = file.replace("</w:body>", Collections.toString("", datas) + "</w:body>");
-
-      if (!file.contains("xmlns:ns2=\"http")) {
-         file = file.replaceAll("ns2", "ns1");
-      }
-
-      if (!file.contains("xmlns:ns1=\"http")) {
-         file = file.replaceAll("ns1", "ns0");
-      }
-      if (fileName == null) {
-         fileName = baseFileStr + "/" + GUID.generateGuidStr() + "_diff.xml";
-      }
-      AFile.writeFile(fileName, file);
-
-      monitor.done();
-      getAssociatedProgram(artifact).execute(fileName);
    }
 
    @Override
@@ -305,10 +245,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
-         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs");
+         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
       } else {
          diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
-         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs");
+         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs", show);
       }
 
       return diffPath;

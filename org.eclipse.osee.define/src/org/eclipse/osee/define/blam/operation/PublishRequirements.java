@@ -13,8 +13,10 @@ package org.eclipse.osee.define.blam.operation;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
@@ -85,7 +87,7 @@ public class PublishRequirements extends AbstractBlam {
 
       ArrayList<Artifact> nonFolderChildren = new ArrayList<Artifact>();
       if (artifact.isOfType("Folder")) {
-         for (Artifact child : artifact.getChildren()) {
+         for (Artifact child : artifact.getChildren(true)) {
             if (child.isOfType("Folder")) {
                publish(monitor, child, options);
             } else {
@@ -105,8 +107,22 @@ public class PublishRequirements extends AbstractBlam {
          }
          nonFolderChildren = buildRecursiveList(nonFolderChildren);
          int transactionId = BranchManager.getBranchTransaction(date, branch.getBranchId());
-         RendererManager.diffInJob(getOlderArtifacts(nonFolderChildren, transactionId, branch.getBranchId()),
-               nonFolderChildren, options);
+         ArrayList<Artifact> olderArtifacts = getOlderArtifacts(nonFolderChildren, transactionId, branch.getBranchId());
+         int index = 0;
+         for (Artifact art : olderArtifacts) {
+            if (art != null && art.isDeleted()) {
+               olderArtifacts.set(index, null);
+            }
+            index++;
+         }
+         index = 0;
+         for (Artifact art : nonFolderChildren) {
+            if (art != null && art.isDeleted()) {
+               nonFolderChildren.set(index, null);
+            }
+            index++;
+         }
+         RendererManager.diffInJob(olderArtifacts, nonFolderChildren, options);
       } else {
          RendererManager.preview(nonFolderChildren, monitor, options);
       }
@@ -131,8 +147,9 @@ public class PublishRequirements extends AbstractBlam {
       int queryId = ArtifactLoader.getNewQueryId();
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
+      Set<Artifact> artifactSet = new HashSet<Artifact>(artifacts);
       List<Object[]> insertParameters = new LinkedList<Object[]>();
-      for (Artifact artifact : artifacts) {
+      for (Artifact artifact : artifactSet) {
          insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branchId, transactionId});
       }
       ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, true, true);
@@ -152,7 +169,7 @@ public class PublishRequirements extends AbstractBlam {
    }
 
    private void addChildren(ArrayList<Artifact> artifacts, Artifact artifact) throws OseeCoreException {
-      for (Artifact loopArtifact : artifact.getChildren()) {
+      for (Artifact loopArtifact : artifact.getChildren(true)) {
          artifacts.add(loopArtifact);
          addChildren(artifacts, loopArtifact);
       }

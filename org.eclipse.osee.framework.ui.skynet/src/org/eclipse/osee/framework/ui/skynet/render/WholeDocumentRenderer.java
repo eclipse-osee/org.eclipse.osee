@@ -153,10 +153,10 @@ public class WholeDocumentRenderer extends WordRenderer {
          addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
-         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs");
+         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
       } else {
          diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
-         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs");
+         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs", show);
       }
 
       return diffPath;

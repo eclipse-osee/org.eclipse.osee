@@ -189,6 +189,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return RelationManager.getRelatedArtifacts(this, relationEnum);
    }
 
+   public List<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum, boolean includeDeleted) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(this, relationEnum, includeDeleted);
+   }
+
    /**
     * Check if artifacts are related to each other by relation type
     * 
@@ -369,6 +373,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public List<Artifact> getChildren() throws OseeCoreException {
       return getRelatedArtifacts(DEFAULT_HIERARCHICAL__CHILD);
+   }
+
+   /**
+    * @return set of the direct children of this artifact
+    * @throws OseeCoreException
+    */
+   public List<Artifact> getChildren(boolean includeDeleted) throws OseeCoreException {
+      return getRelatedArtifacts(DEFAULT_HIERARCHICAL__CHILD, includeDeleted);
    }
 
    /**

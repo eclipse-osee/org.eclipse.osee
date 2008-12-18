@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +53,11 @@ public class RelationManager {
 
    private static final HashMap<Artifact, List<RelationLink>> artifactToRelations =
          new HashMap<Artifact, List<RelationLink>>(1024);
+
+   private static final String GET_DELETED_ARTIFACT_B =
+         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current in (2, 3))";
+   private static final String GET_DELETED_ARTIFACT_A =
+         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = (2, 3))";
 
    private static final int LINKED_LIST_KEY = -1;
 
@@ -158,17 +164,17 @@ public class RelationManager {
             try {
                if (relationSide == null) {
                   Artifact art = relation.getArtifactOnOtherSide(artifact);
-                  //	               if(!art.isDeleted()){
+                  //                if(!art.isDeleted()){
                   relatedArtifacts.add(art);
-                  //	               }
+                  //                }
                } else {
                   // only select relations where the related artifact is on relationSide
                   // (and thus on the side opposite of "artifact")
                   if (relation.getSide(artifact) != relationSide) {
                      Artifact art = relation.getArtifact(relationSide);
-                     //	            	  if(!art.isDeleted()){
+                     //                  if(!art.isDeleted()){
                      relatedArtifacts.add(art);
-                     //		              }	                  
+                     //                  }                     
                   }
                }
             } catch (ArtifactDoesNotExist ex) {
@@ -259,6 +265,42 @@ public class RelationManager {
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType) throws OseeCoreException {
       return getRelatedArtifacts(artifact, relationType, null);
+   }
+
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, boolean includeDeleted) throws OseeCoreException {
+      if (includeDeleted) {
+         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+         List<Artifact> artifacts =
+               getRelatedArtifacts(artifact, relationEnum.getRelationType(), relationEnum.getSide());
+         int queryId = ArtifactLoader.getNewQueryId();
+         //(SELECT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = 3)"
+         if (relationEnum.getSide().equals(RelationSide.SIDE_B)) {
+            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, insertTime, SQL3DataType.INTEGER,
+                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getRelationTypeId(),
+                  artifact.getArtId());
+         } else {
+            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, insertTime, SQL3DataType.INTEGER,
+                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getRelationTypeId(),
+                  artifact.getArtId());
+         }
+
+         List<Artifact> deletedArtifacts =
+               ArtifactLoader.loadArtifactsFromQueryId(queryId, ArtifactLoad.FULL, null, 4, false, false, true);
+
+         if (artifacts.isEmpty()) {
+            artifacts = new LinkedList<Artifact>();
+         }
+         for (Artifact artifactLoop : deletedArtifacts) {
+            if (artifactLoop.isDeleted()) {
+               artifacts.add(artifactLoop);
+            }
+         }
+
+         return artifacts;
+      } else {
+         return getRelatedArtifacts(artifact, relationEnum.getRelationType(), relationEnum.getSide());
+      }
+
    }
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
