@@ -43,6 +43,10 @@
          id="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
          name="Artifact Editor">
    </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.wordeditor.command"
+         name="Word Edit">
+   </command>
 </extension>
 <extension
       id="Open With Handlers"
@@ -60,7 +64,7 @@
       </enabledWhen>
    </handler>
    <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.RendererOpenHandler"
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.OpenHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.open.command">
       <enabledWhen>
          <with
@@ -70,6 +74,10 @@
             </count>
          </with>
       </enabledWhen>
+   </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.WordEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.wordeditor.command">
    </handler>
 </extension>
  <extension

@@ -35,6 +35,8 @@ public interface IRenderer {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
+   public abstract String rendererId();
+
    public abstract boolean isPreviewable();
 
    public abstract List<PreviewRendererData> getPreviewData();

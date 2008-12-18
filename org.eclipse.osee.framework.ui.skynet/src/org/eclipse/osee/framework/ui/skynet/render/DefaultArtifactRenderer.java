@@ -262,4 +262,12 @@ public class DefaultArtifactRenderer implements IRenderer {
    public List<PreviewRendererData> getPreviewData() {
       return null;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#rendererId()
+    */
+   @Override
+   public String rendererId() {
+      return null;
+   }
 }

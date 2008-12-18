@@ -92,6 +92,14 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#rendererId()
+    */
+   @Override
+   public String rendererId() {
+      return "org.eclipse.osee.framework.ui.skynet.wordeditor.command";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
     */
    @Override
