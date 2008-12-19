@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -23,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -61,7 +61,7 @@ public class PurgeArtifactHandler extends CommandHandler {
                try {
                   new DbTransaction() {
                      @Override
-                     protected void handleTxWork(Connection connection) throws OseeCoreException {
+                     protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
                         for (Artifact artifactToPurge : artifacts) {
                            monitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
                            artifactToPurge.purgeFromBranch(connection);

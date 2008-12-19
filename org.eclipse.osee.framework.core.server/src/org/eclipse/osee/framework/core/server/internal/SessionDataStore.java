@@ -17,8 +17,6 @@ import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.server.internal.SessionData.SessionState;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -43,60 +41,35 @@ public class SessionDataStore {
    }
 
    public static void deleteSession(String... sessionIds) throws OseeDataStoreException {
-      OseeConnection connection = null;
-      try {
-         if (sessionIds != null) {
-            connection = OseeDbConnection.getConnection();
-            List<Object[]> data = new ArrayList<Object[]>();
-            for (String session : sessionIds) {
-               data.add(new Object[] {session});
-            }
-            ConnectionHandler.runBatchUpdate(connection, DELETE_SESSION, data);
+      if (sessionIds != null) {
+         List<Object[]> data = new ArrayList<Object[]>();
+         for (String session : sessionIds) {
+            data.add(new Object[] {session});
          }
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
+         ConnectionHandler.runBatchUpdate(DELETE_SESSION, data);
       }
    }
 
    public static void createSessions(String serverId, OseeSession... sessions) throws OseeDataStoreException {
-      OseeConnection connection = null;
-      try {
-         if (sessions != null && sessions.length > 0) {
-            connection = OseeDbConnection.getConnection();
-            List<Object[]> data = new ArrayList<Object[]>();
-            for (OseeSession session : sessions) {
-               data.add(new Object[] {serverId, session.getSessionId(), session.getUserId(),
-                     session.getClientMachineName(), session.getClientAddress(), session.getPort(),
-                     session.getVersion(), session.getCreation(), session.getLastInteractionDate(),
-                     session.getLastInteraction()});
-            }
-            ConnectionHandler.runBatchUpdate(connection, INSERT_SESSION, data);
+      if (sessions != null && sessions.length > 0) {
+         List<Object[]> data = new ArrayList<Object[]>();
+         for (OseeSession session : sessions) {
+            data.add(new Object[] {serverId, session.getSessionId(), session.getUserId(),
+                  session.getClientMachineName(), session.getClientAddress(), session.getPort(), session.getVersion(),
+                  session.getCreation(), session.getLastInteractionDate(), session.getLastInteraction()});
          }
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
+         ConnectionHandler.runBatchUpdate(INSERT_SESSION, data);
       }
    }
 
    public static void updateSessions(String serverId, OseeSession... sessions) throws OseeDataStoreException {
-      OseeConnection connection = null;
-      try {
-         if (sessions != null && sessions.length > 0) {
-            connection = OseeDbConnection.getConnection();
-            List<Object[]> data = new ArrayList<Object[]>();
-            for (OseeSession session : sessions) {
-               data.add(new Object[] {serverId, session.getLastInteractionDate(), session.getLastInteraction(),
-                     session.getSessionId()});
-            }
-            ConnectionHandler.runBatchUpdate(connection, UPDATE_SESSION, data);
+      if (sessions != null && sessions.length > 0) {
+         List<Object[]> data = new ArrayList<Object[]>();
+         for (OseeSession session : sessions) {
+            data.add(new Object[] {serverId, session.getLastInteractionDate(), session.getLastInteraction(),
+                  session.getSessionId()});
          }
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
+         ConnectionHandler.runBatchUpdate(UPDATE_SESSION, data);
       }
    }
 

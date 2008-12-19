@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
-import java.sql.Connection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
@@ -62,7 +62,7 @@ public class TagItemWorker extends BaseCmdWorker {
       if (toTag.isEmpty() != true) {
          new DbTransaction() {
             @Override
-            protected void handleTxWork(Connection connection) throws OseeCoreException {
+            protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
                TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
                for (Long item : toTag) {
                   joinQuery.add(item);

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
@@ -132,7 +132,7 @@ public class IdTranslator {
       return !newIds.isEmpty();
    }
 
-   public void store(Connection connection, int sequenceId) throws OseeDataStoreException {
+   public void store(OseeConnection connection, int sequenceId) throws OseeDataStoreException {
       if (hasItemsToStore()) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (Long original : newIds) {

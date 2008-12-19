@@ -66,8 +66,8 @@ public class RevertTest extends TestCase {
             ConflictTestManager.getArtifacts(true, ConflictTestManager.REVERT_ARTIFACT_QUERY);
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
-      for (Artifact artifact : artifacts) {
-         try {
+      try {
+         for (Artifact artifact : artifacts) {
             if (DEBUG) {
                System.out.println("     Baselined Transactions");
             }
@@ -81,13 +81,9 @@ public class RevertTest extends TestCase {
                         chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
                }
             }
-         } finally {
-            chStmt.close();
-         }
-         if (DEBUG) {
-            System.out.println("     Nonbaselined Transactions");
-         }
-         try {
+            if (DEBUG) {
+               System.out.println("     Nonbaselined Transactions");
+            }
             chStmt.runPreparedQuery(GET_NON_BASELINED_TRANSACTIONS, artifact.getBranch().getBranchId(),
                   artifact.getArtId(), artifact.getBranch().getBranchId(), artifact.getArtId(),
                   artifact.getBranch().getBranchId(), artifact.getArtId(), artifact.getArtId());
@@ -98,97 +94,84 @@ public class RevertTest extends TestCase {
                         chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
                }
             }
-         } finally {
-            chStmt.close();
-         }
-         for (Pair<Integer, Integer> pairs : baselines) {
-            try {
+            for (Pair<Integer, Integer> pairs : baselines) {
                chStmt.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(), artifact.getBranch().getBranchId());
                while (chStmt.next()) {
                   uniqueGammas.add(chStmt.getInt("gamma_id"));
                }
-            } finally {
-               chStmt.close();
-            }
-            try {
                chStmt.runPreparedQuery(GAMMAS_KEEP, pairs.getKey(), artifact.getBranch().getBranchId());
                while (chStmt.next()) {
                   keepGammas.add(chStmt.getInt("gamma_id"));
                }
-            } finally {
-               chStmt.close();
             }
-         }
-         for (Pair<Integer, Integer> pairs : nonBaselines) {
-            try {
-               chStmt.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(), artifact.getBranch().getBranchId());
-               while (chStmt.next()) {
-                  uniqueGammas.add(chStmt.getInt("gamma_id"));
-               }
-            } finally {
-
+            for (Pair<Integer, Integer> pairs : nonBaselines) {
                try {
+                  chStmt.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(), artifact.getBranch().getBranchId());
+                  while (chStmt.next()) {
+                     uniqueGammas.add(chStmt.getInt("gamma_id"));
+                  }
+               } finally {
+
                   chStmt.runPreparedQuery(GAMMAS_KEEP, pairs.getKey(), artifact.getBranch().getBranchId());
                   while (chStmt.next()) {
                      keepGammas.add(chStmt.getInt("gamma_id"));
                   }
-               } finally {
-                  chStmt.close();
                }
             }
          }
-      }
 
-      if (DEBUG) {
-         System.out.println("     Gammas to Remove");
-         for (Integer integer : uniqueGammas) {
-            System.out.println(String.format("          Gamma ID = %d ", integer.intValue()));
-         }
-         System.out.println("     Gammas to Keep");
-         for (Integer integer : keepGammas) {
-            System.out.println(String.format("          Gamma ID = %d ", integer.intValue()));
-         }
-      }
-
-      //Ok now lets revert the artifacts
-      for (Artifact artifact : artifacts) {
          if (DEBUG) {
-            System.out.println("Before Revert");
-            DeletionTest.dumpArtifact(artifact);
+            System.out.println("     Gammas to Remove");
+            for (Integer integer : uniqueGammas) {
+               System.out.println(String.format("          Gamma ID = %d ", integer.intValue()));
+            }
+            System.out.println("     Gammas to Keep");
+            for (Integer integer : keepGammas) {
+               System.out.println(String.format("          Gamma ID = %d ", integer.intValue()));
+            }
          }
-         artifact.revert();
-         if (DEBUG) {
-            System.out.println("After Revert");
-            DeletionTest.dumpArtifact(artifact);
+
+         //Ok now lets revert the artifacts
+         for (Artifact artifact : artifacts) {
+            if (DEBUG) {
+               System.out.println("Before Revert");
+               DeletionTest.dumpArtifact(artifact);
+            }
+            artifact.revert();
+            if (DEBUG) {
+               System.out.println("After Revert");
+               DeletionTest.dumpArtifact(artifact);
+            }
          }
+
+         //Now lets check that everything is as should be
+
+         for (Pair<Integer, Integer> pairs : baselines) {
+            chStmt.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(), pairs.getValue().intValue());
+            assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d Trans %d",
+                  pairs.getKey(), pairs.getValue()), chStmt.next());
+         }
+
+         for (Pair<Integer, Integer> pairs : nonBaselines) {
+            chStmt.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(), pairs.getValue().intValue());
+            assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d Trans %d",
+                  pairs.getKey(), pairs.getValue()), !chStmt.next());
+         }
+
+         for (Integer gammas : uniqueGammas) {
+            chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(), gammas.intValue());
+            assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d", gammas),
+                  !chStmt.next());
+         }
+
+         for (Integer gammas : keepGammas) {
+            chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(), gammas.intValue());
+            assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d", gammas),
+                  chStmt.next());
+         }
+      } finally {
+         chStmt.close();
       }
-
-      //Now lets check that everything is as should be
-
-      for (Pair<Integer, Integer> pairs : baselines) {
-         chStmt.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(), pairs.getValue().intValue());
-         assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d Trans %d",
-               pairs.getKey(), pairs.getValue()), chStmt.next());
-      }
-
-      for (Pair<Integer, Integer> pairs : nonBaselines) {
-         chStmt.runPreparedQuery(GET_TXS_ENTRIES, pairs.getKey().intValue(), pairs.getValue().intValue());
-         assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d Trans %d",
-               pairs.getKey(), pairs.getValue()), !chStmt.next());
-      }
-
-      for (Integer gammas : uniqueGammas) {
-         chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(), gammas.intValue());
-         assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d", gammas),
-               !chStmt.next());
-      }
-
-      for (Integer gammas : keepGammas) {
-         chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(), gammas.intValue());
-         assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d", gammas),
-               chStmt.next());
-      }
-
    }
    private static final String GET_BASELINE_RELATION_LINKS =
          "Select txs.transaction_id, txs.gamma_id FROM osee_relation_link rel, osee_txs txs, osee_tx_details det WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_id = ? AND det.tx_type = 1";

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -157,7 +157,7 @@ public class JoinUtility {
          return insertTime;
       }
 
-      public void store(Connection connection) throws OseeDataStoreException {
+      public void store(OseeConnection connection) throws OseeDataStoreException {
          if (this.wasStored != true) {
             List<Object[]> data = new ArrayList<Object[]>();
             for (IJoinRow joinArray : entries) {
@@ -172,7 +172,7 @@ public class JoinUtility {
          }
       }
 
-      public int delete(Connection connection) throws OseeDataStoreException {
+      public int delete(OseeConnection connection) throws OseeDataStoreException {
          int updated = 0;
          if (queryId != -1) {
             updated = ConnectionHandler.runPreparedUpdate(connection, joinItem.getDeleteSql(), queryId);
@@ -193,7 +193,7 @@ public class JoinUtility {
       }
    }
 
-   public static void deleteQuery(Connection connection, JoinItem item, int queryId) throws Exception {
+   public static void deleteQuery(OseeConnection connection, JoinItem item, int queryId) throws Exception {
       if (item != null) {
          ConnectionHandler.runPreparedUpdate(connection, item.getDeleteSql(), queryId);
       }

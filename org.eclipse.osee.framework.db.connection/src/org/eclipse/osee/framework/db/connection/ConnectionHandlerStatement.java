@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.db.connection;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.Connection;
+import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,25 +23,26 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
- * Statment object created by the ConnectionHandler. It contains: <li>ResultSet <li>Statement
- * 
  * @author Jeff C. Phillips
+ * @author Ryan D. Brooks
  */
 public class ConnectionHandlerStatement {
    private ResultSet rSet;
    private PreparedStatement preparedStatement;
-   private Connection connection;
+   private CallableStatement callableStatement;
+   private OseeConnection connection;
    private final boolean autoClose;
 
-   public ConnectionHandlerStatement(Connection connection) {
+   public ConnectionHandlerStatement(OseeConnection connection) {
       this(connection, connection == null);
    }
 
-   public ConnectionHandlerStatement(Connection connection, boolean autoClose) {
+   public ConnectionHandlerStatement(OseeConnection connection, boolean autoClose) {
       this.autoClose = autoClose;
       this.connection = connection;
    }
@@ -65,15 +66,46 @@ public class ConnectionHandlerStatement {
       QueryRecord record = new QueryRecord(query, data);
 
       try {
-         if (connection == null) {
-            connection = OseeDbConnection.getConnection(); // this allows for multiple calls to this method to have an open connection
-         }
+         allowReuse();
          preparedStatement = connection.prepareStatement(query);
          preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
          ConnectionHandler.populateValuesForPreparedStatement(preparedStatement, data);
 
          record.markStart();
          rSet = preparedStatement.executeQuery();
+         record.markEnd();
+      } catch (SQLException ex) {
+         record.setSqlException(ex);
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   /**
+    * Invokes a stored procedure parameters of type SQL3DataType are registered as Out parameters and all others are set
+    * as in parameters
+    * 
+    * @param query
+    * @param data
+    * @throws OseeDataStoreException
+    */
+   public void runCallableStatement(String query, Object... data) throws OseeDataStoreException {
+      QueryRecord record = new QueryRecord(query, data);
+
+      try {
+         allowReuse();
+         callableStatement = connection.prepareCall(query);
+
+         for (int index = 0; index < data.length; index++) {
+            if (data[index] instanceof SQL3DataType) {
+               callableStatement.registerOutParameter(index + 1, ((SQL3DataType) data[index]).getSQLTypeNumber());
+            }
+         }
+         ConnectionHandler.populateValuesForPreparedStatement(callableStatement, data);
+
+         record.markStart();
+         if (callableStatement.execute()) {
+            rSet = callableStatement.getResultSet();
+         }
          record.markEnd();
       } catch (SQLException ex) {
          record.setSqlException(ex);
@@ -93,34 +125,43 @@ public class ConnectionHandlerStatement {
    }
 
    /**
-    * @param rset The rset to set.
+    * The application must call close when it is done using this object; however, it is safe to use this same object
+    * multiple times, for example calling runPreparedQuery() repeatedly, without any intermediate calls to close
     */
-   @Deprecated
-   public void setRset(ResultSet rset) {
-      this.rSet = rset;
-   }
-
-   /**
-    * @param statement The statement to set.
-    */
-   public void setStatement(PreparedStatement statement) {
-      this.preparedStatement = statement;
-   }
-
    public void close() {
       try {
-         if (rSet != null) {
-            rSet.close();
-         }
-         if (preparedStatement != null) {
-            preparedStatement.close();
-         }
+         closePreviousResources();
          if (autoClose && connection != null) {
             connection.close();
             connection = null;// this allows for multiple calls to runPreparedQuery to have an open connection
          }
       } catch (SQLException ex) {
          OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
+      }
+   }
+
+   /**
+    * allows for multiple uses of this object to have an open connection
+    * 
+    * @throws SQLException
+    * @throws OseeDataStoreException
+    */
+   private void allowReuse() throws SQLException, OseeDataStoreException {
+      if (connection == null) {
+         connection = OseeDbConnection.getConnection();
+      }
+      closePreviousResources();
+   }
+
+   private void closePreviousResources() throws SQLException {
+      if (rSet != null) {
+         rSet.close();
+      }
+      if (preparedStatement != null) {
+         preparedStatement.close();
+      }
+      if (callableStatement != null) {
+         callableStatement.close();
       }
    }
 
@@ -182,6 +223,22 @@ public class ConnectionHandlerStatement {
    int getInt(int columnIndex) throws OseeDataStoreException {
       try {
          return rSet.getInt(columnIndex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   int getCallableInt(int columnIndex) throws OseeDataStoreException {
+      try {
+         return callableStatement.getInt(columnIndex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public double getCallableDouble(int columnIndex) throws OseeDataStoreException {
+      try {
+         return callableStatement.getDouble(columnIndex);
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
@@ -300,6 +357,22 @@ public class ConnectionHandlerStatement {
    public Object getObject(int columnIndex) throws OseeDataStoreException {
       try {
          return rSet.getObject(columnIndex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   /**
+    * Returns the number of rows in the result set. Once this method returns the result set will be pointing to the last
+    * row
+    * 
+    * @return the number of rows in the result set
+    * @throws OseeDataStoreException
+    */
+   public int getRowCount() throws OseeDataStoreException {
+      try {
+         rSet.last();
+         return rSet.getRow();
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }

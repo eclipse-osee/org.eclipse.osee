@@ -1,22 +1,16 @@
-package org.eclipse.osee.framework.db.connection.internal;
+package org.eclipse.osee.framework.db.connection;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.IConnection;
-import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-public class OseeConnectionPool {
-
-   private final Vector<OseeConnection> connections;
-   final private long timeout = 60000;
-   private final ConnectionReaper reaper;
+class OseeConnectionPool {
+   private final List<OseeConnection> connections = new CopyOnWriteArrayList<OseeConnection>();
    private final String dbDriver;
    private final String dbUrl;
    private final Properties properties;
@@ -29,62 +23,45 @@ public class OseeConnectionPool {
    }
 
    public OseeConnectionPool(String dbDriver, String dbUrl, Properties properties) {
-      connections = new Vector<OseeConnection>();
       this.dbDriver = dbDriver;
       this.dbUrl = dbUrl;
       this.properties = properties;
-      reaper = new ConnectionReaper(this);
-      reaper.start();
-   }
-
-   public synchronized void reapConnections() {
-
-      long stale = System.currentTimeMillis() - timeout;
-      Enumeration<OseeConnection> connlist = connections.elements();
-
-      while ((connlist != null) && (connlist.hasMoreElements())) {
-         OseeConnection conn = connlist.nextElement();
-         if ((conn.inUse()) && (stale > conn.getLastUse()) && (!conn.validate())) {
-            removeConnection(conn);
-         }
-      }
    }
 
    public synchronized boolean hasOpenConnection() {
       return connections.size() > 0;
    }
 
+   /**
+    * at a minimum this should be called on jvm shutdown
+    */
    public synchronized void closeConnections() {
-
-      Enumeration<OseeConnection> connlist = connections.elements();
-
-      while ((connlist != null) && (connlist.hasMoreElements())) {
-         OseeConnection conn = connlist.nextElement();
-         removeConnection(conn);
+      for (OseeConnection connection : connections) {
+         connection.close();
       }
+      connections.clear();
    }
 
-   private synchronized void removeConnection(OseeConnection conn) {
-      connections.removeElement(conn);
+   synchronized void removeConnection(OseeConnection conn) {
+      connections.remove(conn);
       OseeLog.log(InternalActivator.class, Level.INFO, String.format("removeConnection - %s - connections [%s]", dbUrl,
             connections.size()));
    }
 
    public synchronized OseeConnection getConnection() throws OseeDataStoreException {
-      OseeConnection c;
-      for (int i = 0; i < connections.size(); i++) {
-         c = connections.elementAt(i);
-         if (c.lease()) {
-            return c;
+      for (OseeConnection connection : connections) {
+         if (connection.lease()) {
+            return connection;
          }
       }
+
       try {
-         c = getOseeConnection();
-         c.lease();
-         connections.addElement(c);
+         OseeConnection connection = getOseeConnection();
+         connection.lease();
+         connections.add(connection);
          OseeLog.log(InternalActivator.class, Level.INFO, String.format("getConnection - %s - connections [%s]", dbUrl,
                connections.size()));
-         return c;
+         return connection;
       } catch (Throwable th) {
          throw new OseeDataStoreException("Unable to get a database connection: ", th);
       }
@@ -98,15 +75,24 @@ public class OseeConnectionPool {
       return new OseeConnection(connection, this);
    }
 
-   public synchronized void returnConnection(OseeConnection conn) {
+   synchronized void returnConnection(OseeConnection connection) {
       try {
-         if (conn.isClosed()) {
-            removeConnection(conn);
+         if (connection.isClosed()) {
+            removeConnection(connection);
          } else {
-            conn.expireLease();
+            connection.expireLease();
          }
-      } catch (SQLException ex) {
-         removeConnection(conn);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
+         removeConnection(connection);
+      }
+   }
+
+   synchronized void releaseUneededConnections() throws OseeDataStoreException {
+      for (OseeConnection connection : connections) {
+         if (connection.isStale()) {
+            connection.destroy();
+         }
       }
    }
 }

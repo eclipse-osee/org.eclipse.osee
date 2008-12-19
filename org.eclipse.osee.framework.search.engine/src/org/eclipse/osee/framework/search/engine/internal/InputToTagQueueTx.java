@@ -11,12 +11,12 @@
 
 package org.eclipse.osee.framework.search.engine.internal;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
@@ -47,10 +47,10 @@ public abstract class InputToTagQueueTx extends DbTransaction {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
+    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.OseeConnection)
     */
    @Override
-   protected void handleTxWork(Connection connection) throws OseeCoreException {
+   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       try {
          convertInput(connection);
       } catch (Exception ex) {
@@ -93,7 +93,7 @@ public abstract class InputToTagQueueTx extends DbTransaction {
       }
    }
 
-   protected void addEntry(Connection connection, long gammaId) throws OseeDataStoreException {
+   protected void addEntry(OseeConnection connection, long gammaId) throws OseeDataStoreException {
       if (currentJoinQuery == null) {
          currentJoinQuery = JoinUtility.createTagQueueJoinQuery();
       }
@@ -107,7 +107,7 @@ public abstract class InputToTagQueueTx extends DbTransaction {
       return this.isCacheAll != true && this.currentJoinQuery != null && this.currentJoinQuery.size() > this.cacheLimit;
    }
 
-   private void storeQueryIds(Connection connection) throws OseeDataStoreException {
+   private void storeQueryIds(OseeConnection connection) throws OseeDataStoreException {
       if (currentJoinQuery != null && !currentJoinQuery.isEmpty()) {
          currentJoinQuery.store(connection);
          queryIds.add(currentJoinQuery.getQueryId());
@@ -115,5 +115,5 @@ public abstract class InputToTagQueueTx extends DbTransaction {
       currentJoinQuery = null;
    }
 
-   abstract protected void convertInput(Connection connection) throws Exception;
+   abstract protected void convertInput(OseeConnection connection) throws Exception;
 }

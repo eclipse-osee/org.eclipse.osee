@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.db.connection;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
-import org.eclipse.osee.framework.db.connection.internal.OseeConnectionPool;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Andrew M. Finkbeiner
  */
 public class OseeDbConnection {
-
+   private static final Timer timer = new Timer();
    private static final Map<String, OseeConnectionPool> dbInfoToPools = new HashMap<String, OseeConnectionPool>();
 
    public static boolean hasOpenConnection() throws OseeDataStoreException {
@@ -42,23 +42,10 @@ public class OseeDbConnection {
    }
 
    public static OseeConnection getConnection() throws OseeDataStoreException {
-      checkThread();
       return getConnection(getDatabaseInfoProvider());
    }
 
-   private static void checkThread() {/*
-                           String threadName = Thread.currentThread().getName();
-                           
-                           if (Display.getCurrent() == null) return false;
-                           return Display.getCurrent().getThread() == Thread.currentThread();
-                           
-                           if (threadName.equals("main") || threadName.equals("Start Level Event Dispatcher")) {
-                              OseeLog.log(InternalActivator.class, Level.SEVERE, "Making db calls in display threads.");
-                           }*/
-   }
-
    public static OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeDataStoreException {
-      checkThread();
       if (databaseInfo == null) {
          throw new OseeDataStoreException("Unable to get connection - database info was null.");
       }
@@ -68,22 +55,9 @@ public class OseeDbConnection {
                new OseeConnectionPool(databaseInfo.getDriver(), databaseInfo.getConnectionUrl(),
                      databaseInfo.getConnectionProperties());
          dbInfoToPools.put(databaseInfo.getId(), pool);
+         timer.schedule(new StaleConnectionCloser(pool), 900000, 900000);
       }
       return pool.getConnection();
-   }
-
-   /**
-    * @return whether a successful connection has been had to the database
-    */
-   public static boolean isConnectionValid() {
-      try {
-         OseeConnection connection = getConnection();
-         connection.close();
-      } catch (OseeDataStoreException ex) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
-         return false;
-      }
-      return true;
    }
 
    private static IDatabaseInfo getDatabaseInfoProvider() throws OseeDataStoreException {

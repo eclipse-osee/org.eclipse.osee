@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -138,7 +138,7 @@ public class CommitDbTx extends DbTransaction {
     * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
     */
    @Override
-   protected void handleTxWork(Connection connection) throws OseeCoreException {
+   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       branchesInCommit.add(this.fromBranch);
       User userToBlame = UserManager.getUser();
 
@@ -371,7 +371,7 @@ public class CommitDbTx extends DbTransaction {
       branchesInCommit.remove(this.fromBranch);
    }
 
-   private static int addCommitTransactionToDatabase(Connection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
+   private static int addCommitTransactionToDatabase(OseeConnection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
       int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();

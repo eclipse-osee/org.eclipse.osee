@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -443,7 +443,7 @@ public class ArtifactPersistenceManager {
     * 
     * @param artifact
     */
-   public static void purgeArtifactFromBranch(Connection connection, int branchId, int artId) throws OseeCoreException {
+   public static void purgeArtifactFromBranch(OseeConnection connection, int branchId, int artId) throws OseeCoreException {
       revertArtifact(connection, branchId, artId);
 
       //Remove from Baseline
@@ -452,12 +452,12 @@ public class ArtifactPersistenceManager {
       ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
    }
 
-   public static void revertAttribute(Connection connection, Attribute<?> attribute) throws OseeDataStoreException {
+   public static void revertAttribute(OseeConnection connection, Attribute<?> attribute) throws OseeDataStoreException {
       revertAttribute(connection, attribute.getArtifact().getBranch().getBranchId(),
             attribute.getArtifact().getArtId(), attribute.getAttrId());
    }
 
-   public static void revertAttribute(Connection connection, int branchId, int artId, int attributeId) throws OseeDataStoreException {
+   public static void revertAttribute(OseeConnection connection, int branchId, int artId, int attributeId) throws OseeDataStoreException {
 
       long time = System.currentTimeMillis();
       long totalTime = time;
@@ -551,7 +551,7 @@ public class ArtifactPersistenceManager {
     * @deprecated Not really deprecated but not usable yet because we don't handle fixing the reordering issue that may
     *             have occured
     */
-   private void revertRelationLink(Connection connection, RelationLink link) throws OseeCoreException {
+   private void revertRelationLink(OseeConnection connection, RelationLink link) throws OseeCoreException {
       //Only reverts relation links that don't span multiple branches.  Need to revisit if additional functionality is needed.
       if (!link.getArtifactA().getBranch().equals(link.getArtifactB().getBranch())) {
          throw new OseeArgumentException(String.format("Can not revert Relation %d. Relation spans multiple branches",
@@ -561,7 +561,7 @@ public class ArtifactPersistenceManager {
             link.getArtifactA().getArtId(), link.getArtifactB().getArtId());
    }
 
-   private void revertRelationLink(Connection connection, int branchId, int relLinkId, int aArtId, int bArtId) throws OseeDataStoreException {
+   private void revertRelationLink(OseeConnection connection, int branchId, int relLinkId, int aArtId, int bArtId) throws OseeDataStoreException {
       long time = System.currentTimeMillis();
       long totalTime = time;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
@@ -655,7 +655,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   private static void updateArtifactVersion(Connection connection, int branchId, int artId) throws OseeDataStoreException {
+   private static void updateArtifactVersion(OseeConnection connection, int branchId, int artId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       //Set Artifact Version transactions to current
       if (DEBUG) {
@@ -673,12 +673,12 @@ public class ArtifactPersistenceManager {
       ConnectionHandler.runPreparedUpdate(connection, REVERT_ARTIFACT_VERSION_SET_CURRENT, artId, branchId, artId);
    }
 
-   public static void revertArtifact(Connection connection, Artifact artifact) throws OseeCoreException {
+   public static void revertArtifact(OseeConnection connection, Artifact artifact) throws OseeCoreException {
       if (artifact == null) return;
       revertArtifact(connection, artifact.getBranch().getBranchId(), artifact.getArtId());
    }
 
-   public static void revertArtifact(Connection connection, int branchId, int artId) throws OseeCoreException {
+   public static void revertArtifact(OseeConnection connection, int branchId, int artId) throws OseeCoreException {
       List<Object[]> gammaIdsModified = new ArrayList<Object[]>();
       List<Object[]> gammaIdsModifications = new ArrayList<Object[]>();
       List<Object[]> gammaIdsBaseline = new ArrayList<Object[]>();

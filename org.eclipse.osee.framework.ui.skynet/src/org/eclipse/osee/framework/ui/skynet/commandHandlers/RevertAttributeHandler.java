@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.sql.Connection;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -23,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -76,7 +76,7 @@ public class RevertAttributeHandler extends AbstractHandler {
 
             DbTransaction dbTransaction = new DbTransaction() {
                @Override
-               protected void handleTxWork(Connection connection) throws OseeCoreException {
+               protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
                   for (Attribute<?> attribute : attributes) {
                      monitor.setTaskName(attribute.getArtifact().getInternalDescriptiveName() + " : " + attribute.getDisplayableString());
                      ArtifactPersistenceManager.revertAttribute(connection, attribute);

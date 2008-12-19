@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -27,7 +27,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    private final int cacheLimit;
    private final boolean isCacheAll;
 
-   private Connection connection;
+   private OseeConnection connection;
    private MetaData metadata;
    private TranslationManager translator;
    private Options options;
@@ -61,7 +61,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.metadata = metadata;
    }
 
-   public void setConnection(Connection connection) {
+   public void setConnection(OseeConnection connection) {
       this.connection = connection;
    }
 
@@ -69,7 +69,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.translator = translator;
    }
 
-   protected Connection getConnection() {
+   protected OseeConnection getConnection() {
       return this.connection;
    }
 
@@ -89,7 +89,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.data.add(objects);
    }
 
-   protected void store(Connection connection) throws OseeDataStoreException {
+   protected void store(OseeConnection connection) throws OseeDataStoreException {
       if (this.data.isEmpty() != true) {
          ConnectionHandler.runBatchUpdate(connection, getMetaData().getQuery(), this.data);
          this.data.clear();

@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -64,7 +64,7 @@ public class BranchCreator {
       return instance;
    }
 
-   private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Connection connection, Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
+   private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(OseeConnection connection, Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
       User userToBlame = UserManager.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId = (userToBlame == null) ? UserManager.getUser(SystemUser.NoOne).getArtId() : userToBlame.getArtId();
@@ -101,7 +101,7 @@ public class BranchCreator {
     * @return branch object that represents the newly created branch
     * @throws OseeCoreException
     */
-   private Branch initializeBranch(Connection connection, TransactionId sourceTransactionId, String branchShortName, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
+   private Branch initializeBranch(OseeConnection connection, TransactionId sourceTransactionId, String branchShortName, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
       if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, SELECT_BRANCH_BY_NAME, branchName) > 0) {
@@ -193,7 +193,7 @@ public class BranchCreator {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork(Connection connection) throws OseeCoreException {
+      protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
 
          if (artIds == null || artIds.isEmpty()) {
             throw new IllegalArgumentException("Artifact IDs can not be null or empty");
@@ -234,7 +234,7 @@ public class BranchCreator {
       }
    }
 
-   public void addArtifactsToBranch(Connection connection, Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
+   public void addArtifactsToBranch(OseeConnection connection, Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
       if (artIds == null || artIds.isEmpty()) {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
@@ -260,7 +260,7 @@ public class BranchCreator {
       mergeBranch = branchWithTransactionNumber.getKey();
    }
 
-   private static void insertGammas(Connection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch) throws OseeDataStoreException {
+   private static void insertGammas(OseeConnection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
             sourceBranch.getBranchId(), queryId);
    }

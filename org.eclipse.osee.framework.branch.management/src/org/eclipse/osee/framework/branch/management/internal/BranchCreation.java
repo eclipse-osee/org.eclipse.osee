@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.internal;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -96,7 +96,7 @@ public class BranchCreation implements IBranchCreation {
          return branchId;
       }
 
-      protected void handleTxWork(Connection connection) throws OseeCoreException {
+      protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          branchId =
                initializeBranch(connection, childBranchShortName, childBranchName, parentBranchId, parentTransactionId,
@@ -110,7 +110,7 @@ public class BranchCreation implements IBranchCreation {
          success = true;
       }
 
-      private int initializeBranch(Connection connection, String branchShortName, String branchName, int parentBranchId, int parentTransactionId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) throws OseeDataStoreException, OseeArgumentException {
+      private int initializeBranch(OseeConnection connection, String branchShortName, String branchName, int parentBranchId, int parentTransactionId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) throws OseeDataStoreException, OseeArgumentException {
          if (checkAlreadyHasBranchName(branchName)) {
             throw new OseeArgumentException("A branch with the name " + branchName + " already exists");
          }
@@ -126,7 +126,7 @@ public class BranchCreation implements IBranchCreation {
          return ConnectionHandler.runPreparedQueryFetchInt(0, SELECT_BRANCH_BY_NAME, branchName) > 0;
       }
 
-      public abstract void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws OseeDataStoreException;
+      public abstract void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException;
 
       /**
        * @return the parentBranchId
@@ -151,7 +151,7 @@ public class BranchCreation implements IBranchCreation {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws OseeDataStoreException {
+      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException {
          if (staticBranchName != null) {
             ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, staticBranchName, branchId);
          }
@@ -170,7 +170,7 @@ public class BranchCreation implements IBranchCreation {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws OseeDataStoreException {
+      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException {
          int updates =
                ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, newTransactionNumber,
                      parentBranchId);

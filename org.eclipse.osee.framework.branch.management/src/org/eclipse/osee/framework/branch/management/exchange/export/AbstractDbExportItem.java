@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
-import java.sql.Connection;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractDbExportItem extends AbstractExportItem {
 
-   private Connection connection;
+   private OseeConnection connection;
    private int joinQueryId;
 
    public AbstractDbExportItem(int priority, String name, String source) {
@@ -30,11 +30,11 @@ public abstract class AbstractDbExportItem extends AbstractExportItem {
       this.joinQueryId = joinQueryId;
    }
 
-   public void setConnection(Connection connection) {
+   public void setConnection(OseeConnection connection) {
       this.connection = connection;
    }
 
-   protected Connection getConnection() {
+   protected OseeConnection getConnection() {
       return this.connection;
    }
 

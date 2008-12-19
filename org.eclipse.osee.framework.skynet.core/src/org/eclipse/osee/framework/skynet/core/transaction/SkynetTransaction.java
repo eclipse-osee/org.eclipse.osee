@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -99,7 +99,7 @@ public final class SkynetTransaction extends DbTransaction {
       }
    }
 
-   private void fetchTxNotCurrent(Connection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
+   private void fetchTxNotCurrent(OseeConnection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
          String query = ClientSessionManager.getSQL(transactionData.getSelectTxNotCurrentSql());
@@ -112,7 +112,7 @@ public final class SkynetTransaction extends DbTransaction {
       }
    }
 
-   private void executeTransactionDataItems(Connection connection) throws OseeCoreException {
+   private void executeTransactionDataItems(OseeConnection connection) throws OseeCoreException {
       if (transactionDataItems.isEmpty()) {
          return;
       }
@@ -236,7 +236,7 @@ public final class SkynetTransaction extends DbTransaction {
          }
       }
 
-      if (!(attribute.getAttrId() > 0)) {
+      if (attribute.getAttrId() == 0) {
          attribute.internalSetAttributeId(getNewAttributeId(artifact, attribute));
       }
 
@@ -330,10 +330,10 @@ public final class SkynetTransaction extends DbTransaction {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
+    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.OseeConnection)
     */
    @Override
-   protected void handleTxWork(Connection connection) throws OseeCoreException {
+   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       executeTransactionDataItems(connection);
       Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
 

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.info;
 
-import java.sql.Connection;
 import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 public enum SupportedDatabase {
    oracle, derby, foxpro, mysql, postgresql;
 
-   public static SupportedDatabase getDatabaseType(Connection connection) throws OseeDataStoreException {
+   public static SupportedDatabase getDatabaseType(OseeConnection connection) throws OseeDataStoreException {
       try {
          SupportedDatabase toReturn = null;
          String dbName = connection.getMetaData().getDatabaseProductName();
@@ -53,15 +53,12 @@ public enum SupportedDatabase {
    }
 
    public static boolean areHintsSupported() throws OseeDataStoreException {
-      OseeConnection connection = OseeDbConnection.getConnection();
       try {
-         if (oracle == SupportedDatabase.getDatabaseType(connection)) {
-            return connection.getMetaData().getDatabaseMajorVersion() > 10;
+         if (oracle == SupportedDatabase.getDatabaseType()) {
+            return ConnectionHandler.getMetaData().getDatabaseMajorVersion() > 10;
          }
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
-      } finally {
-         connection.close();
       }
       return false;
    }

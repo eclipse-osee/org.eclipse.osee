@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.utility;
 
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -28,13 +27,16 @@ import org.eclipse.osee.framework.database.data.ReferenceClause;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 
 public class DatabaseConfigurationData {
 
    private List<URL> filesToProcess;
-   private Connection connection;
+   private OseeConnection connection;
 
-   public DatabaseConfigurationData(Connection connection, List<URL> filesToProcess) {
+   public DatabaseConfigurationData(OseeConnection connection, List<URL> filesToProcess) {
       this.filesToProcess = filesToProcess;
       this.connection = connection;
    }
@@ -43,7 +45,7 @@ public class DatabaseConfigurationData {
       return filesToProcess;
    }
 
-   public Map<String, SchemaData> getUserSpecifiedSchemas() {
+   public Map<String, SchemaData> getUserSpecifiedSchemas() throws OseeCoreException {
       Map<String, SchemaData> schemasFromUserFiles =
             SchemaConfigUtility.getUserDefinedConfig(getUserSchemaFilesToProcess());
       if (!useFileSpecifiedSchemas()) {
@@ -60,7 +62,7 @@ public class DatabaseConfigurationData {
                }
             }
          } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new OseeWrappedException(ex);
          }
       }
       return schemasFromUserFiles;

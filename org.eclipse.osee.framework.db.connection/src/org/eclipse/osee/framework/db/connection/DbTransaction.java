@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
@@ -71,23 +69,15 @@ public abstract class DbTransaction {
          OseeLog.log(InternalActivator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
          OseeLog.log(InternalActivator.class, Level.FINEST, ex);
-         try {
-            connection.rollback();
-            connection.destroy();
-         } catch (SQLException ex1) {
-            throw new OseeWrappedException(ex1);
-         }
+         connection.rollback();
+         connection.destroy();
          handleTxException(ex);
          if (ex instanceof OseeCoreException) {
             throw (OseeCoreException) ex;
          }
          throw new OseeWrappedException(ex);
       } finally {
-         try {
-            connection.setAutoCommit(initialAutoCommit);
-         } catch (SQLException ex) {
-            OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
-         }
+         connection.setAutoCommit(initialAutoCommit);
          if (commit) {
             connection.close();
             OseeDbConnection.reportTxEnd(this);
@@ -101,9 +91,9 @@ public abstract class DbTransaction {
     * Provides the transaction's work implementation.
     * 
     * @param connection
-    * @throws OseeCoreException TODO
+    * @throws OseeCoreException
     */
-   protected abstract void handleTxWork(Connection connection) throws OseeCoreException;
+   protected abstract void handleTxWork(OseeConnection connection) throws OseeCoreException;
 
    /**
     * When an exception is detected during transaction processing, the exception is caught and passed to this method.

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.test;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +17,7 @@ import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
@@ -53,7 +53,7 @@ public class TestSearchDataStore extends TestCase {
    public void testSearchTagDataStore() throws OseeCoreException {
       new DbTransaction() {
          @Override
-         protected void handleTxWork(Connection connection) throws OseeCoreException {
+         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
             List<SearchTag> testData = getTestSearchTagDataStoreData();
             int totalTags = 0;
             for (SearchTag searchTag : testData) {
@@ -81,7 +81,7 @@ public class TestSearchDataStore extends TestCase {
    public void testSearchTagDataStoreDeleteByQuery() throws Exception {
       new DbTransaction() {
          @Override
-         protected void handleTxWork(Connection connection) throws OseeCoreException {
+         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
             List<SearchTag> testData = getTestSearchTagDataStoreData();
             TransactionJoinQuery joinQuery = null;
             int totalTags = 0;

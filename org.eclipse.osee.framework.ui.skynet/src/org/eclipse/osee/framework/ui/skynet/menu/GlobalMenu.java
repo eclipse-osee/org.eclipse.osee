@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.menu;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,6 +23,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -189,7 +189,7 @@ public class GlobalMenu {
                   try {
                      new DbTransaction() {
                         @Override
-                        protected void handleTxWork(Connection connection) throws OseeCoreException {
+                        protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
                            for (Artifact artifactToPurge : artifactsToBePurged) {
                               if (!artifactToPurge.isDeleted()) {
                                  monitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());

@@ -148,7 +148,7 @@ public class MetadataExportItem extends AbstractDbExportItem {
             resultSet = metaData.getColumns(null, null, tableName, null);
          }
          if (resultSet != null) {
-            SupportedDatabase dbType = SupportedDatabase.getDatabaseType(metaData.getConnection());
+            SupportedDatabase dbType = SupportedDatabase.getDatabaseType(getConnection());
             while (resultSet.next()) {
                ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.COLUMN);
                try {

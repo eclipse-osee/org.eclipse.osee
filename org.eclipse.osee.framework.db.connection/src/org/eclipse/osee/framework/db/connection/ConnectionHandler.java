@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.db.connection;
 
 import java.io.ByteArrayInputStream;
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -86,7 +85,7 @@ public final class ConnectionHandler {
     * @return number of records updated
     * @throws OseeDataStoreException
     */
-   public static int runPreparedUpdate(Connection connection, String query, Object... data) throws OseeDataStoreException {
+   public static int runPreparedUpdate(OseeConnection connection, String query, Object... data) throws OseeDataStoreException {
       if (connection == null) {
          return runPreparedUpdate(query, data);
       }
@@ -104,7 +103,7 @@ public final class ConnectionHandler {
       return updateCount;
    }
 
-   public static int runBatchUpdate(Connection connection, String query, List<Object[]> dataList) throws OseeDataStoreException {
+   public static int runBatchUpdate(OseeConnection connection, String query, List<Object[]> dataList) throws OseeDataStoreException {
       if (connection == null) {
          return runBatchUpdate(query, dataList);
       }
@@ -177,7 +176,7 @@ public final class ConnectionHandler {
       return runPreparedQueryFetchInt(new ConnectionHandlerStatement(), defaultValue, query, data);
    }
 
-   public static int runPreparedQueryFetchInt(Connection connection, int defaultValue, String query, Object... data) throws OseeDataStoreException {
+   public static int runPreparedQueryFetchInt(OseeConnection connection, int defaultValue, String query, Object... data) throws OseeDataStoreException {
       return runPreparedQueryFetchInt(new ConnectionHandlerStatement(connection), defaultValue, query, data);
    }
 
@@ -193,11 +192,45 @@ public final class ConnectionHandler {
       }
    }
 
+   public static int runCallableStatementFetchInt(String query, Object... data) throws OseeDataStoreException {
+      return runCallableStatementFetchInt(new ConnectionHandlerStatement(), query, data);
+   }
+
+   public static int runCallableStatementFetchInt(OseeConnection connection, String query, Object... data) throws OseeDataStoreException {
+      return runCallableStatementFetchInt(new ConnectionHandlerStatement(connection), query, data);
+   }
+
+   private static int runCallableStatementFetchInt(ConnectionHandlerStatement chStmt, String query, Object... data) throws OseeDataStoreException {
+      try {
+         chStmt.runCallableStatement(query, data);
+         return chStmt.getCallableInt(1);
+      } finally {
+         chStmt.close();
+      }
+   }
+
+   public static double runCallableStatementFetchDouble(String query, Object... data) throws OseeDataStoreException {
+      return runCallableStatementFetchDouble(new ConnectionHandlerStatement(), query, data);
+   }
+
+   public static double runCallableStatementFetchDouble(OseeConnection connection, String query, Object... data) throws OseeDataStoreException {
+      return runCallableStatementFetchDouble(new ConnectionHandlerStatement(connection), query, data);
+   }
+
+   private static double runCallableStatementFetchDouble(ConnectionHandlerStatement chStmt, String query, Object... data) throws OseeDataStoreException {
+      try {
+         chStmt.runCallableStatement(query, data);
+         return chStmt.getCallableDouble(1);
+      } finally {
+         chStmt.close();
+      }
+   }
+
    public static long runPreparedQueryFetchLong(long defaultValue, String query, Object... data) throws OseeDataStoreException {
       return runPreparedQueryFetchLong(new ConnectionHandlerStatement(), defaultValue, query, data);
    }
 
-   public static long runPreparedQueryFetchLong(Connection connection, long defaultValue, String query, Object... data) throws OseeDataStoreException {
+   public static long runPreparedQueryFetchLong(OseeConnection connection, long defaultValue, String query, Object... data) throws OseeDataStoreException {
       return runPreparedQueryFetchLong(new ConnectionHandlerStatement(connection), defaultValue, query, data);
    }
 
@@ -217,7 +250,7 @@ public final class ConnectionHandler {
       return runPreparedQueryFetchString(new ConnectionHandlerStatement(), defaultValue, query, data);
    }
 
-   public static String runPreparedQueryFetchString(Connection connection, String defaultValue, String query, Object... data) throws OseeDataStoreException {
+   public static String runPreparedQueryFetchString(OseeConnection connection, String defaultValue, String query, Object... data) throws OseeDataStoreException {
       return runPreparedQueryFetchString(new ConnectionHandlerStatement(connection), defaultValue, query, data);
    }
 
@@ -291,7 +324,7 @@ public final class ConnectionHandler {
     * @param connection
     * @throws OseeDataStoreException
     */
-   public static void deferConstraintChecking(Connection connection) throws OseeDataStoreException {
+   public static void deferConstraintChecking(OseeConnection connection) throws OseeDataStoreException {
       if (SupportedDatabase.getDatabaseType(connection) == SupportedDatabase.derby) {
          return;
       }
@@ -303,8 +336,6 @@ public final class ConnectionHandler {
       OseeConnection connection = OseeDbConnection.getConnection();
       try {
          return connection.getMetaData();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          connection.close();
       }

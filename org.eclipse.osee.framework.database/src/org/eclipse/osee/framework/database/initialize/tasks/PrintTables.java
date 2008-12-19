@@ -10,17 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.initialize.tasks;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.data.SchemaData;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 public class PrintTables implements IDbInitializationTask {
 
@@ -42,18 +39,15 @@ public class PrintTables implements IDbInitializationTask {
       }
    }
 
-   private void printTable(Connection connection, String tableName) {
-      Statement statement = null;
-      ResultSet resultSet = null;
+   private void printTable(OseeConnection connection, String tableName) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         statement = connection.createStatement();
-         resultSet = statement.executeQuery("select * from " + tableName);
-         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-         int numberOfColumns = resultSetMetaData.getColumnCount();
+         chStmt.runPreparedQuery("select * from " + tableName);
+         int numberOfColumns = chStmt.getColumnCount();
          String header = "\nTable:\t" + tableName + "\n";
          header += "Columns:\t";
          for (int index = 1; index <= numberOfColumns; index++) {
-            header += resultSetMetaData.getColumnLabel(index);
+            header += chStmt.getColumnName(index);
             if (index + 1 <= numberOfColumns) {
                header += ", ";
             }
@@ -63,10 +57,10 @@ public class PrintTables implements IDbInitializationTask {
          System.out.print(header);
 
          String results = "";
-         while (resultSet.next()) {
+         while (chStmt.next()) {
             results = "Data:\t";
             for (int index = 1; index <= numberOfColumns; index++) {
-               results += resultSet.getObject(index).toString();
+               results += chStmt.getObject(index).toString();
                if (index + 1 <= numberOfColumns) {
                   results += ", ";
                }
@@ -74,21 +68,8 @@ public class PrintTables implements IDbInitializationTask {
             results += "\n";
             System.out.print(results);
          }
-      } catch (SQLException ex) {
-         ex.printStackTrace();
       } finally {
-         try {
-            if (resultSet != null) {
-               resultSet.close();
-            }
-         } catch (Exception ex) {
-         }
-         try {
-            if (statement != null) {
-               statement.close();
-            }
-         } catch (Exception ex) {
-         }
+         chStmt.close();
       }
    }
 }

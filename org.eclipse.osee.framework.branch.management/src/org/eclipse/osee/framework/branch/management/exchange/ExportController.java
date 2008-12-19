@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.io.File;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.core.data.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
@@ -69,7 +69,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       return joinQuery != null ? joinQuery.getQueryId() : -1;
    }
 
-   private void cleanUp(Connection connection, List<AbstractExportItem> taskList) {
+   private void cleanUp(OseeConnection connection, List<AbstractExportItem> taskList) {
       for (AbstractExportItem exportItem : taskList) {
          exportItem.cleanUp();
       }
@@ -93,7 +93,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       return rootDirectory;
    }
 
-   private void setUp(Connection connection, List<AbstractExportItem> taskList, File tempFolder) throws OseeDataStoreException {
+   private void setUp(OseeConnection connection, List<AbstractExportItem> taskList, File tempFolder) throws OseeDataStoreException {
       joinQuery = JoinUtility.createExportImportJoinQuery();
       for (int branchId : branchIds) {
          joinQuery.add(branchId, -1);
@@ -124,7 +124,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
     * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
     */
    @Override
-   protected void handleTxWork(Connection connection) throws OseeCoreException {
+   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       List<AbstractExportItem> taskList = ExchangeDb.createTaskList();
       try {

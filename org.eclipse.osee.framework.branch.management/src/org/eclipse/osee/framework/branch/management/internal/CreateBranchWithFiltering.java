@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,6 +26,7 @@ import org.eclipse.osee.framework.branch.management.internal.BranchCreation.Crea
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -81,7 +81,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
     * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
     */
    @Override
-   public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws OseeDataStoreException {
+   public void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException {
       gammasToCurrent.clear();
 
       if (compressArtTypeIds != null && compressArtTypeIds.length > 0) {
@@ -137,7 +137,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
       }
    }
 
-   private void createBaselineTransaction(int newTransactionNumber, String[] compressArtTypes, Connection connection) throws OseeDataStoreException {
+   private void createBaselineTransaction(int newTransactionNumber, String[] compressArtTypes, OseeConnection connection) throws OseeDataStoreException {
       for (String artifactTypeId : compressArtTypes) {
          ConnectionHandler.runPreparedUpdate(connection, SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED, newTransactionNumber,
                1, artifactTypeId, getParentBranchId());
@@ -156,7 +156,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
     * @param compressArtTypes
     * @param preserveArtTypes
     */
-   private void initSelectLinkHistory(String[] compressArtTypeIds, String[] preserveArtTypeIds, HashCollection<Integer, Pair<Integer, Integer>> historyMap, Connection connection) throws OseeDataStoreException {
+   private void initSelectLinkHistory(String[] compressArtTypeIds, String[] preserveArtTypeIds, HashCollection<Integer, Pair<Integer, Integer>> historyMap, OseeConnection connection) throws OseeDataStoreException {
       String preservedTypeSet = makeArtTypeSet(null, preserveArtTypeIds);
       String compressTypeSet = makeArtTypeSet(compressArtTypeIds, null);
 
@@ -193,7 +193,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
       populateHistoryMapWithRelations(historyMap, ppSql, connection);
    }
 
-   private void populateHistoryMapWithRelations(HashCollection<Integer, Pair<Integer, Integer>> historyMap, String sql, Connection connection) throws OseeDataStoreException {
+   private void populateHistoryMapWithRelations(HashCollection<Integer, Pair<Integer, Integer>> historyMap, String sql, OseeConnection connection) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
          chStmt.runPreparedQuery(sql, getParentBranchId());

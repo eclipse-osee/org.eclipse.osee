@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.initialize.tasks;
 
 import java.io.File;
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.database.utility.FileUtility;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -46,46 +44,37 @@ public class ImportDataFromDbService implements IDbInitializationTask {
          System.out.println("Import Table Data from Db: " + importFromDbService);
 
          IDatabaseInfo dbInfo = DatabaseInfoManager.getDataStoreById(importFromDbService);
-         OseeConnection importConnection = OseeDbConnection.getConnection(dbInfo);
-         if (importConnection != null) {
-            try {
-               System.out.println("Gathering information from ..." + importFromDbService);
+         System.out.println("Gathering information from ..." + importFromDbService);
 
-               String userName = dbInfo.getDatabaseLoginName();
-               if (userName != null && !userName.equals("")) {
+         String userName = dbInfo.getDatabaseLoginName();
+         if (userName != null && !userName.equals("")) {
 
-                  Set<String> schemasToGet = new TreeSet<String>();
-                  schemasToGet.add(userName.toUpperCase());
+            Set<String> schemasToGet = new TreeSet<String>();
+            schemasToGet.add(userName.toUpperCase());
 
-                  Map<String, Set<String>> dataToImport =
-                        getTablesToImport(importConnection, userName.toUpperCase(), schemasToGet);
-                  if (dataToImport.size() > 0) {
-                     System.out.println(dataToImport.toString().replaceAll(", ", "\n"));
-                     makeBackupDirectoryIfItDoesntExist();
+            Map<String, Set<String>> dataToImport = getTablesToImport(connection, userName.toUpperCase(), schemasToGet);
+            if (dataToImport.size() > 0) {
+               System.out.println(dataToImport.toString().replaceAll(", ", "\n"));
+               makeBackupDirectoryIfItDoesntExist();
 
-                     System.out.println("Backing up Files to: " + backupDirectory.getAbsolutePath());
-                     DatabaseDataExtractor dbDataExtractor =
-                           new DatabaseDataExtractor(importConnection, schemasToGet, backupDirectory);
+               System.out.println("Backing up Files to: " + backupDirectory.getAbsolutePath());
+               DatabaseDataExtractor dbDataExtractor =
+                     new DatabaseDataExtractor(connection, schemasToGet, backupDirectory);
 
-                     Set<String> tablesToImport;
-                     if (importFromDbService.equals(determineDefaultConnection())) {
-                        tablesToImport = dataToImport.get(OseeClientProperties.getTableImportSource());
-                     } else {
-                        tablesToImport = dataToImport.get(importFromDbService);
-                     }
-
-                     for (String importTable : tablesToImport) {
-                        dbDataExtractor.addTableNameToExtract(importTable);
-                     }
-                     dbDataExtractor.extract();
-                     dbDataExtractor.waitForWorkerThreads();
-
-                     prepareFilesForImport();
-                  }
-
+               Set<String> tablesToImport;
+               if (importFromDbService.equals(determineDefaultConnection())) {
+                  tablesToImport = dataToImport.get(OseeClientProperties.getTableImportSource());
+               } else {
+                  tablesToImport = dataToImport.get(importFromDbService);
                }
-            } finally {
-               importConnection.close();
+
+               for (String importTable : tablesToImport) {
+                  dbDataExtractor.addTableNameToExtract(importTable);
+               }
+               dbDataExtractor.extract();
+               dbDataExtractor.waitForWorkerThreads();
+
+               prepareFilesForImport();
             }
          }
       }
@@ -139,13 +128,13 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       return true;
    }
 
-   private Map<String, SchemaData> getAvailableSchemasFromImportDb(Connection importConnection, Set<String> schemas) throws OseeDataStoreException {
+   private Map<String, SchemaData> getAvailableSchemasFromImportDb(OseeConnection importConnection, Set<String> schemas) throws OseeDataStoreException {
       DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(importConnection, schemas);
       schemaExtractor.extractSchemaData();
       return schemaExtractor.getSchemas();
    }
 
-   private Map<String, Set<String>> getTablesToImport(Connection importConnection, String userName, Set<String> schemasToGet) throws OseeDataStoreException {
+   private Map<String, Set<String>> getTablesToImport(OseeConnection importConnection, String userName, Set<String> schemasToGet) throws OseeDataStoreException {
       Map<String, SchemaData> currentDbSchemas = getAvailableSchemasFromImportDb(importConnection, schemasToGet);
       Set<String> userSchemas = userSpecifiedConfig.keySet();
 

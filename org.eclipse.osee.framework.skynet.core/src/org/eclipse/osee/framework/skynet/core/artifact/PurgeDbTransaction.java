@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +13,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -66,7 +66,7 @@ public class PurgeDbTransaction extends DbTransaction {
     * @see org.eclipse.osee.framework.db.connection.DbTransaction#handleTxWork(java.sql.Connection)
     */
    @Override
-   protected void handleTxWork(Connection connection) throws OseeCoreException {
+   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       //first determine if the purge is legal.
       List<Object[]> batchParameters = new ArrayList<Object[]>();
       int queryId = ArtifactLoader.getNewQueryId();

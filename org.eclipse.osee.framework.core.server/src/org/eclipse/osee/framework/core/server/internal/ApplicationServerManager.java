@@ -47,7 +47,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.threadFactories = Collections.synchronizedMap(new HashMap<String, OseeServerThreadFactory>());
       this.applicationServerInfo = createOseeServerInfo();
       this.isRegistered = false;
-      applicationServerInfo.setAcceptingRequests(true);
+      applicationServerInfo.setAcceptingRequests(false);
 
       new Thread(new Runnable() {
          @Override

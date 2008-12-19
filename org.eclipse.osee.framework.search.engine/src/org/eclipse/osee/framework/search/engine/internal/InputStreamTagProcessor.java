@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import java.io.InputStream;
-import java.sql.Connection;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
@@ -35,19 +35,19 @@ final class InputStreamTagProcessor extends InputToTagQueueTx {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.internal.ConvertToTagQueueTx#doWork(java.sql.Connection)
+    * @see org.eclipse.osee.framework.search.engine.internal.ConvertToTagQueueTx#doWork(java.sql.OseeConnection)
     */
    @Override
-   protected void convertInput(Connection connection) throws Exception {
+   protected void convertInput(OseeConnection connection) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(new AttributeXmlParser(connection));
       xmlReader.parse(new InputSource(inputStream));
    }
 
    private final class AttributeXmlParser extends AbstractSaxHandler {
-      private final Connection connection;
+      private final OseeConnection connection;
 
-      AttributeXmlParser(Connection connection) {
+      AttributeXmlParser(OseeConnection connection) {
          this.connection = connection;
       }
 

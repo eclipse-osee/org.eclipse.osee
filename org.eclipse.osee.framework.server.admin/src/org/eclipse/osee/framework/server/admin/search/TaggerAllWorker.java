@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
-import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
@@ -38,7 +38,7 @@ class TaggerAllWorker extends BaseCmdWorker {
       this.processor = null;
    }
 
-   private void fetchAndProcessGammas(Connection connection, int branchId, TagProcessListener processor) throws OseeDataStoreException {
+   private void fetchAndProcessGammas(OseeConnection connection, int branchId, TagProcessListener processor) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
          chStmt.runPreparedQuery(AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId),
@@ -58,8 +58,8 @@ class TaggerAllWorker extends BaseCmdWorker {
       }
    }
 
-   protected void doWork(final long startTime) throws Exception {
-      Connection connection = null;
+   protected void doWork(final long startTime) throws OseeDataStoreException, InterruptedException {
+      OseeConnection connection = OseeDbConnection.getConnection();
       try {
          String arg = getCommandInterpreter().nextArgument();
          int branchId = -1;
@@ -67,7 +67,6 @@ class TaggerAllWorker extends BaseCmdWorker {
             branchId = Integer.parseInt(arg);
          }
          println(String.format("Tagging Attributes For: [%s]", branchId > -1 ? "Branch " + branchId : "All Branches"));
-         connection = OseeDbConnection.getConnection();
 
          int totalAttributes = AttributeDataStore.getTotalTaggableItems(connection, branchId);
          processor = new TagProcessListener(startTime, totalAttributes);
@@ -84,9 +83,7 @@ class TaggerAllWorker extends BaseCmdWorker {
          processor.printStats();
       } finally {
          processor = null;
-         if (connection != null) {
-            connection.close();
-         }
+         connection.close();
       }
    }
 
@@ -124,7 +121,7 @@ class TaggerAllWorker extends BaseCmdWorker {
       /**
        * @param connection
        */
-      public void cancelProcessing(Connection connection) {
+      public void cancelProcessing(OseeConnection connection) {
          Set<Integer> list = queryIdMap.keySet();
          int[] toStop = new int[list.size()];
          int index = 0;
@@ -135,7 +132,7 @@ class TaggerAllWorker extends BaseCmdWorker {
          Activator.getInstance().getSearchTagger().stopTaggingByQueueQueryId(toStop);
       }
 
-      public void storeAndAddQueryId(Connection connection, TagQueueJoinQuery joinQuery) throws OseeDataStoreException {
+      public void storeAndAddQueryId(OseeConnection connection, TagQueueJoinQuery joinQuery) throws OseeDataStoreException {
          if (joinQuery.size() > 0) {
             joinQuery.store(connection);
             this.queryIdMap.put(joinQuery.getQueryId(), joinQuery);

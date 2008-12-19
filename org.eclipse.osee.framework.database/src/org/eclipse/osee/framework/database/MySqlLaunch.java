@@ -12,10 +12,7 @@ package org.eclipse.osee.framework.database;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -39,18 +36,5 @@ public class MySqlLaunch {
       }
       File exe = new File(installLocation, "bin/mysqld.exe");
       Runtime.getRuntime().exec(exe.getAbsolutePath());
-   }
-
-   public Connection getLocalMysqlConnection() throws IOException, InterruptedException {
-      startMySql();
-      Connection connection = null;
-      for (int i = 0; i < NUMBER_OF_TRIES && connection == null; i++) {
-         Thread.sleep(SLEEP_TIME);
-         try {
-            connection = OseeDbConnection.getConnection(dbInfo);
-         } catch (OseeDataStoreException ex) {
-         }
-      }
-      return connection;
    }
 }

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.database.utility;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,6 +43,7 @@ import org.eclipse.osee.framework.database.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
@@ -67,7 +67,7 @@ public class DatabaseSchemaExtractor {
 
    private static final String DEFAULT_FILTER = "BIN.*";
 
-   public DatabaseSchemaExtractor(Connection connection, Set<String> schemas) throws OseeDataStoreException {
+   public DatabaseSchemaExtractor(OseeConnection connection, Set<String> schemas) throws OseeDataStoreException {
       try {
          this.dbData = connection.getMetaData();
          this.dbName = dbData.getDatabaseProductName();

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.access;
 
-import java.sql.Connection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -717,7 +717,7 @@ public class AccessControlManager {
    /**
     * Removes all locks from a branch
     */
-   public void removeAllPermissionsFromBranch(final Connection connection, final Branch branch) throws OseeCoreException {
+   public void removeAllPermissionsFromBranch(OseeConnection connection, Branch branch) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getBranchId());
       ConnectionHandler.runPreparedUpdate(connection, DELETE_BRANCH_ACL_FROM_BRANCH, branch.getBranchId());
    }

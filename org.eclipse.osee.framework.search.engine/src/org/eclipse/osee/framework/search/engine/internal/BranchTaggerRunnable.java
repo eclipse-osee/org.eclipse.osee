@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import java.sql.Connection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -54,7 +54,7 @@ public class BranchTaggerRunnable implements Runnable {
        * @see org.eclipse.osee.framework.search.engine.internal.ConvertToTagQueueTx#doWork(java.sql.Connection)
        */
       @Override
-      protected void convertInput(Connection connection) throws OseeDataStoreException, Exception {
+      protected void convertInput(OseeConnection connection) throws OseeDataStoreException, Exception {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
          try {
             String sql = AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId);

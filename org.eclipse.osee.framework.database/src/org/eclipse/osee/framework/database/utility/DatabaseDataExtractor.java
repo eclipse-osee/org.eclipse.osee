@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -38,6 +37,7 @@ import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
@@ -55,7 +55,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 public class DatabaseDataExtractor {
 
    private static final String SQL_WILD_QUERY = "SELECT * FROM ";
-   private Connection connection;
+   private OseeConnection connection;
    private DatabaseSchemaExtractor databaseInfo;
    private Set<String> schemas;
    private File directory;
@@ -68,7 +68,7 @@ public class DatabaseDataExtractor {
       SQL3DataType type;
    }
 
-   public DatabaseDataExtractor(Connection connection, Set<String> schemas, File directory) throws OseeDataStoreException {
+   public DatabaseDataExtractor(OseeConnection connection, Set<String> schemas, File directory) throws OseeDataStoreException {
       this.connection = connection;
       this.schemas = schemas;
       this.directory = directory;

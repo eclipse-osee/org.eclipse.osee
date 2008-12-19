@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import java.sql.Connection;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.JoinItem;
 import org.eclipse.osee.framework.core.data.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -131,7 +131,7 @@ class TaggerRunnable implements Runnable {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
        */
       @Override
-      protected void handleTxWork(Connection connection) throws OseeCoreException {
+      protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          Collection<AttributeData> attributeDatas = AttributeDataStore.getAttribute(connection, getTagQueueQueryId());
          try {
             deleteOldSearchTags(connection, attributeDatas);
@@ -180,7 +180,7 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      private void deleteOldSearchTags(Connection connection, Collection<AttributeData> attributeDatas) throws OseeDataStoreException {
+      private void deleteOldSearchTags(OseeConnection connection, Collection<AttributeData> attributeDatas) throws OseeDataStoreException {
          TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
          try {
             for (AttributeData attributeData : attributeDatas) {
@@ -193,7 +193,7 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      private void checkSizeStoreIfNeeded(Connection connection) throws OseeDataStoreException {
+      private void checkSizeStoreIfNeeded(OseeConnection connection) throws OseeDataStoreException {
          int cummulative = 0;
          boolean needsStorage = false;
          for (SearchTag item : this.searchTags) {
@@ -208,7 +208,7 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      private void store(Connection connection, Collection<SearchTag> toStore) throws OseeDataStoreException {
+      private void store(OseeConnection connection, Collection<SearchTag> toStore) throws OseeDataStoreException {
          SearchTagDataStore.storeTags(connection, toStore);
          for (SearchTag item : toStore) {
             item.clearCache();

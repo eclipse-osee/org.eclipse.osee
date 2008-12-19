@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.sql;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,7 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,7 +35,7 @@ public class SqlManagerImpl extends SqlManager {
       super(sqlDataType);
    }
 
-   private String handleColumnCreationSection(Connection connection, Map<String, ColumnMetadata> columns) {
+   private String handleColumnCreationSection(OseeConnection connection, Map<String, ColumnMetadata> columns) {
       List<String> lines = new ArrayList<String>();
       Set<String> keys = columns.keySet();
       for (String key : keys) {
@@ -46,7 +46,7 @@ public class SqlManagerImpl extends SqlManager {
       return toExecute;
    }
 
-   public void createTable(Connection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void createTable(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\.") + " ( \n");
@@ -61,7 +61,7 @@ public class SqlManagerImpl extends SqlManager {
    }
 
    @Override
-   public void dropTable(Connection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void dropTable(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\."));

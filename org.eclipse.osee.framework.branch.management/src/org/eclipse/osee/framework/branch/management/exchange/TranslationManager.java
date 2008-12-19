@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -61,7 +61,7 @@ public class TranslationManager {
       return toReturn;
    }
 
-   public void store(Connection connection, int importIdIndex) throws OseeDataStoreException {
+   public void store(OseeConnection connection, int importIdIndex) throws OseeDataStoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       for (IdTranslator translatedIdMap : translators) {
          if (translatedIdMap.hasItemsToStore()) {

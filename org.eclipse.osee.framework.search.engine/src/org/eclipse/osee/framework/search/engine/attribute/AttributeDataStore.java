@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.attribute;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,6 +19,7 @@ import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.AttributeJoinQuery;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -55,7 +55,7 @@ public class AttributeDataStore {
    private AttributeDataStore() {
    }
 
-   public static Collection<AttributeData> getAttribute(final Connection connection, final int tagQueueQueryId) throws OseeDataStoreException {
+   public static Collection<AttributeData> getAttribute(final OseeConnection connection, final int tagQueueQueryId) throws OseeDataStoreException {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
@@ -197,7 +197,7 @@ public class AttributeDataStore {
       return builder.toString();
    }
 
-   public static int getTotalTaggableItems(Connection connection, final int branchId) throws OseeDataStoreException {
+   public static int getTotalTaggableItems(OseeConnection connection, final int branchId) throws OseeDataStoreException {
       return ConnectionHandler.runPreparedQueryFetchInt(connection, -1, getBranchTaggingQueries(branchId, true),
             getAllTaggableGammasByBranchQueryData(branchId));
    }

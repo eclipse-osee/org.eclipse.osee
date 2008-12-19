@@ -400,26 +400,22 @@ public class ConflictManagerInternal {
    public static int getCommitTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       int transactionId = 0;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      if (sourceBranch != null && destBranch != null) {
-         try {
+      try {
+         if (sourceBranch != null && destBranch != null) {
             chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getBranchId(), destBranch.getBranchId());
             if (chStmt.next()) {
                transactionId = chStmt.getInt("commit_transaction_id");
             }
-         } finally {
-            chStmt.close();
-         }
-         if (transactionId == 0) {
-            try {
+            if (transactionId == 0) {
                chStmt.runPreparedQuery(GET_COMMIT_TRANSACTION_COMMENT,
                      BranchManager.COMMIT_COMMENT + sourceBranch.getBranchName(), destBranch.getBranchId());
                if (chStmt.next()) {
                   transactionId = chStmt.getInt("transaction_id");
                }
-            } finally {
-               chStmt.close();
             }
          }
+      } finally {
+         chStmt.close();
       }
       return transactionId;
    }

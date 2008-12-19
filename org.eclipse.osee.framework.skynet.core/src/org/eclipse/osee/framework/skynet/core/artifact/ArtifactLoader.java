@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.ATTRI
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -190,7 +190,7 @@ public final class ArtifactLoader {
     * @param insertParameters
     * @throws OseeDataStoreException
     */
-   public static int selectArtifacts(Connection connection, List<Object[]> insertParameters) throws OseeDataStoreException {
+   public static int selectArtifacts(OseeConnection connection, List<Object[]> insertParameters) throws OseeDataStoreException {
       return ConnectionHandler.runBatchUpdate(connection, INSERT_JOIN_ARTIFACT, insertParameters);
    }
 
@@ -220,7 +220,7 @@ public final class ArtifactLoader {
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
-   public static void clearQuery(Connection connection, int queryId) throws OseeDataStoreException {
+   public static void clearQuery(OseeConnection connection, int queryId) throws OseeDataStoreException {
       if (connection != null) {
          ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_JOIN_ARTIFACT, queryId);
       } else {

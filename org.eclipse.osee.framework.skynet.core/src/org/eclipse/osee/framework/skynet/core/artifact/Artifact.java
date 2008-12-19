@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,6 +30,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
@@ -537,9 +537,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public void deleteAttributes() {
       for (Attribute<?> attribute : attributes.getValues()) {
          if (attribute.isInDb()) {
-            attribute.delete();
-         }
+         attribute.delete();
       }
+   }
    }
 
    private void ensureAttributesLoaded() throws OseeCoreException {
@@ -956,7 +956,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public void revert() throws OseeCoreException {
       DbTransaction dbTransaction = new DbTransaction() {
          @Override
-         protected void handleTxWork(Connection connection) throws OseeCoreException {
+         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
             ArtifactPersistenceManager.revertArtifact(connection, Artifact.this);
          }
       };
@@ -1128,7 +1128,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param connection TODO
     * @throws OseeCoreException
     */
-   public void purgeFromBranch(Connection connection) throws OseeCoreException {
+   public void purgeFromBranch(OseeConnection connection) throws OseeCoreException {
       ArtifactPersistenceManager.purgeArtifactFromBranch(connection, branch.getBranchId(), artId);
    }
 

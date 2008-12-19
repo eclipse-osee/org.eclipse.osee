@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.utility;
 
 import java.io.File;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
 import org.eclipse.osee.framework.database.sql.SqlManager;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -43,7 +43,7 @@ import org.w3c.dom.NodeList;
  * @author Roberto E. Escobar
  */
 public class DatabaseDataImporter {
-   private Connection connection;
+   private OseeConnection connection;
    private File directory;
    private SqlManager sqlManager;
    private List<String> tableOrder;
@@ -66,7 +66,7 @@ public class DatabaseDataImporter {
       }
    }
 
-   public DatabaseDataImporter(Connection connection, File directory, SqlManager sqlManager) {
+   public DatabaseDataImporter(OseeConnection connection, File directory, SqlManager sqlManager) {
       this.connection = connection;
       this.directory = directory;
       this.sqlManager = sqlManager;

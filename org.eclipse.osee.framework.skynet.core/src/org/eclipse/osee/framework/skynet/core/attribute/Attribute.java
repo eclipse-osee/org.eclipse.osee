@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.util.Arrays;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
@@ -247,7 +247,7 @@ public abstract class Attribute<T> {
    public void revert() throws OseeCoreException {
       DbTransaction dbTransaction = new DbTransaction() {
          @Override
-         protected void handleTxWork(Connection connection) throws OseeCoreException {
+         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
             ArtifactPersistenceManager.revertAttribute(connection, Attribute.this);
          }
       };

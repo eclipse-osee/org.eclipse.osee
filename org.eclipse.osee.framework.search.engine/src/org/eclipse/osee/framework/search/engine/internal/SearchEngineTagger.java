@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import java.io.InputStream;
-import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -211,7 +211,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       }
 
       @Override
-      protected void handleTxWork(Connection connection) throws OseeCoreException {
+      protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          this.updated = SearchTagDataStore.deleteTags(connection, queryId);
       }
    }
