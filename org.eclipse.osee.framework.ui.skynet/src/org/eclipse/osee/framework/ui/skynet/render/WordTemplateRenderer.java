@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.w3c.dom.Element;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
@@ -161,26 +162,32 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
                generator.initialize(false, false);
                for (int i = 0; i < newerArtifact.size(); i++) {
-                  IFile baseFile =
-                        renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
-                              getRenderInputStream(baseArtifacts.get(i), PresentationType.DIFF), PresentationType.DIFF);
-                  IFile newerFile =
-                        renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
-                              getRenderInputStream(newerArtifact.get(i), PresentationType.DIFF), PresentationType.DIFF);
+                  try {
+                     IFile baseFile =
+                           renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
+                                 getRenderInputStream(baseArtifacts.get(i), PresentationType.DIFF),
+                                 PresentationType.DIFF);
+                     IFile newerFile =
+                           renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
+                                 getRenderInputStream(newerArtifact.get(i), PresentationType.DIFF),
+                                 PresentationType.DIFF);
 
-                  baseFileStr = changeReportFolder.getLocation().toOSString();
-                  localFileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
-                  fileNames.add(localFileName);
+                     baseFileStr = changeReportFolder.getLocation().toOSString();
+                     localFileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
+                     fileNames.add(localFileName);
 
-                  monitor.setTaskName("Adding to Diff Script: " + (newerArtifact.get(i) == null ? "Unnamed Artifact" : newerArtifact.get(
-                        i).getDescriptiveName()));
-                  monitor.worked(1);
+                     monitor.setTaskName("Adding to Diff Script: " + (newerArtifact.get(i) == null ? "Unnamed Artifact" : newerArtifact.get(
+                           i).getDescriptiveName()));
+                     monitor.worked(1);
 
-                  if (monitor.isCanceled()) {
-                     monitor.done();
-                     return Status.CANCEL_STATUS;
+                     if (monitor.isCanceled()) {
+                        monitor.done();
+                        return Status.CANCEL_STATUS;
+                     }
+                     generator.addComparison(baseFile, newerFile, localFileName, false);
+                  } catch (OseeCoreException ex) {
+                     OSEELog.logException(WordTemplateRenderer.class, ex, false);
                   }
-                  generator.addComparison(baseFile, newerFile, localFileName, false);
 
                }
                monitor.setTaskName("Running Diff Script");

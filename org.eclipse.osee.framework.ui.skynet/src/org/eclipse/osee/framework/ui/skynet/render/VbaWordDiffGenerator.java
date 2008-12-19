@@ -21,11 +21,10 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
    private final static String comparisonCommand =
          "    baseDoc.Compare ver2, authorName, wdCompareTargetSelectedDiff, detectFormatChanges, False, False\n    set compareDoc = oWord.ActiveDocument\n\n";
-   private final static String comparisonCommandFirst =
-         "    set mainDoc = compareDoc\n    baseDoc.close\n    set baseDoc = Nothing\n";
+   private final static String comparisonCommandFirst = "    set mainDoc = oWord.Documents.Add\n\n";
 
    private final static String comparisonCommandOthers =
-         "    compareDoc.Content.Copy\n\n    with mainDoc\n       mainDoc.Range(.Range.End-1, .Range.End-1).Paste\n    end with\n    baseDoc.close wdDoNotSaveChanges\n    set baseDoc = Nothing\n\n    compareDoc.close wdDoNotSaveChanges\n    set compareDoc = Nothing\n\n";
+         "    baseDoc.close\n    set baseDoc = Nothing\n    compareDoc.close\n    set compareDoc = Nothing\n    oWord.Selection.insertFile ver2\n\n";
 
    private final static String mergeCommand =
          "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False\n\n";
@@ -91,6 +90,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          builder.append(comparisonCommand);
          if (first) {
             builder.append(comparisonCommandFirst);
+            builder.append(comparisonCommandOthers);
             first = false;
          } else {
             builder.append(comparisonCommandOthers);
