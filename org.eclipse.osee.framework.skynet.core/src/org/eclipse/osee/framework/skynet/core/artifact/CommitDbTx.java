@@ -14,7 +14,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -113,8 +115,10 @@ public class CommitDbTx extends DbTransaction {
    private final Branch fromBranch;
    private boolean success = true;
    private int fromBranchId = -1;
-   private List<Object[]> relLinks = new ArrayList<Object[]>();
+   private final List<Object[]> relLinks = new ArrayList<Object[]>();
    private long startTime;
+   // Store branches that are currently being committed
+   private static Set<Branch> branchesInCommit = new HashSet<Branch>();
 
    protected CommitDbTx(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
       this.conflictManager = conflictManager;
@@ -135,6 +139,7 @@ public class CommitDbTx extends DbTransaction {
     */
    @Override
    protected void handleTxWork(Connection connection) throws OseeCoreException {
+      branchesInCommit.add(this.fromBranch);
       User userToBlame = UserManager.getUser();
 
       long time = System.currentTimeMillis();
@@ -352,6 +357,7 @@ public class CommitDbTx extends DbTransaction {
             System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(startTime)));
          }
       }
+      branchesInCommit.remove(this.fromBranch);
    }
 
    /*
@@ -362,6 +368,7 @@ public class CommitDbTx extends DbTransaction {
    @Override
    protected void handleTxException(Exception ex) {
       success = false;
+      branchesInCommit.remove(this.fromBranch);
    }
 
    private static int addCommitTransactionToDatabase(Connection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
@@ -380,5 +387,9 @@ public class CommitDbTx extends DbTransaction {
       }
 
       return newTransactionNumber;
+   }
+
+   public static boolean isBranchInCommit(Branch branch) {
+      return (branchesInCommit.contains(branch));
    }
 }

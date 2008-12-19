@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor.service.branch;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -71,7 +73,11 @@ public class CommitWorkingBranchService extends WorkPageService implements IBran
                }
 
                public void linkActivated(HyperlinkEvent e) {
-                  smaMgr.getBranchMgr().commitWorkingBranch(true, overrideStateValidation);
+                  try {
+                     smaMgr.getBranchMgr().commitWorkingBranch(true, overrideStateValidation);
+                  } catch (OseeCoreException ex) {
+                     OSEELog.logException(AtsPlugin.class, ex, true);
+                  }
                }
             });
       }

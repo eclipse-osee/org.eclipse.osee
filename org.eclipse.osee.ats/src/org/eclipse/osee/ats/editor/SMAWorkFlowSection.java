@@ -547,10 +547,17 @@ public class SMAWorkFlowSection extends SectionPart {
             smaMgr.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
             smaMgr.getStateMgr().addAssignee(UserManager.getUser());
          }
-         if (smaMgr.getBranchMgr().isWorkingBranch() && !atsWorkPage.isAllowTransitionWithWorkingBranch()) {
-            AWorkbench.popup("ERROR",
-                  "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
-            return;
+         if (smaMgr.getBranchMgr().isWorkingBranch()) {
+            if (smaMgr.getBranchMgr().isBranchInCommit()) {
+               AWorkbench.popup("ERROR",
+                     "Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
+               return;
+            }
+            if (!atsWorkPage.isAllowTransitionWithWorkingBranch()) {
+               AWorkbench.popup("ERROR",
+                     "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
+               return;
+            }
          }
 
          smaMgr.setInTransition(true);

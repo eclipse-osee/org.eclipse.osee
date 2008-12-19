@@ -581,12 +581,20 @@ public class AtsBranchManager {
       }
    }
 
+   public boolean isBranchInCommit() throws OseeCoreException {
+      if (!isWorkingBranch()) return false;
+      return BranchManager.isBranchInCommit(getWorkingBranch());
+   }
+
    /**
     * @param commitPopup if true, popup errors associated with results
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     *           used for developmental testing or automation
     */
-   public void commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation) {
+   public void commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation) throws OseeCoreException {
+      if (isBranchInCommit()) {
+         throw new OseeCoreException("Branch is currently being committed.");
+      }
       Jobs.startJob(new AtsCommitJob(commitPopup, overrideStateValidation));
    }
 

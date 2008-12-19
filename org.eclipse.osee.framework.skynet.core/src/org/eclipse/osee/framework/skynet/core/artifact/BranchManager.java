@@ -356,6 +356,10 @@ public class BranchManager {
       new CommitDbTx(conflictManager, archiveSourceBranch).execute();
    }
 
+   public static boolean isBranchInCommit(Branch branch) {
+      return CommitDbTx.isBranchInCommit(branch);
+   }
+
    /**
     * @throws OseeDataStoreException
     */
