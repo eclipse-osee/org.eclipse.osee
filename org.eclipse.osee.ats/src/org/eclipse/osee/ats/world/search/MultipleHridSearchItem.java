@@ -55,6 +55,11 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
    }
 
    @Override
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+      return String.format(getName() + " - %s", enteredIds);
+   }
+
+   @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       List<String> ids = new ArrayList<String>();
       for (String str : enteredIds.split(",")) {
