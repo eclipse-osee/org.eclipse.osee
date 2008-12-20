@@ -12,13 +12,17 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
@@ -98,10 +102,14 @@ public class HtmlExportTable {
                path = System.getProperty("user.home") + File.separator + "table.csv";
 
             if (path != null) {
-               File file = new File(path);
-               AFile.writeFile(file, sb.toString());
-               if (openInSystem) Program.launch(file.getAbsolutePath());
-               return Result.TrueResult;
+               try {
+                  File file = new File(path);
+                  Lib.writeStringToFile(sb.toString(), file);
+                  if (openInSystem) Program.launch(file.getAbsolutePath());
+                  return Result.TrueResult;
+               } catch (IOException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
             }
          } else {
             AWorkbench.popup("ERROR", "Can't find table in results.\n\nNothing to export");

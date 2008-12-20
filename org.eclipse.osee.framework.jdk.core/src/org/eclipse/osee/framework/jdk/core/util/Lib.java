@@ -348,18 +348,19 @@ public final class Lib {
    }
 
    public static String inputStreamToString(InputStream in) throws IOException {
-      return inputStreamToStringBuffer(in).toString();
+      return inputStreamToChangeSet(in).toString();
    }
 
-   public static StringBuffer inputStreamToStringBuffer(InputStream in) throws IOException {
+   public static ChangeSet inputStreamToChangeSet(InputStream in) throws IOException {
       InputStreamReader reader = new InputStreamReader(in, "UTF-8");
-      StringBuffer strB = new StringBuffer(1000);
-      char[] chars = new char[1000];
+      ChangeSet set = new ChangeSet();
+
+      char[] chars = new char[8000];
       int readCount = 0;
       while ((readCount = reader.read(chars)) != -1) {
-         strB.append(chars, 0, readCount);
+         set.insertBefore(0, chars, 0, readCount);
       }
-      return strB;
+      return set;
    }
 
    public static byte[] inputStreamToBytes(InputStream in) throws IOException {
@@ -385,10 +386,7 @@ public final class Lib {
    }
 
    public static CharBuffer inputStreamToCharBuffer(InputStream in) throws IOException {
-      StringBuffer strB = inputStreamToStringBuffer(in);
-      char[] chars = new char[strB.length()];
-      strB.getChars(0, strB.length(), chars, 0);
-      return CharBuffer.wrap(chars);
+      return CharBuffer.wrap(inputStreamToChangeSet(in).toCharArray());
    }
 
    public static java.io.InputStream stringToInputStream(String value) throws Exception {
@@ -966,8 +964,19 @@ public final class Lib {
    }
 
    public static void writeCharBufferToFile(CharBuffer charBuf, File outFile) throws IOException {
+      writeCharsToFile(charBuf.array(), outFile);
+   }
+
+   public static void writeCharsToFile(char[] chars, File outFile) throws IOException {
       FileWriter out = new FileWriter(outFile);
-      out.write(charBuf.array(), 0, charBuf.limit());
+      out.write(chars, 0, chars.length);
+      out.close();
+   }
+
+   public static void writeStringToFile(String str, File outFile) throws IOException {
+      FileWriter out = new FileWriter(outFile);
+      char[] chars = str.toCharArray();
+      out.write(chars, 0, chars.length);
       out.close();
    }
 

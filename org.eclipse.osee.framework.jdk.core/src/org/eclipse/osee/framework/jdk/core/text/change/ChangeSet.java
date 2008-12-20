@@ -27,9 +27,9 @@ public class ChangeSet {
    private char[] sourceChars;
    private CharSequence source;
 
-   /**
-    * public ChangeSet(char[] sourceChars) { this.sourceChars = sourceChars; }
-    */
+   public ChangeSet() {
+      this("");
+   }
 
    public ChangeSet(CharSequence source) {
       if (source instanceof CharBuffer) {
@@ -150,9 +150,10 @@ public class ChangeSet {
    }
 
    /**
-    * replaces may not overlap deletes my overlap, but they must be conbining into a single delete optional, conbine
-    * adjacent deletes adjacent inserts may be done at the same index if start is < last end and not a delete since all
-    * changes are placed in order and normalized as they are added the list of changes is always in order and normalized
+    * Replaces may not overlap. Deletes may overlap, but they must be combined into a single delete. Optionally you may
+    * combine adjacent deletes. Adjacent inserts may be done at the same index if start is < last end and not a delete
+    * since all changes are placed in order and normalized as they are added to the list of changes is always in order
+    * and normalized
     */
    private void addChanger(CharacterChanger changer) {
       if (firstChange == null) { // if the change set is currently empty
@@ -235,16 +236,16 @@ public class ChangeSet {
    public String toString() {
       return new String(toCharArray());
    }
-   
+
    /**
     * This function calls reset(source) on your matcher and will replace all matched items in the ChangesSet source.
     * 
     * @param matcher
     * @param replacement
     */
-   public void replaceAll(Matcher matcher, String replacement){
+   public void replaceAll(Matcher matcher, String replacement) {
       matcher.reset(source);
-      while(matcher.find()){
+      while (matcher.find()) {
          replace(matcher.start(), matcher.end(), replacement);
       }
    }

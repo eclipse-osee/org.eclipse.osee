@@ -10,10 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlExportTable;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 import org.eclipse.swt.SWT;
@@ -41,8 +46,15 @@ public class Dialogs {
       final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.SAVE);
       dialog.setFilterExtensions(new String[] {"*.html"});
       String filename = dialog.open();
-      if (filename == null || filename.equals("")) return Result.FalseResult;
-      AFile.writeFile(filename, htmlText);
+      if (filename == null || filename.equals("")) {
+         return Result.FalseResult;
+      }
+      try {
+         Lib.writeStringToFile(htmlText, new File(filename));
+      } catch (IOException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         return Result.FalseResult;
+      }
       if (openInSystem) Program.launch(filename);
       return Result.TrueResult;
    }

@@ -11,10 +11,13 @@
 package org.eclipse.osee.ats.editor.help;
 
 import java.io.File;
+import java.io.IOException;
 import org.eclipse.help.IHelpResource;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 
 /**
@@ -44,8 +47,13 @@ public class WorkAttrHelpResource implements IHelpResource {
          else
             sb.append(AHTML.para("Enter the " + layoutData.getName()));
          String html = AHTML.simplePage(sb.toString());
-         AFile.writeFile(file, html);
-         System.out.println("Opening file => " + absFile);
+
+         try {
+            Lib.writeStringToFile(html, file);
+         } catch (IOException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+
          return absFile;
       }
       return null;

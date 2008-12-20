@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -99,8 +101,9 @@ public class NewActionJob extends Job {
     * atsNumFilename>".
     * 
     * @return number
+    * @throws IOException
     */
-   public static int getAtsDeveloperTTNum() {
+   public static int getAtsDeveloperTTNum() throws IOException {
       File numFile = OseeData.getFile("atsDevNum.txt");
       if (numFile.exists() && ttNum == 0) {
          try {
@@ -110,7 +113,7 @@ public class NewActionJob extends Job {
          }
       }
       ttNum++;
-      AFile.writeFile(numFile, ttNum + "");
+      Lib.writeStringToFile(String.valueOf(ttNum), numFile);
       return ttNum;
    }
 

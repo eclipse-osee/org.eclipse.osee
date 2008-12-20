@@ -6,11 +6,15 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 
@@ -87,7 +91,7 @@ public class XViewerTestCustomizations implements IXViewerCustomizations {
     */
    @Override
    public void saveCustomization(CustomizeData custData) throws Exception {
-      AFile.writeFile(getFilename(custData), custData.getXml(true));
+      Lib.writeStringToFile(custData.getXml(true), new File(getFilename(custData)));
       Thread.sleep(2000);
    }
 
@@ -104,11 +108,17 @@ public class XViewerTestCustomizations implements IXViewerCustomizations {
     */
    @Override
    public void setUserDefaultCustData(CustomizeData newCustData, boolean set) {
-      if (set)
-         AFile.writeFile(getDefaultFilename(), newCustData.getGuid());
-      else {
+      if (set) {
+         try {
+            Lib.writeStringToFile(newCustData.getGuid(), new File(getDefaultFilename()));
+         } catch (IOException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      } else {
          File file = new File(getDefaultFilename());
-         if (file.exists()) file.delete();
+         if (file.exists()) {
+            file.delete();
+         }
       }
    }
 

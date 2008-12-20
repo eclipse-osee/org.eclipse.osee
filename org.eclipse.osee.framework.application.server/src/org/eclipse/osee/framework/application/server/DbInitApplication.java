@@ -14,6 +14,5 @@ public class DbInitApplication implements IApplication {
 
    @Override
    public void stop() {
-      // TODO Auto-generated method stub
    }
 }

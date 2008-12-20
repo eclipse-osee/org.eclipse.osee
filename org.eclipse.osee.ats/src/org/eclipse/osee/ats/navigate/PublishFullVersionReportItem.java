@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.io.File;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,7 +23,7 @@ import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -114,7 +115,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       public IStatus run(IProgressMonitor monitor) {
          try {
             String html = VersionReportJob.getFullReleaseReport(teamDef, monitor);
-            AFile.writeFile(filename, html);
+            Lib.writeStringToFile(html, new File(filename));
             Program.launch(filename);
             AWorkbench.popup("Publish Complete", "Data Published To \"" + filename + "\"");
          } catch (Exception ex) {

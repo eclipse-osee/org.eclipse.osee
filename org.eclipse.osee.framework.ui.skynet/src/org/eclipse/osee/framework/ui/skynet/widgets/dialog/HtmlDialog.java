@@ -12,8 +12,12 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.io.File;
+import java.io.IOException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationListener;
@@ -68,7 +72,11 @@ public class HtmlDialog extends MessageDialog {
 
          public void widgetSelected(SelectionEvent e) {
             String file = System.getProperty("user.home") + File.separator + "out.html";
-            AFile.writeFile(file, html);
+            try {
+               Lib.writeStringToFile(html, new File(file));
+            } catch (IOException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
             Program.launch(file);
          }
       });

@@ -12,10 +12,14 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xresults;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 import org.eclipse.swt.SWT;
@@ -76,7 +80,11 @@ public class XResultsComposite extends Composite {
                return;
             }
             String fileName = System.getProperty("user.home") + File.separator + "out.html";
-            AFile.writeFile(fileName, htmlText);
+            try {
+               Lib.writeStringToFile(htmlText, new File(fileName));
+            } catch (IOException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
             Program.launch(fileName);
          }
       });

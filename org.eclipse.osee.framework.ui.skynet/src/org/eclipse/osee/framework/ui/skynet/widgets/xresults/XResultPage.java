@@ -10,15 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xresults;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.swt.program.Program;
 
@@ -92,16 +96,14 @@ public class XResultPage {
 
    public int getNumWarnings() {
       if (numWarnings != Integer.MAX_VALUE) return numWarnings;
-      if (manipulations.contains(Manipulations.WARNING_YELLOW)) numWarnings =
-            Lib.numOccurances(html, "Warning:");
+      if (manipulations.contains(Manipulations.WARNING_YELLOW)) numWarnings = Lib.numOccurances(html, "Warning:");
       if (numWarnings == Integer.MAX_VALUE) return 0;
       return numWarnings;
    }
 
    public int getNumErrors() {
       if (numErrors != Integer.MAX_VALUE) return numErrors;
-      if (manipulations.contains(Manipulations.ERROR_RED)) numErrors =
-            Lib.numOccurances(html, "Error:");
+      if (manipulations.contains(Manipulations.ERROR_RED)) numErrors = Lib.numOccurances(html, "Error:");
       if (numErrors == Integer.MAX_VALUE) return 0;
       return numErrors;
    }
@@ -125,8 +127,7 @@ public class XResultPage {
    }
 
    public String getErrorWarningHtml() {
-      return String.format("<b>Errors</b>: %d  <b>Warnings</b>: %d<br><br>",
-            getNumErrors(), getNumWarnings());
+      return String.format("<b>Errors</b>: %d  <b>Warnings</b>: %d<br><br>", getNumErrors(), getNumWarnings());
    }
 
    public String getManipulatedHtml() {
@@ -140,14 +141,12 @@ public class XResultPage {
          if (manipulations.contains(Manipulations.RAW_HTML)) {
             str = AHTML.simplePage(str);
          } else {
-            if (manipulations.contains(Manipulations.CONVERT_NEWLINES)) str =
-                  str.replaceAll("\n", AHTML.newline());
+            if (manipulations.contains(Manipulations.CONVERT_NEWLINES)) str = str.replaceAll("\n", AHTML.newline());
             if (manipulations.contains(Manipulations.HRID_CMD_HYPER)) {
                // System.err.println("match " + line);
                // Match getText so it doesn't mess up replace
                // Retireve all ATS=WPN_PAGE:HSRID matches
-               Matcher m =
-                     Pattern.compile("([A-Z]{3,4})=(.*?):([A-Z0-9]{5})").matcher(str);
+               Matcher m = Pattern.compile("([A-Z]{3,4})=(.*?):([A-Z0-9]{5})").matcher(str);
                Set<String> cmdNameHrids = new HashSet<String>();
                while (m.find())
                   cmdNameHrids.add(m.group());
@@ -160,22 +159,14 @@ public class XResultPage {
                   String hrid = value;
                   hrid = hrid.replaceAll("^.*:", "");
                   if (cmdNameHrid.startsWith(HyperType.BOTH.name())) {
-                     String replaceStr =
-                           hrid + " (" + XResultHtml.getOpenHyperlinkHtml("ATS-" + name,
-                                 hrid);
-                     replaceStr +=
-                           "  " + XResultHtml.getOpenArtEditHyperlinkHtml("AE-" + name,
-                                 hrid);
+                     String replaceStr = hrid + " (" + XResultHtml.getOpenHyperlinkHtml("ATS-" + name, hrid);
+                     replaceStr += "  " + XResultHtml.getOpenArtEditHyperlinkHtml("AE-" + name, hrid);
                      replaceStr += ")";
                      str = str.replaceAll(cmdNameHrid, replaceStr);
                   } else if (cmdNameHrid.startsWith(HyperType.ATS.name())) {
-                     str =
-                           str.replaceAll(cmdNameHrid, XResultHtml.getOpenHyperlinkHtml(
-                                 name, hrid));
+                     str = str.replaceAll(cmdNameHrid, XResultHtml.getOpenHyperlinkHtml(name, hrid));
                   } else if (cmdNameHrid.startsWith(HyperType.ART.name())) {
-                     str =
-                           str.replaceAll(cmdNameHrid,
-                                 XResultHtml.getOpenArtEditHyperlinkHtml(name, hrid));
+                     str = str.replaceAll(cmdNameHrid, XResultHtml.getOpenArtEditHyperlinkHtml(name, hrid));
                   }
                }
                // Retrieve all ATS=HRSID matches and replace with hyperlinking
@@ -187,34 +178,26 @@ public class XResultPage {
                   String hrid = cmdHrid;
                   hrid = hrid.replaceAll("^.*?=", "");
                   if (cmdHrid.startsWith(HyperType.BOTH.name())) {
-                     String replaceStr =
-                           hrid + " (" + XResultHtml.getOpenHyperlinkHtml("ATS", hrid);
-                     replaceStr +=
-                           "  " + XResultHtml.getOpenArtEditHyperlinkHtml("AE", hrid);
+                     String replaceStr = hrid + " (" + XResultHtml.getOpenHyperlinkHtml("ATS", hrid);
+                     replaceStr += "  " + XResultHtml.getOpenArtEditHyperlinkHtml("AE", hrid);
                      replaceStr += ")";
                      str = str.replaceAll(cmdHrid, replaceStr);
                   } else if (cmdHrid.startsWith(HyperType.ATS.name())) {
-                     str =
-                           str.replaceAll(cmdHrid, XResultHtml.getOpenHyperlinkHtml(hrid,
-                                 hrid));
+                     str = str.replaceAll(cmdHrid, XResultHtml.getOpenHyperlinkHtml(hrid, hrid));
                   } else if (cmdHrid.startsWith(HyperType.ART.name())) {
-                     str =
-                           str.replaceAll(cmdHrid,
-                                 XResultHtml.getOpenArtEditHyperlinkHtml(hrid, hrid));
+                     str = str.replaceAll(cmdHrid, XResultHtml.getOpenArtEditHyperlinkHtml(hrid, hrid));
                   }
                }
             }
             if (manipulations.contains(Manipulations.HRID_ATS_HYPER)) {
                Matcher m =
-                     Pattern.compile(
-                           "(?<![A-Za-z0-9])([A-Z0-9]{1}[B-DF-HJ-NP-TV-Z0-9]{3}[A-Z0-9]{1})(?![A-Za-z0-9])").matcher(
+                     Pattern.compile("(?<![A-Za-z0-9])([A-Z0-9]{1}[B-DF-HJ-NP-TV-Z0-9]{3}[A-Z0-9]{1})(?![A-Za-z0-9])").matcher(
                            str);
                Set<String> hrids = new HashSet<String>();
                while (m.find())
                   hrids.add(m.group(1));
                for (String hrid : hrids)
-                  str =
-                        str.replaceAll(hrid, XResultHtml.getOpenHyperlinkHtml(hrid, hrid));
+                  str = str.replaceAll(hrid, XResultHtml.getOpenHyperlinkHtml(hrid, hrid));
             }
             if (manipulations.contains(Manipulations.ERROR_RED)) {
                str = str.replaceAll("Error:", AHTML.color("red", "Error:"));
@@ -267,7 +250,11 @@ public class XResultPage {
       if (filename == null) {
          Dialogs.saveHtmlDialog(manipulatedHtml, true);
       } else {
-         AFile.writeFile(filename, manipulatedHtml);
+         try {
+            Lib.writeStringToFile(manipulatedHtml, new File(filename));
+         } catch (IOException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
          Program.launch(filename);
       }
    }

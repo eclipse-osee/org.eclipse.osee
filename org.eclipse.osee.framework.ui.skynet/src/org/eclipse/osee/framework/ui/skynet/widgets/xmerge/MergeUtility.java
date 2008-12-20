@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
+import java.io.File;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -382,6 +384,6 @@ public class MergeUtility {
          fileValue = fileValue.replace(rev, "<wsp:rsid wsp:val=\"" + baselineRsid + "\"/></wsp:rsids>");
       }
 
-      AFile.writeFile(fileName, fileValue);
+      Lib.writeStringToFile(fileValue, new File(fileName));
    }
 }

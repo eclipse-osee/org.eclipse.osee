@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.skywalker;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -24,6 +26,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -143,8 +147,7 @@ public class SkyWalkerView extends ViewPart {
       try {
          if (storedGuid != null) {
             Artifact art =
-                  ArtifactQuery.getArtifactFromId(storedGuid,
-                        BranchManager.getBranch(Integer.parseInt(storedBrandId)));
+                  ArtifactQuery.getArtifactFromId(storedGuid, BranchManager.getBranch(Integer.parseInt(storedBrandId)));
             if (art != null) explore(art);
          }
       } catch (Exception ex) {
@@ -240,8 +243,12 @@ public class SkyWalkerView extends ViewPart {
       dialog.setFilterExtensions(new String[] {"*.sky"});
       String filename = dialog.open();
       if (filename != null) {
-         AFile.writeFile(filename, options.toXml());
-         AWorkbench.popup("Saved", "Save Successful");
+         try {
+            Lib.writeStringToFile(options.toXml(), new File(filename));
+            AWorkbench.popup("Saved", "Save Successful");
+         } catch (IOException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
    }
 
