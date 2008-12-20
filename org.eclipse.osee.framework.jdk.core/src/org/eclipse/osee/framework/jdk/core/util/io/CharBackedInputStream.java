@@ -25,8 +25,6 @@ import java.util.LinkedList;
  * @author Ryan D. Brooks
  */
 public class CharBackedInputStream extends InputStream implements Appendable {
-   //don't change!!!! this is for java 1.4 compatability
-   //private LinkedList<ByteBuffer> backers;
    private LinkedList<ByteBuffer> backers;
    private ByteBuffer currentBacker;
    private CharsetEncoder encoder;
