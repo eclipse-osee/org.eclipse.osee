@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -27,7 +26,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
     */
    @Override
-   public String getValue() throws OseeDataStoreException {
+   public String getValue() throws OseeCoreException {
       return getAttributeDataProvider().getValueAsString();
    }
 

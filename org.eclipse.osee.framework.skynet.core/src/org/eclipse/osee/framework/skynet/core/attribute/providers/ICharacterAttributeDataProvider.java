@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
@@ -17,7 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
  */
 public interface ICharacterAttributeDataProvider extends IAttributeDataProvider {
 
-   public String getValueAsString() throws OseeDataStoreException;
+   public String getValueAsString() throws OseeCoreException;
 
    public boolean setValue(String value) throws OseeDataStoreException;
 

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
@@ -42,7 +41,7 @@ public class WordAttribute extends StringAttribute {
       return super.subClassSetValue(value);
    }
 
-   public boolean mergeMarkupPresent() throws OseeDataStoreException {
+   public boolean mergeMarkupPresent() throws OseeCoreException {
       String temp = getValue();
       if (temp.contains("<w:delText>") || temp.contains("w:type=\"Word.Insertion\"")) return true;
       return false;

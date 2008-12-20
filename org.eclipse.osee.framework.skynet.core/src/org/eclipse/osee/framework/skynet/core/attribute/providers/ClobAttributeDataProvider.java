@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -41,7 +42,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider#getDisplayableString()
     */
    @Override
-   public String getDisplayableString() throws OseeDataStoreException {
+   public String getDisplayableString() throws OseeCoreException {
       return getValueAsString();
    }
 
@@ -57,7 +58,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider#getValueAsString()
     */
    @Override
-   public String getValueAsString() throws OseeDataStoreException {
+   public String getValueAsString() throws OseeCoreException {
       String fromStorage = null;
       byte[] data = null;
       try {

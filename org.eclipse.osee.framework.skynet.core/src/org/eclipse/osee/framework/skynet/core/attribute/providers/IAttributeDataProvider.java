@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
  */
 public interface IAttributeDataProvider {
 
-   public String getDisplayableString() throws OseeDataStoreException;
+   public String getDisplayableString() throws OseeCoreException;
 
    public void setDisplayableString(String toDisplay) throws OseeDataStoreException;
 

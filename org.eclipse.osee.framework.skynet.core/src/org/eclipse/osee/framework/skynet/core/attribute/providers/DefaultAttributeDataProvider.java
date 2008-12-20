@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -40,7 +41,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.AbstractAttributeDataProvider#getValueAsString()
     */
    @Override
-   public String getValueAsString() {
+   public String getValueAsString() throws OseeCoreException {
       return this.value;
    }
 

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -61,7 +61,7 @@ public class EnumeratedAttribute extends StringAttribute {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
     */
    @Override
-   public String getDisplayableString() throws OseeDataStoreException {
+   public String getDisplayableString() throws OseeCoreException {
       String toDisplay = getAttributeDataProvider().getDisplayableString();
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
    }

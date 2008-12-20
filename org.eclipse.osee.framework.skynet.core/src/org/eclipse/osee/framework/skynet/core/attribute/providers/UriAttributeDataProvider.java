@@ -11,11 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
@@ -89,16 +92,17 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#getValueAsBytes()
     */
    @Override
-   public ByteBuffer getValueAsBytes() throws OseeDataStoreException {
+   public ByteBuffer getValueAsBytes() throws OseeCoreException {
       ByteBuffer decompressed = null;
-      try {
-         byte[] rawData = dataStore.getContent();
-         if (rawData != null) {
+      byte[] rawData = dataStore.getContent();
+      if (rawData != null) {
+         try {
             decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
+         } catch (IOException ex) {
+            throw new OseeWrappedException("Error acquiring data. - ", ex);
          }
-      } catch (Exception ex) {
-         throw new OseeDataStoreException("Error acquiring data. - ", ex);
       }
+
       return decompressed;
    }
 
@@ -106,7 +110,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.data.IStringAttributeDataProvider#getValueAsString()
     */
    @Override
-   public String getValueAsString() throws OseeDataStoreException {
+   public String getValueAsString() throws OseeCoreException {
       String toReturn = null;
       ByteBuffer data = getValueAsBytes();
       if (data != null) {
