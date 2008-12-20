@@ -18,10 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -42,9 +45,38 @@ public class GroupSelection {
       return instance;
    }
 
+   private List<IConfigurationElement> getExtensionElements(Bundle bundle, String extensionPointName, String elementName) {
+      return getExtensionElements(bundle.getSymbolicName() + "." + extensionPointName, elementName);
+   }
+
+   private List<IConfigurationElement> getExtensionElements(String extensionPointId, String elementName) {
+      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+      if (extensionRegistry == null) {
+         throw new IllegalStateException("The extension registry is unavailable");
+      }
+
+      IExtensionPoint point = extensionRegistry.getExtensionPoint(extensionPointId);
+      if (point == null) {
+         throw new IllegalArgumentException("The extension point " + extensionPointId + " does not exist");
+      }
+
+      IExtension[] extensions = point.getExtensions();
+      ArrayList<IConfigurationElement> elementsList = new ArrayList<IConfigurationElement>(extensions.length * 3);
+
+      for (IExtension extension : extensions) {
+         IConfigurationElement[] elements = extension.getConfigurationElements();
+         for (IConfigurationElement element : elements) {
+            if (element.getName().equalsIgnoreCase(elementName)) {
+               elementsList.add(element);
+            }
+         }
+      }
+      return elementsList;
+   }
+
    private void populateDbInitChoices() {
       List<IConfigurationElement> elements =
-            ExtensionPoints.getExtensionElements(DatabaseActivator.getInstance(), "AddDbInitChoice", "dbInitChoice");
+            getExtensionElements(DatabaseActivator.getInstance().getBundle(), "AddDbInitChoice", "dbInitChoice");
 
       for (IConfigurationElement element : elements) {
          String choiceClass = element.getAttribute("classname");

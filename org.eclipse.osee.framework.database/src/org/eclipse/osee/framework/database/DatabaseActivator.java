@@ -10,29 +10,47 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
-import org.eclipse.osee.framework.plugin.core.OseeActivator;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plug-in class to be used in the desktop.
  * 
  * @author Ryan D. Brooks
  */
-public class DatabaseActivator extends OseeActivator {
+public class DatabaseActivator implements BundleActivator {
 
    // The shared instance.
    private static DatabaseActivator plugin;
-
-   /**
-    * The constructor.
-    */
-   public DatabaseActivator() {
-      plugin = this;
-   }
 
    /**
     * Returns the shared instance.
     */
    public static DatabaseActivator getInstance() {
       return plugin;
+   }
+
+   public Bundle getBundle() {
+      return bundle;
+   }
+
+   private Bundle bundle;
+
+   /* (non-Javadoc)
+    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+    */
+   @Override
+   public void start(BundleContext context) throws Exception {
+      bundle = context.getBundle();
+      plugin = this;
+   }
+
+   /* (non-Javadoc)
+    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+    */
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      plugin = null;
    }
 }
