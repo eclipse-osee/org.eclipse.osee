@@ -11,6 +11,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetProvider;
 
@@ -28,7 +33,11 @@ public class XBranchSelectWidgetProvider implements IXWidgetProvider {
       if (widgetName.equals(XBranchSelectWidget.WIDGET_ID)) {
          XBranchSelectWidget widget = new XBranchSelectWidget(name);
          widget.setToolTip(widgetLayoutData.getToolTip());
-         widget.setDefaultBranch(widgetLayoutData.getDefaultValue());
+         try {
+            widget.setDefaultBranch(BranchManager.getBranch(widgetLayoutData.getDefaultValue()));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
          toReturn = widget;
       }
       return toReturn;

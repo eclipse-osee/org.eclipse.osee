@@ -13,14 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -41,13 +36,12 @@ public class XBranchSelectWidget extends XWidget implements Listener {
 
    private BranchSelectComposite selectComposite;
    private Composite composite;
-   private int defaultBranchId;
+   private Branch defaultBranch;
 
    private final List<Listener> listeners = new ArrayList<Listener>();
 
    public XBranchSelectWidget(String label) {
       super(label);
-      this.defaultBranchId = -1;
    }
 
    /* (non-Javadoc)
@@ -80,12 +74,8 @@ public class XBranchSelectWidget extends XWidget implements Listener {
          labelWidget.setText(label + ":");
       }
       selectComposite = BranchSelectComposite.createBranchSelectComposite(composite, SWT.NONE);
-      try {
-         if (defaultBranchId != -1) {
-            selectComposite.setDefaultSelectedBranch(BranchManager.getBranch(defaultBranchId));
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      if (defaultBranch != null) {
+         selectComposite.setDefaultSelectedBranch(defaultBranch);
       }
       selectComposite.addListener(this);
    }
@@ -220,15 +210,8 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       notifyListeners(event);
    }
 
-   public void setDefaultBranch(String branchName) {
-      if (Strings.isValid(branchName) != false) {
-         try {
-            Branch branch = BranchManager.getBranch(branchName);
-            defaultBranchId = branch.getBranchId();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Unable to set default branch.", ex);
-         }
-      }
+   public void setDefaultBranch(Branch branch) {
+      defaultBranch = branch;
    }
 
    public void addListener(Listener listener) {
