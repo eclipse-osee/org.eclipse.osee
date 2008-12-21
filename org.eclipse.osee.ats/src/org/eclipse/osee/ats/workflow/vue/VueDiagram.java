@@ -19,9 +19,9 @@ import java.util.regex.Pattern;
  */
 public class VueDiagram {
 
-   private ArrayList<VueLink> links = new ArrayList<VueLink>();
-   private ArrayList<VueNode> vuePages = new ArrayList<VueNode>();
-   private Diagram workflow;
+   private final ArrayList<VueLink> links = new ArrayList<VueLink>();
+   private final ArrayList<VueNode> vuePages = new ArrayList<VueNode>();
+   private final Diagram workflow;
    private static Pattern childPattern =
          Pattern.compile("<child(.*?)>(.*?)</child>", Pattern.DOTALL | Pattern.MULTILINE);
 
@@ -48,15 +48,20 @@ public class VueDiagram {
             VueNode vuePage = new VueNode(matchStr);
             vuePages.add(vuePage);
             workflow.addPage(vuePage.getWorkPage());
-         } else
+         } else {
             throw new IllegalArgumentException("Unhandled xsi:type");
+         }
       }
       for (VueLink link : links) {
          VueNode fromVuePage = getPageFromVueId(link.getFromVueId());
-         if (fromVuePage == null) throw new IllegalArgumentException("Can't retrieve from page");
+         if (fromVuePage == null) {
+            throw new IllegalArgumentException("Can't retrieve fromVuePage with id " + link.getFromVueId());
+         }
          VueNode toVuePage = getPageFromVueId(link.getToVueId());
-         if (toVuePage == null) throw new IllegalArgumentException(
-               "Can't retrieve to page " + link.getToVueId() + " from page " + link.getFromVueId() + " named \"" + fromVuePage.getWorkPage().getName() + "\"");
+         if (toVuePage == null) {
+            throw new IllegalArgumentException(
+                  "Can't retrieve toVuePage " + link.getToVueId() + " fromVuePage " + link.getFromVueId() + " named \"" + fromVuePage.getWorkPage().getName() + "\"");
+         }
          fromVuePage.getWorkPage().addToPage(toVuePage.getWorkPage(), link.getName().equals("return"));
          toVuePage.getWorkPage().addFromPage(fromVuePage.getWorkPage());
          if (link.isMultiDirectional()) {

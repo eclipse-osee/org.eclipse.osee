@@ -23,7 +23,7 @@ public class VueNode {
 
    private final String vueXml;
    private String vueId;
-   private DiagramNode workPage;
+   private final DiagramNode workPage;
    public static enum Shape {
       ellipse, rectangle, hexagon;
       public static Shape getShape(String shape) {
@@ -35,8 +35,9 @@ public class VueNode {
    };
    private Shape shape;
 
+   @Override
    public String toString() {
-      return workPage.getPageType() + ": " + workPage.getName();
+      return "[" + workPage.getPageType() + " (" + vueId + ") " + workPage.getName() + "]";
    }
 
    /**

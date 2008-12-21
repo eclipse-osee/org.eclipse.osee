@@ -25,6 +25,11 @@ public class VueLink {
    private String fromVueId;
    private String toVueId;
 
+   @Override
+   public String toString() {
+      return "[" + vueId + " - " + name + " - " + fromVueId + " --> " + toVueId + " - " + (multiDirectional ? "multiDirectional]" : "singleDirection]");
+   }
+
    /**
     * 
     */
