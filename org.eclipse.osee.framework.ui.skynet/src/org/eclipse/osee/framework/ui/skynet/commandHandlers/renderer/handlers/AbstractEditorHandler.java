@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands;
+package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import java.util.List;
 import org.eclipse.jface.viewers.ISelectionProvider;

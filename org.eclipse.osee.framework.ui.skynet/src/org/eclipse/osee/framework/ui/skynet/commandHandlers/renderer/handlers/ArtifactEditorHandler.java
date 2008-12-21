@@ -8,36 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands;
+package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 
 /**
+ * Opens an artifact editor as long as the user has Read permission
+ * 
  * @author Jeff C. Phillips
  */
-public class OpenHandler extends AbstractEditorHandler {
+public class ArtifactEditorHandler extends AbstractEditorHandler {
    /*
     * (non-Javadoc)
     * 
     * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
     */
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
-      if (!artifacts.isEmpty()) {
-         try {
-            RendererManager.previewInJob(artifacts);
-            dispose();
-
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
+   public Object execute(ExecutionEvent myExecutionEvent) throws ExecutionException {
+      ArtifactEditor.editArtifacts(artifacts);
       return null;
    }
 }
