@@ -358,7 +358,7 @@ public final class Lib {
       char[] chars = new char[8000];
       int readCount = 0;
       while ((readCount = reader.read(chars)) != -1) {
-         set.insertBefore(0, chars, 0, readCount);
+         set.insertBefore(0, chars, 0, readCount, true);
       }
       return set;
    }

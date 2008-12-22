@@ -113,6 +113,10 @@ public class ChangeSet {
       writer.close();
    }
 
+   public void insertBefore(int index, char[] newChars, int offset, int length, boolean copy) {
+      addChanger(new CharArrayChange(index, index, newChars, offset, length, copy));
+   }
+
    public void insertBefore(int index, char[] newChars, int offset, int length) {
       addChanger(new CharArrayChange(index, index, newChars, offset, length));
    }

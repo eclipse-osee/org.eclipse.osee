@@ -24,16 +24,25 @@ public class CharArrayChange implements CharacterChanger {
    private int length;
    private CharacterChanger next;
 
+   public CharArrayChange(int srcStartIndex, int srcEndIndex, char[] newChars, int offset, int length, boolean copy) {
+      super();
+      this.srcStartIndex = srcStartIndex;
+      this.srcEndIndex = srcEndIndex;
+      if (copy) {
+         this.newChars = new char[newChars.length];
+         System.arraycopy(newChars, 0, this.newChars, 0, newChars.length);
+      } else {
+         this.newChars = newChars;
+      }
+      this.offset = offset;
+      this.length = length;
+   }
+
    /**
     * 
     */
    public CharArrayChange(int srcStartIndex, int srcEndIndex, char[] newChars, int offset, int length) {
-      super();
-      this.srcStartIndex = srcStartIndex;
-      this.srcEndIndex = srcEndIndex;
-      this.newChars = newChars;
-      this.offset = offset;
-      this.length = length;
+      this(srcStartIndex, srcEndIndex, newChars, offset, length, false);
    }
 
    public CharArrayChange(int srcStartIndex, int srcEndIndex, char[] newChars) {
