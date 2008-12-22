@@ -827,11 +827,12 @@ public class SMAManager {
                "Working Branch exists.  Please commit or delete working branch before transition.");
 
          // Check extension points for valid transition
-         for (IAtsStateItem item : stateItems.getStateItems(fromWorkPageDefinition.getId())) {
+         List<IAtsStateItem> atsStateItems = stateItems.getStateItems(fromWorkPageDefinition.getId());
+         for (IAtsStateItem item : atsStateItems) {
             Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
             if (result.isFalse()) return result;
          }
-         for (IAtsStateItem item : stateItems.getStateItems(toWorkPageDefinition.getId())) {
+         for (IAtsStateItem item : atsStateItems) {
             Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
             if (result.isFalse()) return result;
          }
