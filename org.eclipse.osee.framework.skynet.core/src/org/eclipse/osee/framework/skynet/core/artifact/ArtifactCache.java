@@ -60,7 +60,7 @@ public class ArtifactCache {
    }
 
    static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
-      for (String staticId : artifact.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE)) {
+      for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
          instance.staticIdArtifactCache.put(staticId, artifact);
       }
    }
@@ -71,7 +71,7 @@ public class ArtifactCache {
          instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
          instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
          instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
-         for (String staticId : artifact.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE)) {
+         for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
             instance.staticIdArtifactCache.removeValue(staticId, artifact);
          }
       } catch (Exception ex) {
@@ -80,7 +80,11 @@ public class ArtifactCache {
    }
 
    public static Collection<Artifact> getArtifactsByStaticId(String staticId) {
-      return instance.staticIdArtifactCache.getValues(staticId);
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      for (Artifact artifact : instance.staticIdArtifactCache.getValues(staticId)) {
+         if (!artifact.isDeleted()) artifacts.add(artifact);
+      }
+      return artifacts;
    }
 
    public static Collection<Artifact> getArtifactsByStaticId(String staticId, Branch branch) {
@@ -88,7 +92,7 @@ public class ArtifactCache {
       Collection<Artifact> cachedArts = instance.staticIdArtifactCache.getValues(staticId);
       if (cachedArts == null) return artifacts;
       for (Artifact artifact : cachedArts) {
-         if (artifact.getBranch().equals(branch)) artifacts.add(artifact);
+         if (!artifact.isDeleted() && artifact.getBranch().equals(branch)) artifacts.add(artifact);
       }
       return artifacts;
    }

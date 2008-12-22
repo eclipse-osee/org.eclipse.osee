@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -253,7 +253,7 @@ public class LoadAIsAndTeamsAction {
                teamDefArt.addRelation(AtsRelation.TeamActionableItem_ActionableItem, actionableItem);
             }
             for (String staticId : staticIds) {
-               teamDefArt.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, staticId);
+               StaticIdManager.setSingletonAttributeValue(teamDefArt, staticId);
             }
             teamDefArt.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
          }
@@ -276,7 +276,7 @@ public class LoadAIsAndTeamsAction {
       // Handle all team children
       for (DiagramNode childPage : page.getToPages()) {
          if (childPage.getPageType() == PageType.Team) {
-            addTeam(teamDefArt, (DiagramNode) childPage, transaction);
+            addTeam(teamDefArt, childPage, transaction);
          }
       }
       return teamDefArt;
@@ -320,7 +320,7 @@ public class LoadAIsAndTeamsAction {
                         AtsPlugin.getAtsBranch());
             aia.setDescriptiveName(page.getName());
             for (String staticId : staticIds) {
-               aia.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, staticId);
+               StaticIdManager.setSingletonAttributeValue(aia, staticId);
             }
             for (User user : leads) {
                aia.addRelation(AtsRelation.TeamLead_Lead, user);
@@ -333,7 +333,7 @@ public class LoadAIsAndTeamsAction {
          }
       }
       for (DiagramNode childPage : page.getToPages()) {
-         addActionableItem(aia, (DiagramNode) childPage, transaction);
+         addActionableItem(aia, childPage, transaction);
       }
       aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
 

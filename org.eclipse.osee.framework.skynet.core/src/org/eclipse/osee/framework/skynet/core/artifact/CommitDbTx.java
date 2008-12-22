@@ -338,7 +338,6 @@ public class CommitDbTx extends DbTransaction {
    @Override
    protected void handleTxFinally() throws OseeCoreException {
       if (success) {
-         OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, fromBranchId);
          long time = System.currentTimeMillis();
          Object[] dataList =
                new Object[] {toBranch.getBranchId(), newTransactionNumber, toBranch.getBranchId(), newTransactionNumber};
@@ -353,11 +352,15 @@ public class CommitDbTx extends DbTransaction {
             fromBranch.archive();
          }
 
+         branchesInCommit.remove(this.fromBranch);
+         OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, fromBranchId);
+
          if (DEBUG) {
             System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(startTime)));
          }
+      } else {
+         branchesInCommit.remove(this.fromBranch);
       }
-      branchesInCommit.remove(this.fromBranch);
    }
 
    /*

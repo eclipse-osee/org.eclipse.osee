@@ -89,6 +89,7 @@ public abstract class ArtifactFactory {
       return factoryId;
    }
 
+   @Override
    public String toString() {
       return getClass().getName();
    }

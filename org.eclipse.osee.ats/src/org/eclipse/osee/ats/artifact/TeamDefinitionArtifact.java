@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -158,7 +158,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public static TeamDefinitionArtifact getTopTeamDefinition() throws OseeCoreException {
-      return (TeamDefinitionArtifact) StaticIdQuery.getSingletonArtifactOrException(
+      return (TeamDefinitionArtifact) StaticIdManager.getSingletonArtifactOrException(
             TeamDefinitionArtifact.ARTIFACT_NAME, TOP_TEAM_STATIC_ID, AtsPlugin.getAtsBranch());
    }
 

@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -48,8 +48,8 @@ public class AtsConfig {
 
    public Artifact getOrCreateWorkRulesFolderArtifact(SkynetTransaction transaction) throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_RULES_FOLDER);
-      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_RULES_FOLDER)) {
-         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_RULES_FOLDER);
+      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(WORK_RULES_FOLDER)) {
+         StaticIdManager.setSingletonAttributeValue(art, WORK_RULES_FOLDER);
       }
       validateATSHeadingParent(art, transaction);
       return art;
@@ -57,8 +57,8 @@ public class AtsConfig {
 
    public Artifact getOrCreateWorkPagesFolderArtifact(SkynetTransaction transaction) throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_PAGES_FOLDER);
-      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_PAGES_FOLDER)) {
-         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_PAGES_FOLDER);
+      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(WORK_PAGES_FOLDER)) {
+         StaticIdManager.setSingletonAttributeValue(art, WORK_PAGES_FOLDER);
       }
       validateATSHeadingParent(art, transaction);
       return art;
@@ -66,8 +66,8 @@ public class AtsConfig {
 
    public Artifact getOrCreateWorkWidgetsFolderArtifact(SkynetTransaction transaction) throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_WIDGETS_FOLDER);
-      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_WIDGETS_FOLDER)) {
-         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_WIDGETS_FOLDER);
+      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(WORK_WIDGETS_FOLDER)) {
+         StaticIdManager.setSingletonAttributeValue(art, WORK_WIDGETS_FOLDER);
       }
       validateATSHeadingParent(art, transaction);
       return art;
@@ -75,8 +75,8 @@ public class AtsConfig {
 
    public Artifact getOrCreateWorkFlowsFolderArtifact(SkynetTransaction transaction) throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_FLOWS_FOLDER);
-      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_FLOWS_FOLDER)) {
-         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_FLOWS_FOLDER);
+      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(WORK_FLOWS_FOLDER)) {
+         StaticIdManager.setSingletonAttributeValue(art, WORK_FLOWS_FOLDER);
       }
       validateATSHeadingParent(art, transaction);
       return art;
@@ -86,9 +86,9 @@ public class AtsConfig {
       Artifact art =
             Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), ActionableItemArtifact.ARTIFACT_NAME,
                   ACTIONABLE_ITEMS_HEADING);
-      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(
+      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(
             ActionableItemArtifact.TOP_AI_STATIC_ID)) {
-         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, ActionableItemArtifact.TOP_AI_STATIC_ID);
+         StaticIdManager.setSingletonAttributeValue(art, ActionableItemArtifact.TOP_AI_STATIC_ID);
       }
       validateATSHeadingParent(art, transaction);
       return (ActionableItemArtifact) art;
@@ -97,9 +97,9 @@ public class AtsConfig {
    public TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact(SkynetTransaction transaction) throws OseeCoreException {
       Artifact art =
             Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), TeamDefinitionArtifact.ARTIFACT_NAME, TEAMS_HEADING);
-      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(
+      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(
             TeamDefinitionArtifact.TOP_TEAM_STATIC_ID)) {
-         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, TeamDefinitionArtifact.TOP_TEAM_STATIC_ID);
+         StaticIdManager.setSingletonAttributeValue(art, TeamDefinitionArtifact.TOP_TEAM_STATIC_ID);
       }
       validateATSHeadingParent(art, transaction);
       return (TeamDefinitionArtifact) art;
@@ -126,19 +126,5 @@ public class AtsConfig {
       }
       return art;
    }
-
-   //   public Artifact getOrCreateMsaToolsHeadingArtifact(SkynetTransaction transaction) throws OseeCoreException {
-   //      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, MSA_TOOLS_HEADING);
-   //      if (art.getParent() == null) {
-   //         try {
-   //            Artifact rootArt = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
-   //            rootArt.addChild(art);
-   //            art.persistAttributesAndRelations(transaction);
-   //         } catch (Exception ex) {
-   //            OSEELog.logException(AtsPlugin.class, ex, true);
-   //         }
-   //      }
-   //      return art;
-   //   }
 
 }

@@ -183,6 +183,26 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return getParentSMA().getWorldViewWorkPackage();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getWorldViewEstimatedCompletionDate()
+    */
+   @Override
+   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
+      Date value = super.getWorldViewEstimatedCompletionDate();
+      if (value != null) return value;
+      return getParentSMA().getWorldViewEstimatedCompletionDate();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getWorldViewEstimatedReleaseDate()
+    */
+   @Override
+   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
+      Date value = super.getWorldViewEstimatedReleaseDate();
+      if (value != null) return value;
+      return getParentSMA().getWorldViewEstimatedReleaseDate();
+   }
+
    public Boolean isInWork() throws OseeCoreException {
       return (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name()));
    }
