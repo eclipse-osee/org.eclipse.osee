@@ -131,6 +131,7 @@ class DeleteBranchJob extends Job {
             deleteRelationVersions();
             deleteArtifactVersions();
             deleteBranch();
+            txResult = Status.OK_STATUS;
          } finally {
             chStmt.close();
          }
@@ -184,9 +185,6 @@ class DeleteBranchJob extends Job {
 
       private boolean isCanceled() {
          boolean isCanceled = monitor.isCanceled();
-         if (!isCanceled) {
-            txResult = Status.OK_STATUS;
-         }
          return isCanceled;
       }
    }
