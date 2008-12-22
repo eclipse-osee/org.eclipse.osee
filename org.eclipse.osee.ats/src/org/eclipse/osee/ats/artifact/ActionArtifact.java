@@ -261,13 +261,18 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
+   @Override
    public String getWorldViewActivePoc() throws OseeCoreException {
       Set<User> pocs = new HashSet<User>();
-      // Roll up all assignees
+      Set<User> implementers = new HashSet<User>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         pocs.addAll(team.getSmaMgr().getStateMgr().getAssignees());
+         if (team.getSmaMgr().isCancelledOrCompleted()) {
+            implementers.addAll(team.getImplementers());
+         } else {
+            pocs.addAll(team.getSmaMgr().getStateMgr().getAssignees());
+         }
       }
-      return Artifacts.toString("; ", pocs);
+      return Artifacts.toString("; ", pocs) + (implementers.size() > 0 ? "(" + Artifacts.toString("; ", implementers) + ")" : "");
    }
 
    public String getWorldViewCreatedDateStr() throws OseeCoreException {

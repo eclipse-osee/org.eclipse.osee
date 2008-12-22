@@ -12,8 +12,6 @@ package org.eclipse.osee.ats.world;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.ActionDebug;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -52,9 +50,8 @@ public class WorldXViewerSorter extends XViewerSorter {
 
          if (sortXCol.equals(WorldXViewerFactory.Assignees_Col)) {
             int compareInt =
-                  getComparator().compare(
-                        (new SMAManager((StateMachineArtifact) m1)).getAssigneesWasIsStr().replaceFirst("\\(", ""),
-                        (new SMAManager((StateMachineArtifact) m2)).getAssigneesWasIsStr().replaceFirst("\\(", ""));
+                  getComparator().compare(m1.getWorldViewActivePoc().replaceFirst("\\(", ""),
+                        m2.getWorldViewActivePoc().replaceFirst("\\(", ""));
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          } else if (sortXCol.equals(WorldXViewerFactory.Change_Type_Col)) {
             int compareInt =

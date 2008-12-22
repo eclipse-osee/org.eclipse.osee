@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
-import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -744,12 +743,6 @@ public class SMAManager {
          sb.append(u.getName() + SEPERATOR);
       }
       return sb.toString().replaceFirst(SEPERATOR + "$", "");
-   }
-
-   public String getAssigneesWasIsStr() throws OseeCoreException {
-      if (isCompleted() || isCancelled()) return "(" + Artifacts.toString("; ",
-            stateMgr.getAssignees(TaskStates.InWork.name())) + ")";
-      return Artifacts.toString("; ", stateMgr.getAssignees());
    }
 
    public Image getAssigneeImage() throws OseeCoreException {

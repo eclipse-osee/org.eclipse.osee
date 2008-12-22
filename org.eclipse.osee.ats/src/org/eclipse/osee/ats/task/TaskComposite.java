@@ -484,7 +484,7 @@ public class TaskComposite extends Composite implements IActionable {
             SMAManager smaMgr = new SMAManager(art);
             html.append(AHTML.addRowMultiColumnTable(new String[] {art.getDescriptiveName(),
                   art.getSmaMgr().getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
-                  smaMgr.getAssigneesWasIsStr(), smaMgr.getSma().getPercentCompleteSMATotal() + "",
+                  smaMgr.getSma().getWorldViewActivePoc(), smaMgr.getSma().getPercentCompleteSMATotal() + "",
                   smaMgr.getSma().getHoursSpentSMATotal() + "",
                   art.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), ""),
                   art.getHumanReadableId()}));
