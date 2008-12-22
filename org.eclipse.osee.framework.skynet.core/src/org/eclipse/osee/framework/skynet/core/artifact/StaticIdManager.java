@@ -39,7 +39,7 @@ public class StaticIdManager {
     * @throws OseeCoreException
     */
    public static void setSingletonAttributeValue(Artifact artifact, String staticId) throws OseeCoreException {
-      List<Attribute<String>> attributes = artifact.getAttributes(STATIC_ID_ATTRIBUTE);
+      List<Attribute<String>> attributes = artifact.getAttributes(STATIC_ID_ATTRIBUTE, staticId);
       if (attributes.size() == 0) {
          artifact.addAttribute(STATIC_ID_ATTRIBUTE, staticId);
       } else if (attributes.size() > 1) {

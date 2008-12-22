@@ -82,7 +82,6 @@ public class AtsCache {
 
    public static TeamDefinitionArtifact getTeamDefinitionArtifact(String guid) throws OseeCoreException {
       BulkLoadAtsCache.run(true);
-      BulkLoadAtsCache.run(true);
       TeamDefinitionArtifact teamDef = instance.guidToTeamDefinition.get(guid);
       if (teamDef != null) return teamDef;
       Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch(), false);
@@ -126,7 +125,7 @@ public class AtsCache {
       BulkLoadAtsCache.run(true);
       List<A> arts = getArtifactsByName(name, clazz);
       if (arts.size() == 1) {
-         return (A) arts.iterator().next();
+         return arts.iterator().next();
       }
       return null;
    }

@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public class ApplicationServerManager implements IApplicationServerManager {
-   private Map<String, OseeServerThreadFactory> threadFactories;
+   private final Map<String, OseeServerThreadFactory> threadFactories;
    private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
 
    private final OseeServerInfo applicationServerInfo;
@@ -47,7 +47,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.threadFactories = Collections.synchronizedMap(new HashMap<String, OseeServerThreadFactory>());
       this.applicationServerInfo = createOseeServerInfo();
       this.isRegistered = false;
-      applicationServerInfo.setAcceptingRequests(false);
+      applicationServerInfo.setAcceptingRequests(true);
 
       new Thread(new Runnable() {
          @Override

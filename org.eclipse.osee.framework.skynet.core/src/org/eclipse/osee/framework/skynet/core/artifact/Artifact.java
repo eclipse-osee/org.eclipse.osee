@@ -510,6 +510,29 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     * 
+    * @param <T>
+    * @param attributeTypeName
+    * @param value
+    * @throws OseeCoreException
+    */
+   public <T> List<Attribute<T>> getAttributes(String attributeTypeName, Object value) throws OseeCoreException {
+      ensureAttributesLoaded();
+      List<Attribute<?>> notDeltedAttributes = new ArrayList<Attribute<?>>();
+      Collection<Attribute<?>> selectedAttributes = attributes.getValues(attributeTypeName);
+      if (selectedAttributes == null) {
+         return java.util.Collections.emptyList();
+      }
+      for (Attribute<?> attribute : selectedAttributes) {
+         if (!attribute.isDeleted() && attribute.getValue().equals(value)) {
+            notDeltedAttributes.add(attribute);
+         }
+      }
+      return Collections.castAll(notDeltedAttributes);
+   }
+
+   /**
+    * The use of this method is discouraged since it directly returns Attributes.
+    * 
     * @return attributes
     * @throws OseeCoreException
     */
@@ -537,9 +560,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public void deleteAttributes() {
       for (Attribute<?> attribute : attributes.getValues()) {
          if (attribute.isInDb()) {
-         attribute.delete();
+            attribute.delete();
+         }
       }
-   }
    }
 
    private void ensureAttributesLoaded() throws OseeCoreException {
