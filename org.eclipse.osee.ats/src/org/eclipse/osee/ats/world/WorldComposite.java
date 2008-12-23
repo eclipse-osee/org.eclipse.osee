@@ -75,7 +75,8 @@ import org.eclipse.swt.widgets.Tree;
  */
 public class WorldComposite extends ScrolledComposite implements IFrameworkTransactionEventListener {
 
-   private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toWorkFlow, toTask;
+   private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toReview, toWorkFlow,
+         toTask;
    private Label extraInfoLabel;
    private final WorldXViewer worldXViewer;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
@@ -441,6 +442,15 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       };
       toTask.setToolTipText("Re-display as Tasks");
 
+      toReview = new Action("Re-display as Reviews", Action.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            redisplayAsReviews();
+         }
+      };
+      toReview.setToolTipText("Re-display as Reviews");
+
       if (toolBar != null) {
          actionToToolItem(toolBar, refreshAction);
          new ToolItem(toolBar, SWT.SEPARATOR);
@@ -483,6 +493,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       actionToMenuItem(menu, toAction, SWT.PUSH);
       actionToMenuItem(menu, toWorkFlow, SWT.PUSH);
       actionToMenuItem(menu, toTask, SWT.PUSH);
+      actionToMenuItem(menu, toReview, SWT.PUSH);
 
    }
 
@@ -614,6 +625,40 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                      }
                   } else if (art instanceof StateMachineArtifact) {
                      arts.addAll(((StateMachineArtifact) art).getSmaMgr().getTaskMgr().getTaskArtifacts());
+                  }
+               }
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     load(worldEditor.getCurrentTitleLabel(), arts);
+                  }
+               });
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
+   }
+
+   public void redisplayAsReviews() {
+      final ArrayList<Artifact> artifacts = worldXViewer.getLoadedArtifacts();
+      Job job = new Job("Re-display as Reviews") {
+         /* (non-Javadoc)
+          * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+          */
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> arts = new HashSet<Artifact>();
+               for (Artifact art : artifacts) {
+                  if (art instanceof ActionArtifact) {
+                     for (TeamWorkFlowArtifact team : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
+                        arts.addAll(team.getSmaMgr().getReviewManager().getReviews());
+                     }
+                  } else if (art instanceof StateMachineArtifact) {
+                     arts.addAll(((StateMachineArtifact) art).getSmaMgr().getReviewManager().getReviews());
                   }
                }
                Displays.ensureInDisplayThread(new Runnable() {

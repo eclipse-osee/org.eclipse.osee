@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog.Selection;
@@ -119,12 +120,16 @@ public class ArtifactPromptChange {
                   artifacts.size() == 1 ? artifacts.iterator().next().getSoleAttributeValue(attributeName, null,
                         Date.class) : null);
       if (diag.open() == 0) {
-         for (Artifact artifact : artifacts) {
-            if (diag.isNoneSelected())
-               artifact.deleteSoleAttribute(attributeName);
-            else
-               artifact.setSoleAttributeValue(attributeName, diag.getSelectedDate());
-            if (persist) artifact.persistAttributes();
+         if (artifacts.size() > 0) {
+            SkynetTransaction transaction = new SkynetTransaction(artifacts.iterator().next().getBranch());
+            for (Artifact artifact : artifacts) {
+               if (diag.isNoneSelected())
+                  artifact.deleteSoleAttribute(attributeName);
+               else
+                  artifact.setSoleAttributeValue(attributeName, diag.getSelectedDate());
+               if (persist) artifact.persistAttributes(transaction);
+            }
+            if (persist) transaction.execute();
          }
       }
       return true;
@@ -147,21 +152,25 @@ public class ArtifactPromptChange {
          Set<String> selected = new HashSet<String>();
          for (Object obj : diag.getResult())
             selected.add((String) obj);
-         for (Artifact artifact : artifacts) {
-            List<String> current = artifact.getAttributesToStringList(attributeName);
-            if (diag.getSelected() == Selection.AddSelection) {
-               current.addAll(selected);
-               artifact.setAttributeValues(attributeName, current);
-            } else if (diag.getSelected() == Selection.DeleteSelected) {
-               current.removeAll(selected);
-               artifact.setAttributeValues(attributeName, current);
-            } else if (diag.getSelected() == Selection.ReplaceAll) {
-               artifact.setAttributeValues(attributeName, selected);
-            } else {
-               AWorkbench.popup("ERROR", "Unhandled selection type => " + diag.getSelected().name());
-               return false;
+         if (artifacts.size() > 0) {
+            SkynetTransaction transaction = new SkynetTransaction(artifacts.iterator().next().getBranch());
+            for (Artifact artifact : artifacts) {
+               List<String> current = artifact.getAttributesToStringList(attributeName);
+               if (diag.getSelected() == Selection.AddSelection) {
+                  current.addAll(selected);
+                  artifact.setAttributeValues(attributeName, current);
+               } else if (diag.getSelected() == Selection.DeleteSelected) {
+                  current.removeAll(selected);
+                  artifact.setAttributeValues(attributeName, current);
+               } else if (diag.getSelected() == Selection.ReplaceAll) {
+                  artifact.setAttributeValues(attributeName, selected);
+               } else {
+                  AWorkbench.popup("ERROR", "Unhandled selection type => " + diag.getSelected().name());
+                  return false;
+               }
+               if (persist) artifact.persistAttributes(transaction);
             }
-            if (persist) artifact.persistAttributes();
+            if (persist) transaction.execute();
          }
       }
       return true;
@@ -185,6 +194,7 @@ public class ArtifactPromptChange {
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
       if (result == 0 || result == 1) {
+         SkynetTransaction transaction = new SkynetTransaction(smas.iterator().next().getBranch());
          for (Artifact sma : smas) {
             String value = ed.getEntry();
             if (result == 0) {
@@ -195,8 +205,9 @@ public class ArtifactPromptChange {
                }
                sma.deleteSoleAttribute(attributeName);
             }
-            if (persist) sma.persistAttributes();
+            if (persist) sma.persistAttributes(transaction);
          }
+         if (persist) transaction.execute();
          return true;
       }
       return false;
@@ -216,9 +227,13 @@ public class ArtifactPromptChange {
 
       int result = md.open();
       if (result == 256) {
-         for (Artifact sma : smas) {
-            sma.setSoleAttributeValue(attributeName, md.getToggleState());
-            if (persist) sma.persistAttributes();
+         if (smas.size() > 0) {
+            SkynetTransaction transaction = new SkynetTransaction(smas.iterator().next().getBranch());
+            for (Artifact sma : smas) {
+               sma.setSoleAttributeValue(attributeName, md.getToggleState());
+               if (persist) sma.persistAttributes();
+            }
+            if (persist) transaction.execute();
          }
          return true;
       }

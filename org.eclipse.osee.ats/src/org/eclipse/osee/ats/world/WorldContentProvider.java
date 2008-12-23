@@ -77,6 +77,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public void remove(final Collection<? extends Object> arts) {
+      if (arts.size() == 0) return;
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);

@@ -152,11 +152,19 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          @Override
          public void run() {
             if (getContentProvider() == null) return;
-            ((WorldContentProvider) getContentProvider()).remove(transData.cacheDeletedArtifacts);
-            update(transData.cacheChangedArtifacts, null);
-            refresh(transData.cacheRelationAddedArtifacts);
-            refresh(transData.cacheRelationChangedArtifacts);
-            refresh(transData.cacheRelationDeletedArtifacts);
+            if (transData.cacheDeletedArtifacts.size() > 0) {
+               ((WorldContentProvider) getContentProvider()).remove(transData.cacheDeletedArtifacts);
+            }
+            if (transData.cacheChangedArtifacts.size() > 0) {
+               update(transData.cacheChangedArtifacts, null);
+            }
+            Set<Artifact> arts = new HashSet<Artifact>();
+            arts.addAll(transData.cacheRelationAddedArtifacts);
+            arts.addAll(transData.cacheRelationChangedArtifacts);
+            arts.addAll(transData.cacheRelationDeletedArtifacts);
+            if (arts.size() > 0) {
+               refresh(arts);
+            }
          }
       });
    }
