@@ -102,7 +102,12 @@ public class OseeDbConnection {
    public static void reportTxCreation(DbTransaction transaction) throws OseeWrappedException {
       ObjectPair<DbTransaction, Exception> currentPair = txCreateds.get(Thread.currentThread());
       if (currentPair != null) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, currentPair.object2);
+         // This log is to support debugging the case where skynet transactions are nested and should
+         // use the same transaction.
+         // This case may happen legitimately if an exception happened before transaction.execute(), so
+         // it is only notification that this is occurring.
+         OseeLog.log(InternalActivator.class, Level.SEVERE, "New transaction created over Last transaction",
+               currentPair.object2);
       }
 
       txCreateds.put(Thread.currentThread(), new ObjectPair<DbTransaction, Exception>(transaction, new Exception()));

@@ -121,7 +121,8 @@ public class ArtifactPromptChange {
                         Date.class) : null);
       if (diag.open() == 0) {
          if (artifacts.size() > 0) {
-            SkynetTransaction transaction = new SkynetTransaction(artifacts.iterator().next().getBranch());
+            SkynetTransaction transaction =
+                  !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch());
             for (Artifact artifact : artifacts) {
                if (diag.isNoneSelected())
                   artifact.deleteSoleAttribute(attributeName);
@@ -153,7 +154,8 @@ public class ArtifactPromptChange {
          for (Object obj : diag.getResult())
             selected.add((String) obj);
          if (artifacts.size() > 0) {
-            SkynetTransaction transaction = new SkynetTransaction(artifacts.iterator().next().getBranch());
+            SkynetTransaction transaction =
+                  !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch());
             for (Artifact artifact : artifacts) {
                List<String> current = artifact.getAttributesToStringList(attributeName);
                if (diag.getSelected() == Selection.AddSelection) {
@@ -194,7 +196,7 @@ public class ArtifactPromptChange {
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
       if (result == 0 || result == 1) {
-         SkynetTransaction transaction = new SkynetTransaction(smas.iterator().next().getBranch());
+         SkynetTransaction transaction = !persist ? null : new SkynetTransaction(smas.iterator().next().getBranch());
          for (Artifact sma : smas) {
             String value = ed.getEntry();
             if (result == 0) {
@@ -228,7 +230,7 @@ public class ArtifactPromptChange {
       int result = md.open();
       if (result == 256) {
          if (smas.size() > 0) {
-            SkynetTransaction transaction = new SkynetTransaction(smas.iterator().next().getBranch());
+            SkynetTransaction transaction = !persist ? null : new SkynetTransaction(smas.iterator().next().getBranch());
             for (Artifact sma : smas) {
                sma.setSoleAttributeValue(attributeName, md.getToggleState());
                if (persist) sma.persistAttributes();
