@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="RUN_FIRST_FOR_LBA" name="build">
 
-	<property name="releaseName" value="0.6.0_RC_2008_12_23-14-46" />
+	<property name="releaseName" value="0.6.0_RC_2008_12_23-14-46_2" />
 	
 	<target name="plugin_export_lba">
 		<pde.exportPlugins destination="osee_server_bundles" exportSource="false" exportType="directory" 
@@ -50,6 +50,11 @@
 		<copy todir="/lba_ws/osee_common/osee_installs/osee_server/${releaseName}">
 			<fileset dir="${basedir}/osee_server_bundles" excludes="**/.svn" />
 		</copy>
+		<chmod perm="+x" type="file">
+			<fileset dir="/lba_ws/osee_common/osee_installs/osee_server/${releaseName}">
+				<include name="*.sh"/>
+			</fileset>
+		</chmod>
 	</target>
 	
 </project>
