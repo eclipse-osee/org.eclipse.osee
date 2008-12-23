@@ -251,7 +251,7 @@ public class DefaultArtifactRenderer implements IRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isPreviewable()
     */
    @Override
-   public boolean isPreviewable() {
+   public boolean isPreviewable(Artifact artifact) {
       return false;
    }
 

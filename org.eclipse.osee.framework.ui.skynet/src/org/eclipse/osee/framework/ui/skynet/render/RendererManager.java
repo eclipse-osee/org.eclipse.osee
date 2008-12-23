@@ -229,11 +229,11 @@ public class RendererManager {
             SkynetGuiPlugin.PLUGIN_ID, false);
    }
 
-   public static List<IRenderer> getPreviewPresentableRenders() throws OseeCoreException {
+   public static List<IRenderer> getPreviewPresentableRenders(Artifact artifact) throws OseeCoreException {
       ArrayList<IRenderer> previewRenders = new ArrayList<IRenderer>(instance.renderers.size());
 
       for (IRenderer renderer : instance.renderers.values()) {
-         if (renderer.isPreviewable()) {
+         if (renderer.isPreviewable(artifact)) {
             previewRenders.add(renderer.newInstance());
          }
       }

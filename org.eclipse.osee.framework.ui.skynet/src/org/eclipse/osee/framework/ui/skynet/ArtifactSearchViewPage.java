@@ -62,10 +62,9 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
-import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.search.report.RelationMatrixExportJob;
@@ -166,7 +165,8 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
-      //            createPreviewArtifactHandler(menuManager, viewer);
+      createOpenNativeEditorHandler(menuManager, viewer);
+      createOpenRdtEditorHandler(menuManager, viewer);
       createOpenArtifactHandler(menuManager, viewer);
       createOpenArtifactEditorHandler(menuManager, viewer);
       createOpenInAtsWorldHandler(menuManager, viewer);
@@ -190,9 +190,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
-      //      addOpenArtifactHandler(menuManager, viewer);
-      //      addOpenArtifactEditorHandler(menuManager, viewer);
-      addOpenInAtsWorldHandler(menuManager, viewer);
+      //      addOpenInAtsWorldHandler(menuManager, viewer);
       addOpenInAtsTaskHandler(menuManager, viewer);
       addOpenInMassArtifactEditorHandler(menuManager, viewer);
       menuManager.add(new Separator());
@@ -254,7 +252,10 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
-            return true;
+            boolean isEnabled = true;
+            List<Artifact> artifacts = getSelectedArtifacts(viewer);
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+            return isEnabled;
          }
       });
    }
@@ -307,41 +308,22 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
     * @param menuManager
     * @param viewer
     */
+   private String addOpenRdtEditorHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem command =
+            Commands.getLocalCommandContribution("lba.ui.rdt.rdteditor.command", getSite(), null, null, null, null,
+                  null, null, null, null);
+      menuManager.add(command);
 
-   private void addPreviewArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
-      MenuManager previewMenu = new MenuManager("Publish");
-
-      CommandContributionItem previewArtifactCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.publishArtifact.command",
-                  getSite(), null, null, null, null, null, null, null, null);
-      previewMenu.add(previewArtifactCommand);
-
-      CommandContributionItem previewArtifactRecurseCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command",
-                  getSite(), null, null, null, null, null, null, null, null);
-      previewMenu.add(previewArtifactRecurseCommand);
-
-      menuManager.add(previewMenu);
+      return command.getId();
    }
 
-   private void createPreviewArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
-      MenuManager previewMenu = new MenuManager("Publish");
-
-      CommandContributionItem previewArtifactCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.publishArtifact.command",
-                  getSite(), null, null, null, null, null, null, null, null);
-      previewMenu.add(previewArtifactCommand);
-
-      handlerService.activateHandler(previewArtifactCommand.getId(),
+   private void createOpenRdtEditorHandler(MenuManager menuManager, final TableViewer viewer) {
+      handlerService.activateHandler(addOpenRdtEditorHandler(menuManager, viewer),
 
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            try {
-               RendererManager.previewInJob(getSelectedArtifacts(viewer));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
+            RendererManager.openInJob(getSelectedArtifacts(viewer), PresentationType.SPECIALIZED_EDIT);
             return null;
          }
 
@@ -350,33 +332,31 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             boolean isEnabled = true;
             List<Artifact> artifacts = getSelectedArtifacts(viewer);
             isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
-            //whole word artifacts can only be viewed as a single document
-            for (Artifact artifact : artifacts) {
-               if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
-                  isEnabled &= artifacts.size() == 1;
-                  break;
-               }
-            }
             return isEnabled;
          }
       });
+   }
 
-      CommandContributionItem previewArtifactRecurseCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.publishArtifactRecurse.command",
+   /**
+    * @param menuManager
+    * @param viewer
+    */
+   private String addOpenNativeEditorHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem command =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.nativeeditor.command",
                   getSite(), null, null, null, null, null, null, null, null);
-      previewMenu.add(previewArtifactRecurseCommand);
+      menuManager.add(command);
 
-      handlerService.activateHandler(previewArtifactRecurseCommand.getId(),
+      return command.getId();
+   }
+
+   private void createOpenNativeEditorHandler(MenuManager menuManager, final TableViewer viewer) {
+      handlerService.activateHandler(addOpenNativeEditorHandler(menuManager, viewer),
 
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            try {
-               RendererManager.previewInJob(getSelectedArtifacts(viewer), new VariableMap(
-                     ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
+            RendererManager.openInJob(getSelectedArtifacts(viewer), PresentationType.SPECIALIZED_EDIT);
             return null;
          }
 
@@ -385,18 +365,9 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             boolean isEnabled = true;
             List<Artifact> artifacts = getSelectedArtifacts(viewer);
             isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
-            //whole word artifacts can only be viewed as a single document
-            for (Artifact artifact : artifacts) {
-               if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
-                  isEnabled &= artifacts.size() == 1;
-                  break;
-               }
-            }
             return isEnabled;
          }
       });
-
-      menuManager.add(previewMenu);
    }
 
    private String addViewTableHandler(MenuManager menuManager, final TableViewer viewer) {
@@ -649,8 +620,8 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
    private String addOpenInAtsWorldHandler(MenuManager menuManager, final TableViewer viewer) {
       CommandContributionItem openInAtsWorldCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.openInAtsWorldEditor",
-                  getSite(), null, null, null, null, null, null, null, null);
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.atseditor.command", getSite(),
+                  null, null, null, null, null, null, null, null);
       menuManager.add(openInAtsWorldCommand);
 
       return openInAtsWorldCommand.getId();

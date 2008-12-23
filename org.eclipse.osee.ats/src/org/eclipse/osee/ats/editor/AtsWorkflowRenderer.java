@@ -26,6 +26,17 @@ import org.eclipse.swt.graphics.Image;
  * @author Ryan D. Brooks
  */
 public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
+   private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atseditor.command";
+   public static final String RENDERER_EXTENSION = "org.eclipse.osee.ats.editor.AtsWorkflowRenderer";
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
+    */
+   @Override
+   public String getCommandId() {
+      return COMMAND_ID;
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
     */

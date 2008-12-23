@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
@@ -30,6 +31,15 @@ import org.eclipse.swt.program.Program;
  * @author Ryan D. Brooks
  */
 public class NativeRenderer extends FileRenderer {
+   public static final String EXTENSION_ID = "org.eclipse.osee.framework.ui.skynet.render.NativeRenderer";
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
+    */
+   @Override
+   public String getCommandId() {
+      return "org.eclipse.osee.framework.ui.skynet.nativeeditor.command";
+   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
@@ -71,7 +81,7 @@ public class NativeRenderer extends FileRenderer {
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if ((artifact.isOfType("Native") || artifact.isOfType("General Data")) && presentationType == PresentationType.SPECIALIZED_EDIT) {
+      if (!(artifact instanceof WordArtifact) && (artifact.isOfType("Native") || artifact.isOfType("General Data")) && presentationType == PresentationType.SPECIALIZED_EDIT) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

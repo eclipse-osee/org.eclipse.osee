@@ -8,22 +8,21 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
 
 /**
  * @author Jeff C. Phillips
  */
-public class WordEditorHandler extends AbstractEditorHandler {
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+public class NativeEditorHandler extends AbstractEditorHandler {
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
          try {
-            WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
+            NativeRenderer renderer = new NativeRenderer(NativeRenderer.EXTENSION_ID);
             renderer.open(artifacts);
             dispose();
 
@@ -33,4 +32,5 @@ public class WordEditorHandler extends AbstractEditorHandler {
       }
       return null;
    }
+
 }

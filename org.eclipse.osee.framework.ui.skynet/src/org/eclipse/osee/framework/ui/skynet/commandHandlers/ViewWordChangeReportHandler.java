@@ -101,7 +101,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          RendererManager.diffInJob(baseArtifacts, newerArtifacts, variableMap);
       } else {
          //All other artifacts types can be rendered by the wordRenderer so the are displayed in the word change report.
-         WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
+         WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
          try {
             renderer.setOptions(variableMap);
             renderer.compareArtifacts(baseArtifacts, newerArtifacts, new NullProgressMonitor(),

@@ -37,7 +37,7 @@ public interface IRenderer {
 
    public abstract String getCommandId();
 
-   public abstract boolean isPreviewable();
+   public abstract boolean isPreviewable(Artifact artifact);
 
    public abstract List<PreviewRendererData> getPreviewData();
 

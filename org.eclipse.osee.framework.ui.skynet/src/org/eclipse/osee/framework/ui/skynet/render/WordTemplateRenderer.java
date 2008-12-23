@@ -62,7 +62,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private static final Pattern pattern =
          Pattern.compile("<v:imagedata[^>]*src=\"wordml://(\\d+\\.\\w+)\"[^>]*>",
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   public static final String WORD_RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.word";
+   public static final String RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.word";
    public static final String DEFAULT_SET_NAME = "Default";
    public static final String ARTIFACT_NAME = "Word Renderer";
    public static final String TEMPLATE_ATTRIBUTE = "Word Template";
@@ -118,8 +118,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#isPreviewable()
     */
    @Override
-   public boolean isPreviewable() {
-      return true;
+   public boolean isPreviewable(Artifact artifact) {
+      // Not a whole word artifact
+      return !(artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact());
    }
 
    public void publishSRS(VariableMap variableMap) throws OseeCoreException {
