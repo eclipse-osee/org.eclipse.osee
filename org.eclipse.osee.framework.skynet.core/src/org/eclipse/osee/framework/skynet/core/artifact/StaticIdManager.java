@@ -52,6 +52,10 @@ public class StaticIdManager {
       ArtifactCache.cachePostAttributeLoad(artifact);
    }
 
+   public static boolean hasValue(Artifact artifact, String staticId) throws OseeCoreException {
+      return artifact.getAttributesToStringList(STATIC_ID_ATTRIBUTE).contains(staticId);
+   }
+
    /**
     * Return non-deleted artifacts with staticId
     * 

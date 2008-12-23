@@ -526,6 +526,15 @@
           name="Configuration Details">
     </page>
  </extension>
+	<extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
+          class="org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage"
+          id="org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage"
+          name="Editors">
+    </page>
+ </extension>
  <extension
        point="org.eclipse.ui.preferencePages">
     <page
