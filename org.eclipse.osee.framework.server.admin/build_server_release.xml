@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="RUN_FIRST_FOR_LBA" name="build">
+
+	<property name="releaseName" value="0.6.0_RC_2008_12_23-14-46" />
 	
 	<target name="plugin_export_lba">
 		<pde.exportPlugins destination="osee_server_bundles" exportSource="false" exportType="directory" 
@@ -42,6 +44,12 @@
 	
 	<target name="RUN_SECOND">
 		<antcall target="generateconfigIni"/>
+	</target>
+	
+	<target name="COPY">
+		<copy todir="/lba_ws/osee_common/osee_installs/osee_server/${releaseName}">
+			<fileset dir="${basedir}/osee_server_bundles" excludes="**/.svn" />
+		</copy>
 	</target>
 	
 </project>
