@@ -11,15 +11,12 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.Arrays;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.actions.wizard.NewActionWizard;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
@@ -62,21 +59,7 @@ public class NewAction extends Action {
          WizardDialog dialog =
                new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
          dialog.create();
-         if (dialog.open() == 0) {
-            Result result = wizard.isActionValid();
-            if (result.isFalse()) {
-               result.popup();
-               return;
-            }
-            NewActionJob job = null;
-            job =
-                  new NewActionJob(wizard.getTitle(), wizard.getDescription(), wizard.getChangeType(),
-                        wizard.getPriority(), wizard.getNeedBy(), wizard.getValidation(), wizard.getUserCommunities(),
-                        wizard.getSelectedActionableItemArtifacts(), wizard);
-            job.setUser(true);
-            job.setPriority(Job.LONG);
-            job.schedule();
-         }
+         dialog.open();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }

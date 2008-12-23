@@ -52,6 +52,22 @@
                file="reference/peer_to_peer_review_workflow/contexts.xml">
          </contexts>
       </extension> 
+      <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.osee.ats.category"
+            name="OSEE ATS">
+      </category>
+      <wizard
+            canFinishEarly="false"
+            category="org.eclipse.osee.ats.category"
+            class="org.eclipse.osee.ats.actions.wizard.NewActionWizard"
+            hasPages="true"
+            icon="images/Action.gif"
+            id="org.eclipse.osee.ats.NewAction.wizard"
+            name="Action">
+      </wizard>
+   </extension>
 <extension point="org.eclipse.ui.perspectives">
    <perspective
          name="ATS"
@@ -109,7 +125,6 @@
          id="org.eclipse.osee.ats.hyper.ActionSkyWalker">
    </view>
 -->
->>>>>>> .merge-right.r20369
    <view
          class="org.eclipse.osee.ats.hyper.ArtifactHyperView"
          icon="images/artView.gif"

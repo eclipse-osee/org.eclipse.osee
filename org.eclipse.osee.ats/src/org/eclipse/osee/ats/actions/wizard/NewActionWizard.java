@@ -14,8 +14,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
@@ -23,6 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -57,6 +60,23 @@ public class NewActionWizard extends Wizard implements INewWizard {
     */
    @Override
    public boolean performFinish() {
+      try {
+         Result result = isActionValid();
+         if (result.isFalse()) {
+            result.popup();
+            return false;
+         }
+         NewActionJob job = null;
+         job =
+               new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
+                     getValidation(), getUserCommunities(), getSelectedActionableItemArtifacts(), this);
+         job.setUser(true);
+         job.setPriority(Job.LONG);
+         job.schedule();
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+         return false;
+      }
       return true;
    }
 
