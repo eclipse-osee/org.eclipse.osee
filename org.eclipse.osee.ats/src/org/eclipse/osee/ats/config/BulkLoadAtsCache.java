@@ -29,20 +29,27 @@ public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
       super("Bulk Loading ATS Config Artifacts");
    }
 
+   private static BulkLoadAtsCache bulkLoadAtsCacheJob;
+   private static boolean atsTypeDataLoading = false;
    private static boolean atsTypeDataLoaded = false;
 
    public static void run(boolean forcePend) {
       if (atsTypeDataLoaded) return;
-      atsTypeDataLoaded = true;
-      BulkLoadAtsCache job = new BulkLoadAtsCache();
-      job.setPriority(Job.SHORT);
-      job.setSystem(true);
-      job.schedule();
+      if (!atsTypeDataLoading) {
+         atsTypeDataLoading = true;
+         bulkLoadAtsCacheJob = new BulkLoadAtsCache();
+         bulkLoadAtsCacheJob.setPriority(Job.SHORT);
+         bulkLoadAtsCacheJob.setSystem(true);
+         bulkLoadAtsCacheJob.schedule();
+      }
       try {
-         if (forcePend) job.join();
+         if (forcePend) {
+            bulkLoadAtsCacheJob.join();
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+
    }
 
    /* (non-Javadoc)
@@ -50,7 +57,8 @@ public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
     */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
-      OseeLog.log(AtsPlugin.class, Level.INFO,  getName());
+      if (atsTypeDataLoaded) return Status.OK_STATUS;
+      OseeLog.log(AtsPlugin.class, Level.INFO, getName());
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          for (Artifact artifact : RelationManager.getRelatedArtifacts(
@@ -60,6 +68,7 @@ public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
          }
          transaction.execute();
          WorkItemDefinitionFactory.loadDefinitions();
+         atsTypeDataLoaded = true;
       } catch (Exception ex) {
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {
