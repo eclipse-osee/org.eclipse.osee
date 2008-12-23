@@ -68,8 +68,9 @@ public class XNavigateItemAction extends XNavigateItem {
             if (action.isChecked()) {
                action.run();
             }
+         } else {
+            action.run();
          }
-
       }
    }
 
