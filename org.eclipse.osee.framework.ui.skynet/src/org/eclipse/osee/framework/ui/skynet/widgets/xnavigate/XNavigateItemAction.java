@@ -58,14 +58,18 @@ public class XNavigateItemAction extends XNavigateItem {
                 * @see java.lang.Runnable#run()
                 */
                public void run() {
-                  if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) action.run();
+                  if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) {
+                     action.run();
+                  }
                }
             });
-         } else
-             if (action.getStyle() == Action.AS_CHECK_BOX) {
-		action.setChecked(!action.isChecked());
-	    }
-            action.run();
+         } else if (action.getStyle() == Action.AS_CHECK_BOX) {
+            action.setChecked(!action.isChecked());
+            if (action.isChecked()) {
+               action.run();
+            }
+         }
+
       }
    }
 
