@@ -318,4 +318,33 @@
             className="org.eclipse.osee.ats.health.TxImportedValidateChangeReports">
       </Operation>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.osee.framework.ui.skynet.atseditor.command"
+            name="ATS Editor">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.osee.ats.handlers.AtsEditorHandler"
+            commandId="org.eclipse.osee.framework.ui.skynet.atseditor.command">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="+">
+               </count>
+            </with>
+         </enabledWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="org.eclipse.osee.framework.ui.skynet.atseditor.command"
+            icon="images/action.gif">
+      </image>
+   </extension>
 </plugin>

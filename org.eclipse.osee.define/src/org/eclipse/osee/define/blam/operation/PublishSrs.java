@@ -26,7 +26,7 @@ public class PublishSrs extends AbstractBlam {
 
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
-      WordTemplateRenderer srsRenderer = new WordTemplateRenderer(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
+      WordTemplateRenderer srsRenderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
       srsRenderer.setOptions(new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber));
       srsRenderer.publishSRS(variableMap);
    }

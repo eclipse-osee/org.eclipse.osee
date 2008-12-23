@@ -47,12 +47,16 @@
          id="org.eclipse.osee.framework.ui.skynet.wordeditor.command"
          name="MS Word Edit">
    </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.nativeeditor.command"
+         name="Native Editor">
+   </command>
 </extension>
 <extension
       id="Open With Handlers"
       point="org.eclipse.ui.handlers">
    <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.ArtifactEditorHandler"
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.ArtifactEditorHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command">
       <enabledWhen>
          <with
@@ -64,7 +68,7 @@
       </enabledWhen>
    </handler>
    <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.OpenHandler"
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.OpenHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.open.command">
       <enabledWhen>
          <with
@@ -76,10 +80,44 @@
       </enabledWhen>
    </handler>
    <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.WordEditorHandler"
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.WordEditorHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.wordeditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.NativeEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.nativeeditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
    </handler>
 </extension>
+	<extension point="org.eclipse.ui.commandImages">
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
+        icon="images/magnify.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
+        icon="images/edit.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
+        icon="images/laser_16_16.gif">
+  </image>
+	</extension>
  <extension
        point="org.eclipse.ui.commands">
     <command
@@ -226,7 +264,7 @@
         </or>
      </activeWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.commands.ArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.ArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -466,20 +504,6 @@
            commandId="org.eclipse.ui.edit.copy">
      </command>
   </menuContribution>
-	</extension>
-	<extension point="org.eclipse.ui.commandImages">
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
-        icon="images/magnify.gif">
-  </image>
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
-        icon="images/edit.gif">
-  </image>
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
-        icon="images/laser_16_16.gif">
-  </image>
 	</extension>
 	<extension point="org.eclipse.ui.importWizards">
 		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/WordMlImport.bmp" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">

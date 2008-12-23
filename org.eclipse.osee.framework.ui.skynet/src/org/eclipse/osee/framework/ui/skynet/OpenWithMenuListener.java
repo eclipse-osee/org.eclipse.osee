@@ -78,7 +78,7 @@ public class OpenWithMenuListener implements MenuListener {
          List<IRenderer> commonRenders = RendererManager.getCommonSpecializedEditRenders(artifacts);
 
          if (validForPreview) {
-            for (IRenderer previewRenderer : RendererManager.getPreviewPresentableRenders()) {
+            for (IRenderer previewRenderer : RendererManager.getPreviewPresentableRenders(artifact)) {
                for (PreviewRendererData data : previewRenderer.getPreviewData()) {
                   MenuItem item = new MenuItem(parentMenu, SWT.PUSH);
                   item.setText(data.getName());
