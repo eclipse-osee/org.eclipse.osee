@@ -165,6 +165,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
+      createOpenWordEditorHandler(menuManager, viewer);
       createOpenNativeEditorHandler(menuManager, viewer);
       createOpenRdtEditorHandler(menuManager, viewer);
       createOpenArtifactHandler(menuManager, viewer);
@@ -319,6 +320,39 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
    private void createOpenRdtEditorHandler(MenuManager menuManager, final TableViewer viewer) {
       handlerService.activateHandler(addOpenRdtEditorHandler(menuManager, viewer),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            RendererManager.openInJob(getSelectedArtifacts(viewer), PresentationType.SPECIALIZED_EDIT);
+            return null;
+         }
+
+         @Override
+         public boolean isEnabledWithException() throws OseeCoreException {
+            boolean isEnabled = true;
+            List<Artifact> artifacts = getSelectedArtifacts(viewer);
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+            return isEnabled;
+         }
+      });
+   }
+
+   /**
+    * @param menuManager
+    * @param viewer
+    */
+   private String addOpenWordEditorHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem command =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.wordeditor.command", getSite(),
+                  null, null, null, null, null, null, null, null);
+      menuManager.add(command);
+
+      return command.getId();
+   }
+
+   private void createOpenWordEditorHandler(MenuManager menuManager, final TableViewer viewer) {
+      handlerService.activateHandler(addOpenWordEditorHandler(menuManager, viewer),
 
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
