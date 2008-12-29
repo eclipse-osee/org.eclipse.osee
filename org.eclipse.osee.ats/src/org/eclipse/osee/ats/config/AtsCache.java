@@ -69,7 +69,7 @@ public class AtsCache {
    }
 
    public static ActionableItemArtifact getActionableItemByGuid(String guid) throws OseeCoreException {
-      BulkLoadAtsCache.run(true);
+      AtsBulkLoadCache.run(true);
       ActionableItemArtifact aia = instance.guidToActionableItem.get(guid);
       if (aia != null) return aia;
       Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch(), false);
@@ -81,7 +81,7 @@ public class AtsCache {
    }
 
    public static TeamDefinitionArtifact getTeamDefinitionArtifact(String guid) throws OseeCoreException {
-      BulkLoadAtsCache.run(true);
+      AtsBulkLoadCache.run(true);
       TeamDefinitionArtifact teamDef = instance.guidToTeamDefinition.get(guid);
       if (teamDef != null) return teamDef;
       Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch(), false);
@@ -94,7 +94,7 @@ public class AtsCache {
 
    @SuppressWarnings("unchecked")
    public static <A> List<A> getArtifactsByActive(Active active, Class<A> clazz) {
-      BulkLoadAtsCache.run(true);
+      AtsBulkLoadCache.run(true);
       List<A> arts = new ArrayList<A>();
       for (Artifact art : instance.cache) {
          try {
@@ -111,7 +111,7 @@ public class AtsCache {
 
    @SuppressWarnings("unchecked")
    public static <A> List<A> getArtifactsByName(String name, Class<A> clazz) {
-      BulkLoadAtsCache.run(true);
+      AtsBulkLoadCache.run(true);
       List<A> arts = new ArrayList<A>();
       for (Artifact art : instance.cache) {
          if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.getDescriptiveName().equals(name)) {
@@ -122,7 +122,7 @@ public class AtsCache {
    }
 
    public static <A> A getSoleArtifactByName(String name, Class<A> clazz) throws MultipleArtifactsExist, ArtifactDoesNotExist {
-      BulkLoadAtsCache.run(true);
+      AtsBulkLoadCache.run(true);
       List<A> arts = getArtifactsByName(name, clazz);
       if (arts.size() == 1) {
          return arts.iterator().next();

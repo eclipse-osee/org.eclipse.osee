@@ -23,13 +23,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
 /**
  * @author Donald G. Dunne
  */
-public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
+public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
 
-   private BulkLoadAtsCache() {
+   private AtsBulkLoadCache() {
       super("Bulk Loading ATS Config Artifacts");
    }
 
-   private static BulkLoadAtsCache bulkLoadAtsCacheJob;
+   private static AtsBulkLoadCache bulkLoadAtsCacheJob;
    private static boolean atsTypeDataLoading = false;
    private static boolean atsTypeDataLoaded = false;
 
@@ -37,7 +37,7 @@ public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
       if (atsTypeDataLoaded) return;
       if (!atsTypeDataLoading) {
          atsTypeDataLoading = true;
-         bulkLoadAtsCacheJob = new BulkLoadAtsCache();
+         bulkLoadAtsCacheJob = new AtsBulkLoadCache();
          bulkLoadAtsCacheJob.setPriority(Job.SHORT);
          bulkLoadAtsCacheJob.setSystem(true);
          bulkLoadAtsCacheJob.schedule();

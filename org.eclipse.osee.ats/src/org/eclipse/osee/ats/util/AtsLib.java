@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCache;
-import org.eclipse.osee.ats.config.BulkLoadAtsCache;
+import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
@@ -173,7 +173,7 @@ public class AtsLib implements IAtsLib {
     * @param guid
     */
    public void openArtifact(String guid, OseeAts.OpenView view) {
-      BulkLoadAtsCache.run(false);
+      AtsBulkLoadCache.run(false);
       Artifact artifact = null;
       try {
          artifact = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch());

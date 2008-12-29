@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
-import org.eclipse.osee.ats.config.BulkLoadAtsCache;
+import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
@@ -105,7 +105,7 @@ public class TaskComposite extends Composite implements IActionable {
    public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style, ToolBar toolBar) throws OseeCoreException {
       super(parent, style);
       this.iXTaskViewer = iXTaskViewer;
-      BulkLoadAtsCache.run(false);
+      AtsBulkLoadCache.run(false);
 
       setLayout(ALayout.getZeroMarginLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));

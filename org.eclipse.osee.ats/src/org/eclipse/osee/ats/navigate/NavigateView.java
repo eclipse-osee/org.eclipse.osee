@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.config.BulkLoadAtsCache;
+import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -71,7 +71,7 @@ public class NavigateView extends ViewPart implements IActionable {
     */
    @Override
    public void createPartControl(Composite parent) {
-      BulkLoadAtsCache.run(false);
+      AtsBulkLoadCache.run(false);
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
       OseeContributionItem.addTo(this, false);
