@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 
 /**
@@ -107,6 +109,11 @@ public class ArtifactTypeManager {
 
    public static boolean typeExists(String name) throws OseeDataStoreException {
       return typeExists("", name);
+   }
+
+   public static Collection<AttributeType> getAttributeTypes(String artifactTypeName, Branch branch) throws OseeCoreException {
+      return TypeValidityManager.getAttributeTypesFromArtifactType(ArtifactTypeManager.getType(artifactTypeName),
+            branch);
    }
 
    /**
