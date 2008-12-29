@@ -82,7 +82,12 @@ public class OpenWithMenuListener implements MenuListener {
                for (PreviewRendererData data : previewRenderer.getPreviewData()) {
                   MenuItem item = new MenuItem(parentMenu, SWT.PUSH);
                   item.setText(data.getName());
-                  item.setImage(previewRenderer.getImage(null));
+                  //If getting the image exceptions out we do not want to stop this process
+                  try {
+                     item.setImage(previewRenderer.getImage(null));
+                  } catch (Exception ex) {
+                     //                     OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                  }
                   item.addSelectionListener(new OpenWithSelectionListener(previewRenderer, viewer, true,
                         data.getOption()));
                }
@@ -90,7 +95,14 @@ public class OpenWithMenuListener implements MenuListener {
          }
 
          for (IRenderer renderer : commonRenders) {
-            Image image = renderer.getImage(artifacts.iterator().next());
+            Image image = null;
+            //If getting the image exceptions out we do not want to stop this process
+            try {
+               image = renderer.getImage(artifacts.iterator().next());
+            } catch (Exception ex) {
+               //               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            }
+
             MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
             menuItem.setText(renderer.getName());
             menuItem.setImage(image);
