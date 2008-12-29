@@ -110,6 +110,20 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       }
    }
 
+   /**
+    * If deCache, clears cache and reloads workflow data
+    * 
+    * @param deCache
+    * @throws OseeCoreException
+    */
+   public void loadPageData(boolean deCache) throws OseeCoreException {
+      if (deCache) {
+         inheritedPageIdToPageIdsViaTransitionType = null;
+         pageNameToPageId = null;
+      }
+      loadPageData();
+   }
+
    public synchronized void loadPageData() throws OseeCoreException {
       if (inheritedPageIdToPageIdsViaTransitionType == null) {
          inheritedPageIdToPageIdsViaTransitionType = new HashMap<String, Map<TransitionType, Set<String>>>();
