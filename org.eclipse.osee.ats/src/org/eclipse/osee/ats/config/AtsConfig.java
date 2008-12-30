@@ -30,7 +30,6 @@ public class AtsConfig {
    private static AtsConfig instance = new AtsConfig();
    public static String FOLDER_ARTIFACT = "Folder";
    public static String ATS_HEADING = "Action Tracking System";
-   public static String MSA_TOOLS_HEADING = "MSA Tools";
    public static String WORK_FLOWS_FOLDER = "Work Flows";
    public static String WORK_RULES_FOLDER = "Work Rules";
    public static String WORK_WIDGETS_FOLDER = "Work Widgets";
