@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -33,9 +34,13 @@ public class WorkPageShape extends RectangleShape {
    private final WorkPageDefinition workPageDefinition;
    private static String NAME = "Name";
    private static String[] attributeProperties =
-         new String[] {"Name", WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
+         new String[] {NAME, WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
                WorkItemAttributes.WORK_ID.getAttributeTypeName(),
                WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName()};
+   public static String START_PAGE = "Start Page";
+   public static enum StartPageEnum {
+      Yes, No
+   };
 
    public WorkPageShape() {
       this(new WorkPageDefinition("New", "ats.page." + GUID.generateGuidStr(), null));
@@ -47,6 +52,8 @@ public class WorkPageShape extends RectangleShape {
       for (String type : attributeProperties) {
          descriptorList.add(new TextPropertyDescriptor(type, type)); // id and description pair
       }
+      descriptorList.add(new ComboBoxPropertyDescriptor(START_PAGE, START_PAGE, new String[] {StartPageEnum.Yes.name(),
+            StartPageEnum.No.name()}));
    }
 
    @Override
@@ -60,6 +67,14 @@ public class WorkPageShape extends RectangleShape {
             }
          }
       }
+   }
+
+   public boolean isStartPage() {
+      return ((Integer) getPropertyValue(START_PAGE)) == StartPageEnum.Yes.ordinal();
+   }
+
+   public void setStartPage(boolean set) {
+      setPropertyValue(START_PAGE, set ? StartPageEnum.Yes.ordinal() : StartPageEnum.No.ordinal());
    }
 
    @Override
@@ -141,6 +156,9 @@ public class WorkPageShape extends RectangleShape {
             super.setPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), value);
          } else if (WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName().equals(propertyId)) {
             super.setPropertyValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), value);
+         } else if (START_PAGE.equals(propertyId)) {
+            super.setPropertyValue(START_PAGE, value);
+            firePropertyChange(START_PAGE, null, value);
          } else {
             super.setPropertyValue(propertyId, value);
          }

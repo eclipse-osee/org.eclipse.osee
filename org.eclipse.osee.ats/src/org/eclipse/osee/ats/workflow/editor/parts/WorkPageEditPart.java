@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.workflow.editor.parts;
 
+import java.beans.PropertyChangeEvent;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.GridLayout;
@@ -40,10 +41,28 @@ public class WorkPageEditPart extends ShapeEditPart {
          f.setBackgroundColor(ColorConstants.darkGreen);
       } else if (workPageShape instanceof CancelledWorkPageShape) {
          f.setBackgroundColor(ColorConstants.lightGray);
+      } else if (workPageShape.isStartPage()) {
+         f.setBackgroundColor(ColorConstants.yellow);
       }
       f.add(new Label(workPageShape.getName()));
       f.setToolTip(new Label(workPageShape.getToolTip()));
       return f;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.workflow.editor.parts.ShapeEditPart#propertyChange(java.beans.PropertyChangeEvent)
+    */
+   @Override
+   public void propertyChange(PropertyChangeEvent evt) {
+      super.propertyChange(evt);
+      String prop = evt.getPropertyName();
+      if (WorkPageShape.START_PAGE.equals(prop)) {
+         if (workPageShape.isStartPage()) {
+            getFigure().setBackgroundColor(ColorConstants.yellow);
+         } else {
+            getFigure().setBackgroundColor(ColorConstants.green);
+         }
+      }
    }
 
    /* (non-Javadoc)
