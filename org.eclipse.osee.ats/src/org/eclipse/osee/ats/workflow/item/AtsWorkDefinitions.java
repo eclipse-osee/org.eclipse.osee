@@ -234,7 +234,6 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    public static void importWorkItemDefinitionsIntoDb(final WriteType writeType, final XResultData resultData, final Collection<? extends WorkItemDefinition> workItemDefinitions) throws OseeCoreException {
 
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-
       // Items must be imported in order due to the relations that are created between items
       for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
             WorkPageDefinition.class, WorkFlowDefinition.class}) {
@@ -242,21 +241,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             if (clazz.isInstance(wid)) {
                // System.out.println("Adding " + wid.getId() + " as class " + clazz);
                Artifact art = wid.toArtifact(writeType);
-               // Relate if not already related
-               if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent, Artifact.class).size() == 0) {
-                  if (wid instanceof WorkPageDefinition) {
-                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(transaction), art);
-                  }
-                  if (wid instanceof WorkRuleDefinition) {
-                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(transaction), art);
-                  }
-                  if (wid instanceof WorkWidgetDefinition) {
-                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact(transaction), art);
-                  }
-                  if (wid instanceof WorkFlowDefinition) {
-                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact(transaction), art);
-                  }
-               }
+               addUpdateWorkItemToDefaultHeirarchy(art, transaction);
                if (art.isDirty(true) && resultData != null) {
                   resultData.log("Updated artifact " + art);
                }
@@ -265,6 +250,24 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
          }
       }
       transaction.execute();
+   }
+
+   public static void addUpdateWorkItemToDefaultHeirarchy(Artifact art, SkynetTransaction transaction) throws OseeCoreException {
+      // Relate if not already related
+      if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent, Artifact.class).size() == 0) {
+         if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(transaction), art);
+         }
+         if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(transaction), art);
+         }
+         if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact(transaction), art);
+         }
+         if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact(transaction), art);
+         }
+      }
    }
 
    private static void relateIfNotRelated(Artifact parent, Artifact child) throws OseeCoreException {
