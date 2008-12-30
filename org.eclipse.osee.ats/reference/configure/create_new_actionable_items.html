@@ -14,13 +14,16 @@
 	</head>
 
 <body>
-   <h1>Create Actionable Items</h1>
+   <h1>Create Actionable Items (AI)</h1>
 		<h2>Purpose</h2>
 		To create Actionable Items which provide the end user with a selection of things impacted by this Action.
 		<h2>How to do it</h2>
    <ul>
       <li>Create Actionable Items</li>
       <ul>
+         <li>NOTE: AIs should not be deleted once used.  Instead, use the ats.Active attribute to deactivate the AI.
+         If an AI must be deleted, search for all "ats.Actionable Item" attributes that have the value of the AI's guid.
+         These must be changed to another AI before deletion.</li>
          <li>Actionable Item tree can be created to the level at which actions are to be written.  Usually a component decomposition.  In the case of UIs, create one for each view or window.</li>
          <li>Attributes</li>
          <ul>

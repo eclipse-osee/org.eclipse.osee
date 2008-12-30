@@ -27,9 +27,6 @@
          <li>ats.Description:[desc]</li>
          <li>ats.Active:[yes]</li>
          <li>ats.Team Uses Version:[yes if want to use release/build planning]</li>
-         <li></li>
-         <li>Endorse state must have Title, Description, Priority, Deadline, Change Type, Validation</li>
-         <li>Each state must have a unique identifier as the state id</li>
       </ul>
       <li>Relations</li>
       <ul>
@@ -37,6 +34,8 @@
          <li>TeamDefinitionToVersion: Relate to current and future VersionArtifacts</li>
          <li>TeamLead: Relate to one or more team leads.  These individuals will have priviledged edit and perform the Endorse state by default.</li>
          <li>TeamMember: Relate to one or more team members.  These individuals will have ability to priviledged edit Workflows created by themselves against the team they belong to.</li>
+         <li>Work Item.Child: Relate to a single "Work Flow Definition" artifact that defines the workflow
+         that will be used for this team.</li>
       </ul>
    </ul>
 </body>

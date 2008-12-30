@@ -16,7 +16,8 @@
 <body>
    <h1>Configure ATS for Help</h1>
 		<h2>Purpose</h2>
-		To configure ATS workflows to use the integrated help system.  ATS help useds a combination of widget tooltip, static help pages, dynamic help content configured through extended plugins and built into the VUE workflow diagrams.
+		To configure ATS workflows to use the integrated help system.  ATS help useds a combination of widget 
+		tooltip, static help pages and dynamic help content configured through extended plugins.
 		<h2>How to do it</h2>
    <ul>
       <li>Workflow Page Help</li>
@@ -28,12 +29,7 @@
          <li>Top down order of obtaining help content</li>
          <ul>
             <li>Setting tooltip in IStateItem interface</li>
-            <li>VUE Diagram</li>
-            <ul>
-               <li>in xWidget def: tooltip="put help here"</li>
-               <li>in xWidget def: helpPluginId="osee.ats" helpContextId="atsPriority" help is obtained from Eclipse context.xml declaration within plugin using given context id</li>
-               <li>NOTE: Context Ids can not have . notation.</li>
-            </ul>
+            <li>Work Widget Definitions in Work Data attribute value of XWidget=...tooltip="put help here"</li>
             <li>ATSAttributes.java declarations</li>
          </ul>
       </ul>

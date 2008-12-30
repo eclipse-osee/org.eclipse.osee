@@ -9,13 +9,13 @@
      Boeing - initial API and implementation
 -->
 <head>
-<title>Configure ATS for Tracking</title>
+<title>Configure ATS for Change Tracking</title>
 <LINK rel="stylesheet" type="text/css"
 	href="../../osee.help/html/style.css">
 </head>
 
 <body>
-<h1>Configure ATS for Tracking</h1>
+<h1>Configure ATS for Change Tracking</h1>
 <h2>Purpose</h2>
 ATS is used to track any type of change throughout the lifecycle of a
 project. Below are the steps to configure ATS for tracking something
@@ -82,8 +82,8 @@ new.
 		<ul>
 			<li>TeamActionableItem: relation to all AIs that this team is
 			responsible for.</li>
-			<li>TeamDefinitionToWorkflowDiagram: WorkflowDiagram
-			(GeneralDocument) artifact that configures the state machine that
+			<li>Work Item.Child: WorkFlowDefinition artifact
+			configures the state machine that
 			this team works under. NOTE: If this relation is not set, ATS will
 			walk up the Default Hierarchy to find the first AI with this
 			relation.</li>
@@ -96,9 +96,10 @@ new.
 			to privileged edit a Team Workflow for the team they belong to.</li>
 		</ul>
 	</ul>
-	<li>Choose existing Workflow Diagram or create new Workflow
-	Diagram to be used by the team and relate it to Team Definition (as
-	above).</li>
+	<li>Choose existing WorkFlowDefinition or create new WorkFlowDefinition
+	 to be used by the team and relate it to Team Definition (as
+	above).  This can be done through File->New->Workflow Configuration.  Enter a namespace
+	and a default workflow will be created and can be edited.</li>
 	<li>Create version artifacts necessary (if using versions) and
 	relate them to Team Definition (as above)</li>
 	<ul>

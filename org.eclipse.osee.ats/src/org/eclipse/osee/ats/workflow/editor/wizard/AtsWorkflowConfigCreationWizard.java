@@ -15,12 +15,13 @@ import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsEndorseWorkPageDefinition;
-import org.eclipse.osee.ats.workflow.page.AtsImplementWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -77,8 +78,10 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
 
          workflow.setStartPageId(endorsePage.getId());
 
-         WorkPageDefinition implementPage =
-               new WorkPageDefinition("Implement", namespace + ".Implement", AtsImplementWorkPageDefinition.ID);
+         WorkPageDefinition implementPage = new WorkPageDefinition("Implement", namespace + ".Implement", null);
+         implementPage.addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
+         implementPage.addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
+         implementPage.addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
 
          WorkPageDefinition completedPage =
                new WorkPageDefinition("Complete", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);
@@ -88,6 +91,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
 
          workflow.addPageTransition(endorsePage.getId(), implementPage.getId(), TransitionType.ToPageAsDefault);
          workflow.addPageTransition(implementPage.getId(), endorsePage.getId(), TransitionType.ToPageAsReturn);
+         workflow.addPageTransition(cancelledPage.getId(), endorsePage.getId(), TransitionType.ToPageAsReturn);
          workflow.addPageTransition(implementPage.getId(), completedPage.getId(), TransitionType.ToPageAsDefault);
          workflow.addPageTransition(endorsePage.getId(), cancelledPage.getId(), TransitionType.ToPage);
 
@@ -97,16 +101,16 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          artifacts.add(completedPage.toArtifact(WriteType.New));
          artifacts.add(cancelledPage.toArtifact(WriteType.New));
          artifacts.add(workflow.toArtifact(WriteType.New));
+         workflow.loadPageData(true);
 
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          for (Artifact artifact : artifacts) {
-            artifact.persistAttributesAndRelations(transaction);
             AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
+            artifact.persistAttributesAndRelations(transaction);
          }
          transaction.execute();
 
          AtsWorkflowConfigEditor.editWorkflow(workflow);
-         workflow.loadPageData(true);
 
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
