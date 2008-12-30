@@ -167,7 +167,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
       createOpenWordEditorHandler(menuManager, viewer);
       createOpenNativeEditorHandler(menuManager, viewer);
-      createOpenRdtEditorHandler(menuManager, viewer);
+      //      createOpenRdtEditorHandler(menuManager, viewer);
       createOpenArtifactHandler(menuManager, viewer);
       createOpenArtifactEditorHandler(menuManager, viewer);
       createOpenInAtsWorldHandler(menuManager, viewer);
