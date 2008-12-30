@@ -25,6 +25,9 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCheck;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -49,7 +52,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       result = checkTeamDefinitions(artifacts);
       if (result.isFalse()) return result;
       // Check VUE Workflow General Documents
-      result = checkAtsVueWorkflows(artifacts);
+      result = checkAtsWorkflows(artifacts);
       if (result.isFalse()) return result;
       // Check User artifacts related to ATS SMAs
       result = checkUsers(artifacts);
@@ -81,8 +84,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       if (teamDefs.size() > 0) {
 
          TeamWorldSearchItem srch =
-               new TeamWorldSearchItem("Team Def search", teamDefs, true, false, true, null, null,
-                     ReleasedOption.Both);
+               new TeamWorldSearchItem("Team Def search", teamDefs, true, false, true, null, null, ReleasedOption.Both);
          if (srch.performSearchGetResults(false).size() > 0) {
             return new Result(
                   "Team Definition (or children Team Definitions) selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.");
@@ -91,14 +93,19 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return Result.TrueResult;
    }
 
-   public Result checkAtsVueWorkflows(Collection<Artifact> artifacts) throws OseeCoreException {
+   public Result checkAtsWorkflows(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact art : artifacts) {
-         if (art.getArtifactTypeName().equals("General Document")) {
-            String ext = art.getSoleAttributeValue("Extension", "");
-            if (ext != null && ext.equals("vue")) {
-               if (art.getRelatedArtifacts(AtsRelation.TeamDefinitionToTaskWorkflowDiagram_TeamDefinition).size() > 0) return new Result(
-                     "Team Workflow selected to delete has related Team Definition(s); Team Definitions to new Team Workflows first.");
-            }
+         if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent).size() > 0) return new Result(
+                  "ATS Team Workflow selected to delete has related Team Definition(s); Re-assign Team Definitions to new Team Workflows first.");
+         }
+         if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+            if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent).size() > 0) return new Result(
+                  "ATS Workflow Rule selected to delete has related Work Items that must be removed first.");
+         }
+         if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+            if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent).size() > 0) return new Result(
+                  "ATS Workflow Widget selected to delete has related Work Items that must be removed first.");
          }
       }
       return Result.TrueResult;
