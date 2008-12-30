@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.ui.editors,
  org.eclipse.zest.layouts,
- org.eclipse.osee.framework.db.connection
+ org.eclipse.osee.framework.db.connection,
+ org.eclipse.ui.views;bundle-version="3.3.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.actions,
