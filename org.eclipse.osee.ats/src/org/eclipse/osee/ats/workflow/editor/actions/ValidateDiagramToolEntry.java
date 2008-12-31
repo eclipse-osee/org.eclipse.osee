@@ -20,7 +20,7 @@ public class ValidateDiagramToolEntry extends ToolEntry {
     * @param iconLarge
     */
    public ValidateDiagramToolEntry() {
-      super("Validate Diagram", "Validate Diagram", AtsPlugin.getInstance().getImageDescriptor("check.gif"),
+      super("Validate Diagram", "Validate", AtsPlugin.getInstance().getImageDescriptor("check.gif"),
             AtsPlugin.getInstance().getImageDescriptor("check.gif"), ValidateDiagramTool.class);
    }
 
