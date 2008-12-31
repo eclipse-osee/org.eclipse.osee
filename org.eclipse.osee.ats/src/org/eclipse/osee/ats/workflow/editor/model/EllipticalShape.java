@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.model;
 
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -25,6 +26,14 @@ public class EllipticalShape extends Shape {
    @Override
    public Image getIcon() {
       return ELLIPSE_ICON;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
+    */
+   @Override
+   public Result validForSave() {
+      return Result.TrueResult;
    }
 
    @Override

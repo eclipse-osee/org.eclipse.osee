@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.workflow.editor.model.ModelElement;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 
 /**
- * TreeEditPart for a ShapesDiagram instance. This is used in the Outline View of the ShapesEditor.
+ * TreeEditPart for a WorkflowDiagram instance. This is used in the Outline View of the ShapesEditor.
  * <p>
  * This edit part must implement the PropertyChangeListener interface, so it can be notified of property changes in the
  * corresponding model element.
@@ -35,7 +35,7 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements PropertyChange
    /**
     * Create a new instance of this edit part using the given model element.
     * 
-    * @param model a non-null ShapesDiagram instance
+    * @param model a non-null WorkflowDiagram instance
     */
    DiagramTreeEditPart(WorkflowDiagram model) {
       super(model);

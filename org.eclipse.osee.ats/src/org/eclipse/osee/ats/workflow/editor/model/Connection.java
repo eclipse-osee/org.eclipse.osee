@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.workflow.editor.model;
 
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -56,6 +57,11 @@ public class Connection extends ModelElement {
       return Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
    }
 
+   @Override
+   public String toString() {
+      return "Transition: " + getPropertyValue(TYPE_PROP);
+   }
+
    /**
     * Disconnect this connection from the shapes it is attached to.
     */
@@ -74,6 +80,15 @@ public class Connection extends ModelElement {
     */
    public int getLineStyle() {
       return lineStyle;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
+    */
+   @Override
+   public Result validForSave() {
+      System.err.println("Add Connection validations.");
+      return Result.TrueResult;
    }
 
    /**

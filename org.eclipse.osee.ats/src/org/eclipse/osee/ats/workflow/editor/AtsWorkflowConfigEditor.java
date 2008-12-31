@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.workflow.editor.parts.ShapesTreeEditPartFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -148,7 +149,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
       return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
          @Override
          protected CreationFactory getFactory(Object template) {
-            return new SimpleFactory((Class) template);
+            return new SimpleFactory((Class<?>) template);
          }
       };
    }
@@ -158,6 +159,12 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
     */
    @Override
    public void doSave(IProgressMonitor monitor) {
+      Result result = diagram.validForSave();
+      if (result.isFalse()) {
+         AWorkbench.popup("Validate Error", result.getText());
+         return;
+      }
+
       AWorkbench.popup("ERROR", "Not implemented yet");
    }
 
@@ -169,6 +176,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
       AWorkbench.popup("ERROR", "Not implemented yet");
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class type) {
       if (type == IContentOutlinePage.class) return new ShapesOutlinePage(new TreeViewer());

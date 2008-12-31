@@ -72,9 +72,9 @@ public abstract class Shape extends ModelElement {
    /** Size of this shape. */
    private final Dimension size = new Dimension(50, 50);
    /** List of outgoing Connections. */
-   private final List sourceConnections = new ArrayList();
+   private final List<Connection> sourceConnections = new ArrayList<Connection>();
    /** List of incoming Connections. */
-   private final List targetConnections = new ArrayList();
+   private final List<Connection> targetConnections = new ArrayList<Connection>();
    private WorkflowDiagram workflowDiagram;
 
    /**
@@ -193,15 +193,15 @@ public abstract class Shape extends ModelElement {
    /**
     * Return a List of outgoing Connections.
     */
-   public List getSourceConnections() {
-      return new ArrayList(sourceConnections);
+   public List<Connection> getSourceConnections() {
+      return new ArrayList<Connection>(sourceConnections);
    }
 
    /**
     * Return a List of incoming Connections.
     */
-   public List getTargetConnections() {
-      return new ArrayList(targetConnections);
+   public List<Connection> getTargetConnections() {
+      return new ArrayList<Connection>(targetConnections);
    }
 
    /**

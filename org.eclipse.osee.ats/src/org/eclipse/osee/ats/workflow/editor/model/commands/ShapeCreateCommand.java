@@ -31,10 +31,10 @@ public class ShapeCreateCommand extends Command {
    private final Rectangle bounds;
 
    /**
-    * Create a command that will add a new Shape to a ShapesDiagram.
+    * Create a command that will add a new Shape to a WorkflowDiagram.
     * 
     * @param newShape the new Shape that is to be added
-    * @param parent the ShapesDiagram that will hold the new element
+    * @param parent the WorkflowDiagram that will hold the new element
     * @param bounds the bounds of the new shape; the size can be (-1, -1) if not known
     * @throws IllegalArgumentException if any parameter is null, or the request does not provide a new Shape instance
     */

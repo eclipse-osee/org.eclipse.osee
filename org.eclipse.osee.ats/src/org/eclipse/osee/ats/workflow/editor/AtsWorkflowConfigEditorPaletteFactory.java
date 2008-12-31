@@ -22,6 +22,7 @@ import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.workflow.editor.actions.ValidateDiagramToolEntry;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.CompletedWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.Connection;
@@ -143,6 +144,8 @@ final class AtsWorkflowConfigEditorPaletteFactory {
 
       // Add a marquee tool to the group
       toolbar.add(new MarqueeToolEntry());
+
+      toolbar.add(new ValidateDiagramToolEntry());
 
       return toolbar;
    }

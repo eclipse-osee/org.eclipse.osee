@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.workflow.editor.model.commands.ShapeCreateCommand;
 import org.eclipse.osee.ats.workflow.editor.model.commands.ShapeSetConstraintCommand;
 
 /**
- * EditPart for the a ShapesDiagram instance.
+ * EditPart for the a WorkflowDiagram instance.
  * <p>
  * This edit part server as the main diagram container, the white area where everything else is in. Also responsible for
  * the container's layout (the way the container rearanges is contents) and the container's capabilities (edit
@@ -165,7 +165,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
       protected Command getCreateCommand(CreateRequest request) {
          Object childClass = request.getNewObjectType();
          if (childClass == EllipticalShape.class || WorkPageShape.class.isAssignableFrom(((Class<?>) childClass))) {
-            // return a command that can add a Shape to a ShapesDiagram 
+            // return a command that can add a Shape to a WorkflowDiagram 
             return new ShapeCreateCommand((Shape) request.getNewObject(), (WorkflowDiagram) getHost().getModel(),
                   (Rectangle) getConstraintFor(request));
          }

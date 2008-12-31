@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.workflow.editor.model;
 
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -24,6 +25,14 @@ public class RectangleShape extends Shape {
 
    public RectangleShape() {
       setSize(new Dimension(100, 50));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
+    */
+   @Override
+   public Result validForSave() {
+      return Result.TrueResult;
    }
 
    @Override

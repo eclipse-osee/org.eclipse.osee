@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -33,9 +34,8 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 public class WorkPageShape extends RectangleShape {
 
    private final WorkPageDefinition workPageDefinition;
-   private static String NAME = "Name";
    private static String[] attributeProperties =
-         new String[] {NAME, WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
+         new String[] {WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
                WorkItemAttributes.WORK_ID.getAttributeTypeName(),
                WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName()};
    public static String START_PAGE = "Start Page";
@@ -113,6 +113,29 @@ public class WorkPageShape extends RectangleShape {
       return workPageDefinition;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
+    */
+   @Override
+   public Result validForSave() {
+      try {
+         String pageName = (String) getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
+         if (pageName == null || pageName.equals("")) return new Result(
+               WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName() + " can not be null");
+         String pageId = (String) getPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName());
+         if (pageId == null || pageId.equals("")) return new Result(
+               WorkItemAttributes.WORK_ID.getAttributeTypeName() + " can not be null");
+         String parentPageId = (String) getPropertyValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName());
+         if (parentPageId != null && !parentPageId.equals("")) {
+            if (WorkItemDefinitionFactory.getWorkItemDefinition(parentPageId) == null) return new Result(
+                  "Parent Id " + parentPageId + " Work Page Definition must exist and does not.");
+         }
+      } catch (OseeCoreException ex) {
+         return new Result("Exception in validation " + ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
+   }
+
    public WorkPageShape(WorkPageDefinition workPageDefinition) {
       this.workPageDefinition = workPageDefinition;
    }
@@ -182,8 +205,8 @@ public class WorkPageShape extends RectangleShape {
    public void setPropertyValue(Object propertyId, Object value) {
       try {
          initializePropertyValues();
-         if (NAME.equals(propertyId)) {
-            super.setPropertyValue(NAME, value);
+         if (WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName().equals(propertyId)) {
+            super.setPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), value);
          } else if (WorkItemAttributes.WORK_ID.getAttributeTypeName().equals(propertyId)) {
             super.setPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), value);
          } else if (WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName().equals(propertyId)) {
