@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -43,8 +43,8 @@ public class PolymorphicArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   BasicArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
-      return new BasicArtifact(this, guid, humandReadableId, branch, artifactType);
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
+      return new Artifact(this, guid, humandReadableId, branch, artifactType);
    }
 
    /* (non-Javadoc)

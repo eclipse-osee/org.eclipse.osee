@@ -93,7 +93,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private boolean linksLoaded;
    private boolean historical;
 
-   protected Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
+   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
 
       if (guid == null) {
          this.guid = GUID.generateGuidStr();
@@ -871,7 +871,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                   getArtifactTypeName(), getGuid()));
          }
          for (Attribute<?> attribute : internalGetAttributes()) {
-            if (attribute.getAttributeType().getName().equals(attributeTypeName)) {
+            if (attribute.isOfType(attributeTypeName)) {
                return (String) attribute.getValue();
             }
          }
