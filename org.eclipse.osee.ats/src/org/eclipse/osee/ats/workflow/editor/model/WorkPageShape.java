@@ -62,12 +62,11 @@ public class WorkPageShape extends RectangleShape {
    protected void initializePropertyValues() throws OseeCoreException {
       if (propertyValues == null) {
          super.initializePropertyValues();
-         Artifact artifact = getArtifact();
-         if (artifact != null) {
-            for (String type : attributeProperties) {
-               super.setPropertyValue(type, artifact.getAttributesToString(type));
-            }
-         }
+         super.setPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
+               workPageDefinition.getPageName());
+         super.setPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), workPageDefinition.getId());
+         super.setPropertyValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(),
+               workPageDefinition.getParentId());
       }
    }
 
