@@ -12,13 +12,13 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class DefaultConnection extends Connection {
+public class DefaultTransitionConnection extends TransitionConnection {
 
    /**
     * @param source
     * @param target
     */
-   public DefaultConnection(Shape source, Shape target) {
+   public DefaultTransitionConnection(Shape source, Shape target) {
       super(source, target);
    }
 

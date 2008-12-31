@@ -18,10 +18,12 @@ import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -220,6 +222,27 @@ public class WorkPageShape extends RectangleShape {
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#doSave(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
+    */
+   @Override
+   public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
+      String name = (String) getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
+      String workId = (String) getPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName());
+      String parentWorkId = (String) getPropertyValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName());
+      workPageDefinition.setPageName(name);
+      workPageDefinition.setId(workId);
+      workPageDefinition.setParentId(parentWorkId);
+      Artifact artifact = workPageDefinition.toArtifact(WriteType.Update);
+      if (artifact == null) {
+         artifact = workPageDefinition.toArtifact(WriteType.New);
+      } else {
+         artifact = workPageDefinition.toArtifact(WriteType.Update);
+      }
+      artifact.persistAttributesAndRelations(transaction);
+      return Result.TrueResult;
    }
 
 }

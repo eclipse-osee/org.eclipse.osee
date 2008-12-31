@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.workflow.editor.model;
 
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  * A connection between two distinct shapes.
@@ -25,10 +25,6 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public class Connection extends ModelElement {
 
-   /** Property ID to use when the line style of this connection is modified. */
-   public static final String TYPE_PROP = "Type";
-   private static final IPropertyDescriptor[] descriptors = new IPropertyDescriptor[1];
-
    /** True, if the connection is attached to its endpoints. */
    private boolean isConnected;
    private int lineStyle = Graphics.LINE_SOLID;
@@ -36,10 +32,6 @@ public class Connection extends ModelElement {
    private Shape source;
    /** Connection's target endpoint. */
    private Shape target;
-
-   static {
-      descriptors[0] = new TextPropertyDescriptor(TYPE_PROP, TYPE_PROP);
-   }
 
    /**
     * Create a (solid) connection between two distinct shapes.
@@ -59,7 +51,7 @@ public class Connection extends ModelElement {
 
    @Override
    public String toString() {
-      return "Transition: " + getPropertyValue(TYPE_PROP);
+      return "Connection";
    }
 
    /**
@@ -89,29 +81,6 @@ public class Connection extends ModelElement {
    public Result validForSave() {
       System.err.println("Add Connection validations.");
       return Result.TrueResult;
-   }
-
-   /**
-    * Returns the descriptor for the lineStyle property
-    * 
-    * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
-    */
-   @Override
-   public IPropertyDescriptor[] getPropertyDescriptors() {
-      return descriptors;
-   }
-
-   /**
-    * Returns the lineStyle as String for the Property Sheet
-    * 
-    * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
-    */
-   @Override
-   public Object getPropertyValue(Object id) {
-      if (id.equals(TYPE_PROP)) {
-         return getLabel();
-      }
-      return super.getPropertyValue(id);
    }
 
    /**
@@ -180,7 +149,7 @@ public class Connection extends ModelElement {
     * @return the label
     */
    public String getLabel() {
-      return "Transition";
+      return "Connection";
    }
 
    /**
@@ -188,6 +157,14 @@ public class Connection extends ModelElement {
     */
    public int getLineWidth() {
       return 2;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#doSave(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
+    */
+   @Override
+   public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
+      return Result.TrueResult;
    }
 
 }

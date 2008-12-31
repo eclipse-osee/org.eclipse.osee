@@ -24,6 +24,7 @@ import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.osee.ats.workflow.editor.model.Connection;
 import org.eclipse.osee.ats.workflow.editor.model.ModelElement;
+import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.commands.ConnectionDeleteCommand;
 
 /**
@@ -101,7 +102,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements PropertyC
     */
    public void propertyChange(PropertyChangeEvent event) {
       String property = event.getPropertyName();
-      if (Connection.TYPE_PROP.equals(property)) {
+      if (TransitionConnection.TYPE_PROP.equals(property)) {
          ((PolylineConnection) getFigure()).setLineStyle(getCastedModel().getLineStyle());
       }
    }

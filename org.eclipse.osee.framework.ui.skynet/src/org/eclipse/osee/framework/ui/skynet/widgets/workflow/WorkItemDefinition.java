@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public abstract class WorkItemDefinition {
 
    protected String id;
-   protected final String name;
-   protected final String parentId;
+   protected String name;
+   protected String parentId;
    protected String description;
    protected Map<String, String> workDataKeyValueMap = new HashMap<String, String>();
    private final Pattern keyValuePattern = Pattern.compile("^(.*?)=(.*)$", Pattern.MULTILINE);
@@ -231,4 +231,19 @@ public abstract class WorkItemDefinition {
    public void addWorkDataKeyValue(String key, String value) {
       workDataKeyValueMap.put(key, value);
    }
+
+   /**
+    * @param name the name to set
+    */
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   /**
+    * @param parentId the parentId to set
+    */
+   public void setParentId(String parentId) {
+      this.parentId = parentId;
+   }
+
 }

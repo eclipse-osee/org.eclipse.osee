@@ -10,13 +10,13 @@ import org.eclipse.draw2d.Graphics;
 /**
  * @author Donald G. Dunne
  */
-public class ReturnConnection extends Connection {
+public class ReturnTransitionConnection extends TransitionConnection {
 
    /**
     * @param source
     * @param target
     */
-   public ReturnConnection(Shape source, Shape target) {
+   public ReturnTransitionConnection(Shape source, Shape target) {
       super(source, target);
    }
 

@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
@@ -26,8 +25,7 @@ public class CancelledWorkPageShape extends WorkPageShape {
    }
 
    public CancelledWorkPageShape() {
-      super(
-            new WorkPageDefinition("Cancelled", "ats.page." + GUID.generateGuidStr(), AtsCancelledWorkPageDefinition.ID));
+      super(new WorkPageDefinition("Cancelled", "NEW", AtsCancelledWorkPageDefinition.ID));
    }
 
    /* (non-Javadoc)

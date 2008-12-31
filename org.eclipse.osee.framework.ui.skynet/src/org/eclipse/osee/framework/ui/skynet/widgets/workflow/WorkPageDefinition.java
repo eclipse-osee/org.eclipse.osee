@@ -76,6 +76,18 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
       return getPageName().equals("Cancelled");
    }
 
+   public boolean isInstanceof(String workPageDefinitionId) throws OseeCoreException {
+      return isInstanceofRecurse(this, workPageDefinitionId);
+   }
+
+   private boolean isInstanceofRecurse(WorkPageDefinition workPageDefinition, String workPageDefinitionId) throws OseeCoreException {
+      if (workPageDefinition.getId().equals(workPageDefinitionId)) return true;
+      if (workPageDefinition.getParent() != null) {
+         return isInstanceofRecurse((WorkPageDefinition) workPageDefinition.getParent(), workPageDefinitionId);
+      }
+      return false;
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition#getArtifactTypeName()
     */

@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.workflow.editor.model.commands;
 import java.util.Iterator;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.osee.ats.workflow.editor.model.Connection;
-import org.eclipse.osee.ats.workflow.editor.model.DefaultConnection;
-import org.eclipse.osee.ats.workflow.editor.model.ReturnConnection;
+import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
+import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.Shape;
 
 /**
@@ -89,10 +89,10 @@ public class ConnectionCreateCommand extends Command {
    @Override
    public void execute() {
       // create a new connection between source and target
-      if (clazz == DefaultConnection.class) {
-         connection = new DefaultConnection(source, target);
-      } else if (clazz == ReturnConnection.class) {
-         connection = new ReturnConnection(source, target);
+      if (clazz == DefaultTransitionConnection.class) {
+         connection = new DefaultTransitionConnection(source, target);
+      } else if (clazz == ReturnTransitionConnection.class) {
+         connection = new ReturnTransitionConnection(source, target);
       } else if (clazz == Connection.class) {
          connection = new Connection(source, target);
       } else {

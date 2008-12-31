@@ -76,7 +76,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          WorkPageDefinition endorsePage =
                new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID);
 
-         workflow.setStartPageId(endorsePage.getId());
+         workflow.setStartPageId(endorsePage.getPageName());
 
          WorkPageDefinition implementPage = new WorkPageDefinition("Implement", namespace + ".Implement", null);
          implementPage.addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
@@ -84,7 +84,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          implementPage.addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
 
          WorkPageDefinition completedPage =
-               new WorkPageDefinition("Complete", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);
+               new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);
 
          WorkPageDefinition cancelledPage =
                new WorkPageDefinition("Cancelled", namespace + ".Cancelled", AtsCancelledWorkPageDefinition.ID);

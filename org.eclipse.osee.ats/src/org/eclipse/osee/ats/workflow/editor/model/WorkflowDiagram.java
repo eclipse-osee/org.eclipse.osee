@@ -11,10 +11,23 @@
 package org.eclipse.osee.ats.workflow.editor.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
 /**
  * A container for multiple shapes. This is the "root" of the model data structure.
@@ -33,6 +46,96 @@ public class WorkflowDiagram extends ModelElement {
    public WorkflowDiagram(WorkFlowDefinition workFlowDefinition) {
       super();
       this.workFlowDefinition = workFlowDefinition;
+   }
+
+   @Override
+   public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
+      Result result = validForSave();
+      if (result.isFalse()) return result;
+      try {
+
+         List<WorkPageShape> workPageShapes = new ArrayList<WorkPageShape>();
+         for (Shape shape : getChildren()) {
+            if (shape instanceof WorkPageShape) {
+               workPageShapes.add((WorkPageShape) shape);
+            }
+         }
+
+         // Remove all states that do not exist anymore
+         List<WorkItemDefinition> wids = workFlowDefinition.getWorkItems(false);
+         List<WorkItemDefinition> widsForDelete = workFlowDefinition.getWorkItems(false);
+         for (WorkPageShape workPageShape : workPageShapes) {
+            for (WorkItemDefinition wid : wids) {
+               if (wid.getId().equals(workPageShape.getId())) {
+                  // Remove wid from delete list
+                  widsForDelete.remove(wid);
+                  break;
+               }
+            }
+         }
+         for (WorkItemDefinition wid : widsForDelete) {
+            Artifact art = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(wid.getId());
+            art.delete();
+         }
+
+         // Save new states and modifications to states
+         for (WorkPageShape workPageShape : workPageShapes) {
+            result = workPageShape.doSave(transaction);
+            if (result.isFalse()) return result;
+         }
+
+         // Set start page
+         for (WorkPageShape workPageShape : workPageShapes) {
+            if (workPageShape.isStartPage()) {
+               workFlowDefinition.setStartPageId(workPageShape.getWorkPageDefinition().getPageName());
+               break;
+            }
+         }
+
+         // Validate transitions
+         workFlowDefinition.clearTransitions();
+         for (Connection connection : getConnections()) {
+            if (TransitionConnection.class.isAssignableFrom(connection.getClass())) {
+               TransitionConnection transConn = (TransitionConnection) connection;
+               if (transConn instanceof DefaultTransitionConnection) {
+                  workFlowDefinition.addPageTransition(
+                        ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+                        ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+                        TransitionType.ToPageAsDefault);
+               }
+               if (transConn instanceof ReturnTransitionConnection) {
+                  workFlowDefinition.addPageTransition(
+                        ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+                        ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+                        TransitionType.ToPageAsReturn);
+               }
+               if (transConn instanceof DefaultTransitionConnection) {
+                  workFlowDefinition.addPageTransition(
+                        ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+                        ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+                        TransitionType.ToPage);
+               }
+            }
+         }
+         Artifact artifact = workFlowDefinition.toArtifact(WriteType.Update);
+         artifact.persistAttributes(transaction);
+
+         // Validate saved workflows and all corresponding workItemDefinitions
+         // prior to completion of save
+         result = AtsWorkDefinitions.validateWorkItemDefinition(workFlowDefinition);
+         if (result.isFalse()) return result;
+         for (Shape shape : getChildren()) {
+            if (shape instanceof WorkPageShape) {
+               WorkPageDefinition workPageDefinition = ((WorkPageShape) shape).getWorkPageDefinition();
+               result = AtsWorkDefinitions.validateWorkItemDefinition(workPageDefinition);
+               if (result.isFalse()) return result;
+            }
+         }
+
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+      return Result.TrueResult;
    }
 
    @Override
@@ -62,7 +165,7 @@ public class WorkflowDiagram extends ModelElement {
       // Validate # other states
       num = 0;
       for (Shape shape : getChildren()) {
-         if (shape instanceof WorkPageShape) {
+         if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
             num += ((WorkPageShape) shape).isStartPage() ? 1 : 0;
          }
       }
@@ -71,7 +174,7 @@ public class WorkflowDiagram extends ModelElement {
       // Validate state names
       List<String> stateNames = new ArrayList<String>();
       for (Shape shape : getChildren()) {
-         if (shape instanceof WorkPageShape) {
+         if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
             String name =
                   (String) ((WorkPageShape) shape).getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
             if (stateNames.contains(name)) {
@@ -119,6 +222,15 @@ public class WorkflowDiagram extends ModelElement {
    /** Return a List of Shapes in this diagram. The returned List should not be modified. */
    public List<Shape> getChildren() {
       return shapes;
+   }
+
+   public Set<Connection> getConnections() {
+      Set<Connection> connections = new HashSet<Connection>();
+      for (Shape shape : getChildren()) {
+         connections.addAll(shape.getSourceConnections());
+         connections.addAll(shape.getTargetConnections());
+      }
+      return connections;
    }
 
    /**

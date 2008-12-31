@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.workflow.editor.model;
 
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 
@@ -54,6 +56,14 @@ public class RectangleShape extends Shape {
    @Override
    protected String getToolTip() {
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#doSave(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
+    */
+   @Override
+   public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
+      return Result.TrueResult;
    }
 
 }

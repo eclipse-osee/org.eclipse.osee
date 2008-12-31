@@ -16,7 +16,7 @@ import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
-import org.eclipse.osee.ats.workflow.editor.model.ReturnConnection;
+import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -95,7 +95,7 @@ public class WorkPageEditPart extends ShapeEditPart {
     */
    @Override
    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
-      if (connection.getModel() instanceof ReturnConnection) {
+      if (connection.getModel() instanceof ReturnTransitionConnection) {
          if (returnAnchor == null) {
             returnAnchor = new RightAnchor(getFigure());
          }
@@ -109,7 +109,7 @@ public class WorkPageEditPart extends ShapeEditPart {
     */
    @Override
    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
-      if (connection.getModel() instanceof ReturnConnection) {
+      if (connection.getModel() instanceof ReturnTransitionConnection) {
          if (returnAnchor == null) {
             returnAnchor = new RightAnchor(getFigure());
          }

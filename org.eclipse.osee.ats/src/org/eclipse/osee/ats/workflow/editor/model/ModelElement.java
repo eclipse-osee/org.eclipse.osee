@@ -17,6 +17,7 @@ import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -48,6 +49,8 @@ public abstract class ModelElement implements IPropertySource {
          propertyValues = new HashMap<Object, Object>();
       }
    }
+
+   public abstract Result doSave(SkynetTransaction transaction) throws OseeCoreException;
 
    public abstract Result validForSave();
 

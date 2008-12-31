@@ -32,13 +32,14 @@ import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.CompletedWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.Connection;
-import org.eclipse.osee.ats.workflow.editor.model.DefaultConnection;
-import org.eclipse.osee.ats.workflow.editor.model.ReturnConnection;
+import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
+import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesEditPartFactory;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesTreeEditPartFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -159,13 +160,18 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
     */
    @Override
    public void doSave(IProgressMonitor monitor) {
-      Result result = diagram.validForSave();
-      if (result.isFalse()) {
-         AWorkbench.popup("Validate Error", result.getText());
-         return;
+      try {
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         Result result = diagram.doSave(transaction);
+         if (result.isFalse()) {
+            AWorkbench.popup("Save Error", result.getText());
+            return;
+         }
+         transaction.execute();
+         getCommandStack().markSaveLocation();
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
-
-      AWorkbench.popup("ERROR", "Not implemented yet");
    }
 
    /* (non-Javadoc)
@@ -279,7 +285,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
                   }
                   WorkPageShape toPageShape = getWorkPageShape(toPageDef);
                   if (toPageDef.equals(atsWorkPage.getDefaultToPage())) {
-                     new DefaultConnection(pageShape, toPageShape);
+                     new DefaultTransitionConnection(pageShape, toPageShape);
                      //                  System.out.println("Default: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
                   } else {
                      new Connection(pageShape, toPageShape);
@@ -289,7 +295,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
                // Handle return pages
                for (WorkPageDefinition toPageDef : returnPages) {
                   WorkPageShape toPageShape = getWorkPageShape(toPageDef);
-                  new ReturnConnection(pageShape, toPageShape);
+                  new ReturnTransitionConnection(pageShape, toPageShape);
                   //               System.out.println("Return: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
                }
             }

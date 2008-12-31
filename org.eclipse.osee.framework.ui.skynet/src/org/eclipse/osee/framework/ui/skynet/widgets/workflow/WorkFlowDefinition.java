@@ -299,6 +299,10 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       return getPageDefinitions(this, fromPageId, true, transitionType);
    }
 
+   public void clearTransitions() {
+      pageIdToPageIdsViaTransitionType.clear();
+   }
+
    public Map<TransitionType, Set<String>> getTransitionTypeToPageIds(String fromPageId) throws OseeCoreException {
       loadPageData();
       return pageIdToPageIdsViaTransitionType.get(fromPageId);

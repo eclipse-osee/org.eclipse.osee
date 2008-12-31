@@ -26,8 +26,8 @@ import org.eclipse.osee.ats.workflow.editor.actions.ValidateDiagramToolEntry;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.CompletedWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.Connection;
-import org.eclipse.osee.ats.workflow.editor.model.DefaultConnection;
-import org.eclipse.osee.ats.workflow.editor.model.ReturnConnection;
+import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
+import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 
 /**
@@ -84,7 +84,7 @@ final class AtsWorkflowConfigEditorPaletteFactory {
                }
 
                public Object getObjectType() {
-                  return DefaultConnection.class;
+                  return DefaultTransitionConnection.class;
                }
             }, AtsPlugin.getInstance().getImageDescriptor("connection_s16.gif"),
                   AtsPlugin.getInstance().getImageDescriptor("connection_s24.gif"));
@@ -110,7 +110,7 @@ final class AtsWorkflowConfigEditorPaletteFactory {
                }
 
                public Object getObjectType() {
-                  return ReturnConnection.class;
+                  return ReturnTransitionConnection.class;
                }
             }, AtsPlugin.getInstance().getImageDescriptor("connection_d16.gif"),
                   AtsPlugin.getInstance().getImageDescriptor("connection_d24.gif"));
