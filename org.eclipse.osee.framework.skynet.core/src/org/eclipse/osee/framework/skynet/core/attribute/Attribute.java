@@ -16,8 +16,6 @@ import java.util.Arrays;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
@@ -176,6 +174,17 @@ public abstract class Attribute<T> {
    }
 
    /**
+    * Currently this method provides support for quasi artifact type inheritance
+    * 
+    * @param artifactType
+    * @return whether this artifact's type or any of its super-types are the specified type
+    */
+   public boolean isOfType(String otherAttributeTypeName) {
+      String attributeTypeName = attributeType.getName();
+      return attributeTypeName.equals(otherAttributeTypeName);
+   }
+
+   /**
     * Deletes the attribute
     */
    public final void delete() {
@@ -254,7 +263,7 @@ public abstract class Attribute<T> {
       dbTransaction.execute();
    }
 
-   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, Object... data) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, Object... data) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
       attributeType = AttributeTypeManager.getType(attributeType.getName());
 

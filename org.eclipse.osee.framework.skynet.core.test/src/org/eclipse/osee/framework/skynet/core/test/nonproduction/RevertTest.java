@@ -396,7 +396,7 @@ public class RevertTest extends TestCase {
          Collection<Attribute<?>> attributs = artifact.getAttributes(true);
          Attribute<?> attribute = null;
          for (Attribute<?> attr : attributs) {
-            if (attr.getAttributeType().getName().equals("Name")) {
+            if (attr.isOfType("Name")) {
                attribute = attr;
             }
          }

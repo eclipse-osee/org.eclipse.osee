@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.attribute.utils;
 
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
  * @author Roberto E. Escobar
@@ -36,7 +36,7 @@ public class BinaryContentUtils {
       return contentType;
    }
 
-   public static String generateFileName(Attribute<?> attribute) {
+   public static String generateFileName(Attribute<?> attribute) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       try {
          String name = attribute.getArtifact().getDescriptiveName();
@@ -58,17 +58,10 @@ public class BinaryContentUtils {
       return builder.toString();
    }
 
-   private static String getExtension(Attribute<?> attribute) {
-      AttributeType attributeType = attribute.getAttributeType();
-      String fileTypeExtension = null;
-      if (attributeType.getName().equalsIgnoreCase("Native Content")) {
-         try {
-            fileTypeExtension = attribute.getArtifact().getSoleAttributeValue("Extension");
-         } catch (Exception ex) {
-            fileTypeExtension = attributeType.getFileTypeExtension();
-         }
-      } else {
-         fileTypeExtension = attributeType.getFileTypeExtension();
+   private static String getExtension(Attribute<?> attribute) throws OseeCoreException {
+      String fileTypeExtension = attribute.getAttributeType().getFileTypeExtension();
+      if (attribute.isOfType("Native Content")) {
+         fileTypeExtension = attribute.getArtifact().getSoleAttributeValue("Extension");
       }
       return fileTypeExtension;
    }
