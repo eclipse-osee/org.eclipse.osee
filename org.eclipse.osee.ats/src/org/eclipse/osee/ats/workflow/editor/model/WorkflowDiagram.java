@@ -40,6 +40,14 @@ public class WorkflowDiagram extends ModelElement {
       return false;
    }
 
+   public boolean hasChild(Shape s) {
+      for (Object obj : shapes) {
+         Shape shape = (Shape) obj;
+         if (shape.equals(s)) return true;
+      }
+      return false;
+   }
+
    /** Return a List of Shapes in this diagram. The returned List should not be modified. */
    public List getChildren() {
       return shapes;

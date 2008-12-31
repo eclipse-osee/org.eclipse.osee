@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.workflow.editor.model;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -70,6 +72,7 @@ public class WorkPageShape extends RectangleShape {
    }
 
    public boolean isStartPage() {
+      if (getPropertyValue(START_PAGE) == null) return false;
       return ((Integer) getPropertyValue(START_PAGE)) == StartPageEnum.Yes.ordinal();
    }
 
@@ -103,6 +106,26 @@ public class WorkPageShape extends RectangleShape {
 
    public WorkPageShape(WorkPageDefinition workPageDefinition) {
       this.workPageDefinition = workPageDefinition;
+   }
+
+   public boolean isInstanceof(String workPageDefinitionId) throws OseeCoreException {
+      return isInstanceofRecurse(workPageDefinition, workPageDefinitionId);
+   }
+
+   private boolean isInstanceofRecurse(WorkPageDefinition workPageDefinition, String workPageDefinitionId) throws OseeCoreException {
+      if (workPageDefinition.getId().equals(workPageDefinitionId)) return true;
+      if (workPageDefinition.getParent() != null) {
+         return isInstanceofRecurse((WorkPageDefinition) workPageDefinition.getParent(), workPageDefinitionId);
+      }
+      return false;
+   }
+
+   public boolean isCancelledState() throws OseeCoreException {
+      return isInstanceof(AtsCancelledWorkPageDefinition.ID);
+   }
+
+   public boolean isCompletedState() throws OseeCoreException {
+      return isInstanceof(AtsCompletedWorkPageDefinition.ID);
    }
 
    @Override

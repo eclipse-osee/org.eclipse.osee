@@ -52,7 +52,12 @@ public class ShapeCreateCommand extends Command {
     */
    @Override
    public boolean canExecute() {
-      return newShape != null && parent != null && bounds != null;
+      boolean create = newShape != null && parent != null && bounds != null;
+      if (!create) return false;
+      if (parent.hasChild(newShape)) {
+         return false;
+      }
+      return true;
    }
 
    /* (non-Javadoc)

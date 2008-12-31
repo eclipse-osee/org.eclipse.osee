@@ -241,17 +241,17 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
             // Create states
             for (WorkPageDefinition pageDef : workflowDef.getPagesOrdered()) {
                WorkPageShape pageShape = null;
-               if (pageDef.getName().contains("Cancelled")) {
-                  pageShape = new CancelledWorkPageShape();
+               if (pageDef.isCancelledPage()) {
+                  pageShape = new CancelledWorkPageShape(pageDef);
                   pageShape.setLocation(new Point(250, 300));
-               } else if (pageDef.getName().contains("Completed")) {
-                  pageShape = new CompletedWorkPageShape();
+               } else if (pageDef.isCompletePage()) {
+                  pageShape = new CompletedWorkPageShape(pageDef);
                   pageShape.setLocation(new Point(50, yLoc += 100));
                } else {
                   pageShape = new WorkPageShape(pageDef);
                   pageShape.setLocation(new Point(50, yLoc += 100));
-                  pageShape.setStartPage(startPage.equals(pageShape.getId()) || pageShape.getId().endsWith(startPage));
                }
+               pageShape.setStartPage(startPage.equals(pageShape.getId()) || pageShape.getId().endsWith(startPage));
                diagram.addChild(pageShape);
             }
 

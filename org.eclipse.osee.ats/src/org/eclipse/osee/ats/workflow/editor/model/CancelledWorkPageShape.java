@@ -5,8 +5,13 @@
  */
 package org.eclipse.osee.ats.workflow.editor.model;
 
+import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -15,42 +20,28 @@ public class CancelledWorkPageShape extends WorkPageShape {
 
    /**
     * @param workPageDefinition
-    * @throws OseeCoreException
     */
+   public CancelledWorkPageShape(WorkPageDefinition workPageDefinition) {
+      super(workPageDefinition);
+   }
+
    public CancelledWorkPageShape() {
-      super(null);
+      super(
+            new WorkPageDefinition("Cancelled", "ats.page." + GUID.generateGuidStr(), AtsCancelledWorkPageDefinition.ID));
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.WorkPageShape#getName()
+    * @see java.lang.Object#equals(java.lang.Object)
     */
    @Override
-   public String getName() {
-      return "Cancelled";
+   public boolean equals(Object obj) {
+      if (obj instanceof WorkPageShape) {
+         try {
+            return ((WorkPageShape) obj).isCancelledState();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+      }
+      return super.equals(obj);
    }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.WorkPageShape#getToolTip()
-    */
-   @Override
-   public String getToolTip() {
-      return "Cancelled State";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.WorkPageShape#toString()
-    */
-   @Override
-   public String toString() {
-      return "Cancelled";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.WorkPageShape#getId()
-    */
-   @Override
-   public String getId() {
-      return AtsCancelledWorkPageDefinition.ID;
-   }
-
 }

@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.workflow.editor.parts;
 
 import java.beans.PropertyChangeEvent;
+import java.util.logging.Level;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.GridLayout;
@@ -13,10 +14,11 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.Request;
-import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
-import org.eclipse.osee.ats.workflow.editor.model.CompletedWorkPageShape;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -37,12 +39,16 @@ public class WorkPageEditPart extends ShapeEditPart {
    protected IFigure createFigure() {
       IFigure f = super.createFigure();
       f.setLayoutManager(new GridLayout());
-      if (workPageShape instanceof CompletedWorkPageShape) {
-         f.setBackgroundColor(ColorConstants.darkGreen);
-      } else if (workPageShape instanceof CancelledWorkPageShape) {
-         f.setBackgroundColor(ColorConstants.lightGray);
-      } else if (workPageShape.isStartPage()) {
-         f.setBackgroundColor(ColorConstants.yellow);
+      try {
+         if (workPageShape.isCompletedState()) {
+            f.setBackgroundColor(ColorConstants.darkGreen);
+         } else if (workPageShape.isCancelledState()) {
+            f.setBackgroundColor(ColorConstants.lightGray);
+         } else if (workPageShape.isStartPage()) {
+            f.setBackgroundColor(ColorConstants.yellow);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       f.add(new Label(workPageShape.getName()));
       f.setToolTip(new Label(workPageShape.getToolTip()));

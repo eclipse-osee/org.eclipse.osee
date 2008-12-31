@@ -164,14 +164,13 @@ class DiagramEditPart extends AbstractGraphicalEditPart implements PropertyChang
       @Override
       protected Command getCreateCommand(CreateRequest request) {
          Object childClass = request.getNewObjectType();
-         if (childClass == EllipticalShape.class || childClass == WorkPageShape.class) {
+         if (childClass == EllipticalShape.class || WorkPageShape.class.isAssignableFrom(((Class<?>) childClass))) {
             // return a command that can add a Shape to a ShapesDiagram 
             return new ShapeCreateCommand((Shape) request.getNewObject(), (WorkflowDiagram) getHost().getModel(),
                   (Rectangle) getConstraintFor(request));
          }
          return null;
       }
-
    }
 
 }
