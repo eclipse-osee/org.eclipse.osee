@@ -15,6 +15,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -53,6 +54,15 @@ public class WorkPageEditPart extends ShapeEditPart {
       f.add(new Label(workPageShape.getName()));
       f.setToolTip(new Label(workPageShape.getToolTip()));
       return f;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.gef.editparts.AbstractEditPart#performRequest(org.eclipse.gef.Request)
+    */
+   @Override
+   public void performRequest(Request req) {
+      super.performRequest(req);
+      (new EditAction()).run();
    }
 
    /* (non-Javadoc)

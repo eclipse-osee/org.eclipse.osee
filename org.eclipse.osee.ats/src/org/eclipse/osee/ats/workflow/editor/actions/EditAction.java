@@ -16,11 +16,14 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
+import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
+import org.eclipse.osee.ats.workflow.editor.parts.DiagramEditPart;
 import org.eclipse.osee.ats.workflow.editor.parts.WorkPageEditPart;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
@@ -58,6 +61,20 @@ public class EditAction extends Action {
             Iterator<?> i = structuredSelection.iterator();
             while (i.hasNext()) {
                Object obj = i.next();
+               if (obj instanceof DiagramEditPart) {
+                  if (((DiagramEditPart) obj).getModel() instanceof WorkflowDiagram) {
+                     WorkflowDiagram diagram = (WorkflowDiagram) ((DiagramEditPart) obj).getModel();
+                     Artifact artifact = null;
+                     if (diagram.getWorkFlowDefinition() != null) {
+                        WorkFlowDefinition def = diagram.getWorkFlowDefinition();
+                        artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
+                     }
+                     if (artifact != null) {
+                        ArtifactEditor.editArtifact(artifact);
+                        return;
+                     }
+                  }
+               }
                if (obj instanceof WorkPageEditPart) {
                   if (((WorkPageEditPart) obj).getModel() instanceof WorkPageShape) {
                      WorkPageShape shape = (WorkPageShape) ((WorkPageEditPart) obj).getModel();

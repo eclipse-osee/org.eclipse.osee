@@ -52,7 +52,7 @@ import org.eclipse.osee.ats.workflow.editor.model.commands.ShapeSetConstraintCom
  * 
  * @author Donald G. Dunne
  */
-class DiagramEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
+public class DiagramEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
 
    /**
     * Upon activation, attach to the model element as a property change listener.

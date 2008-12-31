@@ -25,10 +25,14 @@ import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
@@ -36,6 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.XWidgetFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
@@ -275,5 +280,34 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             child)) {
          parent.addChild(child);
       }
+   }
+
+   public static Result validateWorkItemDefinition(WorkItemDefinition workItemDefinition) {
+      try {
+         if (workItemDefinition instanceof WorkPageDefinition) {
+            WorkPageDefinition workPageDefinition = (WorkPageDefinition) workItemDefinition;
+            workPageDefinition.getWorkItems(true);
+         }
+         if (workItemDefinition instanceof WorkWidgetDefinition) {
+            WorkWidgetDefinition workWidgetDefinition = (WorkWidgetDefinition) workItemDefinition;
+            DynamicXWidgetLayoutData dynamicXWidgetLayoutData = workWidgetDefinition.get();
+            XWidget xWidget = XWidgetFactory.getInstance().createXWidget(dynamicXWidgetLayoutData);
+            if (xWidget == null) {
+               throw new OseeStateException("XWidget.createXWidget came back null");
+            }
+         }
+         if (workItemDefinition instanceof WorkFlowDefinition) {
+            WorkFlowDefinition workFlowDefinition = (WorkFlowDefinition) workItemDefinition;
+            if (workFlowDefinition.getPagesOrdered().size() == 0) {
+               throw new OseeStateException("Work Flow must have at least one state.");
+            }
+            if (workFlowDefinition.getStartPage() == null) {
+               throw new OseeStateException("Work Flow must have a single start page");
+            }
+         }
+      } catch (Exception ex) {
+         return new Result(ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
    }
 }
