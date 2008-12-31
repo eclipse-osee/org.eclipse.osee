@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public abstract class WorkItemDefinition {
 
-   protected final String id;
+   protected String id;
    protected final String name;
    protected final String parentId;
    protected String description;
@@ -145,6 +145,13 @@ public abstract class WorkItemDefinition {
     */
    public String getId() {
       return id;
+   }
+
+   /**
+    * @param id the id to set
+    */
+   public void setId(String id) {
+      this.id = id;
    }
 
    /**

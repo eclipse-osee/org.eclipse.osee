@@ -235,7 +235,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
          WorkFlowDefinition workflowDef = editorInput.workflow;
          try {
             setPartName(workflowDef.getName());
-            diagram = new WorkflowDiagram();
+            diagram = new WorkflowDiagram(workflowDef);
             int yLoc = 0;
             String startPage = workflowDef.getStartPageId();
             // Create states

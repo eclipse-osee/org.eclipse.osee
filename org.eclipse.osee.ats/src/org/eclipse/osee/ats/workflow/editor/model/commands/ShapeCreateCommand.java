@@ -40,6 +40,7 @@ public class ShapeCreateCommand extends Command {
     */
    public ShapeCreateCommand(Shape newShape, WorkflowDiagram parent, Rectangle bounds) {
       this.newShape = newShape;
+      this.newShape.setWorkflowDiagram(parent);
       this.parent = parent;
       this.bounds = bounds;
       setLabel("shape creation");

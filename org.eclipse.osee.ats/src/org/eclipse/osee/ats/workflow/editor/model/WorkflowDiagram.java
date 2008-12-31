@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.workflow.editor.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 
 /**
  * A container for multiple shapes. This is the "root" of the model data structure.
@@ -25,6 +26,12 @@ public class WorkflowDiagram extends ModelElement {
    /** Property ID to use when a child is removed from this diagram. */
    public static final String CHILD_REMOVED_PROP = "ShapesDiagram.ChildRemoved";
    private final List shapes = new ArrayList();
+   private final WorkFlowDefinition workFlowDefinition;
+
+   public WorkflowDiagram(WorkFlowDefinition workFlowDefinition) {
+      super();
+      this.workFlowDefinition = workFlowDefinition;
+   }
 
    /**
     * Add a shape to this diagram.
@@ -66,4 +73,12 @@ public class WorkflowDiagram extends ModelElement {
       }
       return false;
    }
+
+   /**
+    * @return the workFlowDefinition
+    */
+   public WorkFlowDefinition getWorkFlowDefinition() {
+      return workFlowDefinition;
+   }
+
 }

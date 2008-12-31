@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
@@ -45,7 +44,18 @@ public class WorkPageShape extends RectangleShape {
    };
 
    public WorkPageShape() {
-      this(new WorkPageDefinition("New", "ats.page." + GUID.generateGuidStr(), null));
+      this(new WorkPageDefinition("New", "NEW", null));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.workflow.editor.model.Shape#setWorkflowDiagram(org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram)
+    */
+   @Override
+   public void setWorkflowDiagram(WorkflowDiagram workflowDiagram) {
+      super.setWorkflowDiagram(workflowDiagram);
+      if (getId().equals("NEW")) {
+         workPageDefinition.setId(workflowDiagram.getWorkFlowDefinition().getId() + "." + getWorkPageDefinition().getPageName());
+      }
    }
 
    @Override

@@ -75,6 +75,7 @@ public abstract class Shape extends ModelElement {
    private final List sourceConnections = new ArrayList();
    /** List of incoming Connections. */
    private final List targetConnections = new ArrayList();
+   private WorkflowDiagram workflowDiagram;
 
    /**
     * Add an incoming or outgoing connection to this shape.
@@ -276,5 +277,19 @@ public abstract class Shape extends ModelElement {
          size.setSize(newSize);
          firePropertyChange(SIZE_PROP, null, size);
       }
+   }
+
+   /**
+    * @return the workflowDiagram
+    */
+   public WorkflowDiagram getWorkflowDiagram() {
+      return workflowDiagram;
+   }
+
+   /**
+    * @param workflowDiagram the workflowDiagram to set
+    */
+   public void setWorkflowDiagram(WorkflowDiagram workflowDiagram) {
+      this.workflowDiagram = workflowDiagram;
    }
 }
