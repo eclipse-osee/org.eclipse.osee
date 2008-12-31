@@ -7,10 +7,10 @@
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>Robert Fisher</Author>
-  <LastAuthor>Donald G. Dunne</LastAuthor>
+  <LastAuthor>Ryan Brooks</LastAuthor>
   <LastPrinted>2006-03-15T03:49:16Z</LastPrinted>
   <Created>2005-07-01T21:31:12Z</Created>
-  <LastSaved>2008-06-16T19:25:38Z</LastSaved>
+  <LastSaved>2008-12-22T23:32:20Z</LastSaved>
   <Company>The Boeing Company</Company>
   <Version>11.9999</Version>
  </DocumentProperties>
@@ -205,7 +205,7 @@
    <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R59C1:R62C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="67" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="67" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="359.25"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="300.75"/>
@@ -321,7 +321,6 @@
     <Cell ss:StyleID="s36"><Data ss:Type="String">Min Occurrence</Data></Cell>
     <Cell ss:StyleID="s36"><Data ss:Type="String">Max Occurrence</Data></Cell>
     <Cell ss:StyleID="s36"><Data ss:Type="String">Tip Text</Data></Cell>
-    <Cell ss:StyleID="s36"><Data ss:Type="String">User Visible</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12.75">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
@@ -334,7 +333,6 @@
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Descriptive Name</Data></Cell>
-    <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
@@ -346,7 +344,6 @@
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -360,7 +357,6 @@
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s37"/>
-    <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.EnumeratedAttribute</Data></Cell>
@@ -373,10 +369,9 @@
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s38"><Data ss:Type="String">Page Type: Landscape/Portrait</Data></Cell>
-    <Cell ss:StyleID="s38"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BlobWordAttribute</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Word Ole Data</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">xml</Data></Cell>
@@ -385,7 +380,6 @@
     <Cell ss:Index="8" ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s38"><Data ss:Type="String">Word Ole Data</Data></Cell>
-    <Cell ss:StyleID="s38"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
@@ -398,7 +392,6 @@
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">xml definition of a Blam Workflow</Data></Cell>
-    <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
@@ -410,7 +403,6 @@
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -424,7 +416,6 @@
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell ss:StyleID="s37"/>
-    <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
@@ -436,7 +427,6 @@
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
-    <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -450,7 +440,6 @@
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell ss:StyleID="s37"/>
-    <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.CompressedContentAttribute</Data></Cell>
@@ -463,10 +452,9 @@
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">content that will be editing by a native program</Data></Cell>
-    <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s41"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.WordAttribute</Data></Cell>
+    <Cell ss:StyleID="s41"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.WordTemplateAttribute</Data></Cell>
     <Cell ss:StyleID="s41"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s41"><Data ss:Type="String">Word Template Content</Data></Cell>
     <Cell ss:StyleID="s41"><Data ss:Type="String">xml</Data></Cell>
@@ -476,10 +464,9 @@
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s41"><Data ss:Type="String">value must comply with WordML xml schema</Data></Cell>
-    <Cell ss:StyleID="s41"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s31"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.WordAttribute</Data></Cell>
+    <Cell ss:StyleID="s31"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.WordWholeDocumentAttribute</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">Whole Word Content</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">xml</Data></Cell>
@@ -489,7 +476,6 @@
     <Cell ss:StyleID="s42"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s42"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">value must comply with WordML xml schema</Data></Cell>
-    <Cell ss:StyleID="s31"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="11.25"/>
    <Row ss:AutoFitHeight="0"/>
@@ -693,8 +679,7 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>6</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>21</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

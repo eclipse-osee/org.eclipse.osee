@@ -22,11 +22,11 @@ public interface IAttributeDataProvider {
 
    public void setDisplayableString(String toDisplay) throws OseeDataStoreException;
 
-   public void loadData(Object... objects) throws OseeDataStoreException;
+   public void loadData(Object... objects) throws OseeCoreException;
 
    public Object[] getData() throws OseeDataStoreException;
 
    public void persist(int storageId) throws OseeCoreException;
 
-   public void purge() throws OseeDataStoreException;
+   public void purge() throws OseeCoreException;
 }

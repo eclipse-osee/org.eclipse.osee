@@ -25,14 +25,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.BlobWordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.JavaObjectAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -697,7 +693,6 @@ public class ConflictTestManager {
 
    @SuppressWarnings( {"unchecked"})
    public static Object stringToObject(Class clas, String value) {
-
       if (clas.equals(BooleanAttribute.class)) {
          return new Boolean(value.equals(BooleanAttribute.booleanChoices[0]));
       }
@@ -713,22 +708,6 @@ public class ConflictTestManager {
          if (value.equals("")) return new Double(0);
          return new Double(value);
       }
-      if (clas.equals(EnumeratedAttribute.class)) {
-         return value;
-      }
-      if (clas.equals(StringAttribute.class)) {
-         return value;
-      }
-      if (clas.equals(BlobWordAttribute.class)) {
-         return value;
-      }
-      if (clas.equals(JavaObjectAttribute.class)) {
-         return value;
-      }
-      if (clas.equals(CompressedContentAttribute.class)) {
-         return value;
-      }
       return value;
    }
-
 }

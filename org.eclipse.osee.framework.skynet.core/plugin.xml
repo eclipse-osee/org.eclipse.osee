@@ -300,14 +300,6 @@
                class="org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute">
          </CharacterBackedAttributeType>
       </extension>
-      <extension
-            id="BlobWordAttribute"
-            name="BlobWordAttribute"
-            point="org.eclipse.osee.framework.skynet.core.AttributeType">
-         <CharacterBackedAttributeType
-               class="org.eclipse.osee.framework.skynet.core.attribute.BlobWordAttribute">
-         </CharacterBackedAttributeType>
-      </extension>
        <extension
              id="JavaObjectAttribute"
              name="JavaObjectAttribute"

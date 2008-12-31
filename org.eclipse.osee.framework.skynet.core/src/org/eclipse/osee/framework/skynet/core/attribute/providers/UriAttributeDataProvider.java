@@ -55,7 +55,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       this.displayable = toDisplay;
    }
 
-   public String getInternalFileName() {
+   private String getInternalFileName() throws OseeCoreException {
       return BinaryContentUtils.generateFileName(getAttribute());
    }
 
@@ -63,27 +63,23 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setValue(ByteBuffer)
     */
    @Override
-   public boolean setValue(ByteBuffer data) throws OseeDataStoreException {
+   public boolean setValue(ByteBuffer data) throws OseeCoreException {
       boolean response = false;
       try {
          if (!Arrays.equals(dataStore.getContent(), data != null ? data.array() : null)) {
             if (data != null) {
                byte[] compressed;
-               try {
-                  compressed = Lib.compressStream(Lib.byteBufferToInputStream(data), getInternalFileName());
-                  dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
-                  response = true;
-               } catch (Exception ex) {
-                  throw new OseeDataStoreException("Error compressing data. - ", ex);
-               }
+               compressed = Lib.compressStream(Lib.byteBufferToInputStream(data), getInternalFileName());
+               dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
+               response = true;
             } else {
                String loc = dataStore.getLocator();
                dataStore.clear();
                dataStore.setLocator(loc);
             }
          }
-      } catch (Exception ex1) {
-         throw new OseeDataStoreException("Error committing data. ", ex1);
+      } catch (IOException ex) {
+         throw new OseeWrappedException("Error committing data. ", ex);
       }
       return response;
    }
@@ -117,7 +113,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          try {
             toReturn = new String(data.array(), "UTF-8");
          } catch (UnsupportedEncodingException ex) {
-            throw new OseeDataStoreException("Error encoding data.", ex);
+            throw new OseeWrappedException("Error encoding data.", ex);
          }
       } else {
          toReturn = "";
@@ -129,13 +125,13 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.data.IStringAttributeDataProvider#setValue(java.lang.String)
     */
    @Override
-   public boolean setValue(String value) throws OseeDataStoreException {
+   public boolean setValue(String value) throws OseeCoreException {
       ByteBuffer toSet = null;
       if (value != null) {
          try {
             toSet = ByteBuffer.wrap(value.getBytes("UTF-8"));
          } catch (UnsupportedEncodingException ex) {
-            throw new OseeDataStoreException("Error encoding data.", ex);
+            throw new OseeWrappedException("Error encoding data.", ex);
          }
       }
       setValue(toSet);
@@ -154,7 +150,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#loadData(java.lang.Object[])
     */
    @Override
-   public void loadData(Object... objects) throws OseeDataStoreException {
+   public void loadData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
          dataStore.setLocator((String) objects[1]);
       }
@@ -172,7 +168,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
     */
    @Override
-   public void purge() throws OseeDataStoreException {
+   public void purge() throws OseeCoreException {
       dataStore.purge();
    }
 }

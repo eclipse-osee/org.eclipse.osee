@@ -57,7 +57,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.AbstractAttributeDataProvider#setValue(java.lang.String)
     */
    @Override
-   public boolean setValue(String value) {
+   public boolean setValue(String value) throws OseeCoreException {
       boolean response = false;
 
       if (this.value == value || (this.value != null && this.value.equals(value))) {
@@ -81,7 +81,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#loadData(java.lang.Object[])
     */
    @Override
-   public void loadData(Object... objects) throws OseeDataStoreException {
+   public void loadData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 0) {
          this.value = (String) objects[0];
       }
@@ -99,7 +99,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
     */
    @Override
-   public void purge() throws OseeDataStoreException {
+   public void purge() throws OseeCoreException {
       ArtifactPersistenceManager.purgeAttribute(getAttribute(), getAttribute().getAttrId());
    }
 }
