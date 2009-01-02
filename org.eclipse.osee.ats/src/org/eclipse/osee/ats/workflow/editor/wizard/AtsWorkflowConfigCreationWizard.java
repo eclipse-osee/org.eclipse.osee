@@ -89,11 +89,15 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          WorkPageDefinition cancelledPage =
                new WorkPageDefinition("Cancelled", namespace + ".Cancelled", AtsCancelledWorkPageDefinition.ID);
 
-         workflow.addPageTransition(endorsePage.getId(), implementPage.getId(), TransitionType.ToPageAsDefault);
-         workflow.addPageTransition(implementPage.getId(), endorsePage.getId(), TransitionType.ToPageAsReturn);
-         workflow.addPageTransition(cancelledPage.getId(), endorsePage.getId(), TransitionType.ToPageAsReturn);
-         workflow.addPageTransition(implementPage.getId(), completedPage.getId(), TransitionType.ToPageAsDefault);
-         workflow.addPageTransition(endorsePage.getId(), cancelledPage.getId(), TransitionType.ToPage);
+         workflow.addPageTransition(endorsePage.getPageName(), implementPage.getPageName(),
+               TransitionType.ToPageAsDefault);
+         workflow.addPageTransition(implementPage.getPageName(), endorsePage.getPageName(),
+               TransitionType.ToPageAsReturn);
+         workflow.addPageTransition(cancelledPage.getPageName(), endorsePage.getPageName(),
+               TransitionType.ToPageAsReturn);
+         workflow.addPageTransition(implementPage.getPageName(), completedPage.getPageName(),
+               TransitionType.ToPageAsDefault);
+         workflow.addPageTransition(endorsePage.getPageName(), cancelledPage.getPageName(), TransitionType.ToPage);
 
          List<Artifact> artifacts = new ArrayList<Artifact>();
          artifacts.add(endorsePage.toArtifact(WriteType.New));

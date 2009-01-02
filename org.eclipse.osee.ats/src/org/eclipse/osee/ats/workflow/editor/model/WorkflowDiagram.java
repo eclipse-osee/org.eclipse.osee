@@ -102,14 +102,12 @@ public class WorkflowDiagram extends ModelElement {
                         ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
                         ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
                         TransitionType.ToPageAsDefault);
-               }
-               if (transConn instanceof ReturnTransitionConnection) {
+               } else if (transConn instanceof ReturnTransitionConnection) {
                   workFlowDefinition.addPageTransition(
                         ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
                         ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
                         TransitionType.ToPageAsReturn);
-               }
-               if (transConn instanceof DefaultTransitionConnection) {
+               } else if (transConn instanceof TransitionConnection) {
                   workFlowDefinition.addPageTransition(
                         ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
                         ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
@@ -139,7 +137,7 @@ public class WorkflowDiagram extends ModelElement {
    }
 
    @Override
-   public Result validForSave() {
+   public Result validForSave() throws OseeCoreException {
 
       // Validate # Completed states
       int num = 0;
@@ -166,7 +164,13 @@ public class WorkflowDiagram extends ModelElement {
       num = 0;
       for (Shape shape : getChildren()) {
          if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
-            num += ((WorkPageShape) shape).isStartPage() ? 1 : 0;
+            if (((WorkPageShape) shape).isStartPage()) {
+               if (((WorkPageShape) shape).isCancelledState()) return new Result(
+                     "Cancelled state can not be start page");
+               if (((WorkPageShape) shape).isCompletedState()) return new Result(
+                     "Completed state can not be start page");
+               num++;
+            }
          }
       }
       if (num > 1 || num == 0) return new Result("Must have 1 start page; Currently " + num);
@@ -205,6 +209,7 @@ public class WorkflowDiagram extends ModelElement {
     */
    public boolean addChild(Shape s) {
       if (s != null && shapes.add(s)) {
+         s.setWorkflowDiagram(this);
          firePropertyChange(CHILD_ADDED_PROP, null, s);
          return true;
       }

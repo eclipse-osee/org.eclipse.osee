@@ -10,10 +10,13 @@ import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.SharedCursors;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.tools.SelectionTool;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.model.ModelElement;
 import org.eclipse.osee.ats.workflow.editor.parts.DiagramEditPart;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.events.MouseEvent;
 
 /**
@@ -31,21 +34,25 @@ public class ValidateDiagramTool extends SelectionTool {
    @Override
    public void mouseDown(MouseEvent e, EditPartViewer viewer) {
       super.mouseDown(e, viewer);
-      EditPart editPart = getTargetEditPart();
-      Object model = editPart.getModel();
-      if (editPart instanceof ScalableFreeformRootEditPart) {
-         EditPart ePart = ((ScalableFreeformRootEditPart) editPart).getContents();
-         if (ePart instanceof DiagramEditPart) {
-            model = ((DiagramEditPart) ePart).getModel();
+      try {
+         EditPart editPart = getTargetEditPart();
+         Object model = editPart.getModel();
+         if (editPart instanceof ScalableFreeformRootEditPart) {
+            EditPart ePart = ((ScalableFreeformRootEditPart) editPart).getContents();
+            if (ePart instanceof DiagramEditPart) {
+               model = ((DiagramEditPart) ePart).getModel();
+            }
          }
-      }
-      if (model instanceof ModelElement) {
-         Result result = ((ModelElement) model).validForSave();
-         if (result.isFalse()) {
-            AWorkbench.popup("Validate Error", model + "\n\n" + "Error: " + result.getText());
-         } else {
-            AWorkbench.popup("Validate Success", model + "\n\n" + "Valid");
+         if (model instanceof ModelElement) {
+            Result result = ((ModelElement) model).validForSave();
+            if (result.isFalse()) {
+               AWorkbench.popup("Validate Error", model + "\n\n" + "Error: " + result.getText());
+            } else {
+               AWorkbench.popup("Validate Success", model + "\n\n" + "Valid");
+            }
          }
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
 

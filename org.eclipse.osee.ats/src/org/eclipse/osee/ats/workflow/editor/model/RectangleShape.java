@@ -33,7 +33,7 @@ public class RectangleShape extends Shape {
     * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
     */
    @Override
-   public Result validForSave() {
+   public Result validForSave() throws OseeCoreException {
       return Result.TrueResult;
    }
 

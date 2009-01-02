@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.workflow.editor.model.Connection;
 import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.Shape;
+import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
 
 /**
  * A command to create a connection between two shapes. The command can be undone or redone.
@@ -93,8 +94,8 @@ public class ConnectionCreateCommand extends Command {
          connection = new DefaultTransitionConnection(source, target);
       } else if (clazz == ReturnTransitionConnection.class) {
          connection = new ReturnTransitionConnection(source, target);
-      } else if (clazz == Connection.class) {
-         connection = new Connection(source, target);
+      } else if (clazz == TransitionConnection.class) {
+         connection = new TransitionConnection(source, target);
       } else {
          throw new IllegalStateException("Unhandled connection type");
       }

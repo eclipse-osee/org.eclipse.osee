@@ -52,7 +52,7 @@ public abstract class ModelElement implements IPropertySource {
 
    public abstract Result doSave(SkynetTransaction transaction) throws OseeCoreException;
 
-   public abstract Result validForSave();
+   public abstract Result validForSave() throws OseeCoreException;
 
    /**
     * Attach a non-null PropertyChangeListener to this object.

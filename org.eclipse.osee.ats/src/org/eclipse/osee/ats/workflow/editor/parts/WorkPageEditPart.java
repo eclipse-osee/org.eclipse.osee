@@ -14,12 +14,14 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.requests.SelectionRequest;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 
 /**
  * @author Donald G. Dunne
@@ -28,6 +30,7 @@ public class WorkPageEditPart extends ShapeEditPart {
 
    private final WorkPageShape workPageShape;
    private RightAnchor returnAnchor;
+   private Label label;
 
    public WorkPageEditPart(WorkPageShape workPageShape) {
       this.workPageShape = workPageShape;
@@ -51,9 +54,16 @@ public class WorkPageEditPart extends ShapeEditPart {
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      f.add(new Label(workPageShape.getName()));
+      label = new Label(workPageShape.getName());
+      f.add(label);
       f.setToolTip(new Label(workPageShape.getToolTip()));
       return f;
+   }
+
+   @Override
+   protected void refreshVisuals() {
+      super.refreshVisuals();
+      label.setText(workPageShape.getName());
    }
 
    /* (non-Javadoc)
@@ -62,7 +72,10 @@ public class WorkPageEditPart extends ShapeEditPart {
    @Override
    public void performRequest(Request req) {
       super.performRequest(req);
-      (new EditAction()).run();
+      System.out.println(req);
+      if (req instanceof SelectionRequest) {
+         (new EditAction()).run();
+      }
    }
 
    /* (non-Javadoc)
@@ -78,6 +91,9 @@ public class WorkPageEditPart extends ShapeEditPart {
          } else {
             getFigure().setBackgroundColor(ColorConstants.green);
          }
+      }
+      if (WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName().equals(prop)) {
+         refreshVisuals();
       }
    }
 

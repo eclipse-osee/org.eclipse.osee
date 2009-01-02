@@ -31,9 +31,9 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.CompletedWorkPageShape;
-import org.eclipse.osee.ats.workflow.editor.model.Connection;
 import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
+import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesEditPartFactory;
@@ -169,6 +169,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
          }
          transaction.execute();
          getCommandStack().markSaveLocation();
+
       } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -288,7 +289,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
                      new DefaultTransitionConnection(pageShape, toPageShape);
                      //                  System.out.println("Default: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
                   } else {
-                     new Connection(pageShape, toPageShape);
+                     new TransitionConnection(pageShape, toPageShape);
                      //                  System.out.println("To: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
                   }
                }

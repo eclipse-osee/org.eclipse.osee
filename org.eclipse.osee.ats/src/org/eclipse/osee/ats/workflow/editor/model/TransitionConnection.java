@@ -52,7 +52,7 @@ public class TransitionConnection extends Connection {
     * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
     */
    @Override
-   public Result validForSave() {
+   public Result validForSave() throws OseeCoreException {
       System.err.println("Add Connection validations.");
       return Result.TrueResult;
    }

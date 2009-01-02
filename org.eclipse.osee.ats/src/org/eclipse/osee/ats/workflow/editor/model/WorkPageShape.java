@@ -119,7 +119,7 @@ public class WorkPageShape extends RectangleShape {
     * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
     */
    @Override
-   public Result validForSave() {
+   public Result validForSave() throws OseeCoreException {
       try {
          String pageName = (String) getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
          if (pageName == null || pageName.equals("")) return new Result(
@@ -164,7 +164,7 @@ public class WorkPageShape extends RectangleShape {
 
    @Override
    public String getName() {
-      return workPageDefinition.getPageName();
+      return (String) getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
    }
 
    @Override
@@ -174,11 +174,11 @@ public class WorkPageShape extends RectangleShape {
 
    @Override
    public String toString() {
-      return workPageDefinition.toString();
+      return getId();
    }
 
    public String getId() {
-      return workPageDefinition.getId();
+      return (String) getPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName());
    }
 
    /* (non-Javadoc)
@@ -209,10 +209,15 @@ public class WorkPageShape extends RectangleShape {
          initializePropertyValues();
          if (WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName().equals(propertyId)) {
             super.setPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), value);
+            firePropertyChange(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), null, value);
+            setPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+                  getWorkflowDiagram().getWorkFlowDefinition().getId() + "." + value);
          } else if (WorkItemAttributes.WORK_ID.getAttributeTypeName().equals(propertyId)) {
             super.setPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), value);
+            firePropertyChange(WorkItemAttributes.WORK_ID.getAttributeTypeName(), null, value);
          } else if (WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName().equals(propertyId)) {
             super.setPropertyValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), value);
+            firePropertyChange(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), null, value);
          } else if (START_PAGE.equals(propertyId)) {
             super.setPropertyValue(START_PAGE, value);
             firePropertyChange(START_PAGE, null, value);
