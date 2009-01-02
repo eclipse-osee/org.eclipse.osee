@@ -1,0 +1,41 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>Work Rule Definition Artifact</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+<body>
+   <h1>Work Rule Definition Artifact</h1>
+		<h2>Purpose</h2>
+		The Work Rule Definition artifact specifies a single rule that can be applied to workflow configurations
+		or to <a href="TeamDefinition.html">Team Definition</a> artifacts.  These rules are normally backed by
+		java code that performs certain tasks like automatically creating new reviews, assigning 
+		workflows to specific users or specifying states as allowing create/commit of branches.
+		
+		<h2>How to do it - Artifact Editor</h2>
+		On the Common branch in the Artifact Editor, Expand "Action Tracking System" expand
+		"Work Rule" and double-click any existing Work Rule.  Edit the following attributes and relations 
+		accordingly.
+		<br><br>
+      <li>Attributes</li>
+      <ul>
+         <li>Name:[unique name matching Work Id below]</li>
+         <li>osee.wi.Work Id:[unique workflow namespace].[Work Page Name] as below.</li>
+         <li>osee.wi.Work Description:Simple description explaining what rule does.</li>
+         <li>osee.wi.Work Data:Key/Value pares of information used by rule.</li>
+      </ul>
+      <li>Relations</li>
+      <ul>
+         <li>Work Item.Parent: Relate to any Team Definition or Work Page Definition artifacts as appropriate.</li>
+      </ul>
+</body>
+</html>

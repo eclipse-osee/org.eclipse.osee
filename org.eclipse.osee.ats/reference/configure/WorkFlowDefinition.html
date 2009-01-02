@@ -9,44 +9,26 @@
      Boeing - initial API and implementation
 -->
 	<head>
-		<title>Work Flow Definition</title>
+		<title>Work Flow Definition Artifact</title>
       <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
 	</head>
 
 <body>
-   <h1>Create/Modify Work Flow Definition</h1>
+   <h1>Work Flow Definition Artifact</h1>
 		<h2>Purpose</h2>
 		The Work Flow Definition artifact specifies the workflow that a team moves through to complete
 		an Action.  This artifact specifies the states, their transitions and the start state of the
 		workflow.  Creation/Editing of this artifact can either be done through the Artifact Editor
 		or using the Workflow Configuration Editor (OSEE 0.6.0 Release and beyond). 
-		<h2>How to do it - Configuration Editor</h2>
-      <ul>
-         <li>File -> New -> Other -> OSEE ATS -> Workflow Configuration; Enter unique namespace for
-         this workflow configuration. (eg: org.<company>.code).  This creates a simple workflow
-         to use as a starting place.</li>
-         <li>Add necessary states to diagram to represent workflow.  Note: Only one state
-         is the entry point and the workflow must end at the "Completed" state.  The "Cancelled"
-         state is optional, but should be used in most cases.</li>
-         <li>For each state, a single "Default Transition" must be specified.  This will
-         be the default state specified as the "next" state in the workflow.  Optional transitions
-         to other states can be specified by the "Transition" arrow.  The user will have the 
-         option of selecting one of these states instead.</li>
-         <li>The "Return Transition" can be specified for valid jumps "back" to previous states.
-         (eg: The user may need to transition back to the "Analyze" state from the "Authorize"
-         state if authorization failed and more analysis is needed.</li>
-         <li>Select a single state and set it's "Start State" property to "true" for the state
-         specified to start the workflow</li>
-         <li>Select Save to persist the changes and link the created "Work Flow Definition" artifact
-         to its corresponding "Team Definition" artifact.</li>
-      </ul>
+		
+		<h2>How to do it - <a href="WorkflowConfigurationEditor.html">Configuration Editor</a></h2>
       
 		<h2>How to do it - Artifact Editor</h2>
 		On the Common branch in the Artifact Editor, Expand "Action Tracking System" and right-click
 		on "Work Flows", select New Child -> Work Flow Definition.  Enter a unique namespace name
 		for this workflow (eg: org.<company>.code).  In the Artifact Editor, add and set the attributes
 		and relations as below.
-		
+		<br><br>
       <li>Attributes</li>
       <ul>
          <li>Name:[unique namespace, usually the same as the Work Id specified below]</li>

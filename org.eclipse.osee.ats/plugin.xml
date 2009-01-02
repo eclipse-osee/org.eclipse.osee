@@ -52,11 +52,14 @@
       </extension>
       <extension
             point="org.eclipse.help.contexts">
-         <contexts file="reference/contexts.xml"/>
+         <contexts file="reference/configure/contexts.xml"/>
          <contexts file="reference/newActionWizard/contexts.xml"/>
          <contexts file="reference/decision_review_workflow/contexts.xml"/>
          <contexts
                file="reference/peer_to_peer_review_workflow/contexts.xml">
+         </contexts>
+         <contexts
+               file="reference/contexts.xml">
          </contexts>
       </extension> 
       <extension

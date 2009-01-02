@@ -33,12 +33,20 @@
 	<topic label="ATS Configuration">
     <topic href="reference/configure/configure_ats_for_tracking.html" label="Configure ATS for Change Tracking">
     </topic>
-    <topic href="reference/configure/create_new_team_definition.html" label="Create New Team Definition">
+    <topic href="reference/configure/TeamDefinition.html" label="Create New Team Definition">
     </topic>
-    <topic href="reference/configure/create_new_actionable_items.html" label="Create New Actionable Item(s)">
+    <topic href="reference/configure/ActionableItems.html" label="Create New Actionable Item(s)">
     </topic>
-		<topic href="reference/configure/create_workflow_configuration.html" label="Create Workflow Configuration">
-     <topic href="reference/configure/create_workflowdefintion_artifact.html" label="Work Flow Definition">
+		<topic href="reference/configure/WorkflowConfiguration.html" label="Create Workflow Configuration">
+     <topic href="reference/configure/WorkflowConfigurationEditor.html" label="Workflow Configuration Editor">
+     </topic>
+     <topic href="reference/configure/WorkFlowDefinition.html" label="Work Flow Definition">
+     </topic>
+     <topic href="reference/configure/WorkPageDefinition.html" label="Work Page Definition">
+     </topic>
+     <topic href="reference/configure/WorkWidgetDefinition.html" label="Work Widget Definition">
+     </topic>
+     <topic href="reference/configure/WorkRuleDefinition.html" label="Work Rule Definition">
      </topic>
   </topic>
   <topic href="reference/configure/configure_ats_for_help.html" label="Configure ATS for Help">

@@ -1,0 +1,51 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>Work Page Definition Artifact</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+<body>
+   <h1>Work Page Definition Artifact</h1>
+		<h2>Purpose</h2>
+		The Work Page Definition artifact configures a single state of the <a href="WorkFlowDefinition.html>
+		Workflow Definition</a> for a <a href="WorkflowConfiguration.html">Workflow Configuration</a>. 
+		
+		<h2>How to do it - <a href="WorkflowConfigurationEditor.html">ATS Workflow Configuration Editor</a></h2>
+		The ATS Workflow Configuration Editor will allow the editing of the three main fields of a
+		Work Page Definition Artifact.  The remaining fields, and the relations to <a href="WorkRuleDefinition.html">
+		Work Rules</a> and <a href="WorkWidgetDefinition.html">Work Widgets</a> must be done through the
+		Artifact Editor.
+      
+		<h2>How to do it - Artifact Editor</h2>
+		Work Page Definitions are either stored as children of their Work Flow Definition artifact or 
+		under the "Work Pages" folder.
+		<br>
+		On the Common branch in the Artifact Editor, Expand "Action Tracking System" and right-click
+		on "Work Page", select New Child -> Work Page Definition, or double-click an existing Work Page
+		Definition artifact.  Edit the following attributes and relations accordingly.
+		<br><br>
+      <li>Attributes</li>
+      <ul>
+         <li>Name:[unique name matching Work Id below]</li>
+         <li>osee.wi.Work Id:[unique workflow namespace].[Work Page Name] as below.</li>
+         <li>osee.wi.Parent Work Id:[Work Id of Parent Work Page Definition] - this will allow
+         this workflow to inherit it's widgets and rules from another workflow.  This
+         can not be used with other attributes below</li>
+         <li>osee.wi.Work Page Name:State Name that the user will see.  This can not have any 
+         special characters including . in the name.</li>
+      </ul>
+      <li>Relations</li>
+      <ul>
+         <li>Work Item.Child: Relate to any Rules or Widgets that this state is made of.</li>
+      </ul>
+</body>
+</html>

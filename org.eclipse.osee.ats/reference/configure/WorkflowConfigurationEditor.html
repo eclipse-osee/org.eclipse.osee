@@ -1,0 +1,74 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>ATS Workflow Configuration Editor</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+	<body>
+		<h1>ATS Workflow Configuration Editor</h1>
+		<br/>
+		<img border="1" src="configEditor.jpg"/>
+		<h2>Purpose</h2>
+		Give a graphical method to creating / updating ATS Workflow Configurations.  This editor
+		also gives easy access, through double-click" to edit the "Work Page Definition" artifact
+		that represent the selected state.
+		<h2>How to do it</h2>
+		<ul>
+		   <li>Open editor for a specific workflow:</li>
+         <ul>
+            <li>Existing Work Flow Definition Artifact: From Common branch in Artifact Explorer, expand Action Tracking System -> Work Flows
+            and double-click the workflow you wish to edit.</li>
+            <li>From ATS Workflow Editor: Select workflow icon at top right and associated workflow
+            will be opened.</li>
+            <li>New Workflow Configuration: File -> New -> Other -> OSEE ATS -> Workflow Configuration;
+             Enter unique namespace for this workflow configuration. (eg: org.<company>.code).  This 
+             creates a simple workflow to use as a starting place.</li>
+         </ul>
+         
+		   <li>Create states:</li>
+         <ul>
+            <li>Add necessary states to diagram to represent workflow.  Note: Only one state
+            is the entry point and the workflow must end at the "Completed" state.  The "Cancelled"
+            state is optional, but should be used in most cases.</li>
+         </ul>
+         
+		   <li>Editing Rules, Widgets and other State attributes:  Double-click on any state to open
+		   the Artifact in the Artifact Editor.</li>
+
+ 		   <li>Create transitions:</li>
+         <ul>
+	         <li>For each state, a single "Default Transition" must be specified.  This will
+	         be the default state specified as the "next" state in the workflow.  Optional transitions
+	         to other states can be specified by the "Transition" arrow.  The user will have the 
+	         option of selecting one of these states instead.</li>
+	         <li>The "Return Transition" can be specified for valid jumps "back" to previous states.
+	         (eg: The user may need to transition back to the "Analyze" state from the "Authorize"
+	         state if authorization failed and more analysis is needed.</li>
+         </ul>
+         <li>Select a single state and set it's "Start Page" property to "Yes" for the state
+         specified to start the workflow.  Only one state can be the start state.</li>
+ 		   <li>Save and test the new workflow configuration:</li>
+            <ul>
+               <li>Select Save to persist the changes.  Validation will be automatically run (see below)</li>
+               <li><a href="TeamDefinition.html">Configure the Team Definition</a> to use the new workflow</li>
+               <li>Create a new Action and test the created workflow</li>
+            </ul>
+         <li>   
+      </ul>
+      <h2>Workflow Configuration - Validation</h2>
+		Validation of a workflow is provided by selecting the check icon and selecting a state,
+		transition or the entire workflow (selecting the white background).  This will popup
+		whatever error occurs or a "Validation Success" if all is ok.<br><br>
+		Note: This same validation will occur during save and will fail if all problems are not resolved.
+		<br>
+</body>
+</html>

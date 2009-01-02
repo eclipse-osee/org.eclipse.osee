@@ -1,0 +1,11 @@
+<contexts>
+ <context id="atsConfigureWorkflow">
+    <description>Configure Workflow for use by Team Definition.</description>
+    <topic href="reference/configure/WorkflowConfigurationEditor.html" label="Workflow Configuration Editor"/>
+    <topic href="reference/configure/WorkflowConfiguration.html" label="Workflow Configuration"/>
+    <topic href="reference/configure/WorkFlowDefinition.html" label="Work Flow Definition"/>
+    <topic href="reference/configure/WorkPageDefinition.html" label="Work Page Definition"/>
+    <topic href="reference/configure/WorkWidgetDefinition.html" label="Work Widget Definition"/>
+    <topic href="reference/configure/WorkRuleDefinition.html" label="Work Rule Definition"/>
+ </context>
+</contexts>

@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -291,8 +290,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    private static void relateIfNotRelated(Artifact parent, Artifact child) throws OseeCoreException {
-      if (!parent.getRelatedArtifacts(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, Artifact.class).contains(
-            child)) {
+      if (!parent.getChildren().contains(child) && child.getParent() == null) {
          parent.addChild(child);
       }
    }

@@ -116,6 +116,8 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       ContextMenuProvider cmProvider = new AtsWorkflowConfigEditorContextMenuProvider(viewer, getActionRegistry());
       viewer.setContextMenu(cmProvider);
       getSite().registerContextMenu(cmProvider, viewer);
+      AtsPlugin.getInstance().setHelp(viewer.getControl(), "atsConfigureWorkflow");
+
    }
 
    /* (non-Javadoc)
@@ -274,10 +276,10 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
                   pageShape.setLocation(new Point(250, 300));
                } else if (pageDef.isCompletePage()) {
                   pageShape = new CompletedWorkPageShape(pageDef);
-                  pageShape.setLocation(new Point(50, yLoc += 100));
+                  pageShape.setLocation(new Point(50, yLoc += 90));
                } else {
                   pageShape = new WorkPageShape(pageDef);
-                  pageShape.setLocation(new Point(50, yLoc += 100));
+                  pageShape.setLocation(new Point(50, yLoc += 90));
                }
                pageShape.setStartPage(startPage.equals(pageShape.getId()) || pageShape.getId().endsWith(startPage));
                diagram.addChild(pageShape);
