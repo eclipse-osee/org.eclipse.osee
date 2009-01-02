@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -28,12 +26,9 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
@@ -52,7 +47,6 @@ public class NewActionJob extends Job {
    private ActionArtifact actionArt;
    private final Set<ActionableItemArtifact> actionableItems;
    private final Collection<String> userComms;
-   private static int ttNum;
    private final NewActionWizard wizard;
 
    public NewActionJob(String title, String desc, ChangeType changeType, PriorityType priority, Date needByDate, boolean validationRequired, Collection<String> userComms, Set<ActionableItemArtifact> actionableItems, NewActionWizard wizard) {
@@ -68,10 +62,11 @@ public class NewActionJob extends Job {
       this.wizard = wizard;
    }
 
+   @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
+         if (title.equals("tt")) title += " " + AtsLib.getAtsDeveloperIncrementingNum();
          actionArt =
                createAction(monitor, title, desc, changeType, priority, userComms, validationRequired, needByDate,
                      actionableItems, transaction);
@@ -92,29 +87,6 @@ public class NewActionJob extends Job {
          monitor.done();
       }
       return Status.OK_STATUS;
-   }
-
-   /**
-    * The development of ATS requires quite a few Actions to be created. To facilitate this, getTTNum will retrieve a
-    * persistent number from the filesystem so each action has a different name. By entering "tt" in the title, new
-    * action wizard will be prepopulated with selections and the action name will be created as "tt <number in
-    * atsNumFilename>".
-    * 
-    * @return number
-    * @throws IOException
-    */
-   public static int getAtsDeveloperTTNum() throws IOException {
-      File numFile = OseeData.getFile("atsDevNum.txt");
-      if (numFile.exists() && ttNum == 0) {
-         try {
-            ttNum = new Integer(AFile.readFile(numFile).replaceAll("\\s", ""));
-         } catch (NumberFormatException ex) {
-         } catch (NullPointerException ex) {
-         }
-      }
-      ttNum++;
-      Lib.writeStringToFile(String.valueOf(ttNum), numFile);
-      return ttNum;
    }
 
    public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {

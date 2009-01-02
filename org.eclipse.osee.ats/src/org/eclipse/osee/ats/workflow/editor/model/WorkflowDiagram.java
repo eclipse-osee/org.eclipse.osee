@@ -182,9 +182,19 @@ public class WorkflowDiagram extends ModelElement {
             String name =
                   (String) ((WorkPageShape) shape).getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());
             if (stateNames.contains(name)) {
-               return new Result("Workflow can not have more than one state of same name. Multiple of " + name);
+               return new Result(
+                     "Workflow can not have more than one state of same name.  Multiples found of name " + name);
             }
             stateNames.add(name);
+         }
+      }
+
+      // Validate transitions (each state must have a transition to or from
+      for (Shape shape : getChildren()) {
+         if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
+            if (shape.getSourceConnections().size() == 0 && shape.getTargetConnections().size() == 0) {
+               return new Result("States must have at least one transition to or from.  None found for " + shape);
+            }
          }
       }
 

@@ -11,10 +11,13 @@
 
 package org.eclipse.osee.ats.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
@@ -33,6 +36,9 @@ import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -40,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -60,6 +67,8 @@ import org.eclipse.ui.dialogs.ListDialog;
  */
 public class AtsLib implements IAtsLib {
 
+   private static int atsDevNum;
+
    public AtsLib() {
       super();
    }
@@ -73,6 +82,34 @@ public class AtsLib implements IAtsLib {
       composite.setLayout(layout);
 
       return composite;
+   }
+
+   /**
+    * The development of ATS requires quite a few Actions to be created. To facilitate this, getTTNum will retrieve a
+    * persistent number from the filesystem so each action has a different name. By entering "tt" in the title, new
+    * action wizard will be prepopulated with selections and the action name will be created as "tt <number in
+    * atsNumFilename>".
+    * 
+    * @return number
+    * @throws IOException
+    */
+   public static int getAtsDeveloperIncrementingNum() {
+      try {
+         File numFile = OseeData.getFile("atsDevNum.txt");
+         if (numFile.exists() && atsDevNum == 0) {
+            try {
+               atsDevNum = new Integer(AFile.readFile(numFile).replaceAll("\\s", ""));
+            } catch (NumberFormatException ex) {
+            } catch (NullPointerException ex) {
+            }
+         }
+         atsDevNum++;
+         Lib.writeStringToFile(String.valueOf(atsDevNum), numFile);
+         return atsDevNum;
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return 99;
    }
 
    public static ToolBar createCommonToolBar(Composite parent) {

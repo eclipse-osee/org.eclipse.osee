@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.workflow.editor.model;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -41,12 +42,13 @@ public class WorkPageShape extends RectangleShape {
                WorkItemAttributes.WORK_ID.getAttributeTypeName(),
                WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName()};
    public static String START_PAGE = "Start Page";
+   private Artifact artifact;
    public static enum StartPageEnum {
       Yes, No
    };
 
    public WorkPageShape() {
-      this(new WorkPageDefinition("New", "NEW", null));
+      this(new WorkPageDefinition("New" + AtsLib.getAtsDeveloperIncrementingNum(), "NEW", null));
    }
 
    /* (non-Javadoc)
@@ -56,7 +58,9 @@ public class WorkPageShape extends RectangleShape {
    public void setWorkflowDiagram(WorkflowDiagram workflowDiagram) {
       super.setWorkflowDiagram(workflowDiagram);
       if (getId().equals("NEW")) {
-         workPageDefinition.setId(workflowDiagram.getWorkFlowDefinition().getId() + "." + getWorkPageDefinition().getPageName());
+         setPropertyValue(
+               WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+               workflowDiagram.getWorkFlowDefinition().getId() + "." + getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName()));
       }
    }
 
@@ -102,10 +106,10 @@ public class WorkPageShape extends RectangleShape {
    }
 
    public Artifact getArtifact() throws OseeCoreException {
-      if (workPageDefinition != null) {
-         return WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workPageDefinition.getId());
+      if (artifact == null && workPageDefinition != null) {
+         artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workPageDefinition.getId());
       }
-      return null;
+      return artifact;
    }
 
    /**
