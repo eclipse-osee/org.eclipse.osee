@@ -46,6 +46,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    protected Map<String, Map<TransitionType, Set<String>>> inheritedPageIdToPageIdsViaTransitionType;
    // Contains local and inherited pageNameToPageIds
    protected Map<String, String> pageNameToPageId;
+   protected List<WorkPageDefinition> pages = new ArrayList<WorkPageDefinition>();
    protected String startPageId;
    protected String resolvedStartPageId;
 
@@ -135,6 +136,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
          for (String pageNameOrId : inheritedPageIdToPageIdsViaTransitionType.keySet()) {
             WorkPageDefinition workPageDefinition =
                   (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageNameOrId));
+            pages.add(workPageDefinition);
             pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
             for (Map<TransitionType, Set<String>> transTypeToPageIds : inheritedPageIdToPageIdsViaTransitionType.values()) {
                for (TransitionType transType : transTypeToPageIds.keySet()) {
@@ -147,6 +149,13 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
             }
          }
       }
+   }
+
+   /**
+    * @return the pages
+    */
+   public List<WorkPageDefinition> getPages() {
+      return pages;
    }
 
    /**

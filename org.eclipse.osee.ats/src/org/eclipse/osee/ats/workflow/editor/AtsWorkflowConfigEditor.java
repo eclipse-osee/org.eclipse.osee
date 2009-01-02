@@ -261,7 +261,13 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             int yLoc = 0;
             String startPage = workflowDef.getStartPageId();
             // Create states
-            for (WorkPageDefinition pageDef : workflowDef.getPagesOrdered()) {
+            List<WorkPageDefinition> pages = workflowDef.getPagesOrdered();
+            for (WorkPageDefinition page : workflowDef.getPages()) {
+               if (!pages.contains(page)) {
+                  pages.add(page);
+               }
+            }
+            for (WorkPageDefinition pageDef : pages) {
                WorkPageShape pageShape = null;
                if (pageDef.isCancelledPage()) {
                   pageShape = new CancelledWorkPageShape(pageDef);

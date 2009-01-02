@@ -67,6 +67,7 @@ public class WorkflowDiagram extends ModelElement {
                WorkPageShape workPageShape = (WorkPageShape) shape;
                if (workPageShape.getArtifact() != null) {
                   workPageShape.getArtifact().delete(transaction);
+                  workFlowDefinition.removeWorkItem(((WorkPageShape) shape).getId());
                }
             }
          }
