@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
@@ -41,6 +40,7 @@ public class WorkflowDiagram extends ModelElement {
    /** Property ID to use when a child is removed from this diagram. */
    public static final String CHILD_REMOVED_PROP = "WorkflowDiagram.ChildRemoved";
    private final List<Shape> shapes = new ArrayList<Shape>();
+   private final List<Shape> deletedShapes = new ArrayList<Shape>();
    private final WorkFlowDefinition workFlowDefinition;
 
    public WorkflowDiagram(WorkFlowDefinition workFlowDefinition) {
@@ -62,20 +62,13 @@ public class WorkflowDiagram extends ModelElement {
          }
 
          // Remove all states that do not exist anymore
-         List<WorkItemDefinition> wids = workFlowDefinition.getWorkItems(false);
-         List<WorkItemDefinition> widsForDelete = workFlowDefinition.getWorkItems(false);
-         for (WorkPageShape workPageShape : workPageShapes) {
-            for (WorkItemDefinition wid : wids) {
-               if (wid.getId().equals(workPageShape.getId())) {
-                  // Remove wid from delete list
-                  widsForDelete.remove(wid);
-                  break;
+         for (Shape shape : deletedShapes) {
+            if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
+               WorkPageShape workPageShape = (WorkPageShape) shape;
+               if (workPageShape.getArtifact() != null) {
+                  workPageShape.getArtifact().delete(transaction);
                }
             }
-         }
-         for (WorkItemDefinition wid : widsForDelete) {
-            Artifact art = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(wid.getId());
-            art.delete();
          }
 
          // Save new states and modifications to states
@@ -115,15 +108,20 @@ public class WorkflowDiagram extends ModelElement {
                }
             }
          }
+         workFlowDefinition.loadPageData(true);
+
          Artifact artifact = workFlowDefinition.toArtifact(WriteType.Update);
+         AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
          artifact.persistAttributes(transaction);
+
+         WorkItemDefinitionFactory.deCache(workFlowDefinition);
 
          // Validate saved workflows and all corresponding workItemDefinitions
          // prior to completion of save
          result = AtsWorkDefinitions.validateWorkItemDefinition(workFlowDefinition);
          if (result.isFalse()) return result;
          for (Shape shape : getChildren()) {
-            if (shape instanceof WorkPageShape) {
+            if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
                WorkPageDefinition workPageDefinition = ((WorkPageShape) shape).getWorkPageDefinition();
                result = AtsWorkDefinitions.validateWorkItemDefinition(workPageDefinition);
                if (result.isFalse()) return result;
@@ -219,6 +217,7 @@ public class WorkflowDiagram extends ModelElement {
     */
    public boolean addChild(Shape s) {
       if (s != null && shapes.add(s)) {
+         deletedShapes.remove(s);
          s.setWorkflowDiagram(this);
          firePropertyChange(CHILD_ADDED_PROP, null, s);
          return true;
@@ -256,6 +255,7 @@ public class WorkflowDiagram extends ModelElement {
     */
    public boolean removeChild(Shape s) {
       if (s != null && shapes.remove(s)) {
+         deletedShapes.add(s);
          firePropertyChange(CHILD_REMOVED_PROP, null, s);
          return true;
       }

@@ -261,7 +261,22 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       // Relate if not already related
       if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent, Artifact.class).size() == 0) {
          if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
-            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(transaction), art);
+            // Add to workflow artifact if can
+            WorkPageDefinition workPageDefinition = new WorkPageDefinition(art);
+            Artifact parentArt = null;
+            WorkFlowDefinition workFlowDefinition = workPageDefinition.getWorkFlowDefinitionById();
+            if (workFlowDefinition != null) {
+               Artifact workflowArt =
+                     WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workFlowDefinition.getId());
+               if (workflowArt != null) {
+                  parentArt = workflowArt;
+               }
+            }
+            // Else, add to work pages folder
+            if (parentArt == null) {
+               parentArt = AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(transaction);
+            }
+            relateIfNotRelated(parentArt, art);
          }
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
             relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(transaction), art);

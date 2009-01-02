@@ -43,6 +43,21 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
       return getWorkItemDefinition(ruleId) != null;
    }
 
+   /**
+    * Returns work flow definition with the assumption that WorkFlowDefinition workId = pageWorkId minus pageName
+    * 
+    * @return WorkFlowDefinition
+    * @throws OseeCoreException
+    */
+   public WorkFlowDefinition getWorkFlowDefinitionById() throws OseeCoreException {
+      String id = getId().replace("." + pageName, "");
+      WorkItemDefinition workItemDefinition = WorkItemDefinitionFactory.getWorkItemDefinition(id);
+      if (workItemDefinition instanceof WorkFlowDefinition) {
+         return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id);
+      }
+      return null;
+   }
+
    @Override
    public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact art = super.toArtifact(writeType);

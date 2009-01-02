@@ -39,6 +39,11 @@ import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesEditPartFactory;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesTreeEditPartFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -61,7 +66,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * 
  * @author Donald G. Dunne
  */
-public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
+public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette implements IFrameworkTransactionEventListener {
 
    /** This is the root of the editor's model. */
    private WorkflowDiagram diagram;
@@ -72,6 +77,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
    /** Create a new ShapesEditor instance. This is called by the Workspace. */
    public AtsWorkflowConfigEditor() {
       setEditDomain(new DefaultEditDomain(this));
+      OseeEventManager.addListener(this);
    }
 
    public static void editWorkflow(final WorkFlowDefinition workflow) {
@@ -168,6 +174,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
             return;
          }
          transaction.execute();
+         diagram.getWorkFlowDefinition().loadPageData(true);
          getCommandStack().markSaveLocation();
 
       } catch (OseeCoreException ex) {
@@ -392,6 +399,35 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette {
          id = ActionFactory.DELETE.getId();
          bars.setGlobalActionHandler(id, registry.getAction(id));
       }
+   }
+
+   public void closeEditor() {
+      final IEditorPart editor = this;
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            AWorkbench.getActivePage().closeEditor(editor, false);
+         }
+      });
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      for (Artifact delArt : transData.cacheDeletedArtifacts) {
+         if (delArt.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            if (delArt.getInternalAttributeValue("Name").equals(getPartName())) {
+               closeEditor();
+            }
+         }
+      }
+      System.out.println("Add refresh of editor if workflow mod");
    }
 
 }

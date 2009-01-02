@@ -34,6 +34,11 @@ public class WorkItemDefinitionFactory {
       itemIdToWidArtifact = null;
    }
 
+   public static void deCache(WorkItemDefinition workItemDefinition) {
+      itemIdToDefinition.remove(workItemDefinition.getId());
+      itemIdToWidArtifact.remove(workItemDefinition.getId());
+   }
+
    public synchronized static void loadDefinitions() throws OseeCoreException {
       if (itemIdToDefinition == null) {
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loading Work Item Definitions");

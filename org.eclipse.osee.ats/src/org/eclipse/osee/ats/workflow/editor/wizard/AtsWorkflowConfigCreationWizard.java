@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsEndorseWorkPageDefinition;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -67,9 +68,13 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
    public boolean performFinish() {
       final String namespace = page1.getNamespace();
       try {
-         if (WorkItemDefinitionFactory.getWorkItemDefinition(namespace) != null) {
-            AWorkbench.popup("ERROR", "Namespace already used, choose a unique namespace.");
-            return false;
+         try {
+            if (WorkItemDefinitionFactory.getWorkItemDefinition(namespace) != null) {
+               AWorkbench.popup("ERROR", "Namespace already used, choose a unique namespace.");
+               return false;
+            }
+         } catch (OseeCoreException ex) {
+            // do nothing
          }
 
          WorkFlowDefinition workflow = new WorkFlowDefinition(namespace, namespace, null);

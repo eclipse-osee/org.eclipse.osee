@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -49,6 +50,15 @@ public class WorkPageShape extends RectangleShape {
 
    public WorkPageShape() {
       this(new WorkPageDefinition("New" + AtsLib.getAtsDeveloperIncrementingNum(), "NEW", null));
+   }
+
+   public WorkPageShape(WorkPageDefinition workPageDefinition) {
+      this.workPageDefinition = workPageDefinition;
+      try {
+         artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workPageDefinition.getId());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    /* (non-Javadoc)
@@ -106,9 +116,6 @@ public class WorkPageShape extends RectangleShape {
    }
 
    public Artifact getArtifact() throws OseeCoreException {
-      if (artifact == null && workPageDefinition != null) {
-         artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workPageDefinition.getId());
-      }
       return artifact;
    }
 
@@ -140,10 +147,6 @@ public class WorkPageShape extends RectangleShape {
          return new Result("Exception in validation " + ex.getLocalizedMessage());
       }
       return Result.TrueResult;
-   }
-
-   public WorkPageShape(WorkPageDefinition workPageDefinition) {
-      this.workPageDefinition = workPageDefinition;
    }
 
    public boolean isInstanceof(String workPageDefinitionId) throws OseeCoreException {
@@ -244,14 +247,22 @@ public class WorkPageShape extends RectangleShape {
       workPageDefinition.setPageName(name);
       workPageDefinition.setId(workId);
       workPageDefinition.setParentId(parentWorkId);
-      Artifact artifact = workPageDefinition.toArtifact(WriteType.Update);
+      Artifact artifact = getArtifact();
       if (artifact == null) {
          artifact = workPageDefinition.toArtifact(WriteType.New);
       } else {
-         artifact = workPageDefinition.toArtifact(WriteType.Update);
+         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), name);
+         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), workId);
+         if (parentWorkId == null || parentWorkId.equals("")) {
+            artifact.deleteSoleAttribute(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName());
+         } else {
+            artifact.setSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), parentWorkId);
+         }
       }
+      artifact.setDescriptiveName(workId);
+      AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
+      WorkItemDefinitionFactory.deCache(workPageDefinition);
       artifact.persistAttributesAndRelations(transaction);
       return Result.TrueResult;
    }
-
 }
