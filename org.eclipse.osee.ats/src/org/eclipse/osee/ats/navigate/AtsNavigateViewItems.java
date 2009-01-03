@@ -32,8 +32,6 @@ import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.util.DoesNotWorkItem;
-import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
-import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
@@ -64,13 +62,10 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups.GroupType;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.osgi.framework.Bundle;
 
 /**
@@ -98,20 +93,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       try {
          User user = UserManager.getUser();
 
-         items.add(new XNavigateItem(null, "ATS Config Workflow - Team Workflow") {
-
-            /* (non-Javadoc)
-             * @see org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem#run(org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption[])
-             */
-            @Override
-            public void run(TableLoadOption... tableLoadOptions) throws Exception {
-               super.run(tableLoadOptions);
-               WorkFlowDefinition wid =
-                     (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(TeamWorkflowDefinition.ID);
-               AtsWorkflowConfigEditor.editWorkflow(wid);
-            }
-
-         });
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
