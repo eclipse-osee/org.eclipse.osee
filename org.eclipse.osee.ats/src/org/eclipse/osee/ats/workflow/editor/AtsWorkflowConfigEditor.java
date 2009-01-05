@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesEditPartFactory;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesTreeEditPartFactory;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -261,7 +262,10 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             setPartName(workflowDef.getName());
             diagram = new WorkflowDiagram(workflowDef);
             int yLoc = 0;
-            String startPage = workflowDef.getStartPageId();
+            WorkPageDefinition startPage = workflowDef.getStartPage();
+            if (startPage == null || startPage.equals("")) {
+               throw new OseeArgumentException("StartPage null for workflow " + workflowDef);
+            }
             // Create states
             List<WorkPageDefinition> pages = workflowDef.getPagesOrdered();
             for (WorkPageDefinition page : workflowDef.getPages()) {
@@ -281,7 +285,8 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
                   pageShape = new WorkPageShape(pageDef);
                   pageShape.setLocation(new Point(50, yLoc += 90));
                }
-               pageShape.setStartPage(startPage.equals(pageShape.getId()) || pageShape.getId().endsWith(startPage));
+               pageShape.setStartPage(startPage.getId().equals(pageShape.getId()) || pageShape.getId().endsWith(
+                     startPage.getId()));
                diagram.addChild(pageShape);
             }
 
