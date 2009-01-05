@@ -6,6 +6,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.core.commands.Command;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -23,6 +24,8 @@ import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 
 /**
  * @author Ryan D. Brooks
@@ -33,12 +36,14 @@ public class OpenWithMenuListener implements MenuListener {
    private Menu parentMenu;
    private Viewer viewer;
    private IRebuildMenuListener rebuildMenuListener;
+   private ICommandService commandService;
 
    public OpenWithMenuListener(Menu parentMenu, final Viewer viewer, IRebuildMenuListener rebuildMenuListener) {
       super();
       this.parentMenu = parentMenu;
       this.viewer = viewer;
       this.rebuildMenuListener = rebuildMenuListener;
+      this.commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    /* (non-Javadoc)
@@ -103,10 +108,13 @@ public class OpenWithMenuListener implements MenuListener {
                //               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
             }
 
-            MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
-            menuItem.setText(renderer.getName());
-            menuItem.setImage(image);
-            menuItem.addSelectionListener(new OpenWithSelectionListener(renderer, viewer, false));
+            Command command = commandService.getCommand(renderer.getCommandId());
+            if (command != null && command.isEnabled()) {
+               MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
+               menuItem.setText(renderer.getName());
+               menuItem.setImage(image);
+               menuItem.addSelectionListener(new OpenWithSelectionListener(renderer, viewer, false));
+            }
          }
 
       } catch (Exception ex) {

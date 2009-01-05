@@ -8,6 +8,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
@@ -32,5 +33,13 @@ public class WordEditorHandler extends AbstractEditorHandler {
          }
       }
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler#getPermissionLevel()
+    */
+   @Override
+   protected PermissionEnum getPermissionLevel() {
+      return PermissionEnum.WRITE;
    }
 }

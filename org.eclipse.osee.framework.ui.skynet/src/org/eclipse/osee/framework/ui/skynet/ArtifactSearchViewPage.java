@@ -332,7 +332,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          public boolean isEnabledWithException() throws OseeCoreException {
             boolean isEnabled = true;
             List<Artifact> artifacts = getSelectedArtifacts(viewer);
-            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
             return isEnabled;
          }
       });
@@ -365,7 +365,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          public boolean isEnabledWithException() throws OseeCoreException {
             boolean isEnabled = true;
             List<Artifact> artifacts = getSelectedArtifacts(viewer);
-            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
             return isEnabled;
          }
       });

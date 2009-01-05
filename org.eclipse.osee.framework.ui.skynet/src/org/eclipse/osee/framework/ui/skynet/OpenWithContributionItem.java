@@ -3,6 +3,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.core.commands.Command;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -21,13 +22,17 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.CompoundContributionItem;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
 
 /**
  * @author Jeff C. Phillips
  */
 public class OpenWithContributionItem extends CompoundContributionItem {
+   private ICommandService commandService;
+
    public OpenWithContributionItem() {
+      this.commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    public OpenWithContributionItem(String id) {
@@ -56,7 +61,7 @@ public class OpenWithContributionItem extends CompoundContributionItem {
 
          contributionItems = new ArrayList<IContributionItem>(commonRenders.size());
          for (IRenderer render : commonRenders) {
-            IContributionItem contributionItem = null;
+            CommandContributionItem contributionItem = null;
 
             if (render instanceof WordTemplateRenderer) {
                contributionItem =
@@ -75,11 +80,14 @@ public class OpenWithContributionItem extends CompoundContributionItem {
                                     ((NativeArtifact) artifacts.iterator().next()).getFileExtension()) : null, null,
                               null, null, null, null, SWT.NONE);
                } catch (OseeCoreException ex) {
-                  // TODO Auto-generated catch block
                   ex.printStackTrace();
                }
             }
-            contributionItems.add(contributionItem);
+
+            Command command = commandService.getCommand(contributionItem.getId());
+            if (command != null && command.isEnabled()) {
+               contributionItems.add(contributionItem);
+            }
          }
       }
 
