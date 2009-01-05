@@ -455,11 +455,15 @@ public final class Lib {
    }
 
    public static String fileToString(File file) throws IOException {
-      Reader in = new InputStreamReader(new FileInputStream(file), "UTF-8");
-      char[] chars = new char[(int) file.length()];
-      in.read(chars);
+      StringBuffer buffer = new StringBuffer();
+      Reader inStream = new InputStreamReader(new FileInputStream(file), "UTF-8");
+      Reader in = new BufferedReader(inStream);
+      int ch;
+      while ((ch = in.read()) > -1) {
+         buffer.append((char) ch);
+      }
       in.close();
-      return new String(chars);
+      return buffer.toString();
    }
 
    public static byte[] fileToBytes(File file) throws IOException {
@@ -974,7 +978,7 @@ public final class Lib {
    }
 
    public static void writeStringToFile(String str, File outFile) throws IOException {
-      FileWriter out = new FileWriter(outFile);
+      OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8");
       char[] chars = str.toCharArray();
       out.write(chars, 0, chars.length);
       out.close();
