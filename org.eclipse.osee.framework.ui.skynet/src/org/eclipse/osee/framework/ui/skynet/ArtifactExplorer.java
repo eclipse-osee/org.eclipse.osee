@@ -1163,7 +1163,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
             openMenuItem.setEnabled(permiss.isReadPermission());
             createMenuItem.setEnabled(permiss.isWritePermission());
-            openWithMenuItem.setEnabled(permiss.isWritePermission());
+            openWithMenuItem.setEnabled(permiss.isReadPermission());
             goIntoMenuItem.setEnabled(permiss.isReadPermission());
             copyMenuItem.setEnabled(permiss.isReadPermission());
             pasteMenuItem.setEnabled(permiss.isWritePermission());
