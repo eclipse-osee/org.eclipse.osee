@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
@@ -89,6 +90,7 @@ import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHel
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
+import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
@@ -564,20 +566,20 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       parentMenu.addMenuListener(new OpenWithMenuListener(submenu, treeViewer, this));
    }
 
-   public class OpenListener extends SelectionAdapter {
-      @Override
-      public void widgetSelected(SelectionEvent event) {
-         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         Iterator<?> itemsIter = selection.iterator();
-
-         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
-         while (itemsIter.hasNext()) {
-            artifacts.add((Artifact) itemsIter.next());
-         }
-
-         RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
-      }
-   }
+   //   public class OpenListener extends SelectionAdapter {
+   //      @Override
+   //      public void widgetSelected(SelectionEvent event) {
+   //         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+   //         Iterator<?> itemsIter = selection.iterator();
+   //
+   //         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+   //         while (itemsIter.hasNext()) {
+   //            artifacts.add((Artifact) itemsIter.next());
+   //         }
+   //
+   //         RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
+   //      }
+   //   }
 
    private void createNewItemMenuItem(Menu parentMenu) {
       SelectionAdapter listener = new NewArtifactMenuListener();
@@ -677,7 +679,12 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
             TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
             try {
-               RendererManager.previewInJob(selectedItems);
+               if (StaticIdManager.hasValue(UserManager.getUser(),
+                     EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
+                  RendererManager.previewInJob(selectedItems);
+               } else {
+                  RendererManager.openInJob(selectedItems, PresentationType.GENERALIZED_EDIT);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }

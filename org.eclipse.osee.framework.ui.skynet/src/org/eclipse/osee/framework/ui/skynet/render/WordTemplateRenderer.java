@@ -319,7 +319,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       if (!(artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) && (presentationType == PresentationType.DIFF)) {
          rating = WORD_PUBLICATION;
 
-      } else if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact()) {
+      } else if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() && (presentationType != PresentationType.GENERALIZED_EDIT)) {
          rating = PRESENTATION_SUBTYPE_MATCH;
       }
       return rating;

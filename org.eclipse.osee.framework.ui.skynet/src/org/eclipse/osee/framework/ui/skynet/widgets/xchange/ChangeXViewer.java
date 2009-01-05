@@ -19,11 +19,15 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
@@ -56,6 +60,7 @@ public class ChangeXViewer extends XViewer {
 
    public void handleDoubleClick() throws Exception {
       if (getSelectedChanges().size() == 0) return;
+
       Change change = getSelectedChanges().iterator().next();
       if (CHANGE_DEBUG) {
          System.out.println(String.format(
@@ -67,15 +72,24 @@ public class ChangeXViewer extends XViewer {
       if (artifact != null) {
          ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
          artifacts.add(artifact);
-         RendererManager.previewInJob(artifacts);
+
+         if (StaticIdManager.hasValue(UserManager.getUser(), EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
+            RendererManager.previewInJob(artifacts);
+         } else {
+            RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
+         }
       }
    }
 
    public ArrayList<Change> getSelectedChanges() {
       ArrayList<Change> arts = new ArrayList<Change>();
       TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) for (TreeItem item : items)
-         arts.add((Change) item.getData());
+
+      if (items.length > 0) {
+         for (TreeItem item : items) {
+            arts.add((Change) item.getData());
+         }
+      }
       return arts;
    }
 

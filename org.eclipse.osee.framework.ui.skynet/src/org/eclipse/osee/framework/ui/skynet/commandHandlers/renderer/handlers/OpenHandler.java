@@ -15,7 +15,11 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
@@ -31,7 +35,13 @@ public class OpenHandler extends AbstractEditorHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
          try {
-            RendererManager.previewInJob(artifacts);
+            if (StaticIdManager.hasValue(UserManager.getUser(),
+                  EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
+               RendererManager.previewInJob(artifacts);
+            } else {
+               RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
+            }
+
             dispose();
 
          } catch (OseeCoreException ex) {
