@@ -77,11 +77,23 @@
             id="org.eclipse.osee.ats.NewAction.wizard"
             name="Action">
       </wizard>
-      <wizard name="Workflow Configuration"
-              icon="images/workflowConfig.gif"
-              category="org.eclipse.osee.ats.category"
-              class="org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard"
-              id="org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard">
+      <wizard
+            canFinishEarly="false"
+            category="org.eclipse.osee.ats.category"
+            class="org.eclipse.osee.ats.config.wizard.AtsConfigWizard"
+            hasPages="true"
+            icon="images/workflowConfig.gif"
+            id="org.eclipse.osee.ats.config.wizard.AtsConfigWizard"
+            name="ATS Configuration">
+      </wizard>
+      <wizard
+            canFinishEarly="false"
+            category="org.eclipse.osee.ats.category"
+            class="org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard"
+            hasPages="true"
+            icon="images/workflowConfig.gif"
+            id="org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard"
+            name="Workflow Configuration">
       </wizard>
    </extension>
 <extension point="org.eclipse.ui.perspectives">

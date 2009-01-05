@@ -16,6 +16,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -76,47 +78,8 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          } catch (OseeCoreException ex) {
             // do nothing
          }
-
-         WorkFlowDefinition workflow = new WorkFlowDefinition(namespace, namespace, null);
-         WorkPageDefinition endorsePage =
-               new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID);
-
-         workflow.setStartPageId(endorsePage.getPageName());
-
-         WorkPageDefinition implementPage = new WorkPageDefinition("Implement", namespace + ".Implement", null);
-         implementPage.addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-         implementPage.addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
-         implementPage.addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
-
-         WorkPageDefinition completedPage =
-               new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);
-
-         WorkPageDefinition cancelledPage =
-               new WorkPageDefinition("Cancelled", namespace + ".Cancelled", AtsCancelledWorkPageDefinition.ID);
-
-         workflow.addPageTransition(endorsePage.getPageName(), implementPage.getPageName(),
-               TransitionType.ToPageAsDefault);
-         workflow.addPageTransition(implementPage.getPageName(), endorsePage.getPageName(),
-               TransitionType.ToPageAsReturn);
-         workflow.addPageTransition(cancelledPage.getPageName(), endorsePage.getPageName(),
-               TransitionType.ToPageAsReturn);
-         workflow.addPageTransition(implementPage.getPageName(), completedPage.getPageName(),
-               TransitionType.ToPageAsDefault);
-         workflow.addPageTransition(endorsePage.getPageName(), cancelledPage.getPageName(), TransitionType.ToPage);
-
-         List<Artifact> artifacts = new ArrayList<Artifact>();
-         artifacts.add(endorsePage.toArtifact(WriteType.New));
-         artifacts.add(implementPage.toArtifact(WriteType.New));
-         artifacts.add(completedPage.toArtifact(WriteType.New));
-         artifacts.add(cancelledPage.toArtifact(WriteType.New));
-         artifacts.add(workflow.toArtifact(WriteType.New));
-         workflow.loadPageData(true);
-
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         for (Artifact artifact : artifacts) {
-            AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
-            artifact.persistAttributesAndRelations(transaction);
-         }
+         WorkFlowDefinition workflow = generateWorkflow(namespace, transaction, null);
          transaction.execute();
 
          AtsWorkflowConfigEditor.editWorkflow(workflow);
@@ -126,5 +89,50 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       }
       return true;
 
+   }
+
+   public static WorkFlowDefinition generateWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+      WorkFlowDefinition workflow = new WorkFlowDefinition(namespace, namespace, null);
+      WorkPageDefinition endorsePage =
+            new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID);
+
+      workflow.setStartPageId(endorsePage.getPageName());
+
+      WorkPageDefinition implementPage = new WorkPageDefinition("Implement", namespace + ".Implement", null);
+      implementPage.addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
+      implementPage.addWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
+      implementPage.addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
+
+      WorkPageDefinition completedPage =
+            new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);
+
+      WorkPageDefinition cancelledPage =
+            new WorkPageDefinition("Cancelled", namespace + ".Cancelled", AtsCancelledWorkPageDefinition.ID);
+
+      workflow.addPageTransition(endorsePage.getPageName(), implementPage.getPageName(), TransitionType.ToPageAsDefault);
+      workflow.addPageTransition(implementPage.getPageName(), endorsePage.getPageName(), TransitionType.ToPageAsReturn);
+      workflow.addPageTransition(cancelledPage.getPageName(), endorsePage.getPageName(), TransitionType.ToPageAsReturn);
+      workflow.addPageTransition(implementPage.getPageName(), completedPage.getPageName(),
+            TransitionType.ToPageAsDefault);
+      workflow.addPageTransition(endorsePage.getPageName(), cancelledPage.getPageName(), TransitionType.ToPage);
+
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      artifacts.add(endorsePage.toArtifact(WriteType.New));
+      artifacts.add(implementPage.toArtifact(WriteType.New));
+      artifacts.add(completedPage.toArtifact(WriteType.New));
+      artifacts.add(cancelledPage.toArtifact(WriteType.New));
+      Artifact workflowArt = workflow.toArtifact(WriteType.New);
+      if (teamDef != null) {
+         teamDef.addRelation(AtsRelation.WorkItem__Child, workflowArt);
+         artifacts.add(teamDef);
+      }
+      artifacts.add(workflowArt);
+      workflow.loadPageData(true);
+
+      for (Artifact artifact : artifacts) {
+         AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
+         artifact.persistAttributesAndRelations(transaction);
+      }
+      return workflow;
    }
 }
