@@ -316,6 +316,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             getArtifactTypeName()) >= 0) {
          return true;
       }
+      if (artifactType.equals(WordArtifact.WORD_TEMPLATE) && this instanceof WordArtifact && Arrays.binarySearch(
+            WholeArtifactMatches, getArtifactTypeName()) < 0) {
+         return true;
+      }
       return getArtifactTypeName().equals(artifactType);
    }
 

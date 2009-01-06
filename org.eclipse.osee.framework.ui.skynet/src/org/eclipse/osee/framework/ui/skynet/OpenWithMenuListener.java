@@ -108,11 +108,11 @@ public class OpenWithMenuListener implements MenuListener {
 
             Command command = commandService.getCommand(renderer.getCommandId());
             if (command != null && command.isEnabled()) {
-            MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
-            menuItem.setText(renderer.getName());
-            menuItem.setImage(image);
-            menuItem.addSelectionListener(new OpenWithSelectionListener(renderer, viewer, false));
-         }
+               MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
+               menuItem.setText(renderer.getName());
+               menuItem.setImage(image);
+               menuItem.addSelectionListener(new OpenWithSelectionListener(renderer, viewer, false));
+            }
          }
 
       } catch (Exception ex) {
