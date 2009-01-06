@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**
  * @author Donald G. Dunne
@@ -105,6 +106,11 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
       UserCommunityListDialog gld = new UserCommunityListDialog();
       int result = gld.open();
       if (result == 0) {
+         if (gld.getResult().length == 0) {
+            AWorkbench.popup("ERROR", "No Group Selected");
+            cancelled = true;
+            return;
+         }
          selectedUserComm = (String) gld.getResult()[0];
          return;
       } else {
