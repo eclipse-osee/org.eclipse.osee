@@ -65,17 +65,17 @@ public class ArtifactCache {
       }
    }
 
+   public static void cacheByStaticId(String staticId, Artifact artifact) {
+      instance.staticIdArtifactCache.put(staticId, artifact);
+   }
+
    static void deCache(Artifact artifact) throws OseeCoreException {
-      try {
-         instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
-         instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
-         instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
-         instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
-         for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
-            instance.staticIdArtifactCache.removeValue(staticId, artifact);
-         }
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+      instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
+      instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
+      instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
+      instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
+      for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
+         instance.staticIdArtifactCache.removeValue(staticId, artifact);
       }
    }
 

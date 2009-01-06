@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
@@ -73,6 +75,10 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected void internalUpdate(TransactionId transactionId) throws OseeCoreException {
       attribute.internalSetGammaId(getGammaId());
+
+      if (attribute.isOfType(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
+         ArtifactCache.cacheByStaticId((String) attribute.getValue(), attribute.getArtifact());
+      }
    }
 
    /* (non-Javadoc)
