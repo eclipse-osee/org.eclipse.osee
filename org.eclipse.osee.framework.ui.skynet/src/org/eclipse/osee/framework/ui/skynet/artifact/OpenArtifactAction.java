@@ -14,9 +14,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDragDropSupport;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -48,7 +48,7 @@ public class OpenArtifactAction implements IObjectActionDelegate {
       if (object instanceof IFile) {
          iFile = (IFile) object;
          try {
-            artifact = WorkspaceFileArtifact.getArtifactFromWorkspaceFile(WorkspaceURL.getURL(iFile), shell);
+            artifact = ArtifactDragDropSupport.getArtifactFromWorkspaceFile(WorkspaceURL.getURL(iFile), shell);
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }

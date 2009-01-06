@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -421,7 +420,7 @@ public class WordTemplateProcessor {
    }
 
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
-      if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() || !(artifact instanceof NativeArtifact)) {
+      if (!artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native")) {
          if (outlining) {
             String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
             CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
@@ -494,7 +493,7 @@ public class WordTemplateProcessor {
       attributeTypeName = AttributeTypeManager.getType(attributeTypeName).getName();
 
       //create wordTemplateContent for new guys
-      if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT) && artifact instanceof WordArtifact) {
+      if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
          Attribute<?> attribute = artifact.getSoleAttribute(attributeTypeName);
          if (attribute == null) {
             artifact.createAttribute(AttributeTypeManager.getType(attributeTypeName), true);

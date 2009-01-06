@@ -10,7 +10,6 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -75,8 +74,7 @@ public class OpenWithMenuListener implements MenuListener {
             } else if (object instanceof Match) {
                artifact = (Artifact) ((Match) object).getElement();
             }
-            validForPreview &=
-                  (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() || !(artifact instanceof NativeArtifact));
+            validForPreview &= !artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native");
             artifacts.add(artifact);
          }
 
@@ -110,11 +108,11 @@ public class OpenWithMenuListener implements MenuListener {
 
             Command command = commandService.getCommand(renderer.getCommandId());
             if (command != null && command.isEnabled()) {
-               MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
-               menuItem.setText(renderer.getName());
-               menuItem.setImage(image);
-               menuItem.addSelectionListener(new OpenWithSelectionListener(renderer, viewer, false));
-            }
+            MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
+            menuItem.setText(renderer.getName());
+            menuItem.setImage(image);
+            menuItem.addSelectionListener(new OpenWithSelectionListener(renderer, viewer, false));
+         }
          }
 
       } catch (Exception ex) {

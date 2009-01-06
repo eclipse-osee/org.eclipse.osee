@@ -91,7 +91,7 @@ public class WordChangesMadeToHandler extends AbstractHandler {
          try {
             Artifact changedArtifact = mySelectedArtifactChange.getArtifact();
             boolean readPermission = AccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
-            boolean wordArtifactSelected = changedArtifact instanceof WordArtifact;
+            boolean wordArtifactSelected = changedArtifact.isOfType(WordArtifact.ARTIFACT_NAME);
             isEnabled = readPermission && wordArtifactSelected;
          } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, true);

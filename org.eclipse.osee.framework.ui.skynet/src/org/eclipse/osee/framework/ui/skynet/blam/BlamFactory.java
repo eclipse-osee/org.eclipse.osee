@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -37,7 +38,7 @@ public class BlamFactory extends ArtifactFactory {
    }
 
    public @Override
-   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       if (factoryKey.equals(BlamWorkflow.ARTIFACT_NAME)) {
          return new BlamWorkflow(this, guid, humandReadableId, branch, artifactType);
       }

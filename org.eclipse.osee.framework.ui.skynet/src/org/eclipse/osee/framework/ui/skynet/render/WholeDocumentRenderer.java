@@ -48,7 +48,7 @@ public class WholeDocumentRenderer extends WordRenderer {
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
+      if (artifact.isOfType(WordArtifact.WHOLE_WORD)) {
          return SUBTYPE_TYPE_MATCH;
       }
       return NO_MATCH;

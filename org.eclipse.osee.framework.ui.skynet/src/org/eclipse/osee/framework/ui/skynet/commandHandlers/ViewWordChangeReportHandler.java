@@ -97,7 +97,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
       Artifact instanceOfArtifact = bArtifact != null ? bArtifact : nArtifact;
 
-      if (instanceOfArtifact instanceof WordArtifact && ((WordArtifact) instanceOfArtifact).isWholeWordArtifact()) {
+      if (instanceOfArtifact.isOfType(WordArtifact.WHOLE_WORD)) {
          RendererManager.diffInJob(baseArtifacts, newerArtifacts, variableMap);
       } else {
          //All other artifacts types can be rendered by the wordRenderer so the are displayed in the word change report.

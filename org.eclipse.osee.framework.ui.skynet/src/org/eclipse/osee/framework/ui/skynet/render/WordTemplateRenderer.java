@@ -119,8 +119,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     */
    @Override
    public boolean isPreviewable(Artifact artifact) {
-      // Not a whole word artifact
-      return !(artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact());
+      return !artifact.isOfType(WordArtifact.WHOLE_WORD);
    }
 
    public void publishSRS(VariableMap variableMap) throws OseeCoreException {
@@ -314,15 +313,15 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      int rating = NO_MATCH;
-
-      if (!(artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) && (presentationType == PresentationType.DIFF)) {
-         rating = WORD_PUBLICATION;
-
-      } else if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact() && (presentationType != PresentationType.GENERALIZED_EDIT)) {
-         rating = PRESENTATION_SUBTYPE_MATCH;
+      if (artifact.isOfType(WordArtifact.WORD_TEMPLATE)) {
+         if (presentationType == PresentationType.DIFF) {
+            return WORD_PUBLICATION;
+         }
+         if (presentationType != PresentationType.GENERALIZED_EDIT) {
+            return PRESENTATION_SUBTYPE_MATCH;
+         }
       }
-      return rating;
+      return NO_MATCH;
    }
 
    /*

@@ -13,13 +13,21 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactDescriptorDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -115,7 +123,7 @@ public class ArtifactDragDropSupport {
          }
 
          try {
-            artifact = WorkspaceFileArtifact.getArtifactFromWorkspaceFile(location, shell);
+            artifact = getArtifactFromWorkspaceFile(location, shell);
          } catch (Exception ex) {
             window.addInvalid(location, "Runtime exception: " + ex.getMessage());
             continue;
@@ -148,7 +156,7 @@ public class ArtifactDragDropSupport {
       }
 
       try {
-         artifact = WorkspaceFileArtifact.getArtifactFromWorkspaceFile(location, shell);
+         artifact = getArtifactFromWorkspaceFile(location, shell);
       } catch (Exception ex) {
          window.addInvalid(location, "Runtime exception: " + ex.getMessage());
          return;
@@ -163,5 +171,36 @@ public class ArtifactDragDropSupport {
       } catch (OseeArgumentException ex) {
          window.addInvalid(artifact.getDescriptiveName(), ex.getMessage());
       }
+   }
+
+   public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws OseeCoreException {
+      Artifact artifact = null;
+      int descriptorSelected = -1;
+      ArtifactType descriptor = null;
+      ArtifactDescriptorDialog dialog = null;
+
+      try {
+         artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, BranchManager.getDefaultBranch());
+      } catch (ArtifactDoesNotExist ex) {
+         Collection<ArtifactType> descriptors =
+               TypeValidityManager.getArtifactTypesFromAttributeType("Content URL", BranchManager.getDefaultBranch());
+         dialog =
+               new ArtifactDescriptorDialog(
+                     shell,
+                     "Artifact Descriptor",
+                     null,
+                     "No Artifact could be found for this file. To create a new artifact please" + " select an artfact descriptor.",
+                     MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, descriptors);
+         descriptorSelected = dialog.open();
+         if (descriptorSelected == 0) {
+            descriptor = dialog.getEntry();
+            artifact = descriptor.makeNewArtifact(BranchManager.getDefaultBranch());
+            artifact.setSoleAttributeValue("Content URL", location);
+            artifact.setSoleAttributeValue("Name", new File(location).getName());
+            artifact.persistAttributes();
+         }
+      }
+
+      return artifact;
    }
 }

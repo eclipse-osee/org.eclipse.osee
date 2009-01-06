@@ -295,7 +295,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
             //whole word artifacts can only be viewed as a single document
             for (Artifact artifact : artifacts) {
-               if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
+               if (artifact.isOfType(WordArtifact.WHOLE_WORD)) {
                   isEnabled &= artifacts.size() == 1;
                   break;
                }

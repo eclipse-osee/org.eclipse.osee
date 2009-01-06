@@ -105,17 +105,17 @@ public class UpdateArtifactJob extends UpdateJob {
          singleGuid = singleEditMatcher.group(1);
          artifact = ArtifactQuery.getArtifactFromId(singleGuid, branch);
 
-         if (artifact instanceof WordArtifact) {
-            workArtifactUpdate(getArtifacts(workingFile, true), branch);
-         } else if (artifact instanceof NativeArtifact) {
+         if (artifact.isOfType(WordArtifact.ARTIFACT_NAME)) {
+            wordArtifactUpdate(getArtifacts(workingFile, true), branch);
+         } else if (artifact.isOfType("Native")) {
             updateNativeArtifact((NativeArtifact) artifact);
          } else {
-            throw new IllegalArgumentException("Artifact must be of type WordArtifact or NativeArtifact.");
+            throw new OseeArgumentException("Artifact must be of type WordArtifact or NativeArtifact.");
          }
       } else if (multiEditMatcher.matches()) {
-         workArtifactUpdate(getArtifacts(workingFile, false), branch);
+         wordArtifactUpdate(getArtifacts(workingFile, false), branch);
       } else {
-         throw new IllegalArgumentException("File name did not contain the artifact guid");
+         throw new OseeArgumentException("File name did not contain the artifact guid");
       }
    }
 
@@ -124,7 +124,7 @@ public class UpdateArtifactJob extends UpdateJob {
       artifact.persistAttributes();
    }
 
-   private void workArtifactUpdate(Collection<Element> artElements, Branch branch) throws OseeCoreException {
+   private void wordArtifactUpdate(Collection<Element> artElements, Branch branch) throws OseeCoreException {
       List<String> deletedGuids = new LinkedList<String>();
       try {
          boolean singleArtifact = artElements.size() == 1;

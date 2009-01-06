@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -39,7 +41,7 @@ public class SkynetGuiArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       if (factoryKey.equals(XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME)) {
          return new XViewerCustomizationArtifact(this, guid, humandReadableId, branch, artifactType);
       }
@@ -47,6 +49,6 @@ public class SkynetGuiArtifactFactory extends ArtifactFactory {
          return new GlobalPreferences(this, guid, humandReadableId, branch, artifactType);
       }
 
-      throw new IllegalArgumentException("did not recognize the factory key: " + factoryKey);
+      throw new OseeArgumentException("did not recognize the factory key: " + factoryKey);
    }
 }

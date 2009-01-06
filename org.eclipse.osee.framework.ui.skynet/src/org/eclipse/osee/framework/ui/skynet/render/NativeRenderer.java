@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
@@ -47,7 +46,7 @@ public class NativeRenderer extends FileRenderer {
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
       Image image = null;
-      if (artifact instanceof NativeArtifact) {
+      if (artifact.isOfType("Native")) {
          image = artifact.getImage();
       }
 
@@ -81,7 +80,7 @@ public class NativeRenderer extends FileRenderer {
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (!(artifact instanceof WordArtifact) && (artifact.isOfType("Native") || artifact.isOfType("General Data")) && presentationType == PresentationType.SPECIALIZED_EDIT) {
+      if ((artifact.isOfType("Native") || artifact.isOfType("General Data")) && presentationType == PresentationType.SPECIALIZED_EDIT) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
