@@ -30,13 +30,16 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private final static String mergeCommand =
          "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False\n\n";
 
-   private final static String tail =
-         "    If visible Then\n        oWord.Visible = True\n     Else\n         oWord.Quit()\n        set oWord = Nothing\n    End If\n\nEnd Sub\n\nmain";
+   private final static String tail = "    If visible Then\n        oWord.Visible = True\n     Else\n";
+   private final static String tail2 =
+         "         oWord.Quit()\n        set oWord = Nothing\n    End If\n\nEnd Sub\n\nmain";
 
    private StringBuilder builder;
    private boolean finalized;
    private boolean initialized;
    private boolean first;
+   private String diffPath = null;
+   private boolean merge = false;
 
    public VbaWordDiffGenerator() {
       initialized = false;
@@ -68,6 +71,8 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       if (finalized) {
          return false;
       }
+      this.merge = merge;
+      this.diffPath = diffPath;
       builder.append("   oWord.Visible = False\n");
       builder.append("    ver1 = \"");
       builder.append(baseFile.getLocation().toOSString());
@@ -106,6 +111,13 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          builder.append("    visible = True\n");
       }
       builder.append(tail);
+      if (!show && !merge) {
+         builder.append("         diffPath = \"");
+         builder.append(diffPath);
+         builder.append("\"\n\n");
+         builder.append("         mainDoc.SaveAs diffPath, wdFormatXML, , , False\n\n");
+      }
+      builder.append(tail2);
       compare(getFile(vbScriptPath));
    }
 
