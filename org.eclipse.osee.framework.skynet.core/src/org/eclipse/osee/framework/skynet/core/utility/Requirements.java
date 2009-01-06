@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Donald G. Dunne
  */
 public class Requirements {
+   public static String HARDWARE_REQUIREMENT = "Hardware Requirement";
    public static String SOFTWARE_REQUIREMENT = "Software Requirement";
    public static String SOFTWARE_REQUIREMENTS = "Software Requirements";
    public static String INDIRECT_SOFTWARE_REQUIREMENT = "Indirect Software Requirement";
