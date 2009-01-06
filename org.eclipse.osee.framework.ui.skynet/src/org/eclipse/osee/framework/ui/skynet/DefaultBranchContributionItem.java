@@ -17,11 +17,13 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
@@ -52,7 +54,12 @@ public class DefaultBranchContributionItem extends OseeContributionItem implemen
             int result = branchSelection.open();
             if (result == Window.OK) {
                try {
-                  BranchManager.setDefaultBranch(branchSelection.getSelection());
+                  Branch branch = branchSelection.getSelection();
+                  if (branch == null) {
+                     AWorkbench.popup("ERROR", "No Branch Selected");
+                     return;
+                  }
+                  BranchManager.setDefaultBranch(branch);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

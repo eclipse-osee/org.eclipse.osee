@@ -144,6 +144,7 @@ public class BranchListComposite implements IBranchEventListener {
    public boolean isFiltering() {
       return nameFilter.isFiltering();
    }
+
    private class ColumnSelectionListener extends SelectionAdapter {
       private final int index;
 
