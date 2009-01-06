@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
-import java.util.Arrays;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -21,13 +21,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
  */
 public class WordArtifactFactory extends ArtifactFactory {
    private static WordArtifactFactory factory = null;
-   private static String[] WholeArtifactMatches =
-         new String[] {"Checklist (WordML)", "Guideline", "How To", "Renderer Template", "Roadmap",
-               "Template (WordML)", "Test Procedure WML", "Work Instruction", "Work Sheet (WordML)",};
 
    private WordArtifactFactory(int factoryId) {
       super(factoryId);
-      Arrays.sort(WholeArtifactMatches);
    }
 
    public static WordArtifactFactory getInstance(int factoryId) {
@@ -42,9 +38,7 @@ public class WordArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public WordArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
-      WordArtifact artifact = new WordArtifact(this, guid, humandReadableId, branch, artifactType);
-      artifact.setWholeWordArtifact(Arrays.binarySearch(WholeArtifactMatches, factoryKey) >= 0);
-      return artifact;
+   public WordArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+      return new WordArtifact(this, guid, humandReadableId, branch, artifactType);
    }
 }

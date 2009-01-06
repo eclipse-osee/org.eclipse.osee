@@ -191,11 +191,11 @@ public class PublishRequirements extends AbstractBlam {
    }
 
    private boolean containsTrackedChanges(Artifact art) {
-      if (art instanceof WordArtifact) {
-         boolean isWholeWord = ((WordArtifact) art).isWholeWordArtifact();
+      if (art.isOfType(WordArtifact.ARTIFACT_NAME)) {
+         boolean isWholeWord = art.isOfType(WordArtifact.WHOLE_WORD);
          try {
             Attribute<?> attribute =
-                  ((WordArtifact) art).getSoleAttribute(isWholeWord ? WordAttribute.WHOLE_WORD_CONTENT : WordAttribute.WORD_TEMPLATE_CONTENT);
+                  art.getSoleAttribute(isWholeWord ? WordAttribute.WHOLE_WORD_CONTENT : WordAttribute.WORD_TEMPLATE_CONTENT);
             if (attribute != null) {
                return ((WordAttribute) attribute).mergeMarkupPresent();
             }

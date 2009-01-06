@@ -10,7 +10,7 @@
   <LastAuthor>Ryan Brooks</LastAuthor>
   <LastPrinted>2006-03-15T03:49:16Z</LastPrinted>
   <Created>2005-07-01T21:31:12Z</Created>
-  <LastSaved>2008-12-22T23:32:20Z</LastSaved>
+  <LastSaved>2009-01-02T04:34:49Z</LastSaved>
   <Company>The Boeing Company</Company>
   <Version>11.9999</Version>
  </DocumentProperties>
@@ -166,6 +166,14 @@
    <Font x:Family="Swiss" ss:Size="9"/>
    <NumberFormat ss:Format="0"/>
   </Style>
+  <Style ss:ID="s40">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
   <Style ss:ID="s41">
    <Borders>
     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
@@ -194,7 +202,7 @@
   <Style ss:ID="s44">
    <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
   </Style>
-  <Style ss:ID="s45">
+  <Style ss:ID="s46">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
    <Font x:Family="Swiss" ss:Size="9"/>
    <NumberFormat ss:Format="@"/>
@@ -300,7 +308,7 @@
     <Cell ss:StyleID="s29"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s31"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.SkynetArtifactFactory</Data></Cell>
+    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">Workspace File</Data></Cell>
     <Cell ss:StyleID="s33"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
@@ -431,7 +439,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
-    <Cell ss:StyleID="Default"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
+    <Cell ss:StyleID="s40"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">General String Data</Data></Cell>
     <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s28"/>
@@ -481,7 +489,7 @@
    <Row ss:AutoFitHeight="0"/>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s43"><Data ss:Type="String">Artifact Type Name</Data></Cell>
-    <Cell ss:StyleID="s43"><Data ss:Type="String">Attribute Name</Data></Cell>
+    <Cell ss:StyleID="s43"><Data ss:Type="String">Attribute Type Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s41"><Data ss:Type="String">Artifact</Data></Cell>
@@ -662,7 +670,7 @@
    </Row>
    <Row ss:AutoFitHeight="0"/>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s45"><Data ss:Type="String">#need method to record whether allocation has been verified as complete and re-verify if changes potentially impact the allocation</Data></Cell>
+    <Cell ss:StyleID="s46"><Data ss:Type="String">#need method to record whether allocation has been verified as complete and re-verify if changes potentially impact the allocation</Data></Cell>
    </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
@@ -679,7 +687,7 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>21</ActiveRow>
+     <ActiveRow>12</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

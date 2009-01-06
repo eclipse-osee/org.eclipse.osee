@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.artifact;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -39,7 +40,7 @@ public class DemoArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
+   public Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       if (factoryKey.equals(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME)) return new DemoCodeTeamWorkflowArtifact(this,
             guid, humandReadableId, branch, artifactType);
       if (factoryKey.equals(DemoTestTeamWorkflowArtifact.ARTIFACT_NAME)) return new DemoTestTeamWorkflowArtifact(this,

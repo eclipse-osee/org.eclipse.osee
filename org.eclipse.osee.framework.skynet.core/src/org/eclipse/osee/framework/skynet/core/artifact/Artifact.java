@@ -92,6 +92,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private int gammaId;
    private boolean linksLoaded;
    private boolean historical;
+   private static String[] WholeArtifactMatches =
+         new String[] {"Checklist (WordML)", "Guideline", "How To", "Renderer Template", "Roadmap",
+               "Template (WordML)", "Test Procedure WML", "Work Instruction", "Work Sheet (WordML)",};
+   static {
+      Arrays.sort(WholeArtifactMatches);
+   }
 
    public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
 
@@ -301,6 +307,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
       if (artifactType.equals("Native") && (this instanceof NativeArtifact || getArtifactTypeName().equals(
             "Renderer Template"))) {
+         return true;
+      }
+      if (artifactType.equals(WordArtifact.ARTIFACT_NAME) && this instanceof WordArtifact) {
+         return true;
+      }
+      if (artifactType.equals(WordArtifact.WHOLE_WORD) && Arrays.binarySearch(WholeArtifactMatches,
+            getArtifactTypeName()) >= 0) {
          return true;
       }
       return getArtifactTypeName().equals(artifactType);

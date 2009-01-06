@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.artifact;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -36,7 +37,7 @@ public class SpreadsheetArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Spreadsheet getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
+   public Spreadsheet getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       return new Spreadsheet(this, guid, humandReadableId, branch, artifactType);
    }
 }

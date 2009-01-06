@@ -10,16 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
 
 /**
  * @author Ryan D. Brooks
  */
+@Deprecated
 public class SkynetArtifactFactory extends ArtifactFactory {
    private static SkynetArtifactFactory factory = null;
 
@@ -39,22 +40,10 @@ public class SkynetArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       if (factoryKey.equals(User.ARTIFACT_NAME)) {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }
-      if (factoryKey.equals(WorkspaceFileArtifact.ARTIFACT_NAME)) {
-         return new WorkspaceFileArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (factoryKey.equals(WorkspaceFileArtifact.ARTIFACT_NAME)) {
-         return new WorkspaceFileArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (factoryKey.equals(WorkspaceFileArtifact.ARTIFACT_NAME)) {
-         return new WorkspaceFileArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (factoryKey.equals(WorkspaceFileArtifact.ARTIFACT_NAME)) {
-         return new WorkspaceFileArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      throw new IllegalArgumentException("did not recognize the factory key: " + factoryKey);
+      return new Artifact(this, guid, humandReadableId, branch, artifactType);
    }
 }

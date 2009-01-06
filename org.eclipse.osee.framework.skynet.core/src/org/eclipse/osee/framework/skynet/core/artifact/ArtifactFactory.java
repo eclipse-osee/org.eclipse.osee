@@ -82,8 +82,9 @@ public abstract class ArtifactFactory {
     * 
     * @param branch branch on which this instance of this artifact will be associated
     * @return Return artifact reference
+    * @throws OseeCoreException TODO
     */
-   protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType);
+   protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) throws OseeCoreException;
 
    public int getFactoryId() {
       return factoryId;

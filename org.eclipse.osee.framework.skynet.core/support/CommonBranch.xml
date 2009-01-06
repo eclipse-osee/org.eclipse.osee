@@ -230,7 +230,7 @@
     <Cell ss:StyleID="s25"><Data ss:Type="String">Super Type Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.SkynetArtifactFactory</Data></Cell>
+    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
@@ -1035,7 +1035,7 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <RangeSelection>R1C1:R1C2</RangeSelection>
+     <ActiveRow>6</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
