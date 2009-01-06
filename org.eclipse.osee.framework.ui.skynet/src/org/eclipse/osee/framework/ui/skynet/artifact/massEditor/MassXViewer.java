@@ -285,8 +285,12 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
                dispose();
                return;
             }
-            ((MassContentProvider) getContentProvider()).remove(transData.cacheDeletedArtifacts);
-            update(transData.cacheChangedArtifacts, null);
+            if (transData.cacheDeletedArtifacts.size() > 0) {
+               ((MassContentProvider) getContentProvider()).removeAll(transData.cacheDeletedArtifacts);
+            }
+            if (transData.cacheChangedArtifacts.size() > 0) {
+               ((MassContentProvider) getContentProvider()).updateAll(transData.cacheChangedArtifacts);
+            }
             refresh(transData.cacheRelationAddedArtifacts);
             refresh(transData.cacheRelationChangedArtifacts);
             refresh(transData.cacheRelationDeletedArtifacts);

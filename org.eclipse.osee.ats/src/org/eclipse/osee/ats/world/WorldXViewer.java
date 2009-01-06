@@ -125,7 +125,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       try {
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
          // ContentProvider ensures in display thread
-         ((WorldContentProvider) getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+         ((WorldContentProvider) getContentProvider()).removeAll(loadedArtifacts.getLoadedArtifacts());
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -136,7 +136,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       try {
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
          // ContentProvider ensures in display thread
-         ((WorldContentProvider) getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+         ((WorldContentProvider) getContentProvider()).removeAll(loadedArtifacts.getLoadedArtifacts());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -153,17 +153,17 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          public void run() {
             if (getContentProvider() == null) return;
             if (transData.cacheDeletedArtifacts.size() > 0) {
-               ((WorldContentProvider) getContentProvider()).remove(transData.cacheDeletedArtifacts);
+               ((WorldContentProvider) getContentProvider()).removeAll(transData.cacheDeletedArtifacts);
             }
             if (transData.cacheChangedArtifacts.size() > 0) {
-               update(transData.cacheChangedArtifacts, null);
+               ((WorldContentProvider) getContentProvider()).updateAll(transData.cacheChangedArtifacts);
             }
             Set<Artifact> arts = new HashSet<Artifact>();
             arts.addAll(transData.cacheRelationAddedArtifacts);
             arts.addAll(transData.cacheRelationChangedArtifacts);
             arts.addAll(transData.cacheRelationDeletedArtifacts);
-            if (arts.size() > 0) {
-               refresh(arts);
+            for (Artifact art : arts) {
+               refresh(art);
             }
          }
       });
@@ -806,7 +806,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    @Override
    public void remove(final Collection<Object> artifacts) {
-      ((WorldContentProvider) getContentProvider()).remove(artifacts);
+      ((WorldContentProvider) getContentProvider()).removeAll(artifacts);
    }
 
    @Override

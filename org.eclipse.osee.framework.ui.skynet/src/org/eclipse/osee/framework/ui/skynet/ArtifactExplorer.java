@@ -1436,7 +1436,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                      parents.add(art.getParent());
                   }
                }
-               treeViewer.refresh(parents);
+               for (Artifact art : parents) {
+                  treeViewer.refresh(art);
+               }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
@@ -1458,10 +1460,12 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
           */
          @Override
          public void run() {
-            treeViewer.remove(transData.cacheDeletedArtifacts);
+            for (Artifact art : transData.cacheDeletedArtifacts) {
+               treeViewer.remove(art);
+            }
             try {
                treeViewer.update(transData.getArtifactsInRelations(ChangeType.Changed,
-                     CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType()), null);
+                     CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType()).toArray(), null);
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }

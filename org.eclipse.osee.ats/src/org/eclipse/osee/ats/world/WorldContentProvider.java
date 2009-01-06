@@ -73,10 +73,10 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public void remove(final Artifact art) {
-      remove(Arrays.asList(art));
+      removeAll(Arrays.asList(art));
    }
 
-   public void remove(final Collection<? extends Object> arts) {
+   public void removeAll(final Collection<? extends Object> arts) {
       if (arts.size() == 0) return;
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
@@ -85,6 +85,18 @@ public class WorldContentProvider implements ITreeContentProvider {
                rootSet.remove(art);
             }
             xViewer.refresh();
+         };
+      });
+   }
+
+   public void updateAll(final Collection<? extends Object> arts) {
+      if (arts.size() == 0) return;
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            for (Object art : arts) {
+               xViewer.update(art, null);
+            }
          };
       });
    }

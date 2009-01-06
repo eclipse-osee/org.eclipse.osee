@@ -119,7 +119,7 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    public void removeTask(final Collection<TaskArtifact> artifacts) {
-      ((WorldContentProvider) getContentProvider()).remove(artifacts);
+      ((WorldContentProvider) getContentProvider()).removeAll(artifacts);
    }
 
    public TaskArtifact getSelectedTaskArtifact() {
@@ -406,7 +406,7 @@ public class TaskXViewer extends WorldXViewer {
                   WorldContentProvider contentProvider =
                         (WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider();
                   if (contentProvider != null) {
-                     contentProvider.remove(loadedArtifacts.getLoadedArtifacts());
+                     contentProvider.removeAll(loadedArtifacts.getLoadedArtifacts());
                   }
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -423,7 +423,7 @@ public class TaskXViewer extends WorldXViewer {
       try {
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
          // ContentProvider ensures in display thread
-         ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+         ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(loadedArtifacts.getLoadedArtifacts());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -448,8 +448,8 @@ public class TaskXViewer extends WorldXViewer {
          @Override
          public void run() {
             if (xTaskViewer.getTaskXViewer().getContentProvider() == null) return;
-            ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
-            xTaskViewer.getTaskXViewer().update(transData.cacheChangedArtifacts, null);
+            ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(transData.cacheDeletedArtifacts);
+            ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).updateAll(transData.cacheChangedArtifacts);
 
             try {
                if (xTaskViewer.getIXTaskViewer().getParentSmaMgr() == null) {
@@ -472,7 +472,7 @@ public class TaskXViewer extends WorldXViewer {
                               AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
                               AtsPlugin.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
                   if (artifacts.size() > 0) {
-                     ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).remove(artifacts);
+                     ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(artifacts);
                   }
                }
             } catch (Exception ex) {

@@ -24,7 +24,7 @@ public class MassContentProvider implements ITreeContentProvider {
    protected Collection<Artifact> rootSet = new HashSet<Artifact>();
    private final MassXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private SkynetDebug debug = new SkynetDebug(false, "WorldTreeContentProvider");
+   private final SkynetDebug debug = new SkynetDebug(false, "WorldTreeContentProvider");
 
    public MassContentProvider(MassXViewer xViewer) {
       super();
@@ -55,11 +55,23 @@ public class MassContentProvider implements ITreeContentProvider {
       });
    }
 
-   public void remove(final Artifact art) {
-      remove(Arrays.asList(art));
+   public void updateAll(final Collection<? extends Object> arts) {
+      if (arts.size() == 0) return;
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            for (Object art : arts) {
+               xViewer.update(art, null);
+            }
+         };
+      });
    }
 
-   public void remove(final Collection<? extends Artifact> arts) {
+   public void remove(final Artifact art) {
+      removeAll(Arrays.asList(art));
+   }
+
+   public void removeAll(final Collection<? extends Artifact> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
