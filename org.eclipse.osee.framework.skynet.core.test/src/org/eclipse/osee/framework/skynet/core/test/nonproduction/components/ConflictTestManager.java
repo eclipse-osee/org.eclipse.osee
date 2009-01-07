@@ -503,7 +503,7 @@ public class ConflictTestManager {
                   expected = value.sourceValue;
                }
                if (!stringToObject(value.clas, expected).toString().equals(
-                     destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, " "))) {
+                     destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, " ")) && !destArtifacts[i].isDeleted()) {
                   System.err.println("Expected the " + value.attributeName + " attribute to have a value of " + stringToObject(
                         value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
                         value.attributeName, " ") + " for Artifact " + destArtifacts[i].getArtId() + " conflict index: " + i);
@@ -693,6 +693,7 @@ public class ConflictTestManager {
 
    @SuppressWarnings( {"unchecked"})
    public static Object stringToObject(Class clas, String value) {
+
       if (clas.equals(BooleanAttribute.class)) {
          return new Boolean(value.equals(BooleanAttribute.booleanChoices[0]));
       }
@@ -708,6 +709,6 @@ public class ConflictTestManager {
          if (value.equals("")) return new Double(0);
          return new Double(value);
       }
-      return value;
-   }
+         return value;
+      }
 }
