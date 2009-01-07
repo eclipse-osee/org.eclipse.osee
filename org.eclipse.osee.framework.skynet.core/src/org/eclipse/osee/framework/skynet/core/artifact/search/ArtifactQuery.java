@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
@@ -265,6 +266,11 @@ public class ArtifactQuery {
 
    public static List<Artifact> getArtifactsFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName, attributeValue)).getArtifacts(
+            300, null);
+   }
+
+   public static List<Artifact> getArtifactsFromAttribute(AttributeType attributeType, String attributeValue, Branch branch) throws OseeCoreException {
+      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeType, attributeValue)).getArtifacts(
             300, null);
    }
 

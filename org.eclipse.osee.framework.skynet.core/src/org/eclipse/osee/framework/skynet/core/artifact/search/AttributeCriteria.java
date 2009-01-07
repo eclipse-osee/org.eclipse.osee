@@ -47,6 +47,10 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       this(attributeTypeName, value, false);
    }
 
+   public AttributeCriteria(AttributeType attributeType, String value) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      this(attributeType, value, null, false, Operator.EQUAL);
+   }
+
    /**
     * Constructor for search criteria that finds an attribute of the given type and any value (i.e. checks for
     * existence)
@@ -71,7 +75,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @throws OseeDataStoreException
     */
    public AttributeCriteria(String attributeTypeName, Collection<String> values) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      this(attributeTypeName, null, values, false, Operator.EQUAL);
+      this(toAttributeType(attributeTypeName), null, values, false, Operator.EQUAL);
    }
 
    /**
@@ -86,7 +90,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @throws OseeDataStoreException
     */
    public AttributeCriteria(String attributeTypeName, Collection<String> values, Operator operator) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      this(attributeTypeName, null, values, false, operator);
+      this(toAttributeType(attributeTypeName), null, values, false, operator);
    }
 
    /**
@@ -100,13 +104,15 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @throws OseeDataStoreException
     */
    public AttributeCriteria(String attributeTypeName, String value, boolean historical) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      this(attributeTypeName, value, null, historical, Operator.EQUAL);
+      this(toAttributeType(attributeTypeName), value, null, historical, Operator.EQUAL);
    }
 
-   private AttributeCriteria(String attributeTypeName, String value, Collection<String> values, boolean historical, Operator operator) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      if (attributeTypeName != null) {
-         this.attributeType = AttributeTypeManager.getType(attributeTypeName);
-      }
+   private static AttributeType toAttributeType(String attributeTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      return attributeTypeName == null ? null : AttributeTypeManager.getType(attributeTypeName);
+   }
+
+   public AttributeCriteria(AttributeType attributeType, String value, Collection<String> values, boolean historical, Operator operator) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      this.attributeType = attributeType;
 
       if (values == null) {
          this.value = value;

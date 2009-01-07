@@ -1182,4 +1182,12 @@
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.DatastoreStatistics">
     </Operation>
  </extension>
+ <extension
+       id="DeleteUnneededUnspecifiedAttributes"
+       name="DeleteUnneededUnspecifiedAttributes"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteUnneededUnspecifiedAttributes">
+    </Operation>
+ </extension>
 </plugin>
