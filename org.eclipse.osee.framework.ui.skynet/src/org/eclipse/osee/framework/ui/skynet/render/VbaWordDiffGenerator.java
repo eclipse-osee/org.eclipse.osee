@@ -72,7 +72,6 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          return false;
       }
       this.merge = merge;
-      this.diffPath = diffPath;
       builder.append("   oWord.Visible = False\n");
       builder.append("    ver1 = \"");
       builder.append(baseFile.getLocation().toOSString());
@@ -82,11 +81,9 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       builder.append(newerFile.getLocation().toOSString());
       builder.append("\"\n");
 
-      if (merge) {
-         builder.append("    diffPath = \"");
-         builder.append(diffPath);
-         builder.append("\"\n\n");
-      }
+      builder.append("    diffPath = \"");
+      builder.append(diffPath);
+      builder.append("\"\n\n");
 
       builder.append("    set baseDoc = oWord.Documents.Open (ver1)\n");
 
@@ -109,12 +106,10 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       finalized = true;
       if (show) {
          builder.append("    visible = True\n");
+         builder.append("         mainDoc.SaveAs diffPath, wdFormatXML, , , False\n\n");
       }
       builder.append(tail);
       if (!show && !merge) {
-         builder.append("         diffPath = \"");
-         builder.append(diffPath);
-         builder.append("\"\n\n");
          builder.append("         mainDoc.SaveAs diffPath, wdFormatXML, , , False\n\n");
       }
       builder.append(tail2);
