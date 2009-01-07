@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -132,7 +133,7 @@ public class XDate extends XWidget {
       labelWidget = new Label(parent, SWT.NONE);
       labelWidget.setText(label + ": ");
       dateCombo = new CalendarCombo(parent, SWT.BORDER);
-      dateCombo.setEnabled(true);
+      dateCombo.setEnabled(isEditable());
       GridData gd = new GridData();
       gd.widthHint = 100;
       if (date != null) dateCombo.setDate(date);
