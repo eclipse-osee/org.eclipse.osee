@@ -34,6 +34,6 @@ public class AtsTeamDefintionToWorkflowTest extends TestCase {
             error = true;
          }
       }
-      assertFalse(error);
+      assertFalse("See syserr message(s)", error);
    }
 }
