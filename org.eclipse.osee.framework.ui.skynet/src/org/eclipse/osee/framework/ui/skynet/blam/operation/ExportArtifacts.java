@@ -37,7 +37,7 @@ import org.eclipse.swt.program.Program;
  */
 public class ExportArtifacts extends AbstractBlam {
    private CharBackedInputStream charBak;
-   private ISheetWriter excelWriter; //attributeType, columnIndex
+   private ISheetWriter excelWriter;
    private AttributeType[] attributeColumns;
    private AttributeType nameAttributeType;
    private static final int NUM_FIXED_COLUMNS = 4;
