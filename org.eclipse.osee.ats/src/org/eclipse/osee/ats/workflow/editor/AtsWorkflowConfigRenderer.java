@@ -33,6 +33,14 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getId()
+    */
+   @Override
+   public String getId() {
+      return "org.eclipse.osee.ats.editor.AtsWorkflowConfigRenderer";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
     */
    @Override

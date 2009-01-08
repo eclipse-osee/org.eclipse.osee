@@ -38,6 +38,14 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getId()
+    */
+   @Override
+   public String getId() {
+      return "org.eclipse.osee.ats.editor.AtsWorkflowRenderer";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
     */
    @Override
@@ -78,6 +86,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
+   @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact instanceof IATSArtifact) {
          return PRESENTATION_SUBTYPE_MATCH;
