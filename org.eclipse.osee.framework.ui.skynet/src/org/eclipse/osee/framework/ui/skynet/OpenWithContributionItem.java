@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
@@ -63,7 +62,7 @@ public class OpenWithContributionItem extends CompoundContributionItem {
          for (IRenderer render : commonRenders) {
             CommandContributionItem contributionItem = null;
 
-            if (render instanceof WordTemplateRenderer) {
+            if (render instanceof WordRenderer) {
                contributionItem =
                      new CommandContributionItem(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
                            render.getCommandId(), render.getCommandId(), Collections.emptyMap(),

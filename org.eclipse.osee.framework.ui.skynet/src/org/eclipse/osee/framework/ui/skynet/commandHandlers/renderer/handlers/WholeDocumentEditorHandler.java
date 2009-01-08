@@ -15,13 +15,13 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
  */
-public class WordEditorHandler extends AbstractEditorHandler {
+public class WholeDocumentEditorHandler extends AbstractEditorHandler {
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
 
    /*
@@ -33,12 +33,12 @@ public class WordEditorHandler extends AbstractEditorHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
          try {
-            WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
+            WholeDocumentRenderer renderer = new WholeDocumentRenderer(WholeDocumentRenderer.RENDERER_EXTENSION);
             renderer.open(artifacts);
             dispose();
 
          } catch (OseeCoreException ex) {
-            OseeLog.log(WordEditorHandler.class, Level.SEVERE, ex);
+            OseeLog.log(WholeDocumentEditorHandler.class, Level.SEVERE, ex);
          }
       }
       return null;

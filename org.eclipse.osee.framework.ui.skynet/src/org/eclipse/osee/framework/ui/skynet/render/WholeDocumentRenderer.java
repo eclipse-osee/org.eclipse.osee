@@ -32,6 +32,8 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
  */
 public class WholeDocumentRenderer extends WordRenderer {
 
+   public static final String RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer";
+
    /**
     * @param rendererId
     */
@@ -45,6 +47,14 @@ public class WholeDocumentRenderer extends WordRenderer {
    @Override
    public WholeDocumentRenderer newInstance() throws OseeCoreException {
       return new WholeDocumentRenderer(getId());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#commandId()
+    */
+   @Override
+   public String getCommandId() {
+      return "org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command";
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {

@@ -48,6 +48,10 @@
          name="MS Word Edit">
    </command>
    <command
+         id="org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command"
+         name="MS Word Edit">
+   </command>
+   <command
          id="org.eclipse.osee.framework.ui.skynet.nativeeditor.command"
          name="Native Editor">
    </command>
@@ -102,6 +106,10 @@
             </count>
          </with>
       </enabledWhen>
+   </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.WholeDocumentEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command">
    </handler>
 </extension>
 	<extension point="org.eclipse.ui.commandImages">
