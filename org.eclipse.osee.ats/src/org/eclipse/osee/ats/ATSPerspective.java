@@ -48,6 +48,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
       layout.addShowViewShortcut("osee.admin.AdminView");
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
+      layout.addShowViewShortcut("org.eclipse.ui.views.PropertySheet");
 
    }
 
