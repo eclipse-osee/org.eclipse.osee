@@ -96,7 +96,12 @@ public class RendererManager {
             Constructor<IRenderer> constructor = clazz.getConstructor(new Class[] {String.class});
             IRenderer renderer =
                   constructor.newInstance(new Object[] {element.getDeclaringExtension().getUniqueIdentifier()});
-            renderers.put(renderer.getId(), renderer);
+            if (renderers.containsKey(renderer.getId())) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                     "Multiple renderers found with id [" + renderer.getId() + "]");
+            } else {
+               renderers.put(renderer.getId(), renderer);
+            }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          } catch (NoClassDefFoundError er) {
