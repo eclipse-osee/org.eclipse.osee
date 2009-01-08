@@ -43,7 +43,8 @@ public class SMARelationsHyperlinkComposite extends Composite {
    private static AtsRelation sides[] =
          new AtsRelation[] {AtsRelation.TeamWorkflowToReview_Review, AtsRelation.TeamWorkflowToReview_Team,
                AtsRelation.Supercedes_Superceded, AtsRelation.Supercedes_Supercedes,
-               AtsRelation.SupportingInfo_SupportedBy, AtsRelation.SupportingInfo_SupportingInfo};
+               AtsRelation.SupportingInfo_SupportedBy, AtsRelation.SupportingInfo_SupportingInfo,
+               AtsRelation.Dependency__Artifact, AtsRelation.Dependency__Dependency};
    private SMAManager smaMgr;
    private Label actionableItemsLabel;
 

@@ -64,7 +64,9 @@ public enum AtsRelation implements IRelationEnumeration {
    //
    WorkItem__Parent(true, "Work Item"),
    WorkItem__Child(false, "Work Item"),
-   //
+   //   
+   Dependency__Dependency(false, "Dependency"),
+   Dependency__Artifact(true, "Dependency"),
    SubscribedUser_Artifact(true, "SubscribedUser"),
    SubscribedUser_User(false, "SubscribedUser"),
    FavoriteUser_Artifact(true, "FavoriteUser"),
