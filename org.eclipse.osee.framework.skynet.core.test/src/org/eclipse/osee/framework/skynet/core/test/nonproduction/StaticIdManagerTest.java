@@ -11,7 +11,9 @@ import junit.framework.TestCase;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
@@ -51,6 +53,18 @@ public class StaticIdManagerTest extends TestCase {
          }
          assertTrue("Expected 0 artifacts; Returned " + artifacts.size(), artifacts.size() == 0);
       }
+   }
+
+   public void testStaticIdsGettingCached() throws OseeCoreException {
+      String staticId = "org." + GUID.generateGuidStr();
+      Collection<Artifact> artifacts = ArtifactCache.getArtifactsByStaticId(staticId);
+      assertTrue("Should be 0; Returned " + artifacts.size(), artifacts.size() == 0);
+      Artifact art = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
+      art.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, staticId);
+      art.persistAttributesAndRelations();
+
+      artifacts = ArtifactCache.getArtifactsByStaticId(staticId);
+      assertTrue("Should be 1; Returned " + artifacts.size(), artifacts.size() == 1);
    }
 
    /**

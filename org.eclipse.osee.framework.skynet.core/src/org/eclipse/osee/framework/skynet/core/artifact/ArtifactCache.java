@@ -81,7 +81,9 @@ public class ArtifactCache {
 
    public static Collection<Artifact> getArtifactsByStaticId(String staticId) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
-      for (Artifact artifact : instance.staticIdArtifactCache.getValues(staticId)) {
+      Collection<Artifact> cachedArts = instance.staticIdArtifactCache.getValues(staticId);
+      if (cachedArts == null) return artifacts;
+      for (Artifact artifact : cachedArts) {
          if (!artifact.isDeleted()) artifacts.add(artifact);
       }
       return artifacts;
