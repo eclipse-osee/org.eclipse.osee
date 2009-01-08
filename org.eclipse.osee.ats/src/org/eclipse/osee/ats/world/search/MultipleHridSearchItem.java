@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -84,11 +83,6 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          }
       }
 
-      // This does artId search
-      for (Artifact art : ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
-            BranchManager.getDefaultBranch(), false)) {
-         artifacts.add(art);
-      }
       // This does hrid/guid search
       for (Artifact art : ArtifactQuery.getArtifactsFromIds(ids, AtsPlugin.getAtsBranch())) {
          artifacts.add(art);

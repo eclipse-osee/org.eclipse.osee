@@ -56,7 +56,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       try {
-         final MultipleHridSearchItem srch = new MultipleHridSearchItem();
+         final MultipleHridSearchItem srch = new MultipleHridSearchItem(getName());
          srch.performUI(SearchType.Search);
          if (srch.isCancelled()) return;
          String name = "Open Change Report by ID: \"" + srch.getEnteredIds() + "\"";
