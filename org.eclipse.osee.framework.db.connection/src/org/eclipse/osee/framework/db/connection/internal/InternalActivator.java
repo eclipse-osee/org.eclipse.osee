@@ -37,7 +37,7 @@ public class InternalActivator implements BundleActivator {
       return (IDbConnectionInformation) instance.dbConnectionInfoTracker.waitForService(TIMEOUT);
    }
 
-   public static IApplicationDatabaseManager getApplicationDatabaseManager() throws InterruptedException {
+   private static IApplicationDatabaseManager getApplicationDatabaseManager() throws InterruptedException {
       return (IApplicationDatabaseManager) instance.applicationDbManagerTracker.waitForService(TIMEOUT);
    }
 
