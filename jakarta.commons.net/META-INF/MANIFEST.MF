@@ -18,3 +18,4 @@ Export-Package: org.apache.commons.net,
  org.apache.commons.net.tftp,
  org.apache.commons.net.util
 Bundle-Vendor: Apache Foundation
+Bundle-ActivationPolicy: lazy

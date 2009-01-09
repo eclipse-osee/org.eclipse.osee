@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Text Fragment
-Bundle-SymbolicName: org.eclipse.osee.ats.test
+Bundle-SymbolicName: org.eclipse.osee.ats.test;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.osee.ats;bundle-version="0.2.0"

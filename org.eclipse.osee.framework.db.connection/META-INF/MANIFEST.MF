@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.eclipse.osee.framework.db.connection;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.db.connection.internal.InternalActivator
 Bundle-Vendor: Boeing
-Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.xml,
@@ -29,3 +28,4 @@ Service-Component: OSGI-INF/db.connection.consumer.xml,
  OSGI-INF/db.connection.contributor.consumer.xml,
  OSGI-INF/application.db.provider.consumer.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

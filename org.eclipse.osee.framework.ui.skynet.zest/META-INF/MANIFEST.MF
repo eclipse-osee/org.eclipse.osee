@@ -16,3 +16,4 @@ Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.logging
+Bundle-ActivationPolicy: lazy

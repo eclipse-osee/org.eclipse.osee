@@ -1,0 +1,70 @@
+Paul Meyers - manager of advances services group
+development process to produce high integrity software
+everything must be requirement driven
+source, test, test output, coverage output
+
+http://www.stsc.hill.af.mil/crosstalk/2008/11/0811FromtheSponsor.html
+Ms. Kristen Baldwin serves as Deputy Director for Software Engineering and System Assurance in the Office of the Under Secretary of Defense for Acquisition, Technology and Logistics (OUSD (AT&L)).
+
+gps
+
+gnat bench
+
+use ECORE for meta-data model
+Doug Gaff and Wind River
+
+Open DO-178B
+
+config set of DO-178B workflows into OSEE
+import the DO-178B into OSEE
+integrate output from project coverage
+
+___________________________________
+2008-11-20
+Bruce Lewis worked with SEI - came up with an idea with AADL - University in Pairs working on AADL OSATE
+
+DO-178x categories:
+	development tools - has possibility of introducing 
+	verification tools - 
+	applications
+
+Willie Fizpatrick
+
+Topcased to become and Eclippse project
+
+
+need:  PSAC, SAS, DTP, 66 objectives,
+software development plan can be the PSAC
+Configuration Management Plan
+Plan of Software Aspects of Certification
+workflows should have a review with a checklist of what should be in the document
+get DO-178B: www.avionics.com
+DO-254
+DO-248: clarification
+DO-278: for ground systems
+CAS papers of FAA website
+ 
+Vance Hilderman and Tony Baghai
+
+
+
+
+
+Egineering Process Group: CCMI
+__________________________________
+
+Test Suite - parent of test cases and/or test suites
+
+Test Case - test program the traces to the software requiements and verifies the code unit
+
+Code Unit - application code that traces to the software requiements
+
+
+need attribute to reference workspace file
+on edit launch the predefined workspace editor
+preview should translate to html
+
+inside test case use an annotation like "@Interesting 1" and "@InterestingEnd 1" to mark section of file
+
+
+fitnesse ochem@adacore.com

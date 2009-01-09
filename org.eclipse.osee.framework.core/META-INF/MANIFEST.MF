@@ -4,7 +4,7 @@ Bundle-Name: OSEE Core Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.core
 Bundle-Version: 0.5.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.CoreActivator
-Bundle-Vendor: Boeing
+Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.exception,

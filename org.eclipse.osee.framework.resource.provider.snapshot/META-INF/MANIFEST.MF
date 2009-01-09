@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Snapshot Provider Plug-in
-Bundle-SymbolicName: org.eclipse.osee.framework.resource.provider.snapshot
+Bundle-SymbolicName: org.eclipse.osee.framework.resource.provider.snapshot;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.resource.provider.snapshot.Activator
 Bundle-Vendor: Boeing

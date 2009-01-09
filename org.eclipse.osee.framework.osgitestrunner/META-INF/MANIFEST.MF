@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osgitest Plug-in
-Bundle-SymbolicName: org.eclipse.osee.framework.osgitest
+Bundle-SymbolicName: org.eclipse.osee.framework.osgitest;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.eclipse.osee.framework.osgitestrunner.Activator
 Service-Component: OSGI-INF/testRunner.xml

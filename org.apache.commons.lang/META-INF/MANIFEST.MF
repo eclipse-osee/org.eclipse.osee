@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apache Commons Lang
-Bundle-SymbolicName: org.apache.commons.lang
+Bundle-SymbolicName: org.apache.commons.lang;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: The Apache Software Foundation
 Export-Package: org.apache.commons.lang;uses:="org.apache.commons.lang.exception",
@@ -13,3 +13,4 @@ Export-Package: org.apache.commons.lang;uses:="org.apache.commons.lang.exception
  org.apache.commons.lang.time
 Bundle-ClassPath: lib/commons-lang-2.1.jar,
  .
+Bundle-ActivationPolicy: lazy
