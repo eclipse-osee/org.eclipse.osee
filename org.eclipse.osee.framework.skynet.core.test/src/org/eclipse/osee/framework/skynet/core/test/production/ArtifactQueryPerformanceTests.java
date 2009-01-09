@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder;
 
 /**
- * @author b1528444
+ * @author Andrew M Finkbeiner
  */
 public class ArtifactQueryPerformanceTests extends TestCase {
 
@@ -135,8 +135,8 @@ public class ArtifactQueryPerformanceTests extends TestCase {
             result.size()));
       assertTrue("No artifacts found", result.size() > 0);
       assertTrue(String.format(
-            "Elapsed time for testGetArtifactsByArtTypes took %dms.  It should take less than 1100ms.", elapsedTime),
-            elapsedTime < 1100);
+            "Elapsed time for testGetArtifactsByArtTypes took %dms.  It should take less than 1600ms.", elapsedTime),
+            elapsedTime < 1600);
    }
 
    public void testGetArtifactsByArtTypesAllowDeleted() throws OseeCoreException {
@@ -154,8 +154,8 @@ public class ArtifactQueryPerformanceTests extends TestCase {
             elapsedTime, result.size()));
       assertTrue("No artifacts found", result.size() > 0);
       assertTrue(String.format(
-            "Elapsed time for testGetArtifactsByArtTypesAllowDeleted took %dms.  It should take less than 3750ms.",
-            elapsedTime), elapsedTime < 3750);
+            "Elapsed time for testGetArtifactsByArtTypesAllowDeleted took %dms.  It should take less than 4300ms.",
+            elapsedTime), elapsedTime < 4300);
    }
 
    public void testLoadAllBranch() throws OseeCoreException {
