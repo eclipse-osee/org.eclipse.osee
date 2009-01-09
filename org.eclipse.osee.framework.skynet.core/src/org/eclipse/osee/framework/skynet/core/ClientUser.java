@@ -65,10 +65,12 @@ final class ClientUser {
                if (ClientSessionManager.isUserCreationRequired()) {
                   SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
                   UserManager.createMainUser(ClientSessionManager.getCurrentUserInfo(), transaction);
+                  setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
                   transaction.execute();
                   ClientSessionManager.clearUserCreationRequired();
+               } else {
+                  setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
                }
-               setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
             }
          } catch (UserNotInDatabase ex) {
             executeGuestLogin();
