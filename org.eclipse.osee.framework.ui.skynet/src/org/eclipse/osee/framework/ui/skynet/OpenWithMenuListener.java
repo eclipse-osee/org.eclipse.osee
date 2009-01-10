@@ -96,6 +96,8 @@ public class OpenWithMenuListener implements MenuListener {
                         data.getOption()));
                }
             }
+
+            new MenuItem(parentMenu, SWT.SEPARATOR);
          }
 
          for (IRenderer renderer : commonRenders) {

@@ -55,6 +55,18 @@
          id="org.eclipse.osee.framework.ui.skynet.nativeeditor.command"
          name="Native Editor">
    </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.wordpreview.command"
+         name="MS Word Preview">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command"
+         name="MS Word Preview with children">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.tispreview.command"
+         name="MS Word TIS Preview">
+   </command>
 </extension>
 <extension
       id="Open With Handlers"
@@ -110,6 +122,50 @@
    <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.WholeDocumentEditorHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWordHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.wordpreview.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWithChildWordHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewTisHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.tispreview.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
    </handler>
 </extension>
 	<extension point="org.eclipse.ui.commandImages">

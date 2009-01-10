@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.template.WordTemplateMan
  */
 public class TisRenderer extends WordTemplateRenderer {
    private ArrayList<PreviewRendererData> previewData;
+   public static String RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.tis";
 
    /**
     * @param rendererId
@@ -41,7 +42,8 @@ public class TisRenderer extends WordTemplateRenderer {
       super(rendererId);
 
       previewData = new ArrayList<PreviewRendererData>(1);
-      previewData.add(new PreviewRendererData("MS Word TIS Preview"));
+      previewData.add(new PreviewRendererData("MS Word TIS Preview",
+            "org.eclipse.osee.framework.ui.skynet.tispreview.command", WordRenderer.getImageDescriptor()));
    }
 
    /* (non-Javadoc)

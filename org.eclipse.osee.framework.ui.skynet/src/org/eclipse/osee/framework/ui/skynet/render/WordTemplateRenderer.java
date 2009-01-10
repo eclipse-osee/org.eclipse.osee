@@ -85,8 +85,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       super(rendererId);
 
       previewData = new ArrayList<PreviewRendererData>(2);
-      previewData.add(new PreviewRendererData("MS Word Preview"));
+      previewData.add(new PreviewRendererData("MS Word Preview",
+            "org.eclipse.osee.framework.ui.skynet.wordpreview.command", WordRenderer.getImageDescriptor()));
       previewData.add(new PreviewRendererData("MS Word Preview with children",
+            "org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command", WordRenderer.getImageDescriptor(),
             ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
    }
 

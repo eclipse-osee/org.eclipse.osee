@@ -23,6 +23,7 @@ import org.eclipse.ui.PlatformUI;
 public abstract class AbstractEditorHandler extends CommandHandler {
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    protected List<Artifact> artifacts;
+   ISelectionProvider selectionProvider;
 
    protected PermissionEnum getPermissionLevel() {
       return PermissionEnum.READ;
@@ -35,8 +36,7 @@ public abstract class AbstractEditorHandler extends CommandHandler {
       }
       boolean isEnabled = false;
 
-      ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+      selectionProvider = AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
