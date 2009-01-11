@@ -62,10 +62,14 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWordHandler;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
+import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.search.report.RelationMatrixExportJob;
 import org.eclipse.osee.framework.ui.skynet.search.report.ReportJob;
@@ -165,6 +169,8 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
+      createOpenWordPreviewChildrenHandler(menuManager, viewer);
+      createOpenWordPreviewHandler(menuManager, viewer);
       createOpenWordEditorHandler(menuManager, viewer);
       createOpenNativeEditorHandler(menuManager, viewer);
       createOpenRdtEditorHandler(menuManager, viewer);
@@ -300,6 +306,79 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                   break;
                }
             }
+            return isEnabled;
+         }
+      });
+   }
+
+   private String addOpenWordPreviewChildrenHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem command =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command",
+                  getSite(), null, null, null, null, null, null, null, null);
+      menuManager.add(command);
+
+      return command.getId();
+   }
+
+   private void createOpenWordPreviewChildrenHandler(MenuManager menuManager, final TableViewer viewer) {
+      handlerService.activateHandler(addOpenWordPreviewChildrenHandler(menuManager, viewer),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
+            try {
+               renderer.setOptions(new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
+               renderer.preview(getSelectedArtifacts(viewer));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(PreviewWordHandler.class, Level.SEVERE, ex);
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabledWithException() throws OseeCoreException {
+            boolean isEnabled = true;
+            List<Artifact> artifacts = getSelectedArtifacts(viewer);
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+            return isEnabled;
+         }
+      });
+   }
+
+   /**
+    * @param menuManager
+    * @param viewer
+    */
+   private String addOpenWordPreviewHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem command =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.wordpreview.command", getSite(),
+                  null, null, null, null, null, null, null, null);
+      menuManager.add(command);
+
+      return command.getId();
+   }
+
+   private void createOpenWordPreviewHandler(MenuManager menuManager, final TableViewer viewer) {
+      handlerService.activateHandler(addOpenWordPreviewHandler(menuManager, viewer),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
+            try {
+               renderer.preview(getSelectedArtifacts(viewer));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(PreviewWordHandler.class, Level.SEVERE, ex);
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabledWithException() throws OseeCoreException {
+            boolean isEnabled = true;
+            List<Artifact> artifacts = getSelectedArtifacts(viewer);
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
             return isEnabled;
          }
       });
