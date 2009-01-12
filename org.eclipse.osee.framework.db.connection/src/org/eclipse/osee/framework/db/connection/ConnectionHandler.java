@@ -200,7 +200,7 @@ public final class ConnectionHandler {
       return runCallableStatementFetchInt(new ConnectionHandlerStatement(connection), query, data);
    }
 
-   private static int runCallableStatementFetchInt(ConnectionHandlerStatement chStmt, String query, Object... data) throws OseeDataStoreException {
+   public static int runCallableStatementFetchInt(ConnectionHandlerStatement chStmt, String query, Object... data) throws OseeDataStoreException {
       try {
          chStmt.runCallableStatement(query, data);
          return chStmt.getCallableInt(1);
