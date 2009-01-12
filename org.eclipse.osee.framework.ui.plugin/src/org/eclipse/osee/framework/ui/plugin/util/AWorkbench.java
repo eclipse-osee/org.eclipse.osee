@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -41,6 +44,26 @@ public class AWorkbench {
 
    public static IViewPart getView(String viewId) {
       return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId);
+   }
+
+   public static List<IEditorReference> getEditors(String editorId) {
+      List<IEditorReference> editors = new ArrayList<IEditorReference>();
+      for (IEditorReference editor : getEditors()) {
+         if (editor.getId().equals(editorId)) {
+            editors.add(editor);
+         }
+      }
+      return editors;
+   }
+
+   public static List<IEditorReference> getEditors() {
+      List<IEditorReference> editors = new ArrayList<IEditorReference>();
+      for (IWorkbenchPage page : PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPages()) {
+         for (IEditorReference editor : page.getEditorReferences()) {
+            editors.add(editor);
+         }
+      }
+      return editors;
    }
 
    public static void popup(final String title, final String message) {

@@ -99,7 +99,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    private RelationsComposite relationsComposite;
    private AttributesComposite attributesComposite;
    private AtsMetricsComposite metricsComposite;
-   private final MultiPageEditorPart editor;
    public static enum PriviledgedEditMode {
       Off, CurrentState, Global
    };
@@ -108,7 +107,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    public SMAEditor() {
       super();
-      editor = this;
    }
 
    /*
@@ -550,6 +548,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public void closeEditor() {
+      final MultiPageEditorPart editor = this;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()

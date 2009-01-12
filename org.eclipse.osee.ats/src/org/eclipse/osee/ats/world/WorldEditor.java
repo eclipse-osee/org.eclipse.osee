@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -31,9 +32,11 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * @author Donald G. Dunne
@@ -72,6 +75,49 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
             }
          }
       }, forcePend);
+   }
+
+   public void closeEditor() {
+      final MultiPageEditorPart editor = this;
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            AWorkbench.getActivePage().closeEditor(editor, false);
+         }
+      });
+   }
+
+   public static Collection<WorldEditor> getEditors() {
+      final List<WorldEditor> editors = new ArrayList<WorldEditor>();
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               editors.add((WorldEditor) editor.getEditor(false));
+            }
+         }
+      }, true);
+      return editors;
+   }
+
+   public static void closeAll() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               AWorkbench.getActivePage().closeEditor((editor.getEditor(false)), false);
+            }
+         }
+      });
    }
 
    @Override

@@ -7,7 +7,6 @@ package org.eclipse.osee.ats.test.testDb;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import junit.framework.TestCase;
@@ -26,6 +25,7 @@ import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
@@ -56,16 +56,15 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       runGeneralLoadingTest("My World", ActionArtifact.class, 6, null);
    }
 
-   public void testMyFavorites() throws Exception {
+   public void testMyFavoritesAndMyRecentlyVisited() throws Exception {
       // Load My Favorites (test My Favorites and use results to test My Recently Visited
       Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
       assertTrue(arts.size() == 3);
+      // Open all three favorites
       for (Artifact artifact : arts)
          SMAEditor.editArtifact(artifact);
-      System.err.println("TBD");
-      // Clear WorldView
-      //      WorldView.loadIt("", new ArrayList<Artifact>(), TableLoadOption.ForcePend);
-      //      assertTrue(WorldView.getLoadedArtifacts().size() == 0);
+      // Test that recently visited returns all three
+      runGeneralLoadingTest("My Recently Visited", TeamWorkFlowArtifact.class, 3, null);
    }
 
    public void testMyReviews() throws Exception {
@@ -77,14 +76,6 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
 
    public void testMySubscribed() throws Exception {
       runGeneralLoadingTest("My Subscribed", TeamWorkFlowArtifact.class, 1, null);
-   }
-
-   public void testMyWorkflows() throws Exception {
-      runGeneralLoadingTest("My Team Workflows", TeamWorkFlowArtifact.class, 9, null);
-   }
-
-   public void testMyTasks() throws Exception {
-      runGeneralLoadingTest("My Tasks (WorldView)", TaskArtifact.class, DemoDbTasks.getNumTasks(), null);
    }
 
    public void testMyOriginator() throws Exception {
@@ -280,17 +271,24 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    }
 
    public Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, Class<?> clazz, int numOfType, User user) throws Exception {
+      // Close all open world editors
+      WorldEditor.closeAll();
+      // Find the correct navigate item
       if (user != null && (item instanceof SearchNavigateItem)) {
          if (((SearchNavigateItem) item).getWorldSearchItem() instanceof UserSearchItem) {
             ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(user);
          }
       }
-      //      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      //      Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      //      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);
-      //      return WorldView.getLoadedArtifacts();
-      System.err.println("TBD");
-      return Collections.emptyList();
+      // Simulate double-click of navigate item
+      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      // Retrieve results from opened editor and test
+      Collection<WorldEditor> editors = WorldEditor.getEditors();
+      assertTrue("Expecting 1 editor open, currently " + editors.size(), editors.size() == 1);
+
+      WorldEditor worldEditor = editors.iterator().next();
+      Collection<Artifact> arts = worldEditor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);
+      return arts;
    }
 
 }

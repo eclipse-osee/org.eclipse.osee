@@ -31,6 +31,8 @@ public class NavigateTestUtil {
          for (XNavigateItem item : AtsNavigateViewItems.getInstance().getSearchNavigateItems())
             NavigateTestUtil.createNameToNavItemMap(item, nameToNavItem);
       }
+      if (nameToNavItem.get(itemName) == null) throw new IllegalStateException(
+            "No items of name \"" + itemName + "\" found");
       if (nameToNavItem.get(itemName).size() > 1) throw new IllegalStateException(
             "Multiple items of name \"" + itemName + "\" found; use getAtsNavigateItems");
       return nameToNavItem.get(itemName).iterator().next();
@@ -51,7 +53,7 @@ public class NavigateTestUtil {
       String expectedStr =
             "\"" + name + "\"   Expected: " + expectedNumOfType + "   Found: " + actualNumOfType + "   Of Type: " + clazz;
       if (expectedNumOfType != actualNumOfType)
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,  expectedStr, null);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, expectedStr, null);
       else
          OseeLog.log(AtsPlugin.class, Level.INFO, expectedStr);
       TestCase.assertTrue(expectedStr, actualNumOfType == expectedNumOfType);
