@@ -98,7 +98,7 @@ public class OpenWithMenuListener implements MenuListener {
                }
             }
 
-            if (previewRenderers.isEmpty()) {
+            if (!previewRenderers.isEmpty()) {
                new MenuItem(parentMenu, SWT.SEPARATOR);
             }
          }
