@@ -48,7 +48,15 @@ public class XNavigateComposite extends Composite {
    protected final XNavigateViewItems navigateViewItems;
    private List<XNavigateItem> items;
    public static enum TableLoadOption {
-      None, ForcePend, ClearLastSearchItem, NoUI
+      None,
+      // Wait for table to be loaded before returning; for test only
+      ForcePend,
+      //
+      ClearLastSearchItem,
+      // Don't perform UI check, just search
+      NoUI,
+      // Don't create fresh copy of search item; for test only
+      DontCopySearchItem
    };
 
    /**

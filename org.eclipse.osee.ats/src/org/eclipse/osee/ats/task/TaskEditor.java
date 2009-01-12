@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
@@ -83,6 +84,36 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    public boolean isSaveOnCloseNeeded() {
       return isDirty();
+   }
+
+   public static Collection<TaskEditor> getEditors() {
+      final List<TaskEditor> editors = new ArrayList<TaskEditor>();
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               editors.add((TaskEditor) editor.getEditor(false));
+            }
+         }
+      }, true);
+      return editors;
+   }
+
+   public static void closeAll() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               AWorkbench.getActivePage().closeEditor((editor.getEditor(false)), false);
+            }
+         }
+      });
    }
 
    public void setTableTitle(final String title, final boolean warning) {

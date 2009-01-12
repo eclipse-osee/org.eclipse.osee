@@ -31,17 +31,9 @@ public class AtsNavigateItemsToMassEditorTest extends TestCase {
       DemoTestUtil.setUpTest();
    }
 
-   public void testShowTeamVersions() throws Exception {
+   public void testTeamVersions() throws Exception {
       closeTaskEditors();
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Team Versions");
-      ((MassEditTeamVersionItem) item).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
-            Arrays.asList("SAW SW")).iterator().next());
-      handleGeneralDoubleClickAndTestResults(item, VersionArtifact.class, 3);
-   }
-
-   public void testEditVersions() throws Exception {
-      closeTaskEditors();
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Edit Versions");
+      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Versions");
       ((MassEditTeamVersionItem) item).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
             Arrays.asList("SAW SW")).iterator().next());
       handleGeneralDoubleClickAndTestResults(item, VersionArtifact.class, 3);
