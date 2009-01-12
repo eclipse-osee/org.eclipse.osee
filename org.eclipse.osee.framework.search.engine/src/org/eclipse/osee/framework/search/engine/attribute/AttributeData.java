@@ -12,11 +12,12 @@ package org.eclipse.osee.framework.search.engine.attribute;
 
 import java.net.URI;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeData {
+public class AttributeData implements IAttributeLocator {
    private final static String EMPTY_STRING = "";
    private int artId;
    private long gammaId;

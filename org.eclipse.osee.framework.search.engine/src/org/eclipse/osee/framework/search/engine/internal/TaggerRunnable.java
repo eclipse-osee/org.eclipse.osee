@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.JoinItem;
-import org.eclipse.osee.framework.core.data.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -27,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
+import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 import org.eclipse.osee.framework.search.engine.data.SearchTag;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
@@ -134,23 +134,29 @@ class TaggerRunnable implements Runnable {
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          Collection<AttributeData> attributeDatas = AttributeDataStore.getAttribute(connection, getTagQueueQueryId());
          try {
-            deleteOldSearchTags(connection, attributeDatas);
-            for (AttributeData attributeData : attributeDatas) {
-               long startItemTime = System.currentTimeMillis();
-               this.currentTag = new SearchTag(attributeData.getGammaId());
-               this.searchTags.add(this.currentTag);
-               try {
-                  Activator.getTaggerManager().tagIt(attributeData, this);
-                  checkSizeStoreIfNeeded(connection);
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", this.currentTag), ex);
-               } finally {
-                  notifyOnAttributeTagComplete(this.currentTag.getGammaId(), this.currentTag.getTotalTags(),
-                        (System.currentTimeMillis() - startItemTime));
-                  this.currentTag = null;
+            if (!attributeDatas.isEmpty()) {
+               SearchTagDataStore.deleteTags(connection,
+                     attributeDatas.toArray(new IAttributeLocator[attributeDatas.size()]));
+               for (AttributeData attributeData : attributeDatas) {
+                  long startItemTime = System.currentTimeMillis();
+                  this.currentTag = new SearchTag(attributeData.getGammaId());
+                  this.searchTags.add(this.currentTag);
+                  try {
+                     Activator.getTaggerManager().tagIt(attributeData, this);
+                     checkSizeStoreIfNeeded(connection);
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", this.currentTag),
+                           ex);
+                  } finally {
+                     notifyOnAttributeTagComplete(this.currentTag.getGammaId(), this.currentTag.getTotalTags(),
+                           (System.currentTimeMillis() - startItemTime));
+                     this.currentTag = null;
+                  }
                }
+               store(connection, this.searchTags);
+            } else {
+               System.out.println(String.format("Empty gamma query id: %s", getTagQueueQueryId()));
             }
-            store(connection, this.searchTags);
             JoinUtility.deleteQuery(connection, JoinItem.TAG_GAMMA_QUEUE, getTagQueueQueryId());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags - tagQueueQueryId [%d]",
@@ -177,19 +183,6 @@ class TaggerRunnable implements Runnable {
          if (this.currentTag != null) {
             this.currentTag.addTag(codedTag);
             notifyOnAttributeAddTagEvent(this.currentTag.getGammaId(), word, codedTag);
-         }
-      }
-
-      private void deleteOldSearchTags(OseeConnection connection, Collection<AttributeData> attributeDatas) throws OseeDataStoreException {
-         TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
-         try {
-            for (AttributeData attributeData : attributeDatas) {
-               txJoin.add((int) attributeData.getGammaId(), -1);
-            }
-            txJoin.store(connection);
-            SearchTagDataStore.deleteTags(connection, txJoin.getQueryId());
-         } finally {
-            txJoin.delete(connection);
          }
       }
 

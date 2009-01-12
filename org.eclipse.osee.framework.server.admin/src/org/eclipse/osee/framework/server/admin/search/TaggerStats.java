@@ -40,7 +40,7 @@ class TaggerStats extends BaseCmdWorker {
       buffer.append(String.format("Attribute with most tags - %s\n", toString(stats.getMostTagsTask())));
       buffer.append(String.format("Total - QueryIds: [%d] Attributes: [%d] Tags: [%d]\n",
             stats.getTotalQueryIdsProcessed(), stats.getTotalAttributesProcessed(), stats.getTotalTags()));
-      buffer.append(String.format("Total Query Ids Waiting to be Processing - [%d]\n", tagger.getWorkersInQueue()));
+      buffer.append(String.format("Total Query Ids Waiting to be Processed - [%d]\n", tagger.getWorkersInQueue()));
       buffer.append(String.format("Total Query Ids in Tag Queue Table - [%d]\n", stats.getTotalQueryIdsInQueue()));
       buffer.append(String.format("Total Tags in System - [%d]\n\n", stats.getTagsInSystem()));
 

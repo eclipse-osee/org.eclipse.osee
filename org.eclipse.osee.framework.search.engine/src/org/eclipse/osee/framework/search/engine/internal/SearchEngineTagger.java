@@ -43,7 +43,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       this.executor = Executors.newFixedThreadPool(3, CoreServerActivator.createNewThreadFactory("tagger.worker"));
 
       Timer timer = new Timer("Start-Up Tagger");
-      timer.schedule(new StartUpRunnable(this), 1000);
+      timer.schedule(new StartUpRunnable(this), 3000);
    }
 
    /* (non-Javadoc)

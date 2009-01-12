@@ -15,8 +15,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
-import org.eclipse.osee.framework.db.connection.DbTransaction;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
@@ -60,29 +58,24 @@ public class TagItemWorker extends BaseCmdWorker {
       tagListener = null;
       final Set<Long> toTag = getGammas();
       if (toTag.isEmpty() != true) {
-         new DbTransaction() {
-            @Override
-            protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-               TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
-               for (Long item : toTag) {
-                  joinQuery.add(item);
-               }
-               joinQuery.store(connection);
+         TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
+         for (Long item : toTag) {
+            joinQuery.add(item);
+         }
+         joinQuery.store();
 
-               tagListener = new TagListener();
-               Activator.getInstance().getSearchTagger().tagByQueueQueryId(tagListener, joinQuery.getQueryId());
-               synchronized (tagListener) {
-                  try {
-                     tagListener.wait();
-                  } catch (InterruptedException ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-               }
-               if (tagListener.isProcessing()) {
-                  joinQuery.delete(connection);
-               }
+         tagListener = new TagListener();
+         Activator.getInstance().getSearchTagger().tagByQueueQueryId(tagListener, joinQuery.getQueryId());
+         synchronized (tagListener) {
+            try {
+               tagListener.wait();
+            } catch (InterruptedException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
-         }.execute();
+         }
+         if (tagListener.isProcessing()) {
+            joinQuery.delete();
+         }
 
       } else {
          println("No Items to Tag.");
@@ -116,7 +109,7 @@ public class TagItemWorker extends BaseCmdWorker {
       @Override
       public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
          if (queryId == joinQuery) {
-            println(String.format("GammaId: [%d] Tags: [%d] ProcessedIn: [%d] ms", gammaId, totalTags, processingTime));
+            println(String.format("GammaId: [%d] Tags: [%d] Processed In: [%d] ms", gammaId, totalTags, processingTime));
          }
       }
 
