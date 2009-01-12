@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
@@ -95,6 +96,11 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
                status.getMessage().replaceAll("]", "]<br/>"),
                status.isOk() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"}));
       }
+      builder.append(AHTML.addRowMultiColumnTable(new String[] {
+            "<b>Remote Event Service</b>",
+            "",
+            RemoteEventManager.isConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"}));
+
       builder.append(AHTML.endMultiColumnTable());
       browser.setText(String.format(PAGE_TEMPLATE, builder.toString()));
    }
