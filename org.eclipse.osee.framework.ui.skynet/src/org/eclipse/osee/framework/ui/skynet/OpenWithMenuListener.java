@@ -82,7 +82,8 @@ public class OpenWithMenuListener implements MenuListener {
          List<IRenderer> commonRenders = RendererManager.getCommonSpecializedEditRenders(artifacts);
 
          if (validForPreview) {
-            for (IRenderer previewRenderer : RendererManager.getPreviewPresentableRenders(artifact)) {
+            List<IRenderer> previewRenderers = RendererManager.getPreviewPresentableRenders(artifact);
+            for (IRenderer previewRenderer : previewRenderers) {
                for (PreviewRendererData data : previewRenderer.getPreviewData()) {
                   MenuItem item = new MenuItem(parentMenu, SWT.PUSH);
                   item.setText(data.getName());
@@ -97,7 +98,9 @@ public class OpenWithMenuListener implements MenuListener {
                }
             }
 
-            new MenuItem(parentMenu, SWT.SEPARATOR);
+            if (previewRenderers.isEmpty()) {
+               new MenuItem(parentMenu, SWT.SEPARATOR);
+            }
          }
 
          for (IRenderer renderer : commonRenders) {
