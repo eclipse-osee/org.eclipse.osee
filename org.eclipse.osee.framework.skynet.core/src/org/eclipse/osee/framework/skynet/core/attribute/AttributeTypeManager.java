@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -85,7 +87,7 @@ public class AttributeTypeManager {
                            chStmt.getString("validity_xml"), chStmt.getInt("min_occurence"),
                            chStmt.getInt("max_occurence"), chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                cache(type);
-            } catch (ClassNotFoundException ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
@@ -110,7 +112,7 @@ public class AttributeTypeManager {
       return taggableTypes;
    }
 
-   public static boolean typeExists(String namespace, String name) throws Exception {
+   public static boolean typeExists(String namespace, String name) throws OseeDataStoreException {
       ensurePopulated();
       return instance.nameToTypeMap.get(namespace + name) != null;
    }
@@ -169,8 +171,8 @@ public class AttributeTypeManager {
       idToTypeMap.put(attributeType.getAttrTypeId(), attributeType);
    }
 
-   public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws Exception {
-      if (minOccurrences > 0 && defaultValue == null) throw new IllegalArgumentException(
+   public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
+      if (minOccurrences > 0 && defaultValue == null) throw new OseeArgumentException(
             "DefaultValue must be set for attribute namespace \"" + namespace + "\" and name \"" + name + "\" with minOccurrences " + minOccurrences);
       if (typeExists(namespace, name)) {
          return getType(namespace, name);
@@ -232,16 +234,13 @@ public class AttributeTypeManager {
       return attrBaseTypeId;
    }
 
-   public static Set<String> getValidEnumerationAttributeValues(String attributeName, Branch branch) {
+   public static Set<String> getValidEnumerationAttributeValues(String attributeName, Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
       Set<String> names = new HashSet<String>();
-      try {
-         AttributeType dad = getType(attributeName);
-         String str = dad.getValidityXml();
-         Matcher m = Pattern.compile("<Enum>(.*?)</Enum>").matcher(str);
-         while (m.find())
-            names.add(m.group(1));
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, "Error getting valid enumeration values", ex);
+      AttributeType dad = getType(attributeName);
+      String str = dad.getValidityXml();
+      Matcher m = Pattern.compile("<Enum>(.*?)</Enum>").matcher(str);
+      while (m.find()) {
+         names.add(m.group(1));
       }
       return names;
    }

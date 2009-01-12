@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
 import java.util.TreeSet;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
@@ -82,7 +83,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
          for (String string : options) {
             editor.addSelectionChoice(string);
          }
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(EmbeddedEnumAttributeEditor.class, ex, true);
       }
       if (obj instanceof Artifact) {

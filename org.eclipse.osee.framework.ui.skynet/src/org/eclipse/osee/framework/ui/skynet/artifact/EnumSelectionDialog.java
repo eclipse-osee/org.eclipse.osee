@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -55,7 +56,7 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
          options =
                AttributeTypeManager.getValidEnumerationAttributeValues(attributeName,
                      artifacts.iterator().next().getBranch());
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          options = new HashSet<String>();
          options.add(ex.getLocalizedMessage());
       }
