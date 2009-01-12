@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -72,7 +73,7 @@ public class OseeApplicationServerActivator implements BundleActivator {
             processBundles(requiredBundles, bundles, Operation.STOP);
          }
       } catch (Exception ex) {
-         throw new Exception(errorMessage, ex);
+         throw new OseeWrappedException(errorMessage, ex);
       }
    }
 
