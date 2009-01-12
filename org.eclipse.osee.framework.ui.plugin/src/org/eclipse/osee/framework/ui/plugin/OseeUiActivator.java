@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.PlatformUI;
@@ -134,7 +135,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
        * registry without getting a NullPointerException
        */
       if (imageRegistry == null) {
-         imageRegistry = new ImageRegistry();
+         imageRegistry = new ImageRegistry(Display.getDefault());
       }
       return imageRegistry.getDescriptor(imageKey);
    }
