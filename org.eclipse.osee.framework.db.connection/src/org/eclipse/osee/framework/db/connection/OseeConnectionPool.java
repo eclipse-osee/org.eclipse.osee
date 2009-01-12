@@ -57,7 +57,6 @@ class OseeConnectionPool {
 
       try {
          OseeConnection connection = getOseeConnection();
-         connection.lease();
          connections.add(connection);
          OseeLog.log(InternalActivator.class, Level.INFO, String.format("getConnection - %s - connections [%s]", dbUrl,
                connections.size()));

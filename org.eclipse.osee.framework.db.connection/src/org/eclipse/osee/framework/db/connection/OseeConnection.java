@@ -17,7 +17,7 @@ public class OseeConnection {
    OseeConnection(Connection conn, OseeConnectionPool pool) {
       this.conn = conn;
       this.pool = pool;
-      this.inuse = false;
+      this.inuse = true;
       this.lastUsedTime = 0;
    }
 
