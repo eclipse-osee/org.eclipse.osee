@@ -60,7 +60,7 @@ public class CleanJoinTablesServerTask implements IServerTask {
     */
    @Override
    public long getInitialDelay() {
-      return 0;
+      return getPeriod();
    }
 
    /* (non-Javadoc)
