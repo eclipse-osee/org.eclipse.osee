@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
@@ -656,7 +655,7 @@ public class InternalEventManager {
     * @return the disableEvents
     */
    static boolean isDisableEvents() {
-      return disableEvents || SkynetDbInit.isDbInit();
+      return disableEvents;
    }
 
    /**

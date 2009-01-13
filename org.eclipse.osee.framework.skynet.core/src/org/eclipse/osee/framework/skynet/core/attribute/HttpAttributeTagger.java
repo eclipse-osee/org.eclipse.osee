@@ -55,7 +55,7 @@ public class HttpAttributeTagger {
    private final ExecutorService executor;
    private final EventRelay eventRelay;
 
-   protected HttpAttributeTagger() {
+   private HttpAttributeTagger() {
       this.executor = Executors.newSingleThreadExecutor();
       this.eventRelay = new EventRelay();
       OseeEventManager.addListener(eventRelay);
