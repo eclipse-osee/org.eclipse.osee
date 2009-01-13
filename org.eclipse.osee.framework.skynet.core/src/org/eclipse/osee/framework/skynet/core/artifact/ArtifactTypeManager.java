@@ -68,6 +68,8 @@ public class ArtifactTypeManager {
 
    private static synchronized void ensurePopulated() throws OseeDataStoreException {
       if (instance.idToTypeMap.size() == 0) {
+         // Ensure Artifact Factory cache is populated before populating this cache, otherwise an extra database connection gets used because this would be done concurrently
+         ArtifactFactoryManager.refreshCache();
          instance.populateCache();
       }
    }
