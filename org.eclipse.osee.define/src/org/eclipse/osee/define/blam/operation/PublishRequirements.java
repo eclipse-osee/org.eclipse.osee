@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
@@ -104,11 +105,9 @@ public class PublishRequirements extends AbstractBlam {
       }
 
       if (publishAsDiff) {
-         if (branch == null) {
-
-         }
-         if (date == null) {
-
+         if (branch == null || date == null) {
+            throw new OseeCoreException(
+                  "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
          }
          nonFolderChildren = buildRecursiveList(nonFolderChildren);
          int transactionId = BranchManager.getBranchTransaction(date, branch.getBranchId());
@@ -154,7 +153,7 @@ public class PublishRequirements extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" /><XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Skip Artifacts with Tracked Changes\" /><XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" /><XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Skip Artifacts with Tracked Changes\" /><XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getDefaultBranch().getBranchName() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";
    }
 
    private ArrayList<Artifact> getOlderArtifacts(ArrayList<Artifact> artifacts, int transactionId, int branchId) throws OseeCoreException {
@@ -200,6 +199,7 @@ public class PublishRequirements extends AbstractBlam {
                return ((WordAttribute) attribute).mergeMarkupPresent();
             }
          } catch (OseeCoreException ex) {
+            OSEELog.logException(PublishRequirements.class, ex, false);
          }
       }
       return false;

@@ -611,6 +611,9 @@ public class BranchManager {
       int transactionId = -1;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
+      if (date == null) {
+         throw new OseeCoreException("Must select a valid Date");
+      }
       try {
          chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION, branchId, new Timestamp(date.getTime()));
 

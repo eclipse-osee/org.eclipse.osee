@@ -43,8 +43,7 @@ public class WordAttribute extends StringAttribute {
 
    public boolean mergeMarkupPresent() throws OseeCoreException {
       String temp = getValue();
-      if (temp.contains("<w:delText>") || temp.contains("w:type=\"Word.Insertion\"")) return true;
-      return false;
+      return (temp.contains("<w:delText>") || temp.contains("w:type=\"Word.Insertion\"") || temp.contains("w:type=\"Word.Formatting\""));
    }
 
    /* (non-Javadoc)
