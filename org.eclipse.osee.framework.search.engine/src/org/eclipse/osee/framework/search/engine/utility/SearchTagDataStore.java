@@ -51,7 +51,7 @@ public class SearchTagDataStore {
    public static int deleteTags(OseeConnection connection, int queryId) throws OseeDataStoreException {
       int numberDeleted = 0;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
-      chStmt.runPreparedQuery("select gamma_id from osee_tag_gamma_queue where query_id = ?", queryId);
+      chStmt.runPreparedQuery("select gamma_id from osee_join_transaction where query_id = ?", queryId);
       List<Object[]> datas = new ArrayList<Object[]>();
       while (chStmt.next()) {
          datas.add(new Object[] {chStmt.getLong("gamma_id")});
