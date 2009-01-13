@@ -166,7 +166,12 @@ public class XmlTextInputStream extends BufferedInputStream {
                buffer.delete(0, buffer.length());
                value = ' ';
                if (this.isStartOfParagraph != true && available() > 0) {
-                  value = process(readFromOriginalBuffer());
+                  //                  value = process(readFromOriginalBuffer());
+                  value = readFromOriginalBuffer();
+                  if ((char) value == '<') {
+                     partOfTag = true;
+                     buffer.append((char) value);
+                  }
                }
             }
          }

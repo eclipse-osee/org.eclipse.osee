@@ -37,7 +37,7 @@ public class WordsUtil {
 
    private static char[] PUNCTUATION =
          new char[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<',
-               '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~', '_'};
+               '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~', '_', '`', '\\'};
 
    private static final Properties dictionary;
    static {
