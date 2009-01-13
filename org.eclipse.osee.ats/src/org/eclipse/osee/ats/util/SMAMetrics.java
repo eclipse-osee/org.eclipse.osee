@@ -37,7 +37,7 @@ public class SMAMetrics {
    private static int MILLISECS_PER_DAY = (1000 * 60 * 60 * 24);
 
    double estHours = 0;
-   double hrsRemain = 0;
+   double hrsRemainFromEstimates = 0;
    double hrsSpent = 0;
    double manDaysNeeded = 0;
    double cummulativeWorkflowPercentComplete = 0;
@@ -98,19 +98,19 @@ public class SMAMetrics {
          }
       }
       estHours = 0;
-      hrsRemain = 0;
+      hrsRemainFromEstimates = 0;
       hrsSpent = 0;
       manDaysNeeded = 0;
       cummulativeWorkflowPercentComplete = 0;
       manDaysNeeded = 0;
       for (StateMachineArtifact team : smas) {
-         hrsRemain += team.getWorldViewRemainHours();
+         hrsRemainFromEstimates += team.getWorldViewRemainHours();
          estHours += team.getWorldViewEstimatedHours();
          hrsSpent += team.getWorldViewHoursSpentTotal();
          manDaysNeeded += team.getWorldViewManDaysNeeded();
          cummulativeWorkflowPercentComplete += team.getWorldViewPercentCompleteTotal();
       }
-      if (hrsRemain != 0) manDaysNeeded = hrsRemain / manHoursPerDay;
+      if (hrsRemainFromEstimates != 0) manDaysNeeded = hrsRemainFromEstimates / manHoursPerDay;
       percentCompleteByWorkflowPercents = 0;
       if (getNumSMAs() > 0 && cummulativeWorkflowPercentComplete > 0) {
          percentCompleteByWorkflowPercents = cummulativeWorkflowPercentComplete / getNumSMAs();
@@ -127,8 +127,9 @@ public class SMAMetrics {
       }
       str =
             String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
-                  getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByWorkflowPercents, hrsRemain,
-                  hrsSpent, (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
+                  getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByWorkflowPercents,
+                  hrsRemainFromEstimates, hrsSpent, (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ",
+                        manDaysNeeded) : ""),
                   (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
                         versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(
                               estRelDate, XDate.MMDDYY)), daysTillRel) : ""));
@@ -247,10 +248,10 @@ public class SMAMetrics {
    public String toStringLong() {
       return String.format(
             "%s\nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
-            toStringObjectBreakout(), estHours, percentCompleteByWorkflowPercents, hrsRemain, manDaysNeeded, hrsSpent,
-            (versionArtifact != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ",
-                  versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(estRelDate,
-                        XDate.MMDDYY)), daysTillRel) : ""));
+            toStringObjectBreakout(), estHours, percentCompleteByWorkflowPercents, hrsRemainFromEstimates,
+            manDaysNeeded, hrsSpent, (versionArtifact != null ? String.format(
+                  "\nVersion: %s  Estimated Release Date: %s Days Left: %d ", versionArtifact.getDescriptiveName(),
+                  (estRelDate == null ? "Not Set" : XDate.getDateStr(estRelDate, XDate.MMDDYY)), daysTillRel) : ""));
    }
 
    /**
@@ -279,6 +280,11 @@ public class SMAMetrics {
     */
    public double getHoursTillRel() {
       return daysTillRel * manHoursPerDay;
+   }
+
+   public String getHoursTillRelStr() {
+      return String.format("%5.2f hours = %d days till release * %5.2f Man Hours Per Day", getHoursTillRel(),
+            daysTillRel, manHoursPerDay);
    }
 
    /**
@@ -359,15 +365,8 @@ public class SMAMetrics {
    /**
     * @return the hrsRemain
     */
-   public double getHrsRemain() {
-      return hrsRemain;
-   }
-
-   /**
-    * @param hrsRemain the hrsRemain to set
-    */
-   public void setHrsRemain(double hrsRemain) {
-      this.hrsRemain = hrsRemain;
+   public double getHrsRemainFromEstimates() {
+      return hrsRemainFromEstimates;
    }
 
    /**
@@ -378,13 +377,6 @@ public class SMAMetrics {
    }
 
    /**
-    * @param hrsSpent the hrsSpent to set
-    */
-   public void setHrsSpent(double hrsSpent) {
-      this.hrsSpent = hrsSpent;
-   }
-
-   /**
     * @return the manDaysNeeded
     */
    public double getManDaysNeeded() {
@@ -392,24 +384,10 @@ public class SMAMetrics {
    }
 
    /**
-    * @param manDaysNeeded the manDaysNeeded to set
-    */
-   public void setManDaysNeeded(double manDaysNeeded) {
-      this.manDaysNeeded = manDaysNeeded;
-   }
-
-   /**
     * @return the cummulativePercentComplete
     */
    public double getCummulativeWorkflowPercentComplete() {
       return cummulativeWorkflowPercentComplete;
-   }
-
-   /**
-    * @param cummulativePercentComplete the cummulativePercentComplete to set
-    */
-   public void setCummulativePercentComplete(double cummulativePercentComplete) {
-      this.cummulativeWorkflowPercentComplete = cummulativePercentComplete;
    }
 
    /**

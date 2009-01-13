@@ -170,13 +170,14 @@ public class AtsMetricsComposite extends ScrolledComposite {
       lines.add(XBarGraphLine.getTextLine("Estimated Hours: ", String.format("%5.2f Hours", sMet.getEstHours())));
       lines.add(XBarGraphLine.getTextLine("Remaining Hours: ", String.format(
             "%5.2f Hours = (Estimated hours %5.2f - (Estimated hours %5.2f x Percent Complete %5.2f))",
-            sMet.getHrsRemain(), sMet.getEstHours(), sMet.getEstHours(), sMet.getPercentCompleteByWorkflowPercents())));
+            sMet.getHrsRemainFromEstimates(), sMet.getEstHours(), sMet.getEstHours(),
+            sMet.getPercentCompleteByWorkflowPercents())));
       lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f Hours", sMet.getHrsSpent())));
       lines.add(XBarGraphLine.getTextLine("Hours Per Man Day Preference: ", String.format("%5.2f Hours per Day",
             sMet.getHoursPerManDay())));
       lines.add(XBarGraphLine.getTextLine("Man Days Needed: ", String.format(
             "%5.2f Days = Remaining Hours %5.2f / Hours Per Day of %5.2f", sMet.getManDaysNeeded(),
-            sMet.getHrsRemain(), sMet.getHoursPerManDay())));
+            sMet.getHrsRemainFromEstimates(), sMet.getHoursPerManDay())));
 
       try {
          lines.add(new XBarGraphLine(
@@ -189,23 +190,27 @@ public class AtsMetricsComposite extends ScrolledComposite {
                iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValueAsString(
                      ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), "Not Set")));
          double hoursTillRelease = sMet.getHoursTillRel();
-         double hoursRemaining = sMet.getHrsRemain();
+         lines.add(new XBarGraphLine(
+               "Hours Till Release",
+               0,
+               iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Estimated Release Date Not Set" : sMet.getHoursTillRelStr()));
+         double hoursRemainingFromEstimates = sMet.getHrsRemainFromEstimates();
          int percent = 0;
          if (hoursTillRelease != 0) {
-            percent = (int) (hoursRemaining / hoursTillRelease);
+            percent = (int) (hoursRemainingFromEstimates / hoursTillRelease);
          }
          if (sMet.getEstRelDate() == null) {
             lines.add(new XBarGraphLine("Release Effort Remaining", 0, "Estimated Release Date Not Set"));
-         } else if (hoursRemaining > hoursTillRelease) {
+         } else if (hoursRemainingFromEstimates > hoursTillRelease) {
             lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
                   XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
-                        "%5.2f hours exceeds remaining release hours %5.2f;  Over by %5.2f hours.", hoursRemaining,
-                        hoursTillRelease, hoursRemaining - hoursTillRelease)));
+                        "%5.2f hours exceeds remaining release hours %5.2f;  Over by %5.2f hours.",
+                        hoursRemainingFromEstimates, hoursTillRelease, hoursRemainingFromEstimates - hoursTillRelease)));
          } else {
             lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
                   XBarGraphLine.DEFAULT_GREEN_BACKGROUND, SWT.COLOR_WHITE, SWT.COLOR_WHITE, percent, String.format(
-                        "%5.2f remaining work hours", hoursRemaining), String.format("%5.2f release remaining hours",
-                        hoursRemaining)));
+                        "%5.2f remaining work hours", hoursRemainingFromEstimates), String.format(
+                        "%5.2f release remaining hours", hoursRemainingFromEstimates)));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
