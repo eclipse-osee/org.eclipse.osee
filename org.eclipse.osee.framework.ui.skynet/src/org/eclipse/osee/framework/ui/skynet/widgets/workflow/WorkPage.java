@@ -142,8 +142,9 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
          if (!layoutData.getXWidget().isValid().isTrue()) {
             // Check to see if widget is part of a completed OR or XOR group
-            if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStorageName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStorageName())) return new Result(
-                  "Must Enter \"" + layoutData.getName() + "\"");
+            if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStorageName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStorageName())) {
+               return new Result(layoutData.getXWidget().isValid().getText());
+            }
          }
       }
       return Result.TrueResult;
