@@ -144,9 +144,8 @@ class TaggerRunnable implements Runnable {
                   try {
                      Activator.getTaggerManager().tagIt(attributeData, this);
                      checkSizeStoreIfNeeded(connection);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", this.currentTag),
-                           ex);
+                  } catch (Throwable ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", this.currentTag));
                   } finally {
                      notifyOnAttributeTagComplete(this.currentTag.getGammaId(), this.currentTag.getTotalTags(),
                            (System.currentTimeMillis() - startItemTime));
