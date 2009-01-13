@@ -48,7 +48,7 @@ public class TestResourceLocatorSnapshot extends TestCase {
       cases.add(new TestData("7", "1234", "hello.txt", false, "snapshot://123/4/hello.txt"));
       cases.add(new TestData("8", "1", "hello", false, "snapshot://1/hello"));
       cases.add(new TestData("9", "AAABE9X4bfoAeUF7UKx8MABRANCH293", "hello", false,
-            "snapshot://AAA/BE9/X4b/foA/eUF/7UK/x8M/A/293/hello"));
+            "snapshot://AAA/BE9/X4b/foA/eUF/7UK/x8M/ABR/ANC/H29/3/hello"));
       return cases;
    }
 
