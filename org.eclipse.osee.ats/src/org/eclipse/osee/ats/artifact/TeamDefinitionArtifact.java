@@ -343,7 +343,6 @@ public class TeamDefinitionArtifact extends Artifact {
             (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch(),
                   name);
       addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
-      versionArt.persistAttributesAndRelations();
       AtsCache.cache(versionArt);
       return versionArt;
    }
