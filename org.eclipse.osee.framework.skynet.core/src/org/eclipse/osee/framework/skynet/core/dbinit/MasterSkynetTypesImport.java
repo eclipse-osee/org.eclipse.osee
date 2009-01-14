@@ -25,7 +25,8 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.importing.SkynetTypesImporter;
+import org.eclipse.osee.framework.skynet.core.importing.DbOseeDataTypeProcessor;
+import org.eclipse.osee.framework.skynet.core.importing.ExcelOseeTypeDataParser;
 import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
 
@@ -75,7 +76,7 @@ public class MasterSkynetTypesImport {
     * @throws OseeCoreException
     */
    private static void runSkynetDbTypesImport(List<IExtension> skynetDbTypesExtensions, Branch branch) throws IOException, SAXException, OseeCoreException {
-      SkynetTypesImporter importer = new SkynetTypesImporter(branch);
+      ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor());
       OseeLog.log(SkynetActivator.class, Level.INFO, "Importing into [" + branch.getBranchName() + "]");
       for (IExtension extension : skynetDbTypesExtensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();

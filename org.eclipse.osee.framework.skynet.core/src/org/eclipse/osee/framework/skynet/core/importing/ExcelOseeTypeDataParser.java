@@ -8,7 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.io.IOException;
@@ -21,22 +20,12 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKey;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -45,7 +34,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * @author Ryan D. Brooks
  */
-public class SkynetTypesImporter implements RowProcessor {
+public class ExcelOseeTypeDataParser implements RowProcessor {
    private enum Table {
       ARTIFACT_TYPE_TABLE, ATTRIBUTE_TYPE_TABLE, ATTRIBUTE_MAP_TABLE, RELATION_TYPE_TABLE, RELATION_SIDE_TABLE
    }
@@ -56,20 +45,18 @@ public class SkynetTypesImporter implements RowProcessor {
    private Iterator<Table> tableIterator;
    private final HashMap<String, ArrayList<String>> superTypeMap;
    private final ArrayList<ValidityRow> validityArray;
-   private final List<AttributeMapRow> attributeMapRows;
+   private final List<AttributeRow> attributeMapRows;
    private boolean done;
    private final boolean debugRows = false;
    private final XMLReader xmlReader;
+   private final IOseeDataTypeProcessor dataTypeProcessor;
 
-   /**
-    * @throws SAXException
-    * @throws IOException
-    */
-   public SkynetTypesImporter(Branch branch) throws SAXException, IOException {
+   public ExcelOseeTypeDataParser(IOseeDataTypeProcessor dataTypeProcessor) throws SAXException, IOException {
+      this.dataTypeProcessor = dataTypeProcessor;
       excelHandler = new ExcelSaxHandler(this, true, true);
       superTypeMap = new HashMap<String, ArrayList<String>>();
       validityArray = new ArrayList<ValidityRow>();
-      attributeMapRows = new ArrayList<AttributeMapRow>();
+      attributeMapRows = new ArrayList<AttributeRow>();
 
       xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(excelHandler);
@@ -82,26 +69,26 @@ public class SkynetTypesImporter implements RowProcessor {
    }
 
    public void finish() throws OseeCoreException {
-      for (AttributeMapRow attributeRow : attributeMapRows) {
-         attributeRow.persist();
+      for (AttributeRow attributeRow : attributeMapRows) {
+         dataTypeProcessor.onAttributeValidity(attributeRow.attributeName, attributeRow.artifactSuperTypeName,
+               determineConcreteTypes(attributeRow.artifactSuperTypeName));
       }
-      persistRelationValidity();
+      processRelationValidity();
    }
 
-   private void persistRelationValidity() throws OseeCoreException {
-      CompositeKeyHashMap<ArtifactType, RelationType, ObjectPair<Integer, Integer>> keyMap =
-            new CompositeKeyHashMap<ArtifactType, RelationType, ObjectPair<Integer, Integer>>();
+   private void processRelationValidity() throws OseeCoreException {
+      CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>> keyMap =
+            new CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>>();
       for (ValidityRow row : validityArray) {
          for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName)) {
-            ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
-            RelationType relationType = RelationTypeManager.getType(row.relationTypeName);
+            String relationType = row.relationTypeName;
             int sideAMax = row.sideAmax;
             int sideBMax = row.sideBmax;
 
-            ObjectPair<Integer, Integer> sideDefinition = keyMap.get(artifactType, relationType);
+            ObjectPair<Integer, Integer> sideDefinition = keyMap.get(artifactTypeName, relationType);
             if (sideDefinition == null) {
                sideDefinition = new ObjectPair<Integer, Integer>(sideAMax, sideBMax);
-               keyMap.put(artifactType, relationType, sideDefinition);
+               keyMap.put(artifactTypeName, relationType, sideDefinition);
             } else {
                sideDefinition.object1 = Math.max(sideDefinition.object1, sideAMax);
                sideDefinition.object2 = Math.max(sideDefinition.object2, sideBMax);
@@ -109,15 +96,13 @@ public class SkynetTypesImporter implements RowProcessor {
          }
       }
 
-      Branch systemBranch = BranchManager.getSystemRootBranch();
-
-      for (Entry<CompositeKey<ArtifactType, RelationType>, ObjectPair<Integer, Integer>> entry : keyMap.entrySet()) {
-         ArtifactType artifactType = entry.getKey().getKey1();
-         RelationType relationType = entry.getKey().getKey2();
+      for (Entry<CompositeKey<String, String>, ObjectPair<Integer, Integer>> entry : keyMap.entrySet()) {
+         String artifactTypeName = entry.getKey().getKey1();
+         String relationTypeName = entry.getKey().getKey2();
          ObjectPair<Integer, Integer> sideDefinition = entry.getValue();
          int sideAMax = sideDefinition.object1;
          int sideBMax = sideDefinition.object2;
-         RelationTypeManager.createRelationLinkValidity(systemBranch, artifactType, relationType, sideAMax, sideBMax);
+         dataTypeProcessor.onRelationValidity(artifactTypeName, relationTypeName, sideAMax, sideBMax);
       }
    }
 
@@ -165,18 +150,17 @@ public class SkynetTypesImporter implements RowProcessor {
                addValidityConstraints(row);
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(ExcelOseeTypeDataParser.class, Level.SEVERE, ex);
       }
    }
 
    private void addValidityConstraints(String[] row) {
-      validityArray.add(new ValidityRow(row[0], row[1], SkynetTypesImporter.getQuantity(row[2]),
-            SkynetTypesImporter.getQuantity(row[3])));
+      validityArray.add(new ValidityRow(row[0], row[1], getQuantity(row[2]), getQuantity(row[3])));
    }
 
    private void associateAttribute(String[] row) {
       if (debugRows) System.out.println("   associateAttribute => " + row[0] + "," + row[1]);
-      attributeMapRows.add(new AttributeMapRow(this, row));
+      attributeMapRows.add(new AttributeRow(row));
    }
 
    /**
@@ -196,7 +180,7 @@ public class SkynetTypesImporter implements RowProcessor {
       int maxOccurrence = getQuantity(row[8]);
       String tipText = row[9];
 
-      AttributeTypeManager.createType(attrBaseType, attrProviderType, fileTypeExtension, "", attributeName,
+      dataTypeProcessor.onAttributeType(attrBaseType, attrProviderType, fileTypeExtension, "", attributeName,
             defaultValue, validityXml, minOccurrence, maxOccurrence, tipText, taggerId);
    }
 
@@ -204,7 +188,7 @@ public class SkynetTypesImporter implements RowProcessor {
     * @param row
     * @throws OseeCoreException
     */
-   private void addRelationType(String[] row) throws OseeCoreException {
+   private void addRelationType(String[] row) throws Exception {
       if (debugRows) System.out.println("   addRelationType => " + row[0] + "," + row[1]);
       String relationTypeName = row[0];
       String sideAName = row[1];
@@ -214,8 +198,8 @@ public class SkynetTypesImporter implements RowProcessor {
       String shortName = row[5];
       String ordered = row[6];
 
-      RelationTypeManager.createRelationType("", relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
-            shortName, ordered);
+      dataTypeProcessor.onRelationType("", relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing, shortName,
+            ordered);
    }
 
    private void associateWithSuperType(String artifactTypeName, String superTypeName) {
@@ -230,30 +214,7 @@ public class SkynetTypesImporter implements RowProcessor {
       }
    }
 
-   ArrayList<String> determineConcreteTypes(String artifactSuperTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ArrayList<String> artifactTypeList = superTypeMap.get(artifactSuperTypeName);
-
-      // if no sub-types then just return artifactSuperTypeName as the only Concrete type
-      if (artifactTypeList == null) {
-         artifactTypeList = new ArrayList<String>();
-         artifactTypeList.add(artifactSuperTypeName);
-      } else {
-         if (ArtifactTypeManager.typeExists(artifactSuperTypeName)) { // artifactSuperTypeName might also be a concrete type
-            ArtifactTypeManager.getType(artifactSuperTypeName); // ensure existence
-            artifactTypeList.add(artifactSuperTypeName);
-         }
-      }
-      return artifactTypeList;
-   }
-
-   /**
-    * @param row
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
-    * @throws OseeDataStoreException
-    * @throws IllegalStateException
-    */
-   private void addArtifactType(String[] row) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   private void addArtifactType(String[] row) throws Exception {
       if (debugRows) System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
       String factoryClassName = row[0];
       String artifactTypeName = row[1];
@@ -262,7 +223,7 @@ public class SkynetTypesImporter implements RowProcessor {
       if (!artifactTypeName.equals("Artifact")) {
          associateWithSuperType(artifactTypeName, superTypeName);
       }
-      ArtifactTypeManager.createType(factoryClassName, "", artifactTypeName, artifactTypeName);
+      dataTypeProcessor.onArtifactType(factoryClassName, "", artifactTypeName);
    }
 
    /*
@@ -290,13 +251,6 @@ public class SkynetTypesImporter implements RowProcessor {
       done = true;
    }
 
-   public static int getQuantity(String quantity) {
-      if (quantity.equalsIgnoreCase("UNLIMITED")) {
-         return Integer.MAX_VALUE;
-      }
-      return Integer.parseInt(quantity);
-   }
-
    /*
     * (non-Javadoc)
     * 
@@ -311,6 +265,28 @@ public class SkynetTypesImporter implements RowProcessor {
     * @see osee.define.artifact.Import.RowProcessor#foundStartOfWorksheet(java.lang.String)
     */
    public void foundStartOfWorksheet(String sheetName) {
+   }
+
+   private int getQuantity(String quantity) {
+      if (quantity.equalsIgnoreCase("UNLIMITED")) {
+         return Integer.MAX_VALUE;
+      }
+      return Integer.parseInt(quantity);
+   }
+
+   private ArrayList<String> determineConcreteTypes(String artifactSuperTypeName) throws OseeCoreException {
+      ArrayList<String> artifactTypeList = superTypeMap.get(artifactSuperTypeName);
+
+      // if no sub-types then just return artifactSuperTypeName as the only Concrete type
+      if (artifactTypeList == null) {
+         artifactTypeList = new ArrayList<String>();
+         artifactTypeList.add(artifactSuperTypeName);
+      } else {
+         if (dataTypeProcessor.doesArtifactSuperTypeExist(artifactSuperTypeName)) { // artifactSuperTypeName might also be a concrete type
+            artifactTypeList.add(artifactSuperTypeName);
+         }
+      }
+      return artifactTypeList;
    }
 
    private class ValidityRow {
@@ -329,6 +305,17 @@ public class SkynetTypesImporter implements RowProcessor {
       public String toString() {
          return String.format("RelationType:[%s] ArtifactSuperType:[%s] Sides(A,B) - (%s, %s)", relationTypeName,
                artifactSuperTypeName, sideAmax, sideBmax);
+      }
+   }
+
+   private class AttributeRow {
+      private String artifactSuperTypeName;
+      private String attributeName;
+
+      public AttributeRow(String[] row) {
+         super();
+         artifactSuperTypeName = row[0];
+         attributeName = row[1];
       }
    }
 }
