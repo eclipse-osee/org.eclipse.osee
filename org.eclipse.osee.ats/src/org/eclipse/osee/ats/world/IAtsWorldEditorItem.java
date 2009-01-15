@@ -6,8 +6,8 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 
 /**
  * @author Donald G. Dunne

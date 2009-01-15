@@ -5,10 +5,11 @@
  */
 package org.eclipse.osee.ats.util.xviewer.column;
 
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -41,11 +42,15 @@ public class XViewerDeadlineColumn extends XViewerAtsAttributeColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
-      if (element instanceof IWorldViewArtifact) {
-         return ((IWorldViewArtifact) element).getWorldViewDeadlineDateStr();
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
+      try {
+         if (element instanceof IWorldViewArtifact) {
+            return ((IWorldViewArtifact) element).getWorldViewDeadlineDateStr();
+         }
+         return "";
+      } catch (OseeCoreException ex) {
+         throw new XViewerException(ex);
       }
-      return "";
    }
 
 }

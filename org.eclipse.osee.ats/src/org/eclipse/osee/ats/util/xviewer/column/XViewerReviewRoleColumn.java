@@ -5,12 +5,13 @@
  */
 package org.eclipse.osee.ats.util.xviewer.column;
 
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -26,6 +27,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
     * 
     * @param col
     */
+   @Override
    public XViewerReviewRoleColumn copy() {
       return new XViewerReviewRoleColumn(getUser(), getId(), getName(), getWidth(), getAlign(), isShow(),
             getSortDataType(), isMultiColumnEditable(), getDescription());
@@ -45,11 +47,15 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
-      if (element instanceof ReviewSMArtifact) {
-         return getRolesStr((ReviewSMArtifact) element, user);
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
+      try {
+         if (element instanceof ReviewSMArtifact) {
+            return getRolesStr((ReviewSMArtifact) element, user);
+         }
+         return "";
+      } catch (OseeCoreException ex) {
+         throw new XViewerException(ex);
       }
-      return "";
    }
 
    private static String getRolesStr(ReviewSMArtifact reviewArt, User user) throws OseeCoreException {
