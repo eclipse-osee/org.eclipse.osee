@@ -5,10 +5,10 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
@@ -31,6 +31,7 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
     * 
     * @param col
     */
+   @Override
    public XViewerArtifactTypeColumn copy() {
       return new XViewerArtifactTypeColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
             isMultiColumnEditable(), getDescription());
@@ -40,7 +41,7 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (element instanceof Artifact) {
          return ((Artifact) element).getArtifactTypeName();
       }
@@ -51,7 +52,7 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnImage(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (element instanceof Artifact) {
          return ((Artifact) element).getImage();
       }

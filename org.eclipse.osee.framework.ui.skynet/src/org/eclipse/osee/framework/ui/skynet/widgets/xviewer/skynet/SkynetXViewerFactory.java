@@ -16,6 +16,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
+import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
+import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,10 +30,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizations;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.OseeXViewerTreeReport;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 import org.eclipse.swt.SWT;
@@ -125,4 +128,21 @@ public class SkynetXViewerFactory extends XViewerFactory {
       }
       return columns;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.IXViewerFactory#isAdmin()
+    */
+   @Override
+   public boolean isAdmin() {
+      return true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.XViewerFactory#getXViewerTreeReport(org.eclipse.nebula.widgets.xviewer.XViewer)
+    */
+   @Override
+   public XViewerTreeReport getXViewerTreeReport(XViewer viewer) {
+      return new OseeXViewerTreeReport(viewer);
+   }
+
 }

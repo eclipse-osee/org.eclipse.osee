@@ -11,13 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.graphics.Image;
 
 public class MassLabelProvider extends XViewerLabelProvider {
@@ -30,10 +31,10 @@ public class MassLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws XViewerException {
       if (col == null) return null;
       if (columnIndex != 0 && col instanceof XViewerValueColumn) {
-         return ((XViewerValueColumn) col).getColumnImage(element, (XViewerValueColumn) col, columnIndex);
+         return ((XViewerValueColumn) col).getColumnImage(element, col, columnIndex);
       }
       Artifact artifact = (Artifact) element;
       if (artifact == null || artifact.isDeleted()) return null;
@@ -42,37 +43,41 @@ public class MassLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn col, int columnIndex) throws OseeCoreException {
-      if (col == null) return "";
-      if (col instanceof XViewerValueColumn) {
-         return ((XViewerValueColumn) col).getColumnText(element, (XViewerValueColumn) col, columnIndex);
-      }
-      if (element instanceof String) {
-         if (columnIndex == 1)
-            return (String) element;
-         else
-            return "";
-      }
-      Artifact artifact = (Artifact) element;
-      if (artifact == null || artifact.isDeleted()) return "";
-      // Handle case where columns haven't been loaded yet
-      if (columnIndex > (getTreeViewer().getTree().getColumns().length - 1)) {
-         return "";
-      }
-
-      String colName = col.getName();
-      if (!artifact.isAttributeTypeValid(colName)) {
-         return "";
-      }
-      if (AttributeTypeManager.getType(colName).getBaseAttributeClass().equals(DateAttribute.class)) {
-         try {
-            return DateAttribute.MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
-         } catch (OseeCoreException ex) {
+   public String getColumnText(Object element, XViewerColumn col, int columnIndex) throws XViewerException {
+      try {
+         if (col == null) return "";
+         if (col instanceof XViewerValueColumn) {
+            return ((XViewerValueColumn) col).getColumnText(element, col, columnIndex);
+         }
+         if (element instanceof String) {
+            if (columnIndex == 1)
+               return (String) element;
+            else
+               return "";
+         }
+         Artifact artifact = (Artifact) element;
+         if (artifact == null || artifact.isDeleted()) return "";
+         // Handle case where columns haven't been loaded yet
+         if (columnIndex > (getTreeViewer().getTree().getColumns().length - 1)) {
             return "";
          }
-      }
 
-      return artifact.getAttributesToString(colName);
+         String colName = col.getName();
+         if (!artifact.isAttributeTypeValid(colName)) {
+            return "";
+         }
+         if (AttributeTypeManager.getType(colName).getBaseAttributeClass().equals(DateAttribute.class)) {
+            try {
+               return DateAttribute.MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
+            } catch (OseeCoreException ex) {
+               return "";
+            }
+         }
+
+         return artifact.getAttributesToString(colName);
+      } catch (OseeCoreException ex) {
+         throw new XViewerException(ex);
+      }
    }
 
    public boolean isLabelProperty(Object element, String property) {

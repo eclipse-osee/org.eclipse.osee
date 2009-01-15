@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

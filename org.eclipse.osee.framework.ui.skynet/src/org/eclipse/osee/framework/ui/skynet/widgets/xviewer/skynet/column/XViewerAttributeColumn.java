@@ -5,12 +5,13 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 
 /**
  * @author Donald G. Dunne
@@ -25,6 +26,7 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
     * 
     * @param col
     */
+   @Override
    public XViewerAttributeColumn copy() {
       return new XViewerAttributeColumn(getId(), getName(), getAttributeTypeName(), getWidth(), getAlign(), isShow(),
             getSortDataType(), isMultiColumnEditable(), getDescription());
@@ -39,17 +41,21 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
-      if (element instanceof Artifact) {
-         return ((Artifact) element).getAttributesToString(attributeTypeName);
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
+      try {
+         if (element instanceof Artifact) {
+            return ((Artifact) element).getAttributesToString(attributeTypeName);
+         }
+         if (element instanceof Change) {
+            return ((Change) element).getArtifact().getAttributesToString(attributeTypeName);
+         }
+         if (element instanceof Conflict) {
+            return ((Conflict) element).getArtifact().getAttributesToString(attributeTypeName);
+         }
+         return super.getColumnText(element, column, columnIndex);
+      } catch (OseeCoreException ex) {
+         throw new XViewerException(ex);
       }
-      if (element instanceof Change) {
-         return ((Change) element).getArtifact().getAttributesToString(attributeTypeName);
-      }
-      if (element instanceof Conflict) {
-         return ((Conflict) element).getArtifact().getAttributesToString(attributeTypeName);
-      }
-      return super.getColumnText(element, column, columnIndex);
    }
 
    public String getAttributeTypeName() {

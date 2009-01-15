@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.zest.layouts,
  org.eclipse.compare,
  javax.mail.glassfish;bundle-version="1.4.1",
- org.eclipse.help
+ org.eclipse.help,
+ org.eclipse.nebula.widgets.xviewer;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.nebula.widgets.calendarcombo,
@@ -95,9 +96,5 @@ Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.widgets.xmerge,
  org.eclipse.osee.framework.ui.skynet.widgets.xnavigate,
  org.eclipse.osee.framework.ui.skynet.widgets.xresults,
- org.eclipse.osee.framework.ui.skynet.widgets.xviewer,
- org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize,
- org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.dialog,
  org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet,
- org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column,
- org.eclipse.osee.framework.ui.skynet.widgets.xviewer.test
+ org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column

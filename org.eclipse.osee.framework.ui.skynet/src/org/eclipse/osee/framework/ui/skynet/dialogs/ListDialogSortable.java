@@ -6,7 +6,7 @@
 package org.eclipse.osee.framework.ui.skynet.dialogs;
 
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumnSorter;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumnSorter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
