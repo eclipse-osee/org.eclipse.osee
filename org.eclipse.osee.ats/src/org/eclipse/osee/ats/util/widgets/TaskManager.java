@@ -67,15 +67,15 @@ public class TaskManager {
       }
    }
 
-   public TaskArtifact createNewTask(String title, boolean persist) throws OseeCoreException {
-      return createNewTask(Arrays.asList(UserManager.getUser()), title, persist);
+   public TaskArtifact createNewTask(String title) throws OseeCoreException {
+      return createNewTask(Arrays.asList(UserManager.getUser()), title);
    }
 
-   public TaskArtifact createNewTask(User assignee, String title, boolean persist) throws OseeCoreException {
-      return createNewTask(Arrays.asList(assignee), title, persist);
+   public TaskArtifact createNewTask(User assignee, String title) throws OseeCoreException {
+      return createNewTask(Arrays.asList(assignee), title);
    }
 
-   public TaskArtifact createNewTask(Collection<User> assignees, String title, boolean persist) throws OseeCoreException {
+   public TaskArtifact createNewTask(Collection<User> assignees, String title) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt =
             (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch(), title);
@@ -90,9 +90,6 @@ public class TaskManager {
             smaMgr.getStateMgr().getCurrentStateName());
 
       smaMgr.getSma().addRelation(AtsRelation.SmaToTask_Task, taskArt);
-      if (persist) {
-         taskArt.persistAttributesAndRelations();
-      }
 
       return taskArt;
    }

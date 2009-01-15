@@ -451,7 +451,7 @@ public class TaskComposite extends Composite implements IActionable {
                   "Enter Task Title/Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(ed.getEntry(), false);
+            taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(ed.getEntry());
             iXTaskViewer.getEditor().onDirtied();
             taskXViewer.add(taskArt);
             taskXViewer.getTree().setFocus();

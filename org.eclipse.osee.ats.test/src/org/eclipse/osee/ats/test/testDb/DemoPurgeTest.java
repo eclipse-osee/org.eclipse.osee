@@ -82,7 +82,8 @@ public class DemoPurgeTest extends TestCase {
       for (int x = 0; x < 30; x++) {
          TaskArtifact taskArt =
                actionArt.getTeamWorkFlowArtifacts().iterator().next().getSmaMgr().getTaskMgr().createNewTask(
-                     "New Task " + x, true);
+                     "New Task " + x);
+         taskArt.persistAttributesAndRelations();
          artsToPurge.add(taskArt);
       }
 

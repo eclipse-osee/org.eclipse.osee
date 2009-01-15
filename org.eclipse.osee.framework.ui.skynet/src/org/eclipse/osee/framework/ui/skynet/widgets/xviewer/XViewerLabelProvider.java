@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Color;
@@ -132,7 +131,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
       return null;
    }
 
-   public abstract Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
+   public abstract Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws Exception;
 
-   public abstract String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
+   public abstract String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws Exception;
 }

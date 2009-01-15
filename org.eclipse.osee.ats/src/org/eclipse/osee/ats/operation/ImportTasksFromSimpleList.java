@@ -103,7 +103,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
 
    private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
       for (String title : titles) {
-         TaskArtifact taskArt = teamArt.getSmaMgr().getTaskMgr().createNewTask(title, false);
+         TaskArtifact taskArt = teamArt.getSmaMgr().getTaskMgr().createNewTask(title);
          if (assignees != null && assignees.size() > 0) {
             Set<User> users = new HashSet<User>();
             for (Artifact art : assignees) {

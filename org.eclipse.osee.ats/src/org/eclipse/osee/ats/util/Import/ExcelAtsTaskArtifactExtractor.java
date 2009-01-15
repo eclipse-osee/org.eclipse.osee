@@ -86,7 +86,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
       try {
          rowNum++;
          monitor.setTaskName("Processing Row " + rowNum);
-         TaskArtifact taskArt = smaMgr.getTaskMgr().createNewTask("", false);
+         TaskArtifact taskArt = smaMgr.getTaskMgr().createNewTask("");
 
          monitor.subTask("Validating...");
          boolean fullRow = false;
