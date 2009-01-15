@@ -15,13 +15,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
+import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 
 /**
  * @author Donald G. Dunne
@@ -133,13 +134,17 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       }
    }
 
-   public CustomizeData getUserDefaultCustData() throws OseeCoreException {
-      for (CustomizeData custData : getSavedCustDatas()) {
-         if (userArtifactDefaults.isDefaultCustomization(custData)) {
-            return custData;
+   public CustomizeData getUserDefaultCustData() throws XViewerException {
+      try {
+         for (CustomizeData custData : getSavedCustDatas()) {
+            if (userArtifactDefaults.isDefaultCustomization(custData)) {
+               return custData;
+            }
          }
+         return null;
+      } catch (OseeCoreException ex) {
+         throw new XViewerException(ex);
       }
-      return null;
    }
 
    public boolean isCustomizationUserDefault(CustomizeData custData) {
