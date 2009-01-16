@@ -66,8 +66,8 @@ public class SearchEngineServlet extends OseeHttpServlet {
          SearchResult results =
                searchEngine.search(searchInfo.getQuery(), searchInfo.getBranchId(), searchInfo.getOptions(),
                      searchInfo.getAttributeTypes());
+         response.setStatus(wasFromGet ? HttpServletResponse.SC_OK : HttpServletResponse.SC_ACCEPTED);
          if (!results.isEmpty()) {
-            response.setStatus(wasFromGet ? HttpServletResponse.SC_OK : HttpServletResponse.SC_ACCEPTED);
             long start = System.currentTimeMillis();
             if (!searchInfo.getOptions().getBoolean("as xml")) {
                sendAsDbJoin(response, results);
@@ -79,7 +79,6 @@ public class SearchEngineServlet extends OseeHttpServlet {
          } else {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("text/plain");
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
          }
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
