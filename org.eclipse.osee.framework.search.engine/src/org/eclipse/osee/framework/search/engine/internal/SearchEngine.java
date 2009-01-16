@@ -11,13 +11,14 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.JoinUtility;
-import org.eclipse.osee.framework.core.data.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
+import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.SearchResult;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
 
@@ -36,9 +37,11 @@ public class SearchEngine implements ISearchEngine {
     * @see org.eclipse.osee.framework.search.engine.ISearchEngine#search(java.lang.String, org.eclipse.osee.framework.search.engine.Options)
     */
    @Override
-   public String search(String searchString, int branchId, Options options, String... attributeTypes) throws Exception {
+   public SearchResult search(String searchString, int branchId, Options options, String... attributeTypes) throws Exception {
+      SearchResult results = new SearchResult();
+
       long startTime = System.currentTimeMillis();
-      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
+
       IAttributeTaggerProviderManager manager = Activator.getTaggerManager();
       AttributeSearch attributeSearch = new AttributeSearch(searchString, branchId, options, attributeTypes);
       Collection<AttributeData> tagMatches = attributeSearch.getMatchingAttributes();
@@ -48,13 +51,15 @@ public class SearchEngine implements ISearchEngine {
       boolean bypassSecondPass = !options.getBoolean("match word order");
       if (bypassSecondPass) {
          for (AttributeData attributeData : tagMatches) {
-            joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
+            results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId());
          }
       } else {
          for (AttributeData attributeData : tagMatches) {
             try {
-               if (manager.find(attributeData, searchString)) {
-                  joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
+               List<MatchLocation> locations = manager.find(attributeData, searchString, options);
+               if (!locations.isEmpty()) {
+                  results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId(),
+                        locations);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing: [%s]", attributeData));
@@ -62,17 +67,16 @@ public class SearchEngine implements ISearchEngine {
          }
       }
       secondPass = System.currentTimeMillis() - secondPass;
-      joinQuery.store();
 
       String firstPassMsg =
-            String.format("Pass 1: [%d items in %d ms]);", bypassSecondPass ? joinQuery.size() : tagMatches.size(),
+            String.format("Pass 1: [%d items in %d ms]);", bypassSecondPass ? results.size() : tagMatches.size(),
                   timeAfterPass1);
-      String secondPassMsg = String.format(" Pass 2: [%d items in %d ms]", joinQuery.size(), secondPass);
+      String secondPassMsg = String.format(" Pass 2: [%d items in %d ms]", results.size(), secondPass);
 
       System.out.println(String.format("Search for [%s] - %s%s", searchString, firstPassMsg,
             bypassSecondPass ? "" : secondPassMsg));
-      statistics.addEntry(searchString, branchId, options, joinQuery.size(), System.currentTimeMillis() - startTime);
-      return String.format("%d,%d", joinQuery.getQueryId(), joinQuery.size());
+      statistics.addEntry(searchString, branchId, options, results.size(), System.currentTimeMillis() - startTime);
+      return results;
    }
 
    /* (non-Javadoc)

@@ -93,4 +93,29 @@ public class TagProcessor {
          }
       }
    }
+
+   public static char[] normalizeWord(String toSearch) {
+      boolean lastCharacterAddedWasWhiteSpace = false;
+      StringBuilder searchString = new StringBuilder();
+      for (int index = 0; index < toSearch.length(); index++) {
+         char currChar = toSearch.charAt(index);
+         currChar = Character.toLowerCase(currChar);
+
+         if (currChar != '\r' && currChar != '\n') {
+            if (WordsUtil.isPunctuationOrApostrophe(currChar)) {
+               currChar = ' ';
+            }
+            if (Character.isWhitespace(currChar)) {
+               if (!lastCharacterAddedWasWhiteSpace) {
+                  searchString.append(currChar);
+                  lastCharacterAddedWasWhiteSpace = true;
+               }
+            } else {
+               searchString.append(currChar);
+               lastCharacterAddedWasWhiteSpace = false;
+            }
+         }
+      }
+      return searchString.toString().trim().toCharArray();
+   }
 }

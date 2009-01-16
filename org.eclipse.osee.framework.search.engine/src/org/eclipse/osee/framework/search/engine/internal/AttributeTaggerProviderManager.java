@@ -12,10 +12,13 @@ package org.eclipse.osee.framework.search.engine.internal;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.db.connection.exception.InvalidTaggerException;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
+import org.eclipse.osee.framework.search.engine.MatchLocation;
+import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 
@@ -63,9 +66,10 @@ public class AttributeTaggerProviderManager implements IAttributeTaggerProviderM
       provider.tagIt(attributeData, collector);
    }
 
-   public boolean find(AttributeData attributeData, String value) throws Exception {
+   @Override
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, Options options) throws Exception {
       IAttributeTaggerProvider provider = getProvider(attributeData.getTaggerId());
-      return provider.find(attributeData, value);
+      return provider.find(attributeData, toSearch, options);
    }
 
 }

@@ -10,10 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.tagger;
 
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.search.engine.MatchLocation;
+import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
+import org.eclipse.osee.framework.search.engine.utility.WordOrderMatcher;
 
 /**
  * @author Roberto E. Escobar
@@ -24,12 +30,18 @@ public class DefaultAttributeTaggerProvider extends BaseAttributeTaggerProvider 
       TagProcessor.collectFromString(getValue(attributeData), tagCollector);
    }
 
-   public boolean find(AttributeData attributeData, String value) {
-      boolean toReturn = false;
-      if (Strings.isValid(value)) {
-         value = value.toLowerCase();
-         toReturn = getValue(attributeData).toLowerCase().contains(value);
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, Options options) throws Exception {
+      if (Strings.isValid(toSearch)) {
+         InputStream inputStream = null;
+         try {
+            inputStream = getValueAsStream(attributeData);
+            return WordOrderMatcher.findInStream(inputStream, toSearch, options);
+         } finally {
+            if (inputStream != null) {
+               inputStream.close();
+            }
+         }
       }
-      return toReturn;
+      return Collections.emptyList();
    }
 }

@@ -11,15 +11,15 @@
 package org.eclipse.osee.framework.search.engine.tagger;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.search.engine.MatchLocation;
+import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
+import org.eclipse.osee.framework.search.engine.utility.WordOrderMatcher;
 import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
 
 /**
@@ -27,56 +27,20 @@ import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
  */
 public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
 
-   public boolean find(AttributeData attributeData, String value) {
-      boolean toReturn = false;
-      if (Strings.isValid(value)) {
-         value = value.toLowerCase();
-         List<String> wordToSearch = new ArrayList<String>();
-         Scanner wordScanner = null;
+   @Override
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, Options options) throws Exception {
+      if (Strings.isValid(toSearch)) {
+         InputStream inputStream = null;
          try {
-            Scanner scanner1 = new Scanner(value);
-            try {
-               while (scanner1.hasNext()) {
-                  String entry = scanner1.next();
-                  if (Strings.isValid(entry)) {
-                     wordToSearch.add(entry);
-                  }
-               }
-            } finally {
-               scanner1.close();
-            }
-
-            int index = 0;
-            int totalToSearch = wordToSearch.size();
-            wordScanner = new Scanner(new XmlTextInputStream(getValueAsStream(attributeData)), "UTF-8");
-            while (wordScanner.hasNext()) {
-               String word = wordScanner.next();
-               if (Strings.isValid(word)) {
-                  word = word.toLowerCase();
-                  if (word.contains(wordToSearch.get(index))) {
-                     index++;
-                     if (index >= totalToSearch) {
-                        toReturn = true;
-                        break;
-                     }
-                  } else {
-                     index = 0;
-                  }
-               }
-            }
-
-         } catch (Exception ex) {
-            OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex.toString(), ex);
+            inputStream = new XmlTextInputStream(new XmlTextInputStream(getValueAsStream(attributeData)));
+            return WordOrderMatcher.findInStream(inputStream, toSearch, options);
          } finally {
-            wordToSearch.clear();
-            wordToSearch = null;
-            if (wordScanner != null) {
-               wordScanner.close();
-               wordScanner = null;
+            if (inputStream != null) {
+               inputStream.close();
             }
          }
       }
-      return toReturn;
+      return Collections.emptyList();
    }
 
    public void tagIt(AttributeData attributeData, ITagCollector collector) throws Exception {

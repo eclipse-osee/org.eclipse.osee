@@ -15,8 +15,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.internal.Activator;
@@ -35,12 +37,24 @@ public class WordsUtil {
    public static final String EMPTY_STRING = "";
    private static final String[] SPECIAL_ES_ENDING_CASES = new String[] {"ss", "sh", "ch", "x"};
 
-   private static char[] PUNCTUATION =
-         new char[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<',
-               '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~', '_', '`', '\\'};
+   private static Character[] DEFAULT_PUNCTUACTION =
+         new Character[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';',
+               '<', '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~', '_', '`', '\\', '=', '&'};
+
+   private static char[] PUNCTUATION = null;
 
    private static final Properties dictionary;
    static {
+      Set<Character> combined = new HashSet<Character>();
+      combined.addAll(Arrays.asList(DEFAULT_PUNCTUACTION));
+      combined.addAll(HtmlReservedCharacters.getChars());
+      combined.remove('\'');
+      PUNCTUATION = new char[combined.size()];
+      int index = 0;
+      for (Character character : combined) {
+         PUNCTUATION[index] = character;
+         index++;
+      }
       Arrays.sort(PUNCTUATION);
       dictionary = new Properties();
       try {
@@ -96,16 +110,20 @@ public class WordsUtil {
          } else {
             String value = buffer.toString().trim();
             if (value.length() > 0) {
-               toReturn.add(value);
+               toReturn.add(WordsUtil.toRemoveSingleQuotes(value));
             }
             buffer.setLength(0);
          }
       }
       if (buffer.length() > 0) {
-         toReturn.add(buffer.toString());
+         toReturn.add(WordsUtil.toRemoveSingleQuotes(buffer.toString()));
          buffer.setLength(0);
       }
       return toReturn.toArray(new String[toReturn.size()]);
+   }
+
+   public static boolean isPunctuationOrApostrophe(char character) {
+      return Arrays.binarySearch(PUNCTUATION, character) > 0 || character == '\'';
    }
 
    public static int countPuntuation(String original) {
@@ -157,6 +175,24 @@ public class WordsUtil {
          }
       }
       return toReturn;
+   }
+
+   public static String toRemoveSingleQuotes(String original) {
+      int startAt = 0;
+      int stopAt = original.length();
+      boolean process = false;
+      if (original.startsWith("'")) {
+         startAt = 1;
+         process = true;
+      }
+      if (original.endsWith("'")) {
+         stopAt = original.length() - 1;
+         process = true;
+      }
+      if (process) {
+         original = original.substring(startAt, stopAt);
+      }
+      return original;
    }
 
    public static boolean isWordML(InputStream inputStream) {

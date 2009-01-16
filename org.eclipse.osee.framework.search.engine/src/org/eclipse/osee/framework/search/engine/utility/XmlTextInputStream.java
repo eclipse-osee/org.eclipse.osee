@@ -29,6 +29,7 @@ public class XmlTextInputStream extends BufferedInputStream {
 
    public XmlTextInputStream(InputStream inputStream) {
       super(inputStream);
+
    }
 
    public XmlTextInputStream(String input) throws UnsupportedEncodingException {
@@ -43,7 +44,42 @@ public class XmlTextInputStream extends BufferedInputStream {
       if (readHelper == null) {
          readHelper = WordsUtil.isWordML(in) ? new WordMlReadHelper() : new XmlReadHelper();
       }
-      return readHelper.process(super.read());
+      int value = readHelper.process(super.read());
+      value = checkForSpecialCharacters(value);
+      return value;
+   }
+
+   private int checkForSpecialCharacters(int value) throws IOException {
+      char currChar = (char) value;
+      if (currChar == '&' && available() > 0) {
+
+         final int readLimit = 10;
+         boolean needsReset = true;
+         super.mark(readLimit);
+         readHelper.saveState();
+         try {
+            StringBuilder specialCharBuffer = new StringBuilder();
+            specialCharBuffer.append(currChar);
+            int readCount = 0;
+            while (currChar != ';' && readCount < readLimit && super.available() > 0) {
+               currChar = (char) readHelper.process(super.read());
+               specialCharBuffer.append(currChar);
+               readCount++;
+            }
+
+            Character reserved = HtmlReservedCharacters.toCharacter(specialCharBuffer.toString());
+            if (reserved != null) {
+               needsReset = false;
+               value = reserved;
+            }
+         } finally {
+            if (needsReset) {
+               super.reset();
+               readHelper.restoreState();
+            }
+         }
+      }
+      return value;
    }
 
    /* (non-Javadoc)
@@ -85,15 +121,27 @@ public class XmlTextInputStream extends BufferedInputStream {
 
    private interface IReadHelper {
       public int process(int value) throws IOException;
+
+      public void saveState();
+
+      public void restoreState() throws IOException;
    }
 
    private final class XmlReadHelper implements IReadHelper {
       private boolean partOfTag;
       private boolean isCarriageReturn;
 
+      private boolean wasSaved;
+      private boolean lastPartOfTag;
+      private boolean lastIsCarriageReturn;
+
       public XmlReadHelper() {
-         this.partOfTag = false;
-         this.isCarriageReturn = false;
+         partOfTag = false;
+         isCarriageReturn = false;
+
+         wasSaved = false;
+         lastPartOfTag = false;
+         lastIsCarriageReturn = false;
       }
 
       public int process(int value) throws IOException {
@@ -115,6 +163,30 @@ public class XmlTextInputStream extends BufferedInputStream {
          }
          return value;
       }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream.IReadHelper#restoreState()
+       */
+      @Override
+      public void restoreState() throws IOException {
+         if (wasSaved) {
+            partOfTag = lastPartOfTag;
+            isCarriageReturn = lastIsCarriageReturn;
+            wasSaved = false;
+         } else {
+            throw new IOException("Save state was not called before restore.");
+         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream.IReadHelper#saveState()
+       */
+      @Override
+      public void saveState() {
+         wasSaved = true;
+         lastPartOfTag = partOfTag;
+         lastIsCarriageReturn = isCarriageReturn;
+      }
    }
 
    private final class WordMlReadHelper implements IReadHelper {
@@ -124,16 +196,28 @@ public class XmlTextInputStream extends BufferedInputStream {
       private boolean isStartOfParagraph;
       private StringBuilder buffer;
 
+      private boolean wasSaved;
+      private boolean lastPartOfTag;
+      private boolean lastCollect;
+      private boolean lastIsCarriageReturn;
+      private boolean lastIsStartOfParagraph;
+
       public WordMlReadHelper() {
-         this.buffer = new StringBuilder();
-         this.partOfTag = false;
-         this.collect = false;
-         this.isStartOfParagraph = false;
-         this.isCarriageReturn = false;
+         buffer = new StringBuilder();
+         partOfTag = false;
+         collect = false;
+         isStartOfParagraph = false;
+         isCarriageReturn = false;
+
+         wasSaved = false;
+         lastPartOfTag = false;
+         lastCollect = false;
+         lastIsStartOfParagraph = false;
+         lastIsCarriageReturn = false;
       }
 
       public int process(int value) throws IOException {
-         this.isStartOfParagraph = false;
+         isStartOfParagraph = false;
          if ((char) value == '<') {
             partOfTag = true;
             buffer.append((char) value);
@@ -155,17 +239,17 @@ public class XmlTextInputStream extends BufferedInputStream {
                partOfTag = false;
                String tag = buffer.toString();
                if (tag.equals(START_WORDML_TEXT)) {
-                  this.collect = true;
+                  collect = true;
                } else if (tag.equals(END_WORDML_TEXT)) {
-                  this.collect = false;
+                  collect = false;
                } else if (tag.startsWith(START_PARAGRAPH)) {
-                  this.isStartOfParagraph = true;
+                  isStartOfParagraph = true;
                } else if (tag.startsWith(STOP_PARAGRAPH)) {
-                  this.isStartOfParagraph = false;
+                  isStartOfParagraph = false;
                }
                buffer.delete(0, buffer.length());
                value = ' ';
-               if (this.isStartOfParagraph != true && available() > 0) {
+               if (isStartOfParagraph != true && available() > 0) {
                   value = readFromOriginalBuffer();
                   if ((char) value == '<') {
                      partOfTag = true;
@@ -178,6 +262,34 @@ public class XmlTextInputStream extends BufferedInputStream {
             value = -1;
          }
          return value;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream.IReadHelper#restoreState()
+       */
+      @Override
+      public void restoreState() throws IOException {
+         if (wasSaved) {
+            partOfTag = lastPartOfTag;
+            collect = lastCollect;
+            isStartOfParagraph = lastIsStartOfParagraph;
+            isCarriageReturn = lastIsCarriageReturn;
+            wasSaved = false;
+         } else {
+            throw new IOException("Save state was not called before restore.");
+         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream.IReadHelper#saveState()
+       */
+      @Override
+      public void saveState() {
+         wasSaved = true;
+         lastPartOfTag = partOfTag;
+         lastCollect = collect;
+         lastIsStartOfParagraph = isStartOfParagraph;
+         lastIsCarriageReturn = isCarriageReturn;
       }
    }
 }

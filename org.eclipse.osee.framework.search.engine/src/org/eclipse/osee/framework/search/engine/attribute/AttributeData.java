@@ -84,4 +84,23 @@ public class AttributeData implements IAttributeLocator {
       return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] taggerId:[%s]", getArtId(), getBranchId(),
             getGammaId(), getUri(), getTaggerId());
    }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object object) {
+      if (this == object) return true;
+      if (!(object instanceof AttributeData)) return false;
+      AttributeData other = (AttributeData) object;
+      return other.getGammaId() == this.getGammaId();
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      return (int) (gammaId * 37);
+   }
 }
