@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
@@ -429,7 +430,7 @@ public class WordTemplateProcessor {
             if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
                if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
                   artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
-                  artifact.persistAttributes((SkynetTransaction) options.getValue(WordTemplateRenderer.TRANSACTION_OPTION));
+                  artifact.persistAttributes((SkynetTransaction) options.getValue(ITemplateRenderer.TRANSACTION_OPTION));
                }
             }
          }
@@ -462,8 +463,6 @@ public class WordTemplateProcessor {
             if (artifact.isAttributeTypeValid(attributeName)) {
                processAttribute(artifact, wordMl, attributeElement, attributeName, false, presentationType,
                      multipleArtifacts);
-            } else {
-               throw new OseeCoreException(String.format("Invalid attribute type [%s]", attributeName));
             }
          }
       }

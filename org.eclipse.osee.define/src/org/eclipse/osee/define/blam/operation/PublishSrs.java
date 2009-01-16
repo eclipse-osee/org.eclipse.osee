@@ -11,8 +11,11 @@
 package org.eclipse.osee.define.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
@@ -27,8 +30,13 @@ public class PublishSrs extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
       WordTemplateRenderer srsRenderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
-      srsRenderer.setOptions(new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber));
+      Branch branch = variableMap.getBranch("Branch");
+      SkynetTransaction transaction = new SkynetTransaction(branch);
+
+      srsRenderer.setOptions(new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
+            updateParagraphNumber, ITemplateRenderer.TRANSACTION_OPTION, transaction));
       srsRenderer.publishSRS(variableMap);
+      transaction.execute();
    }
 
    /*
