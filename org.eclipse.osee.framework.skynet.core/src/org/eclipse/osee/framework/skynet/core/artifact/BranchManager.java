@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -90,6 +92,9 @@ public class BranchManager {
 
    private Branch systemRoot;
 
+   private final Map<String, Branch> keynameBranchMap = new HashMap<String, Branch>();
+   private static final String GET_MAPPED_BRANCH_INFO = "SELECT * FROM osee_branch_definitions";
+
    private BranchManager() {
    }
 
@@ -111,10 +116,6 @@ public class BranchManager {
 
    public static Branch getCommonBranch() throws OseeCoreException {
       return getKeyedBranch(Branch.COMMON_BRANCH_CONFIG_ID);
-   }
-
-   public static Branch getKeyedBranch(String keyname) throws OseeCoreException {
-      return KeyedBranchCache.getKeyedBranch(keyname);
    }
 
    /**
@@ -192,6 +193,17 @@ public class BranchManager {
                Branch destBranch = branchCache.get(chStmt.getInt("dest_branch_id"));
                Branch mergeBranch = branchCache.get(chStmt.getInt("merge_branch_id"));
                mergeBranch.setMergeBranchInfo(sourceBranch, destBranch);
+            }
+         } finally {
+            chStmt.close();
+         }
+
+         try {
+            chStmt.runPreparedQuery(GET_MAPPED_BRANCH_INFO);
+
+            while (chStmt.next()) {
+               keynameBranchMap.put(chStmt.getString("static_branch_name").toLowerCase(),
+                     instance.branchCache.get(chStmt.getInt("mapped_branch_id")));
             }
          } finally {
             chStmt.close();
@@ -476,7 +488,7 @@ public class BranchManager {
                   systemRootBranch.getParentTransactionId(), false);
       // Add name to cached keyname if static branch name is desired
       if (staticBranchName != null) {
-         KeyedBranchCache.createKeyedBranch(staticBranchName, branch);
+         createKeyedBranch(staticBranchName, branch);
       }
       // Re-init factory cache
       ArtifactFactoryManager.refreshCache();
@@ -624,5 +636,22 @@ public class BranchManager {
          chStmt.close();
       }
       return transactionId;
+   }
+
+   public static void createKeyedBranch(String keyname, Branch branch) throws OseeCoreException {
+      instance.ensurePopulatedCache(false);
+      instance.keynameBranchMap.put(keyname.toLowerCase(), branch);
+   }
+
+   public static Branch getKeyedBranch(String keyname) throws OseeArgumentException, BranchDoesNotExist, OseeDataStoreException {
+      if (keyname == null) throw new OseeArgumentException("keyname can not be null");
+
+      instance.ensurePopulatedCache(false);
+      String lowerKeyname = keyname.toLowerCase();
+      if (instance.keynameBranchMap.containsKey(lowerKeyname)) {
+         return instance.keynameBranchMap.get(lowerKeyname);
+      } else {
+         throw new BranchDoesNotExist("The key \"" + keyname + "\" does not refer to any branch");
+      }
    }
 }
