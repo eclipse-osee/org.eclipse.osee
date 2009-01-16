@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -32,12 +31,7 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
    public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeTypeName = attrName;
-      try {
-         Boolean value = artifact.getSoleAttributeValue(attributeTypeName);
-         super.set(value);
-      } catch (AttributeDoesNotExist ex) {
-         super.set(false);
-      }
+      super.set(artifact.getSoleAttributeValue(attributeTypeName, Boolean.FALSE));
    }
 
    @Override
@@ -54,16 +48,10 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
     */
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         if (checkButton != null && checkButton.isDisposed() != true) {
-            Boolean enteredValue = checkButton.getSelection();
-            Boolean storedValue = artifact.getSoleAttributeValue(attributeTypeName);
-            if (enteredValue.booleanValue() != storedValue.booleanValue()) {
-               return new Result(true, attributeTypeName + " is dirty");
-            }
-         }
-      } catch (AttributeDoesNotExist ex) {
-         if (checkButton != null && checkButton.isDisposed() != true && checkButton.getSelection()) {
+      if (checkButton != null && !checkButton.isDisposed()) {
+         Boolean enteredValue = checkButton.getSelection();
+         Boolean storedValue = artifact.getSoleAttributeValue(attributeTypeName, false);
+         if (enteredValue.booleanValue() != storedValue.booleanValue()) {
             return new Result(true, attributeTypeName + " is dirty");
          }
       }

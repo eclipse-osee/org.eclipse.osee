@@ -456,9 +456,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public <T> Attribute<T> createAttribute(AttributeType attributeType, boolean newAttribute) {
       try {
-
-         attributeType = AttributeTypeManager.getType(attributeType.getName());
-
          Object[] params = new Object[] {attributeType, this};
          Class<? extends Attribute<T>> attributeClass =
                (Class<? extends Attribute<T>>) attributeType.getBaseAttributeClass();
@@ -629,7 +626,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeCoreException
     */
    public <T> T getSoleAttributeValue(String attributeTypeName) throws OseeCoreException {
-      ensureAttributesLoaded();
       List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
       if (soleAttributes.size() == 0) {
          if (!isAttributeTypeValid(attributeTypeName)) {
@@ -679,8 +675,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeCoreException
     */
    public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue) throws OseeCoreException {
-      try {
-         T value = getSoleAttributeValue(attributeTypeName);
+      List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
+      if (soleAttributes.size() == 1) {
+         T value = soleAttributes.iterator().next().getValue();
          if (value == null) {
             OseeLog.log(
                   SkynetActivator.class,
@@ -689,9 +686,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             return defaultReturnValue;
          }
          return value;
-      } catch (AttributeDoesNotExist ex) {
-         return defaultReturnValue;
-      } catch (OseeCoreException ex) {
+      } else {
          return defaultReturnValue;
       }
    }

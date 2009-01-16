@@ -265,8 +265,6 @@ public abstract class Attribute<T> {
 
    public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, Object... data) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
-      attributeType = AttributeTypeManager.getType(attributeType.getName());
-
       Attribute<?> attribute = artifact.createAttribute(attributeType, false);
       attribute.getAttributeDataProvider().loadData(data);
       attribute.internalSetAttributeId(attributeId);

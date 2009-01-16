@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -43,12 +42,8 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
    public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeTypeName = attrName;
-      try {
-         Double value = artifact.getSoleAttributeValue(attributeTypeName);
-         super.set(value.toString());
-      } catch (AttributeDoesNotExist ex) {
-         super.set("");
-      }
+      Double value = artifact.getSoleAttributeValue(attributeTypeName, null);
+      super.set(value == null ? "" : value.toString());
    }
 
    @Override
@@ -72,16 +67,10 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
     */
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         Double enteredValue = getFloat();
-         Double storedValue = artifact.getSoleAttributeValue(attributeTypeName);
-         if (enteredValue.doubleValue() != storedValue.doubleValue()) {
-            return new Result(true, attributeTypeName + " is dirty");
-         }
-      } catch (AttributeDoesNotExist ex) {
-         if (!get().equals("")) return new Result(true, attributeTypeName + " is dirty");
-      } catch (NumberFormatException ex) {
-         // do nothing
+      Double enteredValue = getFloat();
+      Double storedValue = artifact.getSoleAttributeValue(attributeTypeName, 0.0);
+      if (enteredValue.doubleValue() != storedValue.doubleValue()) {
+         return new Result(true, attributeTypeName + " is dirty");
       }
       return Result.FalseResult;
    }

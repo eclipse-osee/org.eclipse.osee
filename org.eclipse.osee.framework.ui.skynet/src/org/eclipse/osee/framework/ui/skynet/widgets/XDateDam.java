@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Date;
-import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -30,11 +29,9 @@ public class XDateDam extends XDate implements IArtifactWidget {
    public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeTypeName = attrName;
-      try {
-         Date value = artifact.getSoleAttributeValue(attributeTypeName);
+      Date value = artifact.getSoleAttributeValue(attributeTypeName, null);
+      if (value != null) {
          super.setDate(value);
-      } catch (AttributeDoesNotExist ex) {
-         // do nothing
       }
    }
 
@@ -57,17 +54,13 @@ public class XDateDam extends XDate implements IArtifactWidget {
     */
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         Date enteredValue = getDate();
-         Date storedValue = artifact.getSoleAttributeValue(attributeTypeName);
-         if (enteredValue == null && storedValue == null) return Result.FalseResult;
-         if (enteredValue == null && storedValue != null) return new Result(true, attributeTypeName + " is dirty");
-         if (enteredValue != null && storedValue == null) return new Result(true, attributeTypeName + " is dirty");
-         if (enteredValue.getTime() != storedValue.getTime()) {
-            return new Result(true, attributeTypeName + " is dirty");
-         }
-      } catch (AttributeDoesNotExist ex) {
-         if (getDate() != null) return new Result(true, attributeTypeName + " is dirty");
+      Date enteredValue = getDate();
+      Date storedValue = artifact.getSoleAttributeValue(attributeTypeName, null);
+      if (enteredValue == null && storedValue == null) return Result.FalseResult;
+      if (enteredValue == null && storedValue != null) return new Result(true, attributeTypeName + " is dirty");
+      if (enteredValue != null && storedValue == null) return new Result(true, attributeTypeName + " is dirty");
+      if (enteredValue.getTime() != storedValue.getTime()) {
+         return new Result(true, attributeTypeName + " is dirty");
       }
       return Result.FalseResult;
    }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -27,13 +26,7 @@ public class XTextDam extends XText implements IArtifactWidget {
    public void setArtifact(Artifact artifact, String attributeTypeName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeTypeName = attributeTypeName;
-
-      try {
-         String value = artifact.getSoleAttributeValue(attributeTypeName);
-         super.set(value);
-      } catch (AttributeDoesNotExist ex) {
-         super.set("");
-      }
+      super.set(artifact.getSoleAttributeValue(attributeTypeName, ""));
    }
 
    @Override
@@ -48,14 +41,10 @@ public class XTextDam extends XText implements IArtifactWidget {
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      try {
-         String enteredValue = get();
-         String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
-         if (!enteredValue.equals(storedValue)) {
-            return new Result(true, attributeTypeName + " is dirty");
-         }
-      } catch (AttributeDoesNotExist ex) {
-         if (!get().equals("")) return new Result(true, attributeTypeName + " is dirty");
+      String enteredValue = get();
+      String storedValue = artifact.getSoleAttributeValue(attributeTypeName, "");
+      if (!enteredValue.equals(storedValue)) {
+         return new Result(true, attributeTypeName + " is dirty");
       }
       return Result.FalseResult;
    }
