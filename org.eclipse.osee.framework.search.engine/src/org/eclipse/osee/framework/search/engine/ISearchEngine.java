@@ -25,10 +25,10 @@ public interface ISearchEngine {
     * @param branchId
     * @param options
     * @param attributeType search filter. When null, all types are searched.
-    * @return result string having the following convention - artifact join query id, expected number of artifacts
+    * @return search result
     * @throws Exception
     */
-   public String search(String searchString, int branchId, Options options, String... attributeTypes) throws Exception;
+   public SearchResult search(String searchString, int branchId, Options options, String... attributeTypes) throws Exception;
 
    /**
     * Get statistics

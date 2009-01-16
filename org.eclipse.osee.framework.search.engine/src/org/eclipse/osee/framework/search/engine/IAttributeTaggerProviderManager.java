@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine;
 
+import java.util.List;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 
@@ -46,8 +47,8 @@ public interface IAttributeTaggerProviderManager {
     * 
     * @param attributeData attribute to search in
     * @param value to search in attribute content
-    * @return <b>true</b> if value is found in attribute content. <b>false</b> if value is not found in attribute
-    *         content
+    * @param options
+    * @return match location
     */
-   public boolean find(AttributeData attributeData, String value) throws Exception;
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, Options options) throws Exception;
 }
