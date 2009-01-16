@@ -108,18 +108,23 @@ public class WordsUtil {
          if (pos < 0) {
             buffer.append(c);
          } else {
-            String value = buffer.toString().trim();
-            if (value.length() > 0) {
-               toReturn.add(WordsUtil.toRemoveSingleQuotes(value));
-            }
+            addToList(buffer.toString(), toReturn);
             buffer.setLength(0);
          }
       }
-      if (buffer.length() > 0) {
-         toReturn.add(WordsUtil.toRemoveSingleQuotes(buffer.toString()));
-         buffer.setLength(0);
-      }
+      addToList(buffer.toString(), toReturn);
+      buffer.setLength(0);
       return toReturn.toArray(new String[toReturn.size()]);
+   }
+
+   private static void addToList(String toAdd, List<String> list) {
+      toAdd = toAdd.trim();
+      if (toAdd.length() > 0) {
+         toAdd = WordsUtil.toRemoveSingleQuotes(toAdd);
+         if (toAdd.length() > 0) {
+            list.add(toAdd);
+         }
+      }
    }
 
    public static boolean isPunctuationOrApostrophe(char character) {
@@ -190,7 +195,11 @@ public class WordsUtil {
          process = true;
       }
       if (process) {
-         original = original.substring(startAt, stopAt);
+         if (startAt > stopAt) {
+            original = "";
+         } else {
+            original = original.substring(startAt, stopAt);
+         }
       }
       return original;
    }
