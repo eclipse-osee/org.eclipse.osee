@@ -12,7 +12,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PreviewRendererData;
@@ -75,7 +74,7 @@ public class OpenWithMenuListener implements MenuListener {
             } else if (object instanceof Match) {
                artifact = (Artifact) ((Match) object).getElement();
             }
-            validForPreview &= !artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native");
+            validForPreview &= !artifact.isOfType("Native");
             artifacts.add(artifact);
          }
 

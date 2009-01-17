@@ -50,4 +50,13 @@ public class OpenHandler extends AbstractEditorHandler {
       }
       return null;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler#isEnabledWithException()
+    */
+   @Override
+   public boolean isEnabledWithException() throws OseeCoreException {
+      // TODO Auto-generated method stub
+      return super.isEnabledWithException();
+   }
 }

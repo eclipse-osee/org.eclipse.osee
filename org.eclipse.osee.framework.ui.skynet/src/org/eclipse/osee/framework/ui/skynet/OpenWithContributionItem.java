@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -107,7 +106,7 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       boolean validForPreview = true;
 
       for (Artifact artifact : artifacts) {
-         validForPreview &= !artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native");
+         validForPreview &= !artifact.isOfType("Native");
       }
 
       if (validForPreview) {

@@ -60,6 +60,10 @@
          name="MS Word Preview">
    </command>
    <command
+         id="org.eclipse.osee.framework.ui.skynet.wholewordpreview.command"
+         name="MS Word Preview">
+   </command>
+   <command
          id="org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command"
          name="MS Word Preview with children">
    </command>
@@ -167,6 +171,18 @@
          </with>
       </enabledWhen>
    </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWholeWordHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.wholewordpreview.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
 </extension>
 	<extension point="org.eclipse.ui.commandImages">
   <image
@@ -220,10 +236,6 @@
           id="org.eclipse.osee.framework.ui.skynet.purge.command"
           name="Purge">
     </command>
-    <command
-          id="org.eclipse.osee.framework.ui.atseditor.command"
-          name="ATS Editor">
-    </command>
  </extension>
 	<extension name="Put commands of BranchView here (for now)" point="org.eclipse.ui.commands">
 		<command description="Show the branches in a flat listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command" name="Flat">
@@ -257,40 +269,6 @@
         description="Collapse  a Tree Viewer"
         id="org.eclipse.osee.framework.ui.skynet.collapseTree.command"
         name="TreeCollapse">
-  </command>
-	</extension>
-	<extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">
-		<command id="org.eclipse.osee.ats.worldXView.editChangeType.command" name="Edit Change Type">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.editPriority.command" name="Edit Priority">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.editTargetedVersion.command" name="Edit Targeted Version">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.editActionableItems.command" name="Edit Actionable Items">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.convertToActionableItemTeam.command" name="Convert to Actionable Item/Team">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.openInATSEditor.command" name="Open in ATS Editor">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.openInArtifactEditor.command" name="Open in Artifact Editor">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.deletePurgeATSObject.command" name="Delete/Purge ATS Object">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.addAsFavorite.command" name="Add as Favorite">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.subscribeForNotifications.command" name="Subscribe for Notifications">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.email.command" name="Email">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.resetActionOffChildren.command" name="Reset Action off Children">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.clearAllSorting.command" name="Clear All Sorting">
-         </command>
-		<command id="org.eclipse.osee.ats.worldXView.tableCustomization.command" name="Table Customization">
-         </command>
-  <command
-        id="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command"
-        name="Open Artifact Editor">
   </command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
@@ -349,16 +327,6 @@
      </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenSkywalkerEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactsInAtsWorldHandler" commandId="org.eclipse.osee.framework.ui.atseditor.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
      <enabledWhen>
@@ -911,6 +879,16 @@
      </separator>
 			<command commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
          </command>
+   <separator
+         name="org.eclipse.osee.framework.ui.skynet.separator.reveal.2"
+         visible="true">
+   </separator>
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
+   </command>
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
+   </command>
 			<separator name="artifactSearchViewCopySeparator" visible="true">
          </separator>
 			<command commandId="org.eclipse.ui.edit.copy">

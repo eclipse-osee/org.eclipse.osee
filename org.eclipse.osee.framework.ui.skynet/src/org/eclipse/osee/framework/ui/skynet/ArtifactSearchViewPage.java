@@ -151,66 +151,84 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    }
 
    private void createContextMenu(Control menuOnwer) {
-      PlatformUI.getWorkbench().getService(IHandlerService.class);
-      handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+      //      PlatformUI.getWorkbench().getService(IHandlerService.class);
+      //      handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
          public void menuAboutToShow(IMenuManager manager) {
-            fillPopupMenu(manager);
+            MenuManager menuManager = (MenuManager) manager;
+            menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
          }
       });
 
-      menuManager.add(new Separator());
+      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
       viewer.getTable().setMenu(menuManager.createContextMenu(viewer.getTable()));
       getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.ArtifactSearchView", menuManager, viewer);
 
+      getSite().setSelectionProvider(viewer);
+      /////////////////////////
+      //      MenuManager menuManager = new MenuManager();
+      //      menuManager.setRemoveAllWhenShown(true);
+      //      menuManager.addMenuListener(new IMenuListener() {
+      //         public void menuAboutToShow(IMenuManager manager) {
+      //            menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+      //         }
+      //      });
+      //
+      //      //      menuManager.add(new Separator());
+      //      viewer.getTable().setMenu(menuManager.createContextMenu(viewer.getTable()));
+      //      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.ArtifactSearchView", menuManager, viewer);
+
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+      ///ats editors
+      /// mass editor
+      //import export ... work patches
 
-      createOpenWordPreviewChildrenHandler(menuManager, viewer);
-      createOpenWordPreviewHandler(menuManager, viewer);
-      createOpenWordEditorHandler(menuManager, viewer);
-      createOpenNativeEditorHandler(menuManager, viewer);
-      createOpenRdtEditorHandler(menuManager, viewer);
-      createOpenArtifactHandler(menuManager, viewer);
-      createOpenArtifactEditorHandler(menuManager, viewer);
-      createOpenInAtsWorldHandler(menuManager, viewer);
-      createOpenInAtsTaskHandler(menuManager, viewer);
-      createOpenInMassArtifactEditorHandler(menuManager, viewer);
-      menuManager.add(new Separator());
-      createReportHandler(menuManager, viewer);
-      createViewTableHandler(menuManager, viewer);
-      menuManager.add(new Separator());
-      createShowInExplorerHandler(menuManager, viewer);
-      createResourceHistoryHandler(menuManager, viewer);
-      menuManager.add(new Separator());
-      createSetAllPartitions(menuManager, viewer);
-      menuManager.add(new Separator());
+      //      x createOpenWordPreviewChildrenHandler(menuManager, viewer);
+      //      x createOpenWordPreviewHandler(menuManager, viewer);
+      //      x createOpenWordEditorHandler(menuManager, viewer);
+      //      x createOpenNativeEditorHandler(menuManager, viewer);
+      //      x createOpenRdtEditorHandler(menuManager, viewer);
+      //      x createOpenArtifactHandler(menuManager, viewer);
+      //      x createOpenArtifactEditorHandler(menuManager, viewer);
+      //      createOpenInAtsWorldHandler(menuManager, viewer);
+      //      createOpenInAtsTaskHandler(menuManager, viewer);
+      //      createOpenInMassArtifactEditorHandler(menuManager, viewer);
+      //      menuManager.add(new Separator());
+      //      createOpenArtifactHandler(menuManager, viewer);
+      //      createViewTableHandler(menuManager, viewer);
+      //      menuManager.add(new Separator());
+      //      x createShowInExplorerHandler(menuManager, viewer);
+      //      x createResourceHistoryHandler(menuManager, viewer);
+      //      menuManager.add(new Separator());
+      //      createSetAllPartitions(menuManager, viewer);
+      //      menuManager.add(new Separator());
    }
 
    private void fillPopupMenu(IMenuManager Manager) {
-      MenuManager menuManager = (MenuManager) Manager;
-      menuManager.add(new Separator());
-
-      // The additions group is a standard group
-      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-
-      //      addOpenInAtsWorldHandler(menuManager, viewer);
-      addOpenInAtsTaskHandler(menuManager, viewer);
-      addOpenInMassArtifactEditorHandler(menuManager, viewer);
-      menuManager.add(new Separator());
-      addReportHandler(menuManager, viewer);
-      addViewTableHandler(menuManager, viewer);
-      menuManager.add(new Separator());
-      addShowInExplorerHandler(menuManager, viewer);
-      addResourceHistoryHandler(menuManager, viewer);
-      menuManager.add(new Separator());
-      addExportHandler(menuManager, viewer);
-      menuManager.add(new Separator());
-      addSetAllPartitions(menuManager, viewer);
-      menuManager.add(new Separator());
+      //      MenuManager menuManager = (MenuManager) Manager;
+      //      menuManager.add(new Separator());
+      //
+      //      // The additions group is a standard group
+      //      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+      //
+      //      //      addOpenInAtsWorldHandler(menuManager, viewer);
+      //      addOpenInAtsTaskHandler(menuManager, viewer);
+      //      addOpenInMassArtifactEditorHandler(menuManager, viewer);
+      //      menuManager.add(new Separator());
+      //      addReportHandler(menuManager, viewer);
+      //      addViewTableHandler(menuManager, viewer);
+      //      menuManager.add(new Separator());
+      //      addShowInExplorerHandler(menuManager, viewer);
+      //      addResourceHistoryHandler(menuManager, viewer);
+      //      menuManager.add(new Separator());
+      //      addExportHandler(menuManager, viewer);
+      //      menuManager.add(new Separator());
+      //      addSetAllPartitions(menuManager, viewer);
+      //      menuManager.add(new Separator());
 
    }
 

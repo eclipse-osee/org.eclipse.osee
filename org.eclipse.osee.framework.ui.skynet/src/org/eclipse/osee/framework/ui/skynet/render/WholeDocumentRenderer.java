@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -33,12 +34,25 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 public class WholeDocumentRenderer extends WordRenderer {
 
    public static final String RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer";
+   private List<PreviewRendererData> previewData;
 
    /**
     * @param rendererId
     */
    public WholeDocumentRenderer(String rendererId) {
       super(rendererId);
+
+      previewData = new ArrayList<PreviewRendererData>(1);
+      previewData.add(new PreviewRendererData("MS Word Preview",
+            "org.eclipse.osee.framework.ui.skynet.wholewordpreview.command", WordRenderer.getImageDescriptor()));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#isPreviewable()
+    */
+   @Override
+   public boolean isPreviewable(Artifact artifact) {
+      return artifact.isOfType(WordArtifact.WHOLE_WORD);
    }
 
    /* (non-Javadoc)
@@ -55,6 +69,14 @@ public class WholeDocumentRenderer extends WordRenderer {
    @Override
    public String getCommandId() {
       return "org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getPreviewData()
+    */
+   @Override
+   public List<PreviewRendererData> getPreviewData() {
+      return previewData;
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
