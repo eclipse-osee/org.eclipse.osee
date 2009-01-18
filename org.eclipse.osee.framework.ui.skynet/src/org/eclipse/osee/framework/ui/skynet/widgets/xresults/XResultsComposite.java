@@ -74,6 +74,7 @@ public class XResultsComposite extends Composite {
       item.setText("View Source");
       item.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             if (htmlText == null || htmlText.equals("")) {
                AWorkbench.popup("ERROR", "Nothing to view");
@@ -93,6 +94,7 @@ public class XResultsComposite extends Composite {
       item.setText("Print");
       item.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             if (htmlText == null || htmlText.equals("")) {
                AWorkbench.popup("ERROR", "Nothing to print");
@@ -106,6 +108,7 @@ public class XResultsComposite extends Composite {
       item.setText("Email");
       item.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             if (htmlText == null || htmlText.equals("")) {
                AWorkbench.popup("ERROR", "Nothing to email");
@@ -121,6 +124,7 @@ public class XResultsComposite extends Composite {
       item.setText("Export Table");
       item.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             Dialogs.exportHtmlTableDialog(title, htmlText, true);
          }
@@ -129,6 +133,7 @@ public class XResultsComposite extends Composite {
       item.setText("Save to File");
       item.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             Dialogs.saveHtmlDialog(htmlText, true);
          }
@@ -154,7 +159,7 @@ public class XResultsComposite extends Composite {
     * @param htmlText the htmlText to set
     */
    public void setHtmlText(String htmlText) {
-      this.htmlText = htmlText;
+      setHtmlText(htmlText, title);
    }
 
    /**
@@ -164,7 +169,9 @@ public class XResultsComposite extends Composite {
    public void setHtmlText(String htmlText, String title) {
       this.htmlText = htmlText;
       this.title = title;
-      if (browser != null && !browser.isDisposed()) browser.setText(htmlText);
+      if (browser != null && !browser.isDisposed()) {
+         browser.setText(htmlText);
+      }
    }
 
    /**

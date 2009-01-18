@@ -26,7 +26,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.compare,
  javax.mail.glassfish;bundle-version="1.4.1",
  org.eclipse.help,
- org.eclipse.nebula.widgets.xviewer;bundle-version="1.0.0"
+ org.eclipse.nebula.widgets.xviewer;bundle-version="1.0.0",
+ org.eclipse.birt.chart.engine;bundle-version="2.3.1",
+ org.eclipse.birt.chart;bundle-version="2.3.1"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.nebula.widgets.calendarcombo,
@@ -75,6 +77,7 @@ Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.render,
  org.eclipse.osee.framework.ui.skynet.render.word,
  org.eclipse.osee.framework.ui.skynet.render.word.template,
+ org.eclipse.osee.framework.ui.skynet.results,
  org.eclipse.osee.framework.ui.skynet.search,
  org.eclipse.osee.framework.ui.skynet.search.filter,
  org.eclipse.osee.framework.ui.skynet.search.report,
