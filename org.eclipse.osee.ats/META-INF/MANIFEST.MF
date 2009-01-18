@@ -24,9 +24,6 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.osee.framework.db.connection,
  org.eclipse.ui.views;bundle-version="3.3.0",
  org.eclipse.nebula.widgets.xviewer;bundle-version="1.0.0",
- org.eclipse.birt;bundle-version="2.3.1",
- org.eclipse.birt.report.engine;bundle-version="2.3.1",
- org.eclipse.birt.chart;bundle-version="2.3.1",
  org.eclipse.birt.chart.engine;bundle-version="2.3.1"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ats,
