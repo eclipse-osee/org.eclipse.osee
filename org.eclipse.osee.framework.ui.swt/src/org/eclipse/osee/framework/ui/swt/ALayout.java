@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.swt;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
@@ -31,4 +33,14 @@ public class ALayout {
       return getZeroMarginLayout(1, false);
    }
 
+   public static Composite createCommonPageComposite(Composite parent) {
+      Composite composite = new Composite(parent, SWT.NONE);
+      GridLayout layout = new GridLayout(1, false);
+      layout.marginHeight = 0;
+      layout.marginWidth = 0;
+      layout.verticalSpacing = 0;
+      composite.setLayout(layout);
+
+      return composite;
+   }
 }
