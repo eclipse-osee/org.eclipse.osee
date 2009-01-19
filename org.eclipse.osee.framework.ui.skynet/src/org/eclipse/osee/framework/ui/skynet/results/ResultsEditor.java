@@ -24,15 +24,21 @@ import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.ImageCapture;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultsComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -47,6 +53,9 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
    private int chartPageIndex, reportsPageIndex;
    private Integer startPage = null;
+   private XResultsComposite xResultComposite;
+   private Composite chartComposite;
+   private Canvas chartCanvas;
 
    /*
     * (non-Javadoc)
@@ -72,6 +81,32 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       }
    }
 
+   private ToolBar createToolBar(Composite parent) {
+      ToolBar toolBar = ALayout.createCommonToolBar(parent);
+      ToolItem item;
+
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Results");
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("print.gif"));
+      item.setToolTipText("Print this tab");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            if (getCurrentPage() == reportsPageIndex) {
+               xResultComposite.getBrowser().setUrl("javascript:print()");
+            } else if (getCurrentPage() == chartPageIndex) {
+               ImageCapture iCapture = new ImageCapture(chartCanvas);
+               iCapture.popupDialog();
+            }
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.SEPARATOR);
+
+      return toolBar;
+   }
+
    public void setEditorTitle(final String str) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
@@ -95,21 +130,21 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
    }
 
    private void createChartTab() throws OseeCoreException {
-      Composite comp = ALayout.createCommonPageComposite(getContainer());
-
+      chartComposite = ALayout.createCommonPageComposite(getContainer());
+      createToolBar(chartComposite);
       Chart chart = getResultsEditorProvider().getChart();
 
       GridData gd = new GridData(GridData.FILL_BOTH);
       if (chart == null) {
-         Label label = new Label(comp, SWT.BORDER);
+         Label label = new Label(chartComposite, SWT.BORDER);
          label.setText("\n   No Chart Provided");
       } else {
-         Canvas cCenter = new Canvas(comp, SWT.NONE);
-         cCenter.setLayoutData(gd);
-         cCenter.addPaintListener(new ChartViewerSWT(chart));
+         chartCanvas = new Canvas(chartComposite, SWT.NONE);
+         chartCanvas.setLayoutData(gd);
+         chartCanvas.addPaintListener(new ChartViewerSWT(chart));
       }
 
-      chartPageIndex = addPage(comp);
+      chartPageIndex = addPage(chartComposite);
       if (chart != null) {
          startPage = chartPageIndex;
       }
@@ -118,12 +153,13 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
 
    private void createReportTab() throws OseeCoreException, PartInitException {
       Composite comp = ALayout.createCommonPageComposite(getContainer());
+      createToolBar(comp);
 
       GridData gd = new GridData(GridData.FILL_BOTH);
-      XResultsComposite resultsComp = new XResultsComposite(comp, SWT.BORDER);
-      resultsComp.setLayoutData(gd);
+      xResultComposite = new XResultsComposite(comp, SWT.BORDER);
+      xResultComposite.setLayoutData(gd);
       if (getResultsEditorProvider().getReportHtml() != null) {
-         resultsComp.setHtmlText(getResultsEditorProvider().getReportHtml());
+         xResultComposite.setHtmlText(getResultsEditorProvider().getReportHtml());
       }
 
       reportsPageIndex = addPage(comp);

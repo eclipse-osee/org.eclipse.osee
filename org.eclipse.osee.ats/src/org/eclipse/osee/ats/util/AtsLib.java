@@ -54,8 +54,8 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.IAtsLib;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -117,18 +117,8 @@ public class AtsLib implements IAtsLib {
    }
 
    public static ToolBar createCommonToolBar(Composite parent, XFormToolkit toolkit) {
-      Composite toolBarComposite = new Composite(parent, SWT.BORDER);
-      GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1);
-      toolBarComposite.setLayoutData(gridData);
-      if (toolkit != null) toolkit.adapt(toolBarComposite);
-      GridLayout layout = new GridLayout(2, false);
-      layout.marginHeight = 0;
-      layout.marginWidth = 0;
-      toolBarComposite.setLayout(layout);
-
-      ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
-      gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1);
-      toolBar.setLayoutData(gridData);
+      ToolBar toolBar = ALayout.createCommonToolBar(parent);
+      if (toolkit != null) toolkit.adapt(toolBar.getParent());
       if (toolkit != null) toolkit.adapt(toolBar);
       return toolBar;
    }
