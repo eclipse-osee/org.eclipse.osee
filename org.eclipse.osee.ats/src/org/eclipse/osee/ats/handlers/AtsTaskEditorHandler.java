@@ -22,7 +22,7 @@ public class AtsTaskEditorHandler extends AbstractEditorHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
-         AtsTaskEditorRenderer renderer = new AtsTaskEditorRenderer(AtsTaskEditorRenderer.RENDERER_EXTENSION);
+         AtsTaskEditorRenderer renderer = new AtsTaskEditorRenderer();
          try {
             renderer.open(artifacts);
          } catch (OseeCoreException ex) {

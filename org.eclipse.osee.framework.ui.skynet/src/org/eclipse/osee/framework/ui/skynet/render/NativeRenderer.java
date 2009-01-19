@@ -59,8 +59,8 @@ public class NativeRenderer extends FileRenderer {
    /**
     * @param rendererId
     */
-   public NativeRenderer(String rendererId) {
-      super(rendererId);
+   public NativeRenderer() {
+      super();
    }
 
    /* (non-Javadoc)
@@ -76,7 +76,7 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public NativeRenderer newInstance() throws OseeCoreException {
-      return new NativeRenderer(getId());
+      return new NativeRenderer();
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {

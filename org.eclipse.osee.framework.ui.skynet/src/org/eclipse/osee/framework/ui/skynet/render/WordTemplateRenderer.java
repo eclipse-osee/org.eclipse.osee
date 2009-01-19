@@ -85,8 +85,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    /**
     * @param rendererId
     */
-   public WordTemplateRenderer(String rendererId) {
-      super(rendererId);
+   public WordTemplateRenderer() {
+      super();
 
       previewData = new ArrayList<PreviewRendererData>(2);
       previewData.add(new PreviewRendererData("MS Word Preview",
@@ -109,7 +109,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     */
    @Override
    public WordTemplateRenderer newInstance() throws OseeCoreException {
-      return new WordTemplateRenderer(getId());
+      return new WordTemplateRenderer();
    }
 
    /* (non-Javadoc)

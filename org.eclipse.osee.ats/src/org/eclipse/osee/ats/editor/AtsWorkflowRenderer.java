@@ -27,7 +27,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atseditor.command";
-   public static final String RENDERER_EXTENSION = "org.eclipse.osee.ats.editor.AtsWorkflowRenderer";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
@@ -35,14 +34,6 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    @Override
    public String getCommandId() {
       return COMMAND_ID;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getId()
-    */
-   @Override
-   public String getId() {
-      return RENDERER_EXTENSION;
    }
 
    /* (non-Javadoc)
@@ -64,8 +55,8 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    /**
     * @param rendererId
     */
-   public AtsWorkflowRenderer(String rendererId) {
-      super(rendererId);
+   public AtsWorkflowRenderer() {
+      super();
    }
 
    @Override
@@ -80,7 +71,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    */
    @Override
    public AtsWorkflowRenderer newInstance() throws OseeCoreException {
-      return new AtsWorkflowRenderer(getId());
+      return new AtsWorkflowRenderer();
    }
 
    /* (non-Javadoc)

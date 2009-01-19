@@ -18,7 +18,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atstaskeditor.command";
-   public static final String RENDERER_EXTENSION = "org.eclipse.osee.ats.editor.AtsTaskEditorRenderer";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#open(java.util.List)
@@ -43,27 +42,12 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
       return AtsPlugin.getInstance().getImage("task.gif");
    }
 
-   /**
-    * @param rendererId
-    */
-   public AtsTaskEditorRenderer(String rendererId) {
-      super(rendererId);
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getName()
     */
    @Override
    public String getName() {
       return "ATS Task Editor";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getId()
-    */
-   @Override
-   public String getId() {
-      return RENDERER_EXTENSION;
    }
 
    /* (non-Javadoc)
@@ -87,7 +71,7 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
 
    @Override
    public AtsTaskEditorRenderer newInstance() throws OseeCoreException {
-      return new AtsTaskEditorRenderer(getId());
+      return new AtsTaskEditorRenderer();
    }
 
 }

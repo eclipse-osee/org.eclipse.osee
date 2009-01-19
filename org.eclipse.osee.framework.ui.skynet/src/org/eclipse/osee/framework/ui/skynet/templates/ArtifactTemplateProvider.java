@@ -95,17 +95,18 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       }
       List<String> list = new ArrayList<String>();
 
+      String rendererId = renderer.getClass().getCanonicalName();
       if (artifact != null && option != null) {
-         list.add(renderer.getId() + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option);
+         list.add(rendererId + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option);
       }
       if (artifact != null) {
-         list.add(renderer.getId() + " " + artifact.getArtifactTypeName() + " " + presentationType);
+         list.add(rendererId + " " + artifact.getArtifactTypeName() + " " + presentationType);
       }
       if (option != null) {
-         list.add(renderer.getId() + " " + presentationType + " " + option);
+         list.add(rendererId + " " + presentationType + " " + option);
       }
 
-      list.add(renderer.getId() + " " + presentationType);
+      list.add(rendererId + " " + presentationType);
       return list;
    }
 

@@ -71,8 +71,6 @@ public interface IRenderer {
 
    public abstract String getArtifactUrl(Artifact artifact) throws OseeCoreException;
 
-   public abstract String getId();
-
    public abstract void setOptions(VariableMap options) throws OseeArgumentException;
 
    public abstract String getStringOption(String key) throws OseeArgumentException;

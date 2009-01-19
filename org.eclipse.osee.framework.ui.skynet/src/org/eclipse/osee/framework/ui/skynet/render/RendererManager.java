@@ -93,15 +93,9 @@ public class RendererManager {
          String bundleName = element.getContributor().getName();
          try {
             Class<IRenderer> clazz = Platform.getBundle(bundleName).loadClass(classname);
-            Constructor<IRenderer> constructor = clazz.getConstructor(new Class[] {String.class});
-            IRenderer renderer =
-                  constructor.newInstance(new Object[] {element.getDeclaringExtension().getUniqueIdentifier()});
-            if (renderers.containsKey(renderer.getId())) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-                     "Multiple renderers found with id [" + renderer.getId() + "]");
-            } else {
-               renderers.put(renderer.getId(), renderer);
-            }
+            Constructor<IRenderer> constructor = clazz.getConstructor();
+            IRenderer renderer = constructor.newInstance();
+            renderers.put(renderer.getClass().getCanonicalName(), renderer);
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          } catch (NoClassDefFoundError er) {

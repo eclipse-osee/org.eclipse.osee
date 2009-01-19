@@ -26,7 +26,7 @@ public class PreviewWholeWordHandler extends AbstractEditorHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
          try {
-            WholeDocumentRenderer renderer = new WholeDocumentRenderer(WholeDocumentRenderer.RENDERER_EXTENSION);
+            WholeDocumentRenderer renderer = new WholeDocumentRenderer();
             renderer.preview(artifacts);
             dispose();
 

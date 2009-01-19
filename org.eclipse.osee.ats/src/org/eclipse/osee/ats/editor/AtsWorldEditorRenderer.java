@@ -18,13 +18,12 @@ import org.eclipse.swt.graphics.Image;
  */
 public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworldeditor.command";
-   public static final String RENDERER_EXTENSION = "org.eclipse.osee.ats.editor.AtsWorldEditorRenderer";
 
    /**
     * @param rendererId
     */
-   public AtsWorldEditorRenderer(String rendererId) {
-      super(rendererId);
+   public AtsWorldEditorRenderer() {
+      super();
    }
 
    /* (non-Javadoc)
@@ -47,14 +46,6 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getId()
-    */
-   @Override
-   public String getId() {
-      return RENDERER_EXTENSION;
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getName()
     */
    @Override
@@ -67,7 +58,7 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
     */
    @Override
    public AtsWorldEditorRenderer newInstance() throws OseeCoreException {
-      return new AtsWorldEditorRenderer(getId());
+      return new AtsWorldEditorRenderer();
    }
 
    @Override

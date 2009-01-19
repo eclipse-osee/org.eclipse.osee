@@ -29,7 +29,7 @@ public class PublishSrs extends AbstractBlam {
 
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
-      WordTemplateRenderer srsRenderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
+      WordTemplateRenderer srsRenderer = new WordTemplateRenderer();
       Branch branch = variableMap.getBranch("Branch");
       SkynetTransaction transaction = new SkynetTransaction(branch);
 

@@ -26,7 +26,7 @@ public class PreviewWordHandler extends AbstractEditorHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
          try {
-            WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
+            WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(getOptions());
             renderer.preview(artifacts);
             dispose();

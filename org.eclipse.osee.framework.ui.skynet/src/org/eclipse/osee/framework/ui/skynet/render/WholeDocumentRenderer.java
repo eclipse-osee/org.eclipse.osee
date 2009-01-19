@@ -36,15 +36,13 @@ import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
  * @author Jeff C. Phillips
  */
 public class WholeDocumentRenderer extends WordRenderer {
-
-   public static final String RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer";
    private List<PreviewRendererData> previewData;
 
    /**
     * @param rendererId
     */
-   public WholeDocumentRenderer(String rendererId) {
-      super(rendererId);
+   public WholeDocumentRenderer() {
+      super();
 
       previewData = new ArrayList<PreviewRendererData>(1);
       previewData.add(new PreviewRendererData("MS Word Preview",
@@ -64,7 +62,7 @@ public class WholeDocumentRenderer extends WordRenderer {
     */
    @Override
    public WholeDocumentRenderer newInstance() throws OseeCoreException {
-      return new WholeDocumentRenderer(getId());
+      return new WholeDocumentRenderer();
    }
 
    /* (non-Javadoc)

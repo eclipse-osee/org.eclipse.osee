@@ -43,8 +43,8 @@ public abstract class FileRenderer extends FileSystemRenderer {
    /**
     * @param rendererId
     */
-   public FileRenderer(String rendererId) {
-      super(rendererId);
+   public FileRenderer() {
+      super();
    }
 
    /* (non-Javadoc)

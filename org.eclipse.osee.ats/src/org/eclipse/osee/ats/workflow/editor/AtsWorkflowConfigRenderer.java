@@ -33,14 +33,6 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getId()
-    */
-   @Override
-   public String getId() {
-      return "org.eclipse.osee.ats.editor.AtsWorkflowConfigRenderer";
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
     */
    @Override
@@ -51,8 +43,8 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    /**
     * @param rendererId
     */
-   public AtsWorkflowConfigRenderer(String rendererId) {
-      super(rendererId);
+   public AtsWorkflowConfigRenderer() {
+      super();
    }
 
    @Override
@@ -73,7 +65,7 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    */
    @Override
    public AtsWorkflowConfigRenderer newInstance() throws OseeCoreException {
-      return new AtsWorkflowConfigRenderer(getId());
+      return new AtsWorkflowConfigRenderer();
    }
 
    /* (non-Javadoc)

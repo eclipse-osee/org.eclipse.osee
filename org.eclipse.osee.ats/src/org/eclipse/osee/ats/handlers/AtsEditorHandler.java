@@ -22,7 +22,7 @@ public class AtsEditorHandler extends AbstractEditorHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
-         AtsWorkflowRenderer renderer = new AtsWorkflowRenderer(AtsWorkflowRenderer.RENDERER_EXTENSION);
+         AtsWorkflowRenderer renderer = new AtsWorkflowRenderer();
          try {
             renderer.open(artifacts);
          } catch (OseeCoreException ex) {

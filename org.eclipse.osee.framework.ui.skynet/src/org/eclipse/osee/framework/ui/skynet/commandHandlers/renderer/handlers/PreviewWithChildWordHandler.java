@@ -27,7 +27,7 @@ public class PreviewWithChildWordHandler extends PreviewWordHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
          try {
-            WordTemplateRenderer renderer = new WordTemplateRenderer(WordTemplateRenderer.RENDERER_EXTENSION);
+            WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.preview(artifacts);
             dispose();
 

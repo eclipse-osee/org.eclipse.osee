@@ -27,8 +27,8 @@ public abstract class WordRenderer extends FileRenderer {
    /**
     * @param rendererId
     */
-   public WordRenderer(String rendererId) {
-      super(rendererId);
+   public WordRenderer() {
+      super();
    }
 
    @Override

@@ -19,8 +19,8 @@ public class OpenOfficeWriterRenderer extends FileRenderer implements ITemplateR
    /**
     * @param rendererId
     */
-   public OpenOfficeWriterRenderer(String rendererId) {
-      super(rendererId);
+   public OpenOfficeWriterRenderer() {
+      super();
    }
 
    /* (non-Javadoc)
@@ -28,7 +28,7 @@ public class OpenOfficeWriterRenderer extends FileRenderer implements ITemplateR
     */
    @Override
    public OpenOfficeWriterRenderer newInstance() throws OseeCoreException {
-      return new OpenOfficeWriterRenderer(getId());
+      return new OpenOfficeWriterRenderer();
    }
 
    /* (non-Javadoc)

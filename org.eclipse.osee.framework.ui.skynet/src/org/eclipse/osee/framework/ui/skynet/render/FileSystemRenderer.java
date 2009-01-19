@@ -29,8 +29,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    /**
     * @param rendererId
     */
-   public FileSystemRenderer(String rendererId) {
-      super(rendererId);
+   public FileSystemRenderer() {
+      super();
    }
 
    private static IFolder workingFolder;

@@ -32,15 +32,13 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Philips
  */
 public class DefaultArtifactRenderer implements IRenderer {
-   private String rendererId;
    private VariableMap options;
 
    /**
     * @param rendererId
     */
-   public DefaultArtifactRenderer(String rendererId) {
+   public DefaultArtifactRenderer() {
       super();
-      this.rendererId = rendererId;
    }
 
    /* (non-Javadoc)
@@ -114,20 +112,6 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getId()
-    */
-   public String getId() {
-      return rendererId;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#setId(java.lang.String)
-    */
-   public void setId(String rendererId) {
-      this.rendererId = rendererId;
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getArtifactUrl(org.eclipse.osee.framework.skynet.core.artifact.Artifact, boolean)
     */
    public String getArtifactUrl(Artifact artifact) throws OseeCoreException {
@@ -177,7 +161,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    */
    @Override
    public DefaultArtifactRenderer newInstance() throws OseeCoreException {
-      return new DefaultArtifactRenderer(getId());
+      return new DefaultArtifactRenderer();
    }
 
    /* (non-Javadoc)

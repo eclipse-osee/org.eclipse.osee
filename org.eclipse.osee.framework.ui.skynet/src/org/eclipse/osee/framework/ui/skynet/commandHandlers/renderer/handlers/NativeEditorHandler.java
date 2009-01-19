@@ -22,7 +22,7 @@ public class NativeEditorHandler extends AbstractEditorHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
          try {
-            NativeRenderer renderer = new NativeRenderer(NativeRenderer.EXTENSION_ID);
+            NativeRenderer renderer = new NativeRenderer();
             renderer.open(artifacts);
             dispose();
 

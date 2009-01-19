@@ -22,7 +22,7 @@ public class AtsWorldEditorHandler extends AbstractEditorHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
-         AtsWorldEditorRenderer renderer = new AtsWorldEditorRenderer(AtsWorldEditorRenderer.RENDERER_EXTENSION);
+         AtsWorldEditorRenderer renderer = new AtsWorldEditorRenderer();
          try {
             renderer.open(artifacts);
          } catch (OseeCoreException ex) {

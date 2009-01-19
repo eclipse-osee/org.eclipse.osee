@@ -24,7 +24,7 @@ public class PreviewTisHandler extends AbstractEditorHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
          try {
-            TisRenderer renderer = new TisRenderer(TisRenderer.RENDERER_EXTENSION);
+            TisRenderer renderer = new TisRenderer();
             renderer.preview(artifacts);
             dispose();
 

@@ -31,8 +31,8 @@ public class UrlRenderer extends DefaultArtifactRenderer {
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
-   public UrlRenderer(String rendererId) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      super(rendererId);
+   public UrlRenderer() throws OseeDataStoreException, OseeTypeDoesNotExist {
+      super();
       contentUrlType = AttributeTypeManager.getType("Content URL");
    }
 
@@ -41,7 +41,7 @@ public class UrlRenderer extends DefaultArtifactRenderer {
     */
    @Override
    public UrlRenderer newInstance() throws OseeCoreException {
-      return new UrlRenderer(getId());
+      return new UrlRenderer();
    }
 
    @Override
