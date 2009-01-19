@@ -175,9 +175,6 @@
                classname="org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory">
          </ArtifactFactory>
          <ArtifactFactory
-               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.SkynetArtifactFactory">
-         </ArtifactFactory>
-         <ArtifactFactory
                classname="org.eclipse.osee.framework.skynet.core.artifact.factory.PolymorphicArtifactFactory">
          </ArtifactFactory>
          <ArtifactFactory
