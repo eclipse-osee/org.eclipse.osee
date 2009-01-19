@@ -8,12 +8,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.commands.Command;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PreviewRendererData;
@@ -71,16 +70,12 @@ public class OpenWithMenuListener implements MenuListener {
          Artifact artifact = null;
          while (iterator.hasNext()) {
             Object object = iterator.next();
-            if (object instanceof Artifact) {
-               artifact = (Artifact) object;
+            if (object instanceof IAdaptable) {
+               artifact = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
             } else if (object instanceof Match) {
                artifact = (Artifact) ((Match) object).getElement();
-            } else if (object instanceof TransactionData) {
-               artifact =
-                     ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                           ((TransactionData) object).getAssociatedArtId(),
-                           ((TransactionData) object).getTransactionId());
             }
+
             validForPreview &= !artifact.isOfType("Native");
             artifacts.add(artifact);
          }
