@@ -42,7 +42,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
     */
    @Override
    public String getId() {
-      return "org.eclipse.osee.ats.editor.AtsWorkflowRenderer";
+      return RENDERER_EXTENSION;
    }
 
    /* (non-Javadoc)

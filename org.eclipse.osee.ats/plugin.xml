@@ -269,6 +269,12 @@
       <Renderer
             classname="org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigRenderer">
       </Renderer>
+      <Renderer
+            classname="org.eclipse.osee.ats.editor.AtsTaskRenderer">
+      </Renderer>
+      <Renderer
+            classname="org.eclipse.osee.ats.editor.AtsWorkflowRenderer">
+      </Renderer>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider">
@@ -355,6 +361,14 @@
             id="org.eclipse.osee.framework.ui.skynet.atseditor.command"
             name="ATS Editor">
       </command>
+      <command
+            id="org.eclipse.osee.framework.ui.skynet.atstaskeditor.command"
+            name="ATS Task Editor">
+      </command>
+      <command
+            id="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command"
+            name="name">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -370,12 +384,44 @@
             </with>
          </enabledWhen>
       </handler>
+      <handler
+            class="org.eclipse.osee.ats.handlers.AtsTaskEditorHandler"
+            commandId="org.eclipse.osee.framework.ui.skynet.atstaskeditor.command">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="+">
+               </count>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.eclipse.osee.ats.handlers.AtsWorldEditorHandler"
+            commandId="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="+">
+               </count>
+            </with>
+         </enabledWhen>
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.commandImages">
       <image
             commandId="org.eclipse.osee.framework.ui.skynet.atseditor.command"
             icon="images/action.gif">
+      </image>
+      <image
+            commandId="org.eclipse.osee.framework.ui.skynet.atstaskeditor.command"
+            icon="images/task.gif">
+      </image>
+      <image
+            commandId="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command"
+            icon="images/globe.gif">
       </image>
    </extension>
 </plugin>

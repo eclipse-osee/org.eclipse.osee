@@ -905,6 +905,14 @@
            visible="true">
      </separator>
    <command
+         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
+         style="push">
+   </command>
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
+         style="push">
+   </command>
+   <command
          commandId="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand">
    </command>
 			<command commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
@@ -928,6 +936,10 @@
          commandId="org.eclipse.ui.file.export"
          style="push">
    </command>
+   <separator
+         name="org.eclipse.osee.framework.ui.skynet.resource.history.separator"
+         visible="true">
+   </separator>
 		</menuContribution>
 	</extension>
  <extension
