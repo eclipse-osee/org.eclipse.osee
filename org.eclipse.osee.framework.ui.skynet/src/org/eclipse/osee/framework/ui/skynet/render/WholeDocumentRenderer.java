@@ -18,15 +18,19 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
 
 /**
  * @author Jeff C. Phillips
@@ -139,7 +143,13 @@ public class WholeDocumentRenderer extends WordRenderer {
       Branch branch = (baseVersion != null ? baseVersion.getBranch() : newerVersion.getBranch());
       IFile baseFile;
       IFile newerFile;
-
+      Pair<String, Boolean> originalValue = null;
+      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+         originalValue =
+               WordImageChecker.checkForImageDiffs(
+                     baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null,
+                     newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null);
+      }
       if (baseVersion != null) {
          if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
             baseFile = renderForMerge(monitor, baseVersion, presentationType);
@@ -160,6 +170,8 @@ public class WholeDocumentRenderer extends WordRenderer {
          newerFile = renderForDiff(monitor, branch);
       }
 
+      WordImageChecker.restoreOriginalValue(
+            baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null, originalValue);
       return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
    }
 

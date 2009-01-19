@@ -1263,4 +1263,13 @@
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteUnneededUnspecifiedAttributes">
     </Operation>
  </extension>
+  <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
+          class="org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage"
+          id="org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage"
+          name="Word Diffing">
+    </page>
+ </extension>
 </plugin>

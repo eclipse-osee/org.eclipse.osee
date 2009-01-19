@@ -28,10 +28,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -42,6 +45,7 @@ import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -165,6 +169,15 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                generator.initialize(false, false);
                for (int i = 0; i < newerArtifact.size(); i++) {
                   try {
+                     Pair<String, Boolean> originalValue = null;
+                     if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+                        originalValue =
+                              WordImageChecker.checkForImageDiffs(
+                                    baseArtifacts.get(i) != null ? baseArtifacts.get(i).getSoleAttribute(
+                                          WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+                                    newerArtifact.get(i) != null ? newerArtifact.get(i).getSoleAttribute(
+                                          WordAttribute.WORD_TEMPLATE_CONTENT) : null);
+                     }
                      IFile baseFile =
                            renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
                                  getRenderInputStream(baseArtifacts.get(i), PresentationType.DIFF),
@@ -173,7 +186,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                            renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
                                  getRenderInputStream(newerArtifact.get(i), PresentationType.DIFF),
                                  PresentationType.DIFF);
-
+                     WordImageChecker.restoreOriginalValue(
+                           baseArtifacts.get(i) != null ? baseArtifacts.get(i).getSoleAttribute(
+                                 WordAttribute.WORD_TEMPLATE_CONTENT) : null, originalValue);
                      baseFileStr = changeReportFolder.getLocation().toOSString();
                      localFileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
                      fileNames.add(localFileName);
@@ -210,7 +225,13 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       Branch branch = (baseVersion != null ? baseVersion.getBranch() : newerVersion.getBranch());
       IFile baseFile;
       IFile newerFile;
-
+      Pair<String, Boolean> originalValue = null;
+      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+         originalValue =
+               WordImageChecker.checkForImageDiffs(
+                     baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+                     newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null);
+      }
       if (baseVersion != null) {
          if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
             baseFile = renderForMerge(monitor, baseVersion, presentationType);
@@ -231,6 +252,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          newerFile = renderForDiff(monitor, branch);
       }
 
+      WordImageChecker.restoreOriginalValue(
+            baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+            originalValue);
       return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
    }
 
@@ -437,4 +461,5 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       return TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION)).getSoleAttributeValue(
             WordAttribute.WHOLE_WORD_CONTENT);
    }
+
 }
