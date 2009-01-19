@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -37,13 +35,9 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
-import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.dnd.DND;
@@ -52,15 +46,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.menus.CommandContributionItem;
 
 /**
  * @author Jeff C. Phillips
  */
 public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage implements IRebuildMenuListener, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener {
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynetd.ArtifactSearchView";
-   private IHandlerService handlerService;
    private TableViewer viewer;
    private ArtifactLabelProvider artifactLabelProvider;
 
@@ -129,39 +120,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       getSite().setSelectionProvider(viewer);
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-      //      createOpenInAtsWorldHandler(menuManager, viewer);
-      //      createOpenInAtsTaskHandler(menuManager, viewer);
-   }
-
-   private String addOpenInAtsTaskHandler(MenuManager menuManager, final TableViewer viewer) {
-      CommandContributionItem openInAtsTaskCommand =
-            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.openInAtsTaskEditor", getSite(),
-                  null, null, null, null, null, null, null, null);
-      menuManager.add(openInAtsTaskCommand);
-
-      return openInAtsTaskCommand.getId();
-   }
-
-   private void createOpenInAtsTaskHandler(MenuManager menuManager, final TableViewer viewer) {
-      handlerService.activateHandler(addOpenInAtsTaskHandler(menuManager, viewer),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            try {
-               if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsTaskEditor("Tasks",
-                     getSelectedArtifacts(viewer));
-            } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            }
-            return null;
-         }
-
-         @Override
-         public boolean isEnabledWithException() throws OseeCoreException {
-            return true;
-         }
-      });
    }
 
    @Override
