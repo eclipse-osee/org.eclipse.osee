@@ -172,21 +172,8 @@
       </enabledWhen>
    </handler>
 </extension>
-	<extension point="org.eclipse.ui.commandImages">
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
-        icon="images/magnify.gif">
-  </image>
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
-        icon="images/edit.gif">
-  </image>
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
-        icon="images/laser_16_16.gif">
-  </image>
-	</extension>
  <extension
+       id="Osee Core commands"
        point="org.eclipse.ui.commands">
     <command
           id="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand"
@@ -209,14 +196,6 @@
           name="Artifact">
     </command>
     <command
-          id="org.eclipse.osee.framework.ui.skynet.openInAtsWorldEditor"
-          name="Open in ATS World Editor">
-    </command>
-    <command
-          id="org.eclipse.osee.framework.ui.skynet.openInAtsTaskEditor"
-          name="Open in ATS Task Editor">
-    </command>
-    <command
           id="org.eclipse.osee.framework.ui.skynet.viewerReport"
           name="View Viewer Report">
     </command>
@@ -229,13 +208,13 @@
           name="ATS Editor">
     </command>
  </extension>
-	<extension name="Put commands of BranchView here (for now)" point="org.eclipse.ui.commands">
+	<extension name="Commands of BranchView" point="org.eclipse.ui.commands">
 		<command description="Show the branches in a flat listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command" name="Flat">
          </command>
 		<command description="Show the branches in a hierarchical listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command" name="Hierarchical">
          </command>
 	</extension>
-	<extension name="Put commands of ChangeReportView here (for now)" point="org.eclipse.ui.commands">
+	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command" name="Word changes on this working branch">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesBetweenCurrentAndParent.command" name="Word differences between current/parent branches">
@@ -897,48 +876,6 @@
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser">
     </Operation>
  </extension>
-	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
-		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.ArtifactSearchView">
-     <command
-           commandId="org.eclipse.osee.framework.ui.skynet.open.command">
-     </command>
-     <menu
-           label="Open with">
-        <dynamic
-              class="org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem"
-              id="org.eclipse.osee.framework.ui.open.with">
-        </dynamic>
-     </menu>
-   <separator
-         name="artifactSearchViewopenwithSeparator"
-         visible="true">
-   </separator>
-     <command
-           commandId="org.eclipse.ui.edit.delete">
-     </command>
-     <separator
-           name="artifactSearchViewDeleteSeparator"
-           visible="true">
-     </separator>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
-         </command>
-			<separator name="artifactSearchViewCopySeparator" visible="true">
-         </separator>
-			<command commandId="org.eclipse.ui.edit.copy">
-         </command>
-   <separator
-         name="artifactSearchViewPurgeSeparator"
-         visible="true">
-   </separator>
-   <command
-         commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
-   </command>
-   <separator
-         name="artifactSearchViewPurgeEndSeparator"
-         visible="true">
-   </separator>
-		</menuContribution>
-	</extension>
  <extension
        name="The merge view"
        point="org.eclipse.ui.menus">
@@ -964,6 +901,55 @@
           </command>
     </menuContribution>
  </extension>
+	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.ArtifactSearchView">
+     <command
+           commandId="org.eclipse.osee.framework.ui.skynet.open.command">
+     </command>
+     <menu
+           label="Open with">
+        <dynamic
+              class="org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem"
+              id="org.eclipse.osee.framework.ui.open.with">
+        </dynamic>
+     </menu>
+   <separator
+         name="artifactSearchViewopenwithSeparator"
+         visible="true">
+   </separator>
+     <command
+           commandId="org.eclipse.ui.edit.delete">
+     </command>
+     <separator
+           name="artifactSearchViewDeleteSeparator"
+           visible="true">
+     </separator>
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand">
+   </command>
+			<command commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
+         </command>
+			<separator name="artifactSearchViewCopySeparator" visible="true">
+         </separator>
+			<command commandId="org.eclipse.ui.edit.copy">
+         </command>
+   <separator
+         name="artifactSearchViewPurgeSeparator"
+         visible="true">
+   </separator>
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
+   </command>
+   <separator
+         name="artifactSearchViewPurgeEndSeparator"
+         visible="true">
+   </separator>
+   <command
+         commandId="org.eclipse.ui.file.export"
+         style="push">
+   </command>
+		</menuContribution>
+	</extension>
  <extension
        name="The new change view"
        point="org.eclipse.ui.menus">
@@ -1230,6 +1216,20 @@
           class="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateRelationCheck">
     </Task>
  </extension>
+	<extension point="org.eclipse.ui.commandImages">
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
+        icon="images/magnify.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
+        icon="images/edit.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
+        icon="images/laser_16_16.gif">
+  </image>
+	</extension>
  <extension
        id="org.eclipse.osee.framework.ui.skynet.expandtree.binding"
        name="Expand Tree"
