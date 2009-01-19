@@ -270,10 +270,10 @@
             classname="org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigRenderer">
       </Renderer>
       <Renderer
-            classname="org.eclipse.osee.ats.editor.AtsTaskRenderer">
+            classname="org.eclipse.osee.ats.editor.AtsTaskEditorRenderer">
       </Renderer>
       <Renderer
-            classname="org.eclipse.osee.ats.editor.AtsWorldRenderer">
+            classname="org.eclipse.osee.ats.editor.AtsWorldEditorRenderer">
       </Renderer>
    </extension>
    <extension
@@ -359,7 +359,7 @@
          point="org.eclipse.ui.commands">
       <command
             id="org.eclipse.osee.framework.ui.skynet.atseditor.command"
-            name="ATS Editor">
+            name="ATS Workflow Editor">
       </command>
       <command
             id="org.eclipse.osee.framework.ui.skynet.atstaskeditor.command"

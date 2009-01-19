@@ -16,9 +16,9 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Jeff C. Phillips
  */
-public class AtsTaskRenderer extends DefaultArtifactRenderer {
+public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atstaskeditor.command";
-   public static final String RENDERER_EXTENSION = "org.eclipse.osee.ats.editor.AtsTaskRenderer";
+   public static final String RENDERER_EXTENSION = "org.eclipse.osee.ats.editor.AtsTaskEditorRenderer";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#open(java.util.List)
@@ -46,7 +46,7 @@ public class AtsTaskRenderer extends DefaultArtifactRenderer {
    /**
     * @param rendererId
     */
-   public AtsTaskRenderer(String rendererId) {
+   public AtsTaskEditorRenderer(String rendererId) {
       super(rendererId);
    }
 
@@ -86,8 +86,8 @@ public class AtsTaskRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public AtsTaskRenderer newInstance() throws OseeCoreException {
-      return new AtsTaskRenderer(getId());
+   public AtsTaskEditorRenderer newInstance() throws OseeCoreException {
+      return new AtsTaskEditorRenderer(getId());
    }
 
 }
