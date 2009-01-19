@@ -12,13 +12,17 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.sql.Timestamp;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -28,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * 
  * @author Jeff C. Phillips
  */
-public class TransactionData {
+public class TransactionData implements IAdaptable {
    private String comment;
    private Timestamp timeStamp;
    private int associatedArtId;
@@ -36,6 +40,7 @@ public class TransactionData {
    private int transactionNumber;
    private String name;
    private Branch branch;
+   private Artifact artifact;
 
    public TransactionData(String comment, Timestamp timeStamp, int authorId, int transactionId, int associatedArtId, Branch branch, int commitArtId) throws OseeCoreException {
       super();
@@ -59,6 +64,21 @@ public class TransactionData {
          name = "Could not resolve artId: " + authorId;
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
+   }
+
+   /**
+    * @return the artifact
+    */
+   public Artifact getArtifact() {
+      if (artifact == null) {
+         try {
+            artifact =
+                  ArtifactPersistenceManager.getInstance().getArtifactFromId(getAssociatedArtId(), getTransactionId());
+         } catch (OseeCoreException ex) {
+            OseeLog.log(OseeActivator.class, Level.SEVERE, ex);
+         }
+      }
+      return artifact;
    }
 
    public String getComment() {
@@ -97,5 +117,26 @@ public class TransactionData {
     */
    public int getCommitArtId() {
       return commitArtId;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+    */
+   @Override
+   public Object getAdapter(Class adapter) {
+      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+
+      if (adapter.isInstance(this)) {
+         return this;
+      }
+
+      try {
+         if (adapter.isInstance(getArtifact())) {
+            return getArtifact();
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      }
+      return null;
    }
 }

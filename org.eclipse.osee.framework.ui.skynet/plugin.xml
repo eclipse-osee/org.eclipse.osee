@@ -311,16 +311,6 @@
         </or>
      </activeWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.ArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openartifacteditor.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-      </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenMassArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand">
      <enabledWhen>
         <with
@@ -332,16 +322,6 @@
      </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenSkywalkerEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactsInAtsWorldHandler" commandId="org.eclipse.osee.framework.ui.atseditor.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
      <enabledWhen>

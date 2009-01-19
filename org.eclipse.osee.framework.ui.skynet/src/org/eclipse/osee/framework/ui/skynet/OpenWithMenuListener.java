@@ -12,6 +12,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PreviewRendererData;
@@ -73,6 +75,11 @@ public class OpenWithMenuListener implements MenuListener {
                artifact = (Artifact) object;
             } else if (object instanceof Match) {
                artifact = (Artifact) ((Match) object).getElement();
+            } else if (object instanceof TransactionData) {
+               artifact =
+                     ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                           ((TransactionData) object).getAssociatedArtId(),
+                           ((TransactionData) object).getTransactionId());
             }
             validForPreview &= !artifact.isOfType("Native");
             artifacts.add(artifact);

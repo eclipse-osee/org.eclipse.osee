@@ -6,6 +6,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -43,7 +44,11 @@ public class OpenWithSelectionListener extends SelectionAdapter {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selection.size());
 
       while (iterator.hasNext()) {
-         artifacts.add((Artifact) iterator.next());
+         Object object = iterator.next();
+
+         if (object instanceof IAdaptable) {
+            artifacts.add((Artifact) ((IAdaptable) object).getAdapter(Artifact.class));
+         }
       }
 
       try {

@@ -13,11 +13,15 @@ package org.eclipse.osee.framework.ui.skynet.history;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -43,7 +47,11 @@ public class Transaction2ClickListener implements IDoubleClickListener {
          Artifact artifact =
                ArtifactPersistenceManager.getInstance().getArtifactFromId(transactionData.getAssociatedArtId(),
                      transactionData.getTransactionId());
-         ArtifactEditor.editArtifact(artifact);
+         if (StaticIdManager.hasValue(UserManager.getUser(), EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
+            RendererManager.previewInJob(artifact);
+         } else {
+            RendererManager.openInJob(artifact, PresentationType.GENERALIZED_EDIT);
+         }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

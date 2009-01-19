@@ -28,10 +28,12 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -39,6 +41,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IMemento;
@@ -52,12 +55,13 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Jeff C. Phillips
  */
-public class RevisionHistoryView extends ViewPart implements IActionable, IFrameworkTransactionEventListener, IBranchEventListener {
+public class RevisionHistoryView extends ViewPart implements IRebuildMenuListener, IActionable, IFrameworkTransactionEventListener, IBranchEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView";
    private static final String[] columnNames = {"Revision", "Time Stamp", "Author", "Comment"};
    private static final String ARTIFACT_GUID = "GUID";
    private TreeViewer treeViewer;
    private Artifact artifact;
+   private MenuItem openWithMenuItem;
 
    /**
     * 
@@ -80,6 +84,14 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
       }
    }
 
+   private void createOpenWithMenuItem(Menu parentMenu) {
+      openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+      openWithMenuItem.setText("&Open With");
+      final Menu submenu = new Menu(openWithMenuItem);
+      openWithMenuItem.setMenu(submenu);
+      parentMenu.addMenuListener(new OpenWithMenuListener(submenu, treeViewer, this));
+   }
+
    @Override
    public void createPartControl(Composite parent) {
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
@@ -99,14 +111,19 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
       createColumns();
       treeViewer.addDoubleClickListener(new Transaction2ClickListener());
 
-      Menu popupMenu = new Menu(parent);
-      ArtifactDiffMenu.createDiffMenuItem(popupMenu, treeViewer, "Compare two Artifacts", null);
-      treeViewer.getTree().setMenu(popupMenu);
       createActions();
-
+      setupMenus();
+      getSite().setSelectionProvider(treeViewer);
       OseeContributionItem.addTo(this, true);
 
       explore(artifact);
+   }
+
+   private void setupMenus() {
+      Menu popupMenu = new Menu(treeViewer.getTree().getParent());
+      createOpenWithMenuItem(popupMenu);
+      ArtifactDiffMenu.createDiffMenuItem(popupMenu, treeViewer, "Compare two Artifacts", null);
+      treeViewer.getTree().setMenu(popupMenu);
    }
 
    protected void createActions() {
@@ -266,5 +283,13 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
     */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener#rebuildMenu()
+    */
+   @Override
+   public void rebuildMenu() {
+      setupMenus();
    }
 }

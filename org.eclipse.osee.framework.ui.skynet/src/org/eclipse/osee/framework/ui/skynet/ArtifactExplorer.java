@@ -566,21 +566,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       parentMenu.addMenuListener(new OpenWithMenuListener(submenu, treeViewer, this));
    }
 
-   //   public class OpenListener extends SelectionAdapter {
-   //      @Override
-   //      public void widgetSelected(SelectionEvent event) {
-   //         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-   //         Iterator<?> itemsIter = selection.iterator();
-   //
-   //         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
-   //         while (itemsIter.hasNext()) {
-   //            artifacts.add((Artifact) itemsIter.next());
-   //         }
-   //
-   //         RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
-   //      }
-   //   }
-
    private void createNewItemMenuItem(Menu parentMenu) {
       SelectionAdapter listener = new NewArtifactMenuListener();
       createMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
