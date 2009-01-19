@@ -273,7 +273,7 @@
             classname="org.eclipse.osee.ats.editor.AtsTaskRenderer">
       </Renderer>
       <Renderer
-            classname="org.eclipse.osee.ats.editor.AtsWorkflowRenderer">
+            classname="org.eclipse.osee.ats.editor.AtsWorldRenderer">
       </Renderer>
    </extension>
    <extension
@@ -367,7 +367,7 @@
       </command>
       <command
             id="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command"
-            name="name">
+            name="ATS World Editor">
       </command>
    </extension>
    <extension

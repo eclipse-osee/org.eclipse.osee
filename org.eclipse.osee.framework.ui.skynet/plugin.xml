@@ -912,13 +912,19 @@
          commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
          style="push">
    </command>
+   <separator
+         name="org.eclipse.osee.framework.ui.skynet.separator2"
+         visible="true">
+   </separator>
    <command
          commandId="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand">
    </command>
 			<command commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
          </command>
-			<separator name="artifactSearchViewCopySeparator" visible="true">
-         </separator>
+   <separator
+         name="org.eclipse.osee.framework.ui.skynet.separator3"
+         visible="true">
+   </separator>
 			<command commandId="org.eclipse.ui.edit.copy">
          </command>
    <separator

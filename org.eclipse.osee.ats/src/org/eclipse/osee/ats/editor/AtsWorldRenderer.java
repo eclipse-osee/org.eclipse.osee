@@ -6,6 +6,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -15,7 +16,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
  */
 public class AtsWorldRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworldeditor.command";
-   public static final String RENDERER_EXTENSION = "org.eclipse.osee.ats.editor.AtsWorkflowRenderer";
+   public static final String RENDERER_EXTENSION = "org.eclipse.osee.ats.editor.AtsWorldRenderer";
 
    /**
     * @param rendererId
@@ -29,7 +30,10 @@ public class AtsWorldRenderer extends DefaultArtifactRenderer {
     */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      return super.getApplicabilityRating(presentationType, artifact);
+      if (artifact instanceof IATSArtifact) {
+         return PRESENTATION_SUBTYPE_MATCH;
+      }
+      return NO_MATCH;
    }
 
    /* (non-Javadoc)
