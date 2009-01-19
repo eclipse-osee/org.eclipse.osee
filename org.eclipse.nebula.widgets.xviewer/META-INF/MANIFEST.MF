@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Xviewer Plug-in
 Bundle-SymbolicName: org.eclipse.nebula.widgets.xviewer
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.nebula.widgets.xviewer.Activator
 Bundle-Vendor: Eclipse Nebula Project
 Require-Bundle: org.eclipse.ui,
