@@ -6,9 +6,9 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.logging.Level;
 import org.eclipse.core.commands.Command;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 
 /**
@@ -22,8 +22,7 @@ public class OpenWithSelectionListener extends SelectionAdapter {
    public OpenWithSelectionListener(Command command) {
       super();
       this.command = command;
-      this.handlerService =
-            (IHandlerService) AWorkbench.getActivePage().getActivePart().getSite().getService(IHandlerService.class);
+      this.handlerService = (IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
    }
 
    @Override
