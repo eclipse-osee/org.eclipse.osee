@@ -57,5 +57,5 @@ public interface IAtsTeamWorkflow {
     * 
     * @return collection of all team workflow artifact type names
     */
-   public Collection<String> getTeamWorkflowArtifactNames();
+   public Collection<String> getTeamWorkflowArtifactNames() throws OseeCoreException;
 }

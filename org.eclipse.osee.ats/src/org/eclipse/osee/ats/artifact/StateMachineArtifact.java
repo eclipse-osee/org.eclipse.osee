@@ -984,7 +984,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return String.valueOf(reWork);
    }
 
-   public static Set<String> getAllSMATypeNames() {
+   public static Set<String> getAllSMATypeNames() throws OseeCoreException {
       Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
       artTypeNames.add(TaskArtifact.ARTIFACT_NAME);
       artTypeNames.add(DecisionReviewArtifact.ARTIFACT_NAME);

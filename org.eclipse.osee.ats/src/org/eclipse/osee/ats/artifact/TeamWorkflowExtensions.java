@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.osgi.framework.Bundle;
 
@@ -37,7 +38,7 @@ public class TeamWorkflowExtensions {
       return instance;
    }
 
-   public Set<String> getAllTeamWorkflowArtifactNames() {
+   public Set<String> getAllTeamWorkflowArtifactNames() throws OseeCoreException {
       Set<String> artifactNames = new HashSet<String>();
       artifactNames.add(TeamWorkFlowArtifact.ARTIFACT_NAME);
       for (IAtsTeamWorkflow ext : getAtsTeamWorkflowExtensions()) {
