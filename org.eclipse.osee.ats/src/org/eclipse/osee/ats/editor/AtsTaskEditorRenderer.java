@@ -3,6 +3,7 @@
  */
 package org.eclipse.osee.ats.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -61,12 +62,15 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
-    */
    @Override
-   public String getCommandId() {
-      return COMMAND_ID;
+   public List<String> getCommandId(PresentationType presentationType) {
+      ArrayList<String> commandIds = new ArrayList<String>(1);
+
+      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+         commandIds.add(COMMAND_ID);
+      }
+
+      return commandIds;
    }
 
    @Override
