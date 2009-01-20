@@ -36,25 +36,12 @@ import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
  * @author Jeff C. Phillips
  */
 public class WholeDocumentRenderer extends WordRenderer {
-   private List<PreviewRendererData> previewData;
 
    /**
     * @param rendererId
     */
    public WholeDocumentRenderer() {
       super();
-
-      previewData = new ArrayList<PreviewRendererData>(1);
-      previewData.add(new PreviewRendererData("MS Word Preview",
-            "org.eclipse.osee.framework.ui.skynet.wholewordpreview.command", WordRenderer.getImageDescriptor()));
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#isPreviewable()
-    */
-   @Override
-   public boolean isPreviewable(Artifact artifact) {
-      return artifact.isOfType(WordArtifact.WHOLE_WORD);
    }
 
    /* (non-Javadoc)
@@ -69,16 +56,16 @@ public class WholeDocumentRenderer extends WordRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#commandId()
     */
    @Override
-   public String getCommandId() {
-      return "org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command";
-   }
+   public List<String> getCommandId(PresentationType presentationType) {
+      ArrayList<String> commandIds = new ArrayList<String>(1);
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getPreviewData()
-    */
-   @Override
-   public List<PreviewRendererData> getPreviewData() {
-      return previewData;
+      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command");
+      } else if (presentationType == PresentationType.PREVIEW) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.wholewordpreview.command");
+      }
+
+      return commandIds;
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {

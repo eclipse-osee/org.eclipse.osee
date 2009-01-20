@@ -52,14 +52,15 @@ public class RendererManager {
 
    /**
     * @param artifacts
+    * @param presentationType TODO
     * @return Returns the intersection of renderers applicable for all of the artifacts
     * @throws OseeCoreException
     */
-   public static List<IRenderer> getCommonSpecializedEditRenders(List<Artifact> artifacts) throws OseeCoreException {
-      List<IRenderer> commonRenders = getApplicableRenderer(PresentationType.SPECIALIZED_EDIT, artifacts.get(0), null);
+   public static List<IRenderer> getCommonRenderers(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.get(0), null);
 
       for (Artifact artifact : artifacts) {
-         List<IRenderer> applicableRenders = getApplicableRenderer(PresentationType.SPECIALIZED_EDIT, artifact, null);
+         List<IRenderer> applicableRenders = getApplicableRenderers(presentationType, artifact, null);
 
          Iterator<?> commIterator = commonRenders.iterator();
 
@@ -148,7 +149,7 @@ public class RendererManager {
             presentationType, producer, options, attributeElement);
    }
 
-   public static List<IRenderer> getApplicableRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
+   public static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
       ArrayList<IRenderer> renderers = new ArrayList<IRenderer>();
 
       for (IRenderer prototypeRenderer : instance.renderers.values()) {
@@ -226,17 +227,6 @@ public class RendererManager {
 
       Jobs.run("Preview " + artifacts.size() + " artifacts", runnable, SkynetGuiPlugin.class,
             SkynetGuiPlugin.PLUGIN_ID, false);
-   }
-
-   public static List<IRenderer> getPreviewPresentableRenders(Artifact artifact) throws OseeCoreException {
-      ArrayList<IRenderer> previewRenders = new ArrayList<IRenderer>(instance.renderers.size());
-
-      for (IRenderer renderer : instance.renderers.values()) {
-         if (renderer.isPreviewable(artifact)) {
-            previewRenders.add(renderer.newInstance());
-         }
-      }
-      return previewRenders;
    }
 
    public static void preview(final List<Artifact> artifacts, IProgressMonitor monitor, final VariableMap options) throws OseeCoreException {

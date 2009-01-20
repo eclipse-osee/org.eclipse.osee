@@ -80,28 +80,29 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public static final String UPDATE_PARAGRAPH_NUMBER_OPTION = "updateParagraphNumber";
 
    private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this);
-   private List<PreviewRendererData> previewData;
 
    /**
     * @param rendererId
     */
    public WordTemplateRenderer() {
       super();
-
-      previewData = new ArrayList<PreviewRendererData>(2);
-      previewData.add(new PreviewRendererData("MS Word Preview",
-            "org.eclipse.osee.framework.ui.skynet.wordpreview.command", WordRenderer.getImageDescriptor()));
-      previewData.add(new PreviewRendererData("MS Word Preview with children",
-            "org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command", WordRenderer.getImageDescriptor(),
-            ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#commandId()
     */
    @Override
-   public String getCommandId() {
-      return "org.eclipse.osee.framework.ui.skynet.wordeditor.command";
+   public List<String> getCommandId(PresentationType presentationType) {
+      ArrayList<String> commandIds = new ArrayList<String>(2);
+
+      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.wordeditor.command");
+      } else if (presentationType == PresentationType.PREVIEW) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.wordpreview.command");
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command");
+      }
+
+      return commandIds;
    }
 
    /* (non-Javadoc)
@@ -110,22 +111,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    @Override
    public WordTemplateRenderer newInstance() throws OseeCoreException {
       return new WordTemplateRenderer();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getPreviewData()
-    */
-   @Override
-   public List<PreviewRendererData> getPreviewData() {
-      return previewData;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#isPreviewable()
-    */
-   @Override
-   public boolean isPreviewable(Artifact artifact) {
-      return !artifact.isOfType(WordArtifact.WHOLE_WORD);
    }
 
    public void publishSRS(VariableMap variableMap) throws OseeCoreException {
@@ -340,7 +325,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     */
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (!artifact.isOfType(WordArtifact.WHOLE_WORD)) {
-         if (presentationType == PresentationType.DIFF) {
+         if (presentationType == PresentationType.DIFF || presentationType == PresentationType.PREVIEW) {
             return WORD_PUBLICATION;
          }
       }

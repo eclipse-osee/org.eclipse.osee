@@ -3,62 +3,34 @@
  */
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.core.commands.Command;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.menu.ArtifactsUi;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.ui.handlers.IHandlerService;
 
 /**
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
  */
 public class OpenWithSelectionListener extends SelectionAdapter {
+   private Command command;
+   private IHandlerService handlerService;
 
-   private IRenderer renderer;
-   private Viewer viewer;
-   private boolean isPreview;
-   private Object[] objects;
-
-   public OpenWithSelectionListener(IRenderer renderer, Viewer viewer, boolean isPreview, Object... objects) {
+   public OpenWithSelectionListener(Command command) {
       super();
-      this.renderer = renderer;
-      this.viewer = viewer;
-      this.isPreview = isPreview;
-      this.objects = objects;
+      this.command = command;
+      this.handlerService =
+            (IHandlerService) AWorkbench.getActivePage().getActivePart().getSite().getService(IHandlerService.class);
    }
 
    @Override
    public void widgetSelected(SelectionEvent e) {
-      IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-      Iterator<?> iterator = selection.iterator();
-      ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selection.size());
-
-      while (iterator.hasNext()) {
-         Object object = iterator.next();
-
-         if (object instanceof IAdaptable) {
-            artifacts.add((Artifact) ((IAdaptable) object).getAdapter(Artifact.class));
-         }
-      }
-
       try {
-         if (isPreview) {
-            renderer.setOptions(new VariableMap(objects));
-            renderer.preview(ArtifactsUi.getSelectedArtifacts(viewer));
-         } else {
-            renderer.open(artifacts);
-         }
-      } catch (OseeCoreException ex) {
+         handlerService.executeCommand(command.getId(), null);
+      } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }

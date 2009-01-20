@@ -8,20 +8,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PreviewRendererData;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.PlatformUI;
@@ -80,49 +81,34 @@ public class OpenWithMenuListener implements MenuListener {
             artifacts.add(artifact);
          }
 
-         List<IRenderer> commonRenders = RendererManager.getCommonSpecializedEditRenders(artifacts);
-
          if (validForPreview) {
-            List<IRenderer> previewRenderers = RendererManager.getPreviewPresentableRenders(artifact);
-            for (IRenderer previewRenderer : previewRenderers) {
-               for (PreviewRendererData data : previewRenderer.getPreviewData()) {
-                  MenuItem item = new MenuItem(parentMenu, SWT.PUSH);
-                  item.setText(data.getName());
-                  //If getting the image exceptions out we do not want to stop this process
-                  try {
-                     item.setImage(previewRenderer.getImage(null));
-                  } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                  }
-                  item.addSelectionListener(new OpenWithSelectionListener(previewRenderer, viewer, true,
-                        data.getOption()));
-               }
-            }
-
-            if (!previewRenderers.isEmpty()) {
+            if (loadMenuItems(PresentationType.PREVIEW, artifacts)) {
                new MenuItem(parentMenu, SWT.SEPARATOR);
             }
          }
+         loadMenuItems(PresentationType.SPECIALIZED_EDIT, artifacts);
 
-         for (IRenderer renderer : commonRenders) {
-            Image image = null;
-            //If getting the image exceptions out we do not want to stop this process
-            try {
-               image = renderer.getImage(artifacts.iterator().next());
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-
-            Command command = commandService.getCommand(renderer.getCommandId());
-            if (command != null && command.isEnabled()) {
-               MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
-               menuItem.setText(renderer.getName());
-               menuItem.setImage(image);
-               menuItem.addSelectionListener(new OpenWithSelectionListener(renderer, viewer, false));
-            }
-         }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   private boolean loadMenuItems(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException, NotDefinedException {
+      List<IRenderer> commonRenders = RendererManager.getCommonRenderers(artifacts, presentationType);
+      Artifact artifact = artifacts.iterator().next();
+      boolean hasMenus = false;
+      for (IRenderer renderer : commonRenders) {
+         for (String commandId : renderer.getCommandId(presentationType)) {
+            Command command = commandService.getCommand(commandId);
+            if (command != null && command.isEnabled()) {
+               hasMenus = true;
+               MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
+               menuItem.setText(command.getName());
+               menuItem.setImage(renderer.getImage(artifact));
+               menuItem.addSelectionListener(new OpenWithSelectionListener(command));
+            }
+         }
+      }
+      return hasMenus;
    }
 }

@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.commands.Command;
-import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PreviewRendererData;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 import org.eclipse.swt.SWT;
@@ -56,8 +56,12 @@ public class OpenWithContributionItem extends CompoundContributionItem {
          List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
          try {
-            contributionItems.addAll(getPreviewContributionItems(artifacts));
-            contributionItems.addAll(getCommonSpecializedEditContributionItems(artifacts));
+            contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.PREVIEW));
+            //add separator between preview and edit commands
+            if (!contributionItems.isEmpty()) {
+               contributionItems.add(new Separator());
+            }
+            contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.SPECIALIZED_EDIT));
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
@@ -66,69 +70,38 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   @SuppressWarnings("deprecation")
-   private ArrayList<IContributionItem> getCommonSpecializedEditContributionItems(List<Artifact> artifacts) throws OseeCoreException {
+   private ArrayList<IContributionItem> getCommonContributionItems(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(25);
-      List<IRenderer> commonRenders = RendererManager.getCommonSpecializedEditRenders(artifacts);
+      List<IRenderer> commonRenders = RendererManager.getCommonRenderers(artifacts, presentationType);
 
       for (IRenderer render : commonRenders) {
-         CommandContributionItem contributionItem = null;
-
          if (render instanceof WordRenderer) {
-            contributionItem =
-                  new CommandContributionItem(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
-                        render.getCommandId(), render.getCommandId(), Collections.emptyMap(),
-                        WordRenderer.getImageDescriptor(), null, null, null, null, null, SWT.NONE);
+            contributionItems.addAll(loadCommands(render, presentationType, WordRenderer.getImageDescriptor()));
          } else {
-            contributionItem =
-                  new CommandContributionItem(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
-                        render.getCommandId(), render.getCommandId(), Collections.emptyMap(),
-                        render instanceof NativeRenderer ? SkynetActivator.getInstance().getImageDescriptorForProgram(
-                              ((NativeArtifact) artifacts.iterator().next()).getFileExtension()) : null, null, null,
-                        null, null, null, SWT.NONE);
+            contributionItems.addAll(loadCommands(render, presentationType,
+                  render instanceof NativeRenderer ? SkynetActivator.getInstance().getImageDescriptorForProgram(
+                        ((NativeArtifact) artifacts.iterator().next()).getFileExtension()) : null));
          }
+      }
+      return contributionItems;
+   }
+
+   @SuppressWarnings("deprecation")
+   private ArrayList<IContributionItem> loadCommands(IRenderer renderer, PresentationType presentationType, ImageDescriptor imageDescriptor) {
+      ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(25);
+      CommandContributionItem contributionItem = null;
+
+      for (String commandId : renderer.getCommandId(presentationType)) {
+         contributionItem =
+               new CommandContributionItem(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId, commandId,
+                     Collections.emptyMap(), imageDescriptor, null, null, null, null, null, SWT.NONE);
 
          Command command = commandService.getCommand(contributionItem.getId());
          if (command != null && command.isEnabled()) {
             contributionItems.add(contributionItem);
          }
       }
-      return contributionItems;
-   }
 
-   /**
-    * @param artifacts
-    * @return Returns the preview renderer contribution items.
-    * @throws OseeCoreException
-    */
-   private ArrayList<IContributionItem> getPreviewContributionItems(List<Artifact> artifacts) throws OseeCoreException {
-      ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(10);
-      boolean validForPreview = true;
-
-      for (Artifact artifact : artifacts) {
-         validForPreview &= !artifact.isOfType("Native");
-      }
-
-      if (validForPreview) {
-         ContributionItem contributionItem;
-         for (IRenderer previewRenderer : RendererManager.getPreviewPresentableRenders(artifacts.iterator().next())) {
-            for (PreviewRendererData data : previewRenderer.getPreviewData()) {
-               contributionItem =
-                     new CommandContributionItem(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
-                           data.getCommandId(), data.getCommandId(), Collections.emptyMap(), data.getImageDescriptor(),
-                           null, null, null, null, null, SWT.NONE);
-
-               Command command = commandService.getCommand(contributionItem.getId());
-               if (command != null && command.isEnabled()) {
-                  contributionItems.add(contributionItem);
-               }
-            }
-         }
-
-         if (!contributionItems.isEmpty()) {
-            contributionItems.add(new Separator());
-         }
-      }
       return contributionItems;
    }
 }

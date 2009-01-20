@@ -32,25 +32,12 @@ import org.eclipse.osee.framework.ui.skynet.render.word.template.WordTemplateMan
  * @author b1528444
  */
 public class TisRenderer extends WordTemplateRenderer {
-   private ArrayList<PreviewRendererData> previewData;
 
    /**
     * @param rendererId
     */
    public TisRenderer() {
       super();
-
-      previewData = new ArrayList<PreviewRendererData>(1);
-      previewData.add(new PreviewRendererData("MS Word TIS Preview",
-            "org.eclipse.osee.framework.ui.skynet.tispreview.command", WordRenderer.getImageDescriptor()));
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer#isPreviewable()
-    */
-   @Override
-   public boolean isPreviewable(Artifact artifact) {
-      return artifact.isOfType("Test Information Sheet");
    }
 
    /* (non-Javadoc)
@@ -72,16 +59,14 @@ public class TisRenderer extends WordTemplateRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer#getCommandId()
     */
    @Override
-   public String getCommandId() {
-      return super.getCommandId();
-   }
+   public List<String> getCommandId(PresentationType presentationType) {
+      ArrayList<String> commandIds = new ArrayList<String>(1);
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer#getPreviewData()
-    */
-   @Override
-   public List<PreviewRendererData> getPreviewData() {
-      return previewData;
+      if (presentationType == PresentationType.PREVIEW) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.tispreview.command");
+      }
+
+      return commandIds;
    }
 
    /* (non-Javadoc)

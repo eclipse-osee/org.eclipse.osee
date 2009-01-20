@@ -28,6 +28,7 @@ public class PreviewWithChildWordHandler extends PreviewWordHandler {
       if (!artifacts.isEmpty()) {
          try {
             WordTemplateRenderer renderer = new WordTemplateRenderer();
+            renderer.setOptions(getOptions());
             renderer.preview(artifacts);
             dispose();
 

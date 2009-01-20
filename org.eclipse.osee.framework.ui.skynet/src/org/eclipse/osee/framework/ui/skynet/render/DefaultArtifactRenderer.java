@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -232,26 +233,16 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isPreviewable()
-    */
-   @Override
-   public boolean isPreviewable(Artifact artifact) {
-      return false;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getPreviewData()
-    */
-   @Override
-   public List<PreviewRendererData> getPreviewData() {
-      return null;
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#rendererId()
     */
    @Override
-   public String getCommandId() {
-      return "org.eclipse.osee.framework.ui.skynet.artifacteditor.command";
+   public List<String> getCommandId(PresentationType presentationType) {
+      ArrayList<String> commandIds = new ArrayList<String>(1);
+
+      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.artifacteditor.command");
+      }
+
+      return commandIds;
    }
 }

@@ -171,6 +171,18 @@
          </with>
       </enabledWhen>
    </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWholeWordHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.wholewordpreview.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
 </extension>
  <extension
        id="Osee Core commands"

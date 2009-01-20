@@ -35,11 +35,7 @@ public interface IRenderer {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
-   public abstract String getCommandId();
-
-   public abstract boolean isPreviewable(Artifact artifact);
-
-   public abstract List<PreviewRendererData> getPreviewData();
+   public abstract List<String> getCommandId(PresentationType presentationType);
 
    public Image getImage(Artifact artifact) throws OseeCoreException;
 

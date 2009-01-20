@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -36,8 +37,14 @@ public class NativeRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
     */
    @Override
-   public String getCommandId() {
-      return "org.eclipse.osee.framework.ui.skynet.nativeeditor.command";
+   public List<String> getCommandId(PresentationType presentationType) {
+      ArrayList<String> commandIds = new ArrayList<String>(1);
+
+      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeeditor.command");
+      }
+
+      return commandIds;
    }
 
    /* (non-Javadoc)
