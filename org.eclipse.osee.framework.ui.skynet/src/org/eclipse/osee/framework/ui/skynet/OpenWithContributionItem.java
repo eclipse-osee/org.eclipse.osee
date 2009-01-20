@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 
 /**
  * @author Jeff C. Phillips
@@ -86,15 +87,15 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       return contributionItems;
    }
 
-   @SuppressWarnings("deprecation")
    private ArrayList<IContributionItem> loadCommands(IRenderer renderer, PresentationType presentationType, ImageDescriptor imageDescriptor) {
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(25);
       CommandContributionItem contributionItem = null;
 
       for (String commandId : renderer.getCommandId(presentationType)) {
          contributionItem =
-               new CommandContributionItem(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId, commandId,
-                     Collections.emptyMap(), imageDescriptor, null, null, null, null, null, SWT.NONE);
+               new CommandContributionItem(new CommandContributionItemParameter(
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId, commandId,
+                     Collections.emptyMap(), imageDescriptor, null, null, null, null, null, SWT.NONE, null, false));
 
          Command command = commandService.getCommand(contributionItem.getId());
          if (command != null && command.isEnabled()) {
