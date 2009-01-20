@@ -30,6 +30,9 @@ import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 
 /**
+ * Dynamically provides the open with CommandContributionItem for menu items based off of calling applicable renderers
+ * getCommandId(presenationType).
+ * 
  * @author Jeff C. Phillips
  */
 public class OpenWithContributionItem extends CompoundContributionItem {
