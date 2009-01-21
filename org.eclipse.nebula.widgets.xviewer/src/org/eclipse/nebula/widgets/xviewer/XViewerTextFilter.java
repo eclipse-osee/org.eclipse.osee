@@ -38,7 +38,8 @@ public class XViewerTextFilter extends ViewerFilter {
       if (xViewer.getCustomizeMgr().getFilterText() == null || xViewer.getCustomizeMgr().getFilterText().equals("")) {
          textPattern = null;
       } else {
-         textPattern = Pattern.compile(xViewer.getCustomizeMgr().getFilterText(), Pattern.CASE_INSENSITIVE);
+         textPattern =
+               Pattern.compile(xViewer.getCustomizeMgr().getFilterText(), Pattern.LITERAL | Pattern.CASE_INSENSITIVE);
       }
       // Update column filter patterns
       colIdToPattern.clear();
