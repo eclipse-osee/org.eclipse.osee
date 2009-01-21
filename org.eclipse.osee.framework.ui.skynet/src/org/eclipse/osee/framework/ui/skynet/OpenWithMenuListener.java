@@ -66,7 +66,6 @@ public class OpenWithMenuListener implements MenuListener {
          Iterator<?> iterator = selection.iterator();
          ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selection.size());
 
-         boolean validForPreview = true;
          //load artifacts in the list
          Artifact artifact = null;
          while (iterator.hasNext()) {
@@ -76,15 +75,11 @@ public class OpenWithMenuListener implements MenuListener {
             } else if (object instanceof Match) {
                artifact = (Artifact) ((Match) object).getElement();
             }
-
-            validForPreview &= !artifact.isOfType("Native");
             artifacts.add(artifact);
          }
 
-         if (validForPreview) {
-            if (loadMenuItems(PresentationType.PREVIEW, artifacts)) {
-               new MenuItem(parentMenu, SWT.SEPARATOR);
-            }
+         if (loadMenuItems(PresentationType.PREVIEW, artifacts)) {
+            new MenuItem(parentMenu, SWT.SEPARATOR);
          }
          loadMenuItems(PresentationType.SPECIALIZED_EDIT, artifacts);
 
