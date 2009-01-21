@@ -39,7 +39,7 @@ public class ReviewAnnotationHandler implements IArtifactAnnotation {
          try {
             if ((new SMAManager((StateMachineArtifact) artifact)).getReviewManager().getReviews().size() == 0) return;
             for (ReviewSMArtifact review : (new SMAManager((StateMachineArtifact) artifact)).getReviewManager().getReviews()) {
-               if (!review.getSmaMgr().isCompleted()) {
+               if (!review.getSmaMgr().isCancelledOrCompleted()) {
                   annotations.add(new ArtifactAnnotation(Type.Warning, "ats.Review",
                         "Review(s) open against this workflow."));
                   return;
