@@ -151,8 +151,15 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    }
 
    public String getHtml(String backgroundColor) {
+      return getHtml(backgroundColor, "");
+   }
+
+   public String getHtml(String backgroundColor, String preHtml) {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.startBorderTable(100, backgroundColor, getName()));
+      if (preHtml != null) {
+         sb.append(preHtml);
+      }
       for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
          sb.append(layoutData.getXWidget().toHTML(AHTML.LABEL_FONT) + AHTML.newline());
       }

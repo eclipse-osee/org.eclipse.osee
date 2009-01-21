@@ -185,8 +185,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       StringBuffer sb = new StringBuffer();
       for (WorkPage wPage : pages) {
          AtsWorkPage page = (AtsWorkPage) wPage;
+         StringBuffer notesSb = new StringBuffer();
+         for (NoteItem note : smaMgr.getNotes().getNoteItems()) {
+            if (note.getState().equals(page.getName())) {
+               notesSb.append(note.toHTML() + AHTML.newline());
+            }
+         }
          if (smaMgr.isCurrentState(page.getName()) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
-            sb.append(page.getHtml(smaMgr.isCurrentState(page.getName()) ? activeColor : normalColor));
+            sb.append(page.getHtml(smaMgr.isCurrentState(page.getName()) ? activeColor : normalColor,
+                  notesSb.toString()));
             sb.append(AHTML.newline());
          }
       }
@@ -496,7 +503,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Display global Notes
       for (NoteItem noteItem : smaMgr.getNotes().getNoteItems()) {
          if (forStateName == null || noteItem.getState().equals(forStateName)) {
-            createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toHTML(), false);
+            createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toString(), false);
          }
       }
    }

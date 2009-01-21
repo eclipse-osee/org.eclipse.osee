@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -77,6 +78,11 @@ public class SMAPrint extends Action {
                (smaMgr.getSma().getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT,
                      "Action HRID: ", smaMgr.getSma().getParentActionArtifact().getHumanReadableId()))}));
          resultData.addRaw(AHTML.endMultiColumnTable());
+         for (NoteItem note : smaMgr.getNotes().getNoteItems()) {
+            if (note.getState().equals("")) {
+               resultData.addRaw(note.toHTML() + AHTML.newline());
+            }
+         }
          if (workFlowTab != null) resultData.addRaw(workFlowTab.getHtml());
          if (taskComposite != null) resultData.addRaw(taskComposite.getHtml());
          resultData.addRaw(AHTML.newline());

@@ -62,8 +62,9 @@ public class NoteItem {
       this.msg = msg;
    }
 
+   @Override
    public String toString() {
-      return msg + " (" + type + ") by " + user + " on " + getDate(XDate.MMDDYYHHMM) + "\n";
+      return "Note: \"" + type + "\" from \"" + user.getName() + "\"" + (state.equals("") ? "" : " for \"" + state + "\" state") + " on " + getDate(XDate.MMDDYYHHMM) + " - " + msg;
    }
 
    public User getUser() {
@@ -79,7 +80,7 @@ public class NoteItem {
    }
 
    public String toHTML() {
-      return "Note: \"" + type + "\" from \"" + user.getName() + "\"" + (state.equals("") ? "" : " for \"" + state + "\" state") + " on " + getDate(XDate.MMDDYYHHMM) + " - " + msg;
+      return "<b>Note:</b> \"" + type + "\" from \"" + user.getName() + "\"" + (state.equals("") ? "" : " for \"" + state + "\" state") + " on " + getDate(XDate.MMDDYYHHMM) + " - " + msg;
    }
 
    public String getState() {
