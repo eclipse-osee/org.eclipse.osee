@@ -42,7 +42,8 @@ public abstract class AbstractEditorHandler extends CommandHandler {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
-         isEnabled = accessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
+         isEnabled =
+               !artifacts.isEmpty() && accessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
       }
       return isEnabled;
    }
