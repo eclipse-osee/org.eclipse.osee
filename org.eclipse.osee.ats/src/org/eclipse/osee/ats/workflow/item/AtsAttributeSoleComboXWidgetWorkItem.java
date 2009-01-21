@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
  */
 public class AtsAttributeSoleComboXWidgetWorkItem extends WorkWidgetDefinition {
 
-   protected AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes atsAttribute, String commaOptions, XOption... xOption) {
+   public AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes atsAttribute, String commaOptions, XOption... xOption) {
       super(atsAttribute.getDisplayName() + " - " + atsAttribute.getStoreName(), atsAttribute.getStoreName());
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());

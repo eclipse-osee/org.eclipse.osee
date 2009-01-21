@@ -194,6 +194,16 @@ public class TeamDefinitionArtifact extends Artifact {
       return aiaTeams;
    }
 
+   public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
+      if (teamDefs == null) {
+         teamDefs = new HashSet<TeamDefinitionArtifact>();
+         for (Artifact art : teamDef.getChildren())
+            if (art instanceof TeamDefinitionArtifact) teamDefs.add((TeamDefinitionArtifact) art);
+      }
+      return teamDefs;
+   }
+
    private static void getTeamFromItemAndChildren(ActionableItemArtifact aia, Set<TeamDefinitionArtifact> aiaTeams) throws OseeCoreException {
       if (aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team).size() > 0) {
          aiaTeams.addAll(aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team, TeamDefinitionArtifact.class));
@@ -394,7 +404,9 @@ public class TeamDefinitionArtifact extends Artifact {
    /**
     * Returns the branch associated with this team. If this team does not have a branch associated then the parent team
     * will be asked, this results in a recursive look at parent teams until a parent artifact has a related branch or
-    * the parent of a team is not a team. <br/><br/> If no branch is associated then null will be returned.
+    * the parent of a team is not a team. <br/>
+    * <br/>
+    * If no branch is associated then null will be returned.
     * 
     * @throws BranchDoesNotExist
     */
