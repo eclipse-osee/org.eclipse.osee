@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -41,9 +42,9 @@ public class WordAttribute extends StringAttribute {
       return super.subClassSetValue(value);
    }
 
-   public boolean mergeMarkupPresent() throws OseeCoreException {
+   public boolean containsWordAnnotations() throws OseeCoreException {
       String temp = getValue();
-      return (temp.contains("<w:delText>") || temp.contains("w:type=\"Word.Insertion\"") || temp.contains("w:type=\"Word.Formatting\""));
+      return WordAnnotationHandler.containsWordAnnotations(temp);
    }
 
    /* (non-Javadoc)
@@ -53,4 +54,5 @@ public class WordAttribute extends StringAttribute {
    public String getDisplayableString() throws OseeCoreException {
       return WordUtil.textOnly(getValue());
    }
+
 }

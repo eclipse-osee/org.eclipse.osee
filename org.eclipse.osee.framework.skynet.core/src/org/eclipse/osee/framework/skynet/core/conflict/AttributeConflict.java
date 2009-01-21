@@ -467,14 +467,14 @@ public class AttributeConflict extends Conflict {
    }
 
    public void setStatus(ConflictStatus status) throws OseeCoreException {
-      if (status.equals(ConflictStatus.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
+      if (status.equals(ConflictStatus.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
          throw new MergeChangesInArtifactException(RESOLVE_MERGE_MARKUP);
       }
       super.setStatus(status);
    }
 
    public boolean wordMarkupPresent() throws OseeCoreException {
-      if (isWordAttribute && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
+      if (isWordAttribute && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
          return true;
       }
       return false;

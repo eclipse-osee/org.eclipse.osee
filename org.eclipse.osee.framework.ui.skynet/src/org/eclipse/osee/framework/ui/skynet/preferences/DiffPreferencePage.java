@@ -26,24 +26,30 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 public class DiffPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
    public static final String IDENTFY_IMAGE_CHANGES = "IdentifyImageChangesInWordDiff";
+   public static final String REMOVE_TRACKED_CHANGES = "RemoveTrackedChangesInWordDiff";
    private Button identifyImageChangesInWord;
+   private Button removeTrackedChangesInWord;
 
    @Override
    protected Control createContents(Composite parent) {
-
-      //Page Composite
-      Composite composite = createComposite(parent, 3);
-
+      noDefaultAndApplyButton();
       // TODO Temporary until editor opening can be configured by users
-      identifyImageChangesInWord = new Button(composite, SWT.CHECK);
-      identifyImageChangesInWord.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, true));
+      identifyImageChangesInWord = new Button(parent, SWT.CHECK);
       identifyImageChangesInWord.setText("Do Not Display OSEE Detected Image Change Indication in Differences");
       try {
          identifyImageChangesInWord.setSelection(StaticIdManager.hasValue(UserManager.getUser(), IDENTFY_IMAGE_CHANGES));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      return composite;
+      // TODO Temporary until editor opening can be configured by users
+      removeTrackedChangesInWord = new Button(parent, SWT.CHECK);
+      removeTrackedChangesInWord.setText("Do Not Remove Word Tracked Changes prior to Diffing");
+      try {
+         removeTrackedChangesInWord.setSelection(StaticIdManager.hasValue(UserManager.getUser(), IDENTFY_IMAGE_CHANGES));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return parent;
    }
 
    /**
@@ -68,6 +74,16 @@ public class DiffPreferencePage extends PreferencePage implements IWorkbenchPref
             StaticIdManager.setSingletonAttributeValue(UserManager.getUser(), IDENTFY_IMAGE_CHANGES);
          } else {
             UserManager.getUser().deleteAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, IDENTFY_IMAGE_CHANGES);
+         }
+         UserManager.getUser().persistAttributes();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      try {
+         if (removeTrackedChangesInWord.getSelection()) {
+            StaticIdManager.setSingletonAttributeValue(UserManager.getUser(), REMOVE_TRACKED_CHANGES);
+         } else {
+            UserManager.getUser().deleteAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, REMOVE_TRACKED_CHANGES);
          }
          UserManager.getUser().persistAttributes();
       } catch (OseeCoreException ex) {

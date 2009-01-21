@@ -37,14 +37,14 @@ public class OpenWithMenuListener implements MenuListener {
    private Menu parentMenu;
    private Viewer viewer;
    private IRebuildMenuListener rebuildMenuListener;
-   private ICommandService commandService;
+   private static ICommandService commandService =
+         (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
 
    public OpenWithMenuListener(Menu parentMenu, final Viewer viewer, IRebuildMenuListener rebuildMenuListener) {
       super();
       this.parentMenu = parentMenu;
       this.viewer = viewer;
       this.rebuildMenuListener = rebuildMenuListener;
-      this.commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    /* (non-Javadoc)
@@ -78,17 +78,17 @@ public class OpenWithMenuListener implements MenuListener {
             artifacts.add(artifact);
          }
 
-         if (loadMenuItems(PresentationType.PREVIEW, artifacts)) {
-            new MenuItem(parentMenu, SWT.SEPARATOR);
-         }
-         loadMenuItems(PresentationType.SPECIALIZED_EDIT, artifacts);
+            if (loadMenuItems(parentMenu, PresentationType.PREVIEW, artifacts)) {
+               new MenuItem(parentMenu, SWT.SEPARATOR);
+            }
+         loadMenuItems(parentMenu, PresentationType.SPECIALIZED_EDIT, artifacts);
 
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   private boolean loadMenuItems(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException, NotDefinedException {
+   public static boolean loadMenuItems(Menu parentMenu, PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException, NotDefinedException {
       List<IRenderer> commonRenders = RendererManager.getCommonRenderers(artifacts, presentationType);
       Artifact artifact = artifacts.iterator().next();
       boolean hasMenus = false;

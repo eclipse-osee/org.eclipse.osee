@@ -8,10 +8,11 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Theron Virgin
@@ -40,12 +41,12 @@ public class WordImageChecker {
          String newValue = (String) newAttr.getValue();
          boolean attrDirty = newAttr.isDirty();
          String originalValue = new String(oldValue);
-         List<WordmlPicture> oldPictures = createPictureList(oldValue);
-         List<WordmlPicture> newPictures = createPictureList(newValue);
+         List<WordmlPicture> oldPictures = createPictureList(oldValue, oldAttr);
+         List<WordmlPicture> newPictures = createPictureList(newValue, newAttr);
          boolean modified = false;
          int count = 0;
          for (int y = 0; y < oldPictures.size(); y++) {
-            if (y < newPictures.size()) {
+            if (y < newPictures.size() && oldPictures.get(y).getBinaryData() != null && newPictures.get(y).getBinaryData() != null) {
                if (!oldPictures.get(y).getBinaryData().equals(newPictures.get(y).getBinaryData())) {
                   int index = oldPictures.get(y).getStartIndex() + (MODIFIED_STRING.length() * count);
                   oldValue = oldValue.substring(0, index) + MODIFIED_STRING + oldValue.substring(index);
@@ -66,7 +67,7 @@ public class WordImageChecker {
     * @param oldValue
     * @return
     */
-   private static List<WordmlPicture> createPictureList(String wordml) {
+   private static List<WordmlPicture> createPictureList(String wordml, Attribute attribute) {
       int startIndex = 0;
       List<WordmlPicture> pictures = new LinkedList<WordmlPicture>();
       while (wordml.indexOf("<w:pict>", startIndex) > 0) {
@@ -75,9 +76,9 @@ public class WordImageChecker {
          if (currentEndIndex > 0) {
             try {
                pictures.add(new WordmlPicture(currentStartIndex, wordml.substring(currentStartIndex, currentEndIndex),
-                     wordml));
+                     wordml, attribute));
             } catch (OseeCoreException ex) {
-               OSEELog.logException(WordTemplateRenderer.class, ex, false);
+               OseeLog.log(WordImageChecker.class, Level.WARNING, ex);
             }
          }
          startIndex = currentEndIndex;

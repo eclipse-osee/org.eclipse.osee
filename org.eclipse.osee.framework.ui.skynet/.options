@@ -7,3 +7,5 @@ org.eclipse.osee.framework.ui.skynet/debug/Change = false
 org.eclipse.osee.framework.ui.skynet/debug/Blam = false
 
 org.eclipse.osee.framework.ui.skynet/debug/Renderer = false
+
+org.eclipse.osee.framework.ui.skynet/debug/Word = false

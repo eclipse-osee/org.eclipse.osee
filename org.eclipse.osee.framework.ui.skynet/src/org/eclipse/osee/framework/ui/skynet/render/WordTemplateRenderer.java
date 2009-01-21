@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -154,7 +155,34 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                generator.initialize(false, false);
                for (int i = 0; i < newerArtifact.size(); i++) {
                   try {
+
+                     //Remove tracked changes and display image diffs
                      Pair<String, Boolean> originalValue = null;
+                     Pair<String, Boolean> newAnnotationValue = null;
+                     Pair<String, Boolean> oldAnnotationValue = null;
+                     if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
+                        Attribute attribute;
+                        if (baseArtifacts.get(i) != null) {
+                           attribute = baseArtifacts.get(i).getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+                           if (attribute != null) {
+                              String value = attribute.getValue().toString();
+                              if (WordAnnotationHandler.containsWordAnnotations(value)) {
+                                 oldAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
+                                 attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+                              }
+                           }
+                        }
+                        if (newerArtifact.get(i) != null) {
+                           attribute = newerArtifact.get(i).getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+                           if (attribute != null) {
+                              String value = attribute.getValue().toString();
+                              if (WordAnnotationHandler.containsWordAnnotations(value)) {
+                                 newAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
+                                 attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+                              }
+                           }
+                        }
+                     }
                      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
                         originalValue =
                               WordImageChecker.checkForImageDiffs(
@@ -173,7 +201,11 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                                  PresentationType.DIFF);
                      WordImageChecker.restoreOriginalValue(
                            baseArtifacts.get(i) != null ? baseArtifacts.get(i).getSoleAttribute(
-                                 WordAttribute.WORD_TEMPLATE_CONTENT) : null, originalValue);
+                                 WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+                           oldAnnotationValue != null ? oldAnnotationValue : originalValue);
+                     WordImageChecker.restoreOriginalValue(
+                           newerArtifact.get(i) != null ? newerArtifact.get(i).getSoleAttribute(
+                                 WordAttribute.WORD_TEMPLATE_CONTENT) : null, newAnnotationValue);
                      baseFileStr = changeReportFolder.getLocation().toOSString();
                      localFileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
                      fileNames.add(localFileName);
@@ -211,6 +243,27 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       IFile baseFile;
       IFile newerFile;
       Pair<String, Boolean> originalValue = null;
+      Pair<String, Boolean> newAnnotationValue = null;
+      Pair<String, Boolean> oldAnnotationValue = null;
+      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
+         Attribute attribute = baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+         if (baseVersion != null && attribute != null) {
+            String value = attribute.getValue().toString();
+            if (WordAnnotationHandler.containsWordAnnotations(value)) {
+               oldAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
+               attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+            }
+         }
+         attribute = newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+         if (newerVersion != null && attribute != null) {
+            String value = attribute.getValue().toString();
+            if (WordAnnotationHandler.containsWordAnnotations(value)) {
+               newAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
+               attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+            }
+         }
+      }
+
       if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
          originalValue =
                WordImageChecker.checkForImageDiffs(
@@ -236,10 +289,12 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       } else {
          newerFile = renderForDiff(monitor, branch);
       }
-
       WordImageChecker.restoreOriginalValue(
             baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
-            originalValue);
+            oldAnnotationValue != null ? oldAnnotationValue : originalValue);
+      WordImageChecker.restoreOriginalValue(
+            newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+            newAnnotationValue);
       return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
    }
 
@@ -410,14 +465,14 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          Artifact firstArtifact = artifacts.iterator().next();
          template = getTemplate(firstArtifact, presentationType);
 
-         for (Artifact artifact : artifacts) {
-            Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-            if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
-               throw new OseeCoreException(
-                     "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
-
-            }
-         }
+         //         for (Artifact artifact : artifacts) {
+         //            Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+         //            if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
+         //               throw new OseeCoreException(
+         //                     "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
+         //
+         //            }
+         //         }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
             // currently we can't support the editing of multiple artifacts with OLE data

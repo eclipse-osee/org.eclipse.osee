@@ -12,7 +12,10 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,6 +23,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -52,6 +59,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
+import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -70,10 +78,16 @@ import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -398,6 +412,29 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    }
 
    private ToolBar createToolBar(Composite parent, IActionable actionable, final Artifact artifact) {
+      ISelectionProvider provider = new ISelectionProvider() {
+         private ISelection selection;
+
+         @Override
+         public void addSelectionChangedListener(ISelectionChangedListener listener) {
+         }
+
+         @Override
+         public ISelection getSelection() {
+            return selection;
+         }
+
+         @Override
+         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+         }
+
+         @Override
+         public void setSelection(ISelection selection) {
+            this.selection = selection;
+         }
+      };
+      provider.setSelection(new StructuredSelection(new Object[] {artifact}));
+      getSite().setSelectionProvider(provider);
       Composite toolBarComposite = new Composite(parent, SWT.BORDER);
       GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1);
       toolBarComposite.setLayoutData(gridData);
@@ -406,7 +443,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       layout.marginWidth = 0;
       toolBarComposite.setLayout(layout);
 
-      ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
+      final ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
 
       gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1);
       toolBar.setLayoutData(gridData);
@@ -445,30 +482,103 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(skynetGuiPlugin.getImage("edit_artifact.gif"));
-      item.setToolTipText("Present this artifact for editing");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
-         }
-      });
-      item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchManager.getDefaultBranch()));
+      //Edit menu Item 
+      //      final Menu editMenu = new Menu(parent.getShell(), SWT.POP_UP);
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(skynetGuiPlugin.getImage("preview_artifact.gif"));
-      item.setToolTipText("Present this artifact for preview (read-only)");
-      item.addSelectionListener(new SelectionAdapter() {
+      List<Artifact> artifacts = new LinkedList<Artifact>();
+      artifacts.add(artifact);
+      //      try {
+      //         OpenWithMenuListener.loadMenuItems(editMenu, PresentationType.SPECIALIZED_EDIT, artifacts);
+      //      } catch (OseeCoreException ex) {
+      //         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      //      } catch (NotDefinedException ex) {
+      //         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      //      }
+      //      final ToolItem editItem = new ToolItem(toolBar, SWT.DROP_DOWN);
+      //      editItem.setImage(skynetGuiPlugin.getImage("edit_artifact.gif"));
+      //      editItem.setToolTipText("Present this artifact for editing");
+      //
+      //      editItem.addListener(SWT.Selection, new Listener() {
+      //         @Override
+      //         public void handleEvent(Event event) {
+      //            if (event.detail == SWT.ARROW) {
+      //               Rectangle rect = editItem.getBounds();
+      //               Point pt = new Point(rect.x, rect.y + rect.height);
+      //               pt = toolBar.toDisplay(pt);
+      //               editMenu.setLocation(pt.x, pt.y);
+      //               editMenu.setVisible(true);
+      //            }
+      //            if (event.detail == 0) {
+      //               RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
+      //            }
+      //         }
+      //
+      //      });
+      //      boolean itemsEnabled = false;
+      //      for (MenuItem menuItems : editMenu.getItems()) {
+      //         if (menuItems.isEnabled()) {
+      //            itemsEnabled = true;
+      //         }
+      //      }
+      //      boolean enabled =
+      //            !artifact.isReadOnly() && editMenu.getItemCount() != 0 && artifact.getBranch().equals(
+      //                  BranchManager.getDefaultBranch());
+      //      editItem.setEnabled(enabled && itemsEnabled);
+
+      //Preview menu Item 
+      final Menu previewMenu = new Menu(parent.getShell(), SWT.POP_UP);
+      boolean previewable = false;
+      try {
+         if (RendererManager.getApplicableRenderers(PresentationType.PREVIEW, artifact, null).size() > 1) {
+            previewable = true;
+         }
+
+         if (previewable) {
+            if (OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.PREVIEW, artifacts)) {
+               new MenuItem(previewMenu, SWT.SEPARATOR);
+            }
+         }
+         OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.SPECIALIZED_EDIT, artifacts);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      } catch (NotDefinedException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      final ToolItem previewItem = new ToolItem(toolBar, SWT.DROP_DOWN);
+      previewItem.setImage(skynetGuiPlugin.getImage("open.gif"));
+      previewItem.setToolTipText("Open the Artifact");
+      final boolean previwableFinal = previewable;
+      previewItem.addListener(SWT.Selection, new Listener() {
          @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               RendererManager.previewInJob(artifact);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         public void handleEvent(Event event) {
+            if (event.detail == SWT.ARROW) {
+               Rectangle rect = previewItem.getBounds();
+               Point pt = new Point(rect.x, rect.y + rect.height);
+               pt = toolBar.toDisplay(pt);
+               previewMenu.setLocation(pt.x, pt.y);
+               previewMenu.setVisible(true);
+            }
+            if (event.detail == 0) {
+               try {
+                  if (previwableFinal) {
+                     RendererManager.previewInJob(artifact);
+                  } else {
+                     RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(ArtifactEditor.class, Level.SEVERE, ex.getMessage());
+               }
             }
          }
       });
+
+      boolean itemzEnabled = false;
+      for (MenuItem menuItems : previewMenu.getItems()) {
+         if (menuItems.isEnabled()) {
+            itemzEnabled = true;
+         }
+      }
+      previewItem.setEnabled(itemzEnabled);
 
       final DeleteArtifactAction deleteAction = new DeleteArtifactAction(artifact);
       item = new ToolItem(toolBar, SWT.PUSH);

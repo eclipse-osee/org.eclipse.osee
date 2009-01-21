@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
+import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
 
@@ -63,7 +64,7 @@ public class WholeDocumentRenderer extends WordRenderer {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command");
       } else if (presentationType == PresentationType.PREVIEW) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.wholewordpreview.command");
-      }
+   }
 
       return commandIds;
    }
@@ -97,7 +98,7 @@ public class WholeDocumentRenderer extends WordRenderer {
          if (attribute == null) {
             attribute = artifact.createAttribute(AttributeTypeManager.getType(WordAttribute.WHOLE_WORD_CONTENT), true);
          }
-         if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
+         if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).containsWordAnnotations()) {
             throw new OseeCoreException(
                   "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
 
@@ -129,6 +130,26 @@ public class WholeDocumentRenderer extends WordRenderer {
       IFile baseFile;
       IFile newerFile;
       Pair<String, Boolean> originalValue = null;
+      Pair<String, Boolean> newAnnotationValue = null;
+      Pair<String, Boolean> oldAnnotationValue = null;
+      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
+         Attribute attribute = baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+         if (baseVersion != null && attribute != null) {
+            String value = attribute.getValue().toString();
+            if (WordAnnotationHandler.containsWordAnnotations(value)) {
+               oldAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
+               attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+            }
+         }
+         attribute = newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+         if (newerVersion != null && attribute != null) {
+            String value = attribute.getValue().toString();
+            if (WordAnnotationHandler.containsWordAnnotations(value)) {
+               newAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
+               attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+            }
+         }
+      }
       if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
          originalValue =
                WordImageChecker.checkForImageDiffs(
@@ -154,9 +175,12 @@ public class WholeDocumentRenderer extends WordRenderer {
       } else {
          newerFile = renderForDiff(monitor, branch);
       }
-
       WordImageChecker.restoreOriginalValue(
-            baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null, originalValue);
+            baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+            oldAnnotationValue != null ? oldAnnotationValue : originalValue);
+      WordImageChecker.restoreOriginalValue(
+            newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+            newAnnotationValue);
       return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
    }
 
