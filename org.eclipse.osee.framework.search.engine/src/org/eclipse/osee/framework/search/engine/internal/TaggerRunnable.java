@@ -117,7 +117,7 @@ class TaggerRunnable implements Runnable {
    }
 
    private final class AttributeToTagTx extends DbTransaction implements ITagCollector {
-
+      private static final int TOTAL_RETRIES = 3;
       private final Deque<SearchTag> searchTags;
       private SearchTag currentTag;
 
@@ -127,12 +127,28 @@ class TaggerRunnable implements Runnable {
          this.currentTag = null;
       }
 
+      private Collection<AttributeData> getDataFromQueryId(OseeConnection connection, int queryId, final int numberOfRetries) throws OseeDataStoreException {
+         Collection<AttributeData> attributeDatas = AttributeDataStore.getAttribute(connection, getTagQueueQueryId());
+         // Re-try in case query id hasn't been committed to the database
+         int retry = 0;
+         while (attributeDatas.isEmpty() && retry < numberOfRetries) {
+            try {
+               Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+               OseeLog.log(Activator.class, Level.WARNING, ex);
+            }
+            attributeDatas = AttributeDataStore.getAttribute(connection, getTagQueueQueryId());
+            retry++;
+         }
+         return attributeDatas;
+      }
+
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
        */
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-         Collection<AttributeData> attributeDatas = AttributeDataStore.getAttribute(connection, getTagQueueQueryId());
+         Collection<AttributeData> attributeDatas = getDataFromQueryId(connection, getTagQueueQueryId(), TOTAL_RETRIES);
          try {
             if (!attributeDatas.isEmpty()) {
                SearchTagDataStore.deleteTags(connection,
