@@ -157,6 +157,18 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             }
             if (transData.cacheChangedArtifacts.size() > 0) {
                ((WorldContentProvider) getContentProvider()).updateAll(transData.cacheChangedArtifacts);
+               for (Artifact art : transData.cacheChangedArtifacts) {
+                  if (art instanceof IWorldViewArtifact) {
+                     // If parent is loaded and child changed, refresh parent
+                     try {
+                        if ((art instanceof StateMachineArtifact) && (((StateMachineArtifact) art).getParentAtsArtifact() instanceof IWorldViewArtifact)) {
+                           update(((StateMachineArtifact) art).getParentAtsArtifact(), null);
+                        }
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                     }
+                  }
+               }
             }
             Set<Artifact> arts = new HashSet<Artifact>();
             arts.addAll(transData.cacheRelationAddedArtifacts);
