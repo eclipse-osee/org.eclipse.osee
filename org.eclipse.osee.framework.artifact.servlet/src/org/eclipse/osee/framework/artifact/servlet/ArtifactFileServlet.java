@@ -70,7 +70,7 @@ public class ArtifactFileServlet extends OseeHttpServlet {
                   }
                }
                response.setContentType(mimeType);
-               //               response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
+               response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
 
                Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
             }
