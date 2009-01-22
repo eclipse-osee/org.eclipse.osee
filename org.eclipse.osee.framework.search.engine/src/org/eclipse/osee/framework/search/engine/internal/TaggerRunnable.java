@@ -149,8 +149,8 @@ class TaggerRunnable implements Runnable {
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          Collection<AttributeData> attributeDatas = getDataFromQueryId(connection, getTagQueueQueryId(), TOTAL_RETRIES);
-         try {
-            if (!attributeDatas.isEmpty()) {
+         if (!attributeDatas.isEmpty()) {
+            try {
                SearchTagDataStore.deleteTags(connection,
                      attributeDatas.toArray(new IAttributeLocator[attributeDatas.size()]));
                for (AttributeData attributeData : attributeDatas) {
@@ -170,13 +170,13 @@ class TaggerRunnable implements Runnable {
                   }
                }
                store(connection, this.searchTags);
-            } else {
-               System.out.println(String.format("Empty gamma query id: %s", getTagQueueQueryId()));
+               JoinUtility.deleteQuery(connection, JoinItem.TAG_GAMMA_QUEUE, getTagQueueQueryId());
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags - tagQueueQueryId [%d]",
+                     getTagQueueQueryId()), ex);
             }
-            JoinUtility.deleteQuery(connection, JoinItem.TAG_GAMMA_QUEUE, getTagQueueQueryId());
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags - tagQueueQueryId [%d]",
-                  getTagQueueQueryId()), ex);
+         } else {
+            System.out.println(String.format("Empty gamma query id: %s", getTagQueueQueryId()));
          }
       }
 
