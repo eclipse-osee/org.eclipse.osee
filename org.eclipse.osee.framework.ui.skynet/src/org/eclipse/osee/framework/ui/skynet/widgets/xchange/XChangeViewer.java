@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -22,17 +23,23 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.status.SwtStatusMonitor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
@@ -94,7 +101,11 @@ public class XChangeViewer extends XWidget implements IActionable {
       mainComp.setLayout(ALayout.getZeroMarginLayout());
       if (toolkit != null) toolkit.paintBordersFor(mainComp);
 
-      createTaskActionBar(mainComp);
+      try {
+         createTaskActionBar(mainComp);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
 
       xChangeViewer = new ChangeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xChangeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -115,7 +126,7 @@ public class XChangeViewer extends XWidget implements IActionable {
       new ChangeDragAndDrop(tree, ChangeXViewerFactory.NAMESPACE);
    }
 
-   public void createTaskActionBar(Composite parent) {
+   public void createTaskActionBar(Composite parent) throws OseeCoreException {
 
       // Button composite for state transitions, etc
       Composite bComp = new Composite(parent, SWT.NONE);
@@ -160,8 +171,54 @@ public class XChangeViewer extends XWidget implements IActionable {
          }
       });
 
+      associatedArtifactToolItem = new ToolItem(toolBar, SWT.PUSH);
+      associatedArtifactToolItem.setImage(SkynetGuiPlugin.getInstance().getImage("edit.gif"));
+      associatedArtifactToolItem.setToolTipText("Open Associated Artifact");
+      associatedArtifactToolItem.setEnabled(false);
+      associatedArtifactToolItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            try {
+               Artifact associatedArtifact = null;
+               if (branch != null) {
+                  associatedArtifact = branch.getAssociatedArtifact();
+               } else if (transactionId != null) {
+                  associatedArtifact =
+                        ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), transactionId.getBranch());
+               }
+               if (associatedArtifact == null) {
+                  AWorkbench.popup("ERROR", "Can not access associated artifact.");
+               } else {
+                  RendererManager.openInJob(associatedArtifact, PresentationType.GENERALIZED_EDIT);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         }
+      });
+
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, ChangeView.VIEW_ID,
             "Change Report");
+   }
+
+   private ToolItem associatedArtifactToolItem;
+
+   private void refreshAssociatedArtifact() throws OseeCoreException {
+      try {
+         Artifact associatedArtifact = null;
+         if (branch != null) {
+            associatedArtifact = branch.getAssociatedArtifact();
+         } else if (transactionId != null) {
+            associatedArtifact =
+                  ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), transactionId.getBranch());
+         }
+         if (associatedArtifact != null && !(associatedArtifact instanceof User)) {
+            associatedArtifactToolItem.setImage(associatedArtifact.getImage());
+            associatedArtifactToolItem.setEnabled(true);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    public void loadTable() {
@@ -240,35 +297,41 @@ public class XChangeViewer extends XWidget implements IActionable {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             final boolean hasBranch = branch != null;
-            final Collection<Change> changes = new ArrayList<Change>() ;
+            final Collection<Change> changes = new ArrayList<Change>();
             SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
 
             try {
-               if(loadChangeReport){	
-            	   changes.addAll((hasBranch ? ChangeManager.getChangesPerBranch(branch, swtMonitor) : ChangeManager.getChangesPerTransaction(transactionId, swtMonitor)));
+               if (loadChangeReport) {
+                  changes.addAll((hasBranch ? ChangeManager.getChangesPerBranch(branch, swtMonitor) : ChangeManager.getChangesPerTransaction(
+                        transactionId, swtMonitor)));
                }
-	
-	               Displays.ensureInDisplayThread(new Runnable() {
-	                  public void run() {
-	                	 if(loadChangeReport){ 
-		                     if (changes.size() == 0) {
-		                        extraInfoLabel.setText(NOT_CHANGES);
-		                        xChangeViewer.setInput(changes);
-		                     } else {
-		                        String infoLabel =
-		                              String.format(
-		                                    "Changes %s to branch: %s\n%s",
-		                                    hasBranch ? "made" : "committed",
-		                                    hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
-		                                    hasBranch ? "" : "Comment: " + transactionId.getComment());
-		                        extraInfoLabel.setText(infoLabel);
-		                        xChangeViewer.setInput(changes);
-		                     }
-	                	 }else{              	
-	                	  extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
-	                	 }
-	               }
-	               });
+
+               Displays.ensureInDisplayThread(new Runnable() {
+                  public void run() {
+                     if (loadChangeReport) {
+                        if (changes.size() == 0) {
+                           extraInfoLabel.setText(NOT_CHANGES);
+                           xChangeViewer.setInput(changes);
+                        } else {
+                           String infoLabel =
+                                 String.format(
+                                       "Changes %s to branch: %s\n%s",
+                                       hasBranch ? "made" : "committed",
+                                       hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
+                                       hasBranch ? "" : "Comment: " + transactionId.getComment());
+                           extraInfoLabel.setText(infoLabel);
+                           xChangeViewer.setInput(changes);
+                        }
+                        try {
+                           refreshAssociatedArtifact();
+                        } catch (OseeCoreException ex) {
+                           OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                        }
+                     } else {
+                        extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
+                     }
+                  }
+               });
             } catch (OseeCoreException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
