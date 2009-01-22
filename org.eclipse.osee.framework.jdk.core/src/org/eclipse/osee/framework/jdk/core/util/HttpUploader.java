@@ -75,9 +75,7 @@ public class HttpUploader {
       } catch (Exception ex) {
          throw new Exception(String.format("Error uploading to server: [%s]", urlRequest), ex);
       } finally {
-         if (connection != null) {
-            connection.disconnect();
-         }
+         handleDisconnect(connection);
       }
       return toReturn;
    }
@@ -114,6 +112,12 @@ public class HttpUploader {
          }
       }
       return toReturn;
+   }
+
+   private static void handleDisconnect(HttpURLConnection connection) {
+      if (connection != null) {
+         connection.disconnect();
+      }
    }
 
    private void inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {

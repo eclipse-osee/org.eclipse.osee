@@ -16,24 +16,37 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethodBase;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 
 /**
  * @author Roberto E. Escobar
  */
 public class HttpProcessor {
-   private static final int CONNECTION_TIMEOUT = 1000 * 60 * 2;
-   private static final String CONTENT_LENGTH = "Content-Length";
-   private static final String CONTENT_TYPE = "Content-Type";
-   private static final String CONTENT_ENCODING = "Content-Encoding";
+   private static final String CONTENT_TYPE = "content-type";
+   private static final String CONTENT_ENCODING = "content-encoding";
+
+   private static final HttpProcessor instance = new HttpProcessor();
+
+   private MultiThreadedHttpConnectionManager connectionManager;
+   private HttpClient httpClient;
 
    private HttpProcessor() {
+      connectionManager = new MultiThreadedHttpConnectionManager();
+      httpClient = new HttpClient(connectionManager);
    }
 
-   private static HttpURLConnection setupConnection(URL url) throws IOException {
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setConnectTimeout(CONNECTION_TIMEOUT);
-      connection.setReadTimeout(0);
-      return connection;
+   private static HttpClient getHttpClient() {
+      return instance.httpClient;
    }
 
    public static URI save(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
@@ -42,54 +55,75 @@ public class HttpProcessor {
    }
 
    public static String put(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
+      int statusCode = -1;
       String response = null;
-      HttpUploader uploader = new HttpUploader(url.toString(), inputStream, contentType, encoding);
-      boolean wasSuccessful = uploader.execute();
-      if (wasSuccessful) {
-         response = uploader.getUploadResponse();
-         if (response == null) {
-            throw new Exception(String.format("Error uploading resource [%s]", url));
+      PutMethod method = new PutMethod(url.toString());
+
+      InputStream responseInputStream = null;
+      try {
+         method.setRequestHeader(CONTENT_ENCODING, encoding);
+         method.setRequestEntity(new InputStreamRequestEntity(inputStream, contentType));
+
+         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+         statusCode = getHttpClient().executeMethod(method);
+         if (statusCode != HttpURLConnection.HTTP_CREATED) {
+            throw new Exception(method.getStatusLine().toString());
+         } else {
+            responseInputStream = method.getResponseBodyAsStream();
+            response = Lib.inputStreamToString(responseInputStream);
          }
-      } else {
-         throw new Exception(String.format("Error uploading resource [%s]", url));
+
+      } catch (Exception ex) {
+         throw new IOException(String.format("Error during POST [%s] - status code: [%s]", url, statusCode), ex);
+      } finally {
+         try {
+            if (responseInputStream != null) {
+               responseInputStream.close();
+            }
+         } catch (Exception ex) {
+            // Do Nothing;
+         } finally {
+            method.releaseConnection();
+         }
       }
       return response;
    }
 
    public static AcquireResult post(URL url, InputStream inputStream, String contentType, String encoding, OutputStream outputStream) throws IOException {
       AcquireResult result = new AcquireResult();
-      int code = -1;
-      HttpURLConnection connection = null;
+      int statusCode = -1;
+
+      PostMethod method = new PostMethod(url.toString());
+
       InputStream httpInputStream = null;
       try {
-         connection = setupConnection(url);
-         connection.setRequestProperty(CONTENT_LENGTH, Integer.toString(inputStream.available()));
-         connection.setRequestProperty(CONTENT_TYPE, contentType);
-         connection.setRequestProperty(CONTENT_ENCODING, encoding);
-         connection.setRequestMethod("POST");
-         connection.setAllowUserInteraction(true);
-         connection.setDoOutput(true);
-         connection.setDoInput(true);
-         connection.connect();
-         Lib.inputStreamToOutputStream(inputStream, connection.getOutputStream());
-         code = connection.getResponseCode();
-         if (code == HttpURLConnection.HTTP_ACCEPTED) {
-            httpInputStream = (InputStream) connection.getContent();
-            result.setContentType(connection.getContentType());
-            result.setEncoding(connection.getContentEncoding());
-            Lib.inputStreamToOutputStream(httpInputStream, outputStream);
+         method.setRequestHeader(CONTENT_ENCODING, encoding);
+         method.setRequestEntity(new InputStreamRequestEntity(inputStream, contentType));
+
+         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+         statusCode = getHttpClient().executeMethod(method);
+         if (statusCode != HttpStatus.SC_ACCEPTED) {
+            throw new Exception(method.getStatusLine().toString());
          } else {
-            throw new IOException(String.format("Error during POST [%s] - status code: [%s]", url, code));
+            httpInputStream = method.getResponseBodyAsStream();
+            result.setContentType(getContentType(method));
+            result.setEncoding(method.getResponseCharSet());
+            Lib.inputStreamToOutputStream(httpInputStream, outputStream);
          }
-      } catch (IOException ex) {
-         throw new IOException(String.format("Error during POST [%s] - status code: [%s]", url, code), ex);
+      } catch (Exception ex) {
+         throw new IOException(String.format("Error during POST [%s] - status code: [%s]", url, statusCode), ex);
       } finally {
-         result.setCode(code);
-         if (httpInputStream != null) {
-            httpInputStream.close();
-         }
-         if (connection != null) {
-            connection.disconnect();
+         try {
+            result.setCode(statusCode);
+            if (httpInputStream != null) {
+               httpInputStream.close();
+            }
+         } catch (Exception ex) {
+            // Do Nothing;
+         } finally {
+            method.releaseConnection();
          }
       }
       return result;
@@ -97,60 +131,77 @@ public class HttpProcessor {
 
    public static String post(URL url) throws Exception {
       String response = null;
-      int code = -1;
-      InputStream inputStream = null;
-      HttpURLConnection connection = null;
+      int statusCode = -1;
+
+      PostMethod method = new PostMethod(url.toString());
+
+      InputStream responseInputStream = null;
       try {
-         connection = setupConnection(url);
-         connection.setRequestMethod("POST");
-         connection.connect();
-         // Wait for response
-         code = connection.getResponseCode();
-         if (code == HttpURLConnection.HTTP_ACCEPTED) {
-            inputStream = (InputStream) connection.getContent();
-            response = Lib.inputStreamToString(inputStream);
+         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+         statusCode = getHttpClient().executeMethod(method);
+         if (statusCode != HttpStatus.SC_ACCEPTED) {
+            throw new Exception(method.getStatusLine().toString());
          } else {
-            throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, code));
+            responseInputStream = method.getResponseBodyAsStream();
+            response = Lib.inputStreamToString(responseInputStream);
          }
       } catch (Exception ex) {
-         throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, code), ex);
+         throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, statusCode), ex);
       } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
-         if (connection != null) {
-            connection.disconnect();
+         try {
+            if (responseInputStream != null) {
+               responseInputStream.close();
+            }
+         } catch (Exception ex) {
+            // Do Nothing;
+         } finally {
+            method.releaseConnection();
          }
       }
       return response;
    }
 
+   private static String getContentType(HttpMethodBase method) {
+      String contentType = method.getResponseHeader(CONTENT_TYPE).getValue();
+      if (Strings.isValid(contentType)) {
+         int index = contentType.indexOf(';');
+         if (index > 0) {
+            contentType = contentType.substring(0, index);
+         }
+      }
+      return contentType;
+   }
+
    public static AcquireResult acquire(URL url, OutputStream outputStream) throws Exception {
       AcquireResult result = new AcquireResult();
-      int code = -1;
+      int statusCode = -1;
+
+      GetMethod method = new GetMethod(url.toString());
+
       InputStream inputStream = null;
-      HttpURLConnection connection = null;
       try {
-         connection = setupConnection(url);
-         connection.connect();
-         // Wait for response
-         code = connection.getResponseCode();
-         if (code == HttpURLConnection.HTTP_OK) {
-            inputStream = (InputStream) connection.getContent();
-            result.setContentType(connection.getContentType());
-            result.setEncoding(connection.getContentEncoding());
+         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+         statusCode = getHttpClient().executeMethod(method);
+         if (statusCode == HttpStatus.SC_OK) {
+            inputStream = method.getResponseBodyAsStream();
+            result.setEncoding(method.getResponseCharSet());
+            result.setContentType(getContentType(method));
             Lib.inputStreamToOutputStream(inputStream, outputStream);
          }
-
       } catch (Exception ex) {
-         throw new Exception(String.format("Error acquiring resource: [%s] - status code: [%s]", url, code), ex);
+         throw new Exception(String.format("Error acquiring resource: [%s] - status code: [%s]", url, statusCode), ex);
       } finally {
-         result.setCode(code);
-         if (inputStream != null) {
-            inputStream.close();
-         }
-         if (connection != null) {
-            connection.disconnect();
+         try {
+            result.setCode(statusCode);
+            if (inputStream != null) {
+               inputStream.close();
+            }
+         } catch (Exception ex) {
+            // Do Nothing;
+         } finally {
+            method.releaseConnection();
          }
       }
       return result;
@@ -158,27 +209,28 @@ public class HttpProcessor {
 
    public static String delete(URL url) throws Exception {
       String response = null;
-      int code = -1;
-      InputStream inputStream = null;
-      HttpURLConnection connection = null;
+      int statusCode = -1;
+      DeleteMethod method = new DeleteMethod(url.toString());
+
+      InputStream responseInputStream = null;
       try {
-         connection = setupConnection(url);
-         connection.setRequestMethod("DELETE");
-         connection.connect();
-         // Wait for response
-         code = connection.getResponseCode();
-         if (code == HttpURLConnection.HTTP_ACCEPTED) {
-            inputStream = (InputStream) connection.getContent();
-            response = Lib.inputStreamToString(inputStream);
+         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+         statusCode = getHttpClient().executeMethod(method);
+         if (statusCode == HttpStatus.SC_ACCEPTED) {
+            responseInputStream = method.getResponseBodyAsStream();
+            response = Lib.inputStreamToString(responseInputStream);
          }
       } catch (Exception ex) {
-         throw new Exception(String.format("Error deleting resource: [%s] - status code: [%s]", url, code), ex);
+         throw new Exception(String.format("Error deleting resource: [%s] - status code: [%s]", url, statusCode), ex);
       } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
-         if (connection != null) {
-            connection.disconnect();
+         try {
+            if (responseInputStream != null) {
+               responseInputStream.close();
+            }
+         } catch (Exception ex) {
+            // Do Nothing;
+         } finally {
+            method.releaseConnection();
          }
       }
       return response;
