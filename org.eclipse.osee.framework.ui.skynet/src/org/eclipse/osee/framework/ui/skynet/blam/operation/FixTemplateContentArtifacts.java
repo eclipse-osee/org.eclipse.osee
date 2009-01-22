@@ -77,9 +77,13 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
             backupFolder.getAbsolutePath()));
 
       ArrayList<AttrData> attrDatas = loadAttrData();
-      monitor.beginTask("Fix word template content", attrDatas.size());
-      for (AttrData attrData : attrDatas) {
-         monitor.subTask(attrData.getHrid());
+      int totalAttrs = attrDatas.size();
+
+      monitor.beginTask("Fix word template content", totalAttrs);
+
+      for (int index = 0; index < attrDatas.size(); index++) {
+         AttrData attrData = attrDatas.get(index);
+         monitor.subTask(String.format("[%s of %s] - hrid[%s]", index, totalAttrs, attrData.getHrid()));
          Resource resource = getResource(attrData.getUri());
 
          Element rootElement = null;
@@ -141,6 +145,14 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                      "Skiping File %s because of exception %s", attrData.getHrid(), ex));
             }
          }
+
+         //         if (index != 0 && index % 1000 == 0) {
+         //            try {
+         //               Thread.sleep(1000 * 60 * 2);
+         //            } catch (InterruptedException ex) {
+         //               ex.printStackTrace();
+         //            }
+         //         }
          monitor.worked(1);
       }
 
@@ -154,6 +166,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());
       rd.report("Fix bad data", Manipulations.RAW_HTML);
+
    }
 
    private ArrayList<AttrData> loadAttrData() throws OseeDataStoreException, OseeTypeDoesNotExist {
@@ -261,9 +274,15 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       InputStream inputStream = null;
       OutputStream outputStream = null;
       try {
-         String path = resource.sourcePath.replace("attr://", "");
-         path = path.replaceAll("/", File.separator);
-         outputStream = new FileOutputStream(new File(backupFolder, path));
+         String path = resource.sourcePath;
+         path = path.replaceAll("attr://", "");
+         path = path.replaceAll("/", Lib.isWindows() ? "\\\\" : "/");
+         File file = new File(backupFolder, path);
+         File parent = file.getParentFile();
+         if (parent != null) {
+            parent.mkdirs();
+         }
+         outputStream = new FileOutputStream(file);
 
          inputStream = new ByteArrayInputStream(resource.rawBytes);
          Lib.inputStreamToOutputStream(inputStream, outputStream);
