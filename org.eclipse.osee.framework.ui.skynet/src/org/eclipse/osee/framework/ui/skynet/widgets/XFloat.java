@@ -39,13 +39,17 @@ public class XFloat extends XText {
       this.maxValue = maxValue;
    }
 
+   @Override
    public double getFloat() {
-      if (get().equals(""))
-         return 0.0;
-      else
+      if (get().equals("")) return 0.0;
+      try {
          return new Double(get());
+      } catch (Exception ex) {
+         return 0.0;
+      }
    }
 
+   @Override
    public Result isValid() {
       if (super.requiredEntry() || (super.get().compareTo("") != 0)) {
          String name = getLabel();
