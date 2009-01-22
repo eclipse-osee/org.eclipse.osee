@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -24,6 +25,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -168,10 +171,14 @@ public class RelationTypeManager {
          chStmt.runPreparedQuery(2000, SELECT_LINK_VALIDITY);
 
          while (chStmt.next()) {
-            RelationType relationType = internalGetType(chStmt.getInt("rel_link_type_id"));
-            ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
-            validityMap.put(relationType, artifactType, new ObjectPair<Integer, Integer>(chStmt.getInt("side_a_max"),
-                  chStmt.getInt("side_b_max")));
+            try {
+               RelationType relationType = internalGetType(chStmt.getInt("rel_link_type_id"));
+               ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
+               validityMap.put(relationType, artifactType, new ObjectPair<Integer, Integer>(
+                     chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max")));
+            } catch (OseeCoreException exception) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, exception);
+            }
          }
       } finally {
          chStmt.close();
