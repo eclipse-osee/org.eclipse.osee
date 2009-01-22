@@ -357,37 +357,37 @@
     <Template
           File="support/templates/PREVIEW_ALL.xml">
        <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.word PREVIEW PREVIEW_ARTIFACT">
+             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_ARTIFACT">
        </MatchCriteria>
        <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.word PREVIEW">
+             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW">
        </MatchCriteria>
        <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.word DIFF">
+             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer DIFF">
        </MatchCriteria>
     </Template>
     <Template
           File="support/templates/PREVIEW_ALL_RECURSE.xml">
        <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.word PREVIEW PREVIEW_WITH_RECURSE">
+             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE">
        </MatchCriteria>
     </Template>
     <Template
           File="support/templates/Word Edit Template.xml">
        <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.word EDIT">
+             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer SPECIALIZED_EDIT">
        </MatchCriteria>
        <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.tis Test Information Sheet EDIT">
+             match="org.eclipse.osee.framework.ui.skynet.render.TisRenderer SPECIALIZED_EDIT">
        </MatchCriteria>
     </Template>
     <Template
           File="support/templates/Word Edit Template.xml">
        <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.word MERGE">
+             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE">
        </MatchCriteria>
        <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.word MERGE_EDIT">
+             match="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE_EDIT">
        </MatchCriteria>
     </Template>
  </extension>
