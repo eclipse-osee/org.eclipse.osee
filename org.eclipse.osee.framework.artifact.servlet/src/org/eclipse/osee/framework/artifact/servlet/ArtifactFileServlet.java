@@ -70,7 +70,7 @@ public class ArtifactFileServlet extends OseeHttpServlet {
                   }
                }
                response.setContentType(mimeType);
-               response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
+               //               response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
 
                Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
             }
@@ -101,13 +101,13 @@ public class ArtifactFileServlet extends OseeHttpServlet {
       OseeLog.log(Activator.class, Level.SEVERE, message, ex);
       response.getWriter().write(Lib.exceptionToString(ex));
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet#checkAccessControl()
     */
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-		// Open to all
-  }
-   
+      // Open to all
+   }
+
 }

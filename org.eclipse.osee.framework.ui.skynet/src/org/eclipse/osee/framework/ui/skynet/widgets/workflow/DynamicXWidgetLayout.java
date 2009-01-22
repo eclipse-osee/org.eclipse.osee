@@ -48,10 +48,11 @@ import org.xml.sax.SAXException;
  */
 public class DynamicXWidgetLayout {
 
-   private Set<DynamicXWidgetLayoutData> datas = new LinkedHashSet<DynamicXWidgetLayoutData>();
-   private Map<String, DynamicXWidgetLayoutData> nameToLayoutData = new HashMap<String, DynamicXWidgetLayoutData>();
-   private ArrayList<ArrayList<String>> orRequired = new ArrayList<ArrayList<String>>();
-   private ArrayList<ArrayList<String>> xorRequired = new ArrayList<ArrayList<String>>();
+   private final Set<DynamicXWidgetLayoutData> datas = new LinkedHashSet<DynamicXWidgetLayoutData>();
+   private final Map<String, DynamicXWidgetLayoutData> nameToLayoutData =
+         new HashMap<String, DynamicXWidgetLayoutData>();
+   private final ArrayList<ArrayList<String>> orRequired = new ArrayList<ArrayList<String>>();
+   private final ArrayList<ArrayList<String>> xorRequired = new ArrayList<ArrayList<String>>();
    public static String OR_REQUIRED = "OrRequired";
    public static String XOR_REQUIRED = "XOrRequired";
    public static String XWIDGET = "XWidget";
@@ -143,7 +144,7 @@ public class DynamicXWidgetLayout {
             xWidget.createWidgets(toolkit, useComp, 2);
          else
             xWidget.createWidgets(useComp, 2);
-         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY) && (xWidget instanceof XText)) {
             GridData gd = new GridData(GridData.FILL_BOTH);
             gd.minimumHeight = 60;
             ((XText) xWidget).getStyledText().setLayoutData(gd);
@@ -162,7 +163,7 @@ public class DynamicXWidgetLayout {
       }
       refreshOrAndXOrRequiredFlags();
    }
-   private XModifiedListener refreshRequiredModListener = new XModifiedListener() {
+   private final XModifiedListener refreshRequiredModListener = new XModifiedListener() {
       public void widgetModified(XWidget widget) {
          refreshOrAndXOrRequiredFlags();
       }

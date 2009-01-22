@@ -211,7 +211,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             new UpdateAssigneesRelations(adminItems);
             new DisplayCurrentOseeEventListeners(adminItems);
 
-            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", "Actions"));
+            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", "Action"));
             new SearchNavigateItem(adminItems,
                   new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
             new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review",
