@@ -44,7 +44,7 @@ public class XFloat extends XText {
       if (get().equals("")) return 0.0;
       try {
          return new Double(get());
-      } catch (Exception ex) {
+      } catch (NumberFormatException ex) {
          return 0.0;
       }
    }
