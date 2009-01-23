@@ -83,7 +83,7 @@ public class ResultsEditorInput implements IEditorInput {
    @Override
    public String getName() {
       try {
-         return iresultsEditorProvider.getName();
+         return iresultsEditorProvider.getEditorName();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return "Exception getting name: " + ex.getLocalizedMessage();
