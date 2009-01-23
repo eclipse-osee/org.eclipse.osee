@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.results.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.skynet.results.xresults.ResultsXViewerContentProvider;
 import org.eclipse.osee.framework.ui.skynet.results.xresults.ResultsXViewerLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.ImageCapture;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultsComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -55,7 +54,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  */
 public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
-   private int chartPageIndex, reportsPageIndex, tablePageIndex;
    private Integer startPage = null;
    private XResultsComposite xResultComposite;
    private ResultsXViewer resultsXViewer;
@@ -101,18 +99,20 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
 
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Results");
 
+      System.err.println("Add printing back in");
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("print.gif"));
       item.setToolTipText("Print this tab");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {
-            if (getCurrentPage() == reportsPageIndex) {
-               xResultComposite.getBrowser().setUrl("javascript:print()");
-            } else if (getCurrentPage() == chartPageIndex) {
-               ImageCapture iCapture = new ImageCapture(chartCanvas);
-               iCapture.popupDialog();
-            }
+            AWorkbench.popup("ERROR", "Not implemented yet");
+            //            if (getCurrentPage() == reportsPageIndex) {
+            //               xResultComposite.getBrowser().setUrl("javascript:print()");
+            //            } else if (getCurrentPage() == chartPageIndex) {
+            //               ImageCapture iCapture = new ImageCapture(chartCanvas);
+            //               iCapture.popupDialog();
+            //            }
          }
       });
 
@@ -159,11 +159,11 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
          chartCanvas.addPaintListener(new ChartViewerSWT(chart));
       }
 
-      chartPageIndex = addPage(chartComposite);
+      int chartPageIndex = addPage(chartComposite);
       if (chart != null) {
          startPage = chartPageIndex;
       }
-      setPageText(chartPageIndex, "Chart");
+      setPageText(chartPageIndex, tab.getTabName());
    }
 
    private void createHtmlTab(IResultsEditorHtmlTab tab) throws OseeCoreException, PartInitException {
@@ -177,11 +177,11 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       xResultComposite.setLayoutData(gd);
       xResultComposite.setHtmlText(html);
 
-      reportsPageIndex = addPage(comp);
+      int reportsPageIndex = addPage(comp);
       if (startPage == null) {
          startPage = reportsPageIndex;
       }
-      setPageText(reportsPageIndex, "Report");
+      setPageText(reportsPageIndex, tab.getTabName());
    }
 
    private void createTableTab(IResultsEditorTableTab tab) throws OseeCoreException, PartInitException {
@@ -197,7 +197,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       resultsXViewer.setInput(tab.getTableRows());
       resultsXViewer.getTree().setLayoutData(gd);
 
-      tablePageIndex = addPage(comp);
+      int tablePageIndex = addPage(comp);
       if (startPage == null) {
          startPage = tablePageIndex;
       }
