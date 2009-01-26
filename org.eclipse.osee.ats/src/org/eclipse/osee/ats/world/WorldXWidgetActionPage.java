@@ -84,7 +84,14 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    public void reSearch() throws OseeCoreException {
-      worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, false);
+      reSearch(false);
+   }
+
+   /*
+    * Mainly for testing purposes
+    */
+   public void reSearch(boolean forcePend) throws OseeCoreException {
+      worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, forcePend);
    }
 
    /* (non-Javadoc)

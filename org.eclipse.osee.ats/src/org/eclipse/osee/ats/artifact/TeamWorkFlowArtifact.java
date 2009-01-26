@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -231,7 +232,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          return getTeamDefinition().getDescriptiveName();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return "Exception: " + ex.getLocalizedMessage() + ". See log for details.";
+         return XViewerCells.getCellExceptionString(ex);         
       }
    }
 

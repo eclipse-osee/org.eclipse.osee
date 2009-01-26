@@ -17,12 +17,22 @@ import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
  */
 public class NavigateTestUtil {
    private static Map<String, List<XNavigateItem>> nameToNavItem;
+   public static String[] expectedErrorCols1 = {"ats.column.type", "ats.column.team"};
+   public static String[] expectedErrorCols2 =
+         {"ats.column.type", "ats.column.state", "ats.column.assignees", "ats.column.versionTarget", "ats.column.team",
+               "ats.column.annualCostAvoidance", "ats.column.remainingHours", "ats.column.statePercentComplete",
+               "ats.column.stateTaskPercentComplete", "ats.column.stateReviewPercentComplete",
+               "ats.column.totalPercentComplete", "ats.column.stateHoursSpent", "ats.column.stateTaskHoursSpent",
+               "ats.column.stateReviewHoursSpent", "ats.column.stateTotalHoursSpent", "ats.column.totalHoursSpent",
+               "ats.column.implementer", "ats.column.completedDate", "ats.column.cancelledDate",
+               "ats.column.manDaysNeeded"};
 
    public static XNavigateItem getAtsNavigateItem(String itemName) {
       if (nameToNavItem == null) {
@@ -52,11 +62,33 @@ public class NavigateTestUtil {
       int actualNumOfType = numOfType(arts, clazz);
       String expectedStr =
             "\"" + name + "\"   Expected: " + expectedNumOfType + "   Found: " + actualNumOfType + "   Of Type: " + clazz;
+      compare(expectedNumOfType, actualNumOfType, expectedStr);
+   }
+
+   public static void testExpectedVersusActual(String testStr, int expected, int actual) {
+      String expectedStr = testStr + "Expected: " + expected + "   Found: " + actual;
+      compare(expected, actual, expectedStr);
+   }
+
+   public static void testExpectedVersusActual(String testStr, boolean expectedCond, boolean actualCond) {
+      String expectedStr = testStr + "Expected: " + expectedCond + "    Found: " + actualCond;
+      compare(expectedCond, actualCond, expectedStr);
+   }
+
+   public static void compare(int expectedNumOfType, int actualNumOfType, String expectedStr) {
       if (expectedNumOfType != actualNumOfType)
          OseeLog.log(AtsPlugin.class, Level.SEVERE, expectedStr, null);
       else
          OseeLog.log(AtsPlugin.class, Level.INFO, expectedStr);
       TestCase.assertTrue(expectedStr, actualNumOfType == expectedNumOfType);
+   }
+
+   public static void compare(boolean expectedCond, boolean actualCond, String expectedStr) {
+      if (expectedCond != actualCond)
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, expectedStr, null);
+      else
+         OseeLog.log(AtsPlugin.class, Level.INFO, expectedStr);
+      TestCase.assertTrue(expectedStr, expectedCond == actualCond);
    }
 
    public static int numOfType(Collection<? extends Artifact> arts, Class<?> clazz) {
@@ -75,6 +107,16 @@ public class NavigateTestUtil {
       nameToItemMap.put(item.getName(), items);
       for (XNavigateItem child : item.getChildren()) {
          createNameToNavItemMap(child, nameToItemMap);
+      }
+   }
+
+   public static void getAllArtifactChildren(TreeItem items[], Collection<Artifact> children) {
+      for (TreeItem item : items) {
+         if (item.getData() instanceof Artifact) {
+            //if (!children.contains(item.getData())) children.add((Artifact) item.getData());
+            children.add((Artifact) item.getData());
+            if (item.getExpanded()) getAllArtifactChildren(item.getItems(), children);
+         }
       }
    }
 

@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -333,7 +334,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
    @Override
    protected Control createDialogArea(Composite parent) {
 
-      getShell().setText(title);
+      if (getShell() != null) getShell().setText(title);
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       final Composite comp = new Composite(parent, SWT.NONE);
@@ -799,6 +800,13 @@ public class XViewerCustomizeDialog extends MessageDialog {
       updateSortTextField();
       updateColumnFilterField();
    }
+   
+   /**
+    * for testing purposes
+    */
+   protected void handleAddAllItem() {	   
+	   handleAddAllItemButton();
+   }
 
    @SuppressWarnings("unchecked")
    private void handleRemoveAllItemButton() {
@@ -940,6 +948,13 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private void handleLoadConfigCustButton() {
       xViewerToCustomize.getCustomizeMgr().loadCustomization(getConfigCustomizeCustData());
       xViewerToCustomize.refresh();
+   }
+   
+   /**
+    * for testing purposes
+    */
+   protected void handleLoadConfigCust() {
+	   handleLoadConfigCustButton();
    }
 
    private void handleSetDefaultButton() {

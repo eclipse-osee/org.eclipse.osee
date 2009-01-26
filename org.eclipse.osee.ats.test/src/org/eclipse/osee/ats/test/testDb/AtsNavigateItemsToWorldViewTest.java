@@ -5,11 +5,16 @@
  */
 package org.eclipse.osee.ats.test.testDb;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import junit.framework.TestCase;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -25,7 +30,10 @@ import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
+import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
@@ -34,12 +42,15 @@ import org.eclipse.osee.ats.world.search.StateWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
+import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
@@ -55,32 +66,39 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
 
    public void testMyWorld() throws Exception {
       runGeneralLoadingTest("My World", ActionArtifact.class, 6, null);
+      runGeneralXColTest(43);
    }
 
    public void testMyFavoritesAndMyRecentlyVisited() throws Exception {
       // Load My Favorites (test My Favorites and use results to test My Recently Visited
       Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
       assertTrue(arts.size() == 3);
+      runGeneralXColTest(20);
       // Open all three favorites
       for (Artifact artifact : arts)
          SMAEditor.editArtifact(artifact);
       // Test that recently visited returns all three
       runGeneralLoadingTest("My Recently Visited", TeamWorkFlowArtifact.class, 3, null);
+      runGeneralXColTest(20);
    }
 
    public void testMyReviews() throws Exception {
       runGeneralLoadingTest("My Reviews", PeerToPeerReviewArtifact.class, 2, null);
       runGeneralLoadingTest("My Reviews", DecisionReviewArtifact.class, 2, null);
+      runGeneralXColTest(4);
       runGeneralLoadingTest("My Reviews - All", PeerToPeerReviewArtifact.class, 2, null);
       runGeneralLoadingTest("My Reviews - All", DecisionReviewArtifact.class, 3, null);
+      runGeneralXColTest(5);
    }
 
    public void testMySubscribed() throws Exception {
       runGeneralLoadingTest("My Subscribed", TeamWorkFlowArtifact.class, 1, null);
+      runGeneralXColTest(1);
    }
 
    public void testMyOriginator() throws Exception {
       runGeneralLoadingTest("My Originator - InWork", TaskArtifact.class, DemoDbTasks.getNumTasks(), null);
+      runGeneralXColTest(68);
       runGeneralLoadingTest("My Originator - InWork", TeamWorkFlowArtifact.class, 18, null);
       runGeneralLoadingTest("My Originator - InWork", PeerToPeerReviewArtifact.class, 7, null);
       runGeneralLoadingTest("My Originator - InWork", DecisionReviewArtifact.class, 7, null);
@@ -88,12 +106,15 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       runGeneralLoadingTest("My Originator - All", TeamWorkFlowArtifact.class, 25, null);
       runGeneralLoadingTest("My Originator - All", PeerToPeerReviewArtifact.class, 7, null);
       runGeneralLoadingTest("My Originator - All", DecisionReviewArtifact.class, 8, null);
+      runGeneralXColTest(84);
    }
 
    public void testMyCompleted() throws Exception {
       runGeneralLoadingTest("My Completed", TeamWorkFlowArtifact.class, 7, null);
+      runGeneralXColTest(17);
       runGeneralLoadingTest("My Completed", PeerToPeerReviewArtifact.class, 1, null);
       runGeneralLoadingTest("My Completed", DecisionReviewArtifact.class, 1, null);
+
    }
 
    public void testMyRecentlyVisited() throws Exception {
@@ -153,6 +174,47 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Teams", arts, TeamWorkFlowArtifact.class, 7);
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Tasks", arts, TaskArtifact.class,
             DemoDbTasks.getNumTasks());
+   }
+
+   public void testTeamWorkflowSearch() throws Exception {
+      WorldEditor.closeAll();
+      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
+      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorkflowSearchWorkflowSearchItem);
+      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Joe Smith", 7);
+      runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.UnReleased, 7);
+      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Kay Jones", 6);
+      runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Released, 0);
+      runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Both, 6);
+   }
+
+   public void runGeneralTeamWorkflowSearchTest(XNavigateItem item, int expectedNum) throws Exception {
+      WorldEditor editor = getSingleEditorOrFail();
+      editor.getActionPage().reSearch(true);
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      // validate
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), expectedNum, arts.size());
+   }
+
+   public void runGeneralTeamWorkflowSearchOnAssigneeTest(XNavigateItem item, String assignee, int expectedNum) throws Exception {
+      WorldEditor editor = getSingleEditorOrFail();
+      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).setSelectedUser(UserManager.getUserByName(assignee));
+      runGeneralTeamWorkflowSearchTest(item, expectedNum);
+   }
+
+   public void runGeneralTeamWorkflowSearchOnTeamTest(XNavigateItem item, String team, int expectedNum) throws Exception {
+      Set<TeamDefinitionArtifact> selectedUsers = null;
+      // need to set team selected users
+      WorldEditor editor = getSingleEditorOrFail();
+      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).setSelectedTeamDefinitions(selectedUsers);
+      runGeneralTeamWorkflowSearchTest(item, expectedNum);
+   }
+
+   public void runGeneralTeamWorkflowSearchOnReleasedTest(XNavigateItem item, ReleasedOption released, int expectedNum) throws Exception {
+      WorldEditor editor = getSingleEditorOrFail();
+      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).setSelectedReleased(released);
+      // simulate pushing the search button
+      runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
    public void testUserCommunitySearch() throws Exception {
@@ -228,6 +290,17 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 0);
    }
 
+   public void testAttributeDeletion() throws Exception {
+      Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
+      arts.clear();
+      NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
+      // delete an artifact, look for expected !Errors in the XCol
+      deleteAttributesForXColErrorTest(arts, "ats.Team Definition", "SAW Code");
+      deleteAttributesForXColErrorTest(arts, "ats.User Community", "Processes");
+      deleteAttributesForXColErrorTest(arts, "ats.Current State", "Problem");
+      deleteAttributesForXColErrorTest(arts, "ats.Priority", "1");
+   }
+
    public Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, Class<?> clazz, int numOfType, User user) throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem(xNavigateItemName);
       return runGeneralLoadingTest(item, clazz, numOfType, user);
@@ -259,11 +332,126 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       return arts;
    }
 
+   public void runGeneralXColTest(int itemCount) throws Exception {
+      int itemCnt, size = 0;
+      XViewer xv = getXViewer();
+      xv.expandAll();
+      itemCnt = xv.getVisibleItemCount(xv.getTree().getItems());
+      NavigateTestUtil.testExpectedVersusActual("Item Count - ", itemCount, itemCnt);
+      // show all columns
+      handleTableCustomization();
+      size = getXViewer().getCustomizeMgr().getCurrentTableColumns().size();
+      NavigateTestUtil.testExpectedVersusActual("Column Count - ", 109, size);
+      runGeneralXColTest(itemCount, false, "", false);
+   }
+
+   public void runGeneralXColTest(int expected, boolean isErrorCheck, String attributeToDelete, boolean testTaskTab) throws OseeCoreException {
+      List<Artifact> arts = new ArrayList<Artifact>();
+      List<XViewerColumn> columns = getXViewer().getCustomizeMgr().getCurrentTableColumns();
+      ITableLabelProvider labelProv = (ITableLabelProvider) getXViewer().getLabelProvider();
+      // want to check all valid children
+      NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
+      NavigateTestUtil.testExpectedVersusActual("Number of Artifacts - ", expected, arts.size());
+      // are we running the fault case?
+      if (testTaskTab) {
+
+      } else if (isErrorCheck)
+         verifyXColumnsHasErrors(labelProv, arts, columns, attributeToDelete);
+      else
+         verifyXColumns(labelProv, arts, columns);
+   }
+
    public WorldEditor getSingleEditorOrFail() throws OseeCoreException {
       // Retrieve results from opened editor and test
       Collection<WorldEditor> editors = WorldEditor.getEditors();
       assertTrue("Expecting 1 editor open, currently " + editors.size(), editors.size() == 1);
 
       return editors.iterator().next();
+   }
+
+   public WorldXViewer getXViewer() throws OseeCoreException {
+      return getSingleEditorOrFail().getWorldComposite().getXViewer();
+   }
+
+   public void handleTableCustomization() throws OseeCoreException {
+      // add all columns
+      CustomizeDemoTableTestUtil cdialog = new CustomizeDemoTableTestUtil(getXViewer());
+      cdialog.createDialogArea(getSingleEditorOrFail().getWorldComposite());
+      cdialog.handleAddAllItemButtonClick();
+   }
+
+   public void deleteAttributesForXColErrorTest(Collection<Artifact> arts, String attributeToDelete, String attributeValue) throws Exception {
+      getXViewer().expandAll();
+      handleTableCustomization();
+      // select a workflow artifact; get its attributes; delete an attribute
+      for (Artifact art : arts) {
+         art.deleteSoleAttribute(attributeToDelete);
+      }
+      runGeneralXColTest(20, true, attributeToDelete, false);
+      // restore the attribute to leave the demo db back in its original state
+      for (Artifact art : arts) {
+         art.addAttributeFromString(attributeToDelete, attributeValue);
+      }
+   }
+
+   public void verifyTaskTabXColumns(List<Artifact> arts) throws OseeCoreException {
+      List<Artifact> tasks = new ArrayList<Artifact>();
+      for (Artifact art : arts) {
+         if (art.getHumanReadableId().equals("Q1J8M") || art.getHumanReadableId().equals("XBBMF")) {
+            AtsLib.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+
+         }
+      }
+
+   }
+
+   public void verifyXColumnsHasErrors(ITableLabelProvider labelProv, List<Artifact> arts, List<XViewerColumn> columns, String attributeToDelete) throws OseeCoreException {
+      List<String> actualErrorCols = new ArrayList<String>();
+      for (XViewerColumn xCol : columns) {
+         verifyArtifactsHasErrors(labelProv, arts, xCol, getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(
+               xCol), attributeToDelete, actualErrorCols);
+      }
+      if (!attributeToDelete.equals("ats.Current State") && !attributeToDelete.equals("ats.Priority"))
+         verifyXCol1HasErrors(actualErrorCols);
+      else
+         verifyXCol2HasErrors(actualErrorCols);
+   }
+
+   public void verifyXCol1HasErrors(List<String> actualErrorCols) {
+      int index = 0;
+      for (String col : actualErrorCols) {
+         NavigateTestUtil.testExpectedVersusActual("Expected xCol errors", true,
+               NavigateTestUtil.expectedErrorCols1[index++].equals(col));
+      }
+   }
+
+   public void verifyXCol2HasErrors(List<String> actualErrorCols) {
+      int index = 0;
+      for (String col : actualErrorCols) {
+         NavigateTestUtil.testExpectedVersusActual("Expected xCol errors", true,
+               NavigateTestUtil.expectedErrorCols2[index++].equals(col));
+      }
+   }
+
+   public void verifyXColumns(ITableLabelProvider labelProv, Collection<Artifact> arts, List<XViewerColumn> columns) throws OseeCoreException {
+      for (XViewerColumn xCol : columns) {
+         verifyArtifact(labelProv, arts, getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
+      }
+   }
+
+   public void verifyArtifact(ITableLabelProvider labelProv, Collection<Artifact> arts, int colIndex) {
+      for (Artifact art : arts) {
+         String colText = labelProv.getColumnText(art, colIndex);
+         NavigateTestUtil.testExpectedVersusActual("No Error in XCol expected", true, !colText.contains("!Error"));
+      }
+   }
+
+   public void verifyArtifactsHasErrors(ITableLabelProvider labelProv, Collection<Artifact> arts, XViewerColumn xCol, int colIndex, String attributeToDelete, List<String> actualErrorCols) {
+      for (Artifact art : arts) {
+         String colText = labelProv.getColumnText(art, colIndex);
+         if (art.getArtifactTypeName().equals("Demo Code Team Workflow")) {
+            if (colText.contains("!Error")) if (!actualErrorCols.contains(xCol.getId())) actualErrorCols.add(xCol.getId());
+         }
+      }
    }
 }

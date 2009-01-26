@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
+import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -174,6 +175,10 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return assigneeCombo.getUser();
    }
 
+   public void setSelectedUser(User user) {
+      if (assigneeCombo != null) assigneeCombo.set(user);
+   }
+
    private boolean isIncludeCompletedCancelledCheckbox() {
       if (includeCompletedCancelledCheckbox == null) return false;
       return includeCompletedCancelledCheckbox.isSelected();
@@ -201,11 +206,19 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return teamCombo.getSelectedTeamDefintions();
    }
 
+   public void setSelectedTeamDefinitions(Set<TeamDefinitionArtifact> selectedUsers) {
+      if (teamCombo != null) teamCombo.setSelectedTeamDefs(selectedUsers);
+   }
+
    private ReleasedOption getSelectedReleased() throws OseeCoreException {
       if (releasedCombo == null || releasedCombo.get() == null || releasedCombo.get().equals("")) {
          return ReleasedOption.Both;
       }
       return ReleasedOption.valueOf(releasedCombo.get());
+   }
+
+   public void setSelectedReleased(ReleasedOption option) {
+      if (releasedCombo != null) releasedCombo.set(option.toString());
    }
 
    /* (non-Javadoc)
