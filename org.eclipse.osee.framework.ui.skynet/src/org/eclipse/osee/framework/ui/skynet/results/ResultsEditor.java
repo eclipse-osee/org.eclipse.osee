@@ -18,6 +18,7 @@ import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -73,6 +74,10 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
 
          IResultsEditorProvider provider = getResultsEditorProvider();
 
+         if (provider.getResultsEditorTabs().size() == 0) {
+            createHtmlTab(new ResultsEditorHtmlTab("Error",
+                  AHTML.simplePage("Error: No Pages Provided for \"" + provider.getEditorName() + "\"")));
+         }
          for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
             if (tab instanceof IResultsEditorChartTab) {
                createChartTab((IResultsEditorChartTab) tab);
