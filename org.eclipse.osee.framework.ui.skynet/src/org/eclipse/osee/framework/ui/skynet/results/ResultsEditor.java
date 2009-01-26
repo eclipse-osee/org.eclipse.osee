@@ -160,7 +160,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       }
 
       int chartPageIndex = addPage(chartComposite);
-      if (chart != null) {
+      if (startPage != null) {
          startPage = chartPageIndex;
       }
       setPageText(chartPageIndex, tab.getTabName());
@@ -201,7 +201,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       if (startPage == null) {
          startPage = tablePageIndex;
       }
-      setPageText(tablePageIndex, "Table");
+      setPageText(tablePageIndex, tab.getTabName());
    }
 
    /*
