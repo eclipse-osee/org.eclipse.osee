@@ -8,6 +8,8 @@ package org.eclipse.osee.ats.world;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -15,5 +17,13 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 public interface IAtsWorldEditorItem {
 
    public List<XViewerColumn> getXViewerColumns() throws OseeCoreException;
+
+   public boolean isXColumnProvider(XViewerColumn xCol) throws OseeCoreException;
+
+   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
+
+   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
+
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
 
 }

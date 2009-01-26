@@ -51,6 +51,12 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
             if (wva.isWorldViewDeadlineAlerting().isTrue()) return AtsPlugin.getInstance().getImage("warn.gif");
          }
+         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+            if (item.isXColumnProvider(xCol)) {
+               Image image = item.getColumnImage(element, xCol, columnIndex);
+               if (image != null) return image;
+            }
+         }
       } catch (Exception ex) {
          // do nothing
       }
@@ -65,6 +71,12 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             TaskResOptionDefinition def = taskArt.getTaskResolutionOptionDefinition(taskArt.getWorldViewResolution());
             if (def != null) {
                return Display.getCurrent().getSystemColor(def.getColorInt());
+            }
+         }
+         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+            if (item.isXColumnProvider(xCol)) {
+               Color color = item.getForeground(element, xCol, columnIndex);
+               if (color != null) return color;
             }
          }
       } catch (Exception ex) {
@@ -147,7 +159,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Review_Moderator_Col)) return wva.getWorldViewReviewModerator();
          if (xCol.equals(WorldXViewerFactory.Review_Reviewer_Col)) return wva.getWorldViewReviewReviewer();
          if (xCol.equals(WorldXViewerFactory.Review_Decider_Col)) return wva.getWorldViewReviewDecider();
-         if (xCol.equals(WorldXViewerFactory.SW_Enhancement_Col)) return wva.getWorldViewSWEnhancement();
          if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) return AtsLib.doubleToStrString(
                wva.getWorldViewWeeklyBenefit(), true);
          if (xCol.equals(WorldXViewerFactory.Annual_Cost_Avoidance_Col)) {
@@ -159,6 +170,12 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             Result result = wva.isWorldViewManDaysNeededValid();
             if (result.isFalse()) return result.getText();
             return AtsLib.doubleToStrString(wva.getWorldViewManDaysNeeded());
+         }
+         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+            if (item.isXColumnProvider(xCol)) {
+               String text = item.getColumnText(element, xCol, columnIndex);
+               if (text != null) return text;
+            }
          }
 
          return "Unhandled Column";

@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -232,7 +231,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          return getTeamDefinition().getDescriptiveName();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return XViewerCells.getCellExceptionString(ex);         
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -593,11 +592,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          return getSmaMgr().getBranchMgr().getWorkingBranch();
       }
       return null;
-   }
-
-   @Override
-   public String getWorldViewSWEnhancement() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.SW_ENHANCEMENT_ATTRIBUTE.getStoreName(), "");
    }
 
 }

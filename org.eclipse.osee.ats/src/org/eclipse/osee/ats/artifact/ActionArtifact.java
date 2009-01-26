@@ -1235,18 +1235,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewSWEnhancement()
-    */
-   @Override
-   public String getWorldViewSWEnhancement() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewSWEnhancement());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewTargetedVersion()
     */
    @Override
