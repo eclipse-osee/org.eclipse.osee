@@ -52,16 +52,21 @@ public class PopulateInspectReggieDialog extends Job {
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       try {
-         this.getThread().setContextClassLoader(ExportClassLoader.getInstance());
-         ServiceMatches serviceMatches = reggie.lookup(new ServiceTemplate(null, null, null), Integer.MAX_VALUE);
-         final ServiceItem[] serviceItemArray = serviceMatches.items;
-         Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-               for (ServiceItem item : serviceItemArray) {
-                  serviceTreeBuilder.serviceAdded(item);
-               }
-            }
-         });
+    	  ClassLoader currentContext = this.getThread().getContextClassLoader();
+          try{
+        	  this.getThread().setContextClassLoader(ExportClassLoader.getInstance());
+    	         ServiceMatches serviceMatches = reggie.lookup(new ServiceTemplate(null, null, null), Integer.MAX_VALUE);
+    	         final ServiceItem[] serviceItemArray = serviceMatches.items;
+    	         Display.getDefault().asyncExec(new Runnable() {
+    	            public void run() {
+    	               for (ServiceItem item : serviceItemArray) {
+    	                  serviceTreeBuilder.serviceAdded(item);
+    	               }
+    	            }
+    	         });
+          } finally{
+        	  this.getThread().setContextClassLoader(currentContext);
+          }  
          return Status.OK_STATUS;
       } catch (RemoteException ex) {
          try {
