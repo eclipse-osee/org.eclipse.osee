@@ -257,8 +257,9 @@ public class XListViewer extends XWidget {
       ArrayList<Object> selected = new ArrayList<Object>();
       IStructuredSelection selection = (IStructuredSelection) listViewer.getSelection();
       Iterator i = selection.iterator();
-      while (i.hasNext())
+      while (i.hasNext()) {
          selected.add(i.next());
+      }
       return selected;
    }
 

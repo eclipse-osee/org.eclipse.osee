@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -31,17 +29,11 @@ public class ArtifactTypeContentProvider implements ITreeContentProvider {
 
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Branch) {
-         ArrayList<Object> descriptors = new ArrayList<Object>();
-
          try {
-            for (ArtifactType descriptor : TypeValidityManager.getValidArtifactTypes((Branch) parentElement)) {
-               descriptors.add((Object) descriptor);
-            }
+            return TypeValidityManager.getValidArtifactTypes((Branch) parentElement).toArray();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-
          }
-         return descriptors.toArray();
       }
       return null;
    }

@@ -187,11 +187,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       builder.append(txsAlias);
       builder.append(".gamma_id AND ");
 
-      if (historical) {
-         builder.addBranchTxSql(txsAlias, txdAlias);
-      } else {
-         builder.addCurrentTxSql(txsAlias, txdAlias);
-      }
+      builder.addTxSql(txsAlias, txdAlias, historical);
    }
 
    /* (non-Javadoc)

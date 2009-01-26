@@ -8,13 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.blam.operation;
+package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -41,32 +41,31 @@ public class ChangeArtifactType extends AbstractBlam {
    private List<RelationLink> relationsToDelete;
 
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      processChange(variableMap.getArtifacts("artifacts"),
-            variableMap.getArtifactType("New Artifact Type"));
+      processChange(variableMap.getArtifacts("artifacts"), variableMap.getArtifactType("New Artifact Type"));
    }
 
    /**
     * Changes the descriptor of the artifacts to the provided artifact descriptor
     * 
     * @param artifacts
-    * @param descriptor
+    * @param artifactType
     */
-   private void processChange(List<Artifact> artifacts, ArtifactType descriptor) throws Exception {
+   public void processChange(Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
       if (artifacts.isEmpty()) {
-         throw new IllegalArgumentException("The artifact list can not be empty");
+         throw new OseeArgumentException("The artifact list can not be empty");
       }
 
       for (Artifact artifact : artifacts) {
-         processAttributes(artifact, descriptor);
-         processRelations(artifact, descriptor);
+         processAttributes(artifact, artifactType);
+         processRelations(artifact, artifactType);
 
-         if (doesUserAcceptArtifactChange(artifact, descriptor)) {
-            changeArtifactType(artifact, descriptor);
+         if (doesUserAcceptArtifactChange(artifact, artifactType)) {
+            changeArtifactType(artifact, artifactType);
          }
       }
 
       // Kick Local and Remote Events
-      OseeEventManager.kickArtifactsChangeTypeEvent(this, descriptor.getArtTypeId(), new LoadedArtifacts(artifacts));
+      OseeEventManager.kickArtifactsChangeTypeEvent(this, artifactType.getArtTypeId(), new LoadedArtifacts(artifacts));
    }
 
    /**
@@ -154,10 +153,10 @@ public class ChangeArtifactType extends AbstractBlam {
     * Sets the artifact descriptor.
     * 
     * @param artifact
-    * @param descriptor
+    * @param artifactType
     * @throws OseeCoreException
     */
-   private void changeArtifactType(Artifact artifact, ArtifactType descriptor) throws OseeCoreException {
+   private void changeArtifactType(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
       for (Attribute<?> attribute : attributesToPurge) {
          attribute.purge();
       }
@@ -166,7 +165,7 @@ public class ChangeArtifactType extends AbstractBlam {
          relation.delete(true);
       }
 
-      artifact.changeArtifactType(descriptor);
+      artifact.changeArtifactType(artifactType);
    }
 
    /*

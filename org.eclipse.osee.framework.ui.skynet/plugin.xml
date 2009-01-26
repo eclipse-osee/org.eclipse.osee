@@ -1284,4 +1284,12 @@
           name="Word Diffing">
     </page>
  </extension>
+  <extension
+       id="PurgeArtifactType"
+       name="PurgeArtifactType"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeArtifactType">
+    </Operation>
+ </extension>
 </plugin>

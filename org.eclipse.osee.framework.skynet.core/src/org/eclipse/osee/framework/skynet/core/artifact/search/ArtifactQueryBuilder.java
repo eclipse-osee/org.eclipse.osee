@@ -91,8 +91,8 @@ public class ArtifactQueryBuilder {
       this(null, 0, null, ensureValid(guidOrHrid), null, branch, allowDeleted, loadLevel, true);
    }
 
-   public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, true);
+   public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, allowDeleted, loadLevel, true);
    }
 
    public ArtifactQueryBuilder(Collection<ArtifactType> artifactTypes, Branch branch, ArtifactLoad loadLevel) {
@@ -295,14 +295,7 @@ public class ArtifactQueryBuilder {
       }
 
       sql.append(" AND ");
-      sql.append(txsAlias);
-      sql.append(".transaction_id=");
-      sql.append(txdAlias);
-      sql.append(".transaction_id");
-      sql.append(" AND ");
-      sql.append(txdAlias);
-      sql.append(".branch_id=?");
-      addParameter(branch.getBranchId());
+      addBranchTxSql(txsAlias, txdAlias);
 
       List<String> paramList = new ArrayList<String>();
       paramList.add(OseeSql.isHintsAllowed() ? ClientSessionManager.getSQL(OseeSql.QUERY_BUILDER_HINT) : "");
@@ -324,26 +317,30 @@ public class ArtifactQueryBuilder {
       queryParameters.add(data);
    }
 
-   public void addCurrentTxSql(String txsAlias, String txdAlias) {
-      addTxSql(txsAlias, txdAlias, branch, true);
-   }
-
-   public void addBranchTxSql(String txsAlias, String txdAlias) {
-      addTxSql(txsAlias, txdAlias, branch, false);
-   }
-
-   private void addTxSql(String txsAlias, String txdAlias, Branch branch, boolean current) {
-      if (current) {
-         sql.append(txsAlias);
-         sql.append(".tx_current=1 AND ");
+   public void addTxSql(String txsAlias, String txdAlias, boolean historical) {
+      if (!historical) {
+         addCurrentTxSql(txsAlias);
       }
+      addBranchTxSql(txsAlias, txdAlias);
+      sql.append(" AND ");
+   }
+
+   private void addCurrentTxSql(String txsAlias) {
+      sql.append(txsAlias);
+      sql.append(".tx_current=1 AND ");
+   }
+
+   private void addBranchTxSql(String txsAlias, String txdAlias) {
       sql.append(txsAlias);
       sql.append(".transaction_id=");
       sql.append(txdAlias);
-      sql.append(".transaction_id AND ");
-      sql.append(txdAlias);
-      sql.append(".branch_id=? AND ");
-      addParameter(branch.getBranchId());
+      sql.append(".transaction_id");
+      if (branch != null) {
+         sql.append(" AND ");
+         sql.append(txdAlias);
+         sql.append(".branch_id=?");
+         addParameter(branch.getBranchId());
+      }
    }
 
    public String appendAliasedTable(String table) {

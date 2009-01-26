@@ -301,4 +301,30 @@ public class ArtifactTypeManager {
    private URL getUrl(Pair<String, String> location) {
       return Platform.getBundle(location.getKey()).getEntry(location.getValue());
    }
+
+   private static final String DELETE_VALID_REL = "delete from osee_valid_relations where art_type_id = ?";
+   private static final String DELETE_VALID_ATTRIBUTE = "delete from osee_valid_attributes where art_type_id = ?";
+   private static final String COUNT_ARTIFACT_OCCURRENCE =
+         "select count(1) AS artCount FROM osee_artifact where art_type_id = ?";
+   private static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
+
+   public static void purgeArtifactType(ArtifactType artifactType) throws Exception {
+      int artTypeId = artifactType.getArtTypeId();
+
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+
+      try {
+         chStmt.runPreparedQuery(COUNT_ARTIFACT_OCCURRENCE, artTypeId);
+         if (chStmt.next() && chStmt.getInt("artCount") != 0) {
+            throw new IllegalArgumentException(
+                  "Can not delete artifact type " + artifactType.getName() + " because there are " + chStmt.getInt("artCount") + " existing artifacts of this type.");
+         }
+      } finally {
+         chStmt.close();
+      }
+
+      ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, artTypeId);
+      ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, artTypeId);
+      ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE, artTypeId);
+   }
 }

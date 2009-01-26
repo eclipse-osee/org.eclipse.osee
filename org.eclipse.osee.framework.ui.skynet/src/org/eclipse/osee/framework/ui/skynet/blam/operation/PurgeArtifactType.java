@@ -10,50 +10,58 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Ryan D. Brooks
  */
 public class PurgeArtifactType extends AbstractBlam {
-   public static final String DELETE_VALID_REL = "delete from osee_valid_relations where art_type_id = ?";
-   public static final String DELETE_VALID_ATTRIBUTE = "delete from osee_valid_attributes where art_type_id = ?";
-   public static final String COUNT_ARTIFACT_OCCURRENCE =
-         "select count(1) AS artCount FROM osee_artifact where art_type_id = ?";
-   public static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      ArtifactType artType = variableMap.getArtifactType("Artifact Type");
-      int artTypeId = artType.getArtTypeId();
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      Collection<ArtifactType> purgeArtifactTypes =
+            variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to purge");
+      ArtifactType newArtifactType = variableMap.getArtifactType("New Artifact Type");
 
-      try {
-         chStmt.runPreparedQuery(COUNT_ARTIFACT_OCCURRENCE, artTypeId);
-         if (chStmt.next() && chStmt.getInt("artCount") != 0) {
-            throw new IllegalArgumentException(
-                  "Can not delete artifact type " + artType.getName() + " because there are " + chStmt.getInt("artCount") + " existing artifacts of this type.");
+      for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
+         // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
+         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(purgeArtifactType, true);
+         if (artifacts.size() > 0) {
+            HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
+            for (Artifact artifact : artifacts) {
+               artifactMap.put(artifact.getArtId(), artifact);
+            }
+            new ChangeArtifactType().processChange(artifactMap.values(), newArtifactType);
          }
-      } finally {
-         chStmt.close();
+         ArtifactTypeManager.purgeArtifactType(purgeArtifactType);
       }
+   }
 
-      ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, artTypeId);
-      ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, artTypeId);
-      ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE, artTypeId);
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    */
+   @Override
+   public String getXWidgetsXml() {
+      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type(s) to purge\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
     */
-   public String getXWidgetsXml() {
-      return "<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" />";
+   @Override
+   public String getDescriptionUsage() {
+      return "Purge an artifact type.  Will find artifacts (if any) of this type on all branches and switch their type to the specified type.  Then purge the artifact type ";
    }
 }

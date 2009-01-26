@@ -12,10 +12,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
@@ -24,24 +26,18 @@ public abstract class XTypeListViewer extends XListViewer {
 
    public XTypeListViewer(String name) {
       super(name);
-
       setLabelProvider(new LabelProvider());
       setSorter(new ViewerSorter());
    }
 
    public Branch resolveBranch(String keyedBranchName) {
-      Branch branch = null;
       try {
          if (keyedBranchName != null) {
-            branch = BranchManager.getKeyedBranch(keyedBranchName);
+            return BranchManager.getKeyedBranch(keyedBranchName);
          }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-
-      if (branch == null) {
-         branch = BranchManager.getDefaultBranch();
-      }
-      return branch;
+      return BranchManager.getDefaultBranch();
    }
 }

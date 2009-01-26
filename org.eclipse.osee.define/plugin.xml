@@ -78,7 +78,7 @@
       <extension
             id="ChangeArtifactType"
             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.define.blam.operation.ChangeArtifactType"/>
+         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactType"/>
       </extension>
       <extension
             id="CheckValidAttributeTypes"

@@ -180,8 +180,16 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName, attributeValue)).getArtifact();
    }
 
+   public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, boolean allowDeleted) throws OseeCoreException {
+      return getArtifactsFromType(artifactType, null, allowDeleted);
+   }
+
+   public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactType, branch, FULL, allowDeleted).getArtifacts(1000, null);
+   }
+
    public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, Branch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(artifactType, branch, FULL).getArtifacts(1000, null);
+      return getArtifactsFromType(artifactType, branch, false);
    }
 
    public static List<Artifact> getArtifactsFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {

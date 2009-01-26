@@ -81,7 +81,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
       builder.append(txsAlias);
       builder.append(".gamma_id AND ");
 
-      builder.addCurrentTxSql(txsAlias, txdAlias);
+      builder.addTxSql(txsAlias, txdAlias, false);
    }
 
    /* (non-Javadoc)
