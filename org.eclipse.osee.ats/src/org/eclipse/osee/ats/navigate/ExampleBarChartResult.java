@@ -1,6 +1,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.birt.chart.model.ChartWithAxes;
 import org.eclipse.birt.chart.model.attribute.Anchor;
@@ -27,7 +28,10 @@ import org.eclipse.birt.chart.model.type.impl.BarSeriesImpl;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
+import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditorChartTab;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -50,28 +54,30 @@ public class ExampleBarChartResult extends XNavigateItemAction {
       ResultsEditor.open(new IResultsEditorProvider() {
 
          @Override
-         public Chart getChart() throws OseeCoreException {
-            return createMyChart();
-         }
-
-         @Override
-         public String getName() throws OseeCoreException {
+         public String getEditorName() throws OseeCoreException {
             return "Example Bar Chart";
          }
 
          @Override
-         public String getReportHtml() throws OseeCoreException {
-            StringBuffer sb = new StringBuffer();
-            sb.append("Example Bar Chart Data");
-            sb.append(AHTML.beginMultiColumnTable(95, 1));
-            sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
-            for (int x = 0; x < 3; x++)
-               sb.append(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
-            sb.append(AHTML.endMultiColumnTable());
-            return AHTML.simplePage(sb.toString());
+         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            tabs.add(new ResultsEditorChartTab("Chart", createMyChart()));
+            tabs.add(getReportHtmlTab());
+            return null;
          }
 
       });
+   }
+
+   private IResultsEditorTab getReportHtmlTab() {
+      StringBuffer sb = new StringBuffer();
+      sb.append("Example Bar Chart Data");
+      sb.append(AHTML.beginMultiColumnTable(95, 1));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
+      for (int x = 0; x < 3; x++)
+         sb.append(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
+      sb.append(AHTML.endMultiColumnTable());
+      return new ResultsEditorHtmlTab("Report", AHTML.simplePage(sb.toString()));
    }
 
    public static Chart createMyChart() {
