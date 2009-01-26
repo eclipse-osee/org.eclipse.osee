@@ -11,12 +11,10 @@
 package org.eclipse.osee.framework.ui.service.control.dialogs;
 
 import java.rmi.RemoteException;
-
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceTemplate;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -51,23 +49,20 @@ public class PopulateInspectReggieDialog extends Job {
 
    @Override
    protected IStatus run(IProgressMonitor monitor) {
+      IStatus status = Status.CANCEL_STATUS;
+      ClassLoader loader = this.getThread().getContextClassLoader();
       try {
-    	  ClassLoader currentContext = this.getThread().getContextClassLoader();
-          try{
-        	  this.getThread().setContextClassLoader(ExportClassLoader.getInstance());
-    	         ServiceMatches serviceMatches = reggie.lookup(new ServiceTemplate(null, null, null), Integer.MAX_VALUE);
-    	         final ServiceItem[] serviceItemArray = serviceMatches.items;
-    	         Display.getDefault().asyncExec(new Runnable() {
-    	            public void run() {
-    	               for (ServiceItem item : serviceItemArray) {
-    	                  serviceTreeBuilder.serviceAdded(item);
-    	               }
-    	            }
-    	         });
-          } finally{
-        	  this.getThread().setContextClassLoader(currentContext);
-          }  
-         return Status.OK_STATUS;
+         this.getThread().setContextClassLoader(ExportClassLoader.getInstance());
+         ServiceMatches serviceMatches = reggie.lookup(new ServiceTemplate(null, null, null), Integer.MAX_VALUE);
+         final ServiceItem[] serviceItemArray = serviceMatches.items;
+         Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+               for (ServiceItem item : serviceItemArray) {
+                  serviceTreeBuilder.serviceAdded(item);
+               }
+            }
+         });
+         status = Status.OK_STATUS;
       } catch (RemoteException ex) {
          try {
             displayMessage("Reggie Lookup Error", String.format("Error searching for services in [%s:%s] reggie.\n%s",
@@ -76,8 +71,10 @@ public class PopulateInspectReggieDialog extends Job {
             displayMessage("Reggie Lookup Error", String.format("Unable to access selected the selected reggie.\n%s",
                   ControlPlugin.getStackMessages(ex)));
          }
+      } finally {
+         this.getThread().setContextClassLoader(loader);
       }
-      return Status.CANCEL_STATUS;
+      return status;
    }
 
    private void displayMessage(final String title, final String message) {

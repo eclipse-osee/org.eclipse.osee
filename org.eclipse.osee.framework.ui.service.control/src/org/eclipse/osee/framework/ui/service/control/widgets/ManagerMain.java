@@ -194,27 +194,33 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
    }
 
    private void registerServiceRenderers() {
-      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+      ClassLoader loader = Thread.currentThread().getContextClassLoader();
+      try {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
 
-      Map<String, String> interfaceToRenderer = contributionManager.getInterfaceToRendererMap();
-      for (String interfaceName : interfaceToRenderer.keySet()) {
-         String serviceRenderer = interfaceToRenderer.get(interfaceName);
-
-         try {
-            Class<?> interfaceClass = contributionManager.loadClass(interfaceName);
-            Class<?> rendererClass = contributionManager.loadClass(serviceRenderer);
+         Map<String, String> interfaceToRenderer = contributionManager.getInterfaceToRendererMap();
+         for (String interfaceName : interfaceToRenderer.keySet()) {
+            String serviceRenderer = interfaceToRenderer.get(interfaceName);
             try {
-               Object renderer = rendererClass.newInstance();
-               connectionManager.registerForConnection(interfaceClass, (IServiceRenderer) renderer);
-               stackedViewer.addControl(interfaceClass.getCanonicalName(), (IRenderer) renderer);
-            } catch (InstantiationException ex) {
-               OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: Instantiation Error.\n", ex);
-            } catch (IllegalAccessException ex) {
-               OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: IllegalAccess Error.\n", ex);
+               Class<?> interfaceClass = contributionManager.loadClass(interfaceName);
+               Class<?> rendererClass = contributionManager.loadClass(serviceRenderer);
+               try {
+                  Object renderer = rendererClass.newInstance();
+                  connectionManager.registerForConnection(interfaceClass, (IServiceRenderer) renderer);
+                  stackedViewer.addControl(interfaceClass.getCanonicalName(), (IRenderer) renderer);
+               } catch (InstantiationException ex) {
+                  OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: Instantiation Error.\n",
+                        ex);
+               } catch (IllegalAccessException ex) {
+                  OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: IllegalAccess Error.\n",
+                        ex);
+               }
+            } catch (ClassNotFoundException ex) {
+               OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: ClassNotFound Error.\n", ex);
             }
-         } catch (ClassNotFoundException ex) {
-            OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: ClassNotFound Error.\n", ex);
          }
+      } finally {
+         Thread.currentThread().setContextClassLoader(loader);
       }
    }
 

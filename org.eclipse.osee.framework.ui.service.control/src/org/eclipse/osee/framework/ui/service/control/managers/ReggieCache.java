@@ -57,9 +57,16 @@ public class ReggieCache implements DiscoveryListener {
       serviceRegistrars = Collections.synchronizedMap(new HashMap<ServiceID, ServiceRegistrar>());
       locators = Collections.synchronizedSet(new HashSet<String>());
 
-      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-      System.setSecurityManager(new RelaxedSecurity());
-      registerWithJINI();
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      SecurityManager securityManager = System.getSecurityManager();
+      try {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+         System.setSecurityManager(new RelaxedSecurity());
+         registerWithJINI();
+      } finally {
+         Thread.currentThread().setContextClassLoader(classLoader);
+         System.setSecurityManager(securityManager);
+      }
    }
 
    private void registerWithJINI() {
@@ -94,13 +101,14 @@ public class ReggieCache implements DiscoveryListener {
 
       public LookupList(String[] lookupLocations) {
          this.lookupLocations = lookupLocations;
-         System.setSecurityManager(new RelaxedSecurity());
       }
 
       public void run() {
-         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-         System.setSecurityManager(new RelaxedSecurity());
+         ClassLoader loader = Thread.currentThread().getContextClassLoader();
+         SecurityManager securityManager = System.getSecurityManager();
          try {
+            Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+            System.setSecurityManager(new RelaxedSecurity());
             if (lookupLocations != null) {
                LookupLocator[] locators = new LookupLocator[lookupLocations.length];
                for (int i = 0; i < locators.length; i++) {
@@ -121,6 +129,9 @@ public class ReggieCache implements DiscoveryListener {
             }
          } catch (MalformedURLException ex) {
             OseeLog.log(ControlPlugin.class, Level.SEVERE, ex.getMessage(), ex);
+         } finally {
+            Thread.currentThread().setContextClassLoader(loader);
+            System.setSecurityManager(securityManager);
          }
       }
    }
@@ -210,20 +221,31 @@ public class ReggieCache implements DiscoveryListener {
    }
 
    public ServiceMatches lookupAllServices(ServiceRegistrar reggie) throws RemoteException {
-      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-      ServiceTemplate st = new ServiceTemplate(null, null, null);
-      return reggie.lookup(st, Integer.MAX_VALUE);
+      ServiceMatches matches = null;
+      ClassLoader loader = Thread.currentThread().getContextClassLoader();
+      try {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+         ServiceTemplate st = new ServiceTemplate(null, null, null);
+         matches = reggie.lookup(st, Integer.MAX_VALUE);
+      } finally {
+         Thread.currentThread().setContextClassLoader(loader);
+      }
+      return matches;
    }
 
    public void addLookupLocators(String[] lookups) {
-      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-      for (int i = 0; i < lookups.length; i++) {
-         locators.add(lookups[i]);
-      }
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      try {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+         for (int i = 0; i < lookups.length; i++) {
+            locators.add(lookups[i]);
+         }
 
-      Thread thread = new LookupList(lookups);
-      thread.setContextClassLoader(ExportClassLoader.getInstance());
-      thread.start();
+         Thread thread = new LookupList(lookups);
+         thread.start();
+      } finally {
+         Thread.currentThread().setContextClassLoader(classLoader);
+      }
    }
 
    public void terminate() {
