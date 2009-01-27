@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -88,7 +88,7 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
                   modifiedWordArtifactSelected && artifactChange.getChangeType() == ChangeType.CONFLICTING;
             isEnabled = readPermission && conflictedWordArtifactSelected;
          } catch (Exception ex) {
-            OSEELog.logException(getClass(), ex, true);
+            OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return isEnabled;

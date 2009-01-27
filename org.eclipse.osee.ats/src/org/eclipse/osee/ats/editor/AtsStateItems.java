@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.osgi.framework.Bundle;
 
 /**
@@ -47,7 +47,7 @@ public class AtsStateItems {
       if (stateItems.size() > 0) return;
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsStateItem");
       if (point == null) {
-         OSEELog.logSevere(AtsPlugin.class, "Can't access AtsStateItem extension point", true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsStateItem extension point");
          return;
       }
       IExtension[] extensions = point.getExtensions();
@@ -65,13 +65,13 @@ public class AtsStateItems {
                      Class taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
                      if (obj == null) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, 
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE,
                               "Error Instantiating AtsStateItem extension \"" + classname + "\"", null);
                      } else {
                         stateItems.add((IAtsStateItem) obj);
                      }
                   } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, "Error loading AtsStateItem extension", ex, true);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsStateItem extension", ex);
                   }
                }
             }

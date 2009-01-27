@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.navigate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -26,10 +27,11 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -101,7 +103,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                      });
                   }
                } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, false);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                   return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
                }
                return Status.OK_STATUS;
@@ -109,7 +111,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
          };
          Jobs.startJob(openJob);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
    }

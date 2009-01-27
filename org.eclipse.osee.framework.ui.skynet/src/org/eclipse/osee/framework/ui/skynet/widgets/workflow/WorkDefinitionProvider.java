@@ -9,9 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.osgi.framework.Bundle;
 
 /**
@@ -37,8 +38,8 @@ public class WorkDefinitionProvider {
                   Object obj = taskClass.newInstance();
                   workDefinitionProviders.add((IWorkDefinitionProvider) obj);
                } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, "Error loading WorkDefinitionProvider extension", ex,
-                        true);
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                        "Error loading WorkDefinitionProvider extension", ex);
                }
             }
 

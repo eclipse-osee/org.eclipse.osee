@@ -9,10 +9,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -150,7 +151,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
                resultsEditor.addResultsTab(new ResultsEditorHtmlTab(new XResultPage(filename, html,
                      Manipulations.RAW_HTML)));
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });

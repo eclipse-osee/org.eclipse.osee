@@ -16,11 +16,12 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -68,7 +69,7 @@ public class TeamVersionListDialog extends SelectionDialog {
          for (Artifact art : TeamDefinitionArtifact.getTeamReleaseableDefinitions(active))
             objs.add((Object) art);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       Composite comp = new Composite(container, SWT.NONE);
@@ -96,7 +97,7 @@ public class TeamVersionListDialog extends SelectionDialog {
                      objs.add((Object) pda);
                   versionCombo.setInput(objs);
                } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             };
          });
@@ -125,7 +126,7 @@ public class TeamVersionListDialog extends SelectionDialog {
                objs.add((Object) pda);
             versionCombo.setInput(objs);
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
 

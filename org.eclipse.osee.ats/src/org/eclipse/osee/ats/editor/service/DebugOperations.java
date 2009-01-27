@@ -18,11 +18,12 @@ import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts.OpenView;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -98,7 +99,7 @@ public class DebugOperations extends WorkPageService {
                else
                   AtsLib.open(hrid, OpenView.ArtifactEditor);
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -119,7 +120,7 @@ public class DebugOperations extends WorkPageService {
                   AtsLib.open(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getGuid(),
                         OpenView.ArtifactEditor);
                } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }

@@ -13,10 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
 import java.util.Date;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -70,7 +72,7 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
             Object object = ((Artifact) obj).getSoleAttributeValue(attributeName);
             if (object instanceof Date) date = (Date) object;
          } catch (Exception ex) {
-            OSEELog.logException(EmbeddedDateAttributeEditor.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       if (obj instanceof AttributeConflict) try {
@@ -79,7 +81,7 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
             date = (Date) object;
          }
       } catch (Exception ex) {
-         OSEELog.logException(EmbeddedDateAttributeEditor.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       editor = new EmbeddedDateEditor("Edit " + displayName, date);
@@ -116,7 +118,7 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
          }
          return true;
       } catch (Exception ex) {
-         OSEELog.logException(EmbeddedDateAttributeEditor.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       AWorkbench.popup("ERROR", "Could not store the attribute");
       return false;

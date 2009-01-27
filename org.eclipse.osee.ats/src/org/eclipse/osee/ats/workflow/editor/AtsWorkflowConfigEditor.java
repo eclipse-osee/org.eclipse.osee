@@ -40,6 +40,8 @@ import org.eclipse.osee.ats.workflow.editor.parts.ShapesEditPartFactory;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesTreeEditPartFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
@@ -50,7 +52,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.swt.widgets.Composite;
@@ -88,7 +89,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
                AWorkbench.getActivePage().openEditor(new AtsWorkflowConfigEditorInput(workflow),
                      AtsWorkflowConfigEditor.EDITOR_ID);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -181,7 +182,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
          getCommandStack().markSaveLocation();
 
       } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -321,7 +322,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
                }
             }
          } catch (OseeCoreException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
       } else {

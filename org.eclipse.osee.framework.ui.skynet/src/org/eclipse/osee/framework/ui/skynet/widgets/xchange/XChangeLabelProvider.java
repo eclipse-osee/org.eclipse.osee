@@ -15,9 +15,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
@@ -87,9 +88,9 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             try {
                return change.getItemKindImage();
             } catch (IllegalArgumentException ex) {
-               OSEELog.logException(XMergeContentProvider.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             } catch (Exception ex) {
-               OSEELog.logException(XMergeContentProvider.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          } else if (xCol.equals(ChangeXViewerFactory.Item_Type)) {
             return change.getItemTypeImage();

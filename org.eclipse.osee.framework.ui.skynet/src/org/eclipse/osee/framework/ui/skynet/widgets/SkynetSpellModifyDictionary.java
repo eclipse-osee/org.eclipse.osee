@@ -15,13 +15,14 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.IOseeDictionary;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -42,7 +43,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       try {
          return updateArtifact("Global", word, GlobalPreferences.get());
       } catch (OseeCoreException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -56,7 +57,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       try {
          return updateArtifact("Local", word, UserManager.getUser());
       } catch (OseeCoreException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
       }
    }
@@ -74,7 +75,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
             loadDictionary(true);
             return true;
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return false;
@@ -115,7 +116,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 }

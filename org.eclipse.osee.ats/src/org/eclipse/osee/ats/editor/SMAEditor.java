@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -66,7 +67,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -137,7 +137,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                transaction.execute();
                workFlowTab.refresh();
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             onDirtied();
          }
@@ -199,7 +199,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          return result;
 
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result(true, ex.getLocalizedMessage());
       }
    }
@@ -272,7 +272,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
          setActivePage(workFlowPageIndex);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       enableGlobalPrint();
@@ -344,7 +344,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                try {
                   smaMgr.getSma().persistAttributes();
                } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
@@ -517,7 +517,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                page.openEditor(new SMAEditorInput(sma), EDITOR_ID);
                VisitedItems.addVisited(sma);
             } catch (PartInitException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });

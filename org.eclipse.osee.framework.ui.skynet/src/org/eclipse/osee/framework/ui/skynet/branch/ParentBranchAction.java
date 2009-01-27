@@ -17,10 +17,11 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.NonBlankValidator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -57,7 +58,7 @@ public class ParentBranchAction extends Action {
          try {
             createNewParentBranch(dialog.getValue(), dialog.getValue());
          } catch (Exception ex) {
-            OSEELog.logException(getClass(), ex, true);
+            OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

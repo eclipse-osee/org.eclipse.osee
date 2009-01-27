@@ -11,10 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
@@ -36,7 +37,7 @@ public class XArtifactTypeListViewer extends XTypeListViewer {
             ArtifactType artifactType = ArtifactTypeManager.getType(defaultValue);
             setDefaultSelected(artifactType);
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

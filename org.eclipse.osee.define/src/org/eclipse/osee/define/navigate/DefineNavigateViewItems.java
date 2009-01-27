@@ -20,12 +20,12 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.health.BranchCommitRegressionTest;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
@@ -45,6 +45,7 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
       return navigateItems;
    }
 
+   @Override
    public List<XNavigateItem> getSearchNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
@@ -72,7 +73,9 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
    public void addExtensionPointItems(List<XNavigateItem> items) {
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.define.DefineNavigateItem");
-      if (point == null) OSEELog.logSevere(DefinePlugin.class, "Can't access DefineNavigateItem extension point", true);
+      if (point == null) {
+         OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Can't access DefineNavigateItem extension point");
+      }
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
@@ -92,7 +95,7 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
                IDefineNavigateItem task = (IDefineNavigateItem) obj;
                items.addAll(task.getNavigateItems());
             } catch (Exception ex) {
-               OSEELog.logException(DefinePlugin.class, "Error loading DefineNavigateItem extension", ex, true);
+               OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Error loading DefineNavigateItem extension", ex);
             }
          }
       }

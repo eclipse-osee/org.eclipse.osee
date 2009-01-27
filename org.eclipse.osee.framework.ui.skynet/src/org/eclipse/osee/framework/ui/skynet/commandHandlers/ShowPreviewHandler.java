@@ -16,11 +16,12 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Paul K. Waldfogel
@@ -50,7 +51,7 @@ public class ShowPreviewHandler extends AbstractHandler {
                selectedArtifact = mySelectedArtifactChange.getArtifact();
                ArtifactEditor.editArtifact(selectedArtifact);
             } catch (Exception ex) {
-               OSEELog.logException(getClass(), ex, true);
+               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
             }
          }
       }

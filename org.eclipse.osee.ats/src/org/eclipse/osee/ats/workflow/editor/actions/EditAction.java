@@ -19,10 +19,11 @@ import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 import org.eclipse.osee.ats.workflow.editor.parts.DiagramEditPart;
 import org.eclipse.osee.ats.workflow.editor.parts.WorkPageEditPart;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -97,7 +98,7 @@ public class EditAction extends Action {
             }
             AWorkbench.popup("ERROR", "Can't locate corresponding artifact");
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

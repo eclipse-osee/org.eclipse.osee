@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.io.File;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -20,7 +22,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -61,7 +62,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
                      new InputStreamImageDescriptor(imageFile.toURL().openStream());
                ArtifactTypeManager.updateArtifactTypeImage(artifactSubtypeDescriptor, imageDescriptor);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          };
       });

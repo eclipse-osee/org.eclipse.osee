@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
@@ -20,7 +22,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * Calls extensions to determine if artifacts are valid to delete.
@@ -53,12 +54,12 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
                Result result = check.isDeleteable(artifacts);
                if (result.isFalse()) rd.logError(result.getText());
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                rd.log("Exception occurred...see error log" + ex.getLocalizedMessage());
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       rd.log("\n");
       rd.log("Validation Complete - Any errors will be displayed.");

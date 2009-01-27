@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
@@ -132,8 +132,9 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
          if (parentArtifact instanceof StateMachineArtifact) {
             if (parentArtifact instanceof TeamWorkFlowArtifact)
                artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
-            else
-               OSEELog.logSevere(AtsPlugin.class, "Unknown parent " + art.getHumanReadableId(), true);
+            else {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unknown parent " + art.getHumanReadableId());
+            }
          }
       }
       return artifact;

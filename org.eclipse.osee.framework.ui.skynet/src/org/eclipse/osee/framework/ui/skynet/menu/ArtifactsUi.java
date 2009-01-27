@@ -15,11 +15,13 @@ import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
 import org.eclipse.search.ui.text.Match;
@@ -55,7 +57,7 @@ public class ArtifactsUi {
                   TreeViewerUtility.getPreorderSelection((TreeViewer) viewer, selectedItems);
                }
             } catch (Exception ex) {
-               OSEELog.logException(ArtifactsUi.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          } else {
             for (Object object : selection.toArray()) {

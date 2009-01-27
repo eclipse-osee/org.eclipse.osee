@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -94,7 +94,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       try {
          getParentActionArtifact().resetAttributesOffChildren(transaction);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't reset Action parent of children", ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't reset Action parent of children", ex);
       }
    }
 
@@ -154,7 +154,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          }
 
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return users;
    }
@@ -354,7 +354,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             toReturn = actionableItemsTx(AtsPlugin.getAtsBranch(), selectedAlias, null);
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          toReturn = Result.FalseResult;
       }
       return toReturn;

@@ -20,7 +20,8 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -47,9 +48,10 @@ public class OpenInAtsWorldOperation extends WorkPageService {
                   Arrays.asList(smaMgr.getSma())));
             return;
          }
-         OSEELog.logSevere(AtsPlugin.class, "Unhandled artifact type " + smaMgr.getSma().getArtifactTypeName(), true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+               "Unhandled artifact type " + smaMgr.getSma().getArtifactTypeName());
       } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

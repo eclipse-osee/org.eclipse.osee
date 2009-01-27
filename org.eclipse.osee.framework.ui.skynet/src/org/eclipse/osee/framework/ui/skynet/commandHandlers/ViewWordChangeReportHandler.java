@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -44,7 +44,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class ViewWordChangeReportHandler extends AbstractHandler {
-   private Map<Integer, ArtifactChange> artifactChangeMap = new HashMap<Integer, ArtifactChange>();
+   private final Map<Integer, ArtifactChange> artifactChangeMap = new HashMap<Integer, ArtifactChange>();
 
    /*
     * (non-Javadoc)
@@ -102,7 +102,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          renderer.compareArtifacts(baseArtifacts, newerArtifacts, new NullProgressMonitor(),
                instanceOfArtifact.getBranch(), PresentationType.DIFF);
       } catch (OseeCoreException e) {
-         OSEELog.logException(getClass(), e, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, e);
       }
       return null;
    }
@@ -133,7 +133,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             isEnabled = AccessControlManager.getInstance().checkObjectListPermission(artifacts, PermissionEnum.READ);
          }
       } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, true);
+         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       }
 
       return isEnabled;

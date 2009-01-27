@@ -23,10 +23,11 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -67,8 +68,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             VersionArtifact verArt = (VersionArtifact) ld.getResult()[0];
 
             // Validate team lead status
-            if (!AtsPlugin.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(
-                  UserManager.getUser())) {
+            if (!AtsPlugin.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(UserManager.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }
@@ -108,7 +108,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Error releasing version", ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error releasing version");
       }
    }
 
@@ -118,7 +118,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       try {
          ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));
       } catch (MultipleAttributesExist ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       int result = ld.open();
       if (result == 0) {

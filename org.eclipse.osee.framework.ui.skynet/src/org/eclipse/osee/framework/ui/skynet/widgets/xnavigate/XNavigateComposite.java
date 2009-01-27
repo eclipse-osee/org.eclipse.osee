@@ -14,8 +14,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -98,7 +99,7 @@ public class XNavigateComposite extends Composite {
             try {
                if (event.button == 1) handleDoubleClick();
             } catch (OseeCoreException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -111,7 +112,7 @@ public class XNavigateComposite extends Composite {
                try {
                   handleDoubleClick();
                } catch (OseeCoreException ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -212,7 +213,7 @@ public class XNavigateComposite extends Composite {
          try {
             item.run(tableLoadOptions);
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

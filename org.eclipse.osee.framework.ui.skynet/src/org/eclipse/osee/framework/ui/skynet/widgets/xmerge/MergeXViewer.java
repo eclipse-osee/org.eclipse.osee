@@ -20,10 +20,12 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.MergeChangesInArtifactException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -186,7 +188,7 @@ public class MergeXViewer extends XViewer {
       } catch (MergeChangesInArtifactException ex) {
          MessageDialog.openError(shell, "Error", ex.getMessage());
       } catch (Exception ex) {
-         OSEELog.logException(MergeXViewer.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       xMergeViewer.loadTable();
       return super.handleLeftClickInIconArea(treeColumn, treeItem);
@@ -200,7 +202,7 @@ public class MergeXViewer extends XViewer {
          try {
             conWizard.setResolution();
          } catch (Exception ex) {
-            OSEELog.logException(MergeXViewer.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

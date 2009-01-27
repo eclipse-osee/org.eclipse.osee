@@ -14,8 +14,9 @@ import java.util.regex.Pattern;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class WorldCompletedFilter extends ViewerFilter {
 
@@ -32,7 +33,7 @@ public class WorldCompletedFilter extends ViewerFilter {
             return !p.matcher(((IWorldViewArtifact) art).getWorldViewState()).find();
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return true;
    }

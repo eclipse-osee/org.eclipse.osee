@@ -15,13 +15,14 @@ import java.util.ArrayList;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlEvent;
@@ -303,7 +304,7 @@ public class RelationExplorerWindow {
                      artifact.setSoleAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
                      artifact.persistAttributes();
                   } catch (Exception ex) {
-                     OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             } else
@@ -313,7 +314,7 @@ public class RelationExplorerWindow {
                try {
                   relationGroup.getArtifact().addRelation(relationGroup, artifact);
                } catch (OseeCoreException ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -322,7 +323,7 @@ public class RelationExplorerWindow {
          try {
             relationGroup.getArtifact().persistRelations();
          } catch (OseeCoreException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       shell.dispose();

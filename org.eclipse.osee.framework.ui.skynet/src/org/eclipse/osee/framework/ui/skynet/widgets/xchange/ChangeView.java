@@ -22,6 +22,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -89,7 +89,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
 
                      changeView.explore(branch, transactionId, loadChangeReport);
                   } catch (Exception ex) {
-                     OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });
@@ -238,7 +238,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
                try {
                   explore(branch, transactionId, true);
                } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });

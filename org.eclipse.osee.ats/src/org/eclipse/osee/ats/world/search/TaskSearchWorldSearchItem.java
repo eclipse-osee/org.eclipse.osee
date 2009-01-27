@@ -26,13 +26,14 @@ import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
@@ -294,7 +295,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                      }
                      versionCombo.setDataStrings(names.toArray(new String[names.size()]));
                   } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, true);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             }

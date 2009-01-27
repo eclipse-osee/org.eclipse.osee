@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -59,8 +59,8 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
    public static String getDescription() {
       return description;
    }
-   private Set<ActionData> actionDatas = new HashSet<ActionData>();
-   private Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
+   private final Set<ActionData> actionDatas = new HashSet<ActionData>();
+   private final Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
 
    public ExcelAtsActionArtifactExtractor(Branch branch, boolean emailPOCs) {
       super(branch);
@@ -138,7 +138,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                if (!str.equals("")) aData.assigneeStrs.add(str);
             }
          } else {
-            OSEELog.logSevere(AtsPlugin.class, "Unhandled column => " + headerRow[i], true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unhandled column => " + headerRow[i]);
          }
       }
       actionDatas.add(aData);

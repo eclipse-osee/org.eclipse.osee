@@ -16,7 +16,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -45,7 +46,7 @@ public class EmailActionService extends WorkPageService {
             try {
                performEmail();
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };

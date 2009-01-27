@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.styledText.IDictionary;
@@ -93,7 +94,7 @@ public class OseeDictionary implements IDictionary {
          return;
       }
       if (point == null) {
-         OSEELog.logSevere(SkynetGuiPlugin.class, "Can't access OseeDictionary extension point", true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access OseeDictionary extension point");
          return;
       }
       IExtension[] extensions = point.getExtensions();
@@ -112,7 +113,8 @@ public class OseeDictionary implements IDictionary {
                      Object obj = taskClass.newInstance();
                      dictionaries.add((IOseeDictionary) obj);
                   } catch (Exception ex) {
-                     OSEELog.logException(SkynetGuiPlugin.class, "Error loading OseeDictionary extension", ex, true);
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                           "Error loading OseeDictionary extension", ex);
                   }
                }
 

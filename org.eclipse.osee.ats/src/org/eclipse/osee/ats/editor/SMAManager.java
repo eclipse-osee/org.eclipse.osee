@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -60,7 +61,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
@@ -188,7 +188,7 @@ public class SMAManager {
       try {
          return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().isTeamUsesVersions();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
       }
    }
@@ -206,7 +206,7 @@ public class SMAManager {
       try {
          return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().hasWorkRule(ruleId);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
       }
    }
@@ -408,7 +408,7 @@ public class SMAManager {
          }
          return true;
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
          return false;
       }
    }
@@ -446,7 +446,7 @@ public class SMAManager {
          }
          return true;
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
          return false;
       }
    }
@@ -530,7 +530,7 @@ public class SMAManager {
             }
          }
       } catch (OseeStateException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       return false;
@@ -541,7 +541,7 @@ public class SMAManager {
          return ArtifactPromptChange.promptChangeFloatAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(sma), persist);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -551,7 +551,7 @@ public class SMAManager {
          return ArtifactPromptChange.promptChangeIntegerAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(sma), persist);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -561,7 +561,7 @@ public class SMAManager {
          return ArtifactPromptChange.promptChangePercentAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(new Artifact[] {sma}), persist);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -571,7 +571,7 @@ public class SMAManager {
          return ArtifactPromptChange.promptChangeBoolean(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(sma), toggleMessage, persist);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -586,7 +586,7 @@ public class SMAManager {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(new Artifact[] {sma}), persist, multiLine);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -596,7 +596,7 @@ public class SMAManager {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(sma), persist, multiLine);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -605,8 +605,8 @@ public class SMAManager {
       try {
          return ArtifactPromptChange.promptChangeDate(atsAttr.getStoreName(), atsAttr.getDisplayName(), sma, persist);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class,
-               "Can't save " + atsAttr.getDisplayName() + " date to artifact " + sma.getHumanReadableId(), ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+               "Can't save " + atsAttr.getDisplayName() + " date to artifact " + sma.getHumanReadableId(), ex);
       }
       return false;
    }
@@ -644,7 +644,7 @@ public class SMAManager {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't save release date " + sma.getHumanReadableId(), ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't save release date " + sma.getHumanReadableId(), ex);
       }
       return false;
    }
@@ -682,7 +682,8 @@ public class SMAManager {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't save est release date " + sma.getHumanReadableId(), ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+               "Can't save est release date " + sma.getHumanReadableId(), ex);
       }
       return false;
    }
@@ -835,7 +836,7 @@ public class SMAManager {
             OseeNotificationManager.sendNotifications();
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result("Transaction failed " + ex.getLocalizedMessage());
       }
       return Result.TrueResult;

@@ -17,10 +17,11 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -61,7 +62,7 @@ public class PasteHandler extends AbstractHandler {
                   try {
                      clipboard.pasteArtifactsFromClipboard((Artifact) selectionObject);
                   } catch (Exception ex) {
-                     OSEELog.logException(getClass(), ex, true);
+                     OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             }

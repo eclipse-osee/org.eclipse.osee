@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -163,7 +163,7 @@ public class TaskXViewer extends WorldXViewer {
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -177,7 +177,7 @@ public class TaskXViewer extends WorldXViewer {
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -191,7 +191,7 @@ public class TaskXViewer extends WorldXViewer {
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -202,7 +202,7 @@ public class TaskXViewer extends WorldXViewer {
             try {
                handleChangeResolution();
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -220,7 +220,7 @@ public class TaskXViewer extends WorldXViewer {
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -237,7 +237,7 @@ public class TaskXViewer extends WorldXViewer {
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -254,7 +254,7 @@ public class TaskXViewer extends WorldXViewer {
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -272,7 +272,7 @@ public class TaskXViewer extends WorldXViewer {
             try {
                xTaskViewer.handleDeleteTask();
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -372,7 +372,7 @@ public class TaskXViewer extends WorldXViewer {
             return true;
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

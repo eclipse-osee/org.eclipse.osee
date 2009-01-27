@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExis
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -126,7 +126,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                smaMgr.getSma().getHelpContext());
 
       } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -349,7 +349,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                   try {
                      AtsLib.editActionActionableItems(teamWf.getParentActionArtifact());
                   } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, true);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });
@@ -402,7 +402,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                   try {
                      AtsLib.editTeamActionableItems(teamWf);
                   } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, true);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
 
@@ -552,7 +552,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                      smaMgr.getEditor().onDirtied();
                   }
                } catch (OseeCoreException ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });

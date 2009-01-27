@@ -13,8 +13,9 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class OseeInfoDbItem extends DbItem {
 
@@ -49,7 +50,7 @@ public class OseeInfoDbItem extends DbItem {
          chStmt.runPreparedQuery(query);
          toReturn = chStmt.next();
       } catch (OseeDataStoreException ex) {
-         OSEELog.logException(AdminPlugin.class, ex, true);
+         OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          chStmt.close();
       }
@@ -70,7 +71,7 @@ public class OseeInfoDbItem extends DbItem {
             ConnectionHandler.runPreparedUpdate(query, key, value);
          }
       } catch (OseeDataStoreException ex) {
-         OSEELog.logException(AdminPlugin.class, ex, true);
+         OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

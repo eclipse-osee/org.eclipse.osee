@@ -16,11 +16,11 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -236,11 +236,11 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       for (String transition : artifact.getAttributesToStringList(WorkItemAttributes.TRANSITION.getAttributeTypeName())) {
          String[] strs = transition.split(";");
          if (strs.length != 3) {
-            OSEELog.logException(
+            OseeLog.log(
                   SkynetGuiPlugin.class,
+                  OseeLevel.SEVERE_POPUP,
                   new IllegalStateException(
-                        "Transition attribute from artifact " + artifact.getHumanReadableId() + " is invalid.  Must be <fromState>;<transitionType>;<toState>"),
-                  false);
+                        "Transition attribute from artifact " + artifact.getHumanReadableId() + " is invalid.  Must be <fromState>;<transitionType>;<toState>"));
             continue;
          }
          TransitionType transType = TransitionType.valueOf(strs[1]);

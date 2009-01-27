@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,7 +46,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.status.SwtStatusMonitor;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -201,7 +201,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                }
                AWorkbench.popup("ERROR", "Unknown branch association");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -218,13 +218,13 @@ public class XMergeViewer extends XWidget implements IActionable {
                   try {
                      ChangeView.open(conflicts[0].getSourceBranch());
                   } catch (Exception ex) {
-                     OSEELog.logException(XMergeViewer.class, ex, true);
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                } else {
                   try {
                      ChangeView.open(conflicts[0].getCommitTransactionId());
                   } catch (Exception ex) {
-                     OSEELog.logException(XMergeViewer.class, ex, true);
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             }
@@ -241,7 +241,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                try {
                   ChangeView.open(conflicts[0].getDestBranch());
                } catch (Exception ex) {
-                  OSEELog.logException(XMergeViewer.class, ex, true);
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -306,7 +306,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                               new String[] {"OK"}, 1).open();
                      }
                   } catch (OseeCoreException ex) {
-                     OSEELog.logException(XMergeViewer.class, ex, false);
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             }
@@ -327,7 +327,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                   conflict.applyPreviousMerge(ConflictManagerInternal.getMergeBranchId(
                         conflict.getSourceBranch().getBranchId(), destBranchId), destBranchId);
                } catch (OseeCoreException ex) {
-                  OSEELog.logException(XMergeViewer.class, ex, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
                monitor.worked(1);
             }
@@ -357,7 +357,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                   }
                }
             } catch (Exception ex) {
-               OSEELog.logException(XMergeViewer.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
 
             return Status.OK_STATUS;
@@ -539,7 +539,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                   }
                });
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }

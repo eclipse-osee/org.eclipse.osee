@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets.role;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -22,11 +23,11 @@ import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -88,7 +89,7 @@ public class UserRoleManager {
          if (persist) artifact.persistAttributes(transaction);
          rollupHoursSpentToReviewState(persist, transaction);
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, "Can't create ats review defect document", ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats review defect document", ex);
       }
    }
 

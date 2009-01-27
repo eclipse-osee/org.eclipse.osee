@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
@@ -106,7 +106,7 @@ public class LoadAIsAndTeamsAction {
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsAIandTeamConfig");
       if (point == null) {
-         OSEELog.logSevere(AtsPlugin.class, "Can't access AtsAIandTeamConfig extension point", true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsAIandTeamConfig extension point");
          return resources;
       }
       IExtension[] extensions = point.getExtensions();
@@ -125,7 +125,7 @@ public class LoadAIsAndTeamsAction {
                         URL url = bundle.getEntry(vueFilename);
                         resources.put(bundleName + "/" + vueFilename, Lib.inputStreamToString(url.openStream()));
                      } catch (Exception ex) {
-                        OSEELog.logException(AtsPlugin.class, "Error loading AtsStateItem extension", ex, true);
+                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsStateItem extension", ex);
                      }
                   }
                }

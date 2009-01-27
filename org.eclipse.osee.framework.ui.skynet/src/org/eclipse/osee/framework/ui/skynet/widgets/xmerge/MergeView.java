@@ -58,7 +58,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -396,7 +395,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      attributeConflict.markStatusToReflectEdit();
                   }
                } catch (Exception ex) {
-                  OSEELog.logException(MergeView.class, ex, true);
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
             return null;
@@ -523,7 +522,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
       } catch (Exception ex) {
-         OSEELog.logException(MergeView.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -662,7 +661,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      break;
                }
             } catch (Exception ex) {
-               OSEELog.logException(MergeView.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
@@ -745,7 +744,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                }
             }
          } catch (Exception ex) {
-            OSEELog.logException(MergeView.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
          return null;
       }
@@ -797,7 +796,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      break;
                }
             } catch (Exception ex) {
-               OSEELog.logException(MergeView.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
 
          } else if (conflicts.get(0) instanceof ArtifactConflict) {
@@ -827,7 +826,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      return false;
                }
             } catch (Exception ex) {
-               OSEELog.logException(MergeView.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
 
          }

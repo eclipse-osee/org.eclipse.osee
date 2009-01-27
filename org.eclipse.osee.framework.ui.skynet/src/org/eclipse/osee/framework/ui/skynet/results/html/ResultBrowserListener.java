@@ -12,12 +12,13 @@
 package org.eclipse.osee.framework.ui.skynet.results.html;
 
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 
@@ -60,7 +61,7 @@ public class ResultBrowserListener implements LocationListener {
                   OseeAts.getAtsLib().openArtifact(hrid, branchId, OseeAts.OpenView.ActionEditor);
                }
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          } else if (resultBrowserHyperCmd == ResultBrowserHyperCmd.openArtifactEditor) {
             event.doit = false;
@@ -75,7 +76,7 @@ public class ResultBrowserListener implements LocationListener {
             BranchView.revealBranch(branch);
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, "Can't process hyperlink.", ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Can't process hyperlink.", ex);
       }
    }
 

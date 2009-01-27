@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
 import org.eclipse.swt.widgets.TableItem;
@@ -28,9 +28,9 @@ import org.eclipse.swt.widgets.TableItem;
  */
 
 public class DbCellModifier implements ICellModifier {
-   private DbTableViewer dbTableViewer;
-   private EnumeratedValue enumeratedValue;
-   private StringValue stringValue;
+   private final DbTableViewer dbTableViewer;
+   private final EnumeratedValue enumeratedValue;
+   private final StringValue stringValue;
    private final DbItem dbItem;
 
    /**
@@ -79,7 +79,7 @@ public class DbCellModifier implements ICellModifier {
          stringValue.setValue(((String) obj));
          return stringValue;
       } else if (obj == null) {
-         stringValue.setValue(((String) ""));
+         stringValue.setValue((""));
          return stringValue;
       }
       return null;
@@ -114,10 +114,10 @@ public class DbCellModifier implements ICellModifier {
                dbModel.setColumnChanged(property);
             }
          } catch (Exception ex) {
-            OSEELog.logException(AdminPlugin.class, ex, true);
+            OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (wasObj instanceof String) {
-         if (!((String) wasObj).equals((String) value)) {
+         if (!((String) wasObj).equals(value)) {
             dbModel.setColumn(columnIndex, value);
             dbModel.setNeedSave(true);
             dbModel.setColumnChanged(property);

@@ -18,12 +18,12 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -73,7 +73,7 @@ public class ATSNote {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return logItems;
    }
@@ -94,7 +94,7 @@ public class ATSNote {
          }
          artifact.setSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't create ats note document", ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats note document", ex);
       }
    }
 

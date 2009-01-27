@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
@@ -178,7 +178,8 @@ public class ExtendedStatusReportJob extends Job {
                values.add(desc);
          } else if (col == Columns.Originator) {
             if (smaMgr.getOriginator() == null) {
-               OSEELog.logSevere(AtsPlugin.class, "Can't retrieve orig for " + sma.getHumanReadableId(), true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+                     "Can't retrieve orig for " + sma.getHumanReadableId());
                values.add(".");
             } else
                values.add(smaMgr.getOriginator().getName());

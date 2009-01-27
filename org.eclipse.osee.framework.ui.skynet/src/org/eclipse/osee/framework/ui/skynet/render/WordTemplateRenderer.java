@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -52,7 +54,6 @@ import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.w3c.dom.Element;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
@@ -220,7 +221,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                      }
                      generator.addComparison(baseFile, newerFile, localFileName, false);
                   } catch (OseeCoreException ex) {
-                     OSEELog.logException(WordTemplateRenderer.class, ex, false);
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
 
                }
@@ -378,6 +379,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     * 
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
+   @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (!artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native")) {
          if (presentationType == PresentationType.DIFF || presentationType == PresentationType.PREVIEW) {

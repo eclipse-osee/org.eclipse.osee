@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -45,7 +46,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.SWT;
@@ -321,7 +321,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                provider.setTableLoadOptions(TableLoadOption.NoUI);
                WorldEditor.open(provider);
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -341,7 +341,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                WorldEditor.open(new WorldEditorSimpleProvider("ATS World", worldXViewer.getSelectedArtifacts(),
                      worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions));
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -380,7 +380,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             try {
                worldEditor.reSearch();
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -575,7 +575,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                   }
                });
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
@@ -610,7 +610,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                   }
                });
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
@@ -644,7 +644,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                   }
                });
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }
@@ -678,7 +678,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                   }
                });
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return Status.OK_STATUS;
          }

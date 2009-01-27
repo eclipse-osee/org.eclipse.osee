@@ -24,13 +24,14 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
@@ -109,8 +110,8 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
       if (isCancelled()) return EMPTY_SET;
 
       if (resultAtsArts.size() == 0 && resultNonAtsArts.size() == 0) {
-         OSEELog.logException(AtsPlugin.class, "Invalid HRID/Guid/Legacy PCR Id(s): " + Lib.getCommaString(ids), null,
-               true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+               "Invalid HRID/Guid/Legacy PCR Id(s): " + Lib.getCommaString(ids));
       }
       if (resultNonAtsArts.size() > 0) {
          ArtifactEditor.editArtifacts(resultNonAtsArts);

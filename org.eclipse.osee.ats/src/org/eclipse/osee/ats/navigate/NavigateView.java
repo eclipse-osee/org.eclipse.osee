@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.SWT;
@@ -123,7 +123,7 @@ public class NavigateView extends ViewPart implements IActionable {
                xNavComp.handleDoubleClick(new SearchNavigateItem(null, new MyWorldSearchItem("My World",
                      UserManager.getUser())), TableLoadOption.None);
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -158,7 +158,7 @@ public class NavigateView extends ViewPart implements IActionable {
                xNavComp.handleDoubleClick(new SearchNavigateItem(null, new MultipleHridSearchItem()),
                      TableLoadOption.None);
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -172,7 +172,7 @@ public class NavigateView extends ViewPart implements IActionable {
             try {
                xNavComp.handleDoubleClick(new OpenChangeReportByIdItem(null), TableLoadOption.None);
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };

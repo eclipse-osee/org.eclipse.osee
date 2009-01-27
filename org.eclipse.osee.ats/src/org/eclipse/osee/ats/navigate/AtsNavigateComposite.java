@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;

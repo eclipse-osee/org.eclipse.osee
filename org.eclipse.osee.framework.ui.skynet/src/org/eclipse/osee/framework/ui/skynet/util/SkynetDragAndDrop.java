@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;

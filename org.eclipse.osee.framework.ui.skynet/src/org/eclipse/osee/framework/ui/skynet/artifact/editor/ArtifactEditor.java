@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -67,7 +68,6 @@ import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.ProgressEvent;
@@ -130,13 +130,13 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             try {
                for (Artifact artifact : artifacts) {
                   if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
-                     OSEELog.logSevere(SkynetGuiPlugin.class,
-                           "The user " + UserManager.getUser() + " does not have read access to " + artifact, true);
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                           "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                   } else
                      AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
                }
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -147,13 +147,13 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          public void run() {
             try {
                if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
-                  OSEELog.logSevere(SkynetGuiPlugin.class,
-                        "The user " + UserManager.getUser() + " does not have read access to " + artifact, true);
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                        "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                } else if (artifact != null) {
                   AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
                }
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -471,7 +471,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             try {
                ArtifactExplorer.revealArtifact(artifact);
             } catch (Exception ex) {
-               OSEELog.logException(getClass(), ex, true);
+               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });

@@ -11,8 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
 import java.net.URL;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.PlatformUI;
@@ -56,7 +57,7 @@ public class XNavigateUrlItem extends XNavigateItemAction {
             IWebBrowser browser = browserSupport.createBrowser("osee.ats.navigator.browser");
             browser.openURL(new URL(url));
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

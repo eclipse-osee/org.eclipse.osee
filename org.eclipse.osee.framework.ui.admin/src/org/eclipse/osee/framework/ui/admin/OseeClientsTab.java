@@ -18,6 +18,8 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -25,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -153,7 +154,7 @@ public class OseeClientsTab {
                OseeEventManager.kickBroadcastEvent(this, BroadcastEventType.Force_Shutdown, selectedUsers, reason);
                AWorkbench.popup("Success", "Shutdown request sent.");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       } else {
@@ -183,7 +184,7 @@ public class OseeClientsTab {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AdminPlugin.class, ex, true);
+         OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return toReturn.toArray(new String[toReturn.size()]);
    }

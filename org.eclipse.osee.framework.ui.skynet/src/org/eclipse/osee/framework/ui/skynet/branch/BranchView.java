@@ -78,7 +78,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetSelections;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -146,7 +145,7 @@ public class BranchView extends ViewPart implements IActionable {
             ((IEclipsePreferences) instanceNode.node(VIEW_ID)).addPreferenceChangeListener(getSingleton());
          }
       } catch (BackingStoreException ex) {
-         OSEELog.logException(BranchView.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       instanceNode.addNodeChangeListener(new IEclipsePreferences.INodeChangeListener() {
@@ -213,7 +212,7 @@ public class BranchView extends ViewPart implements IActionable {
             try {
                branchListComposite.forcePopulateView();
             } catch (OseeCoreException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -310,7 +309,7 @@ public class BranchView extends ViewPart implements IActionable {
       try {
          getViewPreference().flush();
       } catch (BackingStoreException ex) {
-         OSEELog.logException(BranchView.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       super.dispose();
@@ -584,7 +583,7 @@ public class BranchView extends ViewPart implements IActionable {
             try {
                ChangeView.open(selectedBranch);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
 
             return null;
@@ -741,7 +740,7 @@ public class BranchView extends ViewPart implements IActionable {
                               try {
                                  branchListComposite.forcePopulateView();
                               } catch (OseeCoreException ex) {
-                                 OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                                 OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                               }
                            }
                         });
@@ -1022,7 +1021,7 @@ public class BranchView extends ViewPart implements IActionable {
                }
             }
          } catch (Exception ex) {
-            OSEELog.logException(getClass(), ex, true);
+            OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
 
          return null;
@@ -1157,7 +1156,7 @@ public class BranchView extends ViewPart implements IActionable {
             try {
                selectedBranch.rename(newLabel);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             branchTable.refresh();
          }
@@ -1264,7 +1263,7 @@ public class BranchView extends ViewPart implements IActionable {
                   }
                }
             } catch (OseeCoreException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return null;
          }
@@ -1307,13 +1306,13 @@ public class BranchView extends ViewPart implements IActionable {
                   else
                      ArtifactEditor.editArtifact(selectedBranch.getAssociatedArtifact());
                } else {
-                  OSEELog.logSevere(
+                  OseeLog.log(
                         SkynetGuiPlugin.class,
-                        "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifact(),
-                        true);
+                        OseeLevel.SEVERE_POPUP,
+                        "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifact());
                }
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
             return null;
          }

@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeListViewer;
@@ -221,7 +221,7 @@ public class XWidgetFactory {
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.XWidgetProvider");
       if (point == null) {
-         OSEELog.logSevere(SkynetGuiPlugin.class, "Can't access XWidgetProvider extension point", true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access XWidgetProvider extension point");
          return null;
       }
       IExtension[] extensions = point.getExtensions();
@@ -240,7 +240,8 @@ public class XWidgetFactory {
                      Object obj = taskClass.newInstance();
                      widgetProviders.add((IXWidgetProvider) obj);
                   } catch (Exception ex) {
-                     OSEELog.logException(SkynetGuiPlugin.class, "Error loading XWidgetProvider extension", ex, true);
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                           "Error loading XWidgetProvider extension", ex);
                   }
                }
 

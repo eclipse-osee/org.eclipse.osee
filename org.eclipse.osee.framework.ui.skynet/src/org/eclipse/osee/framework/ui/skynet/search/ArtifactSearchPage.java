@@ -28,6 +28,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -42,7 +44,6 @@ import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.HyperLinkLabel;
 import org.eclipse.search.ui.IReplacePage;
 import org.eclipse.search.ui.ISearchPage;
@@ -171,7 +172,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             artifactTypeList.setData(descriptor.getName(), descriptor);
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, "Error encountered while getting list of artifact types", ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+               "Error encountered while getting list of artifact types", ex);
       }
       addToSearchTypeList(new ArtifactTypeFilter(artifactTypeControls, artifactTypeList));
    }
@@ -206,7 +208,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             relationTypeList.setData(linkDescriptor.getTypeName(), linkDescriptor);
          }
       } catch (OseeCoreException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       relationTypeList.getCombo().addSelectionListener(new SelectionAdapter() {
@@ -283,8 +285,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             attributeTypeList.setData(type.getName(), type);
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, "Error encountered while getting list of attribute types", ex,
-               true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+               "Error encountered while getting list of attribute types", ex);
       }
       attributeTypeList.getCombo().setVisibleItemCount(Math.min(attributeTypeList.getCombo().getItemCount(), 15));
       attributeTypeList.getCombo().select(lastAttributeTypeListSelected);

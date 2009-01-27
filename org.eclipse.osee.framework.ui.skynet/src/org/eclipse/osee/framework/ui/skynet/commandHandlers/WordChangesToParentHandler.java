@@ -19,6 +19,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -66,7 +67,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
             RendererManager.diffInJob(firstArtifact, secondArtifact);
 
          } catch (Exception ex) {
-            OSEELog.logException(getClass(), ex, true);
+            OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return null;
@@ -108,7 +109,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
             isEnabled = validDiffParent && modifiedWordArtifactSelected && readPermission;
          }
       } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, true);
+         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       }
       return isEnabled;
    }

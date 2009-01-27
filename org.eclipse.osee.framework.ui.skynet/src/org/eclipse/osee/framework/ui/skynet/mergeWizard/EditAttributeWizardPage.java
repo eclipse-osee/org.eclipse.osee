@@ -13,9 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 import java.util.Arrays;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -49,7 +50,7 @@ public class EditAttributeWizardPage extends WizardPage {
    private static final String CLEAR_TOOLTIP = "Clear the Editor Value";
    private static final int NUM_COLUMNS = 1;
    private IEmbeddedAttributeEditor editor;
-   
+
    private final Listener listener = new Listener() {
       public void handleEvent(Event event) {
          // ...
@@ -73,7 +74,7 @@ public class EditAttributeWizardPage extends WizardPage {
             }
 
          } catch (Exception ex) {
-            OSEELog.logException(EditAttributeWizardPage.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
          getWizard().getContainer().updateButtons();
       }
@@ -96,7 +97,7 @@ public class EditAttributeWizardPage extends WizardPage {
                         Arrays.asList(conflict), true);
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -141,7 +142,7 @@ public class EditAttributeWizardPage extends WizardPage {
          new Label(composite, SWT.NONE).setText(DEST_TEXT);
          new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + conflict.getDestDisplayData());
       } catch (Exception ex) {
-         OSEELog.logException(EditAttributeWizardPage.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       Composite buttonComp = new Composite(composite, SWT.NONE);

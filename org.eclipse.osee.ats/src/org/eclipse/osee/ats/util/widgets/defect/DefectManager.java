@@ -14,16 +14,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
@@ -36,7 +37,7 @@ public class DefectManager {
    private static String ATS_DEFECT_TAG = "AtsDefect";
    private static String DEFECT_ITEM_TAG = "Item";
    private static String REVIEW_DEFECT_ATTRIBUTE_NAME = "ats.Review Defect";
-   private Matcher defectMatcher =
+   private final Matcher defectMatcher =
          java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">",
                Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
@@ -93,7 +94,7 @@ public class DefectManager {
          artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
          if (persist) artifact.persistAttributes(transaction);
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, "Can't create ats review defect document", ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats review defect document", ex);
       }
    }
 

@@ -19,7 +19,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 
 /**
@@ -54,7 +55,7 @@ public class TeamWorkflowExtensions {
 
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsTeamWorkflow");
       if (point == null) {
-         OSEELog.logSevere(AtsPlugin.class, "Can't access AtsTeamWorkflow extension point", true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsTeamWorkflow extension point");
          return teamWorkflowExtensionItems;
       }
       IExtension[] extensions = point.getExtensions();
@@ -73,7 +74,7 @@ public class TeamWorkflowExtensions {
                      Object obj = taskClass.newInstance();
                      teamWorkflowExtensionItems.add((IAtsTeamWorkflow) obj);
                   } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, "Error loading AtsTeamWorkflow extension", ex, true);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsTeamWorkflow extension", ex);
                   }
                }
             }

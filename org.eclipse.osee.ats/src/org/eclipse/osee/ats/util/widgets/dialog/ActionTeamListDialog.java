@@ -13,9 +13,10 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.ArrayList;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
 import org.eclipse.swt.SWT;
@@ -48,7 +49,7 @@ public class ActionTeamListDialog extends ArtifactListDialog {
          for (Artifact prod : TeamDefinitionArtifact.getTeamDefinitions(active))
             arts.add(prod);
       } catch (Exception ex) {
-         OSEELog.logSevere(AtsPlugin.class, "Can't Load product list.", true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't Load product list.");
       }
       setArtifacts(arts);
    }

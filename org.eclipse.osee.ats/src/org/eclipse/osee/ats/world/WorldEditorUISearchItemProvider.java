@@ -7,7 +7,6 @@ package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

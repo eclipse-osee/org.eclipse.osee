@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -51,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -268,7 +268,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
          // These will be processed upon save
          AtsNotifyUsers.notify(this, newAssignees, AtsNotifyUsers.NotifyType.Assigned);
       } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -512,8 +512,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public String getWorldViewCompletedDateStr() throws OseeCoreException {
       if (smaMgr.isCompleted()) {
          if (getWorldViewCompletedDate() == null) {
-            OSEELog.logSevere(AtsPlugin.class, "Completed with no date => " + smaMgr.getSma().getHumanReadableId(),
-                  true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+                  "Completed with no date => " + smaMgr.getSma().getHumanReadableId());
             return XViewerCells.getCellExceptionString("Completed with no date.");
          }
          return new XDate(getWorldViewCompletedDate()).getMMDDYYHHMM();
@@ -699,10 +699,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
          double val = new Float(value).doubleValue();
          if (val == 0) return new Result("Weekly Benefit Hours not set.");
       } catch (NumberFormatException ex) {
-         OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "HRID " + getHumanReadableId(), ex);
          return new Result("Weekly Benefit value is invalid double \"" + value + "\"");
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "HRID " + getHumanReadableId(), ex);
          return new Result("Exception calculating cost avoidance.  See log for details.");
       }
       return Result.TrueResult;
@@ -767,7 +767,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
          for (Artifact artifact : artifacts)
             artifact.persistAttributesAndRelations(transaction);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't save artifact " + getHumanReadableId(), ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getHumanReadableId(), ex);
       }
    }
 
@@ -778,7 +778,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
          for (Artifact artifact : artifacts)
             artifact.reloadAttributesAndRelations();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't revert artifact " + getHumanReadableId(), ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't revert artifact " + getHumanReadableId(), ex);
       }
    }
 

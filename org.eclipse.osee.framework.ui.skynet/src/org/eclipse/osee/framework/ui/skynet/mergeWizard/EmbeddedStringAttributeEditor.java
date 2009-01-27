@@ -12,10 +12,12 @@
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -77,7 +79,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
          try {
             editor.setEntry(((Artifact) obj).getSoleAttributeValue(attributeName).toString());
          } catch (Exception ex) {
-            OSEELog.logException(EmbeddedStringAttributeEditor.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (obj instanceof AttributeConflict) {
          try {
@@ -85,7 +87,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
                editor.setEntry(((AttributeConflict) obj).getMergeObject().toString());
             }
          } catch (Exception ex) {
-            OSEELog.logException(EmbeddedStringAttributeEditor.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       if (regExp != null) editor.setValidationRegularExpression(regExp);
@@ -113,7 +115,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
                            AWorkbench.popup("Attention", MergeUtility.COMMITED_PROMPT);
                         }
                      } catch (Exception ex) {
-                        OSEELog.logException(EmbeddedStringAttributeEditor.class, ex, true);
+                        OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                      }
                   } else {
                      if (!((AttributeConflict) object).clearValue()) {
@@ -124,7 +126,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
             }
             return true;
          } catch (Exception ex) {
-            OSEELog.logException(EmbeddedStringAttributeEditor.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return false;

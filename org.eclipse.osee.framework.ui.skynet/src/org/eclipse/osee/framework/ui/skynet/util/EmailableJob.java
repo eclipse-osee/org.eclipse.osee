@@ -17,6 +17,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -50,11 +52,11 @@ public class EmailableJob extends Job {
                emails.add(user.getEmail());
             emails.addAll(emailAddresses);
             OseeEmail emailMessage =
-                  new OseeEmail(emails, UserManager.getUser().getEmail(),
-                        UserManager.getUser().getEmail(), subject, htmlBody, BodyType.Html);
+                  new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject,
+                        htmlBody, BodyType.Html);
             emailMessage.send();
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, "Your Email Message could not be sent.", ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Your Email Message could not be sent.", ex);
          }
       }
    }

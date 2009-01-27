@@ -13,9 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -47,7 +49,7 @@ public class ImportMetaWizard extends Wizard implements IImportWizard {
          File file = mainPage.getImportFile();
          Jobs.startJob(new ImportMetaJob(file, branch));
       } catch (Exception ex) {
-         OSEELog.logException(getClass(), "Define Import Error", ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Define Import Error", ex);
       }
       return true;
    }
@@ -65,6 +67,7 @@ public class ImportMetaWizard extends Wizard implements IImportWizard {
    /**
     * (non-Javadoc) Method declared on Wizard.
     */
+   @Override
    public void addPages() {
       mainPage = new ImportMetaPage(selection);
       mainPage.setTitle("Import Skynet types into Define");

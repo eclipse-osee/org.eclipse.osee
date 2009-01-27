@@ -15,8 +15,9 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.NewSearchUI;
@@ -44,7 +45,7 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
             numberOfMatches++;
          }
       } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, true);
+         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       }
 
       doneRunning = true;

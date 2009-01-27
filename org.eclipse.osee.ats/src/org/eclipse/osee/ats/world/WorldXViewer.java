@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -75,7 +76,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
@@ -232,7 +232,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -245,7 +245,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -260,7 +260,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -292,7 +292,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   update(getSelectedArtifactItems().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -307,7 +307,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   update(getSelectedArtifactItems().toArray(), null);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -326,7 +326,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                   refresh(getSelectedArtifactItems().toArray()[0]);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -340,7 +340,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                if (result.isFalse() && !result.getText().equals("")) result.popup(result.isTrue());
                refresh(getSelectedArtifactItems().iterator().next());
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -385,7 +385,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                try {
                   page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
                } catch (PartInitException ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -401,7 +401,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             try {
                TaskEditor.open(new TaskEditorSimpleProvider("ATS Tasks", getSelectedTaskArtifacts()));
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -425,8 +425,9 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          public void run() {
             if (getSelectedArtifacts().size() > 0)
                ArtifactEditor.editArtifact(getSelectedArtifactItems().iterator().next());
-            else
-               OSEELog.logException(AtsPlugin.class, new Exception("Can't retrieve SMA"), true);
+            else {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, new Exception("Can't retrieve SMA"));
+            }
          }
       };
 
@@ -443,7 +444,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             try {
                handleEmailSelectedAtsObject();
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -506,7 +507,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -910,7 +911,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -956,7 +957,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             }
          }
       } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
@@ -1022,7 +1023,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             return true;
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

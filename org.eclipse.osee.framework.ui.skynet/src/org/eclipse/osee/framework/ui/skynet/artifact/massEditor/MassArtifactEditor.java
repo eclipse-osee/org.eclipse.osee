@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -80,7 +80,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       try {
          Artifacts.persistInTransaction(artifacts);
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       onDirtied();
    }
@@ -111,7 +111,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                if (accessControlFilteredResults) AWorkbench.popup("ERROR",
                      "Some Artifacts not loaded due to access control limitations.");
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       }, options.contains(TableLoadOption.ForcePend));
@@ -179,7 +179,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
             try {
                page.openEditor(input, EDITOR_ID);
             } catch (PartInitException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -276,7 +276,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       try {
          xViewer.set(((MassArtifactEditorInput) editorInput).getArtifacts());
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

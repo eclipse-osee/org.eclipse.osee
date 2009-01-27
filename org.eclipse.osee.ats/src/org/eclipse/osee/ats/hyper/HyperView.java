@@ -43,12 +43,12 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -695,7 +695,7 @@ public class HyperView extends ViewPart implements IPartListener {
                try {
                   handleItemDoubleClick(si);
                } catch (OseeCoreException ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -774,7 +774,7 @@ public class HyperView extends ViewPart implements IPartListener {
                         try {
                            art.delete();
                         } catch (Exception ex) {
-                           OSEELog.logException(AtsPlugin.class, ex, true);
+                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                         }
                      }
                   }

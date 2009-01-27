@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -246,7 +246,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
             xViewer.set(reviewArt.getDefectManager().getDefectItems());
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       refresh();
    }
@@ -270,7 +270,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
             notifyXModifiedListeners();
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -293,7 +293,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
             deleteDefectHelper(items, persist, transaction);
             transaction.execute();
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -307,7 +307,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          loadTable();
          notifyXModifiedListeners();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -323,7 +323,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
             notifyXModifiedListeners();
             loadTable();
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -385,7 +385,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          extraInfoLabel.setText("");
          return Result.TrueResult;
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result("Exception validating defects. See log for details. " + ex);
       }
    }

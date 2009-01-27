@@ -98,7 +98,6 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.HierarchicalReportDialog;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlReportJob;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -312,7 +311,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
          checkBranchReadable();
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       OseeEventManager.addListener(this);
@@ -327,15 +326,15 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       try {
 
          if (artifact.isDeleted()) {
-            OSEELog.logSevere(SkynetGuiPlugin.class,
-                  "The artifact " + artifact.getDescriptiveName() + " has been deleted.", true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                  "The artifact " + artifact.getDescriptiveName() + " has been deleted.");
          } else {
             if (artifact.isHistorical()) {
                artifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(), false);
             }
             if (artifact.isOrphan()) {
-               OSEELog.logSevere(SkynetGuiPlugin.class,
-                     "The artifact " + artifact.getDescriptiveName() + " does not have a parent (orphan).", true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                     "The artifact " + artifact.getDescriptiveName() + " does not have a parent (orphan).");
             } else {
                IWorkbenchPage page = AWorkbench.getActivePage();
                ArtifactExplorer artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID);
@@ -343,7 +342,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -402,7 +401,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
                treeViewer.setExpandedElements(expandedPlus);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };
@@ -773,7 +772,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             myArtifact.setSoleAttributeValue("Name", newLabel);
             myArtifact.persistAttributes();
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       treeViewer.refresh();
@@ -881,7 +880,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                      AccessControlManager.getInstance().lockObject(object, UserManager.getUser());
                   }
                } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -954,7 +953,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             try {
                artifactClipboard.pasteArtifactsFromClipboard((Artifact) object);
             } catch (Exception ex) {
-               OSEELog.logException(getClass(), ex, true);
+               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
             }
          }
       }
@@ -993,7 +992,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   job.setRecurseChildren(ld.isRecurseChildren());
                   Jobs.startJob(job);
                } catch (Exception ex) {
-                  OSEELog.logException(getClass(), ex, true);
+                  OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -1047,7 +1046,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             upAction.setEnabled(exploreRoot != null && exploreRoot.hasParent());
          } catch (OseeCoreException ex) {
             upAction.setEnabled(false);
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -1154,7 +1153,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             pasteMenuItem.setEnabled(permiss.isWritePermission());
 
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
       }
@@ -1186,7 +1185,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       try {
          explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getDefaultBranch()));
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -1314,7 +1313,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   }
                   transaction.execute();
                } catch (Exception ex) {
-                  OSEELog.logException(getClass(), ex, true);
+                  OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
                }
             }
 

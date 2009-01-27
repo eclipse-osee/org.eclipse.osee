@@ -13,9 +13,11 @@ package org.eclipse.osee.define.traceability;
 import java.io.File;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -46,7 +48,7 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
          File file = mainPage.getImportFile();
          Jobs.startJob(new ImportTraceabilityJob(file, branch, true));
       } catch (Exception ex) {
-         OSEELog.logException(getClass(), "Traceability Import Error", ex, true);
+         OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Traceability Import Error", ex);
       }
       return true;
    }
@@ -64,6 +66,7 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
    /**
     * (non-Javadoc) Method declared on Wizard.
     */
+   @Override
    public void addPages() {
       mainPage = new ImportTraceabilityPage(selection);
       addPage(mainPage);

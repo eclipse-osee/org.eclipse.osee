@@ -18,13 +18,14 @@ import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -76,7 +77,7 @@ public class CommitWorkingBranchService extends WorkPageService implements IBran
                   try {
                      smaMgr.getBranchMgr().commitWorkingBranch(true, overrideStateValidation);
                   } catch (OseeCoreException ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, true);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });

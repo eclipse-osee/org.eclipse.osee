@@ -12,10 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -63,7 +64,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelSelection {
          }
          return true;
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }

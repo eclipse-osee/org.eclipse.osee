@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.search.ui.text.Match;
 
 /**
@@ -45,7 +45,7 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
 
    public static void openArtifact(ISelection selection) {
       IStructuredSelection structSel = (IStructuredSelection) selection;
-      Object object = (Object) structSel.getFirstElement();
+      Object object = structSel.getFirstElement();
       Artifact artifact = null;
       if (object instanceof Artifact) {
          artifact = (Artifact) structSel.getFirstElement();
@@ -73,8 +73,8 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
                }
 
             } else {
-               OSEELog.logSevere(SkynetGuiPlugin.class,
-                     "The user " + UserManager.getUser() + " does not have read access to " + artifact, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                     "The user " + UserManager.getUser() + " does not have read access to " + artifact);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

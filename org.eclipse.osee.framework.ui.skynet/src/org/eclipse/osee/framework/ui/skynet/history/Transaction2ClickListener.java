@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.history;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
@@ -21,7 +23,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Ryan D. Brooks
@@ -37,7 +38,7 @@ public class Transaction2ClickListener implements IDoubleClickListener {
       if (selectedItem instanceof TransactionData) {
          openArtifact((TransactionData) selectedItem);
       } else {
-         OSEELog.logSevere(SkynetGuiPlugin.class, "Selected item not of expected type", true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Selected item not of expected type");
       }
    }
 
@@ -51,7 +52,7 @@ public class Transaction2ClickListener implements IDoubleClickListener {
             RendererManager.openInJob(artifact, PresentationType.GENERALIZED_EDIT);
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 }

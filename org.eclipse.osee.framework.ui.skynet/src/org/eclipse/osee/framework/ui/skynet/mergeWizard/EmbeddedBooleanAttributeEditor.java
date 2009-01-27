@@ -12,10 +12,12 @@
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -71,11 +73,12 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
                Object object = ((Artifact) obj).getSoleAttributeValue(attributeName);
                if (object instanceof Boolean)
                   editor.setEntry(((Boolean) object).booleanValue());
-               else
-                  OSEELog.logException(EmbeddedBooleanAttributeEditor.class, new Exception(
-                        "Boolean editor did not receive a boolean value"), true);
+               else {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, new Exception(
+                        "Boolean editor did not receive a boolean value"));
+               }
             } catch (Exception ex) {
-               OSEELog.logException(EmbeddedBooleanAttributeEditor.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
          if (obj instanceof AttributeConflict) {
@@ -85,7 +88,7 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(EmbeddedBooleanAttributeEditor.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return true;
    }
@@ -111,7 +114,7 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
             }
             return true;
          } catch (Exception ex) {
-            OSEELog.logException(EmbeddedBooleanAttributeEditor.class, ex, true);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       AWorkbench.popup("ERROR", "Could not store the attribute");

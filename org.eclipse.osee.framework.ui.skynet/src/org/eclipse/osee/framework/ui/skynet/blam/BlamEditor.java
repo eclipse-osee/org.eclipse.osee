@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
@@ -40,7 +41,7 @@ public class BlamEditor extends AbstractArtifactEditor implements IBlamEventList
          setPartName("BLAM: " + getWorkflow().getDescriptiveName());
          setTitleImage(SkynetGuiPlugin.getInstance().getImage("blam.gif"));
       } catch (PartInitException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -74,7 +75,7 @@ public class BlamEditor extends AbstractArtifactEditor implements IBlamEventList
             try {
                AWorkbench.getActivePage().openEditor(blamEditorInput, EDITOR_ID);
             } catch (PartInitException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });

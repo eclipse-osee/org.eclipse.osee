@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -53,7 +54,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.IAtsLib;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -190,7 +190,7 @@ public class AtsLib implements IAtsLib {
          Artifact artifact = ArtifactQuery.getArtifactFromId(guidOrHrid, branch);
          openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -205,7 +205,7 @@ public class AtsLib implements IAtsLib {
       try {
          artifact = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch());
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return;
       }
 
@@ -235,7 +235,7 @@ public class AtsLib implements IAtsLib {
                "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");
          return;
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return;
       }
 
@@ -276,7 +276,7 @@ public class AtsLib implements IAtsLib {
                            else
                               return;
                         } catch (OseeCoreException ex) {
-                           OSEELog.logException(AtsPlugin.class, ex, true);
+                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                         }
                      }
                   });
@@ -285,7 +285,7 @@ public class AtsLib implements IAtsLib {
          } else
             SMAEditor.editArtifact(art);
       } catch (OseeCoreException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

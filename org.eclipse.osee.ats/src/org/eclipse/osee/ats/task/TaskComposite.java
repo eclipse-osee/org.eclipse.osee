@@ -36,8 +36,8 @@ import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -176,7 +175,7 @@ public class TaskComposite extends Composite implements IActionable {
          setupDragAndDropSupport();
          parent.layout();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -248,7 +247,7 @@ public class TaskComposite extends Composite implements IActionable {
                   provider.setTableLoadOptions(TableLoadOption.NoUI);
                   TaskEditor.open(provider);
                } catch (OseeCoreException ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
@@ -268,7 +267,7 @@ public class TaskComposite extends Composite implements IActionable {
                TaskEditor.open(new TaskEditorSimpleProvider("Tasks", taskXViewer.getSelectedArtifacts(),
                      taskXViewer.getCustomizeMgr().generateCustDataFromTable()));
             } catch (OseeCoreException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -286,7 +285,7 @@ public class TaskComposite extends Composite implements IActionable {
                   loadTable();
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -338,7 +337,7 @@ public class TaskComposite extends Composite implements IActionable {
             try {
                updateExtraInfoLine();
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -365,7 +364,7 @@ public class TaskComposite extends Composite implements IActionable {
                   try {
                      handleImportTasksViaSpreadsheet();
                   } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, true);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });
@@ -379,13 +378,13 @@ public class TaskComposite extends Composite implements IActionable {
                   try {
                      handleImportTasksViaList();
                   } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, true);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
    }
@@ -439,7 +438,7 @@ public class TaskComposite extends Composite implements IActionable {
             }
             transaction.execute();
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
@@ -456,7 +455,7 @@ public class TaskComposite extends Composite implements IActionable {
             taskXViewer.add(taskArt);
             taskXViewer.getTree().setFocus();
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return taskArt;
@@ -577,7 +576,7 @@ public class TaskComposite extends Composite implements IActionable {
             }
             transaction.execute();
          } catch (Exception ex) {
-            OSEELog.logException(SkynetActivator.class, ex, true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

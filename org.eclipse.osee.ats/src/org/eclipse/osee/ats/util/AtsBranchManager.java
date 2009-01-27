@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
@@ -69,7 +70,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.branch.CommitHandler;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ListDialogSortable;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -100,7 +100,7 @@ public class AtsBranchManager {
          }
          BranchManager.setDefaultBranch(getWorkingBranch());
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -125,7 +125,7 @@ public class AtsBranchManager {
             MergeView.openView(transactionId);
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -140,7 +140,7 @@ public class AtsBranchManager {
          }
          BranchView.revealBranch(getWorkingBranch());
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -169,7 +169,7 @@ public class AtsBranchManager {
          AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
 
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Problem deleting branch.", ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.");
       }
    }
 
@@ -247,7 +247,7 @@ public class AtsBranchManager {
             AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't show change report.", ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't show change report.", ex);
       }
    }
 
@@ -263,7 +263,7 @@ public class AtsBranchManager {
          } else
             CommitManagerView.openViewUpon((IBranchArtifact) smaMgr.getSma());
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

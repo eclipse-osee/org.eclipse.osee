@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -186,7 +186,7 @@ public class SMAWorkFlowSection extends SectionPart {
          Result result = item.pageCreated(toolkit, atsWorkPage, smaMgr, xModListener, isEditable || isGlobalEditable);
          if (result.isFalse()) {
             result.popup();
-            OSEELog.logSevere(AtsPlugin.class, "Error in page creation => " + result.getText(), true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
          }
       }
 
@@ -345,7 +345,7 @@ public class SMAWorkFlowSection extends SectionPart {
                try {
                   handleChangeCurrentAssignees();
                } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
 
@@ -383,7 +383,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private void handleChangeTransitionAssignees() throws OseeCoreException {
       WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
       if (toWorkPage == null) {
-         OSEELog.logException(AtsPlugin.class, "No Transition State Selected", null, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
          return;
       }
       if (toWorkPage.isCancelledPage() || toWorkPage.isCompletePage()) {
@@ -476,7 +476,7 @@ public class SMAWorkFlowSection extends SectionPart {
             try {
                handleChangeTransitionAssignees();
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
@@ -567,7 +567,7 @@ public class SMAWorkFlowSection extends SectionPart {
          WorkPageDefinition toWorkPageDefinition = (WorkPageDefinition) transitionToStateCombo.getSelected();
 
          if (toWorkPageDefinition == null) {
-            OSEELog.logException(AtsPlugin.class, "No Transition State Selected", null, true);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
             return;
          }
          if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name())) {
@@ -676,7 +676,7 @@ public class SMAWorkFlowSection extends SectionPart {
          smaMgr.setInTransition(false);
          smaMgr.getEditor().refreshPages();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          smaMgr.setInTransition(false);
       }

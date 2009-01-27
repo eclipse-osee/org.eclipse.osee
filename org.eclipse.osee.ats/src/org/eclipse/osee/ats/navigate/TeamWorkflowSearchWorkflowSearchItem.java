@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
 import java.util.Set;
-
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -17,11 +17,12 @@ import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
@@ -163,7 +164,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
                      }
                      versionCombo.setDataStrings(names.toArray(new String[names.size()]));
                   } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, true);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             }
@@ -177,16 +178,16 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    public void setSelectedUser(User user) {
-      if (assigneeCombo != null)  assigneeCombo.set(user);
+      if (assigneeCombo != null) assigneeCombo.set(user);
    }
 
    private boolean isIncludeCompletedCancelledCheckbox() {
       if (includeCompletedCancelledCheckbox == null) return false;
       return includeCompletedCancelledCheckbox.isSelected();
    }
-   
-   public void includeCompletedCancelledCheckbox (boolean selected) {
-	   if (includeCompletedCancelledCheckbox != null)  includeCompletedCancelledCheckbox.set(selected);
+
+   public void includeCompletedCancelledCheckbox(boolean selected) {
+      if (includeCompletedCancelledCheckbox != null) includeCompletedCancelledCheckbox.set(selected);
    }
 
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
@@ -205,14 +206,14 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
       return null;
    }
-   
-   public void setVersion (String versionStr) {
-	   if (versionCombo != null && versionCombo.getInDataStrings() != null) {
-		   // should check if the version combo was populated
-		   if (versionCombo.getInDataStrings().length > 0) {
-			   versionCombo.set(versionStr);
-		   }
-	   }
+
+   public void setVersion(String versionStr) {
+      if (versionCombo != null && versionCombo.getInDataStrings() != null) {
+         // should check if the version combo was populated
+         if (versionCombo.getInDataStrings().length > 0) {
+            versionCombo.set(versionStr);
+         }
+      }
    }
 
    public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
@@ -220,14 +221,13 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return teamCombo.getSelectedTeamDefintions();
    }
 
-
    public void setSelectedTeamDefinitions(Set<TeamDefinitionArtifact> selectedUsers) {
-      if (teamCombo != null){ 
-    	  teamCombo.setSelectedTeamDefs(selectedUsers);
-          teamCombo.notifyXModifiedListeners();
+      if (teamCombo != null) {
+         teamCombo.setSelectedTeamDefs(selectedUsers);
+         teamCombo.notifyXModifiedListeners();
       }
    }
-   
+
    private ReleasedOption getSelectedReleased() throws OseeCoreException {
       if (releasedCombo == null || releasedCombo.get() == null || releasedCombo.get().equals("")) {
          return ReleasedOption.Both;
@@ -284,7 +284,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          }
          return Result.TrueResult;
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return new Result("Exception: " + ex.getLocalizedMessage());
       }
    }
