@@ -201,8 +201,8 @@ public class ArtifactQuery {
    }
 
    public static List<Artifact> getArtifactsFromType(String artifactTypeName, Branch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL).getArtifacts(1000,
-            null);
+      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL, false).getArtifacts(
+            1000, null);
    }
 
    public static List<Artifact> getArtifactsFromTypes(Collection<String> artifactTypeNames, Branch branch) throws OseeCoreException {
