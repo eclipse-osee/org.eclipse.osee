@@ -13,8 +13,8 @@ import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDefaultWo
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
 /**
  * @author Donald G. Dunne

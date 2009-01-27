@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Donald G. Dunne

@@ -16,8 +16,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.swt.widgets.TreeItem;
 
 public class OseeXViewerTreeReport extends XViewerTreeReport {

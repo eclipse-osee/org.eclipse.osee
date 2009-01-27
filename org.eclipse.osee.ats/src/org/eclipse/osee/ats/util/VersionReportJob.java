@@ -31,11 +31,10 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -51,16 +50,11 @@ public class VersionReportJob extends Job {
       this.verArt = verArt;
    }
 
+   @Override
    public IStatus run(IProgressMonitor monitor) {
       try {
          final String html = getReleaseReportHtml(title + " - " + XDate.getDateNow(XDate.MMDDYYHHMM), verArt, monitor);
-         Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-               XResultView.getResultView().addResultPage(new XResultPage(title, html, Manipulations.HTML_MANIPULATIONS));
-               AWorkbench.popup("Complete", getName() + " Complete...Results in ATS Results");
-            }
-         });
-
+         ResultsEditor.open(new XResultPage(title, html, Manipulations.HTML_MANIPULATIONS));
       } catch (Exception ex) {
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
       }

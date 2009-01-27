@@ -8,11 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.results.xresults;
+package org.eclipse.osee.framework.ui.skynet.results.table.xresults;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;

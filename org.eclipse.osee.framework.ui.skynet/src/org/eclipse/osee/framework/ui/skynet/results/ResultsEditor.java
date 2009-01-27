@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,22 +25,13 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.results.xresults.ResultsXViewer;
-import org.eclipse.osee.framework.ui.skynet.results.xresults.ResultsXViewerContentProvider;
-import org.eclipse.osee.framework.ui.skynet.results.xresults.ResultsXViewerLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultsComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -56,10 +45,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
    private Integer startPage = null;
-   private XResultsComposite xResultComposite;
-   private ResultsXViewer resultsXViewer;
-   private Composite chartComposite;
-   private Canvas chartCanvas;
 
    /*
     * (non-Javadoc)
@@ -74,27 +59,16 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
 
          IResultsEditorProvider provider = getResultsEditorProvider();
 
-         if (provider.getResultsEditorTabs().size() == 0) {
-            createHtmlTab(new ResultsEditorHtmlTab("Error",
-                  AHTML.simplePage("Error: No Pages Provided for \"" + provider.getEditorName() + "\"")));
-         }
-         for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
-            if (tab instanceof IResultsEditorChartTab) {
-               createChartTab((IResultsEditorChartTab) tab);
-            } else if (tab instanceof IResultsEditorHtmlTab) {
-               createHtmlTab((IResultsEditorHtmlTab) tab);
-            } else if (tab instanceof IResultsEditorTableTab) {
-               createTableTab((IResultsEditorTableTab) tab);
-            } else {
-               throw new OseeArgumentException("Unhandled IResultsEditorTab type " + tab.getClass().getSimpleName());
-            }
-         }
-
-         setPartName(provider.getEditorName());
-         if (provider.getResultsEditorTabs().size() == 0) {
-            createHtmlTab(new ResultsEditorHtmlTab("Error",
+         List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();
+         if (tabs.size() == 0) {
+            tabs.add(new ResultsEditorHtmlTab("Error", "Error",
                   AHTML.simplePage("Error: Pages creation error for \"" + provider.getEditorName() + "\"")));
          }
+
+         for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
+            addResultsTab(tab);
+         }
+         setPartName(provider.getEditorName());
          setActivePage(startPage);
 
       } catch (Exception ex) {
@@ -102,30 +76,19 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       }
    }
 
-   private ToolBar createToolBar(Composite parent) {
+   public void addResultsTab(IResultsEditorTab tab) throws OseeCoreException {
+      Composite comp = tab.createTab(getContainer(), this);
+      int pageIndex = addPage(comp);
+      if (startPage != null) {
+         startPage = pageIndex;
+      }
+      setPageText(pageIndex, tab.getTabName());
+   }
+
+   public ToolBar createToolBar(Composite parent) {
       ToolBar toolBar = ALayout.createCommonToolBar(parent);
-      ToolItem item;
 
-      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Results");
-
-      System.err.println("Add printing back in");
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("print.gif"));
-      item.setToolTipText("Print this tab");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            AWorkbench.popup("ERROR", "Not implemented yet");
-            //            if (getCurrentPage() == reportsPageIndex) {
-            //               xResultComposite.getBrowser().setUrl("javascript:print()");
-            //            } else if (getCurrentPage() == chartPageIndex) {
-            //               ImageCapture iCapture = new ImageCapture(chartCanvas);
-            //               iCapture.popupDialog();
-            //            }
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.SEPARATOR);
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Result View");
 
       return toolBar;
    }
@@ -150,67 +113,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       }
       ResultsEditorInput worldEditorInput = (ResultsEditorInput) editorInput;
       return worldEditorInput.getIWorldEditorProvider();
-   }
-
-   private void createChartTab(IResultsEditorChartTab tab) throws OseeCoreException {
-      Chart chart = tab.getChart();
-      if (chart == null) return;
-      chartComposite = ALayout.createCommonPageComposite(getContainer());
-      createToolBar(chartComposite);
-
-      GridData gd = new GridData(GridData.FILL_BOTH);
-      if (chart == null) {
-         Label label = new Label(chartComposite, SWT.BORDER);
-         label.setText("\n   No Chart Provided");
-      } else {
-         chartCanvas = new Canvas(chartComposite, SWT.NONE);
-         chartCanvas.setLayoutData(gd);
-         chartCanvas.addPaintListener(new ChartViewerSWT(chart));
-      }
-
-      int chartPageIndex = addPage(chartComposite);
-      if (startPage != null) {
-         startPage = chartPageIndex;
-      }
-      setPageText(chartPageIndex, tab.getTabName());
-   }
-
-   private void createHtmlTab(IResultsEditorHtmlTab tab) throws OseeCoreException, PartInitException {
-      String html = tab.getReportHtml();
-      if (html == null || html.equals("")) return;
-      Composite comp = ALayout.createCommonPageComposite(getContainer());
-      createToolBar(comp);
-
-      GridData gd = new GridData(GridData.FILL_BOTH);
-      xResultComposite = new XResultsComposite(comp, SWT.BORDER);
-      xResultComposite.setLayoutData(gd);
-      xResultComposite.setHtmlText(html);
-
-      int reportsPageIndex = addPage(comp);
-      if (startPage == null) {
-         startPage = reportsPageIndex;
-      }
-      setPageText(reportsPageIndex, tab.getTabName());
-   }
-
-   private void createTableTab(IResultsEditorTableTab tab) throws OseeCoreException, PartInitException {
-      if (tab.getTableRows() == null || tab.getTableRows().size() == 0) return;
-      Composite comp = ALayout.createCommonPageComposite(getContainer());
-      createToolBar(comp);
-
-      GridData gd = new GridData(GridData.FILL_BOTH);
-      resultsXViewer = new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, tab.getTableColumns());
-      resultsXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-      resultsXViewer.setContentProvider(new ResultsXViewerContentProvider());
-      resultsXViewer.setLabelProvider(new ResultsXViewerLabelProvider(resultsXViewer));
-      resultsXViewer.setInput(tab.getTableRows());
-      resultsXViewer.getTree().setLayoutData(gd);
-
-      int tablePageIndex = addPage(comp);
-      if (startPage == null) {
-         startPage = tablePageIndex;
-      }
-      setPageText(tablePageIndex, tab.getTabName());
    }
 
    /*
@@ -252,6 +154,40 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
    @Override
    public String getActionDescription() {
       return null;
+   }
+
+   public static void open(final String tabName, final String title, final String html) throws OseeCoreException {
+      ResultsEditor.open(new IResultsEditorProvider() {
+
+         @Override
+         public String getEditorName() throws OseeCoreException {
+            return title;
+         }
+
+         @Override
+         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            tabs.add(new ResultsEditorHtmlTab(title, tabName, html));
+            return tabs;
+         }
+      });
+   }
+
+   public static void open(final XResultPage xResultPage) throws OseeCoreException {
+      ResultsEditor.open(new IResultsEditorProvider() {
+
+         @Override
+         public String getEditorName() throws OseeCoreException {
+            return xResultPage.getTitle();
+         }
+
+         @Override
+         public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            tabs.add(new ResultsEditorHtmlTab(xResultPage));
+            return tabs;
+         }
+      });
    }
 
    public static void open(final IResultsEditorProvider provider) throws OseeCoreException {

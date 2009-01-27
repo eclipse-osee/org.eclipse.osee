@@ -11,12 +11,16 @@
 
 package org.eclipse.osee.ats.navigate;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView;
 
 /**
  * @author Donald G. Dunne
@@ -38,7 +42,11 @@ public class DisplayCurrentOseeEventListeners extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       String str = OseeEventManager.getListenerReport();
-      XResultView.getResultView().displayPage(new XResultPage(getName(), str));
+      try {
+         ResultsEditor.open(new XResultPage(getName(), str));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
 }

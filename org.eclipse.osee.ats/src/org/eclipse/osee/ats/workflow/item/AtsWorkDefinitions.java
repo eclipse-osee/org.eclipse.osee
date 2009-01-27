@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -41,7 +42,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.XWidgetFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
 /**
  * Create all the default ATS work items. This keeps from having to create a class for each of these. Also implement

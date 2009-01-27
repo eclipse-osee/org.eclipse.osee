@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
  * @author Jeff C. Phillips

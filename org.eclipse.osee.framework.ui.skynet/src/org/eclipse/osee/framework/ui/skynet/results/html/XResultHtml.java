@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets.xresults;
+package org.eclipse.osee.framework.ui.skynet.results.html;
 
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

@@ -48,13 +48,13 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -227,12 +227,12 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      public void run() {
                         try {
                            String prePage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(fStoredChangeReport));
-                           XResultView.getResultView().addResultPage(
-                                 new XResultPage("Was Change Report for " + teamArt.getHumanReadableId(), prePage));
+                           ResultsEditor.open(new XResultPage("Was Change Report for " + teamArt.getHumanReadableId(),
+                                 prePage));
 
                            String postPage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(currentChangeReport));
-                           XResultView.getResultView().addResultPage(
-                                 new XResultPage("Is Change Report for " + teamArt.getHumanReadableId(), postPage));
+                           ResultsEditor.open(new XResultPage("Is Change Report for " + teamArt.getHumanReadableId(),
+                                 postPage));
 
                         } catch (Exception ex) {
                            OSEELog.logException(AtsPlugin.class, ex, true);
@@ -331,12 +331,12 @@ public class ValidateChangeReports extends XNavigateItemAction {
    private static boolean isXmlChangeDataEqual(String data1, String data2) {
       int checkSum1 = getCheckSum(data1);
       int checkSum2 = getCheckSum(data2);
-      
+
       boolean result = checkSum1 == checkSum2;
       if (!result) {
          ChangeReportComparer comparer = new ChangeReportComparer();
          comparer.compare(data1, data2);
-         
+
          OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("Checksums not equal - stored:[%s] current:[%s]",
                checkSum1, checkSum2));
       }

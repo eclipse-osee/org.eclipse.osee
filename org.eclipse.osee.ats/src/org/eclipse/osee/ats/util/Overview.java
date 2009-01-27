@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.results.html.ResultBrowserHyperCmd;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultHtml;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.ResultBrowserHyperCmd;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultHtml;
 
 public class Overview {
 

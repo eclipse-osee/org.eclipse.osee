@@ -1,4 +1,4 @@
-package org.eclipse.osee.framework.ui.skynet.results;
+package org.eclipse.osee.framework.ui.skynet.results.chart;
 
 import java.util.logging.Level;
 import org.eclipse.birt.chart.device.IDeviceRenderer;

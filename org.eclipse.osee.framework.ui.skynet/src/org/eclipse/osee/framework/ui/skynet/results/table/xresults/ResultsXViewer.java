@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.ui.skynet.results.xresults;
+package org.eclipse.osee.framework.ui.skynet.results.table.xresults;
 
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewer;

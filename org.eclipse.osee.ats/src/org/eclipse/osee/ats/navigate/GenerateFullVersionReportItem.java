@@ -25,13 +25,13 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 import org.eclipse.swt.widgets.Display;
 
 /**

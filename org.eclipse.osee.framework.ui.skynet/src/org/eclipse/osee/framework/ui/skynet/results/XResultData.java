@@ -9,24 +9,26 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets.xresults;
+package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Used to log Info, Warning and Errors to multiple locations (logger, stderr/out and XResultView). Upon completion, a
@@ -124,14 +126,15 @@ public class XResultData {
 
    public void report(final String title, final Manipulations... manipulations) {
       final List<Manipulations> manips = Collections.getAggregate(manipulations);
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            XResultView.getResultView().addResultPage(getReport(title, manipulations));
-            if (!manips.contains(Manipulations.NO_POPUP)) {
-               AWorkbench.popup("Complete", title + " Complete...Results in Result View");
-            }
+      final String html = getReport(title, manipulations).getManipulatedHtml();
+      try {
+         ResultsEditor.open("Results", title, html);
+         if (!manips.contains(Manipulations.NO_POPUP)) {
+            AWorkbench.popup("Complete", title + " Complete...Results in Result View");
          }
-      });
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    public XResultPage getReport(final String title) {

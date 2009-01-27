@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.util;
 
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.ResultBrowserHyperCmd;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.ResultBrowserListener;
+import org.eclipse.osee.framework.ui.skynet.results.html.ResultBrowserHyperCmd;
+import org.eclipse.osee.framework.ui.skynet.results.html.ResultBrowserListener;
 import org.eclipse.swt.browser.LocationEvent;
 
 /**

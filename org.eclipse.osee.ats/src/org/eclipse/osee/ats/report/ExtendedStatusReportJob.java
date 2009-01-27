@@ -31,12 +31,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -62,14 +61,9 @@ public class ExtendedStatusReportJob extends Job {
       try {
 
          final String html = AHTML.simplePage(getStatusReport(monitor, jobName, teamArts));
-         Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-               XResultView.getResultView().addResultPage(
-                     new XResultPage(jobName + " - " + XDate.getDateNow(XDate.MMDDYYHHMM), html,
-                           Manipulations.HTML_MANIPULATIONS));
-               AWorkbench.popup("Complete", jobName + " Complete...Results in ATS Results");
-            }
-         });
+         ResultsEditor.open(new XResultPage(jobName + " - " + XDate.getDateNow(XDate.MMDDYYHHMM), html,
+               Manipulations.HTML_MANIPULATIONS));
+         AWorkbench.popup("Complete", jobName + " Complete...Results in ATS Results");
          monitor.done();
          return Status.OK_STATUS;
       } catch (Exception ex) {

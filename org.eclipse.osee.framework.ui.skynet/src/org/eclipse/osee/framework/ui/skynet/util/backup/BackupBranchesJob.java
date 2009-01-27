@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.jdk.core.util.io.Zip;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.util.EmailableJob;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
 
 /**
  * @author Donald G. Dunne

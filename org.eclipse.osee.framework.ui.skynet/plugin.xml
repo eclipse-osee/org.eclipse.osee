@@ -163,8 +163,6 @@
 		<toc file="reference/skynet_toc.xml" primary="false"/>
 	</extension>
 	<extension id="org.eclipse.osee.framework.ui.skynet" name="OSEE" point="org.eclipse.ui.views">
-		<view class="org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView" icon="images/results.gif" category="osee.jdk.core.category" name="Results" id="org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView">
-   </view>
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" icon="images/artifact_explorer.gif" id="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" name="Artifact Explorer"/>
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" icon="images/group.gif" id="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" name="OSEE Group Explorer"/>
 		<category id="osee.jdk.core.category" name="OSEE"/>

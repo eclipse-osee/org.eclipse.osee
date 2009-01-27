@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.results.xresults;
+package org.eclipse.osee.framework.ui.skynet.results.table.xresults;
 
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 
 public class ResultsXViewerContentProvider implements ITreeContentProvider {
 

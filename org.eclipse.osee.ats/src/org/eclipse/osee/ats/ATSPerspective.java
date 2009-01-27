@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.group.GroupExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -42,7 +41,6 @@ public class ATSPerspective implements IPerspectiveFactory {
 
       layout.addShowViewShortcut(ArtifactHyperView.VIEW_ID);
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
-      layout.addShowViewShortcut(XResultView.VIEW_ID);
       layout.addShowViewShortcut(BranchView.VIEW_ID);
       layout.addShowViewShortcut(GroupExplorer.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
@@ -73,7 +71,6 @@ public class ATSPerspective implements IPerspectiveFactory {
       //      botLeft.addView(ActionSkyWalker.VIEW_ID);
       botLeft.addView(ActionHyperView.VIEW_ID);
       botLeft.addView(QuickSearchView.VIEW_ID);
-      botLeft.addView(XResultView.VIEW_ID);
 
    }
 }

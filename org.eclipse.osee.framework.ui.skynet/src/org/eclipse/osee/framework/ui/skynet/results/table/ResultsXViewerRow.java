@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.ui.skynet.results.xresults;
+package org.eclipse.osee.framework.ui.skynet.results.table;
 
 import java.util.Arrays;
 import java.util.List;

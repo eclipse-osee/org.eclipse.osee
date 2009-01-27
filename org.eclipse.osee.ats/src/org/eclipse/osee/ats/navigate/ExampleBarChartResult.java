@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
-import org.eclipse.osee.framework.ui.skynet.results.ResultsEditorChartTab;
-import org.eclipse.osee.framework.ui.skynet.results.ResultsEditorHtmlTab;
+import org.eclipse.osee.framework.ui.skynet.results.chart.ResultsEditorChartTab;
+import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -77,7 +77,7 @@ public class ExampleBarChartResult extends XNavigateItemAction {
       for (int x = 0; x < 3; x++)
          sb.append(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
       sb.append(AHTML.endMultiColumnTable());
-      return new ResultsEditorHtmlTab("Report", AHTML.simplePage(sb.toString()));
+      return new ResultsEditorHtmlTab("Example Bar Chart Data", "Report", AHTML.simplePage(sb.toString()));
    }
 
    public static Chart createMyChart() {
