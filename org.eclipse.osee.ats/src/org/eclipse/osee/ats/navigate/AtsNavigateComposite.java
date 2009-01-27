@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -81,7 +82,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
          } else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) {
             if (worldSearchItem instanceof TaskEditorParameterSearchItem) {
                TaskEditor.open(new TaskEditorParameterSearchItemProvider(
-                     (TaskEditorParameterSearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy())));
+                     (TaskEditorParameterSearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()),null,tableLoadOptions));
             } else {
                AWorkbench.popup("ERROR", "Unhandled TaskEditor navigate item");
             }

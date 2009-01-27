@@ -703,6 +703,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
       return comp;
    }
+     
 
    @SuppressWarnings("unchecked")
    private void handleAddItemButton() {
@@ -808,6 +809,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
 	   handleAddAllItemButton();
    }
 
+   
    @SuppressWarnings("unchecked")
    private void handleRemoveAllItemButton() {
 

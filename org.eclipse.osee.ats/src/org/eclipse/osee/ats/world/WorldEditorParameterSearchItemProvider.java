@@ -7,6 +7,7 @@ package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -68,9 +69,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldEditorProvider#run(org.eclipse.osee.ats.world.WorldEditor)
     */
-   @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
-
       if (firstTime) {
          firstTime = false;
          worldEditor.setTableTitle(ENTER_OPTIONS_AND_SELECT_SEARCH, false);
@@ -88,7 +87,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       job = new LoadTableJob(worldEditor, worldParameterSearchItem, searchType, tableLoadOptions);
       job.setUser(false);
       job.setPriority(Job.LONG);
-      job.schedule();
+      job.schedule();           
       if (forcePend) {
          try {
             job.join();

@@ -47,9 +47,9 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection
       return Artifacts.commaArts(selectedTeamDefs);
    }
 
-   public void setSelectedTeamDefs(Set<TeamDefinitionArtifact> selectedUsers) {
-      this.selectedTeamDefs = selectedUsers;
-      refresh();
+   public void setSelectedTeamDefs(Set<TeamDefinitionArtifact> selectedTeamDefs) {
+      this.selectedTeamDefs = selectedTeamDefs;
+      notifyXModifiedListeners();
    }
 
    /* (non-Javadoc)

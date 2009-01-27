@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -264,7 +265,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
       private final ITaskEditorProvider itaskEditorProvider;
       private final TaskEditor taskEditor;
-      private final SearchType searchType;
+      private final SearchType searchType;      
 
       public LoadTableJob(ITaskEditorProvider itaskEditorProvider, SearchType searchType, TaskEditor taskEditor) throws OseeCoreException {
          super("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"...");
@@ -310,7 +311,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                      OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                   }
                }
-            });
+            }, true);
          } catch (final Exception ex) {
             monitor.done();
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks", ex);

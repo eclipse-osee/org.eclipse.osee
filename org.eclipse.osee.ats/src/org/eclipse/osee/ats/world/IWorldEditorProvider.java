@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 public interface IWorldEditorProvider {
 
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException;
-
+  
    public String getSelectedName(SearchType searchType) throws OseeCoreException;
 
    public String getName() throws OseeCoreException;

@@ -7,6 +7,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
 import java.util.Set;
+
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -176,12 +177,16 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    public void setSelectedUser(User user) {
-      if (assigneeCombo != null) assigneeCombo.set(user);
+      if (assigneeCombo != null)  assigneeCombo.set(user);
    }
 
    private boolean isIncludeCompletedCancelledCheckbox() {
       if (includeCompletedCancelledCheckbox == null) return false;
       return includeCompletedCancelledCheckbox.isSelected();
+   }
+   
+   public void includeCompletedCancelledCheckbox (boolean selected) {
+	   if (includeCompletedCancelledCheckbox != null)  includeCompletedCancelledCheckbox.set(selected);
    }
 
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
@@ -200,16 +205,29 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
       return null;
    }
+   
+   public void setVersion (String versionStr) {
+	   if (versionCombo != null && versionCombo.getInDataStrings() != null) {
+		   // should check if the version combo was populated
+		   if (versionCombo.getInDataStrings().length > 0) {
+			   versionCombo.set(versionStr);
+		   }
+	   }
+   }
 
-   private Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
+   public Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
       if (teamCombo == null) return java.util.Collections.emptyList();
       return teamCombo.getSelectedTeamDefintions();
    }
 
-   public void setSelectedTeamDefinitions(Set<TeamDefinitionArtifact> selectedUsers) {
-      if (teamCombo != null) teamCombo.setSelectedTeamDefs(selectedUsers);
-   }
 
+   public void setSelectedTeamDefinitions(Set<TeamDefinitionArtifact> selectedUsers) {
+      if (teamCombo != null){ 
+    	  teamCombo.setSelectedTeamDefs(selectedUsers);
+          teamCombo.notifyXModifiedListeners();
+      }
+   }
+   
    private ReleasedOption getSelectedReleased() throws OseeCoreException {
       if (releasedCombo == null || releasedCombo.get() == null || releasedCombo.get().equals("")) {
          return ReleasedOption.Both;

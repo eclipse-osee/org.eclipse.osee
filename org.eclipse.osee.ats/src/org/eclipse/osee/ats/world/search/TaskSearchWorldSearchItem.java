@@ -307,9 +307,17 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return assigneeCombo.getUser();
    }
 
+   public void setSelectedUser(User user) {
+      if (assigneeCombo != null) assigneeCombo.set(user);
+   }
+
    private boolean isIncludeCompletedCancelledCheckbox() {
       if (includeCompletedCancelledCheckbox == null) return false;
       return includeCompletedCancelledCheckbox.isSelected();
+   }
+
+   public void setIncludeCompletedCancelledCheckbox(boolean selected) {
+      if (includeCompletedCancelledCheckbox != null) includeCompletedCancelledCheckbox.set(selected);
    }
 
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
@@ -329,12 +337,36 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return null;
    }
 
+   public void setVersion(String versionStr) {
+      if (versionCombo != null && versionCombo.getInDataStrings() != null) {
+         // should check if the version combo was populated
+         if (versionCombo.getInDataStrings().length > 0) {
+            versionCombo.set(versionStr);
+         }
+      }
+   }
+
    private Collection<TeamDefinitionArtifact> getSelectedTeamDefinitions() throws OseeCoreException {
       return teamCombo.getSelectedTeamDefintions();
    }
 
+   public void setSelectedTeamDefinitions(Set<TeamDefinitionArtifact> selectedUsers) {
+      if (teamCombo != null) {
+         teamCombo.setSelectedTeamDefs(selectedUsers);
+         teamCombo.notifyXModifiedListeners();
+      }
+   }
+
    private Collection<Artifact> getSelectedGroups() throws OseeCoreException {
       return groupWidget.getSelectedGroups();
+   }
+
+   public void setSelectedGroups(Set<Artifact> selectedUsers) {
+      if (groupWidget != null) groupWidget.setSelectedGroups(selectedUsers);
+   }
+
+   public void handleSelectedGroupsClear() {
+      if (groupWidget != null) groupWidget.handleClear();
    }
 
    /* (non-Javadoc)
