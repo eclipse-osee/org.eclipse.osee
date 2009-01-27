@@ -20,14 +20,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -92,6 +88,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
@@ -338,11 +335,12 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    }
 
    public ToolBar createToolBar(Composite parent) {
-      return createToolBar(parent, this, artifact);
+      return createToolBar(parent, this, artifact, new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1), getSite());
    }
 
-   private ToolBar createPreviewToolBar(Composite parent) {
-      ToolBar toolBar = createToolBar(parent, this, artifact);
+   public ToolBar createPreviewToolBar(Composite parent) {
+      ToolBar toolBar =
+            createToolBar(parent, this, artifact, new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1), getSite());
 
       // Add Navigation Browser Navigation Buttons
       back = new ToolItem(toolBar, SWT.NONE);
@@ -411,7 +409,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    }
 
-   private ToolBar createToolBar(Composite parent, IActionable actionable, final Artifact artifact) {
+   public static ToolBar createToolBar(Composite parent, IActionable actionable, final Artifact artifact, Object layoutData, IWorkbenchPartSite site) {
       ISelectionProvider provider = new ISelectionProvider() {
          private ISelection selection;
 
@@ -434,10 +432,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          }
       };
       provider.setSelection(new StructuredSelection(new Object[] {artifact}));
-      getSite().setSelectionProvider(provider);
+      site.setSelectionProvider(provider);
       Composite toolBarComposite = new Composite(parent, SWT.BORDER);
-      GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1);
-      toolBarComposite.setLayoutData(gridData);
+      toolBarComposite.setLayoutData(layoutData);
       GridLayout layout = new GridLayout(2, false);
       layout.marginHeight = 0;
       layout.marginWidth = 0;
@@ -445,7 +442,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       final ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
 
-      gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1);
+      GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1);
       toolBar.setLayoutData(gridData);
       SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
       ToolItem item;
@@ -487,45 +484,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       List<Artifact> artifacts = new LinkedList<Artifact>();
       artifacts.add(artifact);
-      //      try {
-      //         OpenWithMenuListener.loadMenuItems(editMenu, PresentationType.SPECIALIZED_EDIT, artifacts);
-      //      } catch (OseeCoreException ex) {
-      //         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      //      } catch (NotDefinedException ex) {
-      //         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      //      }
-      //      final ToolItem editItem = new ToolItem(toolBar, SWT.DROP_DOWN);
-      //      editItem.setImage(skynetGuiPlugin.getImage("edit_artifact.gif"));
-      //      editItem.setToolTipText("Present this artifact for editing");
-      //
-      //      editItem.addListener(SWT.Selection, new Listener() {
-      //         @Override
-      //         public void handleEvent(Event event) {
-      //            if (event.detail == SWT.ARROW) {
-      //               Rectangle rect = editItem.getBounds();
-      //               Point pt = new Point(rect.x, rect.y + rect.height);
-      //               pt = toolBar.toDisplay(pt);
-      //               editMenu.setLocation(pt.x, pt.y);
-      //               editMenu.setVisible(true);
-      //            }
-      //            if (event.detail == 0) {
-      //               RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
-      //            }
-      //         }
-      //
-      //      });
-      //      boolean itemsEnabled = false;
-      //      for (MenuItem menuItems : editMenu.getItems()) {
-      //         if (menuItems.isEnabled()) {
-      //            itemsEnabled = true;
-      //         }
-      //      }
-      //      boolean enabled =
-      //            !artifact.isReadOnly() && editMenu.getItemCount() != 0 && artifact.getBranch().equals(
-      //                  BranchManager.getDefaultBranch());
-      //      editItem.setEnabled(enabled && itemsEnabled);
-
-      //Preview menu Item 
       final Menu previewMenu = new Menu(parent.getShell(), SWT.POP_UP);
       boolean previewable = false;
       try {
@@ -626,30 +584,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;
-   }
-   private final class DeleteArtifactAction extends Action {
-
-      private final Artifact artifact;
-
-      public DeleteArtifactAction(Artifact artifact) {
-         super("&Delete Artifact\tDelete", Action.AS_PUSH_BUTTON);
-         this.artifact = artifact;
-      }
-
-      @Override
-      public void run() {
-         try {
-            MessageDialog dialog =
-                  new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion", null,
-                        " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-                        MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
-            if (dialog.open() == Window.OK) {
-               artifact.delete();
-            }
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
-      }
    }
 
    private void checkEnabledTooltems() {

@@ -61,7 +61,7 @@ public class HealthHelper {
                " t1 WHERE t1.",
                " = ? AND t1.gamma_id = txs1.gamma_id AND txs1.transaction_id != (SELECT max(txs.transaction_id) FROM osee_tx_details det, osee_txs txs, ",
                " t2 WHERE det.branch_id = ? AND txs.tx_current != 0 AND det.transaction_id = txs.transaction_id AND txs.gamma_id = t2.gamma_id AND t2.",
-               " = ?))"};
+               " = ?)AND txs1.transaction_id in (Select transaction_id FROM osee_tx_details WHERE branch_id = ?))"};
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
@@ -164,7 +164,7 @@ public class HealthHelper {
       List<Object[]> insertParameters = new LinkedList<Object[]>();
 
       for (LocalTxData link : multipleSet) {
-         insertParameters.add(new Object[] {link.dataId, link.branchId, link.dataId});
+         insertParameters.add(new Object[] {link.dataId, link.branchId, link.dataId, link.branchId});
       }
       int total = 0;
       if (insertParameters.size() > 0) {
