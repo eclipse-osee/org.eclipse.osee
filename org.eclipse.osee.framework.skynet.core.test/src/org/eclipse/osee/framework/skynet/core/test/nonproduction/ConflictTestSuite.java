@@ -35,12 +35,9 @@ public class ConflictTestSuite {
 
    public static Test suite() {
       TestSuite suite = new TestSuite();
-      // Only include short tests
       suite.addTest(new MergeBranchManagementTest("testGetMergeBranchNotCreated"));
       suite.addTest(new ConflictDetectionTest("testGetConflictsPerBranch"));
       suite.addTest(new MergeBranchManagementTest("testGetMergeBranchCreated"));
-      //suite.addTest(new ConflictedBranchCommitingTest("CheckCommitWithResolutionErrors"));
-      //Test conflict resolution
       suite.addTest(new ConflictResolutionTest("testResolveConflicts"));
       suite.addTest(new ConflictedBranchCommitingTest("CheckCommitWithoutResolutionErrors"));
       suite.addTest(new CommitTest("testCommitFiltering"));

@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -49,10 +50,16 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
+import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -358,6 +365,24 @@ public class BranchManager {
       if (conflictManager.remainingConflictsExist() && !overwriteUnresolvedConflicts) {
          throw new OseeCoreException("Commit failed due to unresolved conflicts");
       }
+      //Check that none of the artifacts that will be commited contain tracked changes
+      //Use the change report to get attributeChanges and check their content for trackedChanges
+      for (Change change : ChangeManager.getChangesPerBranch(conflictManager.getFromBranch(), new EmptyMonitor())) {
+         if (!change.getModificationType().equals(ModificationType.DELETED)) {
+            if (change instanceof AttributeChanged) {
+               Attribute<?> attribute = ((AttributeChanged) change).getAttribute();
+               if (attribute instanceof WordAttribute) {
+                  if (((WordAttribute) attribute).containsWordAnnotations()) {
+                     throw new OseeCoreException(
+                           String.format(
+                                 "Commit Branch Failed Artifact \"%s\" Art_ID \"%d\" contains Tracked Changes Accept all revision changes and then recommit",
+                                 attribute.getArtifact().getSafeName(), attribute.getArtifact().getArtId()));
+                  }
+               }
+            }
+         }
+      }
+
       new CommitDbTx(conflictManager, archiveSourceBranch).execute();
    }
 
