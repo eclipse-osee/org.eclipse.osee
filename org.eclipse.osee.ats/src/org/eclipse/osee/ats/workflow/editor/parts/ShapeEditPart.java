@@ -19,7 +19,7 @@ import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.EllipseAnchor;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
@@ -141,7 +141,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
          return new Ellipse();
       }
       if (getModel() instanceof RectangleShape) {
-         return new RectangleFigure();
+         return new RoundedRectangle();
       } else {
          // if Shapes gets extended the conditions above must be updated
          throw new IllegalArgumentException();
