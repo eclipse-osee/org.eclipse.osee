@@ -494,6 +494,16 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       actionToMenuItem(menu, toWorkFlow, SWT.PUSH);
       actionToMenuItem(menu, toTask, SWT.PUSH);
       actionToMenuItem(menu, toReview, SWT.PUSH);
+      new MenuItem(menu, SWT.SEPARATOR);
+      try {
+         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+            for (Action action : item.getWorldMenuActions(this)) {
+               actionToMenuItem(menu, action, SWT.PUSH);
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
 
    }
 

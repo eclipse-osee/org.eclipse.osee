@@ -91,6 +91,10 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
          }
 
          setPartName(provider.getEditorName());
+         if (provider.getResultsEditorTabs().size() == 0) {
+            createHtmlTab(new ResultsEditorHtmlTab("Error",
+                  AHTML.simplePage("Error: Pages creation error for \"" + provider.getEditorName() + "\"")));
+         }
          setActivePage(startPage);
 
       } catch (Exception ex) {

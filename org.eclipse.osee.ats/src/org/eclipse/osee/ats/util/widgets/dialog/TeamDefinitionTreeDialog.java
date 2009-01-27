@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.util.widgets.dialog;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.swt.events.SelectionEvent;
@@ -28,7 +29,7 @@ public class TeamDefinitionTreeDialog extends TeamDefinitionTreeWithChildrenDial
    XCheckBox showActionCheck = new XCheckBox("Show Action instead of Workflows");
    Boolean showAction = false;
 
-   public TeamDefinitionTreeDialog(Active active) {
+   public TeamDefinitionTreeDialog(Active active) throws OseeCoreException {
       super(active);
    }
 

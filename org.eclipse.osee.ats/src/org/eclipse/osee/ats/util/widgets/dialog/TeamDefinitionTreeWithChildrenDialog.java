@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -22,7 +21,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -43,17 +41,17 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
    boolean recurseChildren = false;
    protected Composite dialogComp;
 
-   public TeamDefinitionTreeWithChildrenDialog(Active active) {
+   public TeamDefinitionTreeWithChildrenDialog(Active active) throws OseeCoreException {
+      this(TeamDefinitionArtifact.getTeamTopLevelDefinitions(active));
+   }
+
+   public TeamDefinitionTreeWithChildrenDialog(Collection<TeamDefinitionArtifact> teamDefinitionArtifacts) throws OseeCoreException {
       super(Display.getCurrent().getActiveShell(), new ArtifactDescriptiveLabelProvider(),
-            new TeamDefinitionTreeContentProvider(active));
+            new TeamDefinitionTreeContentProvider());
       setTitle("Select Team Definition");
       setMessage("Select Team Definition");
       setComparator(new ArtifactNameSorter());
-      try {
-         setInput(TeamDefinitionArtifact.getTeamTopLevelDefinitions(active));
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
+      setInput(teamDefinitionArtifacts);
    }
 
    /**

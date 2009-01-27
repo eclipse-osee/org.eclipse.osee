@@ -26,6 +26,11 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
 
    private final Active active;
 
+   public TeamDefinitionTreeContentProvider() {
+      super();
+      this.active = null;
+   }
+
    public TeamDefinitionTreeContentProvider(Active active) {
       super();
       this.active = active;
@@ -35,7 +40,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection)
          return ((Collection) parentElement).toArray();
-      else if (parentElement instanceof TeamDefinitionArtifact) {
+      else if (parentElement instanceof TeamDefinitionArtifact && active != null) {
          try {
             TeamDefinitionArtifact teamDef = ((TeamDefinitionArtifact) parentElement);
             return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, false),

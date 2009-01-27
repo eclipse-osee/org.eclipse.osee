@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -27,6 +28,8 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection
 
    public static final String WIDGET_ID = XHyperlabelTeamDefinitionSelection.class.getSimpleName();
    Set<TeamDefinitionArtifact> selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();
+   Collection<TeamDefinitionArtifact> teamDefs;
+   TeamDefinitionTreeWithChildrenDialog dialog = null;
 
    /**
     * @param label
@@ -62,7 +65,11 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection
    @Override
    public boolean handleSelection() {
       try {
-         TeamDefinitionTreeWithChildrenDialog dialog = new TeamDefinitionTreeWithChildrenDialog(Active.Active);
+         if (teamDefs == null) {
+            dialog = new TeamDefinitionTreeWithChildrenDialog(Active.Active);
+         } else {
+            dialog = new TeamDefinitionTreeWithChildrenDialog(teamDefs);
+         }
          int result = dialog.open();
          if (result == 0) {
             selectedTeamDefs.clear();
@@ -76,6 +83,16 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       return false;
+   }
+
+   /**
+    * @param teamDefs the teamDefs to set
+    */
+   public void setTeamDefs(Collection<TeamDefinitionArtifact> teamDefs) {
+      this.teamDefs = teamDefs;
+      if (dialog != null) {
+         dialog.setInput(teamDefs);
+      }
    }
 
 }

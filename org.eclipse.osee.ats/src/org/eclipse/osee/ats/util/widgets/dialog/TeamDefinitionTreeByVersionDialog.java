@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
@@ -42,19 +43,14 @@ public class TeamDefinitionTreeByVersionDialog extends TeamDefinitionTreeDialog 
 
    XListViewer versionList = new XListViewer("Version");
    VersionArtifact selectedVersion = null;
-private Button okButton;
+   private Button okButton;
 
    /**
     * @param active
     */
-   public TeamDefinitionTreeByVersionDialog(Active active) {
+   public TeamDefinitionTreeByVersionDialog(Active active) throws OseeCoreException {
       super(active);
-      try {
-         setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(active));
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-
+      setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(active));
    }
 
    @Override
@@ -100,7 +96,7 @@ private Button okButton;
                selectedVersion = null;
             else
                selectedVersion = (VersionArtifact) versionList.getSelected().iterator().next();
-            
+
             updateButtons();
          };
       });
@@ -123,17 +119,18 @@ private Button okButton;
    }
 
    protected boolean isComplete() {
-	   return selectedVersion != null;
+      return selectedVersion != null;
    }
 
    private void updateButtons() {
       if (okButton != null) {
-    	  okButton.setEnabled(isComplete());
+         okButton.setEnabled(isComplete());
       }
    }
-   
+
+   @Override
    protected void updateOKStatus() {
-	   updateButtons();
+      updateButtons();
    }
-   
+
 }
