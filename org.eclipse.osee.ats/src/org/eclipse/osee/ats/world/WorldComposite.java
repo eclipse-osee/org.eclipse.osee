@@ -87,9 +87,9 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    private final WorldEditor worldEditor;
    private final Composite mainComp;
 
-   public WorldComposite(WorldEditor editor, Composite parent, int style, ToolBar toolBar) {
+   public WorldComposite(WorldEditor worldEditor, Composite parent, int style, ToolBar toolBar) {
       super(parent, style);
-      this.worldEditor = editor;
+      this.worldEditor = worldEditor;
       this.toolBar = toolBar;
 
       setLayout(new GridLayout(1, true));
@@ -497,7 +497,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       new MenuItem(menu, SWT.SEPARATOR);
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            for (Action action : item.getWorldMenuActions(this)) {
+            for (Action action : item.getWorldMenuActions(worldEditor.getWorldEditorProvider(), this)) {
                actionToMenuItem(menu, action, SWT.PUSH);
             }
          }

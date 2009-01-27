@@ -27,6 +27,14 @@ public interface IAtsWorldEditorItem {
 
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
 
-   public List<? extends Action> getWorldMenuActions(WorldComposite worldComposite) throws OseeCoreException;
+   /**
+    * Return actions to add to the World Editor pull-down menu only if applicable for the given worldSearchItem
+    * 
+    * @param worldEditorProvider
+    * @param worldComposite
+    * @return applicable pull-down actions
+    * @throws OseeCoreException
+    */
+   public List<? extends Action> getWorldMenuActions(IWorldEditorProvider worldEditorProvider, WorldComposite worldComposite) throws OseeCoreException;
 
 }

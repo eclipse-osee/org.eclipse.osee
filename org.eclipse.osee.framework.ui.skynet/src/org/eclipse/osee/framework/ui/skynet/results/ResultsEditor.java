@@ -86,7 +86,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
    public void addResultsTab(IResultsEditorTab tab) throws OseeCoreException {
       Composite comp = tab.createTab(getContainer(), this);
       int pageIndex = addPage(comp);
-      if (startPage != null) {
+      if (startPage == null) {
          startPage = pageIndex;
       }
       setPageText(pageIndex, tab.getTabName());

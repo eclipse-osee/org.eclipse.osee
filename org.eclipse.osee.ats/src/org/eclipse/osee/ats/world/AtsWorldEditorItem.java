@@ -46,7 +46,7 @@ public class AtsWorldEditorItem implements IAtsWorldEditorItem {
     * @see org.eclipse.osee.ats.world.IAtsWorldEditorItem#getWorldMenuActions(org.eclipse.osee.ats.world.WorldComposite)
     */
    @Override
-   public List<? extends Action> getWorldMenuActions(WorldComposite worldComposite) throws OseeCoreException {
+   public List<? extends Action> getWorldMenuActions(IWorldEditorProvider worldEditorProvider, WorldComposite worldComposite) throws OseeCoreException {
       return Collections.emptyList();
    }
 
