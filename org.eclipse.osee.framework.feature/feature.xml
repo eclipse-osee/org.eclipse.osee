@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update url="http://lba-cte.msc.az.boeing.com:31110/osee/3.4/lba/"/>
+      <update url="http://lba-cte.msc.az.boeing.com:31110/osee/3.4/releases/rc/lba"/>
    </url>
 
    <plugin
