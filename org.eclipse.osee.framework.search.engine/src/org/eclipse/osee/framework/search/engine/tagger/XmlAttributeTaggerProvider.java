@@ -32,7 +32,7 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;
          try {
-            inputStream = new XmlTextInputStream(new XmlTextInputStream(getValueAsStream(attributeData)));
+            inputStream = new XmlTextInputStream(getValueAsStream(attributeData));
             return WordOrderMatcher.findInStream(inputStream, toSearch, options);
          } finally {
             if (inputStream != null) {
