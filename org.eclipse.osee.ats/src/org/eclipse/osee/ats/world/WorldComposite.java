@@ -452,15 +452,15 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       toReview.setToolTipText("Re-display as Reviews");
 
       if (toolBar != null) {
-         actionToToolItem(toolBar, refreshAction);
+         actionToToolItem(toolBar, refreshAction, "refresh.gif");
          new ToolItem(toolBar, SWT.SEPARATOR);
-         actionToToolItem(toolBar, expandAllAction);
-         actionToToolItem(toolBar, worldXViewer.getCustomizeAction());
+         actionToToolItem(toolBar, expandAllAction, "expandAll.gif");
+         actionToToolItem(toolBar, worldXViewer.getCustomizeAction(), "customize.gif");
          new ToolItem(toolBar, SWT.SEPARATOR);
-         actionToToolItem(toolBar, newWorldEditor);
-         actionToToolItem(toolBar, newWorldEditorSelected);
+         actionToToolItem(toolBar, newWorldEditor, "globe.gif");
+         actionToToolItem(toolBar, newWorldEditorSelected, "globeSelect.gif");
          new ToolItem(toolBar, SWT.SEPARATOR);
-         actionToToolItem(toolBar, new NewAction());
+         actionToToolItem(toolBar, new NewAction(), "newAction.gif");
 
          OseeAts.addButtonToEditorToolBar(worldEditor, AtsPlugin.getInstance(), toolBar, WorldEditor.EDITOR_ID,
                "ATS World");
@@ -507,10 +507,10 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
    }
 
-   private ToolItem actionToToolItem(ToolBar toolBar, Action action) {
+   private ToolItem actionToToolItem(ToolBar toolBar, Action action, String imageName) {
       final Action fAction = action;
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(action.getImageDescriptor().createImage());
+      item.setImage(AtsPlugin.getInstance().getImage(imageName));
       item.setToolTipText(action.getToolTipText());
       item.addSelectionListener(new SelectionAdapter() {
          @Override
