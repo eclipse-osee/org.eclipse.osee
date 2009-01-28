@@ -26,13 +26,12 @@ public class NavigateTestUtil {
    private static Map<String, List<XNavigateItem>> nameToNavItem;
    public static String[] expectedErrorCols1 = {"ats.column.type", "ats.column.team"};
    public static String[] expectedErrorCols2 =
-         {"ats.column.type", "ats.column.state", "ats.column.assignees", "ats.column.versionTarget", "ats.column.team",
-               "ats.column.annualCostAvoidance", "ats.column.remainingHours", "ats.column.statePercentComplete",
-               "ats.column.stateTaskPercentComplete", "ats.column.stateReviewPercentComplete",
-               "ats.column.totalPercentComplete", "ats.column.stateHoursSpent", "ats.column.stateTaskHoursSpent",
-               "ats.column.stateReviewHoursSpent", "ats.column.stateTotalHoursSpent", "ats.column.totalHoursSpent",
-               "ats.column.implementer", "ats.column.completedDate", "ats.column.cancelledDate",
-               "ats.column.manDaysNeeded"};
+         {"ats.column.state", "ats.column.assignees", "ats.column.versionTarget", "ats.column.annualCostAvoidance",
+               "ats.column.remainingHours", "ats.column.statePercentComplete", "ats.column.stateTaskPercentComplete",
+               "ats.column.stateReviewPercentComplete", "ats.column.totalPercentComplete",
+               "ats.column.stateHoursSpent", "ats.column.stateTaskHoursSpent", "ats.column.stateReviewHoursSpent",
+               "ats.column.stateTotalHoursSpent", "ats.column.totalHoursSpent", "ats.column.implementer",
+               "ats.column.completedDate", "ats.column.cancelledDate", "ats.column.manDaysNeeded"};
 
    public static XNavigateItem getAtsNavigateItem(String itemName) {
       if (nameToNavItem == null) {

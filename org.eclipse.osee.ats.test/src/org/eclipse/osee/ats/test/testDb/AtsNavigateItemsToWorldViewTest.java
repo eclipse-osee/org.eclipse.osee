@@ -31,7 +31,8 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.task.TaskEditor;
+import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -49,10 +50,12 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
@@ -66,39 +69,41 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
 
    public void testMyWorld() throws Exception {
       runGeneralLoadingTest("My World", ActionArtifact.class, 6, null);
-      runGeneralXColTest(43);
+      runGeneralXColTest(43, false);
    }
 
    public void testMyFavoritesAndMyRecentlyVisited() throws Exception {
       // Load My Favorites (test My Favorites and use results to test My Recently Visited
       Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
       assertTrue(arts.size() == 3);
-      runGeneralXColTest(20);
+      runGeneralXColTest(20, false);
+      // test the task tab - this is being done via open ats task editor
+      runGeneralXColTest(20, true);
       // Open all three favorites
       for (Artifact artifact : arts)
          SMAEditor.editArtifact(artifact);
       // Test that recently visited returns all three
       runGeneralLoadingTest("My Recently Visited", TeamWorkFlowArtifact.class, 3, null);
-      runGeneralXColTest(20);
+      runGeneralXColTest(20, false);
    }
 
    public void testMyReviews() throws Exception {
       runGeneralLoadingTest("My Reviews", PeerToPeerReviewArtifact.class, 2, null);
       runGeneralLoadingTest("My Reviews", DecisionReviewArtifact.class, 2, null);
-      runGeneralXColTest(4);
+      runGeneralXColTest(4, false);
       runGeneralLoadingTest("My Reviews - All", PeerToPeerReviewArtifact.class, 2, null);
       runGeneralLoadingTest("My Reviews - All", DecisionReviewArtifact.class, 3, null);
-      runGeneralXColTest(5);
+      runGeneralXColTest(5, false);
    }
 
    public void testMySubscribed() throws Exception {
       runGeneralLoadingTest("My Subscribed", TeamWorkFlowArtifact.class, 1, null);
-      runGeneralXColTest(1);
+      runGeneralXColTest(1, false);
    }
 
    public void testMyOriginator() throws Exception {
       runGeneralLoadingTest("My Originator - InWork", TaskArtifact.class, DemoDbTasks.getNumTasks(), null);
-      runGeneralXColTest(68);
+      runGeneralXColTest(68, false);
       runGeneralLoadingTest("My Originator - InWork", TeamWorkFlowArtifact.class, 18, null);
       runGeneralLoadingTest("My Originator - InWork", PeerToPeerReviewArtifact.class, 7, null);
       runGeneralLoadingTest("My Originator - InWork", DecisionReviewArtifact.class, 7, null);
@@ -106,12 +111,12 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       runGeneralLoadingTest("My Originator - All", TeamWorkFlowArtifact.class, 25, null);
       runGeneralLoadingTest("My Originator - All", PeerToPeerReviewArtifact.class, 7, null);
       runGeneralLoadingTest("My Originator - All", DecisionReviewArtifact.class, 8, null);
-      runGeneralXColTest(84);
+      runGeneralXColTest(84, false);
    }
 
    public void testMyCompleted() throws Exception {
       runGeneralLoadingTest("My Completed", TeamWorkFlowArtifact.class, 7, null);
-      runGeneralXColTest(17);
+      runGeneralXColTest(17, false);
       runGeneralLoadingTest("My Completed", PeerToPeerReviewArtifact.class, 1, null);
       runGeneralLoadingTest("My Completed", DecisionReviewArtifact.class, 1, null);
 
@@ -177,15 +182,29 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    }
 
    public void testTeamWorkflowSearch() throws Exception {
+      Set<TeamDefinitionArtifact> selectedUsers = TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorkflowSearchWorkflowSearchItem);
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Joe Smith", 7);
+      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 1);
+      runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, true, 2);
+      runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, false, 1);
+      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Joe Smith", 0);
+      selectedUsers.clear();
+      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 7);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.UnReleased, 7);
       runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Kay Jones", 6);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Released, 0);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Both, 6);
+      for (TeamDefinitionArtifact art : TeamDefinitionArtifact.getTeamDefinitions(Active.Active)) {
+         selectedUsers.add(art);
+      }
+      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 6);
+      runGeneralTeamWorkflowSearchOnVersionTest(item, "SAW_Bld_1", 0);
+      runGeneralTeamWorkflowSearchOnVersionTest(item, "SAW_Bld_2", 5);
+      selectedUsers.clear();
+      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 6);
    }
 
    public void runGeneralTeamWorkflowSearchTest(XNavigateItem item, int expectedNum) throws Exception {
@@ -202,18 +221,29 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
-   public void runGeneralTeamWorkflowSearchOnTeamTest(XNavigateItem item, String team, int expectedNum) throws Exception {
-      Set<TeamDefinitionArtifact> selectedUsers = null;
+   public void runGeneralTeamWorkflowSearchOnTeamTest(XNavigateItem item, Set<TeamDefinitionArtifact> selectedUsers, int expectedNum) throws Exception {
       // need to set team selected users
       WorldEditor editor = getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).setSelectedTeamDefinitions(selectedUsers);
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((TeamWorkflowSearchWorkflowSearchItem) dwl).setSelectedTeamDefinitions(selectedUsers);
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
    public void runGeneralTeamWorkflowSearchOnReleasedTest(XNavigateItem item, ReleasedOption released, int expectedNum) throws Exception {
       WorldEditor editor = getSingleEditorOrFail();
       ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).setSelectedReleased(released);
-      // simulate pushing the search button
+      runGeneralTeamWorkflowSearchTest(item, expectedNum);
+   }
+
+   public void runGeneralTeamWorkflowSearchOnVersionTest(XNavigateItem item, String versionString, int expectedNum) throws Exception {
+      WorldEditor editor = getSingleEditorOrFail();
+      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).setVersion(versionString);
+      runGeneralTeamWorkflowSearchTest(item, expectedNum);
+   }
+
+   public void runGeneralTeamWorkflowSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
+      WorldEditor editor = getSingleEditorOrFail();
+      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).includeCompletedCancelledCheckbox(selected);
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
@@ -332,7 +362,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       return arts;
    }
 
-   public void runGeneralXColTest(int itemCount) throws Exception {
+   public void runGeneralXColTest(int itemCount, boolean testTaskTab) throws Exception {
       int itemCnt, size = 0;
       XViewer xv = getXViewer();
       xv.expandAll();
@@ -342,23 +372,45 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       handleTableCustomization();
       size = getXViewer().getCustomizeMgr().getCurrentTableColumns().size();
       NavigateTestUtil.testExpectedVersusActual("Column Count - ", 109, size);
-      runGeneralXColTest(itemCount, false, "", false);
+      runGeneralXColTest(itemCount, false, "", testTaskTab);
    }
 
    public void runGeneralXColTest(int expected, boolean isErrorCheck, String attributeToDelete, boolean testTaskTab) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> taskArts = new ArrayList<Artifact>();
       List<XViewerColumn> columns = getXViewer().getCustomizeMgr().getCurrentTableColumns();
       ITableLabelProvider labelProv = (ITableLabelProvider) getXViewer().getLabelProvider();
       // want to check all valid children
-      NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
+      TreeItem[] treeItem = getXViewer().getTree().getItems();
+      NavigateTestUtil.getAllArtifactChildren(treeItem, arts);
       NavigateTestUtil.testExpectedVersusActual("Number of Artifacts - ", expected, arts.size());
-      // are we running the fault case?
+      // are we running the fault case?      
       if (testTaskTab) {
-
+         getXViewer().expandAll();
+         arts.clear();
+         // grab the Task Artifacts and set them as selected
+         this.getAllTreeItems(getXViewer().getTree().getItems(), taskArts);
+         // open the task in the Task Editor
+         TaskEditor.open(new TaskEditorSimpleProvider("ATS Tasks", getXViewer().getSelectedTaskArtifacts()));
+         handleTableCustomization();
+         columns = getXViewer().getCustomizeMgr().getCurrentTableColumns();
+         verifyXColumns(labelProv, arts, columns);
       } else if (isErrorCheck)
          verifyXColumnsHasErrors(labelProv, arts, columns, attributeToDelete);
       else
          verifyXColumns(labelProv, arts, columns);
+   }
+
+   public void getAllTreeItems(TreeItem[] treeItem, List<Artifact> taskArts) throws OseeCoreException {
+      for (TreeItem item : treeItem) {
+         if (item.getData() instanceof Artifact) {
+            if (((Artifact) item.getData()).getArtifactTypeName().equals("Task")) {
+               getXViewer().getTree().setSelection(item);
+               taskArts.add((Artifact) item.getData());
+            }
+         }
+         if (item.getExpanded()) getAllTreeItems(item.getItems(), taskArts);
+      }
    }
 
    public WorldEditor getSingleEditorOrFail() throws OseeCoreException {
@@ -374,7 +426,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    }
 
    public void handleTableCustomization() throws OseeCoreException {
-      // add all columns
+      // add all columns      
       CustomizeDemoTableTestUtil cdialog = new CustomizeDemoTableTestUtil(getXViewer());
       cdialog.createDialogArea(getSingleEditorOrFail().getWorldComposite());
       cdialog.handleAddAllItemButtonClick();
@@ -392,17 +444,6 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       for (Artifact art : arts) {
          art.addAttributeFromString(attributeToDelete, attributeValue);
       }
-   }
-
-   public void verifyTaskTabXColumns(List<Artifact> arts) throws OseeCoreException {
-      List<Artifact> tasks = new ArrayList<Artifact>();
-      for (Artifact art : arts) {
-         if (art.getHumanReadableId().equals("Q1J8M") || art.getHumanReadableId().equals("XBBMF")) {
-            AtsLib.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
-
-         }
-      }
-
    }
 
    public void verifyXColumnsHasErrors(ITableLabelProvider labelProv, List<Artifact> arts, List<XViewerColumn> columns, String attributeToDelete) throws OseeCoreException {

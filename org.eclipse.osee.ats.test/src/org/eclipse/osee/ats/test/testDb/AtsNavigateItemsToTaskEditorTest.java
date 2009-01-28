@@ -6,16 +6,24 @@
 package org.eclipse.osee.ats.test.testDb;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import junit.framework.TestCase;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.config.demo.config.DemoDbGroups;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
@@ -36,32 +44,77 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
    }
 
    public void testTaskSearch() throws Exception {
+      Set<TeamDefinitionArtifact> selectedUsers = TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
       TaskEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TaskSearchWorldSearchItem);
-      handleGeneralDoubleClickAndTestResults(item, TaskSearchWorldSearchItem.class, 0);
-      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Joe Smith", 7);
-      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Kay Jones", 6);
+      handleGeneralDoubleClickAndTestResults(item, TaskSearchWorldSearchItem.class, 0,
+            TableLoadOption.DontCopySearchItem);
+      runGeneralTaskSearchOnCompletedCancelledTest(item, true, 14);
+      runGeneralTaskSearchOnCompletedCancelledTest(item, false, 0);
+      runGeneralTaskSearchOnTeamTest(item, selectedUsers, 0);
+      selectedUsers.clear();
+      for (TeamDefinitionArtifact art : TeamDefinitionArtifact.getTeamDefinitions(Active.Active)) {
+         selectedUsers.add(art);
+      }
+      runGeneralTaskSearchOnTeamTest(item, selectedUsers, 14);
+      runGeneralTaskSearchOnAssigneeTest(item, "Joe Smith", 14);
+      runGeneralTaskSearchOnVersionTest(item, "SAW_Bld_2", 14);
+      runGeneralTaskSearchOnVersionTest(item, "SAW_Bld_1", 0);
+      selectedUsers.clear();
+      runGeneralTaskSearchOnTeamTest(item, selectedUsers, 14);
+      runGeneralTaskSearchOnAssigneeTest(item, "Kay Jones", 8);
+
    }
 
-   public void runGeneralTeamWorkflowSearchTest(XNavigateItem item, int expectedNum) throws Exception {
+   public void runGeneralTaskSearchTest(XNavigateItem item, int expectedNum) throws Exception {
       TaskEditor editor = getSingleEditorOrFail();
-      // needed to force for test...
-      editor.getTaskEditorProvider().setTableLoadOptions(TableLoadOption.ForcePend);
       editor.getTaskActionPage().reSearch();
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      // validate
       NavigateTestUtil.testExpectedVersusActual(item.getName(), expectedNum, arts.size());
    }
 
-   public void runGeneralTeamWorkflowSearchOnAssigneeTest(XNavigateItem item, String assignee, int expectedNum) throws Exception {
+   public void runGeneralTaskSearchOnAssigneeTest(XNavigateItem item, String assignee, int expectedNum) throws Exception {
       TaskEditor editor = getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setSelectedUser(UserManager.getUserByName(assignee));
-      runGeneralTeamWorkflowSearchTest(item, expectedNum);
+      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setSelectedUser(UserManager.getUserByName(assignee));
+      runGeneralTaskSearchTest(item, expectedNum);
    }
 
-   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) throws OseeCoreException {
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+   public void runGeneralTaskSearchOnTeamTest(XNavigateItem item, Set<TeamDefinitionArtifact> selectedUsers, int expectedNum) throws Exception {
+      // need to set team selected users
+      TaskEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getTaskActionPage().getDynamicWidgetLayoutListener();
+      ((TaskSearchWorldSearchItem) dwl).setSelectedTeamDefinitions(selectedUsers);
+      runGeneralTaskSearchTest(item, expectedNum);
+   }
+
+   public void runGeneralTaskSearchOnVersionTest(XNavigateItem item, String versionString, int expectedNum) throws Exception {
+      TaskEditor editor = getSingleEditorOrFail();
+      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setVersion(versionString);
+      runGeneralTaskSearchTest(item, expectedNum);
+   }
+
+   public void runGeneralTaskSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
+      Artifact groupArt =
+            ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, DemoDbGroups.TEST_GROUP_NAME,
+                  AtsPlugin.getAtsBranch());
+      Set<Artifact> selectedUsers = new HashSet<Artifact>();
+      TaskEditor editor = getSingleEditorOrFail();
+      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCompletedCancelledCheckbox(selected);
+      if (selected) {
+         // select the group
+         selectedUsers.add(groupArt);
+         ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setSelectedGroups(selectedUsers);
+      } else {
+         // clear the group selected
+         ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).handleSelectedGroupsClear();
+      }
+      runGeneralTaskSearchTest(item, expectedNum);
+   }
+
+   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType, TableLoadOption tableLoadOption) throws OseeCoreException {
+      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI,
+            tableLoadOption);
       TaskEditor taskEditor = getSingleEditorOrFail();
       assertTrue(taskEditor != null);
       Collection<Artifact> arts = taskEditor.getLoadedArtifacts();
