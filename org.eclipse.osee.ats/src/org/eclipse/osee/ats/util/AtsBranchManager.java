@@ -64,6 +64,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -478,6 +479,41 @@ public class AtsBranchManager {
          this.overrideStateValidation = overrideStateValidation;
       }
 
+      private class ParentMismatchWarning implements Runnable {
+         private final Branch parentBranch;
+         private final Branch workflowWorkingBranchParent;
+         private final String versionName;
+         private boolean commit;
+
+         /**
+          * @param parentBranch
+          * @param versionName
+          * @param workflowWorkingBranchParent
+          */
+         public ParentMismatchWarning(Branch parentBranch, String versionName, Branch workflowWorkingBranchParent) {
+            super();
+            this.parentBranch = parentBranch;
+            this.versionName = versionName;
+            this.workflowWorkingBranchParent = workflowWorkingBranchParent;
+         }
+
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            commit =
+                  MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+                        "Warning: committing into a branch other than its direct parent", String.format(
+                              "Targeted version \"%s\" branch \"%s\" does not match parent branch \"%s\"", versionName,
+                              parentBranch.getBranchShortName(), workflowWorkingBranchParent.getBranchShortName()));
+         }
+
+         public boolean stopCommit() {
+            return !commit;
+         }
+      }
+
       /* (non-Javadoc)
        * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
        */
@@ -494,7 +530,7 @@ public class AtsBranchManager {
             // the team definition's attribute or the related version's attribute
             if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
                // Only perform checks if team definition uses ATS versions
-               TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
+               final TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
                if (team.getTeamDefinition().isTeamUsesVersions()) {
 
                   // Confirm that team is targeted for version
@@ -505,7 +541,7 @@ public class AtsBranchManager {
                   }
 
                   // Validate that a parent branch is specified in ATS configuration
-                  Branch parentBranch = getParentBranchForWorkingBranchCreation();
+                  final Branch parentBranch = getParentBranchForWorkingBranchCreation();
                   if (parentBranch == null) {
                      return new Status(
                            Status.ERROR,
@@ -518,18 +554,16 @@ public class AtsBranchManager {
                   // Validate that the configured parentBranch is the same as the working branch's
                   // parent branch.
                   Integer targetedVersionBranchId = parentBranch.getBranchId();
-                  Integer workflowWorkingBranchParentBranchId =
-                        smaMgr.getBranchMgr().getWorkingBranch().getParentBranchId();
+                  final Branch workflowWorkingBranchParent = smaMgr.getBranchMgr().getWorkingBranch();
+                  Integer workflowWorkingBranchParentBranchId = workflowWorkingBranchParent.getParentBranchId();
                   if (!targetedVersionBranchId.equals(workflowWorkingBranchParentBranchId)) {
-                     return new Status(
-                           Status.ERROR,
-                           AtsPlugin.PLUGIN_ID,
-                           String.format(
-                                 "Commit Branch Failed: Workflow \"%s\" targeted version \"%s\" branch id \"%s\" does not match branch's " + "parent branch id \"%s\"",
-                                 smaMgr.getSma().getHumanReadableId(),
-                                 team.getWorldViewTargetedVersion().getDescriptiveName(),
-                                 String.valueOf(targetedVersionBranchId),
-                                 String.valueOf(workflowWorkingBranchParentBranchId)));
+                     ParentMismatchWarning runnable =
+                           new ParentMismatchWarning(parentBranch,
+                                 team.getWorldViewTargetedVersion().getDescriptiveName(), workflowWorkingBranchParent);
+                     Displays.ensureInDisplayThread(runnable, true);
+                     if (runnable.stopCommit()) {
+                        return Status.OK_STATUS;
+                     }
                   }
                }
             }
