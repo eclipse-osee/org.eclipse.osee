@@ -90,11 +90,28 @@ public final class SkynetTransaction extends DbTransaction {
       return branch;
    }
 
+   /**
+    * Performs branch validation checks
+    */
+   private void checkBranch(Artifact artifact) throws OseeStateException {
+      ensureCorrectBranch(artifact);
+      ensureBranchIsNotArchived(artifact);
+   }
+
    private void ensureCorrectBranch(Artifact artifact) throws OseeStateException {
       if (!artifact.getBranch().equals(branch)) {
          String msg =
                String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
                      artifact.getHumanReadableId(), artifact.getBranch(), branch);
+         throw new OseeStateException(msg);
+      }
+   }
+
+   private void ensureBranchIsNotArchived(Artifact artifact) throws OseeStateException {
+      if (artifact.getBranch().isArchived()) {
+         String msg =
+               String.format("The artifact [%s] is on an archived branch [%s]", artifact.getHumanReadableId(),
+                     artifact.getBranch());
          throw new OseeStateException(msg);
       }
    }
@@ -173,7 +190,7 @@ public final class SkynetTransaction extends DbTransaction {
 
    public void deleteArtifact(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
       if (!artifact.isInDb()) return;
-      ensureCorrectBranch(artifact);
+      checkBranch(artifact);
       madeChanges = true;
 
       addArtifactHelper(artifact, ModificationType.DELETED);
@@ -184,7 +201,7 @@ public final class SkynetTransaction extends DbTransaction {
    }
 
    public void addArtifact(Artifact artifact) throws OseeCoreException {
-      ensureCorrectBranch(artifact);
+      checkBranch(artifact);
       madeChanges = true;
 
       ModificationType modificationType;
