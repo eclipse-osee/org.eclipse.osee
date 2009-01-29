@@ -66,7 +66,7 @@ public class AddPeerToPeerReviewService extends WorkPageService {
          public void linkActivated(HyperlinkEvent e) {
             try {
                StateListAndTitleDialog dialog =
-                     new StateListAndTitleDialog("Related Review State",
+                     new StateListAndTitleDialog("Add Peer to Peer Review",
                            "Select state to that review will be associated with.",
                            smaMgr.getWorkFlowDefinition().getPageNames());
                dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});

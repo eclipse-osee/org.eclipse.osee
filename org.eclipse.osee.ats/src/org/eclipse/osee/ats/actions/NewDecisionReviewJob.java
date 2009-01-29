@@ -36,21 +36,31 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
  */
 public class NewDecisionReviewJob extends Job {
    private final TeamWorkFlowArtifact teamParent;
-   private final boolean againstCurrentState;
    private DecisionReviewArtifact decisionReviewArtifact;
    private final ReviewBlockType reviewBlockType;
+   private final String reviewTitle;
+   private final String againstState;
+   private final String options;
+   private final Collection<User> assignees;
+   private final String description;
 
-   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, boolean againstCurrentState) {
+   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, String options, Collection<User> assignees) {
       super("Creating New Decision Review");
       this.teamParent = teamParent;
+      this.reviewTitle = reviewTitle;
+      this.againstState = againstState;
       this.reviewBlockType = reviewBlockType;
-      this.againstCurrentState = againstCurrentState;
+      this.description = description;
+      this.options = options;
+      this.assignees = assignees;
    }
 
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         decisionReviewArtifact = createNewDecisionReview(teamParent, reviewBlockType, againstCurrentState);
+         decisionReviewArtifact =
+               createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState, description, options,
+                     assignees);
          decisionReviewArtifact.persistAttributesAndRelations();
          AtsLib.openAtsAction(decisionReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
@@ -66,8 +76,11 @@ public class NewDecisionReviewJob extends Job {
       return createNewDecisionReview(teamParent, reviewBlockType,
             "Should we do this?  Yes will require followup, No will not",
             againstCurrentState ? teamParent.getSmaMgr().getStateMgr().getCurrentStateName() : null,
-            "Enter description of the decision, if any",
-            "Yes;Followup;<" + UserManager.getUser().getUserId() + ">\n" + "No;Completed;", null);
+            "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null);
+   }
+
+   public static String getDefaultDecisionReviewOptions() throws OseeCoreException {
+      return "Yes;Followup;<" + UserManager.getUser().getUserId() + ">\n" + "No;Completed;";
    }
 
    public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, String options, Collection<User> assignees) throws OseeCoreException {

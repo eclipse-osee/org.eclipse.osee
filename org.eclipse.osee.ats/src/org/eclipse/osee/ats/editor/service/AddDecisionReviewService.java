@@ -10,17 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -60,12 +63,28 @@ public class AddDecisionReviewService extends WorkPageService {
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Add Decision Review",
-                  "Create a Decision Review and attach it to the current state?")) return;
-            NewDecisionReviewJob job = new NewDecisionReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), null, true);
-            job.setUser(true);
-            job.setPriority(Job.LONG);
-            job.schedule();
+            try {
+               StateListAndTitleDialog dialog =
+                     new StateListAndTitleDialog("Create Decision Review",
+                           "Select state to that review will be associated with.",
+                           smaMgr.getWorkFlowDefinition().getPageNames());
+               dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
+               if (dialog.open() == 0) {
+                  if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
+                     AWorkbench.popup("ERROR", "Must enter review title");
+                     return;
+                  }
+                  NewDecisionReviewJob job =
+                        new NewDecisionReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), null, dialog.getReviewTitle(),
+                              dialog.getSelectedState(), null, NewDecisionReviewJob.getDefaultDecisionReviewOptions(),
+                              null);
+                  job.setUser(true);
+                  job.setPriority(Job.LONG);
+                  job.schedule();
+               }
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
       refresh();

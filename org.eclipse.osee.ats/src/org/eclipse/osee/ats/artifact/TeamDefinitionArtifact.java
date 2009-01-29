@@ -196,10 +196,11 @@ public class TeamDefinitionArtifact extends Artifact {
 
    public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(TeamDefinitionArtifact teamDef) throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-      if (teamDefs == null) {
-         teamDefs = new HashSet<TeamDefinitionArtifact>();
-         for (Artifact art : teamDef.getChildren())
-            if (art instanceof TeamDefinitionArtifact) teamDefs.add((TeamDefinitionArtifact) art);
+      teamDefs.add(teamDef);
+      for (Artifact art : teamDef.getChildren()) {
+         if (art instanceof TeamDefinitionArtifact) {
+            teamDefs.addAll(getTeamsFromItemAndChildren((TeamDefinitionArtifact) art));
+         }
       }
       return teamDefs;
    }

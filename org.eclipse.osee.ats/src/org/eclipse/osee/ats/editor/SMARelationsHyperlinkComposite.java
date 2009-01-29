@@ -83,13 +83,22 @@ public class SMARelationsHyperlinkComposite extends Composite {
       return false;
    }
 
+   private String getCompletedCancelledString(Artifact art) throws OseeCoreException {
+      if (art instanceof StateMachineArtifact) {
+         if (((StateMachineArtifact) art).getSmaMgr().isCancelledOrCompleted()) {
+            return " " + ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getCurrentStateName() + " ";
+         }
+      }
+      return "";
+   }
+
    private void processArtifact(String name, Artifact thisArt) throws OseeCoreException {
       for (AtsRelation side : sides) {
          for (final Artifact art : thisArt.getRelatedArtifacts(side)) {
             RelationLink rel = thisArt.getRelations(side, art).iterator().next();
             toolkit.createLabel(
                   this,
-                  name + " \"" + thisArt.getArtifactTypeName() + "\" " + rel.getSidePhrasingFor(thisArt) + " \"" + art.getArtifactTypeName() + "\" ");
+                  name + " \"" + thisArt.getArtifactTypeName() + "\" " + rel.getSidePhrasingFor(thisArt) + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
             Hyperlink link =
                   toolkit.createHyperlink(
                         this,
@@ -133,7 +142,13 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    private void refreshActionableItemsLabel() throws OseeCoreException {
-      if ((actionableItemsLabel != null) && smaMgr.getSma() instanceof ReviewSMArtifact) actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeName() + "\" is review of Actionable Items  \"" + ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
+      if ((actionableItemsLabel != null) && smaMgr.getSma() instanceof ReviewSMArtifact) {
+         actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeName() +
+         //
+         "\" is review of Actionable Items  \"" +
+         //
+         ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
+      }
    }
 
    public void refresh() throws OseeCoreException {
