@@ -263,7 +263,7 @@ public class UpdateArtifactJob extends UpdateJob {
       } else if (paragraphRoot != null) {
          //Lets try and remove everything after the listnum tag
          if (!cleanUpParagraph(paragraphRoot)) {
-            throw new OseeCoreException("Merge document can't be saved because fldChar tags could not be found");
+            throw new OseeCoreException("This document does not contain the approporate tags to be correctly saved.");
          }
       }
 
