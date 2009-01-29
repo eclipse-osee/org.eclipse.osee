@@ -116,8 +116,7 @@ public class ArtifactFactoryManager {
       try {
          chStmt.runPreparedQuery(SELECT_FROM_FACTORY);
          while (chStmt.next()) {
-            String factoryClassName = null;
-            factoryClassName = chStmt.getString("factory_class");
+            String factoryClassName = chStmt.getString("factory_class");
             int factoryId = chStmt.getInt("factory_id");
             createFactory(factoryClassName, factoryId);
          }
