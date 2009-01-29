@@ -114,6 +114,7 @@ public class WordTemplateProcessor {
    private List<AttributeElement> attributeElements = new LinkedList<AttributeElement>();
    final List<Artifact> nonTemplateArtifacts = new LinkedList<Artifact>();
    private Set<String> ignoreAttributeExtensions = new HashSet<String>();
+   private Set<Artifact> processedArtifacts = new HashSet<Artifact>();
    private int previousTemplateCopyIndex;
    private IRenderer renderer;
 
@@ -302,6 +303,8 @@ public class WordTemplateProcessor {
       for (Artifact artifact : artifacts) {
          processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
       }
+      //maintain a list of artifacts that have been processed so we do not have duplicates.
+      processedArtifacts.clear();
    }
 
    /**
@@ -422,26 +425,31 @@ public class WordTemplateProcessor {
 
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       if (!artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native")) {
-         if (outlining) {
-            String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
-            CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+         //If the artifact has not been processed
+         if (!processedArtifacts.contains(artifact)) {
+            if (outlining) {
+               String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
+               CharSequence paragraphNumber =
+                     wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
-            VariableMap options = renderer.getOptions();
-            if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
-               if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-                  artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
-                  artifact.persistAttributes((SkynetTransaction) options.getValue(ITemplateRenderer.TRANSACTION_OPTION));
+               VariableMap options = renderer.getOptions();
+               if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
+                  if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
+                     artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
+                     artifact.persistAttributes((SkynetTransaction) options.getValue(ITemplateRenderer.TRANSACTION_OPTION));
+                  }
                }
             }
-         }
-         processAttributes(artifact, wordMl, presentationType, multipleArtifacts);
-         if (recurseChildren) {
-            for (Artifact childArtifact : artifact.getChildren()) {
-               processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
+            processAttributes(artifact, wordMl, presentationType, multipleArtifacts);
+            if (recurseChildren) {
+               for (Artifact childArtifact : artifact.getChildren()) {
+                  processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
+               }
             }
-         }
-         if (outlining) {
-            wordMl.endOutlineSubSection();
+            if (outlining) {
+               wordMl.endOutlineSubSection();
+            }
+            processedArtifacts.add(artifact);
          }
       } else {
          nonTemplateArtifacts.add(artifact);
