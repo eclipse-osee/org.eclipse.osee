@@ -1342,4 +1342,15 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return "";
    }
 
+   public String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException {
+      return "";
+   }
+
+   public String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException {
+      return "";
+   }
+
+   public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException {
+      return "";
+   }
 }

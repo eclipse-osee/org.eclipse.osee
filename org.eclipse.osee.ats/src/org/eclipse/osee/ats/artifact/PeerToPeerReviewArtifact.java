@@ -266,4 +266,19 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       return Artifacts.toString("; ", getUserRoleManager().getRoleUsers(Role.Reviewer));
    }
 
+   @Override
+   public String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException {
+      return String.valueOf(getDefectManager().getNumIssues());
+   }
+
+   @Override
+   public String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException {
+      return String.valueOf(getDefectManager().getNumMajor());
+   }
+
+   @Override
+   public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException {
+      return String.valueOf(getDefectManager().getNumMinor());
+   }
+
 }

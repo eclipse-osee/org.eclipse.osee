@@ -163,4 +163,10 @@ public interface IWorldViewArtifact {
 
    public Result isWorldViewRemainHoursValid() throws OseeCoreException;
 
+   public String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException;
+
+   public String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException;
+
+   public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException;
+
 }

@@ -1242,4 +1242,16 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return null;
    }
 
+   public String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException {
+      return "";
+   }
+
+   public String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException {
+      return "";
+   }
+
+   public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException {
+      return "";
+   }
+
 }
