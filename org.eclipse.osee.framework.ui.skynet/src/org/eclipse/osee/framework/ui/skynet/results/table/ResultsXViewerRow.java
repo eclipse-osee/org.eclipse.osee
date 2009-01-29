@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.ui.skynet.results.table;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -14,13 +15,23 @@ import java.util.List;
 public class ResultsXViewerRow implements IResultsXViewerRow {
 
    private final List<String> values;
+   private final Artifact doubleClickOpenArtifact;
 
-   public ResultsXViewerRow(List<String> values) {
+   public ResultsXViewerRow(List<String> values, Artifact doubleClickOpenArtifact) {
+      this.doubleClickOpenArtifact = doubleClickOpenArtifact;
       this.values = values;
    }
 
+   public ResultsXViewerRow(List<String> values) {
+      this(values, null);
+   }
+
+   public ResultsXViewerRow(String[] values, Artifact doubleClickOpenArtifact) {
+      this(Arrays.asList(values), doubleClickOpenArtifact);
+   }
+
    public ResultsXViewerRow(String[] values) {
-      this.values = Arrays.asList(values);
+      this(Arrays.asList(values), null);
    }
 
    /* (non-Javadoc)
@@ -29,6 +40,13 @@ public class ResultsXViewerRow implements IResultsXViewerRow {
    @Override
    public String getValue(int col) {
       return values.get(col);
+   }
+
+   /**
+    * @return the doubleClickOpenArtifact
+    */
+   public Artifact getDoubleClickOpenArtifact() {
+      return doubleClickOpenArtifact;
    }
 
 }

@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -71,11 +70,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
    public MassXViewer(Composite parent, int style, MassArtifactEditor editor) {
       super(parent, style, ((MassArtifactEditorInput) editor.getEditorInput()).getXViewerFactory());
       this.editor = editor;
-      this.addDoubleClickListener(new IDoubleClickListener() {
-         public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
-            handleDoubleClick();
-         };
-      });
       OseeEventManager.addListener(this);
    }
 
@@ -206,6 +200,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
       }
    }
 
+   @Override
    public void handleDoubleClick() {
       if (getSelectedArtifacts().size() == 0) return;
       Artifact art = getSelectedArtifacts().iterator().next();

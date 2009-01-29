@@ -27,7 +27,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
@@ -113,11 +112,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    public WorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
       super(parent, style, xViewerFactory);
-      this.addDoubleClickListener(new IDoubleClickListener() {
-         public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
-            handleDoubleClick();
-         };
-      });
    }
 
    @Override
@@ -672,6 +666,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       return true;
    }
 
+   @Override
    public void handleDoubleClick() {
       if (getSelectedArtifactItems().size() == 0) return;
       Artifact art = getSelectedArtifactItems().iterator().next();

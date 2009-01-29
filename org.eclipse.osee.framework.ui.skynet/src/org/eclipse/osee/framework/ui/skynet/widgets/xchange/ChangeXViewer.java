@@ -20,6 +20,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -59,26 +60,32 @@ public class ChangeXViewer extends XViewer {
       this.xChangeViewer = xRoleViewer;
    }
 
-   public void handleDoubleClick() throws Exception {
-      if (getSelectedChanges().size() == 0) return;
+   @Override
+   public void handleDoubleClick() {
+      try {
+         if (getSelectedChanges().size() == 0) return;
 
-      Change change = getSelectedChanges().iterator().next();
-      if (CHANGE_DEBUG) {
-         System.out.println(String.format(
-               "Handling a Double Click in the Change Report Table for a %s Change on Artifact %s ",
-               change.getItemKind(), change.getArtId()));
-      }
-      Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
-
-      if (artifact != null) {
-         ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-         artifacts.add(artifact);
-
-         if (StaticIdManager.hasValue(UserManager.getUser(), EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
-            RendererManager.previewInJob(artifacts);
-         } else {
-            RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
+         Change change = getSelectedChanges().iterator().next();
+         if (CHANGE_DEBUG) {
+            System.out.println(String.format(
+                  "Handling a Double Click in the Change Report Table for a %s Change on Artifact %s ",
+                  change.getItemKind(), change.getArtId()));
          }
+         Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
+
+         if (artifact != null) {
+            ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
+            artifacts.add(artifact);
+
+            if (StaticIdManager.hasValue(UserManager.getUser(),
+                  EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
+               RendererManager.previewInJob(artifacts);
+            } else {
+               RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
