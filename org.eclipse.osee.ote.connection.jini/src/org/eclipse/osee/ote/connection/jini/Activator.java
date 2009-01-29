@@ -9,6 +9,7 @@ import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -27,6 +28,8 @@ public class Activator extends Plugin {
     private ServiceTracker packageAdminTracker;
     private JiniConnectorRegistrar registrar;
 
+    private ServiceRegistration registration;
+    
     private ExportClassLoader exportClassLoader;
 
     /**
@@ -74,7 +77,7 @@ public class Activator extends Plugin {
 	registrar = new JiniConnectorRegistrar(exportClassLoader, service);
 
 	// register the service
-	context.registerService(IJiniConnectorRegistrar.class.getName(),
+		registration = context.registerService(IJiniConnectorRegistrar.class.getName(),
 		registrar, null);
     }
 
@@ -86,6 +89,7 @@ public class Activator extends Plugin {
      */
     public void stop(BundleContext context) throws Exception {
 	registrar.shutdown();
+	registration.unregister();
 	super.stop(context);
 	connectionServiceTracker.close();
 	packageAdminTracker.close();
