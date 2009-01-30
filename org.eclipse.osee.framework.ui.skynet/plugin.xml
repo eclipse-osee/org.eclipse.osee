@@ -1260,4 +1260,12 @@
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeArtifactType">
     </Operation>
  </extension>
+  <extension
+        id="ShowRevertTransactions"
+        name="ShowRevertTransactions"
+        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+     <Operation
+           className="org.eclipse.osee.framework.ui.skynet.blam.operation.ShowRevertTransactions">
+     </Operation>
+  </extension>
 </plugin>

@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.io.File;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,6 +46,8 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
+import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
+import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -182,7 +186,15 @@ public class MergeUtility {
                      "Revert Source Artifact", "Handle Later"}, 1);
          if (dialog.open() == 0) {
             try {
-               ((ArtifactConflict) conflict).revertSourceArtifact();
+               List<List<Artifact>> artifacts = new LinkedList<List<Artifact>>();
+
+               List<Artifact> artifactList = new LinkedList<Artifact>();
+               artifactList.add(((ArtifactConflict) conflict).getSourceArtifact());
+               artifacts.add(artifactList);
+               RevertWizard wizard = new RevertWizard(artifacts);
+               NonmodalWizardDialog dialog2 = new NonmodalWizardDialog(Display.getCurrent().getActiveShell(), wizard);
+               dialog2.create();
+               dialog2.open();
                return true;
             } catch (Exception ex) {
                OseeLog.log(MergeUtility.class, Level.SEVERE, ex);

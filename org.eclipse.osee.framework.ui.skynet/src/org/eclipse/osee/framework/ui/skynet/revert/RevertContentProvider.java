@@ -1,0 +1,76 @@
+/*
+ * Created on Jan 29, 2009
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.framework.ui.skynet.revert;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.swt.widgets.Combo;
+
+/**
+ * @author Theron Virgin
+ */
+public class RevertContentProvider extends ArtifactContentProvider {
+   private static Object[] EMPTY_ARRAY = new Object[0];
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider#getChildren(java.lang.Object)
+    */
+   private Combo artifactSelectionBox = null;
+   private List<List<Artifact>> artifacts = null;
+
+   public RevertContentProvider(Combo artifactSelectionBox, List<List<Artifact>> artifacts) {
+      super();
+      this.artifactSelectionBox = artifactSelectionBox;
+      this.artifacts = artifacts;
+   }
+
+   @Override
+   public Object[] getChildren(Object parentElement) {
+      if (parentElement instanceof Artifact) {
+         Artifact parentItem = (Artifact) parentElement;
+         if (!RevertDeletionCheck.isRootArtifact(parentItem, artifactSelectionBox, artifacts)) {
+            return EMPTY_ARRAY;
+         }
+         try {
+            if (AccessControlManager.checkObjectPermission(parentItem, PermissionEnum.READ)) {
+               Collection<Artifact> children = parentItem.getChildren();
+               if (children != null) {
+                  List<Artifact> childs = new ArrayList<Artifact>();
+                  for (Artifact artifact : children) {
+                     if (RevertDeletionCheck.relationWillBeReverted(artifact)) {
+                        childs.add(artifact);
+                     }
+                  }
+                  return childs.toArray();
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      } else if (parentElement instanceof Collection) {
+         return ((Collection<?>) parentElement).toArray();
+      }
+
+      return EMPTY_ARRAY;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider#hasChildren(java.lang.Object)
+    */
+   @Override
+   public boolean hasChildren(Object element) {
+      return getChildren(element).length > 0;
+   }
+
+}

@@ -184,7 +184,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    public static void explore(Collection<Artifact> artifacts) {
-      IWorkbenchPage page = AWorkbench.getActivePage();
+      explore(artifacts, AWorkbench.getActivePage());
+   }
+
+   public static void explore(Collection<Artifact> artifacts, IWorkbenchPage page) {
       ArtifactExplorer artifactExplorer;
       try {
          artifactExplorer =
