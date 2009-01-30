@@ -12,11 +12,9 @@
 package org.eclipse.osee.framework.core.client.server;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +23,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.core.client.CorePreferences;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -37,8 +34,7 @@ public class HttpServer implements Runnable {
    private static final int DEFAULT_HTTP_DEVELOPMENT_PORT = 8011;
    protected static final String DEFAULT_SERVICE_NAME = "osee.http.server";
 
-   private static String serverAddress;
-   private static boolean isRemoteServer = false;
+   private static final String serverAddress = "localhost";
    private static boolean neverRun = true;
    private final int port;
    private boolean listenFlag;
@@ -48,32 +44,7 @@ public class HttpServer implements Runnable {
 
    private static final Map<String, HttpServer> availableServers = new HashMap<String, HttpServer>();
 
-   public static void remoteServerStartup() {
-      startServers(10);
-      isRemoteServer = true;
-   }
-
    public static String getLocalServerAddress() {
-      if (serverAddress == null) {
-         if (isRemoteServer) {
-            try {
-               InetAddress address = InetAddress.getLocalHost();
-               serverAddress = address.getHostAddress();
-            } catch (UnknownHostException ex) {
-               try {
-                  serverAddress = CorePreferences.getDefaultInetAddress().getHostAddress();
-               } catch (UnknownHostException ex1) {
-                  OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex1.toString(), ex1);
-               }
-            }
-         } else {
-            try {
-               serverAddress = CorePreferences.getDefaultInetAddress().getHostAddress();
-            } catch (UnknownHostException ex) {
-               OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
-            }
-         }
-      }
       return serverAddress;
    }
 
