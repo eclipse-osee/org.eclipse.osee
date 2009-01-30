@@ -11,8 +11,6 @@
    <extension-point id="DefaultInitialBranchProvider" name="DefaultInitialBranchProvider" schema="schema/DefaultInitialBranchProvider.exsd"/>
    <extension-point id="ArtifactAnnotation" name="ArtifactAnnotation" schema="schema/ArtifactAnnotation.exsd"/>
    <extension-point id="OseeDbSchema" name="OseeDbSchema" schema="schema/OseeDbSchema.exsd"/>
-   <extension-point id="WordMLConversionHandler" name="WordMLConversionHandler" schema="schema/WordMLConversionHandler.exsd"/>
-   <extension-point id="HtmlImageHandler" name="HtmlImageHandler" schema="schema/HtmlImageHandler.exsd"/>
    <extension-point id="WebPage" name="WebPage" schema="schema/WebPage.exsd"/>
    <extension-point id="ArtifactCheck" name="ArtifactCheck" schema="schema/ArtifactCheck.exsd"/>
    <extension-point id="AttributeType" name="AttributeType" schema="schema/AttributeType.exsd"/>
@@ -219,12 +217,7 @@
                SchemaFile="dbschemas/SKYNET.VERSIONING.SCHEMA.xml">
          </Schema>
       </extension>
-      <extension
-            point="org.eclipse.osee.framework.skynet.core.HtmlImageHandler">
-         <HtmlImageHandler
-               ClassName="org.eclipse.osee.framework.skynet.core.httpRequests.EMZHtmlImageHandler">
-         </HtmlImageHandler>
-      </extension>
+
       <extension
             id="BooleanAttribute"
             name="BooleanAttribute"

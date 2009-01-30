@@ -12,18 +12,19 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -61,7 +62,6 @@ import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
-import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
@@ -70,8 +70,9 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.ProgressEvent;
-import org.eclipse.swt.browser.ProgressListener;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -96,22 +97,17 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  */
 public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEditor, IArtifactsPurgedEventListener, IBranchEventListener, IAccessControlEventListener, IArtifactModifiedEventListener, IArtifactsChangeTypeEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor";
-   private int previewPageIndex;
    private int attributesPageIndex;
    private int newAttributesPageIndex;
    private int relationsPageIndex;
    private int detailsCompositeIndex;
    private Artifact artifact;
    private final MultiPageEditorPart editor;
-   private BrowserComposite previewComposite;
    private RelationsComposite relationsComposite;
    private AttributesComposite attributeComposite;
    private NewAttributesComposite newAttributeComposite;
    private DetailsBrowserComposite detailsComposite;
-   private ToolItem forward;
-   private ToolItem back;
 
-   // correspond to the indices of tool items on the toolbar
    private static final int REVEAL_ARTIFACT_INDEX = 2;
    private static final int EDIT_ARTIFACT_INDEX = 4;
 
@@ -205,9 +201,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    protected void createPages() {
       OseeContributionItem.addTo(this, true);
 
-      previewPageIndex = createPreviewPage();
-      setPageText(previewPageIndex, "Preview");
-
       attributesPageIndex = createAttributesPage();
       setPageText(attributesPageIndex, "Attributes");
 
@@ -253,9 +246,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    public void setFocus() {
       int activePage = getActivePage();
 
-      if (activePage == previewPageIndex) {
-         previewComposite.setFocus();
-      } else if (activePage == attributesPageIndex) {
+      if (activePage == attributesPageIndex) {
          attributeComposite.setFocus();
       } else if (activePage == relationsPageIndex) {
          relationsComposite.setFocus();
@@ -266,14 +257,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       }
    }
 
-   private int createPreviewPage() {
-
-      renderPreviewPage();
-      return addPage(previewComposite.getParent());
-   }
-
    private int createDetailsPage() {
-
       renderDetailsPage();
       return addPage(detailsComposite.getParent());
    }
@@ -283,23 +267,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          Composite composite = createCommonPageComposite();
          detailsComposite = new DetailsBrowserComposite(artifact, composite, SWT.BORDER, createToolBar(composite));
       }
-   }
-
-   private void renderPreviewPage() {
-      if (previewComposite == null) {
-         Composite composite = createCommonPageComposite();
-         previewComposite = new BrowserComposite(composite, SWT.BORDER, createPreviewToolBar(composite));
-         try {
-            if (artifact.getAnnotations().size() > 0) {
-               new AnnotationComposite(previewComposite, SWT.BORDER, artifact);
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-         previewComposite.addProgressListener(new BrowserProgressListener(previewComposite, back, forward));
-      }
-
-      RendererManager.previewInComposite(previewComposite, artifact);
    }
 
    private int createAttributesPage() {
@@ -336,77 +303,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    public ToolBar createToolBar(Composite parent) {
       return createToolBar(parent, this, artifact, new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1), getSite());
-   }
-
-   public ToolBar createPreviewToolBar(Composite parent) {
-      ToolBar toolBar =
-            createToolBar(parent, this, artifact, new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1), getSite());
-
-      // Add Navigation Browser Navigation Buttons
-      back = new ToolItem(toolBar, SWT.NONE);
-      back.setImage(SkynetGuiPlugin.getInstance().getImage("nav_backward.gif"));
-      back.setToolTipText("Back to previous page");
-      back.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            previewComposite.back();
-         }
-      });
-      forward = new ToolItem(toolBar, SWT.NONE);
-      forward.setImage(SkynetGuiPlugin.getInstance().getImage("nav_forward.gif"));
-      forward.setToolTipText("Forward to the next page.");
-      forward.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            previewComposite.forward();
-         }
-      });
-
-      ToolItem refresh = new ToolItem(toolBar, SWT.NONE);
-      refresh.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
-      refresh.setToolTipText("Refresh the current page");
-      refresh.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            previewComposite.refresh();
-         }
-      });
-
-      ToolItem isDirty = new ToolItem(toolBar, SWT.NONE);
-      isDirty.setImage(SkynetGuiPlugin.getInstance().getImage("dirty.gif"));
-      isDirty.setToolTipText("Show what attribute or relation making editor dirty.");
-      isDirty.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            Result result = reportIsDirty();
-            AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
-         }
-      });
-
-      ToolItem snapshotSave = new ToolItem(toolBar, SWT.NONE);
-      snapshotSave.setImage(SkynetGuiPlugin.getInstance().getImage("snapshotSave.gif"));
-      snapshotSave.setToolTipText("Store a snapshot of the preview by rendering the artifact and storing a copy for others to use in their preview window.");
-      snapshotSave.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            final String oldUrl = previewComposite.getUrl();
-            if (oldUrl.contains("GET.ARTIFACT") && !oldUrl.contains("&force=true")) {
-               previewComposite.setUrl(oldUrl + "&force=true");
-               Job job = new Job("Update Preview") {
-                  @Override
-                  protected IStatus run(IProgressMonitor monitor) {
-                     renderPreviewPage();
-                     return Status.OK_STATUS;
-                  }
-               };
-               job.setUser(false);
-               job.setPriority(Job.SHORT);
-               job.schedule(2000);
-            }
-         }
-      });
-      return toolBar;
-
    }
 
    public static ToolBar createToolBar(Composite parent, IActionable actionable, final Artifact artifact, Object layoutData, IWorkbenchPartSite site) {
@@ -577,6 +473,41 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("copyToClipboard.gif"));
+      item.setToolTipText("Copy artifact url link to clipboard. NOTE: This is a link pointing to the latest version of the artifact.");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (artifact != null) {
+               Clipboard clipboard = null;
+               try {
+                  Map<String, String> parameters = new HashMap<String, String>();
+                  parameters.put("guid", artifact.getGuid());
+                  parameters.put("branchId", String.valueOf(artifact.getBranch().getBranchId()));
+
+                  String url =
+                        HttpUrlBuilder.getInstance().getOsgiArbitrationServiceUrl(OseeServerContext.PROCESS_CONTEXT,
+                              parameters);
+
+                  clipboard = new Clipboard(null);
+                  clipboard.setContents(new Object[] {url}, new Transfer[] {TextTransfer.getInstance()});
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
+                        "Error obtaining url for - guid: [%s] branch:[%s]", artifact.getGuid(), artifact.getBranch()),
+                        ex);
+               } finally {
+                  if (clipboard != null && !clipboard.isDisposed()) {
+                     clipboard.dispose();
+                     clipboard = null;
+                  }
+               }
+            }
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.SEPARATOR);
+
       Text artifactInfoLabel = new Text(toolBarComposite, SWT.END);
       artifactInfoLabel.setEditable(false);
 
@@ -592,10 +523,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             public void run() {
                boolean areBranchesEqual = artifact.getBranch().equals(BranchManager.getDefaultBranch());
                boolean isEditAllowed = artifact.isReadOnly() != true;
-
-               previewComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
-               previewComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed && areBranchesEqual);
-               previewComposite.getToolBar().update();
 
                attributeComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
                attributeComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(
@@ -655,7 +582,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
             attributeComposite.refreshArtifact(artifact);
             relationsComposite.refreshArtifact(artifact);
-            renderPreviewPage();
          }
       });
    }
@@ -667,44 +593,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    protected void setInput(IEditorInput input) {
       super.setInput(input);
       this.artifact = ((ArtifactEditorInput) input).getArtifact();
-   }
-
-   private final class BrowserProgressListener implements ProgressListener {
-
-      private final BrowserComposite browserComposite;
-      private final ToolItem back;
-      private final ToolItem forward;
-
-      private BrowserProgressListener(BrowserComposite browserComposite, ToolItem back, ToolItem forward) {
-         this.browserComposite = browserComposite;
-         this.back = back;
-         this.forward = forward;
-      }
-
-      private void updateBackNextBusy() {
-         back.setEnabled(browserComposite.isBackEnabled());
-         forward.setEnabled(browserComposite.isForwardEnabled());
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.swt.browser.ProgressListener#changed(org.eclipse.swt.browser.ProgressEvent)
-       */
-      public void changed(ProgressEvent event) {
-         if (event.total != 0) {
-            updateBackNextBusy();
-         }
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.swt.browser.ProgressListener#completed(org.eclipse.swt.browser.ProgressEvent)
-       */
-      public void completed(ProgressEvent event) {
-         updateBackNextBusy();
-      }
    }
 
    /* (non-Javadoc)
@@ -827,7 +715,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             onDirtied();
          }
       });
-      renderPreviewPage();
    }
 
    private void refreshRelationsComposite() {

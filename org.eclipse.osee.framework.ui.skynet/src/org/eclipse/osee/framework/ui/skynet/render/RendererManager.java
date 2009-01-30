@@ -30,11 +30,9 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.BrowserComposite;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
@@ -85,6 +83,7 @@ public class RendererManager {
    /**
     * Maps all renderers in the system to their applicable artifact types
     */
+   @SuppressWarnings("unchecked")
    private void registerRendersFromExtensionPoints() {
       List<IConfigurationElement> elements =
             ExtensionPoints.getExtensionElements(SkynetGuiPlugin.getInstance(), "ArtifactRenderer", "Renderer");
@@ -93,7 +92,7 @@ public class RendererManager {
          String classname = element.getAttribute("classname");
          String bundleName = element.getContributor().getName();
          try {
-            Class<IRenderer> clazz = Platform.getBundle(bundleName).loadClass(classname);
+            Class<IRenderer> clazz = (Class<IRenderer>) Platform.getBundle(bundleName).loadClass(classname);
             Constructor<IRenderer> constructor = clazz.getConstructor();
             IRenderer renderer = constructor.newInstance();
             renderers.put(renderer.getClass().getCanonicalName(), renderer);
@@ -303,34 +302,5 @@ public class RendererManager {
          }
       };
       Jobs.run("Combined Diff", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
-   }
-
-   public static void previewInComposite(final BrowserComposite previewComposite, final Artifact artifact) {
-      previewInComposite(previewComposite, artifact, null);
-   }
-
-   public static void previewInComposite(final BrowserComposite previewComposite, final Artifact artifact, final VariableMap options) {
-      IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public void run(IProgressMonitor monitor) throws Exception {
-            IRenderer renderer = getBestRenderer(PresentationType.PREVIEW_IN_COMPOSITE, artifact, options);
-            final String url = renderer.getArtifactUrl(artifact);
-            Displays.ensureInDisplayThread(new Runnable() {
-               public void run() {
-                  previewComposite.setUrl(url);
-               }
-            });
-         }
-      };
-
-      Jobs.run("Preview " + artifact.getDescriptiveName(), runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID,
-            false);
-   }
-
-   public static String renderToHtml(Artifact artifact) throws OseeCoreException {
-      return renderToHtml(artifact, null);
-   }
-
-   public static String renderToHtml(Artifact artifact, VariableMap options) throws OseeCoreException {
-      return getBestRenderer(PresentationType.PREVIEW_IN_COMPOSITE, artifact, options).generateHtml(artifact);
    }
 }

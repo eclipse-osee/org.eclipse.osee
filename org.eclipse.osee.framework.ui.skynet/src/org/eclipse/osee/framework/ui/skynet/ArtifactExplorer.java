@@ -75,7 +75,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
@@ -96,8 +95,6 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.HierarchicalReportDialog;
-import org.eclipse.osee.framework.ui.skynet.util.HtmlReportJob;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -159,7 +156,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private MenuItem massEditMenuItem;
    private MenuItem skywalkerMenuItem;
    private MenuItem createMenuItem;
-   private MenuItem reportMenuItem;
    private MenuItem openWithMenuItem;
    private MenuItem accessControlMenuItem;
    private MenuItem lockMenuItem;
@@ -364,8 +360,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       new MenuItem(popupMenu, SWT.SEPARATOR);
       new GlobalMenu(popupMenu, globalMenuHelper);
       createRenameArtifactMenuItem(popupMenu);
-      new MenuItem(popupMenu, SWT.SEPARATOR);
-      createReportMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createHistoryMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -857,12 +851,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       });
    }
 
-   private void createReportMenuItem(Menu parentMenu) {
-      reportMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      reportMenuItem.setText("&Hierarchical Report");
-      reportMenuItem.addSelectionListener(new ReportListener());
-   }
-
    private void createLockMenuItem(Menu parentMenu) {
       lockMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       lockMenuItem.addSelectionListener(new SelectionListener() {
@@ -969,33 +957,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       @Override
       public void widgetSelected(SelectionEvent event) {
          expandAll((IStructuredSelection) treeViewer.getSelection());
-      }
-   }
-
-   public class ReportListener extends SelectionAdapter {
-      @Override
-      public void widgetSelected(SelectionEvent event) {
-         Iterator<?> iter = ((IStructuredSelection) treeViewer.getSelection()).iterator();
-         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
-         while (iter.hasNext()) {
-            artifacts.add((Artifact) iter.next());
-         }
-         if (artifacts.size() > 0) {
-            HierarchicalReportDialog ld = new HierarchicalReportDialog(Display.getCurrent().getActiveShell());
-            int result = ld.open();
-            if (result == 0) {
-               HtmlReportJob job;
-               try {
-                  job =
-                        new HtmlReportJob("Hierarchical Report", artifacts,
-                              CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
-                  job.setRecurseChildren(ld.isRecurseChildren());
-                  Jobs.startJob(job);
-               } catch (Exception ex) {
-                  OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         }
       }
    }
 

@@ -250,14 +250,6 @@
                 className="org.eclipse.osee.framework.ui.skynet.blam.operation.CopyTransactionDataToBaseline">
           </Operation>
        </extension>
-       <extension
-             id="ArtifactSnapshotAllItems"
-             name="Regenerate Artifact Preview Snapshots For All Items"
-             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-          <Operation
-                className="org.eclipse.osee.framework.ui.skynet.blam.operation.ArtifactSnapshotAllItems">
-          </Operation>
-       </extension>
 	<extension id="native" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.NativeRenderer"/>
 	</extension>
@@ -303,28 +295,6 @@
 	<extension point="org.eclipse.osee.framework.skynet.core.ArtifactAnnotation">
 		<ArtifactAnnotation classname="org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationHandler">
          </ArtifactAnnotation>
-	</extension>
-	<extension point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
-		<IHttpServerRequest classname="org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest">
-         </IHttpServerRequest>
-	</extension>
-	<extension point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
-		<IHttpServerRequest classname="org.eclipse.osee.framework.ui.skynet.httpRequests.BranchRequest">
-         </IHttpServerRequest>
-	</extension>
-	<extension point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
-		<IHttpServerRequest classname="org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactTreeRequest">
-         </IHttpServerRequest>
-	</extension>
-	<extension point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
-		<IHttpServerRequest classname="org.eclipse.osee.framework.ui.skynet.httpRequests.HttpImageRequest">
-         </IHttpServerRequest>
-	</extension>
-	<extension id="SkynetHttpServer" name="SkynetHttpServer" point="org.eclipse.core.runtime.applications">
-		<application>
-			<run class="org.eclipse.osee.framework.ui.skynet.SkynetHttpServerApplication">
-            </run>
-		</application>
 	</extension>
 	<extension id="AddCommonBranch" name="AddCommonBranch" point="org.eclipse.osee.framework.database.IDbInitializationTask">
 		<DatabaseTask classname="org.eclipse.osee.framework.ui.skynet.dbinit.AddCommonBranch">

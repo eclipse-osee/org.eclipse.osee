@@ -3,13 +3,11 @@
  */
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.io.InputStream;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 
@@ -73,12 +71,6 @@ public abstract class WordRenderer extends FileRenderer {
          throw new OseeStateException("No program associated with the extension .doc");
       }
       return wordApp;
-   }
-
-   @Override
-   public String generateHtml(Artifact artifact) throws OseeCoreException {
-      InputStream xml = getRenderInputStream(artifact, PresentationType.PREVIEW);
-      return WordConverter.toHtml(xml);
    }
 
    /* (non-Javadoc)

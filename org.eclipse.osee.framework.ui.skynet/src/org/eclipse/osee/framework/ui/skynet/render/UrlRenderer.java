@@ -11,12 +11,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
@@ -42,16 +40,6 @@ public class UrlRenderer extends DefaultArtifactRenderer {
    @Override
    public UrlRenderer newInstance() throws OseeCoreException {
       return new UrlRenderer();
-   }
-
-   @Override
-   public String getArtifactUrl(Artifact artifact) throws OseeCoreException {
-      String url = artifact.getSoleAttributeValue("Content URL", "");
-      if (url.startsWith("ws:")) {
-         IFile iFile = WorkspaceURL.getIFile(url);
-         url = iFile.getLocation().toString();
-      }
-      return url;
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {

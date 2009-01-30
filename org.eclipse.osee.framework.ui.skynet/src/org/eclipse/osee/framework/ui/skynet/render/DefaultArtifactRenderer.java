@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -66,23 +65,6 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#generateHtml(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
-    */
-   @Override
-   public String generateHtml(Artifact artifact) throws OseeCoreException {
-      return "<b>" + artifact.getDescriptiveName() + " - " + artifact.getHumanReadableId() + "</b>";
-   }
-
-   @Override
-   public String generateHtml(List<Artifact> artifacts) throws OseeCoreException {
-      StringBuilder result = new StringBuilder();
-      for (Artifact artifact : artifacts) {
-         result.append(generateHtml(artifact));
-      }
-      return result.toString();
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#compare(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
@@ -110,13 +92,6 @@ public class DefaultArtifactRenderer implements IRenderer {
     */
    public boolean supportsCompare() {
       return false;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getArtifactUrl(org.eclipse.osee.framework.skynet.core.artifact.Artifact, boolean)
-    */
-   public String getArtifactUrl(Artifact artifact) throws OseeCoreException {
-      return ArtifactRequest.getInstance().getUrl(artifact);
    }
 
    /* (non-Javadoc)

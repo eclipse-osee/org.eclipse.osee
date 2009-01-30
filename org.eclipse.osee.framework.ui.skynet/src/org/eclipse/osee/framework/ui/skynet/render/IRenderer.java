@@ -47,10 +47,6 @@ public interface IRenderer {
 
    public abstract void preview(List<Artifact> artifacts) throws OseeCoreException;
 
-   public abstract String generateHtml(Artifact artifact) throws OseeCoreException;
-
-   public abstract String generateHtml(List<Artifact> artifacts) throws OseeCoreException;
-
    public abstract void print(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
 
    public abstract void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
@@ -64,8 +60,6 @@ public interface IRenderer {
    public abstract int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException;
 
    public abstract String getName();
-
-   public abstract String getArtifactUrl(Artifact artifact) throws OseeCoreException;
 
    public abstract void setOptions(VariableMap options) throws OseeArgumentException;
 
