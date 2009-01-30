@@ -69,7 +69,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection
          if (teamDefs == null) {
             dialog = new TeamDefinitionTreeWithChildrenDialog(Active.Active);
          } else {
-            dialog = new TeamDefinitionTreeWithChildrenDialog(teamDefs);
+            dialog = new TeamDefinitionTreeWithChildrenDialog(Active.Active, teamDefs);
          }
          int result = dialog.open();
          if (result == 0) {

@@ -42,12 +42,12 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
    protected Composite dialogComp;
 
    public TeamDefinitionTreeWithChildrenDialog(Active active) throws OseeCoreException {
-      this(TeamDefinitionArtifact.getTeamTopLevelDefinitions(active));
+      this(active, TeamDefinitionArtifact.getTeamTopLevelDefinitions(active));
    }
 
-   public TeamDefinitionTreeWithChildrenDialog(Collection<TeamDefinitionArtifact> teamDefinitionArtifacts) throws OseeCoreException {
+   public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<TeamDefinitionArtifact> teamDefinitionArtifacts) throws OseeCoreException {
       super(Display.getCurrent().getActiveShell(), new ArtifactDescriptiveLabelProvider(),
-            new TeamDefinitionTreeContentProvider());
+            new TeamDefinitionTreeContentProvider(active));
       setTitle("Select Team Definition");
       setMessage("Select Team Definition");
       setComparator(new ArtifactNameSorter());
