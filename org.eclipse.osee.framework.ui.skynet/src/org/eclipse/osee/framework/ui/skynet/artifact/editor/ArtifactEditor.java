@@ -302,10 +302,11 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    }
 
    public ToolBar createToolBar(Composite parent) {
-      return createToolBar(parent, this, artifact, new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1), getSite());
+      return createToolBar(parent, this, artifact, new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1), getSite(),
+            EDITOR_ID, "Artifact Editor");
    }
 
-   public static ToolBar createToolBar(Composite parent, IActionable actionable, final Artifact artifact, Object layoutData, IWorkbenchPartSite site) {
+   public static ToolBar createToolBar(Composite parent, IActionable actionable, final Artifact artifact, Object layoutData, IWorkbenchPartSite site, final String actionableItemName, final String editorId) {
       ISelectionProvider provider = new ISelectionProvider() {
          private ISelection selection;
 
@@ -344,8 +345,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       ToolItem item;
 
       if (actionable != null) {
-         OseeAts.addButtonToEditorToolBar(actionable, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID,
-               "Artifact Editor");
+         OseeAts.addButtonToEditorToolBar(actionable, SkynetGuiPlugin.getInstance(), toolBar, editorId,
+               actionableItemName);
       }
 
       item = new ToolItem(toolBar, SWT.PUSH);
