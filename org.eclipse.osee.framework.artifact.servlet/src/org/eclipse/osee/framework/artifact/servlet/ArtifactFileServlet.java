@@ -50,10 +50,10 @@ public class ArtifactFileServlet extends OseeHttpServlet {
             uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchId());
          }
          if (Strings.isValid(uri)) {
-            IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
+            IResourceLocator locator = Activator.getResourceLocatorManager().getResourceLocator(uri);
             Options options = new Options();
             options.put(StandardOptions.DecompressOnAquire.name(), true);
-            IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+            IResource resource = Activator.getResourceManager().acquire(locator, options);
 
             if (resource != null) {
                wasProcessed = true;

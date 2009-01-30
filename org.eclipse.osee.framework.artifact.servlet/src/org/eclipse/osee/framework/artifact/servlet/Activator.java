@@ -42,8 +42,7 @@ public class Activator implements BundleActivator {
       resourceManagementTracker = new ServiceTracker(context, IResourceManager.class.getName(), null);
       resourceManagementTracker.open();
 
-      httpTracker =
-            new OseeHttpServiceTracker(context, OseeServerContext.PROCESS_CONTEXT, ArtifactFileServlet.class);
+      httpTracker = new OseeHttpServiceTracker(context, OseeServerContext.PROCESS_CONTEXT, ArtifactFileServlet.class);
       httpTracker.open();
    }
 
@@ -64,15 +63,11 @@ public class Activator implements BundleActivator {
       instance = null;
    }
 
-   public static Activator getInstance() {
-      return instance;
+   public static IResourceManager getResourceManager() {
+      return (IResourceManager) instance.resourceManagementTracker.getService();
    }
 
-   public IResourceManager getResourceManager() {
-      return (IResourceManager) resourceManagementTracker.getService();
-   }
-
-   public IResourceLocatorManager getResourceLocatorManager() {
-      return (IResourceLocatorManager) resourceLocatorManagerTracker.getService();
+   public static IResourceLocatorManager getResourceLocatorManager() {
+      return (IResourceLocatorManager) instance.resourceLocatorManagerTracker.getService();
    }
 }

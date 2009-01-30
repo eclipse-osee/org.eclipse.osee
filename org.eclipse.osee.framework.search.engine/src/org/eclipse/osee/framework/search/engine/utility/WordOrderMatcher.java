@@ -1,8 +1,13 @@
-/*
- * Created on Jan 15, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.utility;
 
 import java.io.IOException;
@@ -19,11 +24,6 @@ public class WordOrderMatcher {
 
    private WordOrderMatcher() {
    }
-
-   //   public static void main(String[] args) {
-   //      System.out.println("Was it found ?: " + find("[<.MODE>] (B)"));
-   //      System.out.println("Was it found ?: " + find("MODE"));
-   //   }
 
    public static List<MatchLocation> findInStream(InputStream inputStream, String toSearch, Options options) throws IOException {
       char[] charsToSearch = removeExtraSpacesAndSpecialCharacters(toSearch);
@@ -104,36 +104,4 @@ public class WordOrderMatcher {
       }
       return searchString.toString().trim().toCharArray();
    }
-
-   //   public static boolean find(String toSearch) {
-   //      boolean toReturn = false;
-   //      if (Strings.isValid(toSearch)) {
-   //
-   //         InputStream inputStream = null;
-   //         try {
-   //            inputStream =
-   //                  new XmlTextInputStream(new FileInputStream(
-   //                        "C:\\Documents and Settings\\b1122182\\Desktop\\%7BEDIT_FREQ%7D+Display+Logic.G913X.xml"));
-   //            long start = System.currentTimeMillis();
-   //
-   //            List<MatchLocation> results = findInStream(inputStream, toSearch, false);
-   //
-   //            toReturn = !results.isEmpty();
-   //            System.out.println(results.size());
-   //            System.out.println(results);
-   //            System.out.println(String.format("Took: [%s] ", System.currentTimeMillis() - start));
-   //         } catch (Exception ex) {
-   //            OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex.toString(), ex);
-   //         } finally {
-   //            if (inputStream != null) {
-   //               try {
-   //                  inputStream.close();
-   //               } catch (IOException ex) {
-   //               }
-   //               inputStream = null;
-   //            }
-   //         }
-   //      }
-   //      return toReturn;
-   //   }
 }
