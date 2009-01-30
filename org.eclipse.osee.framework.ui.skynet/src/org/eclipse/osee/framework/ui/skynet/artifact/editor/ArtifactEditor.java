@@ -306,7 +306,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             EDITOR_ID, "Artifact Editor");
    }
 
-   public static ToolBar createToolBar(Composite parent, IActionable actionable, final Artifact artifact, Object layoutData, IWorkbenchPartSite site, final String actionableItemName, final String editorId) {
+   public static ToolBar createToolBar(Composite parent, IActionable actionable, final Artifact artifact, Object layoutData, IWorkbenchPartSite site, final String editorId, final String actionableItemName) {
       ISelectionProvider provider = new ISelectionProvider() {
          private ISelection selection;
 
