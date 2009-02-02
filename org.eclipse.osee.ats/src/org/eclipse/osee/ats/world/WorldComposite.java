@@ -29,6 +29,8 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -485,10 +487,25 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          }
       });
 
+      Action exportSelectedArtifacts = new Action("Export Selected ATS Artifacts", Action.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            try {
+               AtsExportManager.export(worldXViewer.getSelection(), ExportOption.POPUP_DIALOG);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+      exportSelectedArtifacts.setToolTipText("Allows ATS artifacts to be exported from OSEE.");
+
       actionToMenuItem(menu, filterCompletedAction, SWT.CHECK);
       new MenuItem(menu, SWT.SEPARATOR);
       actionToMenuItem(menu, releaseMetricsAction, SWT.CHECK);
       actionToMenuItem(menu, selectionMetricsAction, SWT.CHECK);
+      new MenuItem(menu, SWT.SEPARATOR);
+      actionToMenuItem(menu, exportSelectedArtifacts, SWT.PUSH);
       new MenuItem(menu, SWT.SEPARATOR);
       actionToMenuItem(menu, toAction, SWT.PUSH);
       actionToMenuItem(menu, toWorkFlow, SWT.PUSH);

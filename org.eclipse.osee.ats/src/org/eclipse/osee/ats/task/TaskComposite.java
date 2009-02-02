@@ -26,6 +26,8 @@ import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
 import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
 import org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -348,6 +350,21 @@ public class TaskComposite extends Composite implements IActionable {
          @Override
          public void widgetSelected(SelectionEvent e) {
             handleFilterAction();
+         }
+      });
+
+      new MenuItem(menu, SWT.SEPARATOR);
+
+      MenuItem exportAtsArtifactsItem = new MenuItem(menu, SWT.PUSH);
+      exportAtsArtifactsItem.setText("Export Selected ATS Artifacts");
+      exportAtsArtifactsItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            try {
+               AtsExportManager.export(taskXViewer.getSelection(), ExportOption.POPUP_DIALOG);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
 
