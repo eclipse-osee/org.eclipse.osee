@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.util.Arrays;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.NoteItem;
@@ -98,7 +99,14 @@ public class SMAPrint extends Action {
       if (taskComposite != null) resultData.addRaw(taskComposite.getHtml());
       resultData.addRaw(AHTML.newline());
       resultData.addRaw(smaMgr.getLog().getHtml());
-      return resultData;
+
+      XResultData rd = new XResultData();
+      rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
+      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {resultData.getReport("").getManipulatedHtml(
+            Arrays.asList(Manipulations.NONE))}));
+      rd.addRaw(AHTML.endMultiColumnTable());
+
+      return rd;
    }
 
 }

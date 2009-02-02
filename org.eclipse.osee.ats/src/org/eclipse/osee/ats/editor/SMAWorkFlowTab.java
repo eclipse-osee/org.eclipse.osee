@@ -178,8 +178,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return "Workflow Tab";
    }
 
-   public final static String normalColor = "#EEEEEE";
-   private final static String activeColor = "#9CCCFF";
+   public final static String normalColor = "#FFFFFF";
+   private final static String activeColor = "#EEEEEE";
 
    public String getHtml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
