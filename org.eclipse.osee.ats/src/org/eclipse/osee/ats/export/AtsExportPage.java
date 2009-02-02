@@ -129,7 +129,7 @@ public class AtsExportPage extends WizardDataTransferPage {
       if (artifacts.size() == 0) {
          return new Result("No Artifacts selected.  Cancel wizard and try again.");
       }
-      if (!selectedExportOptions.contains(ExportOption.AS_HTML) && !selectedExportOptions.contains(ExportOption.AS_PDF)) {
+      if (!selectedExportOptions.contains(ExportOption.AS_HTML_TO_FILE) && !selectedExportOptions.contains(ExportOption.AS_HTML_TO_RESULT_EDITOR) && !selectedExportOptions.contains(ExportOption.AS_PDF)) {
          return new Result("Must select at least one export AS_ option.");
       }
       if (!selectedExportOptions.contains(ExportOption.SINGLE_FILE) && !selectedExportOptions.contains(ExportOption.MULTIPLE_FILES)) {

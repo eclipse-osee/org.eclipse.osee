@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.PlatformUI;
@@ -39,7 +40,14 @@ import org.eclipse.ui.PlatformUI;
 public class AtsExportManager {
 
    public enum ExportOption {
-      NONE, POPUP_DIALOG, AS_HTML, AS_PDF, SINGLE_FILE, MULTIPLE_FILES, INCLUDE_TASKLIST
+      NONE,
+      POPUP_DIALOG,
+      AS_HTML_TO_RESULT_EDITOR,
+      AS_HTML_TO_FILE,
+      AS_PDF,
+      SINGLE_FILE,
+      MULTIPLE_FILES,
+      INCLUDE_TASKLIST
    };
 
    public static Collection<StateMachineArtifact> getSmaArts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
@@ -92,9 +100,11 @@ public class AtsExportManager {
          if (dialog.open() == WizardDialog.OK) {
             Collection<ExportOption> selectedExportOptions = exportWizard.getSelectedExportOptions();
             boolean singleFile = selectedExportOptions.contains(ExportOption.SINGLE_FILE);
+            boolean asHtmlToFile = selectedExportOptions.contains(ExportOption.AS_HTML_TO_FILE);
+            boolean asHtmlToResultEditor = selectedExportOptions.contains(ExportOption.AS_HTML_TO_RESULT_EDITOR);
             boolean multipleFile = selectedExportOptions.contains(ExportOption.MULTIPLE_FILES);
             boolean includeTaskList = selectedExportOptions.contains(ExportOption.INCLUDE_TASKLIST);
-            if (selectedExportOptions.contains(ExportOption.AS_HTML)) {
+            if (asHtmlToFile || asHtmlToResultEditor) {
                StringBuffer singleSb = new StringBuffer();
                for (Artifact artifact : artifacts) {
                   if (artifact instanceof StateMachineArtifact) {
@@ -106,9 +116,14 @@ public class AtsExportManager {
                      String html = smaPrint.getResultData().getReport("").getManipulatedHtml();
                      if (multipleFile) {
                         try {
-                           File file = new File("C:\\UserData\\" + artifact.getHumanReadableId() + ".html");
-                           Lib.writeStringToFile(html, file);
-                           Program.launch(file.getAbsolutePath());
+                           if (asHtmlToFile) {
+                              File file = new File("C:\\UserData\\" + artifact.getHumanReadableId() + ".html");
+                              Lib.writeStringToFile(html, file);
+                              Program.launch(file.getAbsolutePath());
+                           }
+                           if (asHtmlToResultEditor) {
+                              ResultsEditor.open("Output", "Export " + artifact.getHumanReadableId(), html);
+                           }
                         } catch (IOException ex) {
                            throw new OseeCoreException("Error writing to html file", ex);
                         }
@@ -120,9 +135,14 @@ public class AtsExportManager {
                }
                if (singleFile) {
                   try {
-                     File file = new File("C:\\UserData\\ATS_Export.html");
-                     Lib.writeStringToFile(singleSb.toString(), file);
-                     Program.launch(file.getAbsolutePath());
+                     if (asHtmlToFile) {
+                        File file = new File("C:\\UserData\\ATS_Export.html");
+                        Lib.writeStringToFile(singleSb.toString(), file);
+                        Program.launch(file.getAbsolutePath());
+                     }
+                     if (asHtmlToResultEditor) {
+                        ResultsEditor.open("Output", "Export ATS Artifacts", singleSb.toString());
+                     }
                   } catch (IOException ex) {
                      throw new OseeCoreException("Error writing to html file", ex);
                   }
