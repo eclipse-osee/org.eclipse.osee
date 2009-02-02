@@ -47,7 +47,8 @@ public class AtsExportManager {
       AS_PDF,
       SINGLE_FILE,
       MULTIPLE_FILES,
-      INCLUDE_TASKLIST
+      INCLUDE_TASKLIST;
+
    };
 
    public static Collection<StateMachineArtifact> getSmaArts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
@@ -117,7 +118,7 @@ public class AtsExportManager {
                      if (multipleFile) {
                         try {
                            if (asHtmlToFile) {
-                              File file = new File("C:\\UserData\\" + artifact.getHumanReadableId() + ".html");
+                              File file = new File(exportWizard + "\\" + artifact.getHumanReadableId() + ".html");
                               Lib.writeStringToFile(html, file);
                               Program.launch(file.getAbsolutePath());
                            }
@@ -136,7 +137,7 @@ public class AtsExportManager {
                if (singleFile) {
                   try {
                      if (asHtmlToFile) {
-                        File file = new File("C:\\UserData\\ATS_Export.html");
+                        File file = new File(exportWizard.getFileLocation() + "\\ATS_Export.html");
                         Lib.writeStringToFile(singleSb.toString(), file);
                         Program.launch(file.getAbsolutePath());
                      }

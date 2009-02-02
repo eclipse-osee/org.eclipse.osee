@@ -40,6 +40,13 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
    }
 
    /**
+    * @return the fileLocation
+    */
+   public String getFileLocation() {
+      return mainPage.getFileLocation();
+   }
+
+   /**
     * @return the selectedExportOptions
     */
    public Collection<ExportOption> getSelectedExportOptions() {

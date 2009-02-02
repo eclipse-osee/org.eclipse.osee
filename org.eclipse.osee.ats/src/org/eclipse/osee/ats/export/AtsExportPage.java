@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.export;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,9 +22,10 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.XFileSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.layout.GridData;
@@ -41,7 +43,8 @@ public class AtsExportPage extends WizardDataTransferPage {
    MouseMoveListener listener;
    Label errorLabel;
    List<XCheckBox> checkBoxes = new ArrayList<XCheckBox>();
-   XFileSelectionDialog xFileSel;
+   XFileTextWithSelectionDialog xFileSel;
+   String fileLocation;
    Collection<ExportOption> selectedExportOptions = new ArrayList<ExportOption>();
    private final Collection<? extends Artifact> artifacts;
 
@@ -121,6 +124,10 @@ public class AtsExportPage extends WizardDataTransferPage {
          checkBoxes.add(checkBox);
       }
 
+      xFileSel = new XFileTextWithSelectionDialog("Export Location", Type.Directory);
+      xFileSel.createWidgets(composite, 2);
+      xFileSel.addXModifiedListener(modifyListener);
+
       setPageComplete(determinePageCompletion());
       setControl(composite);
    }
@@ -135,6 +142,15 @@ public class AtsExportPage extends WizardDataTransferPage {
       if (!selectedExportOptions.contains(ExportOption.SINGLE_FILE) && !selectedExportOptions.contains(ExportOption.MULTIPLE_FILES)) {
          return new Result("Must select SINGLE or MULTIPLE");
       }
+      if (selectedExportOptions.contains(ExportOption.AS_HTML_TO_FILE) || selectedExportOptions.contains(ExportOption.AS_PDF)) {
+         if (xFileSel.get().equals("")) {
+            return new Result(
+                  "Must select \"Export Location\" for \"" + ExportOption.AS_HTML_TO_FILE + "\" or \"" + ExportOption.AS_PDF + "\" options.");
+         }
+         if (!(new File(xFileSel.get())).isDirectory()) {
+            return new Result("Invalid Directory");
+         }
+      }
       return Result.TrueResult;
    }
 
@@ -147,6 +163,7 @@ public class AtsExportPage extends WizardDataTransferPage {
             selectedExportOptions.remove(exportOption);
          }
       }
+      fileLocation = xFileSel.get();
    }
 
    /**
@@ -154,6 +171,13 @@ public class AtsExportPage extends WizardDataTransferPage {
     */
    public Collection<ExportOption> getSelectedExportOptions() {
       return selectedExportOptions;
+   }
+
+   /**
+    * @return the fileLocation
+    */
+   public String getFileLocation() {
+      return fileLocation;
    }
 
 }

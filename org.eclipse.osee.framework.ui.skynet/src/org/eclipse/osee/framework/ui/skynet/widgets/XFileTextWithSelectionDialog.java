@@ -17,25 +17,35 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class XFileSelectionDialog extends XText {
+public class XFileTextWithSelectionDialog extends XText {
 
    private String defaultFileSelection;
+   private final Type type;
+   public static enum Type {
+      File, Directory
+   };
 
-   public XFileSelectionDialog() {
-      super();
+   public XFileTextWithSelectionDialog(String displayLabel, Type type) {
+      super(displayLabel);
+      this.type = type;
+   }
+
+   public XFileTextWithSelectionDialog() {
+      this("", Type.File);
    }
 
    /**
     * @param displayLabel
     */
-   public XFileSelectionDialog(String displayLabel) {
-      super(displayLabel);
+   public XFileTextWithSelectionDialog(String displayLabel) {
+      this(displayLabel, Type.File);
    }
 
    /* (non-Javadoc)
@@ -46,7 +56,7 @@ public class XFileSelectionDialog extends XText {
       super.createWidgets(parent, horizontalSpan, fillText);
 
       Button fileDialog = new Button(getStyledText().getParent(), SWT.NONE);
-      fileDialog.setText("Select File");
+      fileDialog.setText("Select " + type.name());
       fileDialog.addSelectionListener(new SelectionListener() {
 
          public void widgetDefaultSelected(SelectionEvent e) {
@@ -54,18 +64,33 @@ public class XFileSelectionDialog extends XText {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
-            dialog.setFilterExtensions(new String[] {"*.*"});
-            String defaultDir = getDefaultFileSelection();
-            File dir = new File(defaultDir != null ? defaultDir : "");
-            if (dir.isFile() || dir.isDirectory())
-               dialog.setFilterPath(defaultDir);
-            else
-               dialog.setFilterPath("c:\\");
+            if (type == Type.File) {
+               FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
+               dialog.setFilterExtensions(new String[] {"*.*"});
+               String defaultDir = getDefaultFileSelection();
+               File dir = new File(defaultDir != null ? defaultDir : "");
+               if (dir.isFile() || dir.isDirectory())
+                  dialog.setFilterPath(defaultDir);
+               else
+                  dialog.setFilterPath("c:\\");
 
-            String result = dialog.open();
-            if (result != null && !result.equals("")) {
-               setText(dialog.getFilterPath() + File.separatorChar + dialog.getFileName());
+               String result = dialog.open();
+               if (result != null && !result.equals("")) {
+                  setText(dialog.getFilterPath() + File.separatorChar + dialog.getFileName());
+               }
+            } else if (type == Type.Directory) {
+               DirectoryDialog dialog = new DirectoryDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
+               String defaultDir = getDefaultFileSelection();
+               File dir = new File(defaultDir != null ? defaultDir : "");
+               if (dir.isFile() || dir.isDirectory())
+                  dialog.setFilterPath(defaultDir);
+               else
+                  dialog.setFilterPath("c:\\");
+
+               String result = dialog.open();
+               if (result != null && !result.equals("")) {
+                  setText(result);
+               }
             }
          }
       });
