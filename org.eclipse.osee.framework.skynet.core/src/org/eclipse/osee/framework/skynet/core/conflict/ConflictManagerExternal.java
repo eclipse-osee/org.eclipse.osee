@@ -23,20 +23,20 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  */
 public class ConflictManagerExternal {
 
-   Branch toBranch;
-   Branch fromBranch;
+   Branch destinationBranch;
+   Branch sourceBranch;
    List<Conflict> originalConflicts;
 
-   public ConflictManagerExternal(Branch toBranch, Branch fromBranch) {
-      this.toBranch = toBranch;
-      this.fromBranch = fromBranch;
+   public ConflictManagerExternal(Branch destinationBranch, Branch sourceBranch) {
+      this.destinationBranch = destinationBranch;
+      this.sourceBranch = sourceBranch;
    }
 
    public List<Conflict> getOriginalConflicts() throws OseeCoreException {
       if (originalConflicts == null) {
          originalConflicts =
-               ConflictManagerInternal.getConflictsPerBranch(fromBranch, toBranch,
-                     TransactionIdManager.getStartEndPoint(fromBranch).getKey(), new EmptyMonitor());
+               ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
+                     TransactionIdManager.getStartEndPoint(sourceBranch).getKey(), new EmptyMonitor());
       }
       return originalConflicts;
    }
@@ -62,10 +62,10 @@ public class ConflictManagerExternal {
    }
 
    public Branch getToBranch() {
-      return toBranch;
+      return destinationBranch;
    }
 
    public Branch getFromBranch() {
-      return fromBranch;
+      return sourceBranch;
    }
 }

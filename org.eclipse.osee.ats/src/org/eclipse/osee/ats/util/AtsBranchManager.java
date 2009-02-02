@@ -112,7 +112,7 @@ public class AtsBranchManager {
             return;
          }
          if (isWorkingBranch()) {
-            Branch branch = getParentBranchForWorkingBranchCreation();
+            Branch branch = getConfiguredBranchForWorkflow();
             if (branch == null) {
                AWorkbench.popup("ERROR", "Can't access parent branch");
                return;
@@ -325,7 +325,7 @@ public class AtsBranchManager {
                   "Can not create another working branch once changes have been committed.");
             return new Result("Committed branch already exists.");
          }
-         Branch parentBranch = getParentBranchForWorkingBranchCreation();
+         Branch parentBranch = getConfiguredBranchForWorkflow();
          if (parentBranch == null) {
             String errorStr =
                   "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.";
@@ -370,7 +370,7 @@ public class AtsBranchManager {
    /**
     * @return Branch that is the configured branch to create working branch from.
     */
-   private Branch getParentBranchForWorkingBranchCreation() throws OseeCoreException {
+   private Branch getConfiguredBranchForWorkflow() throws OseeCoreException {
       Branch parentBranch = null;
 
       // Check for parent branch id in Version artifact
@@ -521,6 +521,7 @@ public class AtsBranchManager {
       protected IStatus run(IProgressMonitor monitor) {
          try {
             Branch branch = getWorkingBranch();
+            Branch configuredBranch = null;
             if (branch == null) {
                return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
                      "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId());
@@ -541,8 +542,8 @@ public class AtsBranchManager {
                   }
 
                   // Validate that a parent branch is specified in ATS configuration
-                  final Branch parentBranch = getParentBranchForWorkingBranchCreation();
-                  if (parentBranch == null) {
+                  configuredBranch = getConfiguredBranchForWorkflow();
+                  if (configuredBranch == null) {
                      return new Status(
                            Status.ERROR,
                            AtsPlugin.PLUGIN_ID,
@@ -553,12 +554,12 @@ public class AtsBranchManager {
 
                   // Validate that the configured parentBranch is the same as the working branch's
                   // parent branch.
-                  Integer targetedVersionBranchId = parentBranch.getBranchId();
+                  Integer configuredBranchId = configuredBranch.getBranchId();
                   final Branch workflowWorkingBranchParent = smaMgr.getBranchMgr().getWorkingBranch();
                   Integer workflowWorkingBranchParentBranchId = workflowWorkingBranchParent.getParentBranchId();
-                  if (!targetedVersionBranchId.equals(workflowWorkingBranchParentBranchId)) {
+                  if (!configuredBranchId.equals(workflowWorkingBranchParentBranchId)) {
                      ParentMismatchWarning runnable =
-                           new ParentMismatchWarning(parentBranch,
+                           new ParentMismatchWarning(configuredBranch,
                                  team.getWorldViewTargetedVersion().getDescriptiveName(), workflowWorkingBranchParent);
                      Displays.ensureInDisplayThread(runnable, true);
                      if (runnable.stopCommit()) {
@@ -589,16 +590,16 @@ public class AtsBranchManager {
                }
             }
 
-            commit(commitPopup, branch);
+            commit(commitPopup, branch, configuredBranch);
          } catch (OseeCoreException ex) {
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
          }
          return Status.OK_STATUS;
       }
 
-      private void commit(boolean commitPopup, Branch branch) throws OseeCoreException {
+      private void commit(boolean commitPopup, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
          boolean branchCommitted = false;
-         ConflictManagerExternal conflictManager = new ConflictManagerExternal(branch.getParentBranch(), branch);
+         ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, sourceBranch);
 
          if (commitPopup) {
             branchCommitted = CommitHandler.commitBranch(conflictManager, true);
