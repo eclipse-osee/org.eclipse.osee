@@ -15,11 +15,11 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -39,6 +39,13 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
       this.artifacts = artifacts;
    }
 
+   /**
+    * @return the selectedExportOptions
+    */
+   public Collection<ExportOption> getSelectedExportOptions() {
+      return mainPage.getSelectedExportOptions();
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.jface.wizard.Wizard#performFinish()
     */
@@ -50,7 +57,12 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
          result.popup();
          return false;
       }
-      AWorkbench.popup("ERROR", "not implemented yet");
+      try {
+         AtsExportManager.export(artifacts, mainPage.getSelectedExportOptions().toArray(
+               new ExportOption[mainPage.getSelectedExportOptions().size()]));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       return true;
    }
 

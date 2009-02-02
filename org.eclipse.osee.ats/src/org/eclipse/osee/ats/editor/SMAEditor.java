@@ -502,6 +502,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public static void editArtifact(final StateMachineArtifact sma) {
+      editArtifact(sma, false);
+   }
+
+   public static void editArtifact(final StateMachineArtifact sma, boolean pend) {
       if (sma.isDeleted()) {
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
@@ -520,7 +524,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
-      });
+      }, pend);
 
    }
 
@@ -545,6 +549,20 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             }
          }
       }
+   }
+
+   public static SMAEditor getSmaEditor(StateMachineArtifact artifact) {
+      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IEditorReference editors[] = page.getEditorReferences();
+      for (int j = 0; j < editors.length; j++) {
+         IEditorReference editor = editors[j];
+         if (editor.getPart(false) instanceof SMAEditor) {
+            if (((SMAEditor) editor.getPart(false)).getSmaMgr().getSma().equals(artifact)) {
+               return ((SMAEditor) editor.getPart(false));
+            }
+         }
+      }
+      return null;
    }
 
    public void closeEditor() {
@@ -824,5 +842,26 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
       return smaMgr.getSma().getManHrsPerDayPreference();
+   }
+
+   /**
+    * @return the workFlowTab
+    */
+   public SMAWorkFlowTab getWorkFlowTab() {
+      return workFlowTab;
+   }
+
+   /**
+    * @return the taskComposite
+    */
+   public SMATaskComposite getTaskComposite() {
+      return taskComposite;
+   }
+
+   /**
+    * @param taskComposite the taskComposite to set
+    */
+   public void setTaskComposite(SMATaskComposite taskComposite) {
+      this.taskComposite = taskComposite;
    }
 }

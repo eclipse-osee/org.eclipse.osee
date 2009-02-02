@@ -108,6 +108,7 @@ public class AtsExportPage extends WizardDataTransferPage {
       List<ExportOption> validExportOptions = new ArrayList<ExportOption>();
       validExportOptions.addAll(Arrays.asList(ExportOption.values()));
       validExportOptions.remove(ExportOption.POPUP_DIALOG);
+      validExportOptions.remove(ExportOption.NONE);
 
       for (ExportOption exportOption : validExportOptions) {
          XCheckBox checkBox = new XCheckBox(exportOption.name());
@@ -128,7 +129,7 @@ public class AtsExportPage extends WizardDataTransferPage {
       if (artifacts.size() == 0) {
          return new Result("No Artifacts selected.  Cancel wizard and try again.");
       }
-      if (!selectedExportOptions.contains(ExportOption.AS_HTML) && !selectedExportOptions.contains(ExportOption.AS_PDF) && !selectedExportOptions.contains(ExportOption.AS_EMAIL)) {
+      if (!selectedExportOptions.contains(ExportOption.AS_HTML) && !selectedExportOptions.contains(ExportOption.AS_PDF)) {
          return new Result("Must select at least one export AS_ option.");
       }
       if (!selectedExportOptions.contains(ExportOption.SINGLE_FILE) && !selectedExportOptions.contains(ExportOption.MULTIPLE_FILES)) {
@@ -146,6 +147,13 @@ public class AtsExportPage extends WizardDataTransferPage {
             selectedExportOptions.remove(exportOption);
          }
       }
+   }
+
+   /**
+    * @return the selectedExportOptions
+    */
+   public Collection<ExportOption> getSelectedExportOptions() {
+      return selectedExportOptions;
    }
 
 }

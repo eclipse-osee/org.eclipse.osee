@@ -15,6 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -46,53 +47,58 @@ public class SMAPrint extends Action {
    @Override
    public void run() {
       try {
-         XResultData resultData = new XResultData();
-         resultData.addRaw(AHTML.beginMultiColumnTable(100));
-         resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT,
-               "Title: ", smaMgr.getSma().getDescriptiveName())}));
-         resultData.addRaw(AHTML.endMultiColumnTable());
-         resultData.addRaw(AHTML.beginMultiColumnTable(100));
-         resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-         //
-               AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ",
-                     ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewState()),
-               //
-               AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-                     ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewTeam()),
-               //
-               AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
-                     ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewActivePoc()),
-               //
-               AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ",
-                     ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewOriginator()),
-               //
-               AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", XDate.getDateStr(
-                     smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM))
-
-         }));
-         resultData.addRaw(AHTML.endMultiColumnTable());
-         resultData.addRaw(AHTML.beginMultiColumnTable(100));
-         resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-               //
-               AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", smaMgr.getSma().getArtifactTypeName()),
-               AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", smaMgr.getSma().getHumanReadableId()),
-               (smaMgr.getSma().getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT,
-                     "Action HRID: ", smaMgr.getSma().getParentActionArtifact().getHumanReadableId()))}));
-         resultData.addRaw(AHTML.endMultiColumnTable());
-         for (NoteItem note : smaMgr.getNotes().getNoteItems()) {
-            if (note.getState().equals("")) {
-               resultData.addRaw(note.toHTML() + AHTML.newline());
-            }
-         }
-         if (workFlowTab != null) resultData.addRaw(workFlowTab.getHtml());
-         if (taskComposite != null) resultData.addRaw(taskComposite.getHtml());
-         resultData.addRaw(AHTML.newline());
-         resultData.addRaw(smaMgr.getLog().getHtml());
-         resultData.report(smaMgr.getSma().getDescriptiveName(), Manipulations.RAW_HTML);
-      } catch (Exception ex) {
+         XResultData xResultData = getResultData();
+         xResultData.report(smaMgr.getSma().getDescriptiveName(), Manipulations.RAW_HTML);
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
+   }
+
+   public XResultData getResultData() throws OseeCoreException {
+      XResultData resultData = new XResultData();
+      resultData.addRaw(AHTML.beginMultiColumnTable(100));
+      resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Title: ",
+            smaMgr.getSma().getDescriptiveName())}));
+      resultData.addRaw(AHTML.endMultiColumnTable());
+      resultData.addRaw(AHTML.beginMultiColumnTable(100));
+      resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+      //
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ",
+                  ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewState()),
+            //
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
+                  ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewTeam()),
+            //
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
+                  ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewActivePoc()),
+            //
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ",
+                  ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewOriginator()),
+            //
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", XDate.getDateStr(smaMgr.getLog().getCreationDate(),
+                  XDate.MMDDYYHHMM))
+
+      }));
+      resultData.addRaw(AHTML.endMultiColumnTable());
+      resultData.addRaw(AHTML.beginMultiColumnTable(100));
+      resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+            //
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", smaMgr.getSma().getArtifactTypeName()),
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", smaMgr.getSma().getHumanReadableId()),
+            (smaMgr.getSma().getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT,
+                  "Action HRID: ", smaMgr.getSma().getParentActionArtifact().getHumanReadableId()))}));
+      resultData.addRaw(AHTML.endMultiColumnTable());
+      for (NoteItem note : smaMgr.getNotes().getNoteItems()) {
+         if (note.getState().equals("")) {
+            resultData.addRaw(note.toHTML() + AHTML.newline());
+         }
+      }
+      if (workFlowTab != null) resultData.addRaw(workFlowTab.getHtml());
+      if (taskComposite != null) resultData.addRaw(taskComposite.getHtml());
+      resultData.addRaw(AHTML.newline());
+      resultData.addRaw(smaMgr.getLog().getHtml());
+      return resultData;
    }
 
 }
