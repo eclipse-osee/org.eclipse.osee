@@ -480,19 +480,19 @@ public class AtsBranchManager {
       }
 
       private class ParentMismatchWarning implements Runnable {
-         private final Branch parentBranch;
+         private final Branch configuredBranch;
          private final Branch workflowWorkingBranchParent;
          private final String versionName;
          private boolean commit;
 
          /**
-          * @param parentBranch
+          * @param configuredBranch
           * @param versionName
           * @param workflowWorkingBranchParent
           */
-         public ParentMismatchWarning(Branch parentBranch, String versionName, Branch workflowWorkingBranchParent) {
+         public ParentMismatchWarning(Branch configuredBranch, String versionName, Branch workflowWorkingBranchParent) {
             super();
-            this.parentBranch = parentBranch;
+            this.configuredBranch = configuredBranch;
             this.versionName = versionName;
             this.workflowWorkingBranchParent = workflowWorkingBranchParent;
          }
@@ -506,7 +506,7 @@ public class AtsBranchManager {
                   MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
                         "Warning: committing into a branch other than its direct parent", String.format(
                               "Targeted version \"%s\" branch \"%s\" does not match parent branch \"%s\"", versionName,
-                              parentBranch.getBranchShortName(), workflowWorkingBranchParent.getBranchShortName()));
+                              configuredBranch.getBranchShortName(), workflowWorkingBranchParent.getBranchShortName()));
          }
 
          public boolean stopCommit() {
@@ -520,9 +520,9 @@ public class AtsBranchManager {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            Branch branch = getWorkingBranch();
+            Branch workflowWorkingBranch = getWorkingBranch();
             Branch configuredBranch = null;
-            if (branch == null) {
+            if (workflowWorkingBranch == null) {
                return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
                      "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId());
             }
@@ -554,10 +554,8 @@ public class AtsBranchManager {
 
                   // Validate that the configured parentBranch is the same as the working branch's
                   // parent branch.
-                  Integer configuredBranchId = configuredBranch.getBranchId();
-                  final Branch workflowWorkingBranchParent = smaMgr.getBranchMgr().getWorkingBranch();
-                  Integer workflowWorkingBranchParentBranchId = workflowWorkingBranchParent.getParentBranchId();
-                  if (!configuredBranchId.equals(workflowWorkingBranchParentBranchId)) {
+                  Branch workflowWorkingBranchParent = workflowWorkingBranch.getParentBranch();
+                  if (!configuredBranch.equals(workflowWorkingBranchParent)) {
                      ParentMismatchWarning runnable =
                            new ParentMismatchWarning(configuredBranch,
                                  team.getWorldViewTargetedVersion().getDescriptiveName(), workflowWorkingBranchParent);
@@ -590,7 +588,7 @@ public class AtsBranchManager {
                }
             }
 
-            commit(commitPopup, branch, configuredBranch);
+            commit(commitPopup, workflowWorkingBranch, configuredBranch);
          } catch (OseeCoreException ex) {
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
          }
