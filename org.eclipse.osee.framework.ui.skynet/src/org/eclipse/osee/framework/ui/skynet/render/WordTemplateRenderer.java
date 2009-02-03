@@ -431,6 +431,13 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             value = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
             //Change the BinData Id so images do not get overridden by the other images
             value = WordUtil.reassignBinDataID(value);
+
+            // TODO: attach link/unlink
+            //            // Based on Options ?
+            //            LinkType linkType = LinkType.OPEN_IN_OSEE;
+            //            LinkType.INTERNAL_DOC_REFERENCE;
+            //            LinkType.STANDALONE_DOC;
+            //            value = WordMlLinkHandler.link(linkType, artifact.getBranch(), value);
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {

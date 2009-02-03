@@ -12,9 +12,13 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 
 /**
@@ -38,8 +42,19 @@ public class HTMLTransferFormatter {
          }
 
          List<String> urls = new ArrayList<String>(artifacts.length);
-         for (Artifact artifact : artifacts)
-            urls.add(DefineHttpServerRequest.getInstance().getUrl(artifact) + "\">" + artifact.getDescriptiveName());
+         for (Artifact artifact : artifacts) {
+            String link = null;
+            try {
+               link = ArtifactURL.getOpenInOseeLink(artifact).toString();
+            } catch (OseeCoreException ex) {
+               link =
+                     String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(),
+                           artifact.getBranch().getBranchId(), artifact.getGammaId());
+               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, String.format("Error creating link for: [%s]",
+                     artifact), ex);
+            }
+            urls.add(link + "\">" + artifact.getDescriptiveName());
+         }
 
          sb.append(Collections.toString(urls, START, END + ", " + START, END));
 

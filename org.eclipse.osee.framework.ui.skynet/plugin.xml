@@ -206,9 +206,6 @@
 		<ArtifactFactory classname="org.eclipse.osee.framework.ui.skynet.artifact.SkynetGuiArtifactFactory"/>
 		<ArtifactFactory classname="org.eclipse.osee.framework.ui.skynet.blam.BlamFactory"/>
 	</extension>
-	<extension point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
-		<IHttpServerRequest classname="org.eclipse.osee.framework.ui.skynet.DefineHttpServerRequest"/>
-	</extension>
 	<extension id="SrsProducer" name="SrsProducer" point="org.eclipse.osee.framework.ui.skynet.WordMlProducer">
 		<producer class="org.eclipse.osee.framework.ui.skynet.render.word.SrsProducer"/>
 	</extension>
@@ -1267,5 +1264,11 @@
      <Operation
            className="org.eclipse.osee.framework.ui.skynet.blam.operation.ShowRevertTransactions">
      </Operation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.skynet.core.ClientLoopbackCmd">
+     <ClientLoopbackCmd
+           className="org.eclipse.osee.framework.ui.skynet.artifact.OpenArtifactEditorLoopbackCmd">
+     </ClientLoopbackCmd>
   </extension>
 </plugin>

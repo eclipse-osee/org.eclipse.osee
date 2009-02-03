@@ -11,11 +11,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
+import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,8 +22,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -34,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -483,16 +481,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             if (artifact != null) {
                Clipboard clipboard = null;
                try {
-                  Map<String, String> parameters = new HashMap<String, String>();
-                  parameters.put("guid", artifact.getGuid());
-                  parameters.put("branchId", String.valueOf(artifact.getBranch().getBranchId()));
-
-                  String url =
-                        HttpUrlBuilder.getInstance().getOsgiArbitrationServiceUrl(OseeServerContext.PROCESS_CONTEXT,
-                              parameters);
-
+                  URL url = ArtifactURL.getExternalArtifactLink(artifact);
                   clipboard = new Clipboard(null);
-                  clipboard.setContents(new Object[] {url}, new Transfer[] {TextTransfer.getInstance()});
+                  clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
                         "Error obtaining url for - guid: [%s] branch:[%s]", artifact.getGuid(), artifact.getBranch()),
