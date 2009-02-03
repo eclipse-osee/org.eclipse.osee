@@ -31,7 +31,7 @@ public class CoreClientActivator extends OseeActivator {
    public void start(BundleContext context) throws Exception {
       super.start(context);
       this.context = context;
-      HttpServer.startServers(1);
+      HttpServer.startServer(1);
    }
 
    @Override
@@ -39,7 +39,7 @@ public class CoreClientActivator extends OseeActivator {
       super.stop(context);
       savePluginPreferences();
 
-      HttpServer.stopServers();
+      HttpServer.stopServer();
 
       ClientSessionManager.releaseSession();
       context = null;
