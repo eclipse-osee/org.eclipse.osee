@@ -79,7 +79,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetSelections;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
@@ -872,15 +871,6 @@ public class BranchView extends ViewPart implements IActionable {
             return oneBranchSelected;
          }
       });
-   }
-
-   public static CheckBoxDialog createCommitDialog() {
-      return new CheckBoxDialog(
-            Display.getCurrent().getActiveShell(),
-            "Confirm Commit",
-            null,
-            "Committing a branch that has conflicts reported in the Change Report can result in the overwriting of data" + " on the branch being committed to. All conflicts should be addressed accordingly to prevent data loss.",
-            "I accept responsibility for the results of this action", MessageDialog.QUESTION, 0);
    }
 
    private void addCommitCommand(MenuManager menuManager) {
