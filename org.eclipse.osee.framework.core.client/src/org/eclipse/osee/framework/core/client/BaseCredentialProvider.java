@@ -34,7 +34,7 @@ public abstract class BaseCredentialProvider implements ICredentialProvider {
       credential.setDomain("");
       credential.setPassword("");
       credential.setAuthenticationProtocol("");
-      String localAddress = HttpServer.getLocalServerAddress();
+      String localAddress = HttpServer.getServerAddressForExternalCommunication();
 
       credential.setClientAddress(Strings.isValid(localAddress) ? localAddress : "Unknown",
             HttpServer.getDefaultServicePort());

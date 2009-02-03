@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.core.server.internal;
+package org.eclipse.osee.framework.core.server;
 
 import org.eclipse.osee.framework.core.data.OseeSession;
 

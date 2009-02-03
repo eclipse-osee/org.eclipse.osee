@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.GuestCredentialProvider;
 import org.eclipse.osee.framework.core.client.ICredentialProvider;
-import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeClientInfo;
@@ -61,7 +61,8 @@ public class InternalClientSessionManager {
    private InternalClientSessionManager() {
       clearData();
       this.clientInfo = new OseeClientInfo();
-      clientInfo.setClientAddress(HttpServer.getLocalServerAddress(), HttpServer.getDefaultServicePort());
+      clientInfo.setClientAddress(HttpServer.getServerAddressForExternalCommunication(),
+            HttpServer.getDefaultServicePort());
       clientInfo.setClientVersion(OseeCodeVersion.getVersion());
       try {
          clientInfo.setClientMachineName(InetAddress.getLocalHost().getHostName());

@@ -28,7 +28,8 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
-import org.eclipse.osee.framework.core.server.internal.SessionData.SessionState;
+import org.eclipse.osee.framework.core.server.SessionData;
+import org.eclipse.osee.framework.core.server.SessionData.SessionState;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -53,6 +54,24 @@ public class SessionManager implements ISessionManager {
       updateTimer.scheduleAtFixedRate(new UpdateDataStore(), 2000, DATASTORE_UPDATE);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.ISessionManager#getSessionByClientAddress(java.lang.String)
+    */
+   @Override
+   public List<SessionData> getSessionByClientAddress(String clientAddress) {
+      List<SessionData> toReturn = new ArrayList<SessionData>();
+      for (SessionData sessionData : sessionCache.values()) {
+         if (sessionData.getSession().getClientAddress().equals(clientAddress)) {
+            toReturn.add(sessionData);
+         }
+      }
+      return toReturn;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.ISessionManager#getSessionById(java.lang.String)
+    */
+   @Override
    public SessionData getSessionById(String sessionId) {
       return sessionCache.get(sessionId);
    }

@@ -109,6 +109,10 @@ public class HttpRequest {
       return parameterMap.toString();
    }
 
+   public Map<String, String> getParameters() {
+      return parameterMap;
+   }
+
    public InputStream getInputStream() {
       return inputStream;
    }

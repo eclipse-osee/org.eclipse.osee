@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.exception.OseeArbitrationServerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -58,15 +59,6 @@ public class HttpUrlBuilder {
       return sb.toString();
    }
 
-   public String getLocalServerPrefix(String serviceName) {
-      int port = HttpServer.getPortByServiceName(serviceName);
-      if (port == -1) {
-         throw new IllegalStateException(
-               "Http Server was not launched by this workbench - Ensure port was set correctly");
-      }
-      return String.format(urlPrefixFormat, HttpServer.getLocalServerAddress(), port);
-   }
-
    private String buildUrl(String prefix, String context, String parameters) {
       StringBuilder sb = new StringBuilder();
       sb.append(prefix);
@@ -76,17 +68,21 @@ public class HttpUrlBuilder {
       return sb.toString();
    }
 
-   public String getUrlForLocalSkynetHttpServer(String context, Map<String, String> parameters) {
+   public String getUrlForLocalSkynetHttpServer(String context, Map<String, String> parameters) throws OseeStateException {
       try {
-         return buildUrl(getSkynetHttpLocalServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+         return buildUrl(getHttpLocalServerPrefix(), context, getParametersAsEncodedUrl(parameters));
       } catch (UnsupportedEncodingException ex) {
          OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
       }
       return null;
    }
 
-   public String getSkynetHttpLocalServerPrefix() {
-      return getLocalServerPrefix(HttpServer.DEFAULT_SERVICE_NAME);
+   public String getHttpLocalServerPrefix() throws OseeStateException {
+      int port = HttpServer.getDefaultServicePort();
+      if (port == -1) {
+         throw new OseeStateException("Http Server was not launched by this workbench - Ensure port was set correctly");
+      }
+      return String.format(urlPrefixFormat, HttpServer.getLocalServerAddress(), port);
    }
 
    public String getApplicationServerPrefix() throws OseeDataStoreException, OseeArbitrationServerException {

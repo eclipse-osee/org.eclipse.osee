@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats;
 
+import java.net.URL;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
@@ -18,6 +19,8 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -109,5 +112,9 @@ public class AtsPlugin extends OseeUiActivator {
 
    public static Branch getAtsBranch() throws OseeCoreException {
       return BranchManager.getCommonBranch();
+   }
+
+   public static URL getOpenInAtsLink(final Artifact artifact) throws OseeCoreException {
+      return ArtifactURL.getOpenInOseeLink(artifact, "open.ats");
    }
 }

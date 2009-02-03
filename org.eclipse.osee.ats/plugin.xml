@@ -39,11 +39,6 @@
    <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
       <ArtifactFactory classname="org.eclipse.osee.ats.artifact.AtsArtifactFactory"/>
    </extension>
-           <extension
-         point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
-      <IHttpServerRequest
-            classname="org.eclipse.osee.ats.util.AtsHttpServerRequest"/>
-   </extension>
       <extension
             point="org.eclipse.help.toc">
          <toc
@@ -456,5 +451,11 @@
             id="org.eclipse.osee.ats.exportWwizard"
             name="OSEE ATS Export">
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.ClientLoopbackCmd">
+      <ClientLoopbackCmd
+            className="org.eclipse.osee.ats.util.OpenInAtsLoopbackCmd">
+      </ClientLoopbackCmd>
    </extension>
 </plugin>

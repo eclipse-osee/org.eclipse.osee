@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
@@ -25,4 +26,8 @@ public interface ISessionManager {
    public void releaseSession(String sessionId);
 
    public void updateSessionActivity(String sessionId, String interactionName) throws OseeInvalidSessionException;
+
+   public SessionData getSessionById(String sessionId);
+
+   public List<SessionData> getSessionByClientAddress(String clientAddress);
 }
