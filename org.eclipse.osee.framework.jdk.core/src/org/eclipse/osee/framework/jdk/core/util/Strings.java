@@ -21,7 +21,7 @@ public class Strings {
     * 
     * @param string
     * @param length
-    * @return
+    * @return truncated string
     */
    public static String truncate(String string, int length) {
 

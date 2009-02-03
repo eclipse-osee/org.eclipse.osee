@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Roberto E. Escobar
@@ -42,7 +43,7 @@ public class XmlTextInputStream extends BufferedInputStream {
    @Override
    public synchronized int read() throws IOException {
       if (readHelper == null) {
-         readHelper = WordsUtil.isWordML(in) ? new WordMlReadHelper() : new XmlReadHelper();
+         readHelper = Lib.isWordML(in) ? new WordMlReadHelper() : new XmlReadHelper();
       }
       int value = readHelper.process(super.read());
       value = checkForSpecialCharacters(value);

@@ -1583,4 +1583,41 @@ public final class Lib {
       strB.replace(strB.length() - 3, strB.length(), "};");
       return strB.toString();
    }
+
+   /**
+    * Determine whether the input stream is word xml content.
+    * 
+    * @param inputStream
+    * @return <b>true</b> is the input stream is word xml content.
+    */
+   public static boolean isWordML(InputStream inputStream) {
+      boolean toReturn = false;
+      try {
+         inputStream.mark(250);
+         byte[] buffer = new byte[200];
+         int index = 0;
+         for (; index < buffer.length; index++) {
+            if (inputStream.available() > 0) {
+               buffer[index] = (byte) inputStream.read();
+            } else {
+               break;
+            }
+         }
+         if (index > 0) {
+            String header = new String(buffer).toLowerCase();
+            if (header.contains("word.document") || header.contains("worddocument") || header.contains("<w:")) {
+               toReturn = true;
+            }
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      } finally {
+         try {
+            inputStream.reset();
+         } catch (IOException ex) {
+            // Do Nothing
+         }
+      }
+      return toReturn;
+   }
 }
