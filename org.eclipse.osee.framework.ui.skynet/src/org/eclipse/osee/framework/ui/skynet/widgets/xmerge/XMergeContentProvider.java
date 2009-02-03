@@ -27,9 +27,6 @@ public class XMergeContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Object[]) {
          return (Object[]) parentElement;
       }
-      //      if(parentElement instanceof TransactionArtifactChange){
-      //    	  return ((TransactionArtifactChange)parentElement).getAttributeChanges().toArray();
-      //      }
       return EMPTY_ARRAY;
    }
 

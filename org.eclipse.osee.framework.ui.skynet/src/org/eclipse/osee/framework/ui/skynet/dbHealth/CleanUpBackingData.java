@@ -25,9 +25,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 public class CleanUpBackingData extends DatabaseHealthTask {
 
    private static final String NOT_ADDRESSESED_GAMMAS =
-         HealthHelper.ALL_BACKING_GAMMAS + " %s SELECT gamma_id FROM osee_txs";
+         HealthHelper.ALL_BACKING_GAMMAS + " %s (SELECT gamma_id FROM osee_txs Union Select rem_gamma_id FROM osee_removed_txs)";
    private static final String NOT_ADDRESSESED_TRANSACTIONS =
-         "SELECT transaction_id FROM osee_tx_details WHERE tx_type != 1 %s SELECT transaction_id FROM osee_txs";
+         "SELECT transaction_id FROM osee_tx_details WHERE tx_type != 1 %s (SELECT transaction_id FROM osee_txs UNION SELECT rem_transaction_id FROM osee_removed_txs UNION SELECT DISTINCT transaction_id FROM osee_removed_txs)";
    private static final String REMOVE_GAMMAS_ARTIFACT = "DELETE FROM osee_artifact_version WHERE gamma_id = ?";
    private static final String REMOVE_GAMMAS_ATTRIBUTE = "DELETE FROM osee_attribute WHERE gamma_id = ?";
    private static final String REMOVE_GAMMAS_RELATIONS = "DELETE FROM osee_relation_link WHERE gamma_id = ?";

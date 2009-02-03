@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 public class ArtifactTemplateProvider implements ITemplateProvider {
    private HashMap<String, Artifact> templateMap;
 
+   private List<Artifact> templates;
+
    public ArtifactTemplateProvider() {
 
    }
@@ -42,9 +44,8 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    private synchronized void ensureTemplateCachePopulated() throws OseeCoreException {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();
-         Collection<Artifact> artifacts =
-               ArtifactQuery.getArtifactsFromType("Renderer Template", BranchManager.getCommonBranch());
-         for (Artifact art : artifacts) {
+         templates = ArtifactQuery.getArtifactsFromType("Renderer Template", BranchManager.getCommonBranch());
+         for (Artifact art : templates) {
             Collection<Attribute<String>> attrs = art.getAttributes("Template Match Criteria");
             for (Attribute<String> attr : attrs) {
                String matchCriteria = attr.getValue();
@@ -115,6 +116,13 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
     */
    public int getApplicabilityRating(IRenderer rendererId, Artifact artifact, String presentationType, String option) {
       return ITemplateProvider.DEFAULT_MATCH;
+   }
+
+   public List<Artifact> getAllTemplates() throws OseeCoreException {
+      if (templates == null) {
+         templates = ArtifactQuery.getArtifactsFromType("Renderer Template", BranchManager.getCommonBranch());
+      }
+      return templates;
    }
 
 }

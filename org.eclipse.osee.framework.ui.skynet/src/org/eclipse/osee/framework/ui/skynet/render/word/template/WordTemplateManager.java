@@ -195,7 +195,7 @@ public class WordTemplateManager {
     */
    public void processArtifacts(WordMLProducer wordMl, List<Artifact> artifacts) throws OseeCoreException {
       String outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, artifacts);
-      template = wordMl.setHeadingNumbers(outlineNumber, template);
+      template = wordMl.setHeadingNumbers(outlineNumber, template, null);
       preProcessTemplatePositions();
 
       for (ITemplateTask task : tasks) {

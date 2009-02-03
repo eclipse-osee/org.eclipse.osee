@@ -109,22 +109,33 @@ public class WordMLProducer extends Producer {
       append("</w:t></w:r></w:p>");
    }
 
-   public String setHeadingNumbers(String outLineNumber, String template) {
-      if (outLineNumber == null) {
+   public String setHeadingNumbers(String outlineNumber, String template, String outlineType) {
+      boolean appendixOutlineType = outlineType != null && outlineType.equalsIgnoreCase("APPENDIX");
+      if (outlineNumber == null) {
          return template;
       }
 
-      int index = 1;
-      String[] numbers = outLineNumber.split("\\.");
+      if (appendixOutlineType) {
+         // Example of appendix number: A.0
+         char[] chars = outlineNumber.toCharArray();
+         template = setAppendixStartLetter(chars[0], template);
+      } else {
+         int index = 1;
+         String[] numbers = outlineNumber.split("\\.");
 
-      for (String number : numbers) {
-         Matcher matcher =
-               Pattern.compile(String.format("<w:start w:val=\"(\\d*?)\"/><w:pStyle w:val=\"Heading%d\"/>", index)).matcher(
-                     "");
-         matcher.reset(template);
-         template =
-               matcher.replaceAll(String.format("<w:start w:val=\"%s\"/><w:pStyle w:val=\"Heading%d\"/>", number, index));
-         index++;
+         for (String number : numbers) {
+            Matcher matcher =
+                  Pattern.compile(String.format("<w:start w:val=\"(\\d*?)\"/><w:pStyle w:val=\"Heading%d\"/>", index)).matcher(
+                        "");
+            matcher.reset(template);
+            template =
+                  matcher.replaceAll(String.format("<w:start w:val=\"%s\"/><w:pStyle w:val=\"Heading%d\"/>", number,
+                        index));
+            index++;
+         }
+      }
+      if (!appendixOutlineType) {
+         setNextParagraphNumberTo(outlineNumber);
       }
       return template;
    }

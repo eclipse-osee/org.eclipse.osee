@@ -1,0 +1,93 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
+
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+
+/**
+ * @author Jeff C. Phillips
+ */
+public class XHistoryLabelProvider extends XViewerLabelProvider {
+
+   Font font = null;
+   private final HistoryXViewer changeXViewer;
+
+   public XHistoryLabelProvider(HistoryXViewer changeXViewer) {
+      super(changeXViewer);
+      this.changeXViewer = changeXViewer;
+   }
+
+   @Override
+   public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
+      //      try {
+      //         if (!(element instanceof TransactionData)) return "";
+      //         TransactionData data = (TransactionData) element;
+      //         if (cCol.equals(HistoryXViewerFactory.transaction)) {
+      //            return String.valueOf(data.getTransactionNumber());
+      //         } else if (cCol.equals(HistoryXViewerFactory.Timestamp)) {
+      //            return String.valueOf(data.getTimeStamp());
+      //         } else if (cCol.equals(HistoryXViewerFactory.author)) {
+      //            return data.getName();
+      //         } else if (cCol.equals(HistoryXViewerFactory.comment)) {
+      //            return data.getComment();
+      //         }
+      //      } catch (Exception ex) {
+      //         return XViewerCells.getCellExceptionString(ex);
+      //      }
+      return "unhandled column";
+   }
+
+   public void dispose() {
+      if (font != null) font.dispose();
+      font = null;
+   }
+
+   public boolean isLabelProperty(Object element, String property) {
+      return false;
+   }
+
+   public void addListener(ILabelProviderListener listener) {
+   }
+
+   public void removeListener(ILabelProviderListener listener) {
+   }
+
+   public HistoryXViewer getTreeViewer() {
+      return changeXViewer;
+   }
+
+   @Override
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
+      //      try {
+      //         if (!(element instanceof Change)) return null;
+      //         Change change = (Change) element;
+      //         if (xCol.equals(HistoryXViewerFactory.transaction)) {
+      //            try {
+      //               return change.getItemKindImage();
+      //            } catch (IllegalArgumentException ex) {
+      //               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      //            } catch (Exception ex) {
+      //               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      //            }
+      //         } else if (xCol.equals(HistoryXViewerFactory.Timestamp)) {
+      //            return change.getItemTypeImage();
+      //         }
+      //      } catch (Exception ex) {
+      //         // do nothing
+      //      }
+      return null;
+   }
+}

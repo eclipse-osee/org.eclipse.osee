@@ -12,6 +12,7 @@ package org.eclipse.osee.define.blam.operation;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -38,6 +39,8 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.templates.ITemplateProvider;
+import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 
 /**
  * @author Jeff C. Phillips
@@ -139,7 +142,20 @@ public class PublishRequirements extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" /><XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" /><XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getDefaultBranch().getBranchName() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";
+      List<Artifact> templates = new ArrayList<Artifact>();
+      try {
+         for (ITemplateProvider provider : TemplateManager.getTemplateProviders()) {
+            templates.addAll(provider.getAllTemplates());
+         }
+         Collections.sort(templates);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(getClass(), Level.SEVERE, ex);
+      }
+      StringBuilder builder = new StringBuilder();
+      builder.append("<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" /><XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" /><XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getDefaultBranch().getBranchName() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" />");
+      builder.append("</xWidgets>");
+      return builder.toString();
    }
 
    private ArrayList<Artifact> getOlderArtifacts(ArrayList<Artifact> artifacts, int transactionId, int branchId) throws OseeCoreException {

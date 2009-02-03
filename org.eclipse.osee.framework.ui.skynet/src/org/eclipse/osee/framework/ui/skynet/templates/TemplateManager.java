@@ -45,4 +45,8 @@ public class TemplateManager {
       }
       return bestTemplateProvider.getTemplate(renderer, artifact, presentationType, option);
    }
+
+   public static List<ITemplateProvider> getTemplateProviders() {
+      return instance.templateProviders;
+   }
 }

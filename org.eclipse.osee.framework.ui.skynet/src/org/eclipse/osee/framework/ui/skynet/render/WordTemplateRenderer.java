@@ -115,8 +115,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       return new WordTemplateRenderer();
    }
 
-   public void publishSRS(VariableMap variableMap) throws OseeCoreException {
-      templateProcessor.publishSRS(variableMap);
+   public void publish(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
+      templateProcessor.publishWithExtensionTemplates(variableMap, masterTemplateArtifact, slaveTemplateArtifact,
+            artifacts);
    }
 
    /**
@@ -473,16 +474,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       } else {
          Artifact firstArtifact = artifacts.iterator().next();
          template = getTemplate(firstArtifact, presentationType);
-
-         //         for (Artifact artifact : artifacts) {
-         //            Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-         //            if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
-         //               throw new OseeCoreException(
-         //                     "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
-         //
-         //            }
-         //         }
-
          if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
             // currently we can't support the editing of multiple artifacts with OLE data
             for (Artifact artifact : artifacts) {
@@ -503,7 +494,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
 
       template = WordUtil.removeGUIDFromTemplate(template);
-      return templateProcessor.applyTemplate(artifacts, template, null, presentationType);
+      return templateProcessor.applyTemplate(null, artifacts, template, null, null, null, presentationType);
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {

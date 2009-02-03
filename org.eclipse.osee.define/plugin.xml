@@ -71,11 +71,6 @@
                primary="true"/>
       </extension>
       <extension
-            id="PublishSrs"
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.define.blam.operation.PublishSrs"/>
-      </extension>
-      <extension
             id="ChangeArtifactType"
             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
          <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactType"/>
@@ -151,6 +146,14 @@
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
             className="org.eclipse.osee.define.blam.operation.ExperimentalBlam">
+      </Operation>
+   </extension>
+   <extension
+         id="PublishWithSpecifiedTemplate"
+         name="Publish With Specified Template"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.define.blam.operation.PublishWithSpecifiedTemplate">
       </Operation>
    </extension>
 </plugin>
