@@ -218,7 +218,7 @@ public class ArtifactPersistenceManager {
                   transactionLimit.getBranchId());
 
             if (!chStmt.next()) {
-               throw new IllegalStateException(
+               throw new OseeStateException(
                      "The artifact with " + idString + " does not exist for transaction \"" + transactionLimit + "\"");
             }
 
@@ -757,7 +757,7 @@ public class ArtifactPersistenceManager {
             }
 
             if (DEBUG) {
-              System.out.println(String.format(" Reverted the Artifact %d in %s", artId,
+               System.out.println(String.format(" Reverted the Artifact %d in %s", artId,
                      Lib.getElapseString(totalTime)));
 
             }
