@@ -26,6 +26,7 @@ public class Activator implements BundleActivator {
    private static Activator instance;
 
    private OseeHttpServiceTracker httpTracker;
+   private OseeHttpServiceTracker httpTracker1;
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
 
@@ -44,6 +45,9 @@ public class Activator implements BundleActivator {
 
       httpTracker = new OseeHttpServiceTracker(context, OseeServerContext.PROCESS_CONTEXT, ArtifactFileServlet.class);
       httpTracker.open();
+
+      httpTracker1 = new OseeHttpServiceTracker(context, OseeServerContext.ARTIFACT_CONTEXT, ArtifactFileServlet.class);
+      httpTracker1.open();
    }
 
    /*
@@ -51,15 +55,25 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      httpTracker.close();
-      httpTracker = null;
+      if (httpTracker != null) {
+         httpTracker.close();
+         httpTracker = null;
+      }
 
-      resourceManagementTracker.close();
-      resourceManagementTracker = null;
+      if (httpTracker1 != null) {
+         httpTracker1.close();
+         httpTracker1 = null;
+      }
 
-      resourceLocatorManagerTracker.close();
-      resourceLocatorManagerTracker = null;
+      if (resourceManagementTracker != null) {
+         resourceManagementTracker.close();
+         resourceManagementTracker = null;
+      }
 
+      if (resourceLocatorManagerTracker != null) {
+         resourceLocatorManagerTracker.close();
+         resourceLocatorManagerTracker = null;
+      }
       instance = null;
    }
 
