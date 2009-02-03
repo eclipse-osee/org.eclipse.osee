@@ -56,7 +56,7 @@ public class ReviewManager {
     * Create a new decision review configured and transitioned to handle action validation
     * 
     * @param force will force the creation of the review without checking that a review should be created
-    * @param transaction 
+    * @param transaction
     * @return new review
     * @throws
     */
@@ -84,7 +84,8 @@ public class ReviewManager {
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
 
          SMAManager revSmaMgr = new SMAManager(decRev);
-         revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), smaMgr.getOriginator(), true, transaction);
+         revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), smaMgr.getOriginator(), true,
+               transaction);
 
          return decRev;
 
@@ -92,6 +93,24 @@ public class ReviewManager {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return null;
+   }
+
+   public DecisionReviewArtifact createNewDecisionReview(String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
+      DecisionReviewArtifact decRev =
+            NewDecisionReviewJob.createNewDecisionReview(smaMgr.getSma(), reviewBlockType, reviewTitle, againstState,
+                  description, options, assignees);
+      return decRev;
+   }
+
+   public DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
+      DecisionReviewArtifact decRev =
+            createNewDecisionReview(reviewTitle, description, againstState, reviewBlockType, options, assignees,
+                  transaction);
+
+      SMAManager revSmaMgr = new SMAManager(decRev);
+      revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), assignees, true, false,
+            transaction);
+      return decRev;
    }
 
    public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
@@ -118,9 +137,10 @@ public class ReviewManager {
             ReviewBlockType.None.name());
 
       // Initialize state machine
-      peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
-      peerToPeerRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.DecisionReviewState.Prepare.name(),
-            "", origDate, origUser);
+      peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(
+            DecisionReviewArtifact.DecisionReviewState.Prepare.name());
+      peerToPeerRev.getSmaMgr().getLog().addLog(LogType.StateEntered,
+            DecisionReviewArtifact.DecisionReviewState.Prepare.name(), "", origDate, origUser);
       peerToPeerRev.persistAttributesAndRelations(transaction);
       return peerToPeerRev;
    }
