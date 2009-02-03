@@ -22,6 +22,7 @@ public class SessionManagementServletActivator implements BundleActivator {
 
    private static SessionManagementServletActivator instance;
    private OseeHttpServiceTracker httpServiceTracker;
+   private OseeHttpServiceTracker httpServiceTracker1;
    private ServiceTracker serviceTracker;
    private ServiceTracker authenticationServiceTracker;
 
@@ -41,6 +42,11 @@ public class SessionManagementServletActivator implements BundleActivator {
       httpServiceTracker =
             new OseeHttpServiceTracker(context, OseeServerContext.SESSION_CONTEXT, SessionManagementServlet.class);
       httpServiceTracker.open();
+
+      httpServiceTracker1 =
+            new OseeHttpServiceTracker(context, OseeServerContext.CLIENT_LOOPBACK_CONTEXT,
+                  SessionClientLoopbackServlet.class);
+      httpServiceTracker1.open();
    }
 
    /*
@@ -51,6 +57,11 @@ public class SessionManagementServletActivator implements BundleActivator {
       if (httpServiceTracker != null) {
          httpServiceTracker.close();
          httpServiceTracker = null;
+      }
+
+      if (httpServiceTracker1 != null) {
+         httpServiceTracker1.close();
+         httpServiceTracker1 = null;
       }
 
       if (serviceTracker != null) {
@@ -66,16 +77,12 @@ public class SessionManagementServletActivator implements BundleActivator {
       instance = null;
    }
 
-   public static SessionManagementServletActivator getInstance() {
-      return instance;
+   public static ISessionManager getSessionManager() {
+      return (ISessionManager) instance.serviceTracker.getService();
    }
 
-   public ISessionManager getSessionManager() {
-      return (ISessionManager) serviceTracker.getService();
-   }
-
-   public IAuthenticationManager getAuthenticationManager() {
-      return (IAuthenticationManager) authenticationServiceTracker.getService();
+   public static IAuthenticationManager getAuthenticationManager() {
+      return (IAuthenticationManager) instance.authenticationServiceTracker.getService();
    }
 
 }

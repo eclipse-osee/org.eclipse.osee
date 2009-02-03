@@ -63,7 +63,7 @@ public class SessionManagementServlet extends OseeHttpServlet {
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
-         String[] protocols = SessionManagementServletActivator.getInstance().getAuthenticationManager().getProtocols();
+         String[] protocols = SessionManagementServletActivator.getAuthenticationManager().getProtocols();
          response.setStatus(HttpServletResponse.SC_OK);
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
@@ -109,7 +109,7 @@ public class SessionManagementServlet extends OseeHttpServlet {
 
    private void createSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
       try {
-         ISessionManager manager = SessionManagementServletActivator.getInstance().getSessionManager();
+         ISessionManager manager = SessionManagementServletActivator.getSessionManager();
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          Lib.inputStreamToOutputStream(request.getInputStream(), outputStream);
          byte[] bytes = outputStream.toByteArray();
@@ -142,7 +142,7 @@ public class SessionManagementServlet extends OseeHttpServlet {
 
    private void releaseSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
       try {
-         ISessionManager manager = SessionManagementServletActivator.getInstance().getSessionManager();
+         ISessionManager manager = SessionManagementServletActivator.getSessionManager();
          String sessionId = request.getParameter("sessionId");
          manager.releaseSession(sessionId);
          response.setStatus(HttpServletResponse.SC_ACCEPTED);
