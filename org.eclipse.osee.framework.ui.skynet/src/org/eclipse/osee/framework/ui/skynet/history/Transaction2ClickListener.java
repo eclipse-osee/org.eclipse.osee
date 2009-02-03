@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.history;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -51,7 +52,7 @@ public class Transaction2ClickListener implements IDoubleClickListener {
          } else {
             RendererManager.openInJob(artifact, PresentationType.GENERALIZED_EDIT);
          }
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
