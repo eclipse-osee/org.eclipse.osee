@@ -363,15 +363,16 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    }
 
    public void runGeneralXColTest(int itemCount, boolean testTaskTab) throws Exception {
-      int itemCnt, size = 0;
+      int itemCnt, beforeSize, afterSize = 0;
       XViewer xv = getXViewer();
       xv.expandAll();
       itemCnt = xv.getVisibleItemCount(xv.getTree().getItems());
       NavigateTestUtil.testExpectedVersusActual("Item Count - ", itemCount, itemCnt);
+      beforeSize = getXViewer().getCustomizeMgr().getCurrentVisibleTableColumns().size();
       // show all columns
       handleTableCustomization();
-      size = getXViewer().getCustomizeMgr().getCurrentTableColumns().size();
-      NavigateTestUtil.testExpectedVersusActual("Column Count - ", 109, size);
+      afterSize = getXViewer().getCustomizeMgr().getCurrentVisibleTableColumns().size();
+      NavigateTestUtil.testExpectedVersusActual("Column Count - ", true, (afterSize >= beforeSize));
       runGeneralXColTest(itemCount, false, "", testTaskTab);
    }
 
