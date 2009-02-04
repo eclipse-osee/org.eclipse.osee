@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -136,7 +137,15 @@ public abstract class XViewerStyledTextLabelProvider extends StyledCellLabelProv
 
    private Color getBackground(Object element, int columnIndex) {
       try {
+    	  
          XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
+        
+         if(viewer.isSearch()){
+        	  StyledString text = getStyledText(element,columnIndex);
+	          if(viewer.searchMatch(text.getString())){
+	         	return viewer.getSearchMatchColor(); 
+	          }  
+   	     } 
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return null;
          if (xViewerColumn instanceof XViewerValueColumn) {

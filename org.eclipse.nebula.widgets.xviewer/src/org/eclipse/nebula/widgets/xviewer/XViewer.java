@@ -13,6 +13,7 @@ package org.eclipse.nebula.widgets.xviewer;
 
 import java.util.Collection;
 import java.util.logging.Level;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -25,9 +26,11 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.customize.ColumnFilterDataUI;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeManager;
 import org.eclipse.nebula.widgets.xviewer.customize.FilterDataUI;
+import org.eclipse.nebula.widgets.xviewer.customize.SearchDataUI;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -54,6 +57,7 @@ public class XViewer extends TreeViewer {
    private static boolean altKeyDown = false;
    protected final IXViewerFactory xViewerFactory;
    private final FilterDataUI filterDataUI;
+   private final SearchDataUI searchDataUI;
    private final ColumnFilterDataUI columnFilterDataUI;
    private static boolean ctrlKeyListenersSet = false;
 
@@ -68,6 +72,7 @@ public class XViewer extends TreeViewer {
    private TreeColumn rightClickSelectedColumn = null;
    private Integer rightClickSelectedColumnNum = null;
    private TreeItem rightClickSelectedItem = null;
+private Color searchColor;
 
    public XViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
       super(parent, style);
@@ -76,6 +81,7 @@ public class XViewer extends TreeViewer {
       this.menuManager.setRemoveAllWhenShown(true);
       this.menuManager.createContextMenu(parent);
       this.filterDataUI = new FilterDataUI(this);
+      this.searchDataUI = new SearchDataUI(this);
       this.columnFilterDataUI = new ColumnFilterDataUI(this);
       try {
          customizeMgr = new CustomizeManager(this, xViewerFactory);
@@ -92,6 +98,7 @@ public class XViewer extends TreeViewer {
    }
 
    public void dispose() {
+	  searchDataUI.dispose();
       filterDataUI.dispose();
       columnFilterDataUI.dispose();
    }
@@ -127,16 +134,28 @@ public class XViewer extends TreeViewer {
 
    protected void createSupportWidgets(Composite parent) {
 
+	  searchColor = Display.getDefault().getSystemColor(SWT.COLOR_YELLOW);
+	   
       Composite comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(XViewerLib.getZeroMarginLayout(4, false));
+      comp.setLayout(XViewerLib.getZeroMarginLayout(8, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      filterDataUI.createWidgets(comp);
+      //Composite searchAndFilter = new Composite(comp, SWT.NONE);
+//      searchAndFilter.setLayout(XViewerLib.getZeroMarginLayout(8, false));
+//      searchAndFilter.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+//      GridData gd = new GridData(SWT.RIGHT, SWT.NONE, false, false);
+//      searchAndFilter.setLayoutData(gd);
+      searchDataUI.createWidgets(comp);
+      
+    
 
       statusLabel = new Label(comp, SWT.NONE);
       statusLabel.setText(" ");
-      statusLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      GridData gd = new GridData(SWT.CENTER, SWT.NONE, true, false);
+      statusLabel.setLayoutData(gd);
 
+      filterDataUI.createWidgets(comp);
+      
       getTree().addListener(SWT.MouseDown, new Listener() {
          public void handleEvent(Event event) {
             if (event.button == 3) {
@@ -471,5 +490,27 @@ public class XViewer extends TreeViewer {
    public boolean isAltKeyDown() {
       return altKeyDown;
    }
+
+	/**
+	 * @param text
+	 * @return
+	 */
+	boolean searchMatch(String text) {
+		return searchDataUI.match(text);
+	}
+
+/**
+ * @return
+ */
+Color getSearchMatchColor() {
+	return searchColor;
+}
+
+/**
+ * @return
+ */
+public boolean isSearch() {
+	return searchDataUI.isSearch();
+}
 
 }
