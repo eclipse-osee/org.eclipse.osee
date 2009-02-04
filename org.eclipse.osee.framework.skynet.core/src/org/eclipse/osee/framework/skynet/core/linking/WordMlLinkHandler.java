@@ -37,16 +37,42 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
+ * This class converts between OSEE hyperlink markers into wordML style links. <br/><br/> <b>Example:</b>
+ * 
  * <pre>
- * &lt;w:hlink w:dest=&quot;http://127.0.0.1:8010/Define?guid=AAABFOH1iAEBxyFeG2MQzQ&quot;&gt;
+ * LinkType linkType = LinkType.OSEE_SERVER_LINK;
+ * 
+ * String original = ... //Doc containing osee link markers
+ * 
+ * // Substitue OSEE link markers with wordML style hyperlinks requesting content to the OSEE application server
+ * String linkedDoc = WordMlLinkHandler.link(linkType, original);
+ * 
+ * // Substitue wordML style hyperlinks with OSEE link markers
+ * String original = WordMlLinkHandler.unLink(linkType, linkedDoc);
+ * </pre>
+ * 
+ * <b>Link types handled</b> <br/><br/>
+ * <ol>
+ * <li><b>OSEE link:</b> This is a branch neutral marker placed in the wordML document.
+ * 
+ * <pre>
+ *    OSEE_LINK([artifact_guid])
+ * </pre>
+ * <li><b>Legacy style links:</b>
+ * 
+ * <pre>
+ * &lt;w:hlink w:dest=&quot;http://[server_address]:[server_port]/Define?guid=&quot;[artifact_guid]&quot;&gt;
  *    &lt;w:r&gt;
  *       &lt;w:rPr&gt;
  *          &lt;w:rStyle w:val=&quot;Hyperlink&quot;/&gt;
  *       &lt;/w:rPr&gt;
- *       &lt;w:t&gt;Abbreviation Lines Format 4 Drawing&lt;/w:t&gt;
+ *       &lt;w:t&gt;[artifact_name]&lt;/w:t&gt;
  *    &lt;/w:r&gt;
  * &lt;/w:hlink&gt;
  * </pre>
+ * 
+ * </li>
+ * </ol>
  * 
  * @author Roberto E. Escobar
  */
@@ -105,7 +131,7 @@ public class WordMlLinkHandler {
             Branch branch = BranchManager.getBranch(branchId);
 
             List<Artifact> artifacts =
-                  ArtifactQuery.getArtifactsFromIds(new ArrayList<String>(guidMatches.keySet()), branch);
+                  ArtifactQuery.getArtifactsFromIds(new ArrayList<String>(guidMatches.keySet()), branch, true);
             if (guidMatches.keySet().size() != artifacts.size()) {
                Set<String> artGuids = new HashSet<String>();
                for (Artifact artifact : artifacts) {
@@ -124,6 +150,7 @@ public class WordMlLinkHandler {
          }
          modified = changeSet.applyChangesToSelf().toString();
       }
+      System.out.println(modified);
       return modified;
    }
 
@@ -210,10 +237,26 @@ public class WordMlLinkHandler {
 
       if (!matchMap.isEmpty()) {
          ChangeSet changeSet = new ChangeSet(original);
-         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromIds(new ArrayList<String>(matchMap.keySet()), branch);
+         List<Artifact> artifacts =
+               ArtifactQuery.getArtifactsFromIds(new ArrayList<String>(matchMap.keySet()), branch, true);
          for (Artifact artifact : artifacts) {
             for (Match match : matchMap.getValues(artifact.getGuid())) {
                changeSet.replace(match.start, match.end, getWordMlLink(destLinkType, artifact, branch));
+            }
+         }
+         if (matchMap.keySet().size() != artifacts.size()) {
+            Set<String> artGuids = new HashSet<String>();
+            for (Artifact artifact : artifacts) {
+               artGuids.add(artifact.getGuid());
+            }
+            List<String> unknownGuids = Collections.setComplement(matchMap.keySet(), artGuids);
+            for (String guid : unknownGuids) {
+               for (Match match : matchMap.getValues(guid)) {
+                  String guidBranch = String.format("guid=%s&branchId=%s", guid, branch.getBranchId());
+                  String link =
+                        String.format(WORDML_LINK_FORMAT, guidBranch, String.format("Link Unknown: [%s]", guidBranch));
+                  changeSet.replace(match.start, match.end, link);
+               }
             }
          }
          modified = changeSet.applyChangesToSelf().toString();
@@ -225,13 +268,11 @@ public class WordMlLinkHandler {
       String toReturn = "";
       URL url = null;
       switch (destLinkType) {
-         case OPEN_IN_OSEE:
+         case OSEE_SERVER_LINK:
             url = ArtifactURL.getOpenInOseeLink(artifact);
-            toReturn = String.format(WORDML_LINK_FORMAT, toWordMlHyperLink(url), artifact.getDescriptiveName());
-            break;
-         case STANDALONE_DOC:
-            url = ArtifactURL.getExternalArtifactLink(artifact);
-            toReturn = String.format(WORDML_LINK_FORMAT, toWordMlHyperLink(url), artifact.getDescriptiveName());
+            toReturn =
+                  String.format(WORDML_LINK_FORMAT, toWordMlHyperLink(url),
+                        artifact.getDescriptiveName() + (artifact.isDeleted() ? " (DELETED)" : ""));
             break;
          default:
             throw new OseeArgumentException(String.format("Unsupported link type [%s]", destLinkType));

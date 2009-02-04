@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
@@ -55,19 +56,18 @@ public class SessionClientLoopbackServlet extends OseeHttpServlet {
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          int remotePort = getSessionPort(request);
+         response.setContentType("text/plain");
+         String url = null;
          if (remotePort > -1) {
-            response.setContentType("text/plain");
-            String url =
-                  String.format("http://%s:%s/%s", request.getRemoteAddr(), remotePort, getLoopbackPostfix(request));
-            response.sendRedirect(url);
+            // Session found - redirect to client.
+            url = String.format("http://%s:%s/%s", request.getRemoteAddr(), remotePort, getLoopbackPostfix(request));
          } else {
-            response.setContentType("text/plain");
-            response.sendError(
-                  HttpServletResponse.SC_ACCEPTED,
-                  String.format(
-                        "Unable to find an open osee port for request address: [%s]\nRequest [%s]\nPlease ensure you have OSEE running on your machine.",
-                        request.getRemoteAddr(), request.getQueryString()));
+            // No session found - redirect to web browser request handler.
+            url =
+                  String.format("http://%s:%s/%s?%s", getNormalizedAddress(request.getLocalAddr()),
+                        request.getLocalPort(), OseeServerContext.ARTIFACT_CONTEXT, request.getQueryString());
          }
+         response.sendRedirect(url);
       } catch (Exception ex) {
          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, String.format(
                "Error processing request [%s]", request.getQueryString()));
@@ -140,8 +140,7 @@ public class SessionClientLoopbackServlet extends OseeHttpServlet {
       return canConnect;
    }
 
-   private String getRemoteAddress(HttpServletRequest request) throws UnknownHostException {
-      String remoteAddress = request.getRemoteAddr();
+   private String getNormalizedAddress(String remoteAddress) throws UnknownHostException {
       if (remoteAddress.equals("127.0.0.1") || remoteAddress.equals("localhost")) {
          remoteAddress = InetAddress.getLocalHost().getHostAddress();
       }
@@ -161,7 +160,7 @@ public class SessionClientLoopbackServlet extends OseeHttpServlet {
    }
 
    private int getSessionPort(HttpServletRequest request) throws UnknownHostException {
-      String remoteAddress = getRemoteAddress(request);
+      String remoteAddress = getNormalizedAddress(request.getRemoteAddr());
       String sessionId = request.getParameter("sessionId");
 
       ISessionManager sessionManager = SessionManagementServletActivator.getSessionManager();

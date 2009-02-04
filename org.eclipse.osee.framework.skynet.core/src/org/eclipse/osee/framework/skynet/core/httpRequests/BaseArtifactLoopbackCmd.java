@@ -27,6 +27,7 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
    public void execute(final Map<String, String> parameters, final HttpResponse httpResponse) {
       final String branchId = parameters.get("branchId");
       final String guid = parameters.get("guid");
+      final boolean isDeleted = Boolean.valueOf(parameters.get("isDeleted"));
 
       if (!Strings.isValid(branchId) || !Strings.isValid(guid)) {
          httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, String.format("Unable to process [%s]",
@@ -34,7 +35,7 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
       } else {
          try {
             final Branch branch = BranchManager.getBranch(Integer.parseInt(branchId));
-            final Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch);
+            final Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch, isDeleted);
             if (artifact == null) {
                httpResponse.outputStandardError(HttpURLConnection.HTTP_NOT_FOUND, String.format(
                      "Artifact can not be found in OSEE on branch [%s]", branch));

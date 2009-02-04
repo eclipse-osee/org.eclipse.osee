@@ -48,6 +48,7 @@ public class ArtifactURL {
       parameters.put("context", "osee/loopback");
       parameters.put("guid", artifact.getGuid());
       parameters.put("branchId", String.valueOf(artifact.getBranch().getBranchId()));
+      parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
       parameters.put("cmd", cmd);
       String urlString =
             HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
