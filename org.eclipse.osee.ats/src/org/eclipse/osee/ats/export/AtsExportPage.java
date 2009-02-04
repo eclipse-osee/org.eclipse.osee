@@ -139,8 +139,8 @@ public class AtsExportPage extends WizardDataTransferPage {
       if (!selectedExportOptions.contains(ExportOption.AS_HTML_TO_FILE) && !selectedExportOptions.contains(ExportOption.AS_HTML_TO_RESULT_EDITOR) && !selectedExportOptions.contains(ExportOption.AS_PDF)) {
          return new Result("Must select at least one export AS_ option.");
       }
-      if (!selectedExportOptions.contains(ExportOption.SINGLE_FILE) && !selectedExportOptions.contains(ExportOption.MULTIPLE_FILES)) {
-         return new Result("Must select SINGLE or MULTIPLE");
+      if (!selectedExportOptions.contains(ExportOption.MERGE_INTO_SINGLE_FILE) && !selectedExportOptions.contains(ExportOption.SAVE_INTO_SEPARATE_FILES)) {
+         return new Result("Must select \"MERGE_INTO_SINGLE_FILE\" or \"SAVE_INTO_SEPARATE_FILES\"");
       }
       if (selectedExportOptions.contains(ExportOption.AS_HTML_TO_FILE) || selectedExportOptions.contains(ExportOption.AS_PDF)) {
          if (xFileSel.get().equals("")) {

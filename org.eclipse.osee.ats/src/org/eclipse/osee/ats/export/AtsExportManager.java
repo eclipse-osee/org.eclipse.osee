@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.swt.program.Program;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -45,8 +44,8 @@ public class AtsExportManager {
       AS_HTML_TO_RESULT_EDITOR,
       AS_HTML_TO_FILE,
       AS_PDF,
-      SINGLE_FILE,
-      MULTIPLE_FILES,
+      MERGE_INTO_SINGLE_FILE,
+      SAVE_INTO_SEPARATE_FILES,
       INCLUDE_TASKLIST;
 
    };
@@ -100,10 +99,10 @@ public class AtsExportManager {
                new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), exportWizard);
          if (dialog.open() == WizardDialog.OK) {
             Collection<ExportOption> selectedExportOptions = exportWizard.getSelectedExportOptions();
-            boolean singleFile = selectedExportOptions.contains(ExportOption.SINGLE_FILE);
+            boolean singleFile = selectedExportOptions.contains(ExportOption.MERGE_INTO_SINGLE_FILE);
             boolean asHtmlToFile = selectedExportOptions.contains(ExportOption.AS_HTML_TO_FILE);
             boolean asHtmlToResultEditor = selectedExportOptions.contains(ExportOption.AS_HTML_TO_RESULT_EDITOR);
-            boolean multipleFile = selectedExportOptions.contains(ExportOption.MULTIPLE_FILES);
+            boolean multipleFile = selectedExportOptions.contains(ExportOption.SAVE_INTO_SEPARATE_FILES);
             boolean includeTaskList = selectedExportOptions.contains(ExportOption.INCLUDE_TASKLIST);
             if (asHtmlToFile || asHtmlToResultEditor) {
                StringBuffer singleSb = new StringBuffer();
@@ -115,12 +114,14 @@ public class AtsExportManager {
                            new SMAPrint(((StateMachineArtifact) artifact).getSmaMgr(), editor.getWorkFlowTab(),
                                  (includeTaskList ? editor.getTaskComposite() : null));
                      String html = smaPrint.getResultData().getReport("").getManipulatedHtml();
+                     editor.closeEditor();
                      if (multipleFile) {
                         try {
                            if (asHtmlToFile) {
-                              File file = new File(exportWizard + "\\" + artifact.getHumanReadableId() + ".html");
+                              File file =
+                                    new File(
+                                          exportWizard.getFileLocation() + "\\" + artifact.getHumanReadableId() + ".html");
                               Lib.writeStringToFile(html, file);
-                              Program.launch(file.getAbsolutePath());
                            }
                            if (asHtmlToResultEditor) {
                               ResultsEditor.open("Output", "Export " + artifact.getHumanReadableId(), html);
@@ -139,7 +140,6 @@ public class AtsExportManager {
                      if (asHtmlToFile) {
                         File file = new File(exportWizard.getFileLocation() + "\\ATS_Export.html");
                         Lib.writeStringToFile(singleSb.toString(), file);
-                        Program.launch(file.getAbsolutePath());
                      }
                      if (asHtmlToResultEditor) {
                         ResultsEditor.open("Output", "Export ATS Artifacts", singleSb.toString());
