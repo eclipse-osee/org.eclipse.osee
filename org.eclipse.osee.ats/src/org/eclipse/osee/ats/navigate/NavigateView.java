@@ -32,11 +32,15 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -55,6 +59,7 @@ public class NavigateView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
    public static final String HELP_CONTEXT_ID = "atsNavigator";
    private AtsNavigateComposite xNavComp;
+   public Text searchArea;
 
    /**
     * The constructor.
@@ -80,6 +85,10 @@ public class NavigateView extends ViewPart implements IActionable {
 
       AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID);
       createActions();
+
+      // add search text box      
+      createSearchInputPart(xNavComp);
+
       if (savedFilterStr != null) {
          xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
       }
@@ -101,6 +110,34 @@ public class NavigateView extends ViewPart implements IActionable {
       GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
       gridData.heightHint = 15;
       label.setLayoutData(gridData);
+
+   }
+
+   public void createSearchInputPart(Composite parent) {
+      Composite comp = new Composite(parent, SWT.NONE);
+      comp.setLayout(ALayout.getZeroMarginLayout(3, false));
+      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      Label searchLabel = new Label(comp, SWT.NONE);
+      searchLabel.setText("Search:");
+      GridData gridData = new GridData(SWT.RIGHT, SWT.NONE, false, false);
+      gridData.heightHint = 15;
+      this.searchArea = new Text(comp, SWT.SINGLE | SWT.BORDER);
+      GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
+      this.searchArea.setFont(parent.getFont());
+      this.searchArea.setLayoutData(gd);
+      this.searchArea.addKeyListener(new KeyAdapter() {
+         public void keyPressed(KeyEvent event) {
+            if (event.character == '\r') {
+               try {
+                  xNavComp.handleDoubleClick(new SearchNavigateItem(null, new AtsNavigateQuickSearch(
+                        "ATS Quick Search", searchArea.getText())));
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+      });
+      this.searchArea.setToolTipText("ATS Quick Search - Type in a search string.");
    }
 
    private String getWhoAmI() {
