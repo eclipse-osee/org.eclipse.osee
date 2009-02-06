@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.ui.skynet.results.html;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -46,7 +47,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
 
    public ResultsEditorHtmlTab(String title, String tabName, String html) {
       this.tabName = tabName;
-      xResultPage = new XResultPage(title, html);
+      xResultPage = new XResultPage(title, html, Manipulations.NONE);
       org.eclipse.core.runtime.Assert.isNotNull(tabName);
       org.eclipse.core.runtime.Assert.isNotNull(html);
    }
@@ -83,7 +84,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
       GridData gd = new GridData(GridData.FILL_BOTH);
       xResultsComposite = new XResultsComposite(comp, SWT.BORDER);
       xResultsComposite.setLayoutData(gd);
-      xResultsComposite.setHtmlText(xResultPage.getManipulatedHtml());
+      xResultsComposite.setHtmlText(xResultPage.getManipulatedHtml(Arrays.asList(Manipulations.NONE)));
 
       SkynetGuiPlugin.getInstance().setHelp(xResultsComposite, HELP_CONTEXT_ID);
       SkynetGuiPlugin.getInstance().setHelp(xResultsComposite.getBrowser(), HELP_CONTEXT_ID);
@@ -108,8 +109,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
          @Override
          public void widgetSelected(SelectionEvent event) {
             Set<Manipulations> manipulations = new HashSet<Manipulations>();
-            manipulations.add(Manipulations.ALL);
-            manipulations.add(Manipulations.ERROR_WARNING_HEADER);
+            manipulations.add(Manipulations.NONE);
             Dialogs.emailDialog(resultsEditor.getTitle(), xResultPage.getManipulatedHtml(manipulations));
          }
       });

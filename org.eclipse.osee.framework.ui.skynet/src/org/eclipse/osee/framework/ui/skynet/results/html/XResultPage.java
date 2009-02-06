@@ -141,7 +141,9 @@ public class XResultPage {
          if (manipulations.contains(Manipulations.RAW_HTML)) {
             str = AHTML.simplePage(str);
          } else {
-            if (manipulations.contains(Manipulations.CONVERT_NEWLINES)) str = str.replaceAll("\n", AHTML.newline());
+            if (manipulations.contains(Manipulations.CONVERT_NEWLINES)) {
+               str = str.replaceAll("\n", AHTML.newline());
+            }
             if (manipulations.contains(Manipulations.HRID_CMD_HYPER)) {
                // System.err.println("match " + line);
                // Match getText so it doesn't mess up replace

@@ -238,7 +238,9 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
             }
          }
       }
-      TaskEditor.open(new TaskEditorSimpleProvider("ValidateATSDatabase: Tasks have !=1 parent workflows.", badTasks));
+      if (badTasks.size() > 0) {
+         TaskEditor.open(new TaskEditorSimpleProvider("ValidateATSDatabase: Tasks have !=1 parent workflows.", badTasks));
+      }
    }
 
    public void testReviewsHaveParentWorkflowOrActionableItems() throws OseeCoreException {
