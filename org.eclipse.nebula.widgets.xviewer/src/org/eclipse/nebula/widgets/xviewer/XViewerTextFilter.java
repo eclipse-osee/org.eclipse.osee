@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.jface.viewers.ITableLabelProvider;
+
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 public class XViewerTextFilter extends ViewerFilter {
 
    private final XViewer xViewer;
-   private ITableLabelProvider labelProv;
+//   private ITableLabelProvider labelProv;
    private Pattern textPattern;
    private Matcher matcher;
    private final Map<String, Pattern> colIdToPattern = new HashMap<String, Pattern>();
@@ -77,7 +77,7 @@ public class XViewerTextFilter extends ViewerFilter {
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       if (textPattern == null && colIdToPattern.size() == 0) return true;
-      if (labelProv == null) labelProv = (ITableLabelProvider) xViewer.getLabelProvider();
+//      if (labelProv == null) labelProv = (ITableLabelProvider) xViewer.getLabelProvider();
       boolean match = true;
       // Must match all column filters or don't show
       for (String filteredColId : xViewer.getCustomizeMgr().getColumnFilterData().getColIds()) {
@@ -86,7 +86,7 @@ public class XViewerTextFilter extends ViewerFilter {
             // Check column filters
             if (colIdToPattern.keySet().contains(xCol.getId())) {
                String cellStr =
-                     labelProv.getColumnText(element, xViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
+                     xViewer.getColumnText(element, xViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
                if (cellStr != null) {
                   matcher = colIdToPattern.get(xCol.getId()).matcher(cellStr);
                   if (!matcher.find()) {
@@ -107,7 +107,7 @@ public class XViewerTextFilter extends ViewerFilter {
             if (xCol.isShow()) {
                // Check text filter
                String cellStr =
-                     labelProv.getColumnText(element, xViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
+                     xViewer.getColumnText(element, xViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
                if (cellStr != null) {
                   matcher = textPattern.matcher(cellStr);
                   if (matcher.find()) return true;

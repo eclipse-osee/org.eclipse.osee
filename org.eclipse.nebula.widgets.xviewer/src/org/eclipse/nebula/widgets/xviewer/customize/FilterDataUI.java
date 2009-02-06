@@ -104,5 +104,5 @@ public class FilterDataUI {
          sb.append("[Text Filter]");
       }
    }
-
+   
 }

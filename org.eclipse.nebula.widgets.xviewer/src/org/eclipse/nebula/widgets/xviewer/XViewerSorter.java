@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
@@ -44,8 +45,9 @@ public class XViewerSorter extends ViewerSorter {
       XViewerColumn sortXCol = sortXCols.get(sortXColIndex);
       try {
          int columnNum = treeViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(sortXCol);
-         String o1Str = ((XViewerLabelProvider) treeViewer.getLabelProvider()).getColumnText(o1, columnNum);
-         String o2Str = ((XViewerLabelProvider) treeViewer.getLabelProvider()).getColumnText(o2, columnNum);
+         
+         String o1Str = treeViewer.getColumnText(o1, columnNum);
+         String o2Str = treeViewer.getColumnText(o2, columnNum);
 
          // System.out.println("sortForward.get(columnNum) *" +
          // sortXCol.isSortForward() + "*");

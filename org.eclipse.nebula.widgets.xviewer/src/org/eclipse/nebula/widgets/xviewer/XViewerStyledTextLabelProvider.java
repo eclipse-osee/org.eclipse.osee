@@ -121,7 +121,7 @@ public abstract class XViewerStyledTextLabelProvider extends StyledCellLabelProv
       return null;
    }
 
-   private StyledString getStyledText(Object element, int columnIndex) {
+   StyledString getStyledText(Object element, int columnIndex) {
       try {
          XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
          // If not shown, don't process any further

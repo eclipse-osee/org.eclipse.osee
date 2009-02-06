@@ -56,8 +56,7 @@ private boolean regex;
       label.setLayoutData(gd);
 
       searchText = new Text(bar, SWT.SINGLE | SWT.BORDER);
-      regularExpression = new Button(bar, SWT.CHECK);
-      regularExpression.setText("regex");
+      
       gd = new GridData(SWT.RIGHT, SWT.NONE, false, false);
       gd.widthHint = 100;
       searchText.setLayoutData(gd);
@@ -101,6 +100,11 @@ private boolean regex;
       } else {
          searchLabel.setText("clear");
       }
+      
+      regularExpression = new Button(bar, SWT.CHECK);
+      regularExpression.setText("RE");
+      regularExpression.setToolTipText("Enable Regular Expression Search");
+      regularExpression.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
       searchLabel.addListener(SWT.MouseUp, new Listener() {
 		/*
           * (non-Javadoc)

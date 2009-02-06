@@ -72,7 +72,7 @@ public class XViewer extends TreeViewer {
    private TreeColumn rightClickSelectedColumn = null;
    private Integer rightClickSelectedColumnNum = null;
    private TreeItem rightClickSelectedItem = null;
-private Color searchColor;
+   private Color searchColor;
 
    public XViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
       super(parent, style);
@@ -137,7 +137,7 @@ private Color searchColor;
 	  searchColor = Display.getDefault().getSystemColor(SWT.COLOR_YELLOW);
 	   
       Composite comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(XViewerLib.getZeroMarginLayout(8, false));
+      comp.setLayout(XViewerLib.getZeroMarginLayout(11, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       //Composite searchAndFilter = new Composite(comp, SWT.NONE);
@@ -145,16 +145,25 @@ private Color searchColor;
 //      searchAndFilter.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 //      GridData gd = new GridData(SWT.RIGHT, SWT.NONE, false, false);
 //      searchAndFilter.setLayoutData(gd);
-      searchDataUI.createWidgets(comp);
       
-    
-
+      filterDataUI.createWidgets(comp);
+      Label sep1 = new Label(comp, SWT.SEPARATOR);
+      
+      GridData gd = new GridData(SWT.RIGHT, SWT.NONE, false, false);
+      gd.heightHint = 16;
+      sep1.setLayoutData(gd);
+      searchDataUI.createWidgets(comp);
+      Label sep2 = new Label(comp, SWT.SEPARATOR);
+      gd = new GridData(SWT.RIGHT, SWT.NONE, false, false);
+      gd.heightHint = 16;
+      sep2.setLayoutData(gd);
       statusLabel = new Label(comp, SWT.NONE);
       statusLabel.setText(" ");
-      GridData gd = new GridData(SWT.CENTER, SWT.NONE, true, false);
+      
+      gd = new GridData(SWT.CENTER, SWT.NONE, false, false);
       statusLabel.setLayoutData(gd);
 
-      filterDataUI.createWidgets(comp);
+     
       
       getTree().addListener(SWT.MouseDown, new Listener() {
          public void handleEvent(Event event) {
@@ -511,6 +520,16 @@ Color getSearchMatchColor() {
  */
 public boolean isSearch() {
 	return searchDataUI.isSearch();
+}
+
+public String getColumnText(Object element, int col){
+	String returnVal = "";
+	if(getLabelProvider() instanceof XViewerLabelProvider){
+		returnVal = ((XViewerLabelProvider) getLabelProvider()).getColumnText(element, col);
+	} else {
+		returnVal = ((XViewerStyledTextLabelProvider) getLabelProvider()).getStyledText(element, col).getString();
+	}
+	return returnVal;
 }
 
 }
