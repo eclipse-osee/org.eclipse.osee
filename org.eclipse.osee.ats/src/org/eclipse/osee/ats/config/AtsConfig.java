@@ -112,7 +112,7 @@ public class AtsConfig {
             atsHeadingArtifact.addChild(art);
             art.persistAttributesAndRelations(transaction);
          }
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
