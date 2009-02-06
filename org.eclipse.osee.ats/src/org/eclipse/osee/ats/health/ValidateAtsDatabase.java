@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.health;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -29,6 +31,8 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.task.TaskEditor;
+import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -55,7 +59,7 @@ import org.eclipse.swt.widgets.Display;
 public class ValidateAtsDatabase extends XNavigateItemAction {
 
    private final boolean fixAssignees = true;
-   private final boolean fixAttributeValues = false;
+   private final boolean fixAttributeValues = true;
 
    /**
     * @param parent
@@ -223,15 +227,18 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
 
    public void testTasksHaveParentWorkflow() throws OseeCoreException {
       xResultData.log(monitor, "testTasksHaveParentWorkflow");
+      Set<Artifact> badTasks = new HashSet<Artifact>(30);
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArtifact = (TaskArtifact) artifact;
             if (taskArtifact.getRelatedArtifacts(AtsRelation.SmaToTask_Sma).size() != 1) {
                xResultData.logError("Task " + taskArtifact.getHumanReadableId() + " has " + taskArtifact.getRelatedArtifacts(
                      AtsRelation.SmaToTask_Sma).size() + " parents.");
+               badTasks.add(taskArtifact);
             }
          }
       }
+      TaskEditor.open(new TaskEditorSimpleProvider("ValidateATSDatabase: Tasks have !=1 parent workflows.", badTasks));
    }
 
    public void testReviewsHaveParentWorkflowOrActionableItems() throws OseeCoreException {
