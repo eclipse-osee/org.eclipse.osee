@@ -41,11 +41,15 @@ public class XActionableItemsDam extends XTextDam {
    public Set<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
       for (String guid : getActionableItemGuids()) {
-         ActionableItemArtifact aia = AtsCache.getActionableItemByGuid(guid);
-         if (aia == null)
-            OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Can't find Actionable Item for guid " + guid);
-         else
-            ais.add(aia);
+         try {
+            ActionableItemArtifact aia = AtsCache.getActionableItemByGuid(guid);
+            if (aia == null)
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Can't find Actionable Item for guid " + guid);
+            else
+               ais.add(aia);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error getting actionable item for guid " + guid, ex);
+         }
       }
       return ais;
    }
