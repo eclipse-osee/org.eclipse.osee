@@ -74,9 +74,9 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
                   }
                });
                int count = 1;
-               while (!isDone.getValue() && count < 15) {
+               while (!isDone.getValue() && count < 30) {
                   try {
-                     Thread.sleep(1000);
+                     Thread.sleep(350);
                   } catch (InterruptedException ex) {
                   }
                   count++;

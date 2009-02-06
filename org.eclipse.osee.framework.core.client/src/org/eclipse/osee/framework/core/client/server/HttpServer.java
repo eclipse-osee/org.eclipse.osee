@@ -89,6 +89,9 @@ public class HttpServer {
    public static void stopServer() {
       if (internalHttpServer != null) {
          internalHttpServer.haltServer();
+         if (!internalHttpServer.executorService.isShutdown()) {
+            internalHttpServer.executorService.shutdownNow();
+         }
       }
    }
 
