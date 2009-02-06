@@ -29,6 +29,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
+import org.eclipse.osee.framework.skynet.core.linking.LinkType;
+import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
@@ -64,7 +66,7 @@ public class WholeDocumentRenderer extends WordRenderer {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command");
       } else if (presentationType == PresentationType.PREVIEW) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.wholewordpreview.command");
-   }
+      }
 
       return commandIds;
    }
@@ -101,7 +103,6 @@ public class WholeDocumentRenderer extends WordRenderer {
          if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).containsWordAnnotations()) {
             throw new OseeCoreException(
                   "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
-
          }
       }
 
@@ -113,6 +114,9 @@ public class WholeDocumentRenderer extends WordRenderer {
             String content = artifact.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT);
             String myGuid = artifact.getGuid();
             content = WordUtil.addGUIDToDocument(myGuid, content);
+
+            LinkType linkType = LinkType.OSEE_SERVER_LINK;
+            content = WordMlLinkHandler.link(linkType, artifact, content);
             stream = Streams.convertStringToInputStream(content, "UTF-8");
          }
          return stream;

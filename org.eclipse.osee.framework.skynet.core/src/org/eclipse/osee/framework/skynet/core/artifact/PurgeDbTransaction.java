@@ -80,7 +80,7 @@ public class PurgeDbTransaction extends DbTransaction {
             }
          }
          if (batchParameters.size() > 0) {
-            ArtifactLoader.selectArtifacts(connection, batchParameters);
+            ArtifactLoader.insertIntoArtifactJoin(connection, batchParameters);
             ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
             try {
                chStmt.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
@@ -114,7 +114,7 @@ public class PurgeDbTransaction extends DbTransaction {
             batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), art.getBranch().getBranchId(),
                   SQL3DataType.INTEGER});
          }
-         ArtifactLoader.selectArtifacts(connection, batchParameters);
+         ArtifactLoader.insertIntoArtifactJoin(connection, batchParameters);
 
          //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
          int transactionJoinId = ArtifactLoader.getNewQueryId();

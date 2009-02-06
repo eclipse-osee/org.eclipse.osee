@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Ryan D. Brooks
@@ -138,6 +139,10 @@ public class ArtifactQuery {
 
    public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(guidOrHrids, branch, allowDeleted, FULL).getArtifacts(30, null);
+   }
+
+   public static List<Artifact> getHistoricalArtifactsFromIds(List<String> guidOrHrids, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(guidOrHrids, transactionId, allowDeleted, FULL).getArtifacts(30, null);
    }
 
    public static List<Artifact> getArtifactsFromName(String artifactName, Branch branch, boolean allowDeleted) throws OseeCoreException {

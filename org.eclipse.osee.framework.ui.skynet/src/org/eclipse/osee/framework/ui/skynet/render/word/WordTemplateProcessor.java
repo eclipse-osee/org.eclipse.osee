@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
@@ -453,7 +454,7 @@ public class WordTemplateProcessor {
 
          VariableMap map = new VariableMap();
          map.setValue("allAttrs", allAttrs);
-
+         map.setValue("linkType", LinkType.OSEE_SERVER_LINK);
          RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, map, wordMl, attributeElement);
       }
    }

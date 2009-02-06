@@ -215,7 +215,7 @@ public class BranchCreator {
             datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), SQL3DataType.INTEGER});
          }
          try {
-            ArtifactLoader.selectArtifacts(datas);
+            ArtifactLoader.insertIntoArtifactJoin(datas);
             insertGammas(connection, attributeGammas, branchWithTransactionNumber.getValue(), queryId, sourceBranch);
             insertGammas(connection, artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId,
                   sourceBranch);
@@ -251,7 +251,7 @@ public class BranchCreator {
          datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), SQL3DataType.INTEGER});
       }
       try {
-         ArtifactLoader.selectArtifacts(datas);
+         ArtifactLoader.insertIntoArtifactJoin(datas);
          insertGammas(connection, attributeGammas, branchWithTransactionNumber.getValue(), queryId, sourceBranch);
          insertGammas(connection, artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId, sourceBranch);
       } finally {

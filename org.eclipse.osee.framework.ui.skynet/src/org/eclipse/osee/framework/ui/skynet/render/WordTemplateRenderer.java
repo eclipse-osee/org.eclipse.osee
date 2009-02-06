@@ -40,6 +40,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.linking.LinkType;
+import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -433,12 +435,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             //Change the BinData Id so images do not get overridden by the other images
             value = WordUtil.reassignBinDataID(value);
 
-            // TODO: attach link/unlink
-            //            // Based on Options ?
-            //            LinkType linkType = LinkType.OPEN_IN_OSEE;
-            //            LinkType.INTERNAL_DOC_REFERENCE;
-            //            LinkType.STANDALONE_DOC;
-            //            value = WordMlLinkHandler.link(linkType, artifact.getBranch(), value);
+            LinkType linkType = (LinkType) map.getValue("linkType");
+            value = WordMlLinkHandler.link(linkType, artifact, value);
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {

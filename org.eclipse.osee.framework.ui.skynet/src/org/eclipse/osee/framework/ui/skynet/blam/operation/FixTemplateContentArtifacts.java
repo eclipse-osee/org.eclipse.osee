@@ -56,7 +56,6 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 
    private static final String GET_ATTRS =
          "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null";
-   private static final String GET_ATTRS_TEST = GET_ATTRS + " AND t1.art_id = 3894";
    private Collection<String> badData = new LinkedList<String>();
    private static final String[] columnHeaders = new String[] {"Corrupted Data"};
 
@@ -145,14 +144,6 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                      "Skiping File %s because of exception %s", attrData.getHrid(), ex));
             }
          }
-
-         //         if (index != 0 && index % 1000 == 0) {
-         //            try {
-         //               Thread.sleep(1000 * 60 * 2);
-         //            } catch (InterruptedException ex) {
-         //               ex.printStackTrace();
-         //            }
-         //         }
          monitor.worked(1);
       }
 

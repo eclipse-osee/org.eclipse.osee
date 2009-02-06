@@ -124,7 +124,7 @@ public class ChangeManager {
 
       HashCollection<Artifact, TransactionId> transactionMap = new HashCollection<Artifact, TransactionId>();
       try {
-         ArtifactLoader.selectArtifacts(insertParameters);
+         ArtifactLoader.insertIntoArtifactJoin(insertParameters);
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
@@ -169,7 +169,7 @@ public class ChangeManager {
 
       HashCollection<Artifact, Branch> branchMap = new HashCollection<Artifact, Branch>();
       try {
-         ArtifactLoader.selectArtifacts(insertParameters);
+         ArtifactLoader.insertIntoArtifactJoin(insertParameters);
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(insertParameters.size() * 2,

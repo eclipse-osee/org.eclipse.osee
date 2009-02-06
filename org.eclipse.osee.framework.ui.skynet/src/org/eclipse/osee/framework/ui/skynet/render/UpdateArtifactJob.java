@@ -16,9 +16,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,6 +35,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -41,7 +44,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.linking.LinkType;
+import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.w3c.dom.Document;
@@ -207,6 +213,8 @@ public class UpdateArtifactJob extends UpdateJob {
                         System.err.println("AFTER:  " + content);
                      }
                   }
+                  LinkType linkType = LinkType.OSEE_SERVER_LINK;
+                  content = WordMlLinkHandler.unlink(linkType, artifact, content);
                   artifact.setSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, content);
                }
                artifact.persistAttributes();
@@ -221,8 +229,25 @@ public class UpdateArtifactJob extends UpdateJob {
    }
 
    private void updateWholeDocumentArtifact(Artifact artifact) throws FileNotFoundException, OseeCoreException {
-      artifact.setSoleAttributeFromStream(WordAttribute.WHOLE_WORD_CONTENT, new FileInputStream(workingFile));
-      artifact.persistAttributes();
+      InputStream inputStream = null;
+      try {
+         inputStream = new FileInputStream(workingFile);
+         String content = Lib.inputStreamToString(inputStream);
+         LinkType linkType = LinkType.OSEE_SERVER_LINK;
+         content = WordMlLinkHandler.unlink(linkType, artifact, content);
+         artifact.setSoleAttributeFromString(WordAttribute.WHOLE_WORD_CONTENT, content);
+         artifact.persistAttributes();
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      } finally {
+         if (inputStream != null) {
+            try {
+               inputStream.close();
+            } catch (IOException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         }
+      }
    }
 
    private Collection<Element> getArtifacts(File wordFile, boolean single) throws ParserConfigurationException, SAXException, IOException, OseeCoreException {

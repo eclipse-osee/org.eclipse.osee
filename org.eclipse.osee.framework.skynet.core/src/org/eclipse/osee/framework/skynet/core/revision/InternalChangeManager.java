@@ -369,7 +369,7 @@ public class InternalChangeManager {
                   datas.add(new Object[] {queryId, insertTime, artId, wasValueBranch.getBranchId(),
                         SQL3DataType.INTEGER});
                }
-               ArtifactLoader.selectArtifacts(datas);
+               ArtifactLoader.insertIntoArtifactJoin(datas);
 
                chStmt2.runPreparedQuery(sql, sqlParamter, queryId);
                int previousAttrId = -1;

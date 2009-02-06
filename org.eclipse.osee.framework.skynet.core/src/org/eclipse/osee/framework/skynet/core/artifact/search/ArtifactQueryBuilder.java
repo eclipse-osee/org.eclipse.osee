@@ -55,6 +55,7 @@ public class ArtifactQueryBuilder {
    private boolean emptyCriteria = false;
    private boolean firstTable = true;
    private final boolean tableOrderForward;
+   private final TransactionId transactionId;
 
    /**
     * @param artId
@@ -62,7 +63,7 @@ public class ArtifactQueryBuilder {
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
    public ArtifactQueryBuilder(int artId, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
-      this(null, artId, null, null, null, branch, allowDeleted, loadLevel, true);
+      this(null, artId, null, null, null, branch, null, allowDeleted, loadLevel, true);
    }
 
    /**
@@ -73,58 +74,63 @@ public class ArtifactQueryBuilder {
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
    public ArtifactQueryBuilder(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
-      this(artifactIds, 0, null, null, null, branch, allowDeleted, loadLevel, true);
+      this(artifactIds, 0, null, null, null, branch, null, allowDeleted, loadLevel, true);
       emptyCriteria = artifactIds.size() == 0;
    }
 
    public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, guidOrHrids, null, null, branch, false, loadLevel, true);
+      this(null, 0, guidOrHrids, null, null, branch, null, false, loadLevel, true);
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
    public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
-      this(null, 0, guidOrHrids, null, null, branch, allowDeleted, loadLevel, true);
+      this(null, 0, guidOrHrids, null, null, branch, null, allowDeleted, loadLevel, true);
+      emptyCriteria = guidOrHrids.size() == 0;
+   }
+
+   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionId transactionId2, boolean allowDeleted, ArtifactLoad loadLevel) {
+      this(null, 0, guidOrHrids, null, null, transactionId2.getBranch(), transactionId2, allowDeleted, loadLevel, true);
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
    public ArtifactQueryBuilder(String guidOrHrid, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
-      this(null, 0, null, ensureValid(guidOrHrid), null, branch, allowDeleted, loadLevel, true);
+      this(null, 0, null, ensureValid(guidOrHrid), null, branch, null, allowDeleted, loadLevel, true);
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, allowDeleted, loadLevel, true);
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, null, allowDeleted, loadLevel, true);
    }
 
    public ArtifactQueryBuilder(Collection<ArtifactType> artifactTypes, Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, null, null, artifactTypes, branch, false, loadLevel, true);
+      this(null, 0, null, null, artifactTypes, branch, null, false, loadLevel, true);
       emptyCriteria = artifactTypes.size() == 0;
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
-      this(null, 0, null, null, null, branch, allowDeleted, loadLevel, false);
+      this(null, 0, null, null, null, branch, null, allowDeleted, loadLevel, false);
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
-      this(null, 0, null, null, null, branch, allowDeleted, loadLevel, true, criteria);
+      this(null, 0, null, null, null, branch, null, allowDeleted, loadLevel, true, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
-      this(null, 0, null, null, null, branch, false, loadLevel, true, toArray(criteria));
+      this(null, 0, null, null, null, branch, null, false, loadLevel, true, toArray(criteria));
       emptyCriteria = criteria.size() == 0;
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, true, criteria);
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, null, false, loadLevel, true, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, true, toArray(criteria));
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, null, false, loadLevel, true, toArray(criteria));
       emptyCriteria = criteria.size() == 0;
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, TransactionId transactionId, boolean allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
       this.artifactTypes = artifactTypes;
       this.branch = branch;
       this.criteria = criteria;
@@ -133,6 +139,7 @@ public class ArtifactQueryBuilder {
       this.guidOrHrid = guidOrHrid;
       this.artifactId = artifactId;
       this.tableOrderForward = tableOrderForward;
+      this.transactionId = transactionId;
       if (artifactIds != null && !artifactIds.isEmpty()) {
          if (artifactIds.size() == 1) {
             this.artifactId = artifactIds.iterator().next();
@@ -180,7 +187,7 @@ public class ArtifactQueryBuilder {
       if (count) {
          sql.append("SELECT%s count(%s.art_id) FROM ");
       } else {
-         sql.append("SELECT%s %s.art_id, %s.transaction_id, %s.branch_id FROM ");
+         sql.append("SELECT%s %s.art_id, %s.branch_id FROM ");
       }
 
       if (criteria.length > 0) {
@@ -283,15 +290,21 @@ public class ArtifactQueryBuilder {
       sql.append(txsAlias);
       sql.append(".tx_current");
 
-      if (allowDeleted) {
-         sql.append(" IN (");
-         sql.append(TxChange.CURRENT.getValue());
-         sql.append(", ");
-         sql.append(TxChange.DELETED.getValue());
-         sql.append(")");
+      if (transactionId != null) {
+         sql.append(txsAlias);
+         sql.append(".transaction_id <= ?");
+         addParameter(transactionId.getTransactionNumber());
       } else {
-         sql.append("=");
-         sql.append(TxChange.CURRENT.getValue());
+         if (allowDeleted) {
+            sql.append(" IN (");
+            sql.append(TxChange.CURRENT.getValue());
+            sql.append(", ");
+            sql.append(TxChange.DELETED.getValue());
+            sql.append(")");
+         } else {
+            sql.append("=");
+            sql.append(TxChange.CURRENT.getValue());
+         }
       }
 
       sql.append(" AND ");
@@ -303,7 +316,7 @@ public class ArtifactQueryBuilder {
          paramList.add(artAlias);
       } else {
          paramList.add(artAlias);
-         paramList.add(txdAlias);
+         //         paramList.add(txdAlias);
          paramList.add(txdAlias);
       }
       return String.format(sql.toString(), paramList.toArray());

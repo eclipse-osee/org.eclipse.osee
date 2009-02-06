@@ -170,7 +170,7 @@ public final class ArtifactLoader {
       if (insertParameters.size() > 0) {
          long time = System.currentTimeMillis();
          try {
-            selectArtifacts(insertParameters);
+            insertIntoArtifactJoin(insertParameters);
             artifacts =
                   loadArtifactsFromQueryId(queryId, loadLevel, confirmer, insertParameters.size(), reload, historical,
                         allowDeleted);
@@ -190,7 +190,7 @@ public final class ArtifactLoader {
     * @param insertParameters
     * @throws OseeDataStoreException
     */
-   public static int selectArtifacts(OseeConnection connection, List<Object[]> insertParameters) throws OseeDataStoreException {
+   public static int insertIntoArtifactJoin(OseeConnection connection, List<Object[]> insertParameters) throws OseeDataStoreException {
       return ConnectionHandler.runBatchUpdate(connection, INSERT_JOIN_ARTIFACT, insertParameters);
    }
 
@@ -200,8 +200,8 @@ public final class ArtifactLoader {
     * @param insertParameters
     * @throws OseeDataStoreException
     */
-   public static int selectArtifacts(List<Object[]> insertParameters) throws OseeDataStoreException {
-      return ConnectionHandler.runBatchUpdate(INSERT_JOIN_ARTIFACT, insertParameters);
+   public static int insertIntoArtifactJoin(List<Object[]> insertParameters) throws OseeDataStoreException {
+      return insertIntoArtifactJoin(null, insertParameters);
    }
 
    /**

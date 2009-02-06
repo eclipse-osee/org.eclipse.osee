@@ -62,7 +62,7 @@ public class UpdateFromParentBranch extends AbstractBlam {
             insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), parentBranch.getBranchId(),
                   SQL3DataType.INTEGER});
          }
-         ArtifactLoader.selectArtifacts(insertParameters);
+         ArtifactLoader.insertIntoArtifactJoin(insertParameters);
 
          int count =
                ConnectionHandler.runPreparedUpdate(DELETE_GAMMAS_FOR_UPDATES, childBranch.getBranchId(),

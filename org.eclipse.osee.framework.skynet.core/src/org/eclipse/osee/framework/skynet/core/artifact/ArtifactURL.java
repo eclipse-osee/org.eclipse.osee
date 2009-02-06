@@ -49,6 +49,10 @@ public class ArtifactURL {
       parameters.put("guid", artifact.getGuid());
       parameters.put("branchId", String.valueOf(artifact.getBranch().getBranchId()));
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
+      if (artifact.isHistorical()) {
+         // Add artifact gammaId
+         parameters.put("gammaId", String.valueOf(artifact.getGammaId()));
+      }
       parameters.put("cmd", cmd);
       String urlString =
             HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
