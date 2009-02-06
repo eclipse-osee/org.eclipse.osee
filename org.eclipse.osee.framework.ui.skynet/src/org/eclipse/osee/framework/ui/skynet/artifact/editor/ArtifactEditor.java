@@ -516,6 +516,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
                boolean areBranchesEqual = artifact.getBranch().equals(BranchManager.getDefaultBranch());
                boolean isEditAllowed = artifact.isReadOnly() != true;
 
+               if (attributeComposite.getToolBar() == null || attributeComposite.getToolBar().isDisposed()) {
+                  return;
+               }
                attributeComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
                attributeComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(
                      isEditAllowed && areBranchesEqual);

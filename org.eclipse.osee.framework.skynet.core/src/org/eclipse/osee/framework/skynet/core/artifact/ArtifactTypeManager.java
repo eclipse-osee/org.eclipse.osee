@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
@@ -46,7 +45,7 @@ import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 public class ArtifactTypeManager {
    private static final String SELECT_ARTIFACT_TYPES = "SELECT * FROM osee_artifact_type";
    private static final String INSERT_ARTIFACT_TYPE =
-         "INSERT INTO osee_artifact_type (art_type_id, factory_id, namespace, name, factory_key, image) VALUES (?,?,?,?,?,?)";
+         "INSERT INTO osee_artifact_type (art_type_id, namespace, name, image) VALUES (?,?,?,?)";
    private HashMap<String, Pair<String, String>> imageMap;
 
    private static Pair<String, String> defaultIconLocation =
@@ -68,8 +67,6 @@ public class ArtifactTypeManager {
 
    private static synchronized void ensurePopulated() throws OseeDataStoreException {
       if (instance.idToTypeMap.size() == 0) {
-         // Ensure Artifact Factory cache is populated before populating this cache, otherwise an extra database connection gets used because this would be done concurrently
-         ArtifactFactoryManager.refreshCache();
          instance.populateCache();
       }
    }
@@ -82,10 +79,8 @@ public class ArtifactTypeManager {
 
          while (chStmt.next()) {
             try {
-               ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromId(chStmt.getInt("factory_id"));
-               new ArtifactType(chStmt.getInt("art_type_id"), chStmt.getString("factory_key"), factory,
-                     chStmt.getString("namespace"), chStmt.getString("name"), new InputStreamImageDescriptor(
-                           chStmt.getBinaryStream("image")));
+               new ArtifactType(chStmt.getInt("art_type_id"), chStmt.getString("namespace"), chStmt.getString("name"),
+                     new InputStreamImageDescriptor(chStmt.getBinaryStream("image")));
             } catch (OseeDataStoreException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
@@ -233,19 +228,14 @@ public class ArtifactTypeManager {
       if (!typeExists(namespace, artifactTypeName)) {
          int artTypeId = SequenceManager.getNextArtifactTypeId();
          InputStreamImageDescriptor imageDescriptor = instance.getDefaultImageDescriptor(artifactTypeName);
-         ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromName(factoryName);
 
-         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, factory.getFactoryId(), namespace,
-               artifactTypeName, factoryKey, new ByteArrayInputStream(imageDescriptor.getData()));
+         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, namespace, artifactTypeName,
+               new ByteArrayInputStream(imageDescriptor.getData()));
 
-         artifactType = new ArtifactType(artTypeId, factoryKey, factory, namespace, artifactTypeName, imageDescriptor);
+         artifactType = new ArtifactType(artTypeId, namespace, artifactTypeName, imageDescriptor);
       } else {
          // Check if anything valuable is different
          artifactType = getType(namespace, artifactTypeName);
-         if (!artifactType.getFactoryKey().equals(factoryKey) || !artifactType.getFactory().getClass().getCanonicalName().equals(
-               factoryName)) {
-            // update factory information
-         }
       }
       return artifactType;
    }

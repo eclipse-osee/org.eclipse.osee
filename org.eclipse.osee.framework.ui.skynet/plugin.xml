@@ -212,7 +212,6 @@
 	</extension>
 	<extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
 		<ArtifactFactory classname="org.eclipse.osee.framework.ui.skynet.artifact.SkynetGuiArtifactFactory"/>
-		<ArtifactFactory classname="org.eclipse.osee.framework.ui.skynet.blam.BlamFactory"/>
 	</extension>
 	<extension id="SrsProducer" name="SrsProducer" point="org.eclipse.osee.framework.ui.skynet.WordMlProducer">
 		<producer class="org.eclipse.osee.framework.ui.skynet.render.word.SrsProducer"/>

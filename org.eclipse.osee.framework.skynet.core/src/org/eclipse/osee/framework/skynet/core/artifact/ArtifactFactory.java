@@ -10,25 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 public abstract class ArtifactFactory {
-   private final int factoryId;
 
-   protected ArtifactFactory(int factoryId) {
-      super();
+   private final Collection<String> artifactTypeNames;
 
-      if (factoryId < 1) {
-         throw new IllegalStateException(this + " has not (yet) been registered");
-      }
-      this.factoryId = factoryId;
+   protected ArtifactFactory(Collection<String> artifactTypeNames) {
+      this.artifactTypeNames = artifactTypeNames;
    }
 
-   protected boolean compatibleWith(ArtifactType descriptor) {
-      return descriptor.getFactory().getFactoryId() == this.factoryId;
+   protected ArtifactFactory(String artifactTypeName) {
+      this(Arrays.asList(artifactTypeName));
+   }
+
+   protected ArtifactFactory() {
+      super();
+      this.artifactTypeNames = null;
    }
 
    /**
@@ -42,12 +46,7 @@ public abstract class ArtifactFactory {
     * @return the new artifact instance
     */
    public Artifact makeNewArtifact(Branch branch, ArtifactType artifactType, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
-      if (!compatibleWith(artifactType)) {
-         throw new IllegalArgumentException("The supplied descriptor is not appropriate for this factory");
-      }
-
-      Artifact artifact =
-            getArtifactInstance(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
+      Artifact artifact = getArtifactInstance(guid, humandReadableId, branch, artifactType);
 
       artifact.setArtId(SequenceManager.getNextArtifactId());
       if (earlyArtifactInitialization != null) {
@@ -63,9 +62,7 @@ public abstract class ArtifactFactory {
    }
 
    public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
-      Artifact artifact =
-            getArtifactInstance(guid, humandReadableId, artifactType.getFactoryKey(), transactionId.getBranch(),
-                  artifactType);
+      Artifact artifact = getArtifactInstance(guid, humandReadableId, transactionId.getBranch(), artifactType);
 
       artifact.setArtId(artId);
       artifact.internalSetPersistenceData(gammaId, transactionId, modType, historical);
@@ -84,14 +81,21 @@ public abstract class ArtifactFactory {
     * @return Return artifact reference
     * @throws OseeCoreException TODO
     */
-   protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) throws OseeCoreException;
-
-   public int getFactoryId() {
-      return factoryId;
-   }
+   protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException;
 
    @Override
    public String toString() {
       return getClass().getName();
+   }
+
+   /**
+    * Return true if this artifact factory is responsible for creating artifactType.
+    * 
+    * @param artifactTypeName
+    * @return true if responsible
+    * @throws OseeCoreException
+    */
+   public boolean isResponsibleFor(String artifactTypeName) throws OseeDataStoreException {
+      return artifactTypeNames != null && artifactTypeNames.contains(artifactTypeName);
    }
 }

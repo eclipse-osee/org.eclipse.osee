@@ -121,7 +121,7 @@ public class XResultData {
    }
 
    public void report(final String title) {
-      report(title, Manipulations.ALL);
+      report(title, Manipulations.HTML_MANIPULATIONS);
    }
 
    public void report(final String title, final Manipulations... manipulations) {

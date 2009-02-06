@@ -637,7 +637,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getHumanReadableId());
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
-               "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + ".");
+               "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getHumanReadableId());
       }
       return soleAttributes.iterator().next().getValue();
    }

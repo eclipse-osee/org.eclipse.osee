@@ -167,16 +167,7 @@
       <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
          <ArtifactFactory
-               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory">
-         </ArtifactFactory>
-         <ArtifactFactory
-               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory">
-         </ArtifactFactory>
-         <ArtifactFactory
-               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.PolymorphicArtifactFactory">
-         </ArtifactFactory>
-         <ArtifactFactory
-               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.NativeArtifactFactory">
+               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.SkynetCoreArtifactFactory">
          </ArtifactFactory>
       </extension>
       <extension

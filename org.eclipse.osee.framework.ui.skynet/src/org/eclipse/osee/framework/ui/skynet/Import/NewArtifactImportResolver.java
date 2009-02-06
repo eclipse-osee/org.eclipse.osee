@@ -15,14 +15,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.PolymorphicArtifactFactory;
 
 /**
  * @author Ryan D. Brooks
  */
 public class NewArtifactImportResolver implements IArtifactImportResolver {
-   private static boolean usePolymorphicArtifactFactory = false;
-   private static PolymorphicArtifactFactory polymorphicArtifactFactory = PolymorphicArtifactFactory.getInstance();
 
    public NewArtifactImportResolver() {
    }
@@ -34,12 +31,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       ArtifactType descriptor = roughArtifact.getDescriptorForGetReal();
 
       Artifact realArtifact = null;
-      ArtifactFactory factory = null;
-      if (usePolymorphicArtifactFactory) {
-         factory = polymorphicArtifactFactory;
-      } else {
-         factory = descriptor.getFactory();
-      }
+      ArtifactFactory factory = descriptor.getFactory();
       realArtifact =
             factory.makeNewArtifact(roughArtifact.getBranch(), descriptor, roughArtifact.getGuid(),
                   roughArtifact.getHumandReadableId(), new ArtifactProcessor() {
@@ -52,17 +44,4 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       return realArtifact;
    }
 
-   /**
-    * @return the usePolymorphicArtifactFactory
-    */
-   public static boolean isUsePolymorphicArtifactFactory() {
-      return usePolymorphicArtifactFactory;
-   }
-
-   /**
-    * @param usePolymorphicArtifactFactory the usePolymorphicArtifactFactory to set
-    */
-   public static void setUsePolymorphicArtifactFactory(boolean usePolymorphicArtifactFactory) {
-      NewArtifactImportResolver.usePolymorphicArtifactFactory = usePolymorphicArtifactFactory;
-   }
 }

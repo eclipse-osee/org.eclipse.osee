@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
@@ -515,8 +514,6 @@ public class BranchManager {
       if (staticBranchName != null) {
          createKeyedBranch(staticBranchName, branch);
       }
-      // Re-init factory cache
-      ArtifactFactoryManager.refreshCache();
       // Import skynet types if specified
       if (skynetTypesImportExtensionsIds != null && skynetTypesImportExtensionsIds.size() > 0) {
          MasterSkynetTypesImport.importSkynetDbTypes(skynetTypesImportExtensionsIds, branch);

@@ -70,13 +70,8 @@
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="NAMESPACE" limits="120" type="VARCHAR" />
 		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
-		<Column id="FACTORY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="FACTORY_KEY" defaultValue="not null" limits="100" type="VARCHAR" />
 	    <Column id="IMAGE" defaultValue="not null" type="BLOB" />
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_AR_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID" />
-		<Constraint schema="OSEE" id="FACTORY_ID_FK" type="FOREIGN KEY" appliesTo="FACTORY_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ARTIFACT_FACTORY" column="FACTORY_ID" onDelete="CASCADE" />
-		</Constraint>
 		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="NAME"/>
 		</Index>
@@ -158,15 +153,6 @@
 		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTRIBUTE_PROVIDER_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ATTR_PROVIDER_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" />
-	</Table>
-	
-	<Table name="OSEE_ARTIFACT_FACTORY" schema="OSEE" tablespace="osee_data">
-		<Column id="FACTORY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="FACTORY_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_FACTORY_FI_PK" type="PRIMARY KEY" appliesTo="FACTORY_ID" />
-		<Index id="OSEE_FACTORY_FC_IDX" type="UNIQUE" tablespace="osee_index">
-			<AppliesTo id="FACTORY_CLASS"/>
-		</Index>
 	</Table>
 	
 	<Table name="OSEE_RELATION_LINK" schema="OSEE" tablespace="osee_data">

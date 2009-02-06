@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
+import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
@@ -36,7 +37,9 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Description of an Artifact subtype. The descriptor can be used to create new artifacts that are of the type of this
- * descriptor. <br/><br/> Descriptors can be acquired from the configuration manager.
+ * descriptor. <br/>
+ * <br/>
+ * Descriptors can be acquired from the configuration manager.
  * 
  * @see org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager
  * @author Robert A. Fisher
@@ -76,18 +79,14 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private static final String ERROR = "error";
    private static final String BASE = "base";
    private final int artTypeId;
-   private final String factoryKey;
-   private final ArtifactFactory factory;
    private String name;
-   private String namespace;
+   private final String namespace;
    transient private ImageRegistry imageRegistry;
    transient private ImageDescriptor imageDescriptor;
 
-   ArtifactType(int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, ImageDescriptor imageDescriptor) {
+   ArtifactType(int artTypeId, String namespace, String name, ImageDescriptor imageDescriptor) {
       this.artTypeId = artTypeId;
-      this.factory = factory;
       this.name = name;
-      this.factoryKey = factoryKey == null ? "" : factoryKey;
       this.namespace = namespace == null ? "" : namespace;
       this.imageDescriptor = imageDescriptor;
       this.imageRegistry = null;
@@ -105,7 +104,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
     * @use {@link ArtifactTypeManager}.addArtifact
     */
    public Artifact makeNewArtifact(Branch branch) throws OseeCoreException {
-      return factory.makeNewArtifact(branch, this, null, null, null);
+      return getFactory().makeNewArtifact(branch, this, null, null, null);
    }
 
    /**
@@ -120,7 +119,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
     * @use {@link ArtifactTypeManager}.addArtifact
     */
    public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws OseeCoreException {
-      return factory.makeNewArtifact(branch, this, guid, humandReadableId, null);
+      return getFactory().makeNewArtifact(branch, this, guid, humandReadableId, null);
    }
 
    /**
@@ -133,8 +132,8 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    /**
     * @return Returns the factory.
     */
-   public ArtifactFactory getFactory() {
-      return factory;
+   public ArtifactFactory getFactory() throws OseeCoreException {
+      return ArtifactFactoryManager.getFactory(name);
    }
 
    /**
@@ -147,17 +146,10 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    /**
     * determines if this artifact type is equal to or a subclass of the artifact type referenced by artifactTypeName
     * 
-    * @return
+    * @return true if compatible
     */
    public boolean isTypeCompatible(String artifactTypeName) {
       return name.equals(artifactTypeName);
-   }
-
-   /**
-    * @return Returns the factoryKey.
-    */
-   public String getFactoryKey() {
-      return factoryKey;
    }
 
    /**
@@ -165,9 +157,10 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
     * 
     * @param artifact The artifact to compare against.
     * @return <b>true</b> if and only if this descriptor will give you the same type of artifact.
+    * @throws OseeCoreException
     */
-   public boolean canProduceArtifact(Artifact artifact) {
-      return artifact.getArtTypeId() == artTypeId && artifact.getFactory().getFactoryId() == factory.getFactoryId();
+   public boolean canProduceArtifact(Artifact artifact) throws OseeCoreException {
+      return artifact.getArtTypeId() == artTypeId && getFactory() != null;
    }
 
    public Image getImage() {
@@ -278,6 +271,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       return imageDescriptor;
    }
 
+   @Override
    public String toString() {
       return name;
    }
