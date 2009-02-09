@@ -83,8 +83,10 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    protected void configureTableViewer(final TableViewer viewer) {
       viewer.setUseHashlookup(true);
       this.viewer = viewer;
+      ArtifactDecorator artifactDecorator =
+            new ArtifactDecorator(viewer, SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
 
-      artifactLabelProvider = new ArtifactLabelProvider();
+      artifactLabelProvider = new ArtifactLabelProvider(artifactDecorator);
 
       viewer.setLabelProvider(new DecoratingLabelProvider(artifactLabelProvider,
             PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator()));
@@ -96,11 +98,14 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
       createContextMenu(viewer.getControl());
 
+      artifactDecorator.addActions(getSite().getActionBars().getMenuManager());
+
       new SearchDragAndDrop(viewer.getTable(), VIEW_ID);
 
       OseeContributionItem.addTo(this, false);
       getSite().getActionBars().updateActionBars();
       OseeEventManager.addListener(this);
+
    }
 
    private void createContextMenu(Control menuOnwer) {

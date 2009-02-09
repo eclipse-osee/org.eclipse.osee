@@ -12,12 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.ui.part.ViewPart;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Ryan D. Brooks
@@ -26,7 +25,6 @@ public class ShowAttributeAction extends Action {
    private AttributeCheckListDialog attributeDialog;
    private final StructuredViewer viewer;
    private String preferenceKey;
-   private ViewPart viewPart;
 
    public ShowAttributeAction(StructuredViewer viewer, String preferenceKey) {
       super("Show Attributes", SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
@@ -46,12 +44,6 @@ public class ShowAttributeAction extends Action {
       }
    }
 
-   public void addToView(ViewPart viewPart) {
-      this.viewPart = viewPart;
-      IMenuManager toolbarManager = viewPart.getViewSite().getActionBars().getMenuManager();
-      toolbarManager.add(this);
-   }
-
    public String getSelectedAttributeData(Artifact artifact) throws Exception {
       return attributeDialog.getSelectedAttributeData(artifact);
    }
@@ -65,6 +57,6 @@ public class ShowAttributeAction extends Action {
    }
 
    public void setValidAttributeTypes(Collection<AttributeType> attrTypes) {
-      attributeDialog = new AttributeCheckListDialog(viewPart.getSite().getShell(), attrTypes, preferenceKey);
+      attributeDialog = new AttributeCheckListDialog(Display.getCurrent().getActiveShell(), attrTypes, preferenceKey);
    }
 }

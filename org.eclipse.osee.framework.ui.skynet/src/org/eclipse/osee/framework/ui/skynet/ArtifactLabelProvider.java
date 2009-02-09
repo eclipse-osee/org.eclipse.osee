@@ -62,11 +62,11 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
 //   }
 
    private static final OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
-   private final ArtifactExplorer artifactExplorer;
+   private final ArtifactDecorator artifactDecorator;
 
-   public ArtifactLabelProvider(ArtifactExplorer artifactExplorer) {
+   public ArtifactLabelProvider(ArtifactDecorator artifactDecorator) {
       super();
-      this.artifactExplorer = artifactExplorer;
+      this.artifactDecorator = artifactDecorator;
    }
 
    public ArtifactLabelProvider() {
@@ -100,20 +100,20 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
          if (artifact.isDeleted()) {
             name += " <Deleted>";
          }
-         if (artifactExplorer != null) {
-            if (artifactExplorer.showArtVersion()) {
+         if (artifactDecorator != null) {
+            if (artifactDecorator.showArtVersion()) {
                name += " -" + artifact.getGammaId() + "- ";
             }
 
-            if (artifactExplorer.showArtIds()) {
+            if (artifactDecorator.showArtIds()) {
                name += " (" + artifact.getArtId() + ") ";
             }
             try {
-               if (artifactExplorer.showArtType()) {
+               if (artifactDecorator.showArtType()) {
                   name += " <" + artifact.getArtifactTypeName() + "> ";
                }
 
-               name += artifactExplorer.getSelectedAttributeData(artifact);
+               name += artifactDecorator.getSelectedAttributeData(artifact);
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                name += ex.getLocalizedMessage();

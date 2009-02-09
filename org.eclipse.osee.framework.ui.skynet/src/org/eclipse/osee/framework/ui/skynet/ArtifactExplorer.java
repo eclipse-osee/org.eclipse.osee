@@ -95,9 +95,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
@@ -168,12 +166,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private Tree myTree;
    private TreeEditor myTreeEditor;
    private Text myTextBeingRenamed;
-   private Action showArtIds;
-   private Action showArtType;
-   private Action showArtVersion;
    private Action newArtifactExplorer;
    private Action collapseAllAction;
-   private ShowAttributeAction attributesAction;
+
    IGlobalMenuHelper globalMenuHelper;
 
    private Composite stackComposite;
@@ -262,7 +257,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          myTree = treeViewer.getTree();
          Tree tree = treeViewer.getTree();
          treeViewer.setContentProvider(new ArtifactContentProvider());
-         treeViewer.setLabelProvider(new ArtifactLabelProvider(this));
+
+         ArtifactDecorator artifactDecorator =
+               new ArtifactDecorator(treeViewer, SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
+         treeViewer.setLabelProvider(new ArtifactLabelProvider(artifactDecorator));
          treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
          treeViewer.getControl().setLayoutData(gridData);
 
@@ -277,10 +275,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
          createCollapseAllAction();
          createUpAction();
-         createShowArtVersionAction();
-         createShowArtTypeAction();
-         createAttributesAction();
          createNewArtifactExplorerAction();
+
+         artifactDecorator.addActions(getViewSite().getActionBars().getMenuManager());
 
          getSite().setSelectionProvider(treeViewer);
          addExploreSelection();
@@ -295,9 +292,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          new ArtifactExplorerDragAndDrop(tree, VIEW_ID);
          parent.layout();
 
-         if (AccessControlManager.isOseeAdmin()) {
-            createShowArtIdsAction();
-         }
          createSetDefaultBranchAction();
          OseeAts.addBugToViewToolbar(this, this, SkynetActivator.getInstance(), VIEW_ID, "Artifact Explorer");
 
@@ -411,24 +405,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       toolbarManager.add(upAction);
    }
 
-   protected void createShowArtIdsAction() {
-
-      showArtIds = new Action("Show Artifact Ids") {
-         @Override
-         public void run() {
-            setChecked(!isChecked());
-            updateShowArtIdText();
-            treeViewer.refresh();
-         }
-      };
-
-      showArtIds.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
-      updateShowArtIdText();
-
-      IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
-      toolbarManager.add(showArtIds);
-   }
-
    private void createSetDefaultBranchAction() {
       Action setDefaultBranch = new Action("Set Default Branch", Action.AS_PUSH_BUTTON) {
          @Override
@@ -447,42 +423,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       setDefaultBranch.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
       IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
       toolbarManager.add(setDefaultBranch);
-   }
-
-   protected void createShowArtTypeAction() {
-
-      showArtType = new Action("Show Artifact Type") {
-         @Override
-         public void run() {
-            setChecked(!isChecked());
-            updateShowArtTypeText();
-            treeViewer.refresh();
-         }
-      };
-
-      showArtType.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
-      updateShowArtTypeText();
-
-      IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
-      toolbarManager.add(showArtType);
-   }
-
-   protected void createShowArtVersionAction() {
-
-      showArtVersion = new Action("Show Artifact Version") {
-         @Override
-         public void run() {
-            setChecked(!isChecked());
-            updateShowArtVersionText();
-            treeViewer.refresh();
-         }
-      };
-
-      showArtVersion.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
-      updateShowArtVersionText();
-
-      IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
-      toolbarManager.add(showArtVersion);
    }
 
    private void createNewArtifactExplorerAction() {
@@ -525,33 +465,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(collapseAllAction);
-   }
-
-   private void updateShowArtIdText() {
-      showArtIds.setText((showArtIds.isChecked() ? "Hide" : "Show") + " Artifact Ids");
-   }
-
-   private void updateShowArtTypeText() {
-      showArtType.setText((showArtType.isChecked() ? "Hide" : "Show") + " Artifact Type");
-   }
-
-   private void updateShowArtVersionText() {
-      showArtVersion.setText((showArtVersion.isChecked() ? "Hide" : "Show") + " Artifact Version");
-   }
-
-   protected void createAttributesAction() {
-      try {
-         attributesAction = new ShowAttributeAction(treeViewer, SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
-         attributesAction.addToView(this);
-         attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(
-               SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF, BranchManager.getDefaultBranch()));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   public String getSelectedAttributeData(Artifact artifact) throws Exception {
-      return attributesAction.getSelectedAttributeData(artifact);
    }
 
    private void createOpenWithMenuItem(Menu parentMenu) {
@@ -1177,18 +1090,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    public String getActionDescription() {
       return "";
-   }
-
-   public boolean showArtIds() {
-      return showArtIds != null && showArtIds.isChecked();
-   }
-
-   public boolean showArtType() {
-      return showArtType != null && showArtType.isChecked();
-   }
-
-   public boolean showArtVersion() {
-      return showArtVersion != null && showArtVersion.isChecked();
    }
 
    private class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {

@@ -42,6 +42,9 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
          "org.eclipse.osee.framework.ui.skynet.changeReportAttributes";
    public static final String ARTIFACT_EXPLORER_ATTRIBUTES_PREF =
          "org.eclipse.osee.framework.ui.skynet.artifactExplorerAttributes";
+
+   public static final String ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF =
+         "org.eclipse.osee.framework.ui.skynet.artifactSearchResultsAttributes";
    private ServiceTracker packageAdminTracker;
 
    public SkynetGuiPlugin() {
