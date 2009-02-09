@@ -25,11 +25,24 @@ public class Requirements {
    public static String INDIRECT_SOFTWARE_REQUIREMENT = "Indirect Software Requirement";
    public static String SYSTEM_REQUIREMENT = "System Requirement";
    public static String SYSTEM_REQUIREMENTS = "System Requirements";
+   public static String SYSTEM_DESIGN = "System Design";
+   public static String SYSTEM_FUNCTION = "System Function";
+
    public static String SUBSYSTEM_REQUIREMENT = "Subsystem Requirement";
    public static String SUBSYSTEM_REQUIREMENTS = "Subsystem Requirements";
+   public static String SUBSYSTEM_DESIGN = "Subsystem Design";
+   public static String SUBSYSTEM_FUNCTION = "Subsystem Function";
+
+   public static String SOFTWARE_DESIGN = "Software Design";
+   public static String SOFTWARE_FUNCTION = "Software Function";
+
+   public static String INTERFACE_REQUIREMENT = "Interface Requirement";
    public static String COMPONENT = "Component";
+
+   public static String TEST_INFORMATION_SHEET = "Test Information Sheet";
    public static String TEST_SCRIPT = "Test Script";
    public static String TEST_PROCEDURE = "Test Procedure";
+
    public static String SUBSYSTEM = "Subsystem";
    public static String PARTITION = "Partition";
    public static String CSCI = "CSCI";
