@@ -67,10 +67,10 @@ public abstract class XViewerStyledTextLabelProvider extends StyledCellLabelProv
 
       if (!Arrays.equals(oldStyleRanges, newStyleRanges)) {
          cell.setStyleRanges(newStyleRanges);
-         if (cell.getText().equals(newText)) {
-            // make sure there will be a refresh from a change
-            cell.setText(""); //$NON-NLS-1$
-         }
+//         if (cell.getText().equals(newText)) {
+//            // make sure there will be a refresh from a change
+//            cell.setText(""); //$NON-NLS-1$
+//         }
       }
 
       cell.setText(newText);
