@@ -42,10 +42,10 @@ public class StateManager {
    }
 
    /**
-    * Return current or past state from name
+    * Get state and create if not there.
     * 
     * @param name
-    * @param create TODO
+    * @param create
     * @return state matching name
     */
    private SMAState getSMAState(String name, boolean create) throws OseeCoreException {
@@ -53,6 +53,21 @@ public class StateManager {
          return currentStateDam.getState();
       else
          return (stateDam.getState(name, create));
+   }
+
+   /**
+    * Discouraged Access. This method should not normally be called except in cases were state data is being manually
+    * created.
+    * 
+    * @param name
+    * @throws OseeCoreException
+    */
+   public void internalCreateIfNotExists(String name) throws OseeCoreException {
+      if (isStateVisited(name)) {
+         return;
+      }
+      SMAState smaState = getSMAState(name, true);
+      putState(smaState);
    }
 
    /**
