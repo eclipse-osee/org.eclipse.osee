@@ -81,6 +81,7 @@ public class TaskXViewer extends WorldXViewer {
 
    public boolean isUsingTaskResolutionOptions() {
       try {
+         if (getSelectedTaskArtifact() == null) return false;
          return getSelectedTaskArtifact().isUsingTaskResolutionOptions();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
