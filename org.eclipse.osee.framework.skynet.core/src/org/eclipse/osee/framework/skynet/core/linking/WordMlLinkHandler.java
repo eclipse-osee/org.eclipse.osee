@@ -86,6 +86,12 @@ public class WordMlLinkHandler {
    private static final String WORDML_LINK_FORMAT =
          "<w:hlink w:dest=\"%s\"><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r></w:hlink>";
 
+   private static final String WORDML_BOOKMARK_FORMAT =
+         "<aml:annotation aml:id=\"\" w:type=\"Word.Bookmark.Start\" w:name=\"OSEE.%s\"/><aml:annotation aml:id=\"\" w:type=\"Word.Bookmark.End\"/>";
+
+   private static final String WORDML_INTERNAL_DOC_LINK_FORMAT =
+         "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText> HYPERLINK \\l \"OSEE.%s\" </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>";
+
    private WordMlLinkHandler() {
    }
 
@@ -159,6 +165,11 @@ public class WordMlLinkHandler {
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(destLinkType, source, content, matchMap, false);
       }
+
+      if (destLinkType == LinkType.INTERNAL_DOC_REFERENCE) {
+         // Add a bookmark to the start of the content so internal links can link later
+         modified = getWordMlBookmark(source) + modified;
+      }
       return modified;
    }
 
@@ -212,23 +223,28 @@ public class WordMlLinkHandler {
       return changeSet.applyChangesToSelf().toString();
    }
 
+   private static String getWordMlBookmark(Artifact source) {
+      return String.format(WORDML_BOOKMARK_FORMAT, source.getGuid());
+   }
+
    private static String getWordMlLink(LinkType destLinkType, Artifact artifact, Branch branch) throws OseeCoreException {
       String toReturn = "";
+      String linkText = artifact.getDescriptiveName() + (artifact.isDeleted() ? " (DELETED)" : "");
       switch (destLinkType) {
          case OSEE_SERVER_LINK:
             String url = ArtifactURL.getOpenInOseeLink(artifact).toString();
             // XMl compliant url
             url = url.replaceAll("&", "&amp;");
-            toReturn =
-                  String.format(WORDML_LINK_FORMAT, url,
-                        artifact.getDescriptiveName() + (artifact.isDeleted() ? " (DELETED)" : ""));
+            toReturn = String.format(WORDML_LINK_FORMAT, url, linkText);
+            break;
+         case INTERNAL_DOC_REFERENCE:
+            toReturn = String.format(WORDML_INTERNAL_DOC_LINK_FORMAT, artifact.getGuid(), linkText);
             break;
          default:
             throw new OseeArgumentException(String.format("Unsupported link type [%s]", destLinkType));
       }
       return toReturn;
    }
-
    private static final class Match {
       int start;
       int end;
