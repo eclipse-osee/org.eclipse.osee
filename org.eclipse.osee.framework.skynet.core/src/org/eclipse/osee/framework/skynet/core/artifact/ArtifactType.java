@@ -67,7 +67,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
          SkynetActivator.getInstance().getImageDescriptor("red_lock.gif");
    private static final ImageDescriptor nextImageDesc =
          SkynetActivator.getInstance().getImageDescriptor("yellowN_8_8.gif");
-   private static final ImageDescriptor releasedImageDesc =
+   public static final ImageDescriptor releasedImageDesc =
          SkynetActivator.getInstance().getImageDescriptor("orangeR_8_8.gif");
    private static final String LOCKED_ACCESS = "locked access";
    private static final String LOCKED_NO_ACCESS = "locked No access";
