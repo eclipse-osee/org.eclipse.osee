@@ -13,7 +13,6 @@ package org.eclipse.nebula.widgets.xviewer.customize;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.swt.SWT;
@@ -80,14 +79,19 @@ private boolean regex;
             if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
 //               xViewer.getCustomizeMgr().setSearchText(searchText.getText());
             	String newText = searchText.getText();
-            	regex = true;
-            	if(!regularExpression.getSelection()){
-            		regex = false;
-            		newText = newText.replace("*", ".*");
-            		newText = ".*" + newText + ".*";
+            	if(newText.trim().length() == 0){
+            	   search = false;
+                  match = Pattern.compile(searchText.getText()).matcher("");
+            	} else {
+               	regex = true;
+               	if(!regularExpression.getSelection()){
+               		regex = false;
+               		newText = newText.replace("*", ".*");
+               		newText = ".*" + newText + ".*";
+               	}
+               	match = Pattern.compile(newText, Pattern.CASE_INSENSITIVE).matcher("");
+               	search = true;
             	}
-            	match = Pattern.compile(newText, Pattern.CASE_INSENSITIVE).matcher("");
-            	search = true;
             	xViewer.refresh();
             }
          }
