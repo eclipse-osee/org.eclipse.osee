@@ -15,12 +15,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsNavigateQuickSearch extends WorldUISearchItem {
    private String searchStr;
+   private boolean includeCompleteCancelled = false;
 
    /**
     * @param name
@@ -41,12 +42,19 @@ public class AtsNavigateQuickSearch extends WorldUISearchItem {
       this.searchStr = searchStr;
    }
 
+   public AtsNavigateQuickSearch(String name, String searchStr, boolean includeCompleteCancelled) {
+      super(name);
+      this.searchStr = searchStr;
+      this.includeCompleteCancelled = includeCompleteCancelled;
+   }
+
    /**
     * @param atsNavigateQuickSearch
     */
    public AtsNavigateQuickSearch(AtsNavigateQuickSearch atsNavigateQuickSearch) {
       super(atsNavigateQuickSearch);
       this.searchStr = atsNavigateQuickSearch.getSearchStr();
+      this.includeCompleteCancelled = atsNavigateQuickSearch.includeCompleteCancelled;
    }
 
    /**
@@ -62,19 +70,30 @@ public class AtsNavigateQuickSearch extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       try {
-         List<Artifact> allArtifacts = new ArrayList<Artifact>();
-         for (Artifact art : ArtifactQuery.getArtifactsFromAttributeWithKeywords(AtsPlugin.getAtsBranch(), searchStr,
-               false, false)) {
-            // only ATS Artifacts
-            if (art instanceof IATSArtifact) {
-               allArtifacts.add(art);
-            }
-         }
-         return allArtifacts;
+         return getExpectedArtifacts(ArtifactQuery.getArtifactsFromAttributeWithKeywords(AtsPlugin.getAtsBranch(),
+               searchStr, false, false));
       } catch (Exception ex) {
          OseeLog.log("AtsNavigateQuickSearch.performSearch", Level.SEVERE, ex.getMessage(), ex);
       }
       return null;
+   }
+
+   private Collection<Artifact> getExpectedArtifacts(List<Artifact> arts) throws OseeCoreException {
+      List<Artifact> allArtifacts = new ArrayList<Artifact>();
+      for (Artifact art : arts) {
+         // only ATS Artifacts
+         if (art instanceof StateMachineArtifact) {
+            StateMachineArtifact sma = (StateMachineArtifact) art;
+            // default excludes canceled/completed
+            if (this.includeCompleteCancelled == false) {
+               if (!sma.getSmaMgr().isCancelledOrCompleted()) {
+                  allArtifacts.add(art);
+               }
+            } else
+               allArtifacts.add(art);
+         }
+      }
+      return allArtifacts;
    }
 
    /* (non-Javadoc)

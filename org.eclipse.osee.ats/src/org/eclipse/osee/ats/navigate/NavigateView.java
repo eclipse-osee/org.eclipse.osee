@@ -30,12 +30,15 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -60,6 +63,8 @@ public class NavigateView extends ViewPart implements IActionable {
    public static final String HELP_CONTEXT_ID = "atsNavigator";
    private AtsNavigateComposite xNavComp;
    public Text searchArea;
+   public XCheckBox completeCancelledCheck;
+   private boolean includeCompleteCancelled = false;
 
    /**
     * The constructor.
@@ -115,7 +120,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
    public void createSearchInputPart(Composite parent) {
       Composite comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(ALayout.getZeroMarginLayout(3, false));
+      comp.setLayout(ALayout.getZeroMarginLayout(4, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       Label searchLabel = new Label(comp, SWT.NONE);
       searchLabel.setText("Search:");
@@ -130,7 +135,7 @@ public class NavigateView extends ViewPart implements IActionable {
             if (event.character == '\r') {
                try {
                   xNavComp.handleDoubleClick(new SearchNavigateItem(null, new AtsNavigateQuickSearch(
-                        "ATS Quick Search", searchArea.getText())));
+                        "ATS Quick Search", searchArea.getText(), isIncludeCompleteCancelled())));
                } catch (OseeCoreException ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -138,6 +143,21 @@ public class NavigateView extends ViewPart implements IActionable {
          }
       });
       this.searchArea.setToolTipText("ATS Quick Search - Type in a search string.");
+      this.completeCancelledCheck = new XCheckBox("IC");
+      this.completeCancelledCheck.createWidgets(comp, 2);
+      this.completeCancelledCheck.setToolTip("Include completed/cancelled ATS Artifacts");
+      completeCancelledCheck.addSelectionListener(new SelectionListener() {
+         public void widgetDefaultSelected(SelectionEvent e) {
+         }
+
+         public void widgetSelected(SelectionEvent e) {
+            includeCompleteCancelled = completeCancelledCheck.isSelected();
+         };
+      });
+   }
+
+   public boolean isIncludeCompleteCancelled() {
+      return includeCompleteCancelled;
    }
 
    private String getWhoAmI() {
