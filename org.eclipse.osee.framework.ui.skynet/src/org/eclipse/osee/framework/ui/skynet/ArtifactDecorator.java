@@ -41,21 +41,6 @@ public class ArtifactDecorator {
    }
 
    public void addActions(IMenuManager manager) {
-      try {
-         if (AccessControlManager.isOseeAdmin()) {
-            showArtIds = new Action("Show Artifact Ids") {
-               @Override
-               public void run() {
-                  setChecked(!isChecked());
-                  updateShowArtIdText();
-                  viewer.refresh();
-               }
-            };
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-
       showArtType = new Action("Show Artifact Type") {
          @Override
          public void run() {
@@ -80,12 +65,29 @@ public class ArtifactDecorator {
       showArtType.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
       updateShowArtTypeText();
 
-      showArtIds.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
-      updateShowArtIdText();
+
 
       manager.add(showArtVersion);
       manager.add(showArtType);
-      manager.add(showArtIds);
+      
+      try {
+          if (AccessControlManager.isOseeAdmin()) {
+             showArtIds = new Action("Show Artifact Ids") {
+                @Override
+                public void run() {
+                   setChecked(!isChecked());
+                   updateShowArtIdText();
+                   viewer.refresh();
+                }
+             };
+             
+             showArtIds.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+             updateShowArtIdText();
+             manager.add(showArtIds);
+          }
+       } catch (Exception ex) {
+          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+       }
 
       try {
          attributesAction = new ShowAttributeAction(viewer, preferenceKey);
