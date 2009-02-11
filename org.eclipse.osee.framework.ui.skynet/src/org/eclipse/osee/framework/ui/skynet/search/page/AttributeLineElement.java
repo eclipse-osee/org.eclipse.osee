@@ -11,15 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.search.page;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
 import org.eclipse.search.ui.text.Match;
 
@@ -30,83 +24,40 @@ public class AttributeLineElement implements IAdaptable {
 
    private final Attribute<?> attribute;
    private final Artifact parent;
-   private final MatchLocation location;
-   private String contents;
+   private final int lineNumber;
+   private final int lineStartOffset;
+   private final String lineContents;
 
-   public AttributeLineElement(Artifact parent, Attribute<?> attribute, MatchLocation location) {
+   public AttributeLineElement(Artifact parent, Attribute<?> attribute, int lineNumber, int lineStartOffset, String contents) {
       this.parent = parent;
       this.attribute = attribute;
-      this.location = location;
-      this.contents = null;
+      this.lineContents = contents;
+      this.lineNumber = lineNumber;
+      this.lineStartOffset = lineStartOffset;
    }
 
    public Artifact getParent() {
       return parent;
    }
 
-   public int getStartAt() {
-      int index = location.getStartPosition() - 1;
-      if (index >= 0) {
-         return index;
-      }
-      return location.getStartPosition();
-   }
-
-   public int getStopAt() {
-      int index = location.getEndPosition() - 1;
-      if (index >= getStartAt()) {
-         return index;
-      }
-      return location.getEndPosition();
+   public int getLine() {
+      return lineNumber;
    }
 
    public String getContents() {
-      if (contents == null) {
-         contents = getContentFromAttribute();
-         if (Strings.isValid(contents)) {
-            contents = getContents(contents, getStartAt(), getStopAt());
-         }
-      }
-      return contents;
-   }
-
-   private String getContents(String content, int start, int end) {
-      StringBuffer buf = new StringBuffer();
-      for (int i = start; i < end; i++) {
-         char ch = content.charAt(i);
-         if (Character.isWhitespace(ch) || Character.isISOControl(ch)) {
-            buf.append(' ');
-         } else {
-            buf.append(ch);
-         }
-      }
-      return buf.toString();
-   }
-
-   private String getContentFromAttribute() {
-      try {
-         Object value = attribute.getValue();
-         if (value instanceof String) {
-            return (String) value;
-         } else {
-            return attribute.getDisplayableString();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      return "";
+      return lineContents;
    }
 
    public int getOffset() {
-      return getStartAt();
+      return lineStartOffset;
    }
 
    public boolean contains(int offset) {
-      return getStartAt() <= offset && offset < getStopAt();
+      return lineStartOffset <= offset && offset < lineStartOffset + lineContents.length();
    }
 
    public int getLength() {
-      return getStopAt() - getStartAt();
+      return lineContents.length();
    }
 
    public AttributeMatch[] getMatches(AbstractArtifactSearchResult result) {

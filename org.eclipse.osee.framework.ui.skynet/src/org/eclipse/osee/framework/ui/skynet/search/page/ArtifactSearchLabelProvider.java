@@ -124,7 +124,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
 
    @SuppressWarnings("unchecked")
    private StyledString getLineElementLabel(AttributeLineElement lineElement) {
-      String lineNumberString = String.format("%s, %s ", lineElement.getStartAt(), lineElement.getStopAt());
+      String lineNumberString = String.format("%s, %s ", lineElement.getLine(), lineElement.getOffset());
       StyledString str = new StyledString(lineNumberString, StyledString.QUALIFIER_STYLER);
 
       Match[] matches = lineElement.getMatches(fPage.getInput());
