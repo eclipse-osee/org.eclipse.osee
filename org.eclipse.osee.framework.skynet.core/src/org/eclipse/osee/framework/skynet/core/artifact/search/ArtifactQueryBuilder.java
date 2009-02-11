@@ -287,14 +287,15 @@ public class ArtifactQueryBuilder {
       sql.append(".gamma_id=");
       sql.append(txsAlias);
       sql.append(".gamma_id AND ");
-      sql.append(txsAlias);
-      sql.append(".tx_current");
 
       if (transactionId != null) {
          sql.append(txsAlias);
          sql.append(".transaction_id <= ?");
          addParameter(transactionId.getTransactionNumber());
       } else {
+         sql.append(txsAlias);
+         sql.append(".tx_current");
+
          if (allowDeleted) {
             sql.append(" IN (");
             sql.append(TxChange.CURRENT.getValue());
