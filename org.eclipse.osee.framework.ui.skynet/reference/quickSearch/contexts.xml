@@ -28,4 +28,9 @@
     	<topic label="Quick Search" href="reference/quickSearch/quick_search_view.html"/>
     	<topic label="Word Order Match Search Option" href="reference/quickSearch/word_order_match_option.html"/>
  	</context>
+ 	<context id="quick_search_all_match_locations_option" title="Quick Search">
+ 	   <description>Provides quick access to search for artifacts</description>
+    	<topic label="Quick Search" href="reference/quickSearch/quick_search_view.html"/>
+    	<topic label="All Match Locations Option" href="reference/quickSearch/all_match_locations_option.html"/>
+ 	</context>
 </contexts>

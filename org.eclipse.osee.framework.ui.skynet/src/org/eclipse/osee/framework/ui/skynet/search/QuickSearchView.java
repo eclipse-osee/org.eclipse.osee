@@ -73,7 +73,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       Attribute_Type_Filter("quick_search_attribute_type_filter", "When selected, searches only through the artifact's containing the selected attribute types.", true, new AttributeTypeFilterConfigHandler()),
       By_Id("quick_search_by_id_option", "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.", true),
       Match_Word_Order("quick_search_word_order_option", "When selected, match search string word order.", false),
-      Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.", false);
+      Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.", false),
+      All_Match_Locations("quick_search_all_match_locations_option", "When selected, returns all match locations. NOTE: If the search matches many artifact, performance may be slow.", false);
 
       private static String[] labels = null;
       private static String[] mutuallyExclusive = null;
@@ -303,6 +304,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
                      BranchManager.getDefaultBranch(),
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.Match_Word_Order.asLabel()),
+                     searchComposite.isOptionSelected(SearchOption.All_Match_Locations.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.Attribute_Type_Filter.asLabel()) ? searchComposite.getConfiguration(SearchOption.Attribute_Type_Filter.asLabel()) : null));
             }
          }

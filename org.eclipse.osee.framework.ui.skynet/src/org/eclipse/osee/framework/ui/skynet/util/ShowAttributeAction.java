@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ShowAttributeAction extends Action {
    private AttributeCheckListDialog attributeDialog;
-   private final StructuredViewer viewer;
+   private StructuredViewer viewer;
    private String preferenceKey;
 
    public ShowAttributeAction(StructuredViewer viewer, String preferenceKey) {
@@ -31,6 +31,10 @@ public class ShowAttributeAction extends Action {
       setToolTipText("Show Attributes");
       this.viewer = viewer;
       this.preferenceKey = preferenceKey;
+   }
+
+   public void setViewer(StructuredViewer viewer) {
+      this.viewer = viewer;
    }
 
    /* (non-Javadoc)

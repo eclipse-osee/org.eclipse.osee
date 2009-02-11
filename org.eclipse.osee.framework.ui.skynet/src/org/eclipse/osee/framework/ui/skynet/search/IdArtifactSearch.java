@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 /**
  * @author Roberto E. Escobar
  */
-final class IdArtifactSearch extends AbstractArtifactSearchQuery {
+final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
    private List<String> idsToSearch;
    private Branch branchToSearch;
    private boolean allowDeleted;

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 /**
  * @author Ryan D. Brooks
  */
-public class HistoricalArtifactSearchQuery extends AbstractArtifactSearchQuery {
+public class HistoricalArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery {
    private String attributePattern;
    private final Branch branch;
 

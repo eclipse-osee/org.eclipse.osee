@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 /**
  * @author Ryan D. Brooks
  */
-public class FilterArtifactSearchQuery extends AbstractArtifactSearchQuery {
+public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery {
    private final FilterModelList filterList;
    private final Branch branch;
    private String criteriaLabel = "";

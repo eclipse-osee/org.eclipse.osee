@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
@@ -66,11 +66,11 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
       SessionContributionItem.addTo(manager);
    }
 
-   public static void addTo(AbstractArtifactSearchViewPage view, boolean update) {
-      addTo(view.getSite().getActionBars().getStatusLineManager());
+   public static void addTo(IPageSite pageSite, boolean update) {
+      addTo(pageSite.getActionBars().getStatusLineManager());
 
       if (update) {
-         view.getSite().getActionBars().updateActionBars();
+         pageSite.getActionBars().updateActionBars();
       }
    }
 

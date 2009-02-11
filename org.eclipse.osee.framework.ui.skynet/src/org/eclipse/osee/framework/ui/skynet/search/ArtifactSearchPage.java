@@ -38,11 +38,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
+import org.eclipse.osee.framework.ui.skynet.search.page.AbstractArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.HyperLinkLabel;
 import org.eclipse.search.ui.IReplacePage;
@@ -456,7 +456,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       ISearchResultViewPart view = NewSearchUI.activateSearchResultView();
       if (view != null) {
          final ISearchResultPage page = view.getActivePage();
-         if (page instanceof ArtifactSearchViewPage) {
+         if (page instanceof AbstractArtifactSearchViewPage) {
             runAttributeFindReplaceDialog(page);
          }
       }
@@ -466,8 +466,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private void runAttributeFindReplaceDialog(final ISearchResultPage page) {
       Display.getCurrent().asyncExec(new Runnable() {
          public void run() {
-            if (page instanceof ArtifactSearchViewPage) {
-               ArtifactSearchViewPage artifactPage = (ArtifactSearchViewPage) page;
+            if (page instanceof AbstractArtifactSearchViewPage) {
+               AbstractArtifactSearchViewPage artifactPage = (AbstractArtifactSearchViewPage) page;
                List<Artifact> artifacts = artifactPage.getInput().getArtifactResults();
                new AttributeFindReplaceDialog(page.getSite().getShell(), artifacts).open();
             }
