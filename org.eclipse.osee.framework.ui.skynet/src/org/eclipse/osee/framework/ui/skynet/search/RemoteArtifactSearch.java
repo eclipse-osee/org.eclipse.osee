@@ -134,7 +134,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       } finally {
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(
                "Quick Search: [%s] artifacts with [%s] location matches loaded in [%s secs] collected in [%s]",
-               artifactCount, lineMatches, (endOfloadTime - startTime) / 1000, Lib.getElapseString(startCollectTime)));
+               artifactCount, lineMatches, (endOfloadTime - startTime) / 1000.0, Lib.getElapseString(startCollectTime)));
       }
       setIsDoneRunning(true);
       return new MultiStatus(NewSearchUI.PLUGIN_ID, IStatus.OK, "OK", null);
