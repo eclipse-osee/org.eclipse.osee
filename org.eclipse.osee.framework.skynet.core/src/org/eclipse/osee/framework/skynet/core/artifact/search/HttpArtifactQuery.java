@@ -83,9 +83,11 @@ final class HttpArtifactQuery {
       propertyStore.put("match word order", matchWordOrder);
       propertyStore.put("attributeType", attributeTypes);
 
-      propertyStore.put("as xml", withMatches);
-      if (withMatches) {
-         propertyStore.put("find all locations", findAllMatchLocations);
+      if (matchWordOrder) {
+         propertyStore.put("as xml", withMatches);
+         if (withMatches) {
+            propertyStore.put("find all locations", findAllMatchLocations);
+         }
       }
       PropertyStoreWriter writer = new PropertyStoreWriter();
       writer.save(propertyStore, backedInputStream.getWriter());
