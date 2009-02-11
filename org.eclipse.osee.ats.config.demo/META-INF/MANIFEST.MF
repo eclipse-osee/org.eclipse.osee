@@ -14,7 +14,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.jdk,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
- org.eclipse.osee.framework.ui.plugin
+ org.eclipse.osee.framework.ui.plugin,
+ org.junit;bundle-version="3.8.2",
+ org.eclipse.osee.framework.core;bundle-version="0.5.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,

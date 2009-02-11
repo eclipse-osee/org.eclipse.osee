@@ -14,7 +14,7 @@
 <booleanAttribute key="includeOptional" value="true"/>
 <stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/org.eclipse.osee.ats.test/src/org/eclipse/osee/ats/test/testDb/PopulateDemoDbTest.java"/>
+<listEntry value="/org.eclipse.osee.ats.config.demo/src/org/eclipse/osee/ats/config/demo/test/PopulateDemoDbTest.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -24,9 +24,9 @@
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
 <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit3"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.eclipse.osee.ats.test.testDb.PopulateDemoDbTest"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.eclipse.osee.ats.config.demo.test.PopulateDemoDbTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -nosplash"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.osee.ats.test"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.osee.ats.config.demo"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-XX:MaxPermSize=256m&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dequinox.ds.debug=true &#13;&#10;-Dosee.db.connection.id=postgresqlLocalhost&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dosee.local.http.worker.port=8020&#13;&#10;-Dosee.authentication.protocol=demo"/>
 <stringAttribute key="pde.version" value="3.3"/>

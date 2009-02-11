@@ -16,7 +16,6 @@ import java.util.Set;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.config.demo.config.DemoDbGroups;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -101,7 +100,7 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
 
    public void runGeneralTaskSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
       Artifact groupArt =
-            ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, DemoDbGroups.TEST_GROUP_NAME,
+            ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, "Test Group",
                   AtsPlugin.getAtsBranch());
       Set<Artifact> selectedUsers = new HashSet<Artifact>();
       TaskEditor editor = getSingleEditorOrFail();

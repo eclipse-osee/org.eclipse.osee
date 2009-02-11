@@ -29,9 +29,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.config.demo.config.DemoDbGroups;
-import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
-import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
@@ -107,12 +104,12 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    }
 
    public void testMyOriginator() throws Exception {
-      runGeneralLoadingTest("My Originator - InWork", TaskArtifact.class, DemoDbTasks.getNumTasks(), null);
+      runGeneralLoadingTest("My Originator - InWork", TaskArtifact.class, DemoTestUtil.getNumTasks(), null);
       runGeneralXColTest(68, false);
       runGeneralLoadingTest("My Originator - InWork", TeamWorkFlowArtifact.class, 18, null);
       runGeneralLoadingTest("My Originator - InWork", PeerToPeerReviewArtifact.class, 7, null);
       runGeneralLoadingTest("My Originator - InWork", DecisionReviewArtifact.class, 7, null);
-      runGeneralLoadingTest("My Originator - All", TaskArtifact.class, DemoDbTasks.getNumTasks(), null);
+      runGeneralLoadingTest("My Originator - All", TaskArtifact.class, DemoTestUtil.getNumTasks(), null);
       runGeneralLoadingTest("My Originator - All", TeamWorkFlowArtifact.class, 25, null);
       runGeneralLoadingTest("My Originator - All", PeerToPeerReviewArtifact.class, 7, null);
       runGeneralLoadingTest("My Originator - All", DecisionReviewArtifact.class, 8, null);
@@ -170,7 +167,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    public void testGroupsSearch() throws Exception {
       WorldEditor.closeAll();
       Artifact groupArt =
-            ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, DemoDbGroups.TEST_GROUP_NAME,
+            ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, "Test Group",
                   AtsPlugin.getAtsBranch());
       assertTrue(groupArt != null);
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");
@@ -183,7 +180,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Actions", arts, ActionArtifact.class, 2);
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Teams", arts, TeamWorkFlowArtifact.class, 7);
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Tasks", arts, TaskArtifact.class,
-            DemoDbTasks.getNumTasks());
+            DemoTestUtil.getNumTasks());
    }
 
    public void testTeamWorkflowSearch() throws Exception {
