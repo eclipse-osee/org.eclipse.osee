@@ -1278,4 +1278,12 @@
            className="org.eclipse.osee.framework.ui.skynet.artifact.OpenArtifactEditorLoopbackCmd">
      </ClientLoopbackCmd>
   </extension>
+  <extension
+        id="CheckDefaulHierarchy"
+        name="CheckDefaulHierarchy"
+        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+     <Operation
+           className="org.eclipse.osee.framework.ui.skynet.blam.operation.CheckDefaulHierarchy">
+     </Operation>
+  </extension>
 </plugin>
