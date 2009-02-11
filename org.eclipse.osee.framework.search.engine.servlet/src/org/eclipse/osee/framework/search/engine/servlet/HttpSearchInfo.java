@@ -88,6 +88,8 @@ class HttpSearchInfo {
       Options options = new Options();
       options.put("include deleted", propertyStore.get("include deleted"));
       options.put("match word order", propertyStore.get("match word order"));
+      options.put("as xml", propertyStore.get("as xml"));
+      options.put("find all locations", propertyStore.get("find all locations"));
 
       return new HttpSearchInfo(propertyStore.get("branchId"), options, propertyStore.get("query"),
             propertyStore.getArray("attributeType"));

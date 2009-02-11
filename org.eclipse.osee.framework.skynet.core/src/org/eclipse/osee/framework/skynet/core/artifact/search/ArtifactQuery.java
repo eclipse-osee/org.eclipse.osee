@@ -341,9 +341,29 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws Exception
     */
-   public static List<Artifact> getArtifactsFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, String... attributeTypes) throws Exception {
+   public static List<Artifact> getArtifactsFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, String... attributeTypes) throws OseeCoreException {
       return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, attributeTypes).getArtifacts(
             FULL, null, false, false, allowDeleted);
+   }
+
+   /**
+    * Searches for keywords in attributes and returning match location information such as artifact where match was
+    * found, attribute containing the match and match location in attribute data.
+    * 
+    * @see #getArtifactsFromAttributeWithKeywords
+    * @param branch
+    * @param queryString
+    * @param matchWordOrder
+    * @param allowDeleted
+    * @param findAllMatchLocations when set to <b>true</b> returns all match locations instead of just returning the
+    *           first one. When returning all match locations, search performance may be slow.
+    * @param attributeTypes
+    * @return artifact matches
+    * @throws OseeCoreException
+    */
+   public static List<ArtifactMatch> getArtifactMatchesFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean findAllMatchLocations, String... attributeTypes) throws OseeCoreException {
+      return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, attributeTypes).getArtifactsWithMatches(
+            FULL, null, false, false, allowDeleted, findAllMatchLocations);
    }
 
    /**

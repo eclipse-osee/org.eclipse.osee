@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +24,10 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
@@ -35,7 +41,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.XmlArtifactSearchResult;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -61,7 +73,7 @@ final class HttpArtifactQuery {
       return HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_CONTEXT, parameters);
    }
 
-   private CharBackedInputStream getSearchParameters(String sessionId) throws IOException {
+   private CharBackedInputStream getSearchParameters(String sessionId, boolean withMatches, boolean findAllMatchLocations) throws IOException {
       CharBackedInputStream backedInputStream = new CharBackedInputStream();
 
       PropertyStore propertyStore = new PropertyStore(sessionId);
@@ -71,22 +83,33 @@ final class HttpArtifactQuery {
       propertyStore.put("match word order", matchWordOrder);
       propertyStore.put("attributeType", attributeTypes);
 
+      propertyStore.put("as xml", withMatches);
+      if (withMatches) {
+         propertyStore.put("find all locations", findAllMatchLocations);
+      }
       PropertyStoreWriter writer = new PropertyStoreWriter();
       writer.save(propertyStore, backedInputStream.getWriter());
 
       return backedInputStream;
    }
 
-   public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, boolean allowDeleted) throws Exception {
+   public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       List<Artifact> toReturn = null;
-      ObjectPair<Integer, Integer> queryIdAndSize = executeSearch();
-      if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
+      ObjectPair<String, ByteArrayOutputStream> data = executeSearch(false, false);
+      if (data != null) {
          try {
-            toReturn =
-                  ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, loadLevel, confirmer,
-                        queryIdAndSize.object2, reload, historical, allowDeleted);
-         } finally {
-            JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
+            ObjectPair<Integer, Integer> queryIdAndSize = handleAsDbJoin(data.object2);
+            if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
+               try {
+                  toReturn =
+                        ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, loadLevel, confirmer,
+                              queryIdAndSize.object2, reload, historical, allowDeleted);
+               } finally {
+                  JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
+               }
+            }
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex);
          }
       }
       if (toReturn == null) {
@@ -95,37 +118,107 @@ final class HttpArtifactQuery {
       return toReturn;
    }
 
-   private ObjectPair<Integer, Integer> executeSearch() throws Exception {
-      ObjectPair<Integer, Integer> toReturn = null;
+   public List<ArtifactMatch> getArtifactsWithMatches(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, boolean allowDeleted, boolean findAllMatchLocations) throws OseeCoreException {
+      List<ArtifactMatch> toReturn = new ArrayList<ArtifactMatch>();
+      ObjectPair<String, ByteArrayOutputStream> data = executeSearch(true, findAllMatchLocations);
+      if (data != null) {
+
+         try {
+            if (data.object1.endsWith("xml")) {
+               List<XmlArtifactSearchResult> results = handleAsXmlResults(data.object2);
+               for (XmlArtifactSearchResult result : results) {
+                  try {
+                     result.getJoinQuery().store();
+                     List<Artifact> artifacts =
+                           ArtifactLoader.loadArtifactsFromQueryId(result.getJoinQuery().getQueryId(), loadLevel,
+                                 confirmer, result.getJoinQuery().size(), reload, historical, allowDeleted);
+                     for (Artifact artifact : artifacts) {
+                        ArtifactMatch artMatch = new ArtifactMatch(artifact, allowDeleted);
+                        HashCollection<Long, MatchLocation> attributeMatches =
+                              result.getAttributeMatches(artifact.getArtId());
+                        if (attributeMatches != null) {
+                           artMatch.addMatches(attributeMatches);
+                        }
+                        toReturn.add(artMatch);
+                     }
+                  } finally {
+                     result.getJoinQuery().delete();
+                  }
+               }
+            } else if (data.object1.endsWith("plain")) {
+               ObjectPair<Integer, Integer> queryIdAndSize = handleAsDbJoin(data.object2);
+               if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
+                  try {
+                     List<Artifact> artifactList =
+                           ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, loadLevel, confirmer,
+                                 queryIdAndSize.object2, reload, historical, allowDeleted);
+                     for (Artifact artifact : artifactList) {
+                        toReturn.add(new ArtifactMatch(artifact, allowDeleted));
+                     }
+                  } finally {
+                     JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex);
+         }
+      }
+      return toReturn;
+   }
+
+   private ObjectPair<String, ByteArrayOutputStream> executeSearch(boolean withMatches, boolean findAllMatchLocations) throws OseeCoreException {
+      ObjectPair<String, ByteArrayOutputStream> toReturn = null;
       Result result = SkynetActivator.areOSEEServicesAvailable();
       if (result.isTrue()) {
          String sessionId = ClientSessionManager.getSessionId();
          CharBackedInputStream inputStream = null;
          try {
-            inputStream = getSearchParameters(sessionId);
+            inputStream = getSearchParameters(sessionId, withMatches, findAllMatchLocations);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             AcquireResult httpRequestResult =
                   HttpProcessor.post(new URL(getSearchUrl(sessionId)), inputStream, "application/xml", "UTF-8",
                         outputStream);
             if (httpRequestResult.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
-               String queryIdString = outputStream.toString("UTF-8");
-               if (Strings.isValid(queryIdString)) {
-                  String[] entries = queryIdString.split(",\\s*");
-                  if (entries.length >= 2) {
-                     toReturn = new ObjectPair<Integer, Integer>(new Integer(entries[0]), new Integer(entries[1]));
-                  }
-               }
+               toReturn =
+                     new ObjectPair<String, ByteArrayOutputStream>(httpRequestResult.getContentType(), outputStream);
             } else if (httpRequestResult.getCode() != HttpURLConnection.HTTP_NO_CONTENT) {
-               throw new Exception(String.format("Search error due to bad request: url[%s] status code: [%s]",
+               throw new OseeCoreException(String.format("Search error due to bad request: url[%s] status code: [%s]",
                      inputStream.toString(), httpRequestResult.getCode()));
             }
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex);
          } finally {
             if (inputStream != null) {
-               inputStream.close();
+               try {
+                  inputStream.close();
+               } catch (Exception ex) {
+                  throw new OseeWrappedException(ex);
+               }
             }
          }
       } else {
-         throw new Exception(String.format("Unable to perform search: %s", result.getText()));
+         throw new OseeCoreException(String.format("Unable to perform search: %s", result.getText()));
+      }
+      return toReturn;
+   }
+
+   private List<XmlArtifactSearchResult> handleAsXmlResults(ByteArrayOutputStream outputStream) throws SAXException, IOException {
+      ArtifactXmlQueryResultParser parser = new ArtifactXmlQueryResultParser();
+      XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+      xmlReader.setContentHandler(parser);
+      xmlReader.parse(new InputSource(new ByteArrayInputStream(outputStream.toByteArray())));
+      return parser.getResults();
+   }
+
+   private ObjectPair<Integer, Integer> handleAsDbJoin(ByteArrayOutputStream outputStream) throws UnsupportedEncodingException {
+      ObjectPair<Integer, Integer> toReturn = null;
+      String queryIdString = outputStream.toString("UTF-8");
+      if (Strings.isValid(queryIdString)) {
+         String[] entries = queryIdString.split(",\\s*");
+         if (entries.length >= 2) {
+            toReturn = new ObjectPair<Integer, Integer>(new Integer(entries[0]), new Integer(entries[1]));
+         }
       }
       return toReturn;
    }
