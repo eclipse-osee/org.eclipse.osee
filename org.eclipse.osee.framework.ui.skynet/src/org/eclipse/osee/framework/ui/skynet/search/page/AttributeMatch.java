@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search.page;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.Region;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.search.ui.text.Match;
@@ -17,7 +18,7 @@ import org.eclipse.search.ui.text.Match;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeMatch extends Match {
+public class AttributeMatch extends Match implements IAdaptable {
    private Region fOriginalLocation;
    private AttributeLineElement fLineElement;
 
@@ -60,5 +61,16 @@ public class AttributeMatch extends Match {
 
    public AttributeLineElement getLineElement() {
       return fLineElement;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+    */
+   @Override
+   public Object getAdapter(Class adapter) {
+      if (Artifact.class.equals(adapter)) {
+         return this.getArtifact();
+      }
+      return null;
    }
 }

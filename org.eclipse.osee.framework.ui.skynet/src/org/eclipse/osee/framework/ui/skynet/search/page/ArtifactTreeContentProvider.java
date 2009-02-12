@@ -214,6 +214,13 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    }
 
    public Object getParent(Object element) {
+      if (element instanceof AttributeLineElement) {
+         return ((AttributeLineElement) element).getParent();
+      }
+      if (element instanceof AttributeMatch) {
+         AttributeMatch match = (AttributeMatch) element;
+         return match.getLineElement();
+      }
       if (element instanceof Artifact) {
          Artifact resource = (Artifact) element;
          try {
@@ -221,14 +228,6 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-      }
-      if (element instanceof AttributeLineElement) {
-         return ((AttributeLineElement) element).getParent();
-      }
-
-      if (element instanceof AttributeMatch) {
-         AttributeMatch match = (AttributeMatch) element;
-         return match.getLineElement();
       }
       return null;
    }

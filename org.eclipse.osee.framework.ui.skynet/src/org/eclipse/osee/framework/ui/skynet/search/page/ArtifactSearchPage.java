@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search.page;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
@@ -21,6 +24,9 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -104,11 +110,19 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       }
    }
 
+   //   private static final String[] SHOW_IN_TARGETS = new String[] {IPageLayout.ID_RES_NAV};
+   //   private static final IShowInTargetList SHOW_IN_TARGET_LIST = new IShowInTargetList() {
+   //      public String[] getShowInTargetIds() {
+   //         return SHOW_IN_TARGETS;
+   //      }
+   //   };
+
    private static final String KEY_LIMIT = "org.eclipse.search.resultpage.limit"; //$NON-NLS-1$
    private static final int DEFAULT_ELEMENT_LIMIT = 1000;
 
    private IArtifactSearchContentProvider fContentProvider;
    private ArtifactDecorator artifactDecorator;
+   private ISelectionProvider selectionProvider;
 
    public ArtifactSearchPage() {
       setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));
@@ -136,6 +150,13 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       return artifactDecorator;
    }
 
+   private ISelectionProvider getSearchSelectionProvider() {
+      if (selectionProvider == null) {
+         selectionProvider = new SearchSelectionProvider();
+      }
+      return selectionProvider;
+   }
+
    protected void configureTableViewer(TableViewer viewer) {
       viewer.setUseHashlookup(true);
       ArtifactDecorator decorator = getArtifactDecorator();
@@ -146,6 +167,8 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       viewer.setComparator(new DecoratorIgnoringViewerSorter(innerLabelProvider));
       fContentProvider = (IArtifactSearchContentProvider) viewer.getContentProvider();
       addDragAdapters(viewer);
+
+      //      getSite().setSelectionProvider(getSearchSelectionProvider());
    }
 
    protected void configureTreeViewer(TreeViewer viewer) {
@@ -158,11 +181,13 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       viewer.setComparator(new DecoratorIgnoringViewerSorter(innerLabelProvider));
       fContentProvider = (IArtifactSearchContentProvider) viewer.getContentProvider();
       addDragAdapters(viewer);
+      viewer.getTree().setToolTipText("NOTE: match accuracy for xml content still in work.");
+
+      //      getSite().setSelectionProvider(getSearchSelectionProvider());
    }
 
    protected void fillContextMenu(IMenuManager mgr) {
-      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.ArtifactSearchView", (MenuManager) mgr,
-            getViewer());
+      getSite().registerContextMenu(VIEW_ID, (MenuManager) mgr, getViewer());
       mgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
       super.fillContextMenu(mgr);
       mgr.appendToGroup(IContextMenuConstants.GROUP_PROPERTIES, new Action("Open Search Preferences") {
@@ -174,12 +199,32 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       });
    }
 
+   //   private void createContextMenu(Control menuOnwer) {
+   //      MenuManager menuManager = new MenuManager();
+   //      menuManager.setRemoveAllWhenShown(true);
+   //      menuManager.addMenuListener(new IMenuListener() {
+   //         public void menuAboutToShow(IMenuManager manager) {
+   //            MenuManager menuManager = (MenuManager) manager;
+   //            menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+   //         }
+   //      });
+   //
+   //      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+   //      getViewer().getControl().setMenu(menuManager.createContextMenu(getViewer().getControl()));
+   //      getSite().registerContextMenu(VIEW_ID, menuManager, getViewer());
+   //
+   //      getSite().setSelectionProvider(getViewer());
+   //      // The additions group is a standard group
+   //      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+   //   }
+
    public void setViewPart(ISearchResultViewPart part) {
       super.setViewPart(part);
    }
 
    public void init(IPageSite site) {
       super.init(site);
+      setID(VIEW_ID);
       OseeContributionItem.addTo(getSite(), false);
       getSite().getActionBars().updateActionBars();
       OseeEventManager.addListener(this);
@@ -223,12 +268,8 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    public Object getAdapter(Class adapter) {
-      //      if (adapter == IShowInSource.class) {
-      //         return new IShowInTargetList() {
-      //            public String[] getShowInTargetIds() {
-      //               return new String[0];
-      //            }
-      //         };
+      //      if (IShowInTargetList.class.equals(adapter)) {
+      //         return SHOW_IN_TARGET_LIST;
       //      }
       return null;
    }
@@ -329,12 +370,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       return getLayout() == FLAG_LAYOUT_TREE && input != null && input.hasAttributeMatches();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper#getSelectedArtifacts()
-    */
-   public Collection<Artifact> getSelectedArtifacts() {
+   private Collection<Artifact> getSelectedArtifacts() {
       IStructuredSelection selection = (IStructuredSelection) getViewer().getSelection();
 
       Object[] objects = selection.toArray();
@@ -351,8 +387,9 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       for (Object object : objects) {
          int matchCount = resultInput.getMatchCount(object);
          if (matchCount >= 1) {
-            if (object instanceof AttributeMatch) {
-               artifacts.add(((AttributeMatch) object).getArtifact());
+            if (object instanceof IAdaptable) {
+               Artifact toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
+               artifacts.add(toAdd);
             } else if (object instanceof Match) {
                artifacts.add((Artifact) ((Match) object).getElement());
             }
@@ -360,7 +397,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       }
       return artifacts;
    }
-
    private class SearchDragAndDrop extends SkynetDragAndDrop {
 
       public SearchDragAndDrop(Control control, String viewId) {
@@ -442,6 +478,83 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
             }
          }
       });
+
+   }
+
+   private class SearchSelectionProvider implements ISelectionProvider {
+      public void addSelectionChangedListener(ISelectionChangedListener listener) {
+
+      }
+
+      public ISelection getSelection() {
+         return new ArtifactSelection(getSelectedArtifacts());
+      }
+
+      public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+
+      }
+
+      public void setSelection(ISelection selection) {
+
+      }
+   }
+
+   private final class ArtifactSelection implements IStructuredSelection {
+      private final Collection<Artifact> collection;
+
+      private ArtifactSelection(Collection<Artifact> collection) {
+         this.collection = collection;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.ISelection#isEmpty()
+       */
+      @Override
+      public boolean isEmpty() {
+         return collection.isEmpty();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.IStructuredSelection#getFirstElement()
+       */
+      @Override
+      public Object getFirstElement() {
+         return collection.size() == 0 ? null : iterator().next();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.IStructuredSelection#iterator()
+       */
+      @Override
+      public Iterator iterator() {
+         return collection.iterator();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.IStructuredSelection#size()
+       */
+      @Override
+      public int size() {
+         // TODO Auto-generated method stub
+         return collection.size();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.IStructuredSelection#toArray()
+       */
+      @Override
+      public Object[] toArray() {
+         // TODO Auto-generated method stub
+         return collection.toArray();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.IStructuredSelection#toList()
+       */
+      @Override
+      public List toList() {
+         return new ArrayList<Artifact>(collection);
+      }
 
    }
 
