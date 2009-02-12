@@ -47,7 +47,8 @@ public class ATSAttributes {
                "If selected, originator will be asked to validate the implementation.");
    public static final ATSAttributes ACTIVE_ATTRIBUTE = new ATSAttributes("Active", "Active ATS configuration object.");
    public static final ATSAttributes LOG_ATTRIBUTE = new ATSAttributes("Log");
-   public static final ATSAttributes LOCATION_ATTRIBUTE = new ATSAttributes("Location");
+   public static final ATSAttributes LOCATION_ATTRIBUTE =
+         new ATSAttributes("Location", "Enter location of materials to review.");
    public static final ATSAttributes REVIEW_DEFECT_ATTRIBUTE = new ATSAttributes("Review Defect");
    public static final ATSAttributes STATE_NOTES_ATTRIBUTE = new ATSAttributes("State Notes");
    public static final ATSAttributes ESTIMATED_HOURS_ATTRIBUTE =
