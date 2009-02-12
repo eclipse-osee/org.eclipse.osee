@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -375,9 +376,9 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          if (reviewArt != null) {
             for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
                if (item.isClosed() == false || item.getDisposition() == Disposition.None || (item.getSeverity() == Severity.None && (item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject))) {
-                  extraInfoLabel.setText("Review not complete till all items are marked for severity, disposition and closed");
+                  extraInfoLabel.setText("Review not complete until all items are marked for severity, disposition and closed");
                   return new Result(
-                        "Review not complete till all items are marked for severity, disposition and closed");
+                        "Review not complete until all items are marked for severity, disposition and closed");
                }
 
             }
