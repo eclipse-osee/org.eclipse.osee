@@ -33,13 +33,13 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Jeff C. Phillips
  */
 public class TransactionData implements IAdaptable {
-   private String comment;
-   private Timestamp timeStamp;
-   private int associatedArtId;
-   private int commitArtId;
-   private int transactionNumber;
+   private final String comment;
+   private final Timestamp timeStamp;
+   private final int associatedArtId;
+   private final int commitArtId;
+   private final int transactionNumber;
    private String name;
-   private Branch branch;
+   private final Branch branch;
    private Artifact artifact;
 
    public TransactionData(String comment, Timestamp timeStamp, int authorId, int transactionId, int associatedArtId, Branch branch, int commitArtId) throws OseeCoreException {
@@ -54,7 +54,7 @@ public class TransactionData implements IAdaptable {
       try {
          User user = null;
          if (authorId == 0) {
-            user = UserManager.getUser(SystemUser.NoOne);
+            user = UserManager.getUser(SystemUser.OseeSystem);
             authorId = user.getArtId();
          } else {
             user = UserManager.getUserByArtId(authorId);

@@ -76,10 +76,10 @@ import org.eclipse.swt.widgets.Display;
  */
 public class PopulateDemoActions extends XNavigateItemAction {
 
-   private String[] TITLE_PREFIX =
+   private final String[] TITLE_PREFIX =
          new String[] {"Problem with the", "Can't see the", "Button A doesn't work on", "Add to the",
                "Make new Button for ", "User can't load "};
-   private ChangeType[] CHANGE_TYPE =
+   private final ChangeType[] CHANGE_TYPE =
          new ChangeType[] {ChangeType.Problem, ChangeType.Problem, ChangeType.Problem, ChangeType.Improvement,
                ChangeType.Improvement, ChangeType.Support, ChangeType.Improvement, ChangeType.Support};
 
@@ -191,7 +191,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       Branch childBranch =
             BranchManager.createWorkingBranch(parentBranch, childBranchName, childBranchName,
-                  UserManager.getUser(SystemUser.NoOne));
+                  UserManager.getUser(SystemUser.OseeSystem));
       return childBranch;
    }
 

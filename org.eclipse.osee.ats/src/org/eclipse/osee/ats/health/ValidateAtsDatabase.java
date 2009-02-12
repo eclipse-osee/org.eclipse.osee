@@ -308,7 +308,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    public void testStateMachineAssignees() throws OseeCoreException {
       xResultData.log(monitor, "testStateMachineAssignees");
       User unAssignedUser = UserManager.getUser(SystemUser.UnAssigned);
-      User noOneUser = UserManager.getUser(SystemUser.NoOne);
+      User oseeSystemUser = UserManager.getUser(SystemUser.OseeSystem);
       for (Artifact art : artifacts) {
          if (art instanceof StateMachineArtifact) {
             try {
@@ -331,8 +331,8 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                      xResultData.log(monitor, "Fixed");
                   }
                }
-               if (smaMgr.getStateMgr().getAssignees().contains(noOneUser)) {
-                  xResultData.logError(art.getHumanReadableId() + " is assigned to NoOne; invalid assignment - MANUAL FIX REQUIRED");
+               if (smaMgr.getStateMgr().getAssignees().contains(oseeSystemUser)) {
+                  xResultData.logError(art.getHumanReadableId() + " is assigned to OseeSystem; invalid assignment - MANUAL FIX REQUIRED");
                }
                if ((!smaMgr.isCompleted() && !smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() == 0) {
                   xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " In Work without assignees");

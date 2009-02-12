@@ -80,8 +80,8 @@ public class SMAState {
     * @throws OseeCoreException
     */
    public void setAssignees(Collection<User> assignees) throws OseeCoreException {
-      if (assignees.contains(UserManager.getUser(SystemUser.NoOne)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
-         throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
+      if (assignees.contains(UserManager.getUser(SystemUser.OseeSystem)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
+         throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
       if (assignees.size() > 1 && assignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
          throw new OseeArgumentException("Can not assign to user and UnAssigned");
@@ -107,8 +107,8 @@ public class SMAState {
       if (assignee != null && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) {
          throw new OseeStateException("Can't assign completed/cancelled states.");
       }
-      if (assignee == UserManager.getUser(SystemUser.NoOne) || assignee == UserManager.getUser(SystemUser.Guest)) {
-         throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
+      if (assignee == UserManager.getUser(SystemUser.OseeSystem) || assignee == UserManager.getUser(SystemUser.Guest)) {
+         throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
       this.assignees.clear();
       if (assignee != null) this.assignees.add(assignee);
@@ -118,8 +118,8 @@ public class SMAState {
     * @param assignee
     */
    public void addAssignee(User assignee) throws OseeCoreException {
-      if (assignee == UserManager.getUser(SystemUser.NoOne) || assignee == UserManager.getUser(SystemUser.Guest)) {
-         throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
+      if (assignee == UserManager.getUser(SystemUser.OseeSystem) || assignee == UserManager.getUser(SystemUser.Guest)) {
+         throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
       if (assignee != null) this.assignees.add(assignee);
    }

@@ -76,13 +76,14 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
    public class ActionToArtifactImpactJob extends Job {
       private IProgressMonitor monitor;
       private final String artifactName;
-      private XResultData rd = new XResultData();
+      private final XResultData rd = new XResultData();
 
       public ActionToArtifactImpactJob(String artifactName) {
          super("Searching \"" + artifactName + "\"...");
          this.artifactName = artifactName;
       }
 
+      @Override
       public IStatus run(IProgressMonitor monitor) {
          this.monitor = monitor;
          try {
@@ -140,7 +141,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             if (branches != null) {
                for (Branch branch : branches) {
                   Artifact assocArt = branch.getAssociatedArtifact();
-                  if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.NoOne))) {
+                  if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
                            assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
                   } else {

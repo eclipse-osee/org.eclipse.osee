@@ -94,7 +94,7 @@ public class OseeNotifyUsersJob extends Job {
    }
 
    private void notifyUser(User user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws MessagingException, OseeCoreException {
-      if (user == UserManager.getUser(SystemUser.NoOne) || user == UserManager.getUser(SystemUser.UnAssigned) || user == UserManager.getUser(SystemUser.Guest)) {
+      if (user == UserManager.getUser(SystemUser.OseeSystem) || user == UserManager.getUser(SystemUser.UnAssigned) || user == UserManager.getUser(SystemUser.Guest)) {
          // do nothing
          return;
       }

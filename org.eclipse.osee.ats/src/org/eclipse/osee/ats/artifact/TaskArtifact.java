@@ -58,6 +58,10 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
+   public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {
+      return getWorldViewRelatedToState().equals(getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName());
+   }
+
    /*
     * (non-Javadoc)
     * 

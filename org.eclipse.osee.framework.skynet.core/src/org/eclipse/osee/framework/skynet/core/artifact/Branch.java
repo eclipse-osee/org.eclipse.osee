@@ -285,7 +285,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public boolean isChangeManaged() {
       try {
-         return associatedArtifactId != UserManager.getUser(SystemUser.NoOne).getArtId();
+         return associatedArtifactId != UserManager.getUser(SystemUser.OseeSystem).getArtId();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return true;

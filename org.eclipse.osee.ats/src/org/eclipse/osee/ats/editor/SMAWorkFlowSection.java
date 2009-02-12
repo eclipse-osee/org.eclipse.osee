@@ -586,11 +586,11 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          // Validate assignees
-         if (smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.NoOne)) || smaMgr.getStateMgr().getAssignees().contains(
+         if (smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || smaMgr.getStateMgr().getAssignees().contains(
                UserManager.getUser(SystemUser.Guest)) || smaMgr.getStateMgr().getAssignees().contains(
                UserManager.getUser(SystemUser.UnAssigned))) {
             AWorkbench.popup("ERROR",
-                  "Can not transition with \"Guest\", \"UnAssigned\" or \"NoOne\" user as assignee.");
+                  "Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
             return;
          }
 

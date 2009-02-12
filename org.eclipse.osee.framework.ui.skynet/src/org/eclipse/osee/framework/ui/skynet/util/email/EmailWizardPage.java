@@ -96,7 +96,7 @@ public class EmailWizardPage extends WizardPage {
       try {
          names.addAll(UserManager.getUsers());
          names.remove(UserManager.getUser(SystemUser.UnAssigned));
-         names.remove(UserManager.getUser(SystemUser.NoOne));
+         names.remove(UserManager.getUser(SystemUser.OseeSystem));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          names.add(ex.getLocalizedMessage());

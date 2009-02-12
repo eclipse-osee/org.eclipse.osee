@@ -67,7 +67,8 @@ public class BranchCreator {
    private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(OseeConnection connection, Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
       User userToBlame = UserManager.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
-      int userId = (userToBlame == null) ? UserManager.getUser(SystemUser.NoOne).getArtId() : userToBlame.getArtId();
+      int userId =
+            (userToBlame == null) ? UserManager.getUser(SystemUser.OseeSystem).getArtId() : userToBlame.getArtId();
       String comment =
             NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -114,7 +115,7 @@ public class BranchCreator {
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
-         associatedArtifact = UserManager.getUser(SystemUser.NoOne);
+         associatedArtifact = UserManager.getUser(SystemUser.OseeSystem);
       }
 
       if (associatedArtifact != null) {
@@ -161,9 +162,9 @@ public class BranchCreator {
          "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, arv1.gamma_id, txs1.mod_type, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
 
    private final class CreateMergeBranchTx extends DbTransaction {
-      private Branch sourceBranch;
-      private Branch destBranch;
-      private Collection<Integer> artIds;
+      private final Branch sourceBranch;
+      private final Branch destBranch;
+      private final Collection<Integer> artIds;
       private Branch mergeBranch;
 
       /**

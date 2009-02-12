@@ -122,7 +122,7 @@ public class HttpBranchCreation {
    private static String getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException {
       int associatedArtifactId = -1;
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
-         associatedArtifact = UserManager.getUser(SystemUser.NoOne);
+         associatedArtifact = UserManager.getUser(SystemUser.OseeSystem);
       }
       if (associatedArtifact != null) {
          associatedArtifactId = associatedArtifact.getArtId();

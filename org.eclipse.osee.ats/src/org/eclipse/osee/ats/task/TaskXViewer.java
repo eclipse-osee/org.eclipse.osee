@@ -325,6 +325,13 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    public boolean handleChangeResolution() throws OseeCoreException {
+      // Ensure tasks are related to current state of workflow 
+      for (TaskArtifact taskArt : getSelectedTaskArtifacts()) {
+         if (!taskArt.isRelatedToParentWorkflowCurrentState()) {
+            SMAManager.popupTaskNotInRelatedToState(taskArt);
+            return false;
+         }
+      }
       if (isUsingTaskResolutionOptions()) {
          if (SMAManager.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();

@@ -455,19 +455,26 @@ public class SMAManager {
       return promptChangeStatus(Arrays.asList(sma), persist);
    }
 
+   public static void popupTaskNotInRelatedToState(TaskArtifact taskArt) throws OseeCoreException {
+      AWorkbench.popup(
+            "ERROR",
+            String.format(
+                  "Task work must be done in \"Related to State\" of parent workflow for Task titled: \"%s\".\n\n" +
+                  //
+                  "Task work configured to be done in parent's \"%s\" state.\nParent workflow is currently in \"%s\" state.\n\n" +
+                  //
+                  "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
+                  taskArt.getDescriptiveName(), taskArt.getWorldViewRelatedToState(),
+                  taskArt.getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName()));
+   }
+
    public static boolean promptChangeStatus(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
       try {
          // If task status is being changed, make sure tasks belong to current state
          for (StateMachineArtifact sma : smas) {
             if (sma instanceof TaskArtifact) {
-               if (!((TaskArtifact) sma).getWorldViewRelatedToState().equals(
-                     ((TaskArtifact) sma).getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName())) {
-                  AWorkbench.popup(
-                        "ERROR",
-                        String.format(
-                              "Task work must be done in \"Related to State\" of parent workflow for Task titled: \"%s\".\n\nTask work configured to be done in parent's \"%s\" state.\nParent workflow in \"%s\" state.\n\nEither transition parent workflow or change Task's \"Related to State\".",
-                              sma.getDescriptiveName(), ((TaskArtifact) sma).getWorldViewRelatedToState(),
-                              ((TaskArtifact) sma).getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName()));
+               if (!((TaskArtifact) sma).isRelatedToParentWorkflowCurrentState()) {
+                  popupTaskNotInRelatedToState((TaskArtifact) sma);
                   return false;
                }
             }
@@ -713,8 +720,8 @@ public class SMAManager {
    }
 
    public void setTransitionAssignees(Collection<User> assignees) throws OseeCoreException {
-      if (assignees.contains(UserManager.getUser(SystemUser.NoOne)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
-         throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
+      if (assignees.contains(UserManager.getUser(SystemUser.OseeSystem)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
+         throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
       if (assignees.size() > 1 && assignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
          throw new OseeArgumentException("Can not assign to user and UnAssigned");
@@ -796,10 +803,10 @@ public class SMAManager {
    private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck, SkynetTransaction transaction) {
       try {
          // Validate assignees
-         if (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.NoOne)) || getStateMgr().getAssignees().contains(
+         if (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || getStateMgr().getAssignees().contains(
                UserManager.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
                UserManager.getUser(SystemUser.UnAssigned))) {
-            return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"NoOne\" user as assignee.");
+            return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
          }
 
          // Validate toState name

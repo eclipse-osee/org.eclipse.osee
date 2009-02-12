@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.core.data;
  * @author Ryan D. Brooks
  */
 public enum SystemUser implements IOseeUserInfo {
-   NoOne("No One", "", "99999999", false),
+   OseeSystem("OSEE System", "", "99999999", false),
    Guest("Guest", "", "99999998", false),
    BootStrap("Boot Strap", "bootstrap@osee.org", "bootstrap", true),
    UnAssigned("UnAssigned", "", "99999997", true);

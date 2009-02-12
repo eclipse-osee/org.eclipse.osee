@@ -195,7 +195,7 @@ public class XMergeViewer extends XWidget implements IActionable {
                if (branchAssociatedArtifact instanceof IATSArtifact) {
                   OseeAts.openATSArtifact(branchAssociatedArtifact);
                   return;
-               } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.NoOne))) {
+               } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                   ArtifactEditor.editArtifact(branchAssociatedArtifact);
                   return;
                }
