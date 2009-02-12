@@ -137,9 +137,9 @@ public class DefectXViewer extends XViewer {
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
       if (xCol.equals(DefectXViewerFactory.User_Col)) {
-         return handleAltLeftClick(treeColumn, treeItem);
+         return handleLeftClick(treeColumn, treeItem);
       } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
-         return handleAltLeftClick(treeColumn, treeItem);
+         return handleLeftClick(treeColumn, treeItem);
       }
       return false;
    }
@@ -159,12 +159,26 @@ public class DefectXViewer extends XViewer {
          if (aCol.equals(DefectXViewerFactory.Closed_Col)) {
             modified = true;
             defectItem.setClosed(!defectItem.isClosed());
-         }
-         if (aCol.equals(DefectXViewerFactory.Severity_Col)) {
-            modified = handleAltLeftClick(treeColumn, treeItem);
-         }
-         if (aCol.equals(DefectXViewerFactory.Disposition_Col)) {
-            modified = handleAltLeftClick(treeColumn, treeItem);
+         } else if (aCol.equals(DefectXViewerFactory.Severity_Col)) {
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Severity.strValues(),
+                        defectItem.getSeverity().name());
+            if (enumDialog != null) {
+               if (enumDialog.getResult()[0] != null) {
+                  modified = true;
+                  defectItem.setSeverity(Severity.valueOf((String) enumDialog.getResult()[0]));
+               }
+            }
+         } else if (aCol.equals(DefectXViewerFactory.Disposition_Col)) {
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Disposition.strValues(),
+                        defectItem.getDisposition().name());
+            if (enumDialog != null) {
+               if (enumDialog.getResult()[0] != null) {
+                  modified = true;
+                  defectItem.setDisposition(Disposition.valueOf((String) enumDialog.getResult()[0]));
+               }
+            }
          }
          if (modified) {
             SkynetTransaction transaction =
@@ -205,6 +219,10 @@ public class DefectXViewer extends XViewer {
                modified = true;
                defectItem.setDate(selDate);
             }
+         } else if (xCol.equals(DefectXViewerFactory.Severity_Col)) {
+            // skip it; handled in left click method
+         } else if (xCol.equals(DefectXViewerFactory.Disposition_Col)) {
+            // skip it; handled in left click method
          } else if (xCol.equals(DefectXViewerFactory.Closed_Col)) {
             Boolean closed = XPromptChange.promptChangeBoolean(xCol.getName(), xCol.getName(), defectItem.isClosed());
             if (closed != null && (defectItem.isClosed() != closed)) {
@@ -240,26 +258,6 @@ public class DefectXViewer extends XViewer {
                if (selectedUser != null && defectItem.getUser() != selectedUser) {
                   modified = true;
                   defectItem.setUser(selectedUser);
-               }
-            }
-         } else if (xCol.equals(DefectXViewerFactory.Severity_Col)) {
-            EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Severity.strValues(),
-                        defectItem.getSeverity().name());
-            if (enumDialog != null) {
-               if (enumDialog.getResult()[0] != null) {
-                  modified = true;
-                  defectItem.setSeverity(Severity.valueOf((String) enumDialog.getResult()[0]));
-               }
-            }
-         } else if (xCol.equals(DefectXViewerFactory.Disposition_Col)) {
-            EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Disposition.strValues(),
-                        defectItem.getDisposition().name());
-            if (enumDialog != null) {
-               if (enumDialog.getResult()[0] != null) {
-                  modified = true;
-                  defectItem.setDisposition(Disposition.valueOf((String) enumDialog.getResult()[0]));
                }
             }
          } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {

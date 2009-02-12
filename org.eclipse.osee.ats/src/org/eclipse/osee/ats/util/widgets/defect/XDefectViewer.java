@@ -133,7 +133,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       tree.setLinesVisible(true);
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
 
-      (new Label(mainComp, SWT.None)).setText("Select \"New Defect\" to add.  Select icon in cell to update value.");
+      (new Label(mainComp, SWT.None)).setText("Select \"New Defect\" to add.  Select icon in cell to update value or Alt-Left-Click to update field.");
       loadTable();
    }
 
