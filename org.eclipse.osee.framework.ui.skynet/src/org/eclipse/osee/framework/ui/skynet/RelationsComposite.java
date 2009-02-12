@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -473,22 +474,35 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
     * @param selection
     */
    private void performDeleteArtifact(IStructuredSelection selection) {
-      Object object = selection.getFirstElement();
+      ArrayList<Artifact> artifactsToBeDeleted = new ArrayList<Artifact>(selection.size());
+      
       try {
-         if (object instanceof RelationLink) {
-            RelationLink relLink = (RelationLink) object;
-            Artifact artToDelete = null;
-            if (relLink.getArtifactA() == artifact)
-               artToDelete = relLink.getArtifactB();
-            else
-               artToDelete = relLink.getArtifactA();
-            if (MessageDialog.openConfirm(
-                  Display.getCurrent().getActiveShell(),
-                  "Delete Artifact",
-                  "Delete Artifact?\n\n\"" + artToDelete + "\"\n\nNOTE: This will delete the artifact from the system.  Use \"Delete Relation\" to remove this artifact from the relation.")) {
-               artToDelete.delete();
+         //Add all of the artifacts to a list first
+         for (Object object : selection.toList()) {
+            if (object instanceof RelationLink) {
+               RelationLink relLink = (RelationLink) object;
+               if (relLink.getArtifactA() == artifact){
+                  artifactsToBeDeleted.add(relLink.getArtifactB());
+               }
+               else{
+                  artifactsToBeDeleted.add(relLink.getArtifactA());
+               }
             }
          }
+         
+         //Ask if they are sure they want all artifacts to be deleted
+         if (!artifactsToBeDeleted.isEmpty()) {
+            if (MessageDialog.openConfirm(
+                  Display.getCurrent().getActiveShell(),
+                  "Delete Artifact (s)",
+                  "Delete Artifact (s)?\n\n\"" + Collections.toString(",", artifactsToBeDeleted) + "\"\n\nNOTE: This will delete the artifact from the system.  Use \"Delete Relation\" to remove this artifact from the relation.")) {
+
+               for (Artifact artifact : artifactsToBeDeleted) {
+                  artifact.delete();
+               }
+            }
+         }
+         
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
