@@ -16,6 +16,8 @@ public class ConfigIniGeneration {
    public static void main(String[] args) {
       StringBuilder builder = new StringBuilder();
       builder.append("osgi.bundles= \\\n");
+      builder.append("org.apache.commons.httpclient_3.1.0.v20080605-1935.jar@start, \\\n");
+      builder.append("org.apache.commons.codec_1.3.0.v20080530-1600.jar@start, \\\n");
       builder.append("org.eclipse.equinox.app_1.1.0.v20080421-2006.jar@start, \\\n");
       builder.append("org.eclipse.equinox.registry_3.4.0.v20080516-0950.jar@start, \\\n");
       builder.append("org.eclipse.equinox.common_3.4.0.v20080421-2006.jar@start, \\\n");
