@@ -156,4 +156,10 @@
             className="org.eclipse.osee.define.blam.operation.PublishWithSpecifiedTemplate">
       </Operation>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
+      <ArtifactFactory
+            classname="org.eclipse.osee.define.DefineArtifactFactory">
+      </ArtifactFactory>
+   </extension>
 </plugin>
