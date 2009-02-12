@@ -196,7 +196,7 @@ public class WordTemplateProcessor {
                // for single edit override outlining options
                outlining = false;
             }
-            processArtifactSet(elementValue, artifacts, wordMl, outlineType, presentationType);
+            processArtifactSet(variableMap, elementValue, artifacts, wordMl, outlineType, presentationType);
          } else if (elementType.equals(EXTENSION_PROCESSOR)) {
             try {
                processExtensionTemplate(elementValue, variableMap, folder, wordMl, presentationType, template);
@@ -237,7 +237,7 @@ public class WordTemplateProcessor {
       return startParagraphNumber;
    }
 
-   private void processArtifactSet(final String artifactElement, final List<Artifact> artifacts, final WordMLProducer wordMl, final String outlineType, PresentationType presentationType) throws OseeCoreException {
+   private void processArtifactSet(VariableMap variableMap, final String artifactElement, final List<Artifact> artifacts, final WordMLProducer wordMl, final String outlineType, PresentationType presentationType) throws OseeCoreException {
       nonTemplateArtifacts.clear();
       if (outlineNumber != null) {
          wordMl.setNextParagraphNumberTo(outlineNumber);
@@ -246,7 +246,7 @@ public class WordTemplateProcessor {
       extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
 
       for (Artifact artifact : artifacts) {
-         processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
+         processObjectArtifact(variableMap, artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
       }
       //maintain a list of artifacts that have been processed so we do not have duplicates.
       processedArtifacts.clear();
@@ -357,7 +357,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
+   private void processObjectArtifact(VariableMap variableMap,Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       if (!artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native")) {
          //If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
@@ -374,10 +374,10 @@ public class WordTemplateProcessor {
                   }
                }
             }
-            processAttributes(artifact, wordMl, presentationType, multipleArtifacts);
+            processAttributes(variableMap, artifact, wordMl, presentationType, multipleArtifacts);
             if (recurseChildren) {
                for (Artifact childArtifact : artifact.getChildren()) {
-                  processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
+                  processObjectArtifact(variableMap, childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
                }
             }
             if (outlining) {
@@ -390,20 +390,20 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
+   private void processAttributes(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
          if (attributeElement.getAttributeName().equals("*")) {
             for (String attributeTypeName : orderAttributeNames(artifact.getAttributeTypes())) {
                if (!outlining || !attributeTypeName.equals(headingAttributeName)) {
-                  processAttribute(artifact, wordMl, attributeElement, attributeTypeName, true, presentationType,
+                  processAttribute(variableMap, artifact, wordMl, attributeElement, attributeTypeName, true, presentationType,
                         multipleArtifacts);
                }
             }
          } else {
             if (artifact.isAttributeTypeValid(attributeName)) {
-               processAttribute(artifact, wordMl, attributeElement, attributeName, false, presentationType,
+               processAttribute(variableMap, artifact, wordMl, attributeElement, attributeName, false, presentationType,
                      multipleArtifacts);
             }
          }
@@ -412,7 +412,7 @@ public class WordTemplateProcessor {
       wordMl.setPageLayout(artifact);
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
+   private void processAttribute(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && (attributeTypeName.equals(Requirements.PARTITION) || attributeTypeName.equals("Safety Criticality"))) {
          if (artifact.isAttributeTypeValid(Requirements.PARTITION)) {
@@ -451,12 +451,23 @@ public class WordTemplateProcessor {
          if (ignoreAttributeExtensions.contains(attributeType.getName())) {
             return;
          }
-
-         VariableMap map = new VariableMap();
-         map.setValue("allAttrs", allAttrs);
-         map.setValue("linkType", LinkType.OSEE_SERVER_LINK);
-         RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, map, wordMl, attributeElement);
+         
+         ensureMapIsSetForDocLinks(variableMap, allAttrs);
+         RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, variableMap, wordMl, attributeElement);
       }
+   }
+   
+   private void ensureMapIsSetForDocLinks(VariableMap variableMap, boolean allAttrs) throws OseeArgumentException{
+      //Do not try to use a null map
+      if(variableMap == null){
+         variableMap = new VariableMap();
+      }
+      //If someone else set the link leave it set else set it to OSEE server link
+      if(variableMap.getValue("linkType") == null){
+         variableMap.setValue("linkType", LinkType.OSEE_SERVER_LINK);
+      }
+      //set all attrs
+      variableMap.setValue("allAttrs", allAttrs);
    }
 
    public static String elementNameFor(String artifactName) {

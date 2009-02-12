@@ -87,14 +87,15 @@ public class OpenWithContributionItem extends CompoundContributionItem {
    private ArrayList<IContributionItem> getCommonContributionItems(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(25);
       List<IRenderer> commonRenders = RendererManager.getCommonRenderers(artifacts, presentationType);
-
+      Artifact firstArtifact = artifacts.iterator().next();
       for (IRenderer render : commonRenders) {
          if (render instanceof WordRenderer) {
             contributionItems.addAll(loadCommands(render, presentationType, WordRenderer.getImageDescriptor()));
          } else {
+            
             contributionItems.addAll(loadCommands(render, presentationType,
-                  render instanceof NativeRenderer ? SkynetActivator.getInstance().getImageDescriptorForProgram(
-                        ((NativeArtifact) artifacts.iterator().next()).getFileExtension()) : null));
+                  render instanceof NativeRenderer && firstArtifact instanceof NativeArtifact ? SkynetActivator.getInstance().getImageDescriptorForProgram(
+                        ((NativeArtifact) firstArtifact).getFileExtension()) : null));
          }
       }
       return contributionItems;
