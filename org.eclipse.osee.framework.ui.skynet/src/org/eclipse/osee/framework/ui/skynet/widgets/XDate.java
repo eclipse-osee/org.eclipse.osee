@@ -39,9 +39,10 @@ public class XDate extends XWidget {
    public static String MMDDYY = "MM/dd/yyyy";
    public static String MMDDYYHHMM = "MM/dd/yyyy hh:mm a";
    public static String HHMMSS = "hh:mm:ss";
+   public static String HHMMSSSS = "hh:mm:ss:SS";
    public static String HHMM = "hh:mm";
    private String defaultFormat = MMDDYYHHMM;
-   private ArrayList<ModifyListener> listeners = new ArrayList<ModifyListener>();
+   private final ArrayList<ModifyListener> listeners = new ArrayList<ModifyListener>();
    private boolean requireFutureDate = false;
 
    public XDate() {
@@ -110,6 +111,10 @@ public class XDate extends XWidget {
       return getDateNow(MMDDYY);
    }
 
+   public static String getTimeStamp() {
+      return getDateNow(HHMMSSSS);
+   }
+
    public static String getDateNow(String format) {
       XDate d = new XDate();
       d.setDateToNow();
@@ -122,6 +127,7 @@ public class XDate extends XWidget {
     * @param parent
     * @param horizontalSpan - horizontalSpan takes up 4 columns, therefore horizontalSpan must be >=4
     */
+   @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
 
       // composite = new Composite(parent, parent.getStyle());
@@ -161,6 +167,7 @@ public class XDate extends XWidget {
       if (parent != null && !parent.isDisposed()) parent.layout();
    }
 
+   @Override
    public void setFromXml(String xml) {
       Matcher m =
             Pattern.compile("<" + xmlRoot + ">(\\d+)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
@@ -213,10 +220,12 @@ public class XDate extends XWidget {
       }
    }
 
+   @Override
    public void refresh() {
       setLabelError();
    }
 
+   @Override
    public Result isValid() {
       if (isRequireFutureDate()) {
          if (getDate().before(new Date())) return new Result(getLabel() + " must be in future.");
@@ -227,6 +236,7 @@ public class XDate extends XWidget {
       return Result.TrueResult;
    }
 
+   @Override
    public String getReportData() {
       return get();
    }
@@ -246,6 +256,7 @@ public class XDate extends XWidget {
       return result;
    }
 
+   @Override
    public void setFocus() {
       if (dateCombo != null) dateCombo.setFocus();
    }
@@ -253,6 +264,7 @@ public class XDate extends XWidget {
    /**
     * Don't need this since overriding toReport and toXml
     */
+   @Override
    public String getXmlData() {
       String dateStr = "";
       if (date != null) dateStr = date.getTime() + "";
@@ -262,6 +274,7 @@ public class XDate extends XWidget {
    /**
     * Don't need this since overriding setFromXml
     */
+   @Override
    public void setXmlData(String str) {
       if (str.equals(""))
          date = null;
@@ -276,6 +289,7 @@ public class XDate extends XWidget {
       }
    }
 
+   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelStr(labelFont, label + ": ") + get(defaultFormat);
    }
