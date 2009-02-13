@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.osee.framework.ui.data.model.editor.ODMEditor"
+            contributorClass="org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActionBarContributor"
+            extensions="xml"
+            icon="images/workflowConfig.gif"
+            id="org.eclipse.osee.framework.ui.data.model.editor.ODMEditor"
+            name="OSEE Data Model Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.osee.framework.ui.data.model.editor.OpenODMEditor"
+            description="Opens the Osee Data Model Editor"
+            id="org.eclipse.osee.framework.ui.data.model.editor.command.ODMOpen"
+            name="Open Osee Data Model Editor">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.osee.framework.ui.skynet.branch.BranchView">
+         <command
+               commandId="org.eclipse.osee.framework.ui.data.model.editor.command.ODMOpen"
+               icon="images/workflowConfig.gif"
+               style="push"
+               tooltip="Opens the Osee Data Model Editor">
+         </command>
+      </menuContribution>
+   </extension>
+</plugin>
