@@ -519,8 +519,23 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       new MenuItem(menu, SWT.SEPARATOR);
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            for (Action action : item.getWorldMenuActions(worldEditor.getWorldEditorProvider(), this)) {
-               actionToMenuItem(menu, action, SWT.PUSH);
+            for (final IAtsWorldEditorMenuItem atsMenuItem : item.getWorldEditorMenuItems(
+                  worldEditor.getWorldEditorProvider(), worldEditor)) {
+               MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+               menuItem.setText(atsMenuItem.getName());
+               menuItem.addSelectionListener(new SelectionAdapter() {
+                  /* (non-Javadoc)
+                   * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+                   */
+                  @Override
+                  public void widgetSelected(SelectionEvent e) {
+                     try {
+                        atsMenuItem.run(worldEditor);
+                     } catch (Exception ex) {
+                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     }
+                  }
+               });
             }
          }
       } catch (Exception ex) {

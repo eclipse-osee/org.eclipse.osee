@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.world;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.swt.graphics.Color;
@@ -48,14 +47,6 @@ public class AtsWorldEditorItem implements IAtsWorldEditorItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsWorldEditorItem#getWorldMenuActions(org.eclipse.osee.ats.world.WorldComposite)
-    */
-   @Override
-   public List<? extends Action> getWorldMenuActions(IWorldEditorProvider worldEditorProvider, WorldComposite worldComposite) throws OseeCoreException {
-      return Collections.emptyList();
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IAtsWorldEditorItem#getXViewerColumns()
     */
    @Override
@@ -69,6 +60,14 @@ public class AtsWorldEditorItem implements IAtsWorldEditorItem {
    @Override
    public boolean isXColumnProvider(XViewerColumn col) throws OseeCoreException {
       return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsWorldEditorItem#getWorldEditorMenuItems(org.eclipse.osee.ats.world.IWorldEditorProvider, org.eclipse.osee.ats.world.WorldEditor)
+    */
+   @Override
+   public List<? extends IAtsWorldEditorMenuItem> getWorldEditorMenuItems(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException {
+      return Collections.emptyList();
    }
 
 }

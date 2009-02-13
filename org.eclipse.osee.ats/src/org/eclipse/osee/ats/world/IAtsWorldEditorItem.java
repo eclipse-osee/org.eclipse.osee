@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.List;
-import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.swt.graphics.Color;
@@ -33,13 +32,14 @@ public interface IAtsWorldEditorItem {
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
 
    /**
-    * Return actions to add to the World Editor pull-down menu only if applicable for the given worldSearchItem
+    * Return menu item objects to add to the World Editor pull-down menu only if applicable for the given
+    * worldSearchItem
     * 
     * @param worldEditorProvider
     * @param worldComposite
     * @return applicable pull-down actions
     * @throws OseeCoreException
     */
-   public List<? extends Action> getWorldMenuActions(IWorldEditorProvider worldEditorProvider, WorldComposite worldComposite) throws OseeCoreException;
+   public List<? extends IAtsWorldEditorMenuItem> getWorldEditorMenuItems(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException;
 
 }
