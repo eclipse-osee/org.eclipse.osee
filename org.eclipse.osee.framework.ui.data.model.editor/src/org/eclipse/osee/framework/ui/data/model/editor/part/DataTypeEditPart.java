@@ -18,27 +18,22 @@ import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
-import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
-import org.eclipse.gef.requests.CreateConnectionRequest;
-import org.eclipse.gef.requests.ReconnectRequest;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditor;
-import org.eclipse.osee.framework.ui.data.model.editor.command.ConnectionCreateCommand;
-import org.eclipse.osee.framework.ui.data.model.editor.command.ConnectionReconnectCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.ODMFigureFactory;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.BaseModel;
-import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ModelElement;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ODMGraph;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class DataTypeEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
 
    private ODMEditor editor;
@@ -48,10 +43,6 @@ public class DataTypeEditPart extends AbstractGraphicalEditPart implements Prope
    }
 
    //   protected void refreshVisuals() {
-   //      // notify parent container of changed position & location
-   //      // if this line is removed, the XYLayoutManager used by the parent container 
-   //      // (the Figure of the ShapesDiagramEditPart), will not know the bounds of this figure
-   //      // and will not draw it correctly.
    //      Rectangle bounds = new Rectangle(0, 0, 220, 30);
    //      ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), bounds);
    //   }
@@ -72,51 +63,7 @@ public class DataTypeEditPart extends AbstractGraphicalEditPart implements Prope
     * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
     */
    protected void createEditPolicies() {
-      // allow removal of the associated model element
       //      installEditPolicy(EditPolicy.COMPONENT_ROLE, new ShapeComponentEditPolicy());
-      installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new GraphicalNodeEditPolicy() {
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getConnectionCompleteCommand(org.eclipse.gef.requests.CreateConnectionRequest)
-          */
-         protected Command getConnectionCompleteCommand(CreateConnectionRequest request) {
-            ConnectionCreateCommand cmd = (ConnectionCreateCommand) request.getStartCommand();
-            cmd.setTarget((BaseModel) getHost().getModel());
-            return cmd;
-         }
-
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getConnectionCreateCommand(org.eclipse.gef.requests.CreateConnectionRequest)
-          */
-         protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
-            BaseModel source = (BaseModel) getHost().getModel();
-            int style = ((Integer) request.getNewObjectType()).intValue();
-            ConnectionCreateCommand cmd = new ConnectionCreateCommand(source, style);
-            request.setStartCommand(cmd);
-            return cmd;
-         }
-
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getReconnectSourceCommand(org.eclipse.gef.requests.ReconnectRequest)
-          */
-         protected Command getReconnectSourceCommand(ReconnectRequest request) {
-            ConnectionModel conn = (ConnectionModel) request.getConnectionEditPart().getModel();
-            BaseModel newSource = (BaseModel) getHost().getModel();
-            ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn);
-            cmd.setNewSource(newSource);
-            return cmd;
-         }
-
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getReconnectTargetCommand(org.eclipse.gef.requests.ReconnectRequest)
-          */
-         protected Command getReconnectTargetCommand(ReconnectRequest request) {
-            ConnectionModel conn = (ConnectionModel) request.getConnectionEditPart().getModel();
-            BaseModel newTarget = (BaseModel) getHost().getModel();
-            ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn);
-            cmd.setNewTarget(newTarget);
-            return cmd;
-         }
-      });
    }
 
    /*(non-Javadoc)

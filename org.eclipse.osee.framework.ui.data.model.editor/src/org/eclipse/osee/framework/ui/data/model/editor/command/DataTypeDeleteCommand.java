@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.ODMGraph;
 /**
  * @author Roberto E. Escobar
  */
-public class ShapeDeleteCommand extends Command {
+public class DataTypeDeleteCommand extends Command {
    private final DataType child;
 
    private final ODMGraph parent;
@@ -28,27 +28,15 @@ public class ShapeDeleteCommand extends Command {
    private List targetConnections;
    private boolean wasRemoved;
 
-   /**
-    * Create a command that will remove the shape from its parent.
-    * 
-    * @param parent the ShapesDiagram containing the child
-    * @param child the Shape to remove
-    * @throws IllegalArgumentException if any parameter is null
-    */
-   public ShapeDeleteCommand(ODMGraph parent, DataType child) {
+   public DataTypeDeleteCommand(ODMGraph parent, DataType child) {
       if (parent == null || child == null) {
          throw new IllegalArgumentException();
       }
-      setLabel("shape deletion");
+      setLabel("Data Type Deletion");
       this.parent = parent;
       this.child = child;
    }
 
-   /**
-    * Reconnects a List of Connections with their previous endpoints.
-    * 
-    * @param connections a non-null List of connections
-    */
    private void addConnections(List connections) {
       for (Iterator iter = connections.iterator(); iter.hasNext();) {
          ConnectionModel conn = (ConnectionModel) iter.next();
@@ -67,17 +55,12 @@ public class ShapeDeleteCommand extends Command {
     * @see org.eclipse.gef.commands.Command#execute()
     */
    public void execute() {
-      // store a copy of incoming & outgoing connections before proceeding 
       sourceConnections = child.getSourceConnections();
       targetConnections = child.getTargetConnections();
       redo();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#redo()
-    */
    public void redo() {
-      // remove the child and disconnect its connections
       wasRemoved = parent.remove(child);
       if (wasRemoved) {
          removeConnections(sourceConnections);
@@ -85,11 +68,6 @@ public class ShapeDeleteCommand extends Command {
       }
    }
 
-   /**
-    * Disconnects a List of Connections from their endpoints.
-    * 
-    * @param connections a non-null List of connections
-    */
    private void removeConnections(List connections) {
       for (Iterator iter = connections.iterator(); iter.hasNext();) {
          ConnectionModel conn = (ConnectionModel) iter.next();
@@ -97,9 +75,6 @@ public class ShapeDeleteCommand extends Command {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#undo()
-    */
    public void undo() {
       if (parent.add(child)) {
          addConnections(sourceConnections);

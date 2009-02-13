@@ -23,8 +23,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class ODMConstants {
 
-   public static final String CLASS_IMAGE = "class_obj.gif";
-
    public static final String DEFAULT_NAMESPACE = "default";
 
    public static final Color FONT_COLOR = new Color(null, 1, 70, 122);

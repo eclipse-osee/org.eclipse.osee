@@ -1,8 +1,13 @@
-/*
- * Created on Feb 5, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.policy;
 
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -27,7 +32,6 @@ public class ODMLayoutEditPolicy extends XYLayoutEditPolicy {
     */
    protected Command createChangeConstraintCommand(ChangeBoundsRequest request, EditPart child, Object constraint) {
       if (child instanceof DataTypeEditPart && constraint instanceof Rectangle) {
-         //          return a command that can move and/or resize a Shape
          return new DataTypeMoveResizeConstraintCommand((DataType) child.getModel(), request, (Rectangle) constraint);
       }
       return super.createChangeConstraintCommand(request, child, constraint);
@@ -37,7 +41,6 @@ public class ODMLayoutEditPolicy extends XYLayoutEditPolicy {
     * @see ConstrainedLayoutEditPolicy#createChangeConstraintCommand(EditPart, Object)
     */
    protected Command createChangeConstraintCommand(EditPart child, Object constraint) {
-      // not used in this example
       return null;
    }
 

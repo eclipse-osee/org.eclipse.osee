@@ -36,9 +36,6 @@ public class DataTypeCreateCommand extends Command {
       return dataType != null && parent != null && bounds != null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#execute()
-    */
    public void execute() {
       dataType.setLocation(bounds.getLocation());
       Dimension size = bounds.getSize();
@@ -46,16 +43,10 @@ public class DataTypeCreateCommand extends Command {
       redo();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#redo()
-    */
    public void redo() {
       parent.add(dataType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#undo()
-    */
    public void undo() {
       parent.remove(dataType);
    }

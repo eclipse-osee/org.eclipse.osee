@@ -127,15 +127,4 @@ public class OseeDataTypeDatastore {
       }
       return toReturn;
    }
-
-   private void loadAttributeBaseTypes() {
-      //      Class<? extends Attribute<?>> baseAttributeClass =
-      //         AttributeExtensionManager.getAttributeClassFor(baseClassString);
-
-   }
-
-   private void loadAttributeDataProviders() {
-      //      Class<? extends IAttributeDataProvider> providerAttributeClass =
-      //         AttributeExtensionManager.getAttributeProviderClassFor(baseProviderClassString);
-   }
 }

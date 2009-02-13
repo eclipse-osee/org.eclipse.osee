@@ -35,34 +35,21 @@ public class DataTypeMoveResizeConstraintCommand extends Command {
       setLabel("move / resize");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#canExecute()
-    */
    public boolean canExecute() {
       Object type = request.getType();
-      // make sure the Request is of a type we support:
       return (RequestConstants.REQ_MOVE.equals(type) || RequestConstants.REQ_MOVE_CHILDREN.equals(type) || RequestConstants.REQ_RESIZE.equals(type) || RequestConstants.REQ_RESIZE_CHILDREN.equals(type));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#execute()
-    */
    public void execute() {
       oldBounds = new Rectangle(dataType.getLocation(), dataType.getSize());
       redo();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#redo()
-    */
    public void redo() {
       dataType.setSize(newBounds.getSize());
       dataType.setLocation(newBounds.getLocation());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#undo()
-    */
    public void undo() {
       dataType.setSize(oldBounds.getSize());
       dataType.setLocation(oldBounds.getLocation());
