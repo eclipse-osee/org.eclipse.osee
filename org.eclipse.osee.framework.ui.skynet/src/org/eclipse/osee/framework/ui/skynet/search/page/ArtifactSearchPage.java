@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -68,7 +67,7 @@ import org.eclipse.ui.part.IPageSite;
  */
 public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements IAdaptable, IRebuildMenuListener, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener {
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactSearchView";
-
+   //org.eclipse.search.ui.views.SearchView
    protected static final Match[] EMPTY_MATCH_ARRAY = new Match[0];
    public static class DecoratorIgnoringViewerSorter extends ViewerComparator {
       private final ILabelProvider fLabelProvider;
@@ -167,8 +166,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       viewer.setComparator(new DecoratorIgnoringViewerSorter(innerLabelProvider));
       fContentProvider = (IArtifactSearchContentProvider) viewer.getContentProvider();
       addDragAdapters(viewer);
-
-      //      getSite().setSelectionProvider(getSearchSelectionProvider());
    }
 
    protected void configureTreeViewer(TreeViewer viewer) {
@@ -182,14 +179,12 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       fContentProvider = (IArtifactSearchContentProvider) viewer.getContentProvider();
       addDragAdapters(viewer);
       viewer.getTree().setToolTipText("NOTE: match accuracy for xml content still in work.");
-
-      //      getSite().setSelectionProvider(getSearchSelectionProvider());
    }
 
    protected void fillContextMenu(IMenuManager mgr) {
-      getSite().registerContextMenu(VIEW_ID, (MenuManager) mgr, getViewer());
       mgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-      super.fillContextMenu(mgr);
+      getSite().setSelectionProvider(getSearchSelectionProvider());
+      
       mgr.appendToGroup(IContextMenuConstants.GROUP_PROPERTIES, new Action("Open Search Preferences") {
          public void run() {
             Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
@@ -198,25 +193,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          }
       });
    }
-
-   //   private void createContextMenu(Control menuOnwer) {
-   //      MenuManager menuManager = new MenuManager();
-   //      menuManager.setRemoveAllWhenShown(true);
-   //      menuManager.addMenuListener(new IMenuListener() {
-   //         public void menuAboutToShow(IMenuManager manager) {
-   //            MenuManager menuManager = (MenuManager) manager;
-   //            menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-   //         }
-   //      });
-   //
-   //      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-   //      getViewer().getControl().setMenu(menuManager.createContextMenu(getViewer().getControl()));
-   //      getSite().registerContextMenu(VIEW_ID, menuManager, getViewer());
-   //
-   //      getSite().setSelectionProvider(getViewer());
-   //      // The additions group is a standard group
-   //      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-   //   }
 
    public void setViewPart(ISearchResultViewPart part) {
       super.setViewPart(part);

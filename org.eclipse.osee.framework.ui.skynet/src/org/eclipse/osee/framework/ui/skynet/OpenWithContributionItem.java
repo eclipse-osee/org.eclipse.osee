@@ -69,15 +69,17 @@ public class OpenWithContributionItem extends CompoundContributionItem {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
-         try {
-            contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.PREVIEW));
-            //add separator between preview and edit commands
-            if (!contributionItems.isEmpty()) {
-               contributionItems.add(new Separator());
+         if (artifacts != null && !artifacts.isEmpty()) {
+            try {
+               contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.PREVIEW));
+               //add separator between preview and edit commands
+               if (!contributionItems.isEmpty()) {
+                  contributionItems.add(new Separator());
+               }
+               contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.SPECIALIZED_EDIT));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
-            contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.SPECIALIZED_EDIT));
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
 
