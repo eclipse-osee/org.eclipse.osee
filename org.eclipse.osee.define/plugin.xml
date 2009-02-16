@@ -162,4 +162,12 @@
             classname="org.eclipse.osee.define.DefineArtifactFactory">
       </ArtifactFactory>
    </extension>
+ <extension
+       id="SubsystemToLowLevelReqTraceReport"
+       name="SubsystemToLowLevelReqTraceReport"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.blam.operation.SubsystemToLowLevelReqTraceReport">
+    </Operation>
+ </extension>
 </plugin>
