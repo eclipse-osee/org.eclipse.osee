@@ -26,7 +26,7 @@ public class HistoryTransactionItem {
       this.revisionChange = revisionChange;
    }
 
-   public int getTransactionId() {
+   public int getTransactionNumber() {
       return transactionData.getTransactionNumber();
    }
 
@@ -34,7 +34,7 @@ public class HistoryTransactionItem {
       return revisionChange.getGammaId();
    }
 
-   public String changeType() {
+   public String getChangeType() {
       String returnValue = "";
       if (revisionChange instanceof IAttributeChange) {
          returnValue = ((IAttributeChange) revisionChange).getName();
