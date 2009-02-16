@@ -71,11 +71,14 @@ public class TransactionData implements IAdaptable {
     */
    public Artifact getArtifact() {
       if (artifact == null) {
-         try {
-            artifact =
-                  ArtifactPersistenceManager.getInstance().getArtifactFromId(getAssociatedArtId(), getTransactionId());
-         } catch (OseeCoreException ex) {
-            OseeLog.log(OseeActivator.class, Level.SEVERE, ex);
+         if (getAssociatedArtId() > 0) {
+            try {
+               artifact =
+                     ArtifactPersistenceManager.getInstance().getArtifactFromId(getAssociatedArtId(),
+                           getTransactionId());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(OseeActivator.class, Level.SEVERE, ex);
+            }
          }
       }
       return artifact;
