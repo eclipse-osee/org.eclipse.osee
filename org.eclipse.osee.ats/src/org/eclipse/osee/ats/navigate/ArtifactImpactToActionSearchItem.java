@@ -64,7 +64,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       EntryDialog ed =
             new EntryDialog(
                   getName(),
-                  "Searching on current default branch \"" + BranchManager.getDefaultBranch().getBranchName() + "\"\n\nEnter Artifact Name (or string) to search (no wildcards)");
+                  "Searching on current default branch \"" + BranchManager.getDefaultBranch().getBranchShortName() + "\"\n\nEnter Artifact Name (or string) to search (no wildcards)");
       if (ed.open() == 0) {
          ActionToArtifactImpactJob job = new ActionToArtifactImpactJob(ed.getEntry());
          job.setUser(true);

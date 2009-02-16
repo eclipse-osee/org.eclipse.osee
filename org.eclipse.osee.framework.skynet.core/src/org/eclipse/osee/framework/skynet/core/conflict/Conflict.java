@@ -228,6 +228,14 @@ public abstract class Conflict implements IAdaptable {
       return status.equals(ConflictStatus.OUT_OF_DATE_RESOLVED);
    }
 
+   public boolean statusPreviousMergeAppliedSuccess() {
+      return status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS);
+   }
+
+   public boolean statusPreviousMergeAppliedCaution() {
+      return status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION);
+   }
+
    public boolean statusOutOfDate() {
       return status.equals(ConflictStatus.OUT_OF_DATE);
    }
@@ -260,6 +268,10 @@ public abstract class Conflict implements IAdaptable {
       } else if (status.equals(ConflictStatus.OUT_OF_DATE_RESOLVED)) {
          setStatus(ConflictStatus.RESOLVED);
       } else if (status.equals(ConflictStatus.OUT_OF_DATE)) {
+         setStatus(ConflictStatus.EDITED);
+      } else if (status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS)) {
+         setStatus(ConflictStatus.RESOLVED);
+      } else if (status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION)) {
          setStatus(ConflictStatus.EDITED);
       }
    }

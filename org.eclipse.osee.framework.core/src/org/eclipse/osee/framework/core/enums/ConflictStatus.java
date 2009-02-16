@@ -22,7 +22,9 @@ public enum ConflictStatus {
    NOT_RESOLVABLE(5),
    COMMITTED(6),
    INFORMATIONAL(7),
-   OUT_OF_DATE(8);
+   OUT_OF_DATE(8),
+   PREVIOUS_MERGE_APPLIED_SUCCESS(9),
+   PREVIOUS_MERGE_APPLIED_CAUTION(10);
    private final int value;
 
    ConflictStatus(int value) {

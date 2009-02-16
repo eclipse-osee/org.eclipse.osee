@@ -18,7 +18,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -48,15 +47,15 @@ public class ChangeXViewer extends XViewer {
 
    public ChangeXViewer(Composite parent, int style, XChangeViewer xRoleViewer) {
       super(parent, style, new ChangeXViewerFactory());
-      this.addDoubleClickListener(new IDoubleClickListener() {
-         public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
-            try {
-               handleDoubleClick();
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         };
-      });
+      //      this.addDoubleClickListener(new IDoubleClickListener() {
+      //         public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
+      //            try {
+      //               handleDoubleClick();
+      //            } catch (Exception ex) {
+      //               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      //            }
+      //         };
+      //      });
       this.xChangeViewer = xRoleViewer;
    }
 

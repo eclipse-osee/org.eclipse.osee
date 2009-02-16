@@ -11,17 +11,13 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -70,25 +66,6 @@ public class ArtifactConflict extends Conflict {
 
       if (adapter.isInstance(this)) {
          return this;
-      }
-
-      try {
-         Artifact artifact;
-         Branch defaultBranch = BranchManager.getDefaultBranch();
-         if (defaultBranch.equals(sourceBranch)) {
-            artifact = getSourceArtifact();
-            if (adapter.isInstance(artifact)) {
-               return artifact;
-            }
-         }
-         if (defaultBranch.equals(destBranch)) {
-            artifact = getDestArtifact();
-            if (adapter.isInstance(artifact)) {
-               return artifact;
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
 
       return null;

@@ -336,6 +336,11 @@ public class XMergeViewer extends XWidget implements IActionable {
       };
 
       Jobs.startJob(job);
+      try {
+         job.join();
+      } catch (InterruptedException ex) {
+      }
+      loadTable();
    }
 
    public void refreshTable() throws InterruptedException {

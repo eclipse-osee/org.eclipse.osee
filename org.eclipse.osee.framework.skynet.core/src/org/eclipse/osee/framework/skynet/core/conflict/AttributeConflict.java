@@ -208,7 +208,6 @@ public class AttributeConflict extends Conflict {
       }
 
       try {
-         Artifact artifact;
          Attribute attribute = null;
          try {
             attribute = getSourceAttribute(true);
@@ -216,19 +215,6 @@ public class AttributeConflict extends Conflict {
          }
          if (adapter.isInstance(attribute)) {
             return attribute;
-         }
-         Branch defaultBranch = BranchManager.getDefaultBranch();
-         if (defaultBranch.equals(sourceBranch)) {
-            artifact = getSourceArtifact();
-            if (adapter.isInstance(artifact)) {
-               return artifact;
-            }
-         }
-         if (defaultBranch.equals(destBranch)) {
-            artifact = getDestArtifact();
-            if (adapter.isInstance(artifact)) {
-               return artifact;
-            }
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
@@ -415,7 +401,7 @@ public class AttributeConflict extends Conflict {
 
    public void markStatusToReflectEdit() throws OseeCoreException {
       computeEqualsValues();
-      if ((status.equals(ConflictStatus.UNTOUCHED)) || (status.equals(ConflictStatus.OUT_OF_DATE_RESOLVED) || (status.equals(ConflictStatus.OUT_OF_DATE)))) setStatus(ConflictStatus.EDITED);
+      if (status.equals(ConflictStatus.UNTOUCHED) || status.equals(ConflictStatus.OUT_OF_DATE_RESOLVED) || status.equals(ConflictStatus.OUT_OF_DATE) || status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION) || status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS)) setStatus(ConflictStatus.EDITED);
    }
 
    public ConflictStatus computeStatus() throws OseeCoreException {
@@ -510,9 +496,9 @@ public class AttributeConflict extends Conflict {
          computeEqualsValues();
          if (getDestAttribute().getValue().equals(getAttribute(destArtifact).getValue()) || getDestAttribute().getGammaId() == getAttribute(
                destArtifact).getGammaId()) {
-            setStatus(ConflictStatus.OUT_OF_DATE_RESOLVED);
+            setStatus(ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS);
          } else {
-            setStatus(ConflictStatus.OUT_OF_DATE);
+            setStatus(ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION);
          }
          return true;
       }

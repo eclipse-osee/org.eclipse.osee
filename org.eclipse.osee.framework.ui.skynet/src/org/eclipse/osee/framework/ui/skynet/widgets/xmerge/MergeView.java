@@ -52,10 +52,11 @@ import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
+import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -191,30 +192,34 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          private void fillPopupMenu(MenuManager menuManager) {
-            addSourceBranchDefaultMenuItem(menuManager);
-            addDestBranchDefaultMenuItem(menuManager);
-            menuManager.add(new Separator());
             addEditArtifactMenuItem(menuManager);
             addMergeMenuItem(menuManager);
             menuManager.add(new Separator());
             addPreviewMenuItem(menuManager);
             addDiffMenuItem(menuManager);
             menuManager.add(new Separator());
+            addSourceResourceHistoryMenuItem(menuManager);
+            addSourceRevealMenuItem(menuManager);
+            menuManager.add(new Separator());
+            addDestResourceHistoryMenuItem(menuManager);
+            addDestRevealMenuItem(menuManager);
             menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
          }
       });
 
       xMergeViewer.getXViewer().getTree().setMenu(menuManager.createContextMenu(xMergeViewer.getXViewer().getTree()));
 
-      createSourceBranchDefaultMenuItem(menuManager);
-      createDestBranchDefaultMenuItem(menuManager);
-      menuManager.add(new Separator());
       createEditArtifactMenuItem(menuManager);
       createMergeMenuItem(menuManager);
       menuManager.add(new Separator());
       createPreviewMenuItem(menuManager);
       createDiffMenuItem(menuManager);
       menuManager.add(new Separator());
+      createSourceResourceHistoryMenuItem(menuManager);
+      createSourceRevealMenuItem(menuManager);
+      menuManager.add(new Separator());
+      createDestinationResourceHistoryMenuItem(menuManager);
+      createDestinationRevealMenuItem(menuManager);
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
       OseeContributionItem.addTo(this, true);
@@ -314,65 +319,54 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    /**
     * @param menuManager
     */
-   private String addDestBranchDefaultMenuItem(MenuManager menuManager) {
-      CommandContributionItem setDestBranchDefaultCommand;
-      if (conflicts != null && conflicts.length != 0 && conflicts[0].getDestBranch() == BranchManager.getDefaultBranch()) {
-         setDestBranchDefaultCommand =
-               Commands.getLocalCommandContribution(getSite(), "setDestBranchDefaultCommand",
-                     "Set Destination as Default Branch", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
-                           "chkbox_enabled.gif"), "D", null, "branch_manager_default_branch_menu");
-      } else {
-         setDestBranchDefaultCommand =
-               Commands.getLocalCommandContribution(getSite(), "setDestBranchDefaultCommand",
-                     "Set Destination as Default Branch", null, null, null, "D", null,
-                     "branch_manager_default_branch_menu");
-
-      }
-      menuManager.add(setDestBranchDefaultCommand);
-      return setDestBranchDefaultCommand.getId();
-   }
-
-   /**
-    * @param menuManager
-    */
-   private void createDestBranchDefaultMenuItem(MenuManager menuManager) {
-
-      handlerService.activateHandler(addDestBranchDefaultMenuItem(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            BranchView branchView = BranchView.getBranchView();
-            if (branchView != null) {
-               branchView.setDefaultBranch(conflicts[0].getDestBranch());
-            } else {
-               try {
-                  BranchManager.setDefaultBranch(conflicts[0].getDestBranch());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-            return null;
-         }
-
-         @Override
-         public boolean isEnabledWithException() throws OseeCoreException {
-            if (conflicts == null || conflicts.length == 0) return false;
-            return conflicts[0].getDestBranch() != BranchManager.getDefaultBranch();
-         }
-      });
-   }
-
-   /**
-    * @param menuManager
-    */
    private String addEditArtifactMenuItem(MenuManager menuManager) {
       CommandContributionItem editArtifactCommand;
+      //RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, attributeConflict.getArtifact()).getImage(attributeConflict.getArtifact());
       editArtifactCommand =
             Commands.getLocalCommandContribution(getSite(), "editArtifactCommand", "Edit Merge Artifact", null, null,
                   null, "E", null, "edit_Merge_Artifact");
       menuManager.add(editArtifactCommand);
       return editArtifactCommand.getId();
+   }
+
+   private String addSourceResourceHistoryMenuItem(MenuManager menuManager) {
+      CommandContributionItem sourecResourceCommand;
+      sourecResourceCommand =
+            Commands.getLocalCommandContribution(getSite(), "sourceResourceHistory",
+                  "Show Source Artifact Resource History", null, null,
+                  SkynetGuiPlugin.getInstance().getImageDescriptor("edit.gif"), null, null, "source_Resource_History");
+      menuManager.add(sourecResourceCommand);
+      return sourecResourceCommand.getId();
+   }
+
+   private String addDestResourceHistoryMenuItem(MenuManager menuManager) {
+      CommandContributionItem sourecResourceCommand;
+      sourecResourceCommand =
+            Commands.getLocalCommandContribution(getSite(), "destResourceHistory",
+                  "Show Dest Artifact Resource History", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
+                        "edit.gif"), null, null, "dest_Resource_History");
+      menuManager.add(sourecResourceCommand);
+      return sourecResourceCommand.getId();
+   }
+
+   private String addSourceRevealMenuItem(MenuManager menuManager) {
+      CommandContributionItem sourceReveal;
+      sourceReveal =
+            Commands.getLocalCommandContribution(getSite(), "sourceRevealArtifactExplorer",
+                  "Reveal Source Artifact in Artifact Explorer", null, null,
+                  SkynetGuiPlugin.getInstance().getImageDescriptor("magnify.gif"), null, null, "source_Reveal");
+      menuManager.add(sourceReveal);
+      return sourceReveal.getId();
+   }
+
+   private String addDestRevealMenuItem(MenuManager menuManager) {
+      CommandContributionItem destReveal;
+      destReveal =
+            Commands.getLocalCommandContribution(getSite(), "destRevealArtifactExplorer",
+                  "Reveal Dest Artifact in Artifact Explorer", null, null,
+                  SkynetGuiPlugin.getInstance().getImageDescriptor("magnify.gif"), null, null, "dest_Reveal");
+      menuManager.add(destReveal);
+      return destReveal.getId();
    }
 
    /**
@@ -392,6 +386,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   if (MergeUtility.okToOverwriteEditedValue(attributeConflict,
                         Display.getCurrent().getActiveShell().getShell(), false)) {
                      RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
+
                      attributeConflict.markStatusToReflectEdit();
                   }
                } catch (Exception ex) {
@@ -407,6 +402,134 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
                   0).statusEditable()) return false;
+            attributeConflict = ((AttributeConflict) conflicts.get(0));
+            return true;
+         }
+      });
+   }
+
+   private void createSourceResourceHistoryMenuItem(MenuManager menuManager) {
+
+      handlerService.activateHandler(addSourceResourceHistoryMenuItem(menuManager),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         private AttributeConflict attributeConflict;
+
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            if (attributeConflict != null) {
+               try {
+                  RevisionHistoryView.open(attributeConflict.getSourceArtifact());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabledWithException() throws OseeCoreException {
+            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            attributeConflict = null;
+            if (conflicts == null || conflicts.size() != 1) {
+               return false;
+            }
+            attributeConflict = ((AttributeConflict) conflicts.get(0));
+            return true;
+         }
+      });
+   }
+
+   private void createDestinationResourceHistoryMenuItem(MenuManager menuManager) {
+
+      handlerService.activateHandler(addDestResourceHistoryMenuItem(menuManager),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         private AttributeConflict attributeConflict;
+
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            if (attributeConflict != null) {
+               try {
+                  RevisionHistoryView.open(attributeConflict.getDestArtifact());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabledWithException() throws OseeCoreException {
+            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            attributeConflict = null;
+            if (conflicts == null || conflicts.size() != 1) {
+               return false;
+            }
+            attributeConflict = ((AttributeConflict) conflicts.get(0));
+            return true;
+         }
+      });
+   }
+
+   private void createSourceRevealMenuItem(MenuManager menuManager) {
+
+      handlerService.activateHandler(addSourceRevealMenuItem(menuManager),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         private AttributeConflict attributeConflict;
+
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            if (attributeConflict != null) {
+               try {
+                  ArtifactExplorer.revealArtifact(attributeConflict.getSourceArtifact());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabledWithException() throws OseeCoreException {
+            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            attributeConflict = null;
+            if (conflicts == null || conflicts.size() != 1) {
+               return false;
+            }
+            attributeConflict = ((AttributeConflict) conflicts.get(0));
+            return true;
+         }
+      });
+   }
+
+   private void createDestinationRevealMenuItem(MenuManager menuManager) {
+
+      handlerService.activateHandler(addDestRevealMenuItem(menuManager),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         private AttributeConflict attributeConflict;
+
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            if (attributeConflict != null) {
+               try {
+                  ArtifactExplorer.revealArtifact(attributeConflict.getDestArtifact());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabledWithException() throws OseeCoreException {
+            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            attributeConflict = null;
+            if (conflicts == null || conflicts.size() != 1) {
+               return false;
+            }
             attributeConflict = ((AttributeConflict) conflicts.get(0));
             return true;
          }
@@ -452,56 +575,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   0).statusEditable()) return false;
             attributeConflict = ((AttributeConflict) conflicts.get(0));
             return attributeConflict.isWordAttribute();
-         }
-      });
-   }
-
-   /**
-    * @param menuManager
-    */
-   private String addSourceBranchDefaultMenuItem(MenuManager menuManager) {
-      CommandContributionItem setSourceBranchDefaultCommand;
-      if (conflicts != null && conflicts.length != 0 && conflicts[0].getSourceBranch() == BranchManager.getDefaultBranch()) {
-         setSourceBranchDefaultCommand =
-               Commands.getLocalCommandContribution(getSite(), "setSourceBranchDefaultCommand",
-                     "Set Source as Default Branch", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
-                           "chkbox_enabled.gif"), "S", null, "branch_manager_default_branch_menu");
-      } else {
-         setSourceBranchDefaultCommand =
-               Commands.getLocalCommandContribution(getSite(), "setSourceBranchDefaultCommand",
-                     "Set Source as Default Branch", null, null, null, "S", null, "branch_manager_default_branch_menu");
-      }
-      menuManager.add(setSourceBranchDefaultCommand);
-      return setSourceBranchDefaultCommand.getId();
-   }
-
-   /**
-    * @param menuManager
-    */
-   private void createSourceBranchDefaultMenuItem(MenuManager menuManager) {
-
-      handlerService.activateHandler(addSourceBranchDefaultMenuItem(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            BranchView branchView = BranchView.getBranchView();
-            if (branchView != null) {
-               branchView.setDefaultBranch(conflicts[0].getSourceBranch());
-            } else {
-               try {
-                  BranchManager.setDefaultBranch(conflicts[0].getSourceBranch());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-            return null;
-         }
-
-         @Override
-         public boolean isEnabledWithException() throws OseeCoreException {
-            if (conflicts == null || conflicts.length == 0 || conflicts[0].getSourceBranch() == null) return false;
-            return conflicts[0].getSourceBranch() != BranchManager.getDefaultBranch();
          }
       });
    }
@@ -882,7 +955,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          @Override
          public void run() {
             if (xMergeViewer.getXViewer() == null || xMergeViewer.getXViewer().getTree() == null || xMergeViewer.getXViewer().getTree().isDisposed()) return;
-            FrameworkTransactionData transData1 = transData;
             for (Artifact artifact : transData.cacheChangedArtifacts) {
                try {
                   Branch branch = artifact.getBranch();
@@ -920,7 +992,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
-            if (transData.cacheChangedArtifacts.isEmpty() || !transData.cacheDeletedArtifacts.isEmpty()) {
+            if (!transData.cacheDeletedArtifacts.isEmpty()) {
                Branch branch = transData.cacheDeletedArtifacts.iterator().next().getBranch();
                if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
                   xMergeViewer.setInputData(

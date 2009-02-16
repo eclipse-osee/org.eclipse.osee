@@ -57,10 +57,10 @@ public class ConflictStatusManager {
             //There was an entry so lets check it and update it.
             int intStatus = chStmt.getInt("status");
             if (((chStmt.getInt("source_gamma_id") != sourceGamma) || (chStmt.getInt("dest_gamma_id") != destGamma)) && intStatus != ConflictStatus.COMMITTED.getValue()) {
-               if (intStatus == ConflictStatus.RESOLVED.getValue()) {
+               if (intStatus == ConflictStatus.RESOLVED.getValue() || intStatus == ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS.getValue()) {
                   intStatus = ConflictStatus.OUT_OF_DATE_RESOLVED.getValue();
                }
-               if (intStatus == ConflictStatus.EDITED.getValue()) {
+               if (intStatus == ConflictStatus.EDITED.getValue() || intStatus == ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION.getValue()) {
                   intStatus = ConflictStatus.OUT_OF_DATE.getValue();
                }
                ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, sourceGamma, destGamma, intStatus, branchID,

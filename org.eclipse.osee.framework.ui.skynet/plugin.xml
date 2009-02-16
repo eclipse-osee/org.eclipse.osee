@@ -37,16 +37,6 @@
        point="org.eclipse.ui.menus">
     <menuContribution
           locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView">
-       <separator
-             name="org.eclipse.osee.framework.ui.skynet.mergeView.publishArtifactRecurse.separator"
-             visible="true">
-       </separator>
-          <command
-                commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
-          </command>
-          <command
-             commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
-          </command>
           <separator
                 name="org.eclipse.ui.edit.ChangeView.revert.seperator"
                 visible="true">
@@ -1145,8 +1135,8 @@
         name="Open Artifact Editor">
   </command>
 	</extension>
-	<extension name="The menus for SearchResultsView." point="org.eclipse.ui.menus">
-		<menuContribution locationURI="popup:org.eclipse.search.ui.views.SearchView">
+	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.ArtifactSearchView">
      <command
            commandId="org.eclipse.osee.framework.ui.skynet.open.command">
      </command>

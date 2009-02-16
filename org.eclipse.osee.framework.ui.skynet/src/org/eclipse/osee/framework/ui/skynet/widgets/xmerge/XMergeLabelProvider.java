@@ -30,7 +30,9 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
       RESOLVED(5, "Resolved"),
       INFORMATIONAL(6, "Informational"),
       COMMITTED(7, "Committed"),
-      CHANGED_EDIT(4, "Artifact Changed"), ;
+      CHANGED_EDIT(8, "Artifact Changed"),
+      MERGE_SUCCESS(9, "Previous Merge Applied Successfully"),
+      MERGE_CAUTION(10, "Previous Merge applied with destination differences");
 
       private final int value;
       private final String text;
@@ -69,6 +71,8 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
    private final static String NO_CONFLICT_IMAGE = "accept.gif";
    private final static String NOT_RESOLVABLE_IMAGE = "red_light.gif";
    private final static String INFORMATION_IMAGE = "issue.gif";
+   private final static String MERGE_SUCCESS_IMAGE = "icon_success.gif";
+   private final static String MERGE_CAUTION_IMAGE = "icon_warning.gif";
 
    public XMergeLabelProvider(MergeXViewer mergeXViewer) {
       super(mergeXViewer);
@@ -88,6 +92,8 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
             if (conflict.statusNotResolvable()) return ConflictState.REVERT.getText();
             if (conflict.statusInformational()) return ConflictState.INFORMATIONAL.getText();
             if (conflict.statusCommitted()) return ConflictState.COMMITTED.getText();
+            if (conflict.statusPreviousMergeAppliedSuccess()) return ConflictState.MERGE_SUCCESS.getText();
+            if (conflict.statusPreviousMergeAppliedCaution()) return ConflictState.MERGE_CAUTION.getText();
          } else if (aCol.equals(MergeXViewerFactory.Artifact_Name)) {
             return conflict.getArtifactName();
          } else if (aCol.equals(MergeXViewerFactory.Change_Item)) {
@@ -151,6 +157,10 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
                if (conflict.statusOutOfDate()) return SkynetGuiPlugin.getInstance().getImage(OUT_OF_DATE_IMAGE);
                if (conflict.statusOutOfDateCommitted()) return SkynetGuiPlugin.getInstance().getImage(
                      OUT_OF_DATE_COMMITTED_IMAGE);
+               if (conflict.statusPreviousMergeAppliedSuccess()) return SkynetGuiPlugin.getInstance().getImage(
+                     MERGE_SUCCESS_IMAGE);
+               if (conflict.statusPreviousMergeAppliedCaution()) return SkynetGuiPlugin.getInstance().getImage(
+                     MERGE_CAUTION_IMAGE);
                if (conflict.statusNotResolvable()) return SkynetGuiPlugin.getInstance().getImage(NOT_RESOLVABLE_IMAGE);
                if (conflict.statusInformational()) return SkynetGuiPlugin.getInstance().getImage(INFORMATION_IMAGE);
             }
