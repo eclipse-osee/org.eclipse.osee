@@ -114,7 +114,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
 
-      new ChangeDragAndDrop(tree, HistoryXViewerFactory.NAMESPACE);
+      new HistoryDragAndDrop(tree, HistoryXViewerFactory.NAMESPACE);
    }
 
    public void createTaskActionBar(Composite parent) throws OseeCoreException {
@@ -293,9 +293,9 @@ public class XHistoryWidget extends XWidget implements IActionable {
    @Override
    public void setXmlData(String str) {
    }
-   public class ChangeDragAndDrop extends SkynetDragAndDrop {
+   public class HistoryDragAndDrop extends SkynetDragAndDrop {
 
-      public ChangeDragAndDrop(Tree tree, String viewId) {
+      public HistoryDragAndDrop(Tree tree, String viewId) {
          super(tree, viewId);
       }
 
