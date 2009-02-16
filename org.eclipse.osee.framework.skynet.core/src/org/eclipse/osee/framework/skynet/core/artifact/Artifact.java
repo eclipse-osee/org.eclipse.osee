@@ -345,11 +345,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * @return whether this artifact has at least one parent artifact related by a relation of type default hierarchical
+    * @return whether this artifact has exactly one parent artifact related by a relation of type default hierarchical
     * @throws OseeCoreException
+    * @throws MultipleArtifactsExist if this artifact has more than one parent
     */
    public boolean hasParent() throws OseeCoreException {
-      return getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT) > 0;
+      int parentCount = getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT);
+      if (parentCount == 0) {
+         return false;
+      }
+      if (parentCount == 1) {
+         return true;
+      } else {
+         throw new MultipleArtifactsExist(humanReadableId + " has " + parentCount + " parents");
+      }
    }
 
    public boolean isOrphan() throws OseeCoreException {
