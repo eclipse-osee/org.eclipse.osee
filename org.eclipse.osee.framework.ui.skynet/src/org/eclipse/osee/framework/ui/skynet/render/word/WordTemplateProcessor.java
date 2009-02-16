@@ -452,12 +452,12 @@ public class WordTemplateProcessor {
             return;
          }
          
-         ensureMapIsSetForDocLinks(variableMap, allAttrs);
+         variableMap = ensureMapIsSetForDocLinks(variableMap, allAttrs);
          RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, variableMap, wordMl, attributeElement);
       }
    }
    
-   private void ensureMapIsSetForDocLinks(VariableMap variableMap, boolean allAttrs) throws OseeArgumentException{
+   private VariableMap ensureMapIsSetForDocLinks(VariableMap variableMap, boolean allAttrs) throws OseeArgumentException{
       //Do not try to use a null map
       if(variableMap == null){
          variableMap = new VariableMap();
@@ -468,6 +468,8 @@ public class WordTemplateProcessor {
       }
       //set all attrs
       variableMap.setValue("allAttrs", allAttrs);
+      
+      return variableMap;
    }
 
    public static String elementNameFor(String artifactName) {
