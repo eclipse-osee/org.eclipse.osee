@@ -13,12 +13,12 @@ package org.eclipse.nebula.widgets.xviewer;
 
 import java.util.Collection;
 import java.util.logging.Level;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -30,6 +30,8 @@ import org.eclipse.nebula.widgets.xviewer.customize.SearchDataUI;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -208,13 +210,45 @@ public class XViewer extends TreeViewer {
       });
       this.addDoubleClickListener(new IDoubleClickListener() {
          public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
+            ISelection sel = event.getSelection();
+            System.out.println(sel);
             handleDoubleClick();
          };
+      });
+      getTree().addMouseListener(new MouseListener(){
+         @Override
+         public void mouseDoubleClick(MouseEvent e) {
+            int[] columnOrder = getTree().getColumnOrder();
+            int sum = 0;
+            int count = 0;
+            for(int column : columnOrder){
+               TreeColumn col = getTree().getColumn(column);
+               sum = sum + col.getWidth();
+               if(sum > e.x){
+                  break;
+               }
+               count++;
+            }
+            XViewerColumn xCol = getXTreeColumn(columnOrder[count]);
+            handleDoubleClick(getTree().getColumn(columnOrder[count]), getTree().getItem(new Point(e.x, e.y)));
+         }
+         @Override
+         public void mouseDown(MouseEvent e) {
+         }
+         @Override
+         public void mouseUp(MouseEvent e) {
+         }
       });
       getTree().setMenu(getMenuManager().getMenu());
       columnFilterDataUI.createWidgets(comp);
 
       customizeMgr.loadCustomization();
+   }
+
+   /**
+    * @param col
+    */
+   public void handleDoubleClick(TreeColumn col, TreeItem item) {
    }
 
    public void handleDoubleClick() {
@@ -267,6 +301,7 @@ public class XViewer extends TreeViewer {
     * @return true if handled
     */
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+      XViewerColumn aCol = (XViewerColumn) treeColumn.getData();
       return false;
    }
 
