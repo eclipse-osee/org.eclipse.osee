@@ -11,9 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
@@ -32,21 +34,30 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
-      //      try {
-      //         if (!(element instanceof TransactionData)) return "";
-      //         TransactionData data = (TransactionData) element;
-      //         if (cCol.equals(HistoryXViewerFactory.transaction)) {
-      //            return String.valueOf(data.getTransactionNumber());
-      //         } else if (cCol.equals(HistoryXViewerFactory.Timestamp)) {
-      //            return String.valueOf(data.getTimeStamp());
-      //         } else if (cCol.equals(HistoryXViewerFactory.author)) {
-      //            return data.getName();
-      //         } else if (cCol.equals(HistoryXViewerFactory.comment)) {
-      //            return data.getComment();
-      //         }
-      //      } catch (Exception ex) {
-      //         return XViewerCells.getCellExceptionString(ex);
-      //      }
+            try {
+         if (!(element instanceof HistoryTransactionItem)) return "";
+         HistoryTransactionItem data = (HistoryTransactionItem) element;
+
+         if (cCol.equals(HistoryXViewerFactory.transaction)) {
+            return String.valueOf(data.getTransactionNumber());
+         } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
+            return String.valueOf(data.getGamma());
+         } else if (cCol.equals(HistoryXViewerFactory.changeType)) {
+            return data.getChangeType();
+         } else if (cCol.equals(HistoryXViewerFactory.was)) {
+            return data.getWasValue();
+         } else if (cCol.equals(HistoryXViewerFactory.is)) {
+            return data.getIsValue();
+         } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
+            return data.getTimeStamp();
+         } else if (cCol.equals(HistoryXViewerFactory.author)) {
+            return data.getAuthorName();
+         }else if (cCol.equals(HistoryXViewerFactory.comment)) {
+            return data.getComment();
+         }
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
       return "unhandled column";
    }
 

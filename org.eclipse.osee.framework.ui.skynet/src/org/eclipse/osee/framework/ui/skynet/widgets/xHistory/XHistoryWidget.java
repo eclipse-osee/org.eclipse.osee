@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -231,31 +233,34 @@ public class XHistoryWidget extends XWidget implements IActionable {
    }
 
    public void setInputData(final Artifact artifact, final boolean loadHistory) {
+      this.artifact = artifact;
       extraInfoLabel.setText(LOADING);
 
       Job job = new Job("History: " + artifact.getDescriptiveName()) {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            final Collection<TransactionData> changes = new ArrayList<TransactionData>();
+            final Collection<HistoryTransactionItem> historyItems = new ArrayList<HistoryTransactionItem>();
 
             try {
                if (loadHistory) {
-                  Collection<TransactionData> transactions =
-                        RevisionManager.getInstance().getTransactionsPerArtifact(artifact, true);
-                  changes.addAll(transactions);
+                  for(TransactionData transactionData : RevisionManager.getInstance().getTransactionsPerArtifact(artifact, true)){
+                     for(RevisionChange revisionChange : RevisionManager.getInstance().getTransactionChanges(transactionData)){
+                        historyItems.add(new HistoryTransactionItem(transactionData, revisionChange));
+                     }
+                  }
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
                      if (loadHistory) {
-                        if (changes.size() == 0) {
+                        if (historyItems.size() == 0) {
                            extraInfoLabel.setText(NO_HISTORY);
-                           xHistoryViewer.setInput(changes);
+                           xHistoryViewer.setInput(historyItems);
                         } else {
                            String infoLabel = String.format("History: %s", artifact.getDescriptiveName());
                            extraInfoLabel.setText(infoLabel);
-                           xHistoryViewer.setInput(changes);
+                           xHistoryViewer.setInput(historyItems);
                         }
                      } else {
                         extraInfoLabel.setText("Cleared on shut down - press refresh to reload");

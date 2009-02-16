@@ -11,15 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
 import java.util.Collection;
-import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Jeff C. Phillips
@@ -51,18 +44,8 @@ public class XHistoryContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof TransactionData) {
-         TransactionData parentItem = (TransactionData) inputElement;
-
-         Collection<RevisionChange> changes = null;
-         try {
-            changes = RevisionManager.getInstance().getTransactionChanges(parentItem);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-         if (changes != null) {
-            return changes.toArray();
-         }
+      if (inputElement instanceof Collection) {
+         return ((Collection<?>) inputElement).toArray();
       }
       return EMPTY_ARRAY;
    }
