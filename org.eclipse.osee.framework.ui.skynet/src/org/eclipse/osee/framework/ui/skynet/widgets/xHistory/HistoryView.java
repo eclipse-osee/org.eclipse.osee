@@ -82,7 +82,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
                   try {
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      HistoryView historyView =
-                           (HistoryView) page.showView(VIEW_ID, artifact.getGuid(), IWorkbenchPage.VIEW_VISIBLE);
+                           (HistoryView) page.showView(VIEW_ID, artifact.getGuid() + artifact.getBranch().getBranchId(), IWorkbenchPage.VIEW_VISIBLE);
 
                      historyView.explore(artifact, loadHistory);
                   } catch (Exception ex) {
