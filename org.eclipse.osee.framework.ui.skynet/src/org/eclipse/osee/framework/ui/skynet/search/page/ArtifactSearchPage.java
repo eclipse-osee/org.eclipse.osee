@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
@@ -67,7 +69,7 @@ import org.eclipse.ui.part.IPageSite;
  */
 public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements IAdaptable, IRebuildMenuListener, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener {
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactSearchView";
-   //org.eclipse.search.ui.views.SearchView
+
    protected static final Match[] EMPTY_MATCH_ARRAY = new Match[0];
    public static class DecoratorIgnoringViewerSorter extends ViewerComparator {
       private final ILabelProvider fLabelProvider;
@@ -184,7 +186,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    protected void fillContextMenu(IMenuManager mgr) {
       mgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
       getSite().setSelectionProvider(getSearchSelectionProvider());
-      
+
       mgr.appendToGroup(IContextMenuConstants.GROUP_PROPERTIES, new Action("Open Search Preferences") {
          public void run() {
             Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
@@ -341,6 +343,14 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       }
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.search.ui.text.AbstractTextSearchViewPage#handleOpen(org.eclipse.jface.viewers.OpenEvent)
+    */
+   @Override
+   protected void handleOpen(OpenEvent event) {
+      ArtifactDoubleClick.openArtifact(getSearchSelectionProvider().getSelection());
+   }
+
    private boolean showLineMatches() {
       AbstractArtifactSearchResult input = getInput();
       return getLayout() == FLAG_LAYOUT_TREE && input != null && input.hasAttributeMatches();
@@ -361,13 +371,18 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
       Set<Artifact> artifacts = new HashSet<Artifact>();
       for (Object object : objects) {
-         int matchCount = resultInput.getMatchCount(object);
-         if (matchCount >= 1) {
-            if (object instanceof IAdaptable) {
-               Artifact toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
-               artifacts.add(toAdd);
-            } else if (object instanceof Match) {
-               artifacts.add((Artifact) ((Match) object).getElement());
+         if (object instanceof AttributeLineElement) {
+            Artifact toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
+            artifacts.add(toAdd);
+         } else {
+            int matchCount = resultInput.getMatchCount(object);
+            if (matchCount >= 1) {
+               if (object instanceof IAdaptable) {
+                  Artifact toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
+                  artifacts.add(toAdd);
+               } else if (object instanceof Match) {
+                  artifacts.add((Artifact) ((Match) object).getElement());
+               }
             }
          }
       }
