@@ -348,7 +348,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       }
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(skynetGuiPlugin.getImage("DBiconBlueEdit.GIF.gif"));
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("DBiconBlueEdit.GIF"));
       item.setToolTipText("Show this artifact in the Resource History");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
