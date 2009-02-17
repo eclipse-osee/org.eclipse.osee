@@ -17,13 +17,11 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
@@ -125,13 +123,9 @@ public class XResultData {
    }
 
    public void report(final String title, final Manipulations... manipulations) {
-      final List<Manipulations> manips = Collections.getAggregate(manipulations);
       final String html = getReport(title, manipulations).getManipulatedHtml();
       try {
          ResultsEditor.open("Results", title, html);
-         if (!manips.contains(Manipulations.NO_POPUP)) {
-            AWorkbench.popup("Complete", title + " Complete...Results in Result View");
-         }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
