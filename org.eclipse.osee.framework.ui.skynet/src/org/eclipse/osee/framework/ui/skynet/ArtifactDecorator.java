@@ -53,29 +53,30 @@ public class ArtifactDecorator {
    }
 
    public void addActions(IMenuManager manager) {
+      if (showArtType == null) {
+         showArtType = new Action("Show Artifact Type") {
+            @Override
+            public void run() {
+               setChecked(!isChecked());
+               updateShowArtTypeText();
+               viewer.refresh();
+            }
+         };
+         showArtType.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+      }
+      if (showArtVersion == null) {
+         showArtVersion = new Action("Show Artifact Version") {
+            @Override
+            public void run() {
+               setChecked(!isChecked());
+               updateShowArtVersionText();
+               viewer.refresh();
+            }
+         };
+         showArtVersion.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+      }
 
-      showArtType = new Action("Show Artifact Type") {
-         @Override
-         public void run() {
-            setChecked(!isChecked());
-            updateShowArtTypeText();
-            viewer.refresh();
-         }
-      };
-
-      showArtVersion = new Action("Show Artifact Version") {
-         @Override
-         public void run() {
-            setChecked(!isChecked());
-            updateShowArtVersionText();
-            viewer.refresh();
-         }
-      };
-
-      showArtVersion.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
       updateShowArtVersionText();
-
-      showArtType.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
       updateShowArtTypeText();
 
       manager.add(showArtVersion);
@@ -83,15 +84,17 @@ public class ArtifactDecorator {
 
       try {
          if (AccessControlManager.isOseeAdmin()) {
-            showArtIds = new Action("Show Artifact Ids") {
-               @Override
-               public void run() {
-                  setChecked(!isChecked());
-                  updateShowArtIdText();
-                  viewer.refresh();
-               }
-            };
-            showArtIds.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+            if (showArtIds == null) {
+               showArtIds = new Action("Show Artifact Ids") {
+                  @Override
+                  public void run() {
+                     setChecked(!isChecked());
+                     updateShowArtIdText();
+                     viewer.refresh();
+                  }
+               };
+               showArtIds.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+            }
             updateShowArtIdText();
             manager.add(showArtIds);
          }
@@ -100,9 +103,11 @@ public class ArtifactDecorator {
       }
 
       try {
-         attributesAction = new ShowAttributeAction(viewer, preferenceKey);
-         attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey,
-               BranchManager.getDefaultBranch()));
+         if (attributesAction == null) {
+            attributesAction = new ShowAttributeAction(viewer, preferenceKey);
+            attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey,
+                  BranchManager.getDefaultBranch()));
+         }
          manager.add(attributesAction);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

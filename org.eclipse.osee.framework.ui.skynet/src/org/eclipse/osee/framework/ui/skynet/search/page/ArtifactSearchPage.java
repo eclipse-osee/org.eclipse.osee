@@ -180,7 +180,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       viewer.setComparator(new DecoratorIgnoringViewerSorter(innerLabelProvider));
       fContentProvider = (IArtifactSearchContentProvider) viewer.getContentProvider();
       addDragAdapters(viewer);
-      viewer.getTree().setToolTipText("NOTE: match accuracy for xml content still in work.");
    }
 
    protected void fillContextMenu(IMenuManager mgr) {

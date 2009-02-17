@@ -14,13 +14,13 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 import org.eclipse.osee.framework.search.engine.utility.WordOrderMatcher;
-import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
 
 /**
  * @author Roberto E. Escobar

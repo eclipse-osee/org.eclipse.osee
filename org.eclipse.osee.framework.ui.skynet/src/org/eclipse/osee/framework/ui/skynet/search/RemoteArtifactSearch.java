@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -160,13 +161,10 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          if (matchOffset < 0) {
             matchOffset = 0;
          }
-         int matchEnd = matchLocation.getEndPosition() - 1;
-         if (matchEnd < 0) {
-            matchEnd = 0;
-         }
+         int matchEnd = matchLocation.getEndPosition();
          int matchLength = matchEnd - matchOffset;
 
-         AttributeLineElement lineElement = getLineElement(matchOffset, artifact, attribute);
+         AttributeLineElement lineElement = getLineElement(matchOffset, matchEnd, artifact, attribute);
          if (lineElement != null) {
             AttributeMatch match = new AttributeMatch(artifact, matchOffset, matchLength, lineElement);
             fCachedMatches.add(match);
@@ -174,7 +172,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          return true;
       }
 
-      private AttributeLineElement getLineElement(int offset, Artifact artifact, Attribute<?> attribute) {
+      private AttributeLineElement getLineElement(int offset, int matchEnd, Artifact artifact, Attribute<?> attribute) {
          int lineNumber = 1;
          int lineStart = 0;
          if (!fCachedMatches.isEmpty()) {
@@ -193,8 +191,14 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          int i = lineStart;
          String content = getContentFromAttribute(attribute);
          int contentLength = content.length();
+         int charCount = 0;
          while (i < contentLength) {
             char ch = content.charAt(i++);
+            charCount++;
+            if (charCount >= 40 && Character.isWhitespace(ch) && matchEnd < i) {
+               ch = '\n';
+               charCount = 0;
+            }
             if (ch == '\n' || ch == '\r') {
                if (ch == '\r' && i < contentLength && content.charAt(i) == '\n') {
                   i++;
@@ -225,12 +229,14 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       private String getContentFromAttribute(Attribute<?> attribute) {
          try {
             Object value = attribute.getValue();
-            if (value instanceof String) {
+            if (!attribute.getAttributeType().getTaggerId().contains("Default")) {
+               return Lib.inputStreamToString(new XmlTextInputStream((String) value));
+            } else if (value instanceof String) {
                return (String) value;
             } else {
                return attribute.getDisplayableString();
             }
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return "";

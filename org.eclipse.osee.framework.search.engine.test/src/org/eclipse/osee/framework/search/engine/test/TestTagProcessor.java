@@ -21,9 +21,9 @@ import java.util.Scanner;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
-import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
 import org.osgi.framework.Bundle;
 
 /**

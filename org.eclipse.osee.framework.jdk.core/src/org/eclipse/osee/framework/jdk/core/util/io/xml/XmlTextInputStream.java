@@ -8,13 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.utility;
+package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import org.eclipse.osee.framework.jdk.core.util.HtmlReservedCharacters;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -165,10 +166,6 @@ public class XmlTextInputStream extends BufferedInputStream {
          return value;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream.IReadHelper#restoreState()
-       */
-      @Override
       public void restoreState() throws IOException {
          if (wasSaved) {
             partOfTag = lastPartOfTag;
@@ -179,10 +176,6 @@ public class XmlTextInputStream extends BufferedInputStream {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream.IReadHelper#saveState()
-       */
-      @Override
       public void saveState() {
          wasSaved = true;
          lastPartOfTag = partOfTag;
@@ -265,10 +258,6 @@ public class XmlTextInputStream extends BufferedInputStream {
          return value;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream.IReadHelper#restoreState()
-       */
-      @Override
       public void restoreState() throws IOException {
          if (wasSaved) {
             partOfTag = lastPartOfTag;
@@ -281,10 +270,6 @@ public class XmlTextInputStream extends BufferedInputStream {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream.IReadHelper#saveState()
-       */
-      @Override
       public void saveState() {
          wasSaved = true;
          lastPartOfTag = partOfTag;

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.util.HtmlReservedCharacters;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.internal.Activator;
 
