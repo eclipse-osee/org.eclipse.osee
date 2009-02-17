@@ -10,13 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
  */
-public class HistoryTransactionItem {
+public class HistoryTransactionItem implements IAdaptable{
+   /**
+    * @return the transactionData
+    */
+   public TransactionData getTransactionData() {
+      return transactionData;
+   }
+
    private TransactionData transactionData;
    private RevisionChange revisionChange;
 
@@ -92,5 +100,13 @@ public class HistoryTransactionItem {
          }
       }
       return image;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+    */
+   @Override
+   public Object getAdapter(Class adapter) {
+      return transactionData.getAdapter(adapter);
    }
 }

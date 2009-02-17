@@ -144,8 +144,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       getSite().setSelectionProvider(xHistoryWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
       
-//      xHistoryWidget.getXViewer().getTree().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-      
       setupMenus(); 
    }
    
@@ -272,7 +270,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
     */
    @Override
    public void rebuildMenu() {
-      // TODO Auto-generated method stub
-      
+      setupMenus();
    }
 }

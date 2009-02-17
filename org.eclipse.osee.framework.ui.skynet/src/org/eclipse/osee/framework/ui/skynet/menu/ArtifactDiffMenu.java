@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -78,7 +79,7 @@ public class ArtifactDiffMenu {
       boolean valid = false;
       Object[] selections = selection.toArray();
 
-      if (selections[1] instanceof TransactionData && selections[0] instanceof TransactionData) {
+      if (selections[1] instanceof HistoryTransactionItem && selections[0] instanceof HistoryTransactionItem) {
          Artifact selectedArtifact = (Artifact) viewer.getInput();
          try {
             valid = (RendererManager.getBestFileRenderer(PresentationType.DIFF, selectedArtifact).supportsCompare());
@@ -99,10 +100,10 @@ public class ArtifactDiffMenu {
          firstSelection = selections[0];
          secondSelection = selections[1];
 
-         if (firstSelection instanceof TransactionData && secondSelection instanceof TransactionData) {
+         if (firstSelection instanceof HistoryTransactionItem && secondSelection instanceof HistoryTransactionItem) {
 
-            TransactionData firstTransactionData = (TransactionData) firstSelection;
-            TransactionData secondTransactionData = (TransactionData) secondSelection;
+            TransactionData firstTransactionData = ((HistoryTransactionItem) firstSelection).getTransactionData();
+            TransactionData secondTransactionData = ((HistoryTransactionItem) secondSelection).getTransactionData();
             if (firstTransactionData.getTransactionId().getTransactionNumber() < secondTransactionData.getTransactionId().getTransactionNumber()) {
                firstTransactionData = (TransactionData) secondSelection;
                secondTransactionData = (TransactionData) firstSelection;
