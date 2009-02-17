@@ -672,7 +672,7 @@
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
-        icon="images/edit.gif">
+        icon="images/DBiconBlueEdit.GIF">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"

@@ -334,7 +334,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       sourecResourceCommand =
             Commands.getLocalCommandContribution(getSite(), "sourceResourceHistory",
                   "Show Source Artifact Resource History", null, null,
-                  SkynetGuiPlugin.getInstance().getImageDescriptor("edit.gif"), null, null, "source_Resource_History");
+                  SkynetGuiPlugin.getInstance().getImageDescriptor("DBiconBlueEdit.gif"), null, null,
+                  "source_Resource_History");
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
    }
@@ -344,7 +345,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       sourecResourceCommand =
             Commands.getLocalCommandContribution(getSite(), "destResourceHistory",
                   "Show Dest Artifact Resource History", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
-                        "edit.gif"), null, null, "dest_Resource_History");
+                        "DBiconBlueEdit.gif"), null, null, "dest_Resource_History");
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
    }
