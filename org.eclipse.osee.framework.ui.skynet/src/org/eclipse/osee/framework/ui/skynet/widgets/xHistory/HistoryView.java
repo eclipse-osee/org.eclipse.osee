@@ -36,9 +36,11 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -137,6 +139,8 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
       getSite().setSelectionProvider(xHistoryWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
+      
+      xHistoryWidget.getXViewer().getTree().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
    }
 
    private void explore(final Artifact artifact, boolean loadHistory) {

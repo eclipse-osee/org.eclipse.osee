@@ -15,7 +15,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
@@ -42,7 +45,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
             return String.valueOf(data.getTransactionNumber());
          } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
             return String.valueOf(data.getGamma());
-         } else if (cCol.equals(HistoryXViewerFactory.changeType)) {
+         } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
             return data.getChangeType();
          } else if (cCol.equals(HistoryXViewerFactory.was)) {
             return data.getWasValue();
@@ -82,23 +85,24 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      //      try {
-      //         if (!(element instanceof Change)) return null;
-      //         Change change = (Change) element;
-      //         if (xCol.equals(HistoryXViewerFactory.transaction)) {
-      //            try {
-      //               return change.getItemKindImage();
-      //            } catch (IllegalArgumentException ex) {
-      //               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      //            } catch (Exception ex) {
-      //               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      //            }
-      //         } else if (xCol.equals(HistoryXViewerFactory.Timestamp)) {
-      //            return change.getItemTypeImage();
-      //         }
-      //      } catch (Exception ex) {
-      //         // do nothing
-      //      }
+      try {
+         if (!(element instanceof HistoryTransactionItem)) return null;
+         HistoryTransactionItem change = (HistoryTransactionItem) element;
+         if (xCol.equals(HistoryXViewerFactory.transaction)) {
+            try {
+               return SkynetGuiPlugin.getInstance().getImage("DBicon2.GIF");
+            } catch (IllegalArgumentException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         } else if (xCol.equals(HistoryXViewerFactory.itemType)) {
+            return change.getChangeImage();
+         }
+
+      } catch (Exception ex) {
+         // do nothing
+      }
       return null;
    }
 }
