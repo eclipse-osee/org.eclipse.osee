@@ -492,11 +492,12 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             rData.logError(ex.getLocalizedMessage());
          }
       }
-      if (!rData.isEmpty()) {
-         rData.report("Column Multi Edit Errors");
-         return;
-      }
+
       try {
+         if (!rData.isEmpty()) {
+            rData.report("Column Multi Edit Errors");
+            return;
+         }
          if (useArts.size() > 0) {
             ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
          }

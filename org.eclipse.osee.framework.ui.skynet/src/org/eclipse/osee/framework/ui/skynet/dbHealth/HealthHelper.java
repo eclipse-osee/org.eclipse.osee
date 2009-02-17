@@ -95,7 +95,7 @@ public class HealthHelper {
       return foundItems;
    }
 
-   public static void endTable(StringBuffer sbFull, String taskName) {
+   public static void endTable(StringBuffer sbFull, String taskName) throws OseeCoreException {
       sbFull.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());

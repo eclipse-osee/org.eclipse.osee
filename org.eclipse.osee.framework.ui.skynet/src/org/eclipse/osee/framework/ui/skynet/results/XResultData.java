@@ -53,7 +53,11 @@ public class XResultData {
       for (int x = 0; x < 3; x++)
          rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
       rd.addRaw(AHTML.endMultiColumnTable());
-      rd.report("This is my report title");
+      try {
+         rd.report("This is my report title");
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    public void addRaw(String str) {
@@ -118,11 +122,11 @@ public class XResultData {
       return sb.toString();
    }
 
-   public void report(final String title) {
+   public void report(final String title) throws OseeCoreException {
       report(title, Manipulations.ALL);
    }
 
-   public void report(final String title, final Manipulations... manipulations) {
+   public void report(final String title, final Manipulations... manipulations) throws OseeCoreException {
       final String html = getReport(title, manipulations).getManipulatedHtml();
       try {
          ResultsEditor.open("Results", title, html);

@@ -58,12 +58,12 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
                rd.log("Exception occurred...see error log" + ex.getLocalizedMessage());
             }
          }
+         rd.log("\n");
+         rd.log("Validation Complete - Any errors will be displayed.");
+         rd.report("Validate Artifacts to Delete");
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      rd.log("\n");
-      rd.log("Validation Complete - Any errors will be displayed.");
-      rd.report("Validate Artifacts to Delete");
    }
 
    /* (non-Javadoc)
