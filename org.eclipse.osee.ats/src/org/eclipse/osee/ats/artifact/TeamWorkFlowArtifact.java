@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -307,11 +306,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
-      try {
+      if (getRelatedArtifactsCount(AtsRelation.TeamWorkflowTargetedForVersion_Version) > 0) {
          return (VersionArtifact) getRelatedArtifact(AtsRelation.TeamWorkflowTargetedForVersion_Version);
-      } catch (ArtifactDoesNotExist ex) {
-         return null;
       }
+      return null;
    }
 
    @Override
