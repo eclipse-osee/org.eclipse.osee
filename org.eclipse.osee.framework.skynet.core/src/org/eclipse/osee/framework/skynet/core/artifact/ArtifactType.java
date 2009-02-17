@@ -34,12 +34,11 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Description of an Artifact subtype. The descriptor can be used to create new artifacts that are of the type of this
- * descriptor. <br/>
- * <br/>
- * Descriptors can be acquired from the configuration manager.
+ * descriptor. <br/> <br/> Descriptors can be acquired from the configuration manager.
  * 
  * @see org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager
  * @author Robert A. Fisher
@@ -238,7 +237,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
 
    private synchronized void checkImageRegistry() {
       if (imageRegistry == null) {
-         imageRegistry = new ImageRegistry();
+         imageRegistry = new ImageRegistry(Display.getDefault());
 
          imageRegistry.put(BASE, imageDescriptor);
          imageRegistry.put(BASE + LOCKED_NO_ACCESS, new OverlayImage(imageRegistry.get(BASE), lockedNoAccess, 0, 7));

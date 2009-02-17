@@ -61,7 +61,7 @@ public class RelationTypeManager {
     * @throws OseeTypeDoesNotExist
     */
    public static List<RelationType> getValidTypes(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      return instance.getAllTypes();
+      return getAllTypes();
    }
 
    /**
@@ -69,9 +69,9 @@ public class RelationTypeManager {
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
     */
-   private List<RelationType> getAllTypes() throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static List<RelationType> getAllTypes() throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
-      return new ArrayList<RelationType>(idToTypeMap.values());
+      return new ArrayList<RelationType>(instance.idToTypeMap.values());
    }
 
    public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) {
