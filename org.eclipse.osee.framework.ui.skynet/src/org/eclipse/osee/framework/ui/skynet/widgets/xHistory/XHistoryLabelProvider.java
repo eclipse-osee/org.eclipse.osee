@@ -90,7 +90,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          HistoryTransactionItem change = (HistoryTransactionItem) element;
          if (xCol.equals(HistoryXViewerFactory.transaction)) {
             try {
-               return SkynetGuiPlugin.getInstance().getImage("DBicon2.GIF");
+               return SkynetGuiPlugin.getInstance().getImage("DBiconBlue.GIF");
             } catch (IllegalArgumentException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             } catch (Exception ex) {

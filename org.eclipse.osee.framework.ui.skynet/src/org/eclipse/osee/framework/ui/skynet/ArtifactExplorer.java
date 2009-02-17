@@ -83,7 +83,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
-import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
@@ -97,6 +96,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
 import org.eclipse.swt.SWT;
@@ -726,12 +726,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Artifact selectedArtifact = (Artifact) selection.getFirstElement();
 
-            IWorkbenchPage page = AWorkbench.getActivePage();
             try {
-               RevisionHistoryView revisionHistoryView =
-                     (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(),
-                           IWorkbenchPage.VIEW_ACTIVATE);
-               revisionHistoryView.explore(selectedArtifact);
+               HistoryView.open(selectedArtifact);
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }

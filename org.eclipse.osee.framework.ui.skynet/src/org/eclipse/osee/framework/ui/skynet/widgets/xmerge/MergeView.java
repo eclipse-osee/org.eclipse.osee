@@ -56,10 +56,10 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -419,7 +419,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          public Object execute(ExecutionEvent event) throws ExecutionException {
             if (attributeConflict != null) {
                try {
-                  RevisionHistoryView.open(attributeConflict.getSourceArtifact());
+                  HistoryView.open(attributeConflict.getSourceArtifact());
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
@@ -451,7 +451,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          public Object execute(ExecutionEvent event) throws ExecutionException {
             if (attributeConflict != null) {
                try {
-                  RevisionHistoryView.open(attributeConflict.getDestArtifact());
+                  HistoryView.open(attributeConflict.getDestArtifact());
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }

@@ -33,14 +33,18 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
+import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -53,7 +57,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Jeff C. Phillips
  */
-public class HistoryView extends ViewPart implements IActionable, IBranchEventListener {
+public class HistoryView extends ViewPart implements IActionable, IBranchEventListener, IRebuildMenuListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView";
    private static String HELP_CONTEXT_ID = "HistoryView";
@@ -140,7 +144,24 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       getSite().setSelectionProvider(xHistoryWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
       
-      xHistoryWidget.getXViewer().getTree().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+//      xHistoryWidget.getXViewer().getTree().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      
+      setupMenus(); 
+   }
+   
+   private void setupMenus() {
+      Menu popupMenu = new Menu(xHistoryWidget.getXViewer().getTree().getParent());
+      createOpenWithMenuItem(popupMenu);
+      ArtifactDiffMenu.createDiffMenuItem(popupMenu, xHistoryWidget.getXViewer(), "Compare two Artifacts", null);
+      xHistoryWidget.getXViewer().getTree().setMenu(popupMenu);
+   }
+   
+   private void createOpenWithMenuItem(Menu parentMenu) {
+      MenuItem openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+      openWithMenuItem.setText("&Open With");
+      final Menu submenu = new Menu(openWithMenuItem);
+      openWithMenuItem.setMenu(submenu);
+      parentMenu.addMenuListener(new OpenWithMenuListener(submenu, xHistoryWidget.getXViewer(), this));
    }
 
    private void explore(final Artifact artifact, boolean loadHistory) {
@@ -244,5 +265,14 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
    private void closeView() {
       SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener#rebuildMenu()
+    */
+   @Override
+   public void rebuildMenu() {
+      // TODO Auto-generated method stub
+      
    }
 }

@@ -21,12 +21,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
-import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -41,12 +39,9 @@ public class ShowArtifactInResourceHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       for (Artifact artifact : artifacts) {
-         IWorkbenchPage page = AWorkbench.getActivePage();
          try {
-            RevisionHistoryView revisionHistoryView =
-                  (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, artifact.getGuid(),
-                        IWorkbenchPage.VIEW_ACTIVATE);
-            revisionHistoryView.explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), artifact.getBranch(), true));
+            HistoryView.open(artifact);
+            
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }

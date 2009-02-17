@@ -63,9 +63,9 @@ import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
@@ -348,12 +348,16 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       }
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(skynetGuiPlugin.getImage("edit.gif"));
+      item.setImage(skynetGuiPlugin.getImage("DBiconBlueEdit.GIF.gif"));
       item.setToolTipText("Show this artifact in the Resource History");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            RevisionHistoryView.open(artifact);
+            try {
+               HistoryView.open(artifact);
+            } catch (Exception ex) {
+               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
 

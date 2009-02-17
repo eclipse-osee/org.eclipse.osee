@@ -275,11 +275,11 @@ public class RelationManager {
          int queryId = ArtifactLoader.getNewQueryId();
          //(SELECT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = 3)"
          if (relationEnum.getSide().equals(RelationSide.SIDE_B)) {
-            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, insertTime, SQL3DataType.INTEGER,
+            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, SQL3DataType.TIMESTAMP, SQL3DataType.INTEGER,
                   artifact.getBranch().getBranchId(), relationEnum.getRelationType().getRelationTypeId(),
                   artifact.getArtId());
          } else {
-            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, insertTime, SQL3DataType.INTEGER,
+            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, SQL3DataType.TIMESTAMP, SQL3DataType.INTEGER,
                   artifact.getBranch().getBranchId(), relationEnum.getRelationType().getRelationTypeId(),
                   artifact.getArtId());
          }

@@ -182,7 +182,7 @@
         allowMultiple="true"
         category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView"
-        icon="images/edit.gif"
+        icon="images/DBiconBlueEdit.GIF"
         id="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView"
         name="History">
   </view>
