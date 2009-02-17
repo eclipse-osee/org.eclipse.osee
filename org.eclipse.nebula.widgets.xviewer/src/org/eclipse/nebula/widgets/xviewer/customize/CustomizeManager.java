@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
@@ -423,9 +422,10 @@ public class CustomizeManager {
          currentCustData.setName(CURRENT_LABEL);
       }
       currentCustData.setNameSpace(xViewer.getViewerNamespace());
-      if (currentCustData.getSortingData().isSorting())
+      if (currentCustData.getSortingData().isSorting()) {
          xViewer.resetDefaultSorter();
-      else
+         xViewerTextFilter.update();
+      } else
          xViewer.setSorter(null);
       // Dispose all existing columns
       for (TreeColumn treeCol : xViewer.getTree().getColumns())
