@@ -23,6 +23,11 @@ public class SelectableLabel extends Label {
 
    private boolean selected;
    private boolean hasFocus;
+   private boolean isSelectable;
+
+   public SelectableLabel() {
+      this.isSelectable = true;
+   }
 
    private Rectangle getSelectionRectangle() {
       Rectangle bounds = getTextBounds();
@@ -36,20 +41,22 @@ public class SelectableLabel extends Label {
     * @see org.eclipse.draw2d.Label#paintFigure(org.eclipse.draw2d.Graphics)
     */
    protected void paintFigure(Graphics graphics) {
-      if (selected) {
-         graphics.pushState();
-         graphics.setBackgroundColor(ColorConstants.menuBackgroundSelected);
-         graphics.fillRectangle(getSelectionRectangle());
-         graphics.popState();
-         graphics.setForegroundColor(ColorConstants.white);
-      }
-      if (hasFocus) {
-         graphics.pushState();
-         graphics.setXORMode(true);
-         graphics.setForegroundColor(ColorConstants.menuBackgroundSelected);
-         graphics.setBackgroundColor(ColorConstants.white);
-         graphics.drawFocus(getSelectionRectangle().resize(-1, -1));
-         graphics.popState();
+      if (isSelectable) {
+         if (selected) {
+            graphics.pushState();
+            graphics.setBackgroundColor(ColorConstants.menuBackgroundSelected);
+            graphics.fillRectangle(getSelectionRectangle());
+            graphics.popState();
+            graphics.setForegroundColor(ColorConstants.white);
+         }
+         if (hasFocus) {
+            graphics.pushState();
+            graphics.setXORMode(true);
+            graphics.setForegroundColor(ColorConstants.menuBackgroundSelected);
+            graphics.setBackgroundColor(ColorConstants.white);
+            graphics.drawFocus(getSelectionRectangle().resize(-1, -1));
+            graphics.popState();
+         }
       }
       super.paintFigure(graphics);
    }
@@ -78,4 +85,7 @@ public class SelectableLabel extends Label {
       }
    }
 
+   public void setSelectable(boolean selectable) {
+      isSelectable = selectable;
+   }
 }

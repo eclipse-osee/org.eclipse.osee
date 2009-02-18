@@ -1,5 +1,6 @@
 package org.eclipse.osee.framework.ui.data.model.editor.part;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.commands.Command;
@@ -8,6 +9,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.osee.framework.ui.data.model.editor.command.ChangeNameCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
+import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.InternalEnum;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
 
@@ -35,7 +37,6 @@ public class RelationEditPart extends BaseEditPart {
 
    protected IFigure createFigure() {
       SelectableLabel fig = new SelectableLabel();
-      fig.setIcon(ODMImages.getImage(ODMImages.RELATION_ENTRY));
       return fig;
    }
 
@@ -48,9 +49,19 @@ public class RelationEditPart extends BaseEditPart {
    }
 
    protected void refreshVisuals() {
-      Label fig = (Label) getFigure();
+      SelectableLabel labelFigure = (SelectableLabel) getFigure();
       String text = ODMConstants.getDataTypeText(getRelationDataType());
-      fig.setText(text);
+      labelFigure.setText(text);
+      labelFigure.setIcon(ODMImages.getImage(ODMImages.RELATION_ENTRY));
+      labelFigure.setSelectable(true);
+
+      InternalArtifactEditPart internalArtifactEditPart = ((InternalArtifactEditPart) getParent());
+      InternalEnum value = internalArtifactEditPart.getInternalType();
+      if (value != null && value == InternalEnum.INHERITED_RELATIONS) {
+         labelFigure.setBackgroundColor(ColorConstants.blue);
+         labelFigure.setIcon(ODMImages.getImage(ODMImages.INHERITANCE));
+         labelFigure.setSelectable(false);
+      }
    }
 
    /* (non-Javadoc)

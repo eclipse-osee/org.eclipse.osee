@@ -26,8 +26,8 @@ public abstract class NodeModel extends Model {
    private final List<ConnectionModel> targetConnections;
 
    public NodeModel() {
-      this.location = new Point(0, 0);
-      this.size = new Dimension(50, 50);
+      this.location = new Point(50, 50);
+      this.size = new Dimension(100, 100);
       this.sourceConnections = new ArrayList<ConnectionModel>();
       this.targetConnections = new ArrayList<ConnectionModel>();
 

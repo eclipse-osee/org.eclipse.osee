@@ -15,6 +15,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.CompartmentFigure;
 import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel;
+import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.InternalEnum;
 
 /**
  * @author Roberto E. Escobar
@@ -30,7 +31,8 @@ public class InternalArtifactEditPart extends AbstractGraphicalEditPart {
    }
 
    protected IFigure createFigure() {
-      return new CompartmentFigure();
+      IFigure figure = new CompartmentFigure();
+      return figure;
    }
 
    protected List getModelChildren() {
@@ -43,5 +45,12 @@ public class InternalArtifactEditPart extends AbstractGraphicalEditPart {
 
    public boolean isSelectable() {
       return false;
+   }
+
+   public InternalEnum getInternalType() {
+      if (getModel() instanceof ArtifactInternalsModel) {
+         return ((ArtifactInternalsModel) getModel()).getInternalDescription();
+      }
+      return null;
    }
 }

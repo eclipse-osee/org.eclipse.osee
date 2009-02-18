@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.part;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.osee.framework.ui.data.model.editor.command.ChangeNameCommand;
+import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
+import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.InternalEnum;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
 
@@ -54,10 +57,18 @@ public class AttributeEditPart extends BaseEditPart {
    }
 
    protected void refreshVisuals() {
-      Label labelFigure = (Label) getFigure();
+      SelectableLabel labelFigure = (SelectableLabel) getFigure();
       String displayText = ODMConstants.getDataTypeText(getAttributeDataType());
       labelFigure.setText(displayText);
       labelFigure.setIcon(ODMImages.getImage(ODMImages.ATTRIBUTE_ENTRY));
-   }
+      labelFigure.setSelectable(true);
 
+      InternalArtifactEditPart internalArtifactEditPart = ((InternalArtifactEditPart) getParent());
+      InternalEnum value = internalArtifactEditPart.getInternalType();
+      if (value != null && value == InternalEnum.INHERITED_ATTRIBUTES) {
+         labelFigure.setBackgroundColor(ColorConstants.tooltipBackground);
+         labelFigure.setIcon(ODMImages.getImage(ODMImages.INHERITANCE));
+         labelFigure.setSelectable(false);
+      }
+   }
 }
