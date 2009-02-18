@@ -275,13 +275,13 @@ public class RelationManager {
          int queryId = ArtifactLoader.getNewQueryId();
          //(SELECT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = 3)"
          if (relationEnum.getSide().equals(RelationSide.SIDE_B)) {
-            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, SQL3DataType.TIMESTAMP, SQL3DataType.INTEGER,
-                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getRelationTypeId(),
-                  artifact.getArtId());
+            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, SQL3DataType.TIMESTAMP,
+                  SQL3DataType.INTEGER, artifact.getBranch().getBranchId(),
+                  relationEnum.getRelationType().getRelationTypeId(), artifact.getArtId());
          } else {
-            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, SQL3DataType.TIMESTAMP, SQL3DataType.INTEGER,
-                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getRelationTypeId(),
-                  artifact.getArtId());
+            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, SQL3DataType.TIMESTAMP,
+                  SQL3DataType.INTEGER, artifact.getBranch().getBranchId(),
+                  relationEnum.getRelationType().getRelationTypeId(), artifact.getArtId());
          }
 
          List<Artifact> deletedArtifacts =
@@ -529,8 +529,8 @@ public class RelationManager {
       if (maxCount == 0) {
          throw new OseeArgumentException(String.format(
                "Artifact \"%s\" of type \"%s\" does not belong on side \"%s\" of relation \"%s\"",
-               artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
-               relationType.getTypeName()));
+               artifact.getInternalDescriptiveName(), artifact.getArtifactTypeName(),
+               relationType.getSideName(relationSide), relationType.getTypeName()));
       } else if (maxCount == 1 && usedCount + artifactCount > maxCount) {
          throw new OseeArgumentException(
                String.format(
