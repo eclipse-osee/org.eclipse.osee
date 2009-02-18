@@ -80,11 +80,9 @@ public class ArtifactDiffMenu {
       Object[] selections = selection.toArray();
 
       if (selections[1] instanceof HistoryTransactionItem && selections[0] instanceof HistoryTransactionItem) {
-         Artifact selectedArtifact = (Artifact) viewer.getInput();
-         try {
-            valid = (RendererManager.getBestFileRenderer(PresentationType.DIFF, selectedArtifact).supportsCompare());
-         } catch (OseeCoreException ex) {
-
+            try {
+               valid = (RendererManager.getBestFileRenderer(PresentationType.DIFF, ((HistoryTransactionItem)selections[0]).getTransactionData().getArtifact()).supportsCompare());
+            } catch (OseeCoreException ex) {
          }
       }
       return valid;
