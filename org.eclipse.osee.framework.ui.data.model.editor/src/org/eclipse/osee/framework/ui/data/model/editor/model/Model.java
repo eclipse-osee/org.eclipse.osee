@@ -36,6 +36,10 @@ public class Model {
       }
    }
 
+   protected void fireModelEvent() {
+      fireModelEvent(null);
+   }
+
    protected void fireModelEvent(Object object) {
       for (IModelListener listener : listeners) {
          listener.onModelEvent(object);

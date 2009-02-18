@@ -45,7 +45,10 @@ public class DataType extends NodeModel {
     * @param name the name to set
     */
    public void setName(String name) {
-      this.name = name;
+      if (this.name != name) {
+         this.name = name;
+         fireModelEvent();
+      }
    }
 
    /**
@@ -59,7 +62,10 @@ public class DataType extends NodeModel {
     * @param namespace the namespace to set
     */
    public void setNamespace(String namespace) {
-      this.namespace = namespace;
+      if (this.namespace != namespace) {
+         this.namespace = namespace;
+         fireModelEvent();
+      }
    }
 
    /**
