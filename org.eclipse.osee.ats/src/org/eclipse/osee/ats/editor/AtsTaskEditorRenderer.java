@@ -63,7 +63,7 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
     */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact instanceof TaskArtifact) {
+      if (artifact instanceof TaskArtifact && (!artifact.isHistorical())) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

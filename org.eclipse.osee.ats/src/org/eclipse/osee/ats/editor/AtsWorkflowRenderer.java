@@ -86,7 +86,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
     */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof IATSArtifact) {
+      if (artifact instanceof IATSArtifact && (!artifact.isHistorical())) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

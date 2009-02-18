@@ -39,7 +39,7 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
     */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact instanceof IATSArtifact) {
+      if (artifact instanceof IATSArtifact && (!artifact.isHistorical())) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
