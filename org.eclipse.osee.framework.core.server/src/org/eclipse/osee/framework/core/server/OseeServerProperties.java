@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class OseeServerProperties {
 
    public static final String CHECK_TAG_QUEUE_ON_START_UP = "osee.check.tag.queue.on.startup";
+   private static final String OSEE_CONNECTION_INFO_URI = "osee.connection.info.uri";
    private static boolean wasBinaryDataChecked = false;
 
    private OseeServerProperties() {
@@ -63,5 +64,14 @@ public class OseeServerProperties {
     */
    public static boolean isCheckTagQueueOnStartupAllowed() {
       return Boolean.valueOf(System.getProperty(CHECK_TAG_QUEUE_ON_START_UP, "false"));
+   }
+
+   /**
+    * Retrieve the connection info file location
+    * 
+    * @return connection info file URI
+    */
+   public static String getOseeConnectionInfoUri() {
+      return System.getProperty(OSEE_CONNECTION_INFO_URI, "");
    }
 }

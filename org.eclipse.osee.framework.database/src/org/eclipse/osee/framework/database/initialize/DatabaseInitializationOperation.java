@@ -17,22 +17,24 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.logging.Level;
-import org.apache.commons.lang.time.StopWatch;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.IDbInitializationRule;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
-import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
-import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -63,9 +65,22 @@ public class DatabaseInitializationOperation {
    private void execute() throws OseeCoreException {
       boolean isConfigured = false;
       if (checkPreconditions()) {
-         IDatabaseInfo dbInfo = DatabaseInfoManager.getDefault();
-         String dbName = dbInfo.getDatabaseName();
-         String userName = dbInfo.getDatabaseLoginName();
+         ClientSessionManager.authenticate(new BaseCredentialProvider() {
+            @Override
+            public OseeCredential getCredential() throws OseeCoreException {
+               OseeCredential credential = new OseeCredential();
+               credential.setUserName(SystemUser.BootStrap.getName());
+               return credential;
+            }
+         });
+         String dbName = ClientSessionManager.getDataStoreName();
+         String userName = ClientSessionManager.getDataStoreLoginName();
+
+         if (ClientSessionManager.isProductionDataStore()) {
+            System.err.println(String.format(
+                  "You are not allowed to run config client against production: [%s].\nExiting.", dbName));
+            return;
+         }
 
          String line = null;
          if (isPromptEnabled) {
@@ -77,18 +92,17 @@ public class DatabaseInitializationOperation {
          if (line.equalsIgnoreCase("Y")) {
             isConfigured = true;
             OseeLog.log(DatabaseActivator.class, Level.INFO, "Configuring Database...");
-            StopWatch stopWatch = new StopWatch();
-            stopWatch.start();
+            long startTime = System.currentTimeMillis();
 
-            OseeConnection connection = OseeDbConnection.getConnection(dbInfo);
+            OseeConnection connection = OseeDbConnection.getConnection();
             try {
                processTask(connection);
             } catch (Throwable ex) {
                OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
             } finally {
                connection.close();
-               stopWatch.stop();
-               System.out.println(String.format("Database Configurationg completed in [%s] ms", stopWatch));
+               System.out.println(String.format("Database Configurationg completed in [%s] ms",
+                     Lib.getElapseString(startTime)));
             }
          }
       }
@@ -242,20 +256,12 @@ public class DatabaseInitializationOperation {
    }
 
    private boolean checkPreconditions() throws OseeCoreException {
-      IDatabaseInfo dbInfo = DatabaseInfoManager.getDefault();
-
       String serverUrl = OseeClientProperties.getOseeApplicationServer();
       if (Strings.isValid(serverUrl) != true) {
          throw new OseeDataStoreException(
                String.format(
                      "Invalid resource server address [%s]. Database initialization requires an application server to be set by default. ",
                      serverUrl));
-      }
-
-      if (dbInfo.isProduction()) {
-         System.err.println(String.format(
-               "You are not allowed to run config client against production: [%s].\nExiting.", dbInfo.getDatabaseName()));
-         return false;
       }
 
       boolean serverOk = isApplicationServerAlive(serverUrl);

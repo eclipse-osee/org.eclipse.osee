@@ -64,8 +64,9 @@ public class DbConnectionInformation implements IDbConnectionInformation {
                   timeLeft = endTime - System.currentTimeMillis();
                }
                if (selectedDbInfo == null) {
-                  throw new IllegalStateException(String.format("DB connection information was not found. [%s]",
-                        dbConnectionId));
+                  throw new IllegalStateException(String.format(
+                        "DB connection information was not found for: [%s]\n Available connection ids are: [%s]\n",
+                        dbConnectionId, dbInfo.keySet()));
                }
             }
          } else {

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
-import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
@@ -23,6 +23,6 @@ public class NotOnProductionDbInitializationRule implements IDbInitializationRul
     */
    @Override
    public boolean isAllowed() throws OseeCoreException {
-      return !DatabaseInfoManager.getDefault().isProduction();
+      return !ClientSessionManager.isProductionDataStore();
    }
 }
