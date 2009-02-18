@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.Arrays;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.core.server.OseeServerProperties;
 
 /**
  * @author Roberto E. Escobar
@@ -32,7 +32,7 @@ public class TestResourceManagerServlet extends TestCase {
    @Override
    protected void setUp() throws Exception {
       super.setUp();
-      int port = OseeProperties.getOseeApplicationServerPort();
+      int port = OseeServerProperties.getOseeApplicationServerPort();
       httpServiceURL = String.format("http://localhost:%s/%s", port, OseeServerContext.RESOURCE_CONTEXT);
    }
 
