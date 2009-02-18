@@ -663,11 +663,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws MultipleAttributesExist if multiple attribute instances exist
     */
    public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
-      try {
-         return getSoleAttributeValue(attributeTypeName).toString();
-      } catch (AttributeDoesNotExist ex) {
-         return defaultReturnValue;
+      Object value = getSoleAttributeValue(attributeTypeName, defaultReturnValue);
+      if (value == null) {
+         return null;
       }
+      return value.toString();
    }
 
    /**

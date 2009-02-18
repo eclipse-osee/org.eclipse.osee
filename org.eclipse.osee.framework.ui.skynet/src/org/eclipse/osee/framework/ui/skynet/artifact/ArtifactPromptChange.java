@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -185,13 +184,9 @@ public class ArtifactPromptChange {
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
       ed.setFillVertically(multiLine);
       if (smas.size() == 1) {
-         try {
-            Object obj = smas.iterator().next().getSoleAttributeValue(attributeName);
-            if (obj != null) ed.setEntry(String.valueOf(obj));
-         } catch (AttributeDoesNotExist ex) {
-            // do nothing - not an incorrect state
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         Object obj = smas.iterator().next().getSoleAttributeValueAsString(attributeName, null);
+         if (obj != null) {
+            ed.setEntry(String.valueOf(obj));
          }
       }
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
