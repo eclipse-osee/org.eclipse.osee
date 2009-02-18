@@ -70,6 +70,10 @@ public class ClientSessionManager {
       return getSessionGrant().getDatabaseInfo().getDatabaseName();
    }
 
+   public static String getDataStorePath() throws OseeAuthenticationRequiredException {
+      return getSessionGrant().getDataStorePath();
+   }
+
    public static boolean isProductionDataStore() throws OseeAuthenticationRequiredException {
       return getSessionGrant().getDatabaseInfo().isProduction();
    }

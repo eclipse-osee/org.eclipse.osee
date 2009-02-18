@@ -55,9 +55,13 @@ public class ApplicationServerDataStore {
    static boolean deregisterWithDb(OseeServerInfo applicationServerInfo) {
       boolean status = false;
       try {
-         ConnectionHandler.runPreparedUpdate(DELETE_FROM_LOOKUP_TABLE, applicationServerInfo.getServerAddress(),
-               applicationServerInfo.getPort(), applicationServerInfo.getVersion());
-         status = true;
+         if (ConnectionHandler.doesTableExist("osee_server_lookup")) {
+            ConnectionHandler.runPreparedUpdate(DELETE_FROM_LOOKUP_TABLE, applicationServerInfo.getServerAddress(),
+                  applicationServerInfo.getPort(), applicationServerInfo.getVersion());
+            status = true;
+         } else {
+            OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to deregister server from lookup table.", ex);
       }
@@ -67,10 +71,14 @@ public class ApplicationServerDataStore {
    static boolean registerWithDb(OseeServerInfo applicationServerInfo) {
       boolean status = false;
       try {
-         ConnectionHandler.runPreparedUpdate(INSERT_LOOKUP_TABLE, applicationServerInfo.getServerId(),
-               applicationServerInfo.getVersion(), applicationServerInfo.getServerAddress(),
-               applicationServerInfo.getPort(), applicationServerInfo.getDateStarted(), 1);
-         status = true;
+         if (ConnectionHandler.doesTableExist("osee_server_lookup")) {
+            ConnectionHandler.runPreparedUpdate(INSERT_LOOKUP_TABLE, applicationServerInfo.getServerId(),
+                  applicationServerInfo.getVersion(), applicationServerInfo.getServerAddress(),
+                  applicationServerInfo.getPort(), applicationServerInfo.getDateStarted(), 1);
+            status = true;
+         } else {
+            OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to register server into lookup table.", ex);
       }

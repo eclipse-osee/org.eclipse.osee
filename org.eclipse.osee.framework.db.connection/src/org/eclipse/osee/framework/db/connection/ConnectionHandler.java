@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.db.connection;
 import java.io.ByteArrayInputStream;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -339,5 +340,38 @@ public final class ConnectionHandler {
       } finally {
          connection.close();
       }
+   }
+
+   public static boolean doesTableExist(String targetTable) {
+      return doesTableExist(null, targetTable);
+   }
+
+   public static boolean doesTableExist(String targetSchema, String targetTable) {
+      ResultSet resultSet = null;
+      try {
+         resultSet = getMetaData().getTables(null, null, null, new String[] {"TABLE"});
+         if (resultSet != null) {
+            while (resultSet.next()) {
+               String tableName = resultSet.getString("TABLE_NAME");
+               String schemaName = resultSet.getString("TABLE_SCHEM");
+               if (targetTable.equalsIgnoreCase(tableName)) {
+                  if (targetSchema == null || targetSchema.equalsIgnoreCase(schemaName)) {
+                     return true;
+                  }
+               }
+            }
+         }
+      } catch (Exception ex) {
+         // Do nothing
+      } finally {
+         if (resultSet != null) {
+            try {
+               resultSet.close();
+            } catch (SQLException ex) {
+               // Do nothing
+            }
+         }
+      }
+      return false;
    }
 }

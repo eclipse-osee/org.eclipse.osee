@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+import java.io.File;
 import java.net.URI;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
@@ -33,10 +34,15 @@ public class UriDbConnectionInfo implements IDbConnectionInformationContributor 
       String uri = OseeServerProperties.getOseeConnectionInfoUri();
       if (Strings.isValid(uri)) {
          OseeLog.log(CoreServerActivator.class, Level.INFO, String.format("Loading connection info from: [%s]", uri));
+         //         URL url = new URL(uri);
+         //         uri = uri.replaceAll("\\\\", "/");
+         URI connectionFile = null;
          if (!uri.contains("://")) {
-            uri = "file://" + uri;
+            connectionFile = new File(uri).toURI();
+            //            uri = "file://" + uri;
+         } else {
+            connectionFile = new URI(uri);
          }
-         URI connectionFile = new URI(uri);
          return DatabaseInfoManager.readFromXml(connectionFile.toURL().openStream());
       }
       return new IDatabaseInfo[0];

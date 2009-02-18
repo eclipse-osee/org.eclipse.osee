@@ -28,8 +28,6 @@ public class OseeProperties {
 
    // These need to only be used by the server but for now remain here until OSEE clients stop accessing the database directly
    public static final String OSEE_DB_CONNECTION_ID = "osee.db.connection.id";
-   protected static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
-   private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
 
    protected OseeProperties() {
    }
@@ -59,31 +57,6 @@ public class OseeProperties {
          toReturn = Level.WARNING;
       }
       return toReturn;
-   }
-
-   /**
-    * Get location for OSEE application server binary data
-    * 
-    * @return OSEE application server binary data path
-    */
-   public static String getOseeApplicationServerData() {
-      String toReturn = System.getProperty(OSEE_APPLICATION_SERVER_DATA);
-      if (toReturn == null) {
-         String userHome = System.getProperty("user.home");
-         if (Strings.isValid(userHome)) {
-            toReturn = userHome;
-         }
-      }
-      return toReturn;
-   }
-
-   /**
-    * Retrieve the application server port
-    * 
-    * @return the application server port
-    */
-   public static int getOseeApplicationServerPort() {
-      return Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
    }
 
    /**

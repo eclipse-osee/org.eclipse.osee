@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
+import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.server.SessionData;
 import org.eclipse.osee.framework.core.server.SessionData.SessionState;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
@@ -105,6 +106,7 @@ public class SessionManager implements ISessionManager {
          sessionGrant.setOseeUserInfo(oseeUserInfo);
          sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
          sessionGrant.setSqlProperties(OseeSql.getSqlProperties());
+         sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData());
       }
       return sessionGrant;
    }
@@ -144,8 +146,10 @@ public class SessionManager implements ISessionManager {
       @Override
       public void run() {
          if (firstTimeThrough) {
-            recoverSessions();
-            firstTimeThrough = false;
+            if (SessionDataStore.isSessionTableAvailable()) {
+               recoverSessions();
+               firstTimeThrough = false;
+            }
          }
 
          List<String> deleteIds = new ArrayList<String>();
@@ -172,7 +176,6 @@ public class SessionManager implements ISessionManager {
          createItems(createData);
          updateItems(updateData);
          deleteItems(deleteIds);
-
       }
 
       private void recoverSessions() {

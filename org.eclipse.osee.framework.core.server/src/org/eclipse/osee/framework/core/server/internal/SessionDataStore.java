@@ -41,6 +41,10 @@ public class SessionDataStore {
    private SessionDataStore() {
    }
 
+   public static boolean isSessionTableAvailable() {
+      return ConnectionHandler.doesTableExist("osee_session");
+   }
+
    public static void deleteSession(String... sessionIds) throws OseeDataStoreException {
       if (sessionIds != null) {
          List<Object[]> data = new ArrayList<Object[]>();

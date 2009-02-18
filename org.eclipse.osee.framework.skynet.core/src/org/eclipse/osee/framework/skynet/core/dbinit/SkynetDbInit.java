@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeDatabaseId;
@@ -123,7 +122,7 @@ public class SkynetDbInit implements IDbInitializationTask {
          Socket socket = new Socket(serverUrl.getHost(), serverUrl.getPort());
          if (socket.getInetAddress().isLoopbackAddress()) {
             OseeLog.log(CoreClientActivator.class, Level.INFO, "Deleting binary data from application server...");
-            String binaryDataPath = OseeClientProperties.getOseeApplicationServerData();
+            String binaryDataPath = ClientSessionManager.getDataStorePath();
             Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
             Lib.deleteDir(new File(binaryDataPath + File.separator + "snapshot"));
          } else {

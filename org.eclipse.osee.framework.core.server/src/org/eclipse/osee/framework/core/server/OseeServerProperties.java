@@ -12,20 +12,33 @@ package org.eclipse.osee.framework.core.server;
 
 import java.io.File;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeServerProperties {
-
-   public static final String CHECK_TAG_QUEUE_ON_START_UP = "osee.check.tag.queue.on.startup";
+   private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
+   private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
+   private static final String CHECK_TAG_QUEUE_ON_START_UP = "osee.check.tag.queue.on.startup";
    private static final String OSEE_CONNECTION_INFO_URI = "osee.connection.info.uri";
+
    private static boolean wasBinaryDataChecked = false;
 
    private OseeServerProperties() {
       super();
+   }
+
+   private static String internalGetOseeApplicationServerData() {
+      String toReturn = System.getProperty(OSEE_APPLICATION_SERVER_DATA);
+      if (toReturn == null) {
+         String userHome = System.getProperty("user.home");
+         if (Strings.isValid(userHome)) {
+            toReturn = userHome;
+         }
+      }
+      return toReturn;
    }
 
    /**
@@ -34,7 +47,7 @@ public class OseeServerProperties {
     * @return OSEE application server binary data path
     */
    public static String getOseeApplicationServerData() {
-      String toReturn = OseeProperties.getOseeApplicationServerData();
+      String toReturn = internalGetOseeApplicationServerData();
       if (!wasBinaryDataChecked) {
          File file = new File(toReturn);
          if (file.exists()) {
@@ -54,7 +67,7 @@ public class OseeServerProperties {
     * @return the application server port
     */
    public static int getOseeApplicationServerPort() {
-      return OseeProperties.getOseeApplicationServerPort();
+      return Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
    }
 
    /**

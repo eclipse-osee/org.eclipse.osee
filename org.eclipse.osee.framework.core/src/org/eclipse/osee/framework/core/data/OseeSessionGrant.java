@@ -38,6 +38,7 @@ public class OseeSessionGrant extends BaseExchangeData {
    private static final String OSEE_USER_NAME = "oseeUserName";
    private static final String OSEE_USER_ID = "oseeUserId";
    private static final String OSEE_IS_USER_ACTIVE = "isOseeUserActive";
+   private static final String OSEE_APPLICATION_SERVER_DATA_PATH = "oseeApplicationServerDataPath";
 
    private IDatabaseInfo grantedDatabaseInfo;
    private IOseeUser grantedOseeUserInfo;
@@ -93,6 +94,14 @@ public class OseeSessionGrant extends BaseExchangeData {
 
    public void setCreationRequired(boolean value) {
       this.backingData.put(OSEE_USER_IS_CREATION_REQUIRED, value);
+   }
+
+   public void setDataStorePath(String oseeApplicationServerData) {
+      this.backingData.put(OSEE_APPLICATION_SERVER_DATA_PATH, oseeApplicationServerData);
+   }
+
+   public String getDataStorePath() {
+      return getString(OSEE_APPLICATION_SERVER_DATA_PATH);
    }
 
    public IOseeUser getOseeUserInfo() {
@@ -207,5 +216,4 @@ public class OseeSessionGrant extends BaseExchangeData {
       }
 
    }
-
 }
