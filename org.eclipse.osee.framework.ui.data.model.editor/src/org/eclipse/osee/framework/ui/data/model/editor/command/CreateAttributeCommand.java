@@ -10,45 +10,41 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.command;
 
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
-import org.eclipse.osee.framework.ui.data.model.editor.model.ODMGraph;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
+import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DataTypeCreateCommand extends Command {
+public class CreateAttributeCommand extends Command {
 
-   private DataType dataType;
-   private final ODMGraph parent;
-   private Rectangle bounds;
+   private AttributeDataType attribute;
+   private ArtifactDataType parent;
 
-   public DataTypeCreateCommand(DataType dataType, ODMGraph parent, Rectangle bounds) {
-      this.dataType = dataType;
+   public CreateAttributeCommand(AttributeDataType attribute, ArtifactDataType parent) {
+      super("Create Attribute");
+      this.attribute = attribute;
       this.parent = parent;
-      this.bounds = bounds;
-      setLabel("Type Creation");
    }
 
    public boolean canExecute() {
-      return dataType != null && parent != null && bounds != null;
+      return attribute != null && parent != null;
    }
 
    public void execute() {
-      dataType.setLocation(bounds.getLocation());
-      Dimension size = bounds.getSize();
-      if (size.width > 0 && size.height > 0) dataType.setSize(size);
+      if (attribute.getName() == null || attribute.getName().trim().equals("")) {
+         attribute.setName("newAttribute");
+      }
       redo();
    }
 
    public void redo() {
-      parent.add(dataType);
+      parent.add(attribute);
    }
 
    public void undo() {
-      parent.remove(dataType);
+      parent.remove(attribute);
    }
 
 }

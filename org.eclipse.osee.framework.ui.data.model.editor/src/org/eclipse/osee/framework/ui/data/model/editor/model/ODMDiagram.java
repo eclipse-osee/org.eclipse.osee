@@ -12,39 +12,57 @@ package org.eclipse.osee.framework.ui.data.model.editor.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ODMGraph {
+public class ODMDiagram extends NodeModel {
 
-   private final List<DataType> types;
+   private final Set<DataType> types;
    private final DataTypeCache cache;
 
-   public ODMGraph(DataTypeCache cache) {
-      this.types = new ArrayList<DataType>();
+   public ODMDiagram(DataTypeCache cache) {
+      this.types = new HashSet<DataType>();
       this.cache = cache;
    }
 
-   public List<DataType> getTypes() {
-      return types;
+   public List<DataType> getContent() {
+      return new ArrayList<DataType>(types);
    }
 
    public boolean add(DataType dataType) {
-      return types.add(dataType);
+      boolean result = types.add(dataType);
+      if (result) {
+         fireModelEvent(null);
+      }
+      return result;
    }
 
    public boolean addAll(Collection<? extends DataType> dataTypes) {
-      return types.addAll(dataTypes);
+      boolean result = types.addAll(dataTypes);
+      if (result) {
+         fireModelEvent(null);
+      }
+      return result;
    }
 
    public boolean remove(DataType dataType) {
-      return this.types.remove(dataType);
+      boolean result = this.types.remove(dataType);
+      if (result) {
+         fireModelEvent(null);
+      }
+      return result;
    }
 
    public boolean removeAll(Collection<? extends DataType> dataTypes) {
-      return types.removeAll(dataTypes);
+      boolean result = types.removeAll(dataTypes);
+      if (result) {
+         fireModelEvent(null);
+      }
+      return result;
    }
 
    public DataTypeCache getCache() {

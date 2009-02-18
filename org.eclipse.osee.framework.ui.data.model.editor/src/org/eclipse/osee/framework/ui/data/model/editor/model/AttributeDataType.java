@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.ui.data.model.editor.model;
  */
 public class AttributeDataType extends DataType {
 
-   private static final long serialVersionUID = -7157647058801288395L;
    private String defaultValue;
    private String validityXml;
    private String toolTipText;

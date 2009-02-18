@@ -10,20 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.part;
 
+import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditor;
-import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
-import org.eclipse.osee.framework.ui.data.model.editor.model.ODMGraph;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
+import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
+import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
+import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ODMEditPartFactory implements EditPartFactory {
-   private ODMEditor editor;
 
-   public ODMEditPartFactory(ODMEditor editor) {
-      this.editor = editor;
+   public ODMEditPartFactory() {
    }
 
    /*
@@ -32,15 +37,25 @@ public class ODMEditPartFactory implements EditPartFactory {
     */
    public EditPart createEditPart(EditPart context, Object model) {
       EditPart editPart = null;
-      if (model instanceof String) {
-         editPart = new LabelEditPart((String) model);
-      } else if (model instanceof ODMGraph) {
-         editPart = new GraphEditPart(editor.getViewer());
-      } else if (model instanceof DataType) {
-         editPart = new DataTypeEditPart(editor);
+      if (model instanceof ODMDiagram) {
+         editPart = new DiagramEditPart(model);
+      } else if (model instanceof ArtifactDataType) {
+         editPart = new ArtifactEditPart(model);
+      } else if (model instanceof RelationDataType) {
+         editPart = new RelationEditPart(model);
+      } else if (model instanceof AttributeDataType) {
+         editPart = new AttributeEditPart(model);
+      } else if (model instanceof ArtifactInternalsModel || model instanceof List) {
+         editPart = new InternalArtifactEditPart(model);
+      } else if (model instanceof ConnectionModel) {
+         editPart = new ConnectionEditPart(model);
+      } else if (model instanceof String) {
+         editPart = new StringEditPart((String) model);
       }
       if (editPart == null) {
-         throw new RuntimeException(String.format("Error no EditPart defined for: [%s]", model.getClass().getName()));
+         String message = String.format("Error no EditPart defined for: [%s]", model.getClass().getName());
+         editPart = new StringEditPart(message);
+         OseeLog.log(ODMEditorActivator.class, Level.SEVERE, message);
       } else {
          editPart.setModel(model);
       }

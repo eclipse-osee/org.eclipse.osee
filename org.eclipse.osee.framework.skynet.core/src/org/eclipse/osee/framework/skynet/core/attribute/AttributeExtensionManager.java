@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
@@ -116,5 +117,20 @@ public class AttributeExtensionManager {
    @Override
    public String toString() {
       return super.toString();
+   }
+
+   public static Set<String> getAttributeProviders() throws OseeStateException {
+      if (instance.attributeDataProviderClasses == null) {
+         instance.attributeDataProviderClasses =
+               instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
+      }
+      return instance.attributeDataProviderClasses.keySet();
+   }
+
+   public static Set<String> getAttributeClasses() throws OseeStateException {
+      if (instance.attributeTypeClasses == null) {
+         instance.attributeTypeClasses = instance.loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
+      }
+      return instance.attributeTypeClasses.keySet();
    }
 }

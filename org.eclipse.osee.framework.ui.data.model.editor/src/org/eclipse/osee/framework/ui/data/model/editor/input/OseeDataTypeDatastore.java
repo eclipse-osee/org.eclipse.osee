@@ -11,9 +11,7 @@
 package org.eclipse.osee.framework.ui.data.model.editor.input;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -21,6 +19,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKey;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -51,7 +50,7 @@ public class OseeDataTypeDatastore {
                new AttributeDataType(String.valueOf(attributeType.getAttrTypeId()), attributeType.getNamespace(),
                      attributeType.getName(), attributeType.getBaseAttributeClass().getCanonicalName(),
                      attributeType.getDefaultValue(), attributeType.getFileTypeExtension(),
-                     attributeType.getMinOccurrences(), attributeType.getMaxOccurrences(),
+                     attributeType.getMaxOccurrences(), attributeType.getMinOccurrences(),
                      attributeType.getProviderAttributeClass().getCanonicalName(), attributeType.getTaggerId(),
                      attributeType.getTipText(), attributeType.getValidityXml());
          attributeDataTypes.add(attributeDataType);
@@ -75,17 +74,16 @@ public class OseeDataTypeDatastore {
    public static List<ArtifactDataType> getArtifactDataTypes() throws OseeDataStoreException {
       List<ArtifactDataType> artifactDataTypes = new ArrayList<ArtifactDataType>();
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
-         String factoryName = "";
          ArtifactDataType artifactDataType =
                new ArtifactDataType(String.valueOf(artifactType.getArtTypeId()), artifactType.getNamespace(),
-                     artifactType.getName(), "", factoryName, artifactType.getImage());
+                     artifactType.getName(), artifactType.getImage());
          artifactDataTypes.add(artifactDataType);
       }
       return artifactDataTypes;
    }
 
-   public static Map<String, String> getArtifactToAttributeEntries() throws OseeCoreException {
-      Map<String, String> toReturn = new HashMap<String, String>();
+   public static HashCollection<String, String> getArtifactToAttributeEntries() throws OseeCoreException {
+      HashCollection<String, String> toReturn = new HashCollection<String, String>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_ATTRIBUTE_VALIDITY);
@@ -118,6 +116,24 @@ public class OseeDataTypeDatastore {
                      new ObjectPair<Integer, Integer>(chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max"));
 
                toReturn.put(key, multiplicity);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            }
+         }
+      } finally {
+         chStmt.close();
+      }
+      return toReturn;
+   }
+
+   public static HashCollection<String, String> getArtifactInheritance() throws OseeCoreException {
+      HashCollection<String, String> toReturn = new HashCollection<String, String>();
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery(2000, "select * from osee_artifact_type_inheritance");
+         while (chStmt.next()) {
+            try {
+               toReturn.put(chStmt.getString("art_type_ancestor_id"), chStmt.getString("art_type_descendant_id"));
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }

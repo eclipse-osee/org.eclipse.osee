@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.data.model.editor;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
+import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditorInput;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractSelectionChangedHandler;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;

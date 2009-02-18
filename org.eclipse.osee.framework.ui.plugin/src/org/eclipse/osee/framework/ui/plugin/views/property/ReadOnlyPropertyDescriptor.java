@@ -8,27 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.data.model.editor.part;
+package org.eclipse.osee.framework.ui.plugin.views.property;
 
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-/**
- * @author Roberto E. Escobar
- */
-public class LabelEditPart extends AbstractGraphicalEditPart {
+public class ReadOnlyPropertyDescriptor extends PropertyDescriptor {
 
-   private final String data;
-
-   public LabelEditPart(String data) {
-      this.data = data;
+   public ReadOnlyPropertyDescriptor(PropertyId propertyId) {
+      super(propertyId, propertyId.getDisplayName());
+      setCategory(propertyId.getCategoryName());
    }
 
-   protected IFigure createFigure() {
-      return new Label(data);
+   public static String fromModel(Object object) {
+      return object != null ? object.toString() : "";
    }
 
-   protected void createEditPolicies() {
-   }
 }

@@ -10,31 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
-
 /**
  * @author Roberto E. Escobar
  */
-public class ODMImageRegistry {
+public interface IModelListener {
 
-   private Map<String, Image> imageMap;
-
-   public ODMImageRegistry() {
-      this.imageMap = new HashMap<String, Image>();
-   }
-
-   public Image getImage(String imageName) {
-      return imageMap.get(imageName);
-   }
-
-   public void addImage(String id, ImageDescriptor imageDescriptor) {
-      imageMap.put(id, imageDescriptor.createImage());
-   }
-
-   public void clear() {
-      imageMap.clear();
-   }
+   public void onModelEvent(Object object);
 }

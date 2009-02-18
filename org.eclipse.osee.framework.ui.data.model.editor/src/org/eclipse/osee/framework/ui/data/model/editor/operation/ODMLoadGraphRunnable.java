@@ -15,14 +15,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditor;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorInput;
+import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
+import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditorInput;
 import org.eclipse.osee.framework.ui.data.model.editor.input.OseeDataTypeFactory;
-import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
-import org.eclipse.osee.framework.ui.data.model.editor.model.ODMGraph;
-import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource.TypeManager;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.swt.widgets.Display;
@@ -37,7 +35,6 @@ public class ODMLoadGraphRunnable implements IExceptionableRunnable {
    private GraphicalViewer viewer;
    private ODMEditor editor;
    private ODMEditorInput input;
-   private ODMGraph graph;
 
    private static final int TOTAL_STEPS = Integer.MAX_VALUE;
    private static final int SHORT_TASK_STEPS = TOTAL_STEPS / 50; // 2%
@@ -107,14 +104,16 @@ public class ODMLoadGraphRunnable implements IExceptionableRunnable {
          unitWork = 1;
       }
       monitor.setTaskName("Calculating graph");
-      graph = new ODMGraph(dataTypeCache);
-      String id = dataTypeCache.getDataTypeSourceIds().iterator().next();
-      DataTypeSource source = dataTypeCache.getDataTypeSourceById(id);
+      final ODMDiagram graph = new ODMDiagram(dataTypeCache);
+      //      String id = dataTypeCache.getDataTypeSourceIds().iterator().next();
+      //      DataTypeSource source = dataTypeCache.getDataTypeSourceById(id);
 
-      TypeManager<ArtifactDataType> manager = source.getArtifactTypeManager();
-      ArtifactDataType artifact = manager.getAll().iterator().next();
+      //      TypeManager<ArtifactDataType> manager = source.getArtifactTypeManager();
+      //      ArtifactDataType artifact = manager.getAll().iterator().next();
+      //
+      //      graph.add(artifact);
+      //      graph.add(artifact.getParent());
 
-      graph.add(artifact);
       monitor.setTaskName("Drawing graph");
 
       Display.getDefault().syncExec(new Runnable() {

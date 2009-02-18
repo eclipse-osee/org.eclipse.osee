@@ -13,12 +13,11 @@ package org.eclipse.osee.framework.ui.data.model.editor.model;
 /**
  * @author Roberto E. Escobar
  */
-public class DataType extends BaseModel {
-   private static final long serialVersionUID = -8671180063714913643L;
+public class DataType extends NodeModel {
    protected static final String EMPTY_STRING = "";
    private String name;
    private String namespace;
-   private String typeId;
+   private String uniqueId;
 
    public DataType() {
       this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING);
@@ -30,7 +29,7 @@ public class DataType extends BaseModel {
 
    public DataType(String typeId, String namespace, String name) {
       super();
-      this.typeId = typeId;
+      this.uniqueId = typeId;
       this.namespace = namespace;
       this.name = name;
    }
@@ -67,14 +66,13 @@ public class DataType extends BaseModel {
     * @return the typeId
     */
    public String getUniqueId() {
-      return typeId;
+      return uniqueId;
    }
 
    /**
     * @param typeId the typeId to set
     */
    public void setUniqueId(String typeId) {
-      this.typeId = typeId;
+      this.uniqueId = typeId;
    }
-
 }

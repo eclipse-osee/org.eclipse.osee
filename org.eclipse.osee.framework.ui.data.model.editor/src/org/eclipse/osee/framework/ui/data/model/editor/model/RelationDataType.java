@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.ui.data.model.editor.model;
  */
 public class RelationDataType extends DataType {
 
-   private static final long serialVersionUID = 6042448405691706291L;
    private String sideAName;
    private String sideBName;
    private String aToBPhrase;

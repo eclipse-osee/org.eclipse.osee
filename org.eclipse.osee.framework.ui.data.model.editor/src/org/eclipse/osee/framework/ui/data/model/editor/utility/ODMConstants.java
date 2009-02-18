@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.utility;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Roberto E. Escobar
@@ -24,18 +21,17 @@ import org.eclipse.swt.graphics.Image;
 public class ODMConstants {
 
    public static final String DEFAULT_NAMESPACE = "default";
-
-   public static final Color FONT_COLOR = new Color(null, 1, 70, 122);
-   public static final Color CONNECTION_COLOR = new Color(null, 172, 182, 198);
-   public static final Color CLASS_BG_COLOR = new Color(null, 242, 240, 255);
-   public static final Font BOLD = new Font(null, "", 10, SWT.BOLD);
    public static final Font HEADER_FONT = JFaceResources.getTextFont();
 
-   public static Image getImage(String imageName) {
-      return ODMEditorActivator.getInstance().getImage(imageName);
+   private static String getNamespace(DataType dataType) {
+      String namespace = dataType.getNamespace();
+      if (!Strings.isValid(namespace) || namespace.equals("null") || namespace.equals(ODMConstants.DEFAULT_NAMESPACE)) {
+         namespace = "<<" + ODMConstants.DEFAULT_NAMESPACE + ">>";
+      }
+      return namespace;
    }
 
-   public static ImageDescriptor getImageDescriptor(String imageName) {
-      return ODMEditorActivator.getInstance().getImageDescriptor(imageName);
+   public static String getDataTypeText(DataType dataType) {
+      return String.format("%s:%s", getNamespace(dataType), dataType.getName());
    }
 }
