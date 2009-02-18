@@ -54,6 +54,7 @@ public class TaskXViewer extends WorldXViewer {
    private final TaskComposite xTaskViewer;
    private final IDirtiableEditor editor;
    private boolean tasksEditable = true;
+   private boolean addDeleteTaskEnabled = false;
    private static String viewerId = GUID.generateGuidStr();
 
    /**
@@ -317,10 +318,10 @@ public class TaskXViewer extends WorldXViewer {
 
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_OPEN, new Separator());
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_OPEN, addNewTaskAction);
-      addNewTaskAction.setEnabled(isTasksEditable());
+      addNewTaskAction.setEnabled(isTasksEditable() && addDeleteTaskEnabled);
 
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_OPEN, deleteTasksAction);
-      deleteTasksAction.setEnabled(isTasksEditable() && getSelectedTaskArtifacts().size() > 0);
+      deleteTasksAction.setEnabled(isTasksEditable() && addDeleteTaskEnabled && getSelectedTaskArtifacts().size() > 0);
 
    }
 
@@ -488,6 +489,20 @@ public class TaskXViewer extends WorldXViewer {
             }
          }
       });
+   }
+
+   /**
+    * @return the addDeleteTaskEnabled
+    */
+   public boolean isAddDeleteTaskEnabled() {
+      return addDeleteTaskEnabled;
+   }
+
+   /**
+    * @param addDeleteTaskEnabled the addDeleteTaskEnabled to set
+    */
+   public void setAddDeleteTaskEnabled(boolean addDeleteTaskEnabled) {
+      this.addDeleteTaskEnabled = addDeleteTaskEnabled;
    }
 
 }

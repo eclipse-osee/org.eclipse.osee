@@ -125,6 +125,7 @@ public class TaskComposite extends Composite implements IActionable {
          taskXViewer =
                new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
          taskXViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
+         taskXViewer.setAddDeleteTaskEnabled(iXTaskViewer.isTaskable());
          taskXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
          taskXViewer.setContentProvider(new WorldContentProvider(taskXViewer));
