@@ -1,0 +1,1 @@
+java -Dosee.log.default=INFO -Dorg.osgi.service.http.port=8089 -Dosgi.compatibility.bootdelegation=true -Xmx512m  -Dequinox.ds.debug=true -Dosee.connection.info.uri="<FILE PATH HERE>" -Dosee.db.connection.id=<DB ID HERE> -jar org.eclipse.osgi_3.4.0.v20080326.jar -console 
