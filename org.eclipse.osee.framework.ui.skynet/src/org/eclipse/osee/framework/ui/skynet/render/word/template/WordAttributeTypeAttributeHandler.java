@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -46,7 +47,7 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
                   "ns0:guid=\"" + artifact.getGuid() + "\"", "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"",
                   attribute.toString());
          } else {
-            wordMl.addWordMl(attribute.toString());
+            wordMl.addWordMl(Xml.escape(attribute.toString()));
          }
          wordMl.resetListValue();
       }
