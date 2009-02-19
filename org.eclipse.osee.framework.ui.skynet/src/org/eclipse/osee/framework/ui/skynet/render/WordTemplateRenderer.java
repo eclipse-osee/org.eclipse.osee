@@ -249,21 +249,28 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       Pair<String, Boolean> originalValue = null;
       Pair<String, Boolean> newAnnotationValue = null;
       Pair<String, Boolean> oldAnnotationValue = null;
+
       if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
-         Attribute attribute = baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-         if (baseVersion != null && attribute != null) {
-            String value = attribute.getValue().toString();
-            if (WordAnnotationHandler.containsWordAnnotations(value)) {
-               oldAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
-               attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+         Attribute attribute = null;
+
+         if (baseVersion != null) {
+            attribute = baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+            if (attribute != null) {
+               String value = attribute.getValue().toString();
+               if (WordAnnotationHandler.containsWordAnnotations(value)) {
+                  oldAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
+                  attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+               }
             }
          }
-         attribute = newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-         if (newerVersion != null && attribute != null) {
-            String value = attribute.getValue().toString();
-            if (WordAnnotationHandler.containsWordAnnotations(value)) {
-               newAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
-               attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+         if (newerVersion != null) {
+            attribute = newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+            if (attribute != null) {
+               String value = attribute.getValue().toString();
+               if (WordAnnotationHandler.containsWordAnnotations(value)) {
+                  newAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
+                  attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+               }
             }
          }
       }
