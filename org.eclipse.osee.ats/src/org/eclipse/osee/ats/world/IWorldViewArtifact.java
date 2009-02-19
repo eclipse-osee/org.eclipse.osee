@@ -169,4 +169,6 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException;
 
+   public String getWorldViewActionsIntiatingWorkflow() throws OseeCoreException;
+
 }

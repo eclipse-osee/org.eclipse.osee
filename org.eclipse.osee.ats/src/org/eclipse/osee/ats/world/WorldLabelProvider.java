@@ -112,7 +112,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) return wva.getWorldViewTargetedVersionStr();
          if (xCol.equals(WorldXViewerFactory.Notes_Col)) return wva.getWorldViewNotes();
 
-         if (xCol.equals(WorldXViewerFactory.Artifact_Type_Col)) return ((Artifact) wva).getArtifactTypeName();
          if (xCol.equals(WorldXViewerFactory.Resolution_Col)) return wva.getWorldViewResolution();
          if (xCol.equals(WorldXViewerFactory.Groups_Col)) return wva.getWorldViewGroups();
          if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) return wva.getWorldViewLegacyPCR();
@@ -165,6 +164,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Review_Moderator_Col)) return wva.getWorldViewReviewModerator();
          if (xCol.equals(WorldXViewerFactory.Review_Reviewer_Col)) return wva.getWorldViewReviewReviewer();
          if (xCol.equals(WorldXViewerFactory.Review_Decider_Col)) return wva.getWorldViewReviewDecider();
+         if (xCol.equals(WorldXViewerFactory.Actions_Initiating_Workflow_Col)) return wva.getWorldViewActionsIntiatingWorkflow();
          if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) return AtsLib.doubleToStrString(
                wva.getWorldViewWeeklyBenefit(), true);
          if (xCol.equals(WorldXViewerFactory.Annual_Cost_Avoidance_Col)) {
@@ -177,6 +177,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             if (result.isFalse()) return result.getText();
             return AtsLib.doubleToStrString(wva.getWorldViewManDaysNeeded());
          }
+         if (xCol.equals(WorldXViewerFactory.Artifact_Type_Col)) return ((Artifact) wva).getArtifactTypeName();
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
             if (item.isXColumnProvider(xCol)) {
                String text = item.getColumnText(element, xCol, columnIndex);

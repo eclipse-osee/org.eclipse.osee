@@ -11,10 +11,12 @@
 
 package org.eclipse.osee.ats.artifact;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -1254,4 +1256,20 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return "";
    }
 
+   @Override
+   public String getWorldViewActionsIntiatingWorkflow() throws OseeCoreException {
+      Date earliestDate = null;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (earliestDate == null || team.getSmaMgr().getLog().getCreationDate().before(earliestDate)) {
+            earliestDate = team.getSmaMgr().getLog().getCreationDate();
+         }
+      }
+      List<String> teamNames = new ArrayList<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (team.getSmaMgr().getLog().getCreationDate().equals(earliestDate)) {
+            teamNames.add(team.getTeamName());
+         }
+      }
+      return Collections.toString("; ", teamNames);
+   }
 }
