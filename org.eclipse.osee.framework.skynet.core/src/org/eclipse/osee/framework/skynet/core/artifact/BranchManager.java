@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -49,20 +48,16 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
-import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
+import org.osgi.framework.Bundle;
 
 public class BranchManager {
    private static final BranchManager instance = new BranchManager();
@@ -364,25 +359,32 @@ public class BranchManager {
       if (conflictManager.remainingConflictsExist() && !overwriteUnresolvedConflicts) {
          throw new OseeCoreException("Commit failed due to unresolved conflicts");
       }
-      //Check that none of the artifacts that will be commited contain tracked changes
-      //Use the change report to get attributeChanges and check their content for trackedChanges
-      for (Change change : ChangeManager.getChangesPerBranch(conflictManager.getFromBranch(), new EmptyMonitor())) {
-         if (!change.getModificationType().equals(ModificationType.DELETED)) {
-            if (change instanceof AttributeChanged) {
-               Attribute<?> attribute = ((AttributeChanged) change).getAttribute();
-               if (attribute instanceof WordAttribute) {
-                  if (((WordAttribute) attribute).containsWordAnnotations()) {
-                     throw new OseeCoreException(
-                           String.format(
-                                 "Commit Branch Failed Artifact \"%s\" Art_ID \"%d\" contains Tracked Changes Accept all revision changes and then recommit",
-                                 attribute.getArtifact().getSafeName(), attribute.getArtifact().getArtId()));
+
+      runCommitExtPointActions(conflictManager.getFromBranch());
+      new CommitDbTx(conflictManager, archiveSourceBranch).execute();
+   }
+
+   private static void runCommitExtPointActions(Branch branch) {
+      if (branch != null) {
+         IExtensionPoint point =
+               Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.CommitActions");
+         for (IExtension extension : point.getExtensions()) {
+            for (IConfigurationElement element : extension.getConfigurationElements()) {
+               String classname = element.getAttribute("className");
+               String bundleName = element.getContributor().getName();
+               if (classname != null && bundleName != null) {
+                  Bundle bundle = Platform.getBundle(bundleName);
+                  try {
+                     Class<?> taskClass = bundle.loadClass(classname);
+                     ((CommitAction) taskClass.newInstance()).runCommitAction(branch);
+                  } catch (Exception ex) {
+                     OseeLog.log(SkynetActivator.class, Level.SEVERE, "Unable to create Commit Action: " + classname,
+                           ex);
                   }
                }
             }
          }
       }
-
-      new CommitDbTx(conflictManager, archiveSourceBranch).execute();
    }
 
    public static boolean isBranchInCommit(Branch branch) {
@@ -408,14 +410,6 @@ public class BranchManager {
    public static void archive(Branch branch) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
       branch.setArchived(true);
-      validateDefaultBranch();
-   }
-
-   public static void validateDefaultBranch() throws OseeCoreException {
-      Branch defaultBranch = getDefaultBranch();
-      if (defaultBranch.isArchived() || defaultBranch.isDeleted()) {
-         setDefaultBranch(defaultBranch.hasParentBranch() ? defaultBranch.getParentBranch() : getCommonBranch());
-      }
    }
 
    /**

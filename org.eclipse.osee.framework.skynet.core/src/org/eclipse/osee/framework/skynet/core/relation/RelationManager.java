@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -569,6 +570,29 @@ public class RelationManager {
       }
    }
 
+   /**
+    * This method should only be called for unordered Relation Types. It does not handle reordering relation types that
+    * maintain order.
+    * 
+    * @param artifact
+    * @param relationType
+    * @param relationSide
+    * @throws OseeCoreException
+    */
+   public static void revertRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
+      if (selectedRelations != null) {
+         for (RelationLink relation : selectedRelations) {
+            if (relationSide == null) {
+               ArtifactPersistenceManager.revertRelationLink(null, relation);
+            } else {
+               if (relation.getSide(artifact) != relationSide) {
+                  ArtifactPersistenceManager.revertRelationLink(null, relation);
+               }
+            }
+         }
+      }
+   }
    /**
     * Remove all relations stored in the list awaiting to be deleted.
     * 

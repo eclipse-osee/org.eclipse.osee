@@ -16,6 +16,7 @@
    <extension-point id="AttributeDataProvider" name="AttributeDataProvider" schema="schema/AttributeDataProvider.exsd"/>
    <extension-point id="OseeDbImportData" name="OseeDbImportData" schema="schema/OseeDbImportData.exsd"/>
    <extension-point id="ClientLoopbackCmd" name="ClientLoopbackCmd" schema="schema/ClientLoopbackCmd.exsd"/>
+   <extension-point id="CommitActions" name="CommitActions" schema="schema/CommitActions.exsd"/>
    
       <extension
             id="SkynetDbInit"
@@ -335,4 +336,12 @@
            classname="org.eclipse.osee.framework.skynet.core.httpRequests.ClientLoopbackHandler">
      </IHttpServerRequest>
   </extension>
+        <extension
+              id="CatchTrackedChanges"
+              name="CatchTrackedChanges"
+              point="org.eclipse.osee.framework.skynet.core.CommitActions">
+           <commitActions
+                 className="org.eclipse.osee.framework.skynet.core.commit.actions.CatchTrackedChanges">
+           </commitActions>
+        </extension>
 </plugin>
