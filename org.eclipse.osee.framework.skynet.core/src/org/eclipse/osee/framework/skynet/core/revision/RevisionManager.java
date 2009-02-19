@@ -224,29 +224,29 @@ public class RevisionManager {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       final Integer artId = artifact.getArtId();
-      Branch cursor = artifact.getBranch();
+      Branch branch = artifact.getBranch();
       Integer limit = Integer.MAX_VALUE;
 
-      while (cursor != null) {
+      while (branch != null) {
          try {
-            int branchId = cursor.getBranchId();
+            int branchId = branch.getBranchId();
             chStmt.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, artId, branchId, artId, branchId, artId,
                   branchId, limit);
 
             while (chStmt.next()) {
                transactionDetails.add(new TransactionData(chStmt.getString(TXD_COMMENT), chStmt.getTimestamp("time"),
-                     chStmt.getInt("author"), chStmt.getInt("transaction_id"), artId, cursor,
+                     chStmt.getInt("author"), chStmt.getInt("transaction_id"), artId, branch,
                      chStmt.getInt("commit_art_id")));
             }
          } finally {
             chStmt.close();
          }
 
-         if (includeAncestry && cursor.hasParentBranch()) {
-            cursor = cursor.getParentBranch();
+         if (includeAncestry && branch.hasParentBranch()) {
+            branch = branch.getParentBranch();
             limit = transactionDetails.get(transactionDetails.size() - 1).getTransactionNumber();
          } else {
-            cursor = null;
+            branch = null;
          }
       }
       return transactionDetails;
