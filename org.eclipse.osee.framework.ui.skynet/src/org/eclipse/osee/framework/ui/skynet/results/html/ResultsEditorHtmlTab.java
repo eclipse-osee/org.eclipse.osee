@@ -29,7 +29,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -43,7 +42,6 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
    private static String HELP_CONTEXT_ID = "xResultView";
    private ResultsEditor resultsEditor;
    private final XResultPage xResultPage;
-   private Label infoLabel;
 
    public ResultsEditorHtmlTab(XResultPage xResultPage) {
       this.xResultPage = xResultPage;
@@ -79,12 +77,6 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
       Composite comp = ALayout.createCommonPageComposite(parent);
       ToolBar toolBar = resultsEditor.createToolBar(comp);
       createToolbar(toolBar);
-
-      infoLabel = new Label(comp, SWT.NONE);
-      StringBuffer sb = new StringBuffer();
-      sb.append(String.format("Errors: %s    Warnings: %s", xResultPage.getNumErrors(), xResultPage.getNumWarnings()));
-      infoLabel.setText(sb.toString());
-      infoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       GridData gd = new GridData(GridData.FILL_BOTH);
       xResultsComposite = new XResultsComposite(comp, SWT.BORDER);
