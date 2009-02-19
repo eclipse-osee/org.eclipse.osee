@@ -77,6 +77,18 @@
 		</Index>
 	</Table>
 
+	<Table name="OSEE_ARTIFACT_TYPE_INHERITANCE" schema="OSEE" tablespace="osee_data">
+		<Column id="ART_TYPE_ANCESTOR_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ART_TYPE_DESCENDANT_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_ART_TYPE_INHERIT_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ANCESTOR_ID, ART_TYPE_DESCENDANT_ID" />
+		<Constraint schema="OSEE" id="OSEE_ART_INHERIT_PARENT_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ANCESTOR_ID">
+			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="OSEE_ART_INHERIT_CHILD_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_DESCENDANT_ID">
+			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
+	</Table>
+
 	<Table name="OSEE_ATTRIBUTE" schema="OSEE" tablespace="osee_data">
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
