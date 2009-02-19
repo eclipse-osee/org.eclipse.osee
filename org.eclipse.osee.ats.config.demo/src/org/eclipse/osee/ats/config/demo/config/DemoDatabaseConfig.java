@@ -122,7 +122,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       List<String> skynetTypeImport = new ArrayList<String>();
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramAndCommon");
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramBranch");
-      skynetTypeImport.add("org.eclipse.osee.ats.config.demo.Demo_Program_Skynet_Types");
+      skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
 
       BranchManager.createRootBranch(null, branchName, branchName, skynetTypeImport, true);
    }

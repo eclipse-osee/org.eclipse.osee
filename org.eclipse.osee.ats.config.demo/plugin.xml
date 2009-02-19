@@ -52,11 +52,11 @@
       </DatabaseTask>
    </extension>
    <extension
-         id="Demo_Common_Skynet_Types"
-         name="Demo_Common_Skynet_Types"
+         id="OseeTypes_DemoCommon"
+         name="OseeTypes_DemoCommon"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <ExcelFile
-            file="support/Demo_Common_Skynet_Types.xml">
+            file="support/OseeTypes_DemoCommon.xml">
       </ExcelFile>
    </extension>
    <extension
@@ -72,11 +72,11 @@
       </ArtifactFactory>
    </extension>
    <extension
-         id="Demo_Program_Skynet_Types"
-         name="Demo_Program_Skynet_Types"
+         id="OseeTypes_DemoProgram"
+         name="OseeTypes_DemoProgram"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <ExcelFile
-            file="support/Demo_Program_Skynet_Types.xml">
+            file="support/OseeTypes_DemoProgram.xml">
       </ExcelFile>
    </extension>
 

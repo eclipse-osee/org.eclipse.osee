@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
@@ -316,5 +317,43 @@ public class ArtifactTypeManager {
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, artTypeId);
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, artTypeId);
       ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE, artTypeId);
+   }
+
+   /**
+    * Given a set of artifact types, they will be converted to the new artifact type and the old artifact types will be
+    * purged
+    * 
+    * @param purgeArtifactTypes types to be converted and purged
+    * @param newArtifactType new type to convert any existing artifacts of the old type
+    * @throws OseeCoreException
+    */
+   public static void purgeArtifactTypesWithConversion(Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
+      try {
+         for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
+            // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
+            List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(purgeArtifactType, true);
+            if (artifacts.size() > 0) {
+               HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
+               for (Artifact artifact : artifacts) {
+                  artifactMap.put(artifact.getArtId(), artifact);
+               }
+               changeArtifactType(artifactMap.values(), newArtifactType);
+            }
+            ArtifactTypeManager.purgeArtifactType(purgeArtifactType);
+         }
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
+
+   }
+
+   /**
+    * Changes the descriptor of the artifacts to the provided artifact descriptor
+    * 
+    * @param artifacts
+    * @param artifactType
+    */
+   public static void changeArtifactType(Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
+      new ChangeArtifactType().changeArtifactType(artifacts, artifactType);
    }
 }

@@ -11,13 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -33,18 +29,7 @@ public class PurgeArtifactType extends AbstractBlam {
             variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to purge");
       ArtifactType newArtifactType = variableMap.getArtifactType("New Artifact Type");
 
-      for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
-         // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(purgeArtifactType, true);
-         if (artifacts.size() > 0) {
-            HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
-            for (Artifact artifact : artifacts) {
-               artifactMap.put(artifact.getArtId(), artifact);
-            }
-            new ChangeArtifactType().processChange(artifactMap.values(), newArtifactType);
-         }
-         ArtifactTypeManager.purgeArtifactType(purgeArtifactType);
-      }
+      ArtifactTypeManager.purgeArtifactTypesWithConversion(purgeArtifactTypes, newArtifactType);
    }
 
    /*

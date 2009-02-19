@@ -8,18 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.blam.operation;
+package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -28,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -36,13 +32,9 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author Jeff C. Phillips
  */
-public class ChangeArtifactType extends AbstractBlam {
-   private List<Attribute<?>> attributesToPurge;
-   private List<RelationLink> relationsToDelete;
-
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      processChange(variableMap.getArtifacts("artifacts"), variableMap.getArtifactType("New Artifact Type"));
-   }
+public class ChangeArtifactType {
+   private static List<Attribute<?>> attributesToPurge;
+   private static List<RelationLink> relationsToDelete;
 
    /**
     * Changes the descriptor of the artifacts to the provided artifact descriptor
@@ -50,7 +42,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param artifacts
     * @param artifactType
     */
-   public void processChange(Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
+   public static void changeArtifactType(Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
       if (artifacts.isEmpty()) {
          throw new OseeArgumentException("The artifact list can not be empty");
       }
@@ -65,7 +57,8 @@ public class ChangeArtifactType extends AbstractBlam {
       }
 
       // Kick Local and Remote Events
-      OseeEventManager.kickArtifactsChangeTypeEvent(this, artifactType.getArtTypeId(), new LoadedArtifacts(artifacts));
+      OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getArtTypeId(),
+            new LoadedArtifacts(artifacts));
    }
 
    /**
@@ -75,7 +68,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param artifact
     * @param descriptor
     */
-   private void processAttributes(Artifact artifact, ArtifactType descriptor) throws OseeCoreException {
+   private static void processAttributes(Artifact artifact, ArtifactType descriptor) throws OseeCoreException {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
       Collection<AttributeType> attributeTypes =
@@ -95,7 +88,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param artifact
     * @param artifactType
     */
-   private void processRelations(Artifact artifact, ArtifactType artifactType) {
+   private static void processRelations(Artifact artifact, ArtifactType artifactType) {
       relationsToDelete = new LinkedList<RelationLink>();
 
       for (RelationLink link : artifact.getRelationsAll(false)) {
@@ -111,7 +104,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @return true if the user accepts the purging of the attributes and relations that are not compatible for the new
     *         artifact type else false.
     */
-   private boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType descriptor) {
+   private static boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType descriptor) {
       if (!relationsToDelete.isEmpty() || !attributesToPurge.isEmpty()) {
          ArtifactChangeMessageRunnable messageRunnable = new ArtifactChangeMessageRunnable(artifact, descriptor);
          Displays.ensureInDisplayThread(messageRunnable, true);
@@ -121,7 +114,7 @@ public class ChangeArtifactType extends AbstractBlam {
       }
    }
 
-   private class ArtifactChangeMessageRunnable implements Runnable {
+   private static class ArtifactChangeMessageRunnable implements Runnable {
       private boolean accept = false;
       private final Artifact artifact;
       private final ArtifactType descriptor;
@@ -156,7 +149,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param artifactType
     * @throws OseeCoreException
     */
-   private void changeArtifactType(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
+   private static void changeArtifactType(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
       for (Attribute<?> attribute : attributesToPurge) {
          attribute.purge();
       }
@@ -168,13 +161,4 @@ public class ChangeArtifactType extends AbstractBlam {
       artifact.changeArtifactType(artifactType);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
-   @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
-   }
 }
