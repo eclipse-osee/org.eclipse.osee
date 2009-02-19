@@ -236,6 +236,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Review_Issues =
          new XViewerColumn(COLUMN_NAMESPACE + ".reviewIssues", "Review Issues", 40, SWT.CENTER, false,
                SortDataType.Integer, false, "Number of Issues found in Review");
+   public static final XViewerColumn Artifact_Type_Col =
+         new XViewerColumn("ats.column.artType", "Artifact Type", 150, SWT.LEFT, false, SortDataType.String, false,
+               null);
    public static final XViewerColumn[] WorldViewColumns =
          new XViewerColumn[] {Type_Col, State_Col, Priority_Col, Change_Type_Col, Assignees_Col, Title_Col,
                Actionable_Items_Col, User_Community_Col, ID_Col, Created_Date_Col, Version_Target_Col, Team_Col,
@@ -248,7 +251,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                Total_Hours_Spent_Col, Originator_Col, Implementor_Col, Review_Author_Col, Review_Moderator_Col,
                Review_Reviewer_Col, Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Man_Days_Needed_Col,
                Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col,
-               Validation_Required_Col, Review_Major_Defects, Review_Minor_Defects, Review_Issues};
+               Validation_Required_Col, Review_Major_Defects, Review_Minor_Defects, Review_Issues, Artifact_Type_Col};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {

@@ -50,6 +50,8 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             return wva.getAssigneeImage();
          else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
             if (wva.isWorldViewDeadlineAlerting().isTrue()) return AtsPlugin.getInstance().getImage("warn.gif");
+         } else if (xCol.equals(WorldXViewerFactory.Artifact_Type_Col)) {
+            return ((Artifact) wva).getImage();
          }
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
             if (item.isXColumnProvider(xCol)) {
@@ -110,6 +112,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) return wva.getWorldViewTargetedVersionStr();
          if (xCol.equals(WorldXViewerFactory.Notes_Col)) return wva.getWorldViewNotes();
 
+         if (xCol.equals(WorldXViewerFactory.Artifact_Type_Col)) return ((Artifact) wva).getArtifactTypeName();
          if (xCol.equals(WorldXViewerFactory.Resolution_Col)) return wva.getWorldViewResolution();
          if (xCol.equals(WorldXViewerFactory.Groups_Col)) return wva.getWorldViewGroups();
          if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) return wva.getWorldViewLegacyPCR();
