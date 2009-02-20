@@ -11,63 +11,37 @@
 package org.eclipse.osee.framework.ui.data.model.editor.part;
 
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Label;
-import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.editpolicies.DirectEditPolicy;
-import org.eclipse.gef.requests.DirectEditRequest;
-import org.eclipse.osee.framework.ui.data.model.editor.command.ChangeNameCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
-import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.InternalEnum;
+import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.ComponentType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeEditPart extends BaseEditPart {
+public class AttributeEditPart extends ComponentEditPart {
 
    public AttributeEditPart(Object model) {
       super((AttributeDataType) model);
    }
 
-   protected DirectEditPolicy createDirectEditPolicy() {
-      return new DirectEditPolicy() {
-         protected Command getDirectEditCommand(DirectEditRequest request) {
-            return new ChangeNameCommand(getAttributeDataType(), (String) request.getCellEditor().getValue());
-         }
-
-         protected void showCurrentEditValue(DirectEditRequest request) {
-            ((Label) getFigure()).setText((String) request.getCellEditor().getValue());
-            getFigure().getUpdateManager().performUpdate();
-         }
-      };
-   }
-
-   private AttributeDataType getAttributeDataType() {
-      return (AttributeDataType) getModel();
-   }
-
-   protected String getDirectEditText() {
-      return getAttributeDataType().getName();
-   }
-
-   protected void handleModelEvent(Object msg) {
-      refreshVisuals();
+   @Override
+   protected boolean isInherited() {
+      ComponentType value = getComponentType();
+      return value != null && value == ComponentType.INHERITED_ATTRIBUTES;
    }
 
    protected void refreshVisuals() {
       SelectableLabel labelFigure = (SelectableLabel) getFigure();
-      String displayText = ODMConstants.getDataTypeText(getAttributeDataType());
+      String displayText = ODMConstants.getDataTypeText(getModelAsDataType());
       labelFigure.setText(displayText);
-      labelFigure.setIcon(ODMImages.getImage(ODMImages.ATTRIBUTE_ENTRY));
+      labelFigure.setIcon(ODMImages.getImage(ODMImages.LOCAL_ATTRIBUTE));
       labelFigure.setSelectable(true);
 
-      InternalArtifactEditPart internalArtifactEditPart = ((InternalArtifactEditPart) getParent());
-      InternalEnum value = internalArtifactEditPart.getInternalType();
-      if (value != null && value == InternalEnum.INHERITED_ATTRIBUTES) {
+      if (isInherited()) {
          labelFigure.setBackgroundColor(ColorConstants.tooltipBackground);
-         labelFigure.setIcon(ODMImages.getImage(ODMImages.INHERITANCE));
+         labelFigure.setIcon(ODMImages.getImage(ODMImages.INHERITED_ATTRIBUTE));
          labelFigure.setSelectable(false);
       }
    }

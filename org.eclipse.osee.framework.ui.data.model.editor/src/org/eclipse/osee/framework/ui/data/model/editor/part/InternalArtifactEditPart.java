@@ -15,7 +15,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.CompartmentFigure;
 import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel;
-import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.InternalEnum;
+import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.ComponentType;
 
 /**
  * @author Roberto E. Escobar
@@ -47,7 +47,7 @@ public class InternalArtifactEditPart extends AbstractGraphicalEditPart {
       return false;
    }
 
-   public InternalEnum getInternalType() {
+   public ComponentType getComponentType() {
       if (getModel() instanceof ArtifactInternalsModel) {
          return ((ArtifactInternalsModel) getModel()).getInternalDescription();
       }

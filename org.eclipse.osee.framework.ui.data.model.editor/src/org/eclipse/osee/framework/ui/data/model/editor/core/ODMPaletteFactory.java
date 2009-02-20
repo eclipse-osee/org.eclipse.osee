@@ -136,14 +136,14 @@ public class ODMPaletteFactory {
    }
 
    private CombinedTemplateCreationEntry createAttributeDataTypeToolEntry(AttributeDataType dataType) {
-      ImageDescriptor image = ODMImages.getImageDescriptor(ODMImages.ATTRIBUTE_ENTRY);
+      ImageDescriptor image = ODMImages.getImageDescriptor(ODMImages.LOCAL_ATTRIBUTE);
       CreationFactory factory = new SimpleFactory(AttributeDataType.class);
       return new CombinedTemplateCreationEntry(dataType.getName(),
             "Add attribute data type to an existing artifact type", factory, factory, image, image);
    }
 
    private CombinedTemplateCreationEntry createRelationDataTypeToolEntry(RelationDataType dataType) {
-      ImageDescriptor image = ODMImages.getImageDescriptor(ODMImages.RELATION_ENTRY);
+      ImageDescriptor image = ODMImages.getImageDescriptor(ODMImages.LOCAL_RELATION);
       CreationFactory factory = new SimpleFactory(RelationDataType.class);
       return new CombinedTemplateCreationEntry(dataType.getName(),
             "Add a new relation type to an existing artifact type", factory, factory, image, image);

@@ -15,11 +15,12 @@ import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.osee.framework.ui.data.model.editor.command.CreateAttributeCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.command.CreateRelationCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.ArtifactTypeFigure;
+import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
-import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.InternalEnum;
+import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.ComponentType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 
 /**
@@ -99,7 +100,7 @@ public class ArtifactEditPart extends DataTypeEditPart {
    }
 
    protected IFigure createFigure() {
-      return new ArtifactTypeFigure(new Label());
+      return new ArtifactTypeFigure(new Label(), new SelectableLabel());
    }
 
    public IFigure getContentPane() {
@@ -107,7 +108,7 @@ public class ArtifactEditPart extends DataTypeEditPart {
    }
 
    protected IFigure getDirectEditFigure() {
-      return ((ArtifactTypeFigure) getFigure()).getHeader();
+      return ((ArtifactTypeFigure) getFigure()).getNameFigure();
    }
 
    private ArtifactDataType getArtifactDataType() {
@@ -117,32 +118,35 @@ public class ArtifactEditPart extends DataTypeEditPart {
    protected List getModelChildren() {
       if (modelChildren == null) {
          modelChildren = new ArrayList();
-         modelChildren.add(new ArtifactInternalsModel(getArtifactDataType(), InternalEnum.INHERITED_ATTRIBUTES));
-         modelChildren.add(new ArtifactInternalsModel(getArtifactDataType(), InternalEnum.LOCAL_ATTRIBUTES));
-         modelChildren.add(new ArtifactInternalsModel(getArtifactDataType(), InternalEnum.INHERITED_RELATIONS));
-         modelChildren.add(new ArtifactInternalsModel(getArtifactDataType(), InternalEnum.LOCAL_RELATIONS));
+         modelChildren.add(new ArtifactInternalsModel(getArtifactDataType(), ComponentType.INHERITED_ATTRIBUTES));
+         modelChildren.add(new ArtifactInternalsModel(getArtifactDataType(), ComponentType.LOCAL_ATTRIBUTES));
+         modelChildren.add(new ArtifactInternalsModel(getArtifactDataType(), ComponentType.INHERITED_RELATIONS));
+         modelChildren.add(new ArtifactInternalsModel(getArtifactDataType(), ComponentType.LOCAL_RELATIONS));
       }
       return modelChildren;
    }
 
    protected void refreshVisuals() {
       super.refreshVisuals();
-      Label header = (Label) ((ArtifactTypeFigure) getFigure()).getHeader();
-      header.setText(ODMConstants.getDataTypeText(getArtifactDataType()));
-      header.setIcon(getArtifactDataType().getImage());
-      header.setFont(null);
+      ArtifactTypeFigure artifactTypeFigure = ((ArtifactTypeFigure) getFigure());
+      artifactTypeFigure.setHeaderIcon(getArtifactDataType().getImage());
+      ((Label) artifactTypeFigure.getNamespaceFigure()).setText(ODMConstants.getNamespace(getArtifactDataType()));
+      ((Label) artifactTypeFigure.getNameFigure()).setText(getArtifactDataType().getName());
+
+      artifactTypeFigure.getNamespaceFigure().setFont(null);
+      artifactTypeFigure.getNameFigure().setFont(null);
+
       getFigure().setBackgroundColor(ColorConstants.white);
    }
-
    public static final class ArtifactInternalsModel {
       private ArtifactDataType artifactDataType;
-      private InternalEnum internals;
+      private ComponentType internals;
 
-      public static enum InternalEnum {
+      public static enum ComponentType {
          INHERITED_ATTRIBUTES, INHERITED_RELATIONS, LOCAL_RELATIONS, LOCAL_ATTRIBUTES;
       }
 
-      public ArtifactInternalsModel(ArtifactDataType theClass, InternalEnum internals) {
+      public ArtifactInternalsModel(ArtifactDataType theClass, ComponentType internals) {
          this.artifactDataType = theClass;
          this.internals = internals;
       }
@@ -168,7 +172,7 @@ public class ArtifactEditPart extends DataTypeEditPart {
          return children;
       }
 
-      public InternalEnum getInternalDescription() {
+      public ComponentType getInternalDescription() {
          return internals;
       }
    }

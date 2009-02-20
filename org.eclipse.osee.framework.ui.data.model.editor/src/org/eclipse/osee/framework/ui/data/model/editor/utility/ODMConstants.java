@@ -23,7 +23,7 @@ public class ODMConstants {
    public static final String DEFAULT_NAMESPACE = "default";
    public static final Font HEADER_FONT = JFaceResources.getTextFont();
 
-   private static String getNamespace(DataType dataType) {
+   public static String getNamespace(DataType dataType) {
       String namespace = dataType.getNamespace();
       if (!Strings.isValid(namespace) || namespace.equals("null") || namespace.equals(ODMConstants.DEFAULT_NAMESPACE)) {
          namespace = "<<" + ODMConstants.DEFAULT_NAMESPACE + ">>";

@@ -20,8 +20,12 @@ import org.eclipse.swt.graphics.Image;
 public class ODMImages {
 
    public static final String INHERITANCE = "hierarchy_co.gif";
-   public static final String ATTRIBUTE_ENTRY = "field_public_obj.gif";
-   public static final String RELATION_ENTRY = "link.gif";
+
+   public static final String INHERITED_ATTRIBUTE = "access_restriction_attrib.gif";
+   public static final String LOCAL_ATTRIBUTE = "local_attribute.gif";
+   public static final String INHERITED_RELATION = "access_restriction_relat.gif";
+   public static final String LOCAL_RELATION = "arrows.gif";
+
    public static final String EXPAND_ALL = "expandall.gif";
    public static final String TWO_WAY_REFERENCE = "two_way_reference.gif";
    public static final String ONE_WAY_REFERENCE = "one_way_reference.gif";
