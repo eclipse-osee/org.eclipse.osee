@@ -152,30 +152,32 @@ public class SessionManager implements ISessionManager {
             }
          }
 
-         List<String> deleteIds = new ArrayList<String>();
-         List<OseeSession> createData = new ArrayList<OseeSession>();
-         List<OseeSession> updateData = new ArrayList<OseeSession>();
-         for (String sessionId : sessionCache.keySet()) {
-            SessionData sessionData = sessionCache.get(sessionId);
-            if (sessionData != null) {
-               switch (sessionData.getSessionState()) {
-                  case CREATED:
-                     createData.add(sessionData.getSession());
-                     break;
-                  case DELETED:
-                     deleteIds.add(sessionData.getSessionId());
-                     break;
-                  case UPDATED:
-                     updateData.add(sessionData.getSession());
-                     break;
-                  default:
-                     break;
+         if (SessionDataStore.isSessionTableAvailable()) {
+            List<String> deleteIds = new ArrayList<String>();
+            List<OseeSession> createData = new ArrayList<OseeSession>();
+            List<OseeSession> updateData = new ArrayList<OseeSession>();
+            for (String sessionId : sessionCache.keySet()) {
+               SessionData sessionData = sessionCache.get(sessionId);
+               if (sessionData != null) {
+                  switch (sessionData.getSessionState()) {
+                     case CREATED:
+                        createData.add(sessionData.getSession());
+                        break;
+                     case DELETED:
+                        deleteIds.add(sessionData.getSessionId());
+                        break;
+                     case UPDATED:
+                        updateData.add(sessionData.getSession());
+                        break;
+                     default:
+                        break;
+                  }
                }
             }
+            createItems(createData);
+            updateItems(updateData);
+            deleteItems(deleteIds);
          }
-         createItems(createData);
-         updateItems(updateData);
-         deleteItems(deleteIds);
       }
 
       private void recoverSessions() {
