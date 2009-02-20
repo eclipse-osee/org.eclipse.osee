@@ -28,9 +28,9 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class ImageCaptureBlam extends AbstractBlam {
 
-   public static Point topLeftPoint;
-   public static Point botRightPoint;
-   public static boolean listenerAdded = false;
+   public Point topLeftPoint;
+   public Point botRightPoint;
+   public boolean listenerAdded = false;
 
    public ImageCaptureBlam() {
    }
@@ -50,23 +50,23 @@ public class ImageCaptureBlam extends AbstractBlam {
          }
       });
    }
-   static Listener displayKeysListener = new Listener() {
+   Listener displayKeysListener = new Listener() {
       public void handleEvent(org.eclipse.swt.widgets.Event event) {
          if (event.type == SWT.MouseUp) {
             if (topLeftPoint == null) {
                topLeftPoint = event.display.getCursorLocation();
-               System.out.println("First Mouse Event " + topLeftPoint);
+               appendResultLine("\nFirst Mouse Event " + topLeftPoint + "\n");
             } else {
                botRightPoint = event.display.getCursorLocation();
-               System.out.println("Second Mouse Event " + botRightPoint);
+               appendResultLine("Second Mouse Event " + botRightPoint + "\n");
                GC gc = new GC(Display.getCurrent());
                Image image =
                      new Image(Display.getCurrent(), botRightPoint.x - topLeftPoint.x, botRightPoint.y - topLeftPoint.y);
                gc.copyArea(image, topLeftPoint.x, topLeftPoint.y);
                gc.dispose();
+               Display.getDefault().removeFilter(SWT.MouseUp, displayKeysListener);
                ImageDialog diag = new ImageDialog(image, Display.getCurrent().getActiveShell());
                diag.open();
-               Display.getDefault().removeFilter(SWT.MouseUp, displayKeysListener);
             }
          }
       }
