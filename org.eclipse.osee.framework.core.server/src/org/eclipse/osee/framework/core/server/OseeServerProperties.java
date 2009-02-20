@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.server;
 
 import java.io.File;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -22,7 +23,6 @@ public class OseeServerProperties {
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
    private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
    private static final String CHECK_TAG_QUEUE_ON_START_UP = "osee.check.tag.queue.on.startup";
-   private static final String OSEE_CONNECTION_INFO_URI = "osee.connection.info.uri";
 
    private static boolean wasBinaryDataChecked = false;
 
@@ -85,6 +85,6 @@ public class OseeServerProperties {
     * @return connection info file URI
     */
    public static String getOseeConnectionInfoUri() {
-      return System.getProperty(OSEE_CONNECTION_INFO_URI, "");
+      return OseeProperties.getOseeConnectionInfoUri();
    }
 }

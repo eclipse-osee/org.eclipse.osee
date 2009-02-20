@@ -8,16 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server.internal;
+package org.eclipse.osee.framework.db.connection.internal;
 
 import java.io.File;
 import java.net.URI;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.server.CoreServerActivator;
-import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
 import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -31,15 +30,12 @@ public class UriDbConnectionInfo implements IDbConnectionInformationContributor 
     */
    @Override
    public IDatabaseInfo[] getDbInformation() throws Exception {
-      String uri = OseeServerProperties.getOseeConnectionInfoUri();
+      String uri = OseeProperties.getOseeConnectionInfoUri();
       if (Strings.isValid(uri)) {
-         OseeLog.log(CoreServerActivator.class, Level.INFO, String.format("Loading connection info from: [%s]", uri));
-         //         URL url = new URL(uri);
-         //         uri = uri.replaceAll("\\\\", "/");
+         OseeLog.log(InternalActivator.class, Level.INFO, String.format("Loading connection info from: [%s]", uri));
          URI connectionFile = null;
          if (!uri.contains("://")) {
             connectionFile = new File(uri).toURI();
-            //            uri = "file://" + uri;
          } else {
             connectionFile = new URI(uri);
          }

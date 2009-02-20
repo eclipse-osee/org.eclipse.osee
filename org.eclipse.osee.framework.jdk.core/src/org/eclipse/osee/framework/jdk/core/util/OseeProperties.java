@@ -26,8 +26,8 @@ public class OseeProperties {
    private static final String OSEE_JINI_FORCED_REGGIE_SEARCH = "osee.jini.forced.reggie.search";
    private static final String OSEE_PORT_SCAN_START_PORT = "osee.port.scanner.start.port";
 
-   // These need to only be used by the server but for now remain here until OSEE clients stop accessing the database directly
    public static final String OSEE_DB_CONNECTION_ID = "osee.db.connection.id";
+   private static final String OSEE_CONNECTION_INFO_URI = "osee.connection.info.uri";
 
    protected OseeProperties() {
    }
@@ -66,6 +66,15 @@ public class OseeProperties {
     */
    public static String getOseeDbConnectionId() {
       return System.getProperty(OSEE_DB_CONNECTION_ID);
+   }
+
+   /**
+    * Retrieve the connection info file location
+    * 
+    * @return connection info file URI
+    */
+   public static String getOseeConnectionInfoUri() {
+      return System.getProperty(OSEE_CONNECTION_INFO_URI, "");
    }
 
    /**
