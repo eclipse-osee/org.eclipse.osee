@@ -1276,4 +1276,12 @@
            className="org.eclipse.osee.framework.ui.skynet.blam.operation.CheckDefaulHierarchy">
      </Operation>
   </extension>
+  <extension
+        id="ImageCapture"
+        name="ImageCapture"
+        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+     <Operation
+           className="org.eclipse.osee.framework.ui.skynet.blam.operation.ImageCaptureBlam">
+     </Operation>
+  </extension>
 </plugin>
