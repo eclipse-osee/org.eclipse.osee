@@ -17,7 +17,7 @@
    </license>
 
    <url>
-      <update url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
+      <update label="OSEE Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
 
    <includes
@@ -38,6 +38,10 @@
 
    <includes
          id="org.eclipse.osee.framework.ui.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.demo.feature"
          version="0.0.0"/>
 
 </feature>
