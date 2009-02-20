@@ -98,16 +98,22 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       Object parent = getParent(child);
       while (parent != null) {
          if (insertChild(parent, child)) {
-            if (refreshViewer) fTreeViewer.add(parent, child);
+            if (refreshViewer) {
+               fTreeViewer.add(parent, child);
+            }
          } else {
-            if (refreshViewer) fTreeViewer.refresh(parent);
+            if (refreshViewer) {
+               fTreeViewer.refresh(parent);
+            }
             return;
          }
          child = parent;
          parent = getParent(child);
       }
       if (insertChild(fResult, child)) {
-         if (refreshViewer) fTreeViewer.add(fResult, child);
+         if (refreshViewer) {
+            fTreeViewer.add(fResult, child);
+         }
       }
    }
 
@@ -116,7 +122,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
     * 
     * @param parent
     * @param child
-    * @return Returns <code>trye</code> if the child was added
+    * @return Returns <code>true</code> if the child was added
     */
    @SuppressWarnings("unchecked")
    private boolean insertChild(Object parent, Object child) {
@@ -186,13 +192,12 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    public synchronized void elementsChanged(Object[] updatedElements) {
       for (int i = 0; i < updatedElements.length; i++) {
          if (!(updatedElements[i] instanceof AttributeLineElement)) {
-            // change events to elements are reported in file search
-            if (fResult.getMatchCount(updatedElements[i]) > 0)
+            if (fResult.getMatchCount(updatedElements[i]) > 0) {
                insert(updatedElements[i], true);
-            else
+            } else {
                remove(updatedElements[i], true);
+            }
          } else {
-            // change events to line elements are reported in text search
             AttributeLineElement lineElement = (AttributeLineElement) updatedElements[i];
             int nMatches = lineElement.getNumberOfMatches(fResult);
             if (nMatches > 0) {
@@ -219,7 +224,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       }
       if (element instanceof AttributeMatch) {
          AttributeMatch match = (AttributeMatch) element;
-         return match.getLineElement();
+         return match.getArtifact();
       }
       if (element instanceof Artifact) {
          Artifact resource = (Artifact) element;

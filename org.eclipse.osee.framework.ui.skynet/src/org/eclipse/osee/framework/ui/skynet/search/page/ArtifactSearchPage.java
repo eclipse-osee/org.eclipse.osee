@@ -83,9 +83,13 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
        */
       public int category(Object element) {
          if (element instanceof Artifact) {
-            return 1;
+            return 4;
+         } else if (element instanceof AttributeLineElement) {
+            return 3;
+         } else if (element instanceof AttributeMatch) {
+            return 2;
          }
-         return 2;
+         return 1;
       }
 
       @SuppressWarnings("unchecked")
