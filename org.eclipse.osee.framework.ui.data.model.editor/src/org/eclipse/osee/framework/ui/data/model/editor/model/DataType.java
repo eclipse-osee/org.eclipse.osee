@@ -81,4 +81,8 @@ public class DataType extends NodeModel {
    public void setUniqueId(String typeId) {
       this.uniqueId = typeId;
    }
+
+   public String toString() {
+      return String.format("%s:%s", getNamespace(), getName());
+   }
 }

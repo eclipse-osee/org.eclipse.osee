@@ -33,9 +33,6 @@ public class CreateAttributeCommand extends Command {
    }
 
    public void execute() {
-      if (attribute.getName() == null || attribute.getName().trim().equals("")) {
-         attribute.setName("newAttribute");
-      }
       redo();
    }
 

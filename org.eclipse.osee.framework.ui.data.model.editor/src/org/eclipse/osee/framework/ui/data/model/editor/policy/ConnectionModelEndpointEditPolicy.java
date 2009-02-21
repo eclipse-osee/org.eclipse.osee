@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.FontData;
 /**
  * @author Roberto E. Escobar
  */
-public class LinkEndpointEditPolicy extends ConnectionEndpointEditPolicy {
+public class ConnectionModelEndpointEditPolicy extends ConnectionEndpointEditPolicy {
 
    private static Font BOLD_FONT;
 

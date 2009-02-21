@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.data.model.editor.part;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
-import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.ComponentType;
+import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel.ContainerType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
 
@@ -28,8 +28,8 @@ public class AttributeEditPart extends ComponentEditPart {
 
    @Override
    protected boolean isInherited() {
-      ComponentType value = getComponentType();
-      return value != null && value == ComponentType.INHERITED_ATTRIBUTES;
+      ContainerType value = getContainerType();
+      return value != null && value == ContainerType.INHERITED_ATTRIBUTES;
    }
 
    protected void refreshVisuals() {

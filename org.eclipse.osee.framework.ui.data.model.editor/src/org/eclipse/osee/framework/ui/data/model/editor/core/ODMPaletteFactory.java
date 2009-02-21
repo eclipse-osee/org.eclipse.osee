@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.gef.EditPart;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
@@ -31,9 +30,10 @@ import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
-import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
 
@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
  */
 public class ODMPaletteFactory {
 
+   private final static String DATA_TYPE_TIP_FORMAT = "Add [%s] %s type to %s";
    private ODMEditor editor;
    private PaletteRoot paletteRoot;
 
@@ -83,22 +84,30 @@ public class ODMPaletteFactory {
 
    private List<CombinedTemplateCreationEntry> getToolEntries(DrawerEnum drawerType, DataTypeCache dataTypeCache) {
       List<CombinedTemplateCreationEntry> toReturn = new ArrayList<CombinedTemplateCreationEntry>();
+      ImageDescriptor image = null;
+      String message = null;
       for (String sourceId : dataTypeCache.getDataTypeSourceIds()) {
          DataTypeSource dataTypeSource = dataTypeCache.getDataTypeSourceById(sourceId);
          switch (drawerType) {
             case Artifact_Types:
                for (ArtifactDataType dataType : dataTypeSource.getArtifactTypeManager().getAllSorted()) {
-                  toReturn.add(createArtifactTypeToolEntry(dataType));
+                  image = ImageDescriptor.createFromImage(dataType.getImage());
+                  message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "artifact", "the diagram");
+                  toReturn.add(createDataTypeToolEntry(dataType, image, message));
                }
                break;
             case Attribute_Types:
+               image = ODMImages.getImageDescriptor(ODMImages.LOCAL_ATTRIBUTE);
                for (AttributeDataType dataType : dataTypeSource.getAttributeTypeManager().getAllSorted()) {
-                  toReturn.add(createAttributeDataTypeToolEntry(dataType));
+                  message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "attribute", "an artifact type");
+                  toReturn.add(createDataTypeToolEntry(dataType, image, message));
                }
                break;
             case Relation_Types:
+               image = ODMImages.getImageDescriptor(ODMImages.LOCAL_RELATION);
                for (RelationDataType dataType : dataTypeSource.getRelationTypeManager().getAllSorted()) {
-                  toReturn.add(createRelationDataTypeToolEntry(dataType));
+                  message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "relation", "an artifact type");
+                  toReturn.add(createDataTypeToolEntry(dataType, image, message));
                }
                break;
             default:
@@ -108,19 +117,11 @@ public class ODMPaletteFactory {
       return toReturn;
    }
 
-   private CombinedTemplateCreationEntry createArtifactTypeToolEntry(final ArtifactDataType dataType) {
-      ImageDescriptor imageDescriptor = ImageDescriptor.createFromImage(dataType.getImage());
+   private CombinedTemplateCreationEntry createDataTypeToolEntry(final DataType dataType, ImageDescriptor imageDescriptor, String message) {
       CreationFactory factory = new CreationFactory() {
 
          @Override
          public Object getNewObject() {
-            EditPart editPart = editor.getViewer().getContents();
-            if (editPart != null) {
-               Object object = editPart.getModel();
-               if (object instanceof ODMDiagram) {
-                  ((ODMDiagram) object).add(dataType);
-               }
-            }
             return dataType;
          }
 
@@ -130,23 +131,8 @@ public class ODMPaletteFactory {
          }
 
       };
-      return new CombinedTemplateCreationEntry(dataType.getName(), String.format(
-            "Create a new artifact data type [%s]", dataType.getName()), factory, factory, imageDescriptor,
+      return new CombinedTemplateCreationEntry(dataType.getName(), message, factory, factory, imageDescriptor,
             imageDescriptor);
-   }
-
-   private CombinedTemplateCreationEntry createAttributeDataTypeToolEntry(AttributeDataType dataType) {
-      ImageDescriptor image = ODMImages.getImageDescriptor(ODMImages.LOCAL_ATTRIBUTE);
-      CreationFactory factory = new SimpleFactory(AttributeDataType.class);
-      return new CombinedTemplateCreationEntry(dataType.getName(),
-            "Add attribute data type to an existing artifact type", factory, factory, image, image);
-   }
-
-   private CombinedTemplateCreationEntry createRelationDataTypeToolEntry(RelationDataType dataType) {
-      ImageDescriptor image = ODMImages.getImageDescriptor(ODMImages.LOCAL_RELATION);
-      CreationFactory factory = new SimpleFactory(RelationDataType.class);
-      return new CombinedTemplateCreationEntry(dataType.getName(),
-            "Add a new relation type to an existing artifact type", factory, factory, image, image);
    }
 
    private PaletteContainer createToolsGroup(PaletteRoot palette) {
@@ -160,16 +146,9 @@ public class ODMPaletteFactory {
       toolbar.add(new PaletteSeparator());
 
       ImageDescriptor img = ODMImages.getImageDescriptor(ODMImages.INHERITANCE);
-      toolbar.add(new ConnectionCreationToolEntry("Inheritance", "Create an artifact hierarchy", new CreationFactory() {
-         public Object getNewObject() {
-            //            return ModelFactory.eINSTANCE.createInheritanceView();
-            return null;
-         }
+      toolbar.add(new ConnectionCreationToolEntry("Inheritance", "Inherit from an artifact", new SimpleFactory(
+            ConnectionModel.class), img, img));
 
-         public Object getObjectType() {
-            return null;
-         }
-      }, img, img));
       return toolbar;
    }
 

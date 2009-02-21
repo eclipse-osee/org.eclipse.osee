@@ -23,7 +23,7 @@ public class ChangeNamespaceCommand extends Command {
    private String oldNamespace;
 
    public ChangeNamespaceCommand(DataType dataType, String newNamespace) {
-      super("Change Name");
+      super("Change Namespace");
       element = dataType;
       oldNamespace = dataType.getNamespace();
       this.newNamespace = newNamespace.trim();
@@ -34,6 +34,10 @@ public class ChangeNamespaceCommand extends Command {
    }
 
    public void execute() {
+      redo();
+   }
+
+   public void redo() {
       element.setNamespace(newNamespace);
    }
 

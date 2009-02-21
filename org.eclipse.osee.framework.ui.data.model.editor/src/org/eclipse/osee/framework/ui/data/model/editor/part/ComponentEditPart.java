@@ -16,7 +16,7 @@ import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.osee.framework.ui.data.model.editor.command.ChangeNameCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
-import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.ComponentType;
+import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel.ContainerType;
 
 /**
  * @author Roberto E. Escobar
@@ -44,9 +44,9 @@ public abstract class ComponentEditPart extends BaseEditPart {
       };
    }
 
-   protected ComponentType getComponentType() {
-      InternalArtifactEditPart internalArtifactEditPart = ((InternalArtifactEditPart) getParent());
-      return internalArtifactEditPart.getComponentType();
+   protected ContainerType getContainerType() {
+      ContainerEditPart internalArtifactEditPart = ((ContainerEditPart) getParent());
+      return internalArtifactEditPart.getContainerType();
    }
 
    protected DataType getModelAsDataType() {

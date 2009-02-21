@@ -35,6 +35,10 @@ public class DeleteBendpointCommand extends Command {
    }
 
    public void execute() {
+      redo();
+   }
+
+   public void redo() {
       link.getBendpoints().remove(index);
    }
 

@@ -33,13 +33,15 @@ public class CreateRelationCommand extends Command {
    }
 
    public void execute() {
-      relation.setName("newRelation");
+      redo();
+   }
+
+   public void redo() {
       parent.add(relation);
    }
 
    public void undo() {
       parent.remove(relation);
-      relation.setName(null);
    }
 
 }

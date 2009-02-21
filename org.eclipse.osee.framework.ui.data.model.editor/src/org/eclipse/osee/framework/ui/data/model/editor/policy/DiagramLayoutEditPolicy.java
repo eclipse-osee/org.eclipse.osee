@@ -26,6 +26,7 @@ import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.osee.framework.ui.data.model.editor.command.ChangeBoundsCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.command.CreateNodeCommand;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.NodeModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
@@ -155,18 +156,18 @@ public class DiagramLayoutEditPolicy extends XYLayoutEditPolicy {
       views.addAll(newViews);
    }
 
-   //   private static class LinkInfoHolder {
-   //      private Link link;
-   //      private Node src;
-   //      private Node target;
-   //
-   //      private LinkInfoHolder(Link link, Node src, Node target) {
-   //         this.link = link;
-   //         this.src = src;
-   //         this.target = target;
-   //      }
-   //   }
-   //
+   private static class LinkInfoHolder {
+      private ConnectionModel link;
+      private NodeModel src;
+      private NodeModel target;
+
+      private LinkInfoHolder(ConnectionModel link, NodeModel src, NodeModel target) {
+         this.link = link;
+         this.src = src;
+         this.target = target;
+      }
+   }
+
    //   private static class ShowOppositeMarker {
    //      private ReferenceView refView;
    //

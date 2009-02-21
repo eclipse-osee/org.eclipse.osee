@@ -75,6 +75,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements LayerC
       refreshChildren();
    }
 
+   @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (SnapToHelper.class == adapter) {
          Object snapPropertObject = getViewer().getProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED);
@@ -83,6 +84,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements LayerC
       return super.getAdapter(adapter);
    }
 
+   @SuppressWarnings("unchecked")
    protected List getModelChildren() {
       return ((ODMDiagram) getModel()).getContent();
    }

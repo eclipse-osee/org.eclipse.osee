@@ -14,15 +14,15 @@ import java.util.List;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.CompartmentFigure;
-import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel;
-import org.eclipse.osee.framework.ui.data.model.editor.part.ArtifactEditPart.ArtifactInternalsModel.ComponentType;
+import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel.ContainerType;
 
 /**
  * @author Roberto E. Escobar
  */
-public class InternalArtifactEditPart extends AbstractGraphicalEditPart {
+public class ContainerEditPart extends AbstractGraphicalEditPart {
 
-   public InternalArtifactEditPart(Object model) {
+   public ContainerEditPart(Object model) {
       super();
       setModel(model);
    }
@@ -35,9 +35,10 @@ public class InternalArtifactEditPart extends AbstractGraphicalEditPart {
       return figure;
    }
 
+   @SuppressWarnings("unchecked")
    protected List getModelChildren() {
-      if (getModel() instanceof ArtifactInternalsModel) {
-         return ((ArtifactInternalsModel) getModel()).getChildren();
+      if (getModel() instanceof ContainerModel) {
+         return ((ContainerModel) getModel()).getChildren();
       } else {
          return (List) getModel();
       }
@@ -47,9 +48,9 @@ public class InternalArtifactEditPart extends AbstractGraphicalEditPart {
       return false;
    }
 
-   public ComponentType getComponentType() {
-      if (getModel() instanceof ArtifactInternalsModel) {
-         return ((ArtifactInternalsModel) getModel()).getInternalDescription();
+   public ContainerType getContainerType() {
+      if (getModel() instanceof ContainerModel) {
+         return ((ContainerModel) getModel()).getContainerType();
       }
       return null;
    }

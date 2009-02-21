@@ -33,6 +33,10 @@ public class ChangeNameCommand extends Command {
    }
 
    public void execute() {
+      redo();
+   }
+
+   public void redo() {
       element.setName(newName);
    }
 

@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.ui.data.model.editor.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
@@ -23,7 +25,8 @@ public class ArtifactDataType extends DataType {
    private Image image;
    private TypeManager<AttributeDataType> attributes;
    private TypeManager<RelationDataType> relations;
-   private ArtifactDataType parent;
+   private ArtifactDataType ancestorType;
+   private Set<ArtifactDataType> descendantTypes;
 
    public ArtifactDataType() {
       this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, null);
@@ -38,22 +41,27 @@ public class ArtifactDataType extends DataType {
       this.image = image;
       this.attributes = new TypeManager<AttributeDataType>();
       this.relations = new TypeManager<RelationDataType>();
+      this.descendantTypes = new HashSet<ArtifactDataType>();
    }
 
    public void add(AttributeDataType attribute) {
       getAttributeManager().add(attribute);
+      fireModelEvent();
    }
 
    public void add(RelationDataType relation) {
       getRelationManager().add(relation);
+      fireModelEvent();
    }
 
    public void remove(AttributeDataType attribute) {
       getAttributeManager().remove(attribute);
+      fireModelEvent();
    }
 
    public void remove(RelationDataType relation) {
       getRelationManager().remove(relation);
+      fireModelEvent();
    }
 
    private TypeManager<AttributeDataType> getAttributeManager() {
@@ -69,38 +77,64 @@ public class ArtifactDataType extends DataType {
    }
 
    public void setImage(Image image) {
-      this.image = image;
+      if (this.image != image) {
+         this.image = image;
+         fireModelEvent();
+      }
    }
 
    public void setParent(ArtifactDataType parent) {
-      this.parent = parent;
+      if (this.ancestorType != parent) {
+         if (this.ancestorType != null) {
+            this.ancestorType.remoteChildType(this);
+         }
+         this.ancestorType = parent;
+         this.ancestorType.addChildType(this);
+         fireModelEvent();
+      }
    }
 
-   public ArtifactDataType getParent() {
-      return parent;
+   private void addChildType(ArtifactDataType childType) {
+      descendantTypes.add(childType);
+   }
+
+   private void remoteChildType(ArtifactDataType childType) {
+      descendantTypes.remove(childType);
+   }
+
+   public List<ArtifactDataType> getDescendantTypes() {
+      List<ArtifactDataType> descendants = new ArrayList<ArtifactDataType>(descendantTypes);
+      for (ArtifactDataType descendant : descendantTypes) {
+         descendants.addAll(descendant.getDescendantTypes());
+      }
+      return descendants;
+   }
+
+   public ArtifactDataType getAncestorType() {
+      return ancestorType;
    }
 
    public List<ArtifactDataType> getSuperTypes() {
       List<ArtifactDataType> toReturn = new ArrayList<ArtifactDataType>();
-      if (parent != null) {
-         toReturn.add(parent);
-         toReturn.addAll(parent.getSuperTypes());
+      if (ancestorType != null) {
+         toReturn.add(ancestorType);
+         toReturn.addAll(ancestorType.getSuperTypes());
       }
       return toReturn;
    }
 
    public List<AttributeDataType> getInheritedAttributes() {
       List<AttributeDataType> inherited = new ArrayList<AttributeDataType>();
-      if (parent != null) {
-         inherited.addAll(parent.getLocalAndInheritedAttributes());
+      if (ancestorType != null) {
+         inherited.addAll(ancestorType.getLocalAndInheritedAttributes());
       }
       return inherited;
    }
 
    public List<RelationDataType> getInheritedRelations() {
       List<RelationDataType> inherited = new ArrayList<RelationDataType>();
-      if (parent != null) {
-         inherited.addAll(parent.getLocalAndInheritedRelations());
+      if (ancestorType != null) {
+         inherited.addAll(ancestorType.getLocalAndInheritedRelations());
       }
       return inherited;
    }
@@ -125,5 +159,16 @@ public class ArtifactDataType extends DataType {
 
    public List<RelationDataType> getLocalRelations() {
       return getRelationManager().getAll();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.data.model.editor.model.Model#fireModelEvent()
+    */
+   @Override
+   protected void fireModelEvent() {
+      super.fireModelEvent();
+      for (ArtifactDataType descendant : getDescendantTypes()) {
+         descendant.fireModelEvent();
+      }
    }
 }

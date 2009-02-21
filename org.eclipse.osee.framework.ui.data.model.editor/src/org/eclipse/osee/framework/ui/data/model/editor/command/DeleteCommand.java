@@ -35,67 +35,81 @@ public class DeleteCommand extends Command {
    }
 
    public void execute() {
-      commandDelegate.execute();
+      redo();
    }
 
-   public Command setPartToBeDeleted(Object model) {
-      if (model instanceof AttributeDataType) {
-      } else if (model instanceof RelationDataType) {
-      } else if (model instanceof ArtifactDataType) {
-
-      } else if (model instanceof ConnectionModel) {
-
+   public Command setPartToBeDeleted(Object toDelete, Object parent) {
+      if (toDelete instanceof AttributeDataType) {
+         commandDelegate = new DeleteAttributeCommand(toDelete, parent);
+      } else if (toDelete instanceof RelationDataType) {
+         commandDelegate = new DeleteRelationCommand(toDelete, parent);
+      } else if (toDelete instanceof ArtifactDataType) {
+         System.out.println("Delete Artifact");
+      } else if (toDelete instanceof ConnectionModel) {
+         System.out.println("Delete connection");
       } else {
          commandDelegate = null;
       }
       return this;
    }
 
+   public void redo() {
+      commandDelegate.execute();
+   }
+
    public void undo() {
       commandDelegate.undo();
    }
 
-   //   private static class DeleteAttributeCommand extends Command {
-   //      private AttributeDataType attribute;
-   //      private ArtifactDataType container;
-   //
-   //      public DeleteAttributeCommand(Object model) {
-   //         attribute = (AttributeDataType) model;
-   //         //         parent = attribute.getEContainingClass();
-   //      }
-   //
-   //      public void execute() {
-   //         if (container != null) {
-   //            container.remove(attribute);
-   //         }
-   //      }
-   //
-   //      public void undo() {
-   //         if (container != null) {
-   //            container.add(attribute);
-   //         }
-   //      }
-   //   }
-   //
-   //   private static class DeleteRelationCommand extends Command {
-   //      private RelationDataType operation;
-   //      private ArtifactDataType container;
-   //
-   //      public DeleteRelationCommand(Object model) {
-   //         operation = (RelationDataType) model;
-   //         //         container = operation.getEContainingClass();
-   //      }
-   //
-   //      public void execute() {
-   //         if (container != null) {
-   //            container.remove(operation);
-   //         }
-   //      }
-   //
-   //      public void undo() {
-   //         if (container != null) {
-   //            container.add(operation);
-   //         }
-   //      }
-   //   }
+   private static class DeleteAttributeCommand extends Command {
+      private AttributeDataType attribute;
+      private ArtifactDataType container;
+
+      public DeleteAttributeCommand(Object model, Object parent) {
+         attribute = (AttributeDataType) model;
+         container = (ArtifactDataType) parent;
+      }
+
+      public void execute() {
+         redo();
+      }
+
+      public void redo() {
+         if (container != null) {
+            container.remove(attribute);
+         }
+      }
+
+      public void undo() {
+         if (container != null) {
+            container.add(attribute);
+         }
+      }
+   }
+
+   private static class DeleteRelationCommand extends Command {
+      private RelationDataType relation;
+      private ArtifactDataType container;
+
+      public DeleteRelationCommand(Object model, Object parent) {
+         relation = (RelationDataType) model;
+         container = (ArtifactDataType) parent;
+      }
+
+      public void execute() {
+         redo();
+      }
+
+      public void redo() {
+         if (container != null) {
+            container.remove(relation);
+         }
+      }
+
+      public void undo() {
+         if (container != null) {
+            container.add(relation);
+         }
+      }
+   }
 }

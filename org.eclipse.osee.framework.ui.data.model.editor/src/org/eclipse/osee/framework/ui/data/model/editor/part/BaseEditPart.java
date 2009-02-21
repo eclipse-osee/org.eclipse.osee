@@ -20,6 +20,7 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.UnexecutableCommand;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.command.DeleteCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.IModelListener;
 import org.eclipse.osee.framework.ui.data.model.editor.model.NodeModel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel;
 import org.eclipse.osee.framework.ui.data.model.editor.policy.LabelSelectionEditPolicy;
 import org.eclipse.osee.framework.ui.data.model.editor.property.PropertySourceFactory;
 import org.eclipse.swt.widgets.Text;
@@ -71,17 +73,22 @@ public abstract class BaseEditPart extends AbstractGraphicalEditPart {
    }
 
    protected void createEditPolicies() {
-      installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy() {
-         protected Command createDeleteCommand(GroupRequest deleteRequest) {
-            Boolean booleanObject = (Boolean) deleteRequest.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM);
-            boolean isHardDelete = booleanObject == null ? false : booleanObject.booleanValue();
-            DeleteCommand cmd = new DeleteCommand(isHardDelete);
-            cmd.setPartToBeDeleted(getHost().getModel());
-            return cmd;
-         }
-      });
       installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, createDirectEditPolicy());
       installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new LabelSelectionEditPolicy());
+      installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy() {
+         protected Command createDeleteCommand(GroupRequest deleteRequest) {
+            Object model = ((AbstractGraphicalEditPart) getParent()).getModel();
+            if (model != null) {
+               if (model instanceof ContainerModel) {
+                  Boolean booleanObject = (Boolean) deleteRequest.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM);
+                  boolean isHardDelete = booleanObject == null ? false : booleanObject.booleanValue();
+                  DeleteCommand cmd = new DeleteCommand(isHardDelete);
+                  cmd.setPartToBeDeleted(getHost().getModel(), ((ContainerModel) model).getArtifact());
+               }
+            }
+            return UnexecutableCommand.INSTANCE;
+         }
+      });
    }
 
    protected IFigure createFigure() {

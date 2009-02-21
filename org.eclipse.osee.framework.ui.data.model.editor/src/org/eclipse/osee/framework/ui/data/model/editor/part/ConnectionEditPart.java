@@ -13,16 +13,21 @@ package org.eclipse.osee.framework.ui.data.model.editor.part;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
+import org.eclipse.gef.editpolicies.BendpointEditPolicy;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
+import org.eclipse.gef.requests.BendpointRequest;
 import org.eclipse.gef.requests.GroupRequest;
+import org.eclipse.osee.framework.ui.data.model.editor.command.CreateBendpointCommand;
+import org.eclipse.osee.framework.ui.data.model.editor.command.DeleteBendpointCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.command.DeleteCommand;
+import org.eclipse.osee.framework.ui.data.model.editor.command.MoveBendpointCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.IModelListener;
-import org.eclipse.osee.framework.ui.data.model.editor.policy.LinkBendpointEditPolicy;
-import org.eclipse.osee.framework.ui.data.model.editor.policy.LinkEndpointEditPolicy;
+import org.eclipse.osee.framework.ui.data.model.editor.policy.ConnectionModelEndpointEditPolicy;
 import org.eclipse.osee.framework.ui.data.model.editor.property.PropertySourceFactory;
 import org.eclipse.ui.views.properties.IPropertySource;
 
@@ -50,17 +55,39 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
    }
 
    protected void createEditPolicies() {
-      installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new LinkEndpointEditPolicy());
       installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy() {
          protected Command getDeleteCommand(GroupRequest request) {
             Boolean isBooleanObject = (Boolean) request.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM);
             boolean isHardDelete = isBooleanObject == null ? false : isBooleanObject.booleanValue();
             DeleteCommand cmd = new DeleteCommand(isHardDelete);
-            cmd.setPartToBeDeleted(getHost().getModel());
+            //            cmd.setPartToBeDeleted(getHost().getModel());
             return cmd;
          }
       });
-      installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new LinkBendpointEditPolicy());
+
+      installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new BendpointEditPolicy() {
+
+         protected Command getCreateBendpointCommand(BendpointRequest request) {
+            Point location = request.getLocation();
+            getConnection().translateToRelative(location);
+            return new CreateBendpointCommand((ConnectionModel) request.getSource().getModel(), location,
+                  request.getIndex());
+         }
+
+         protected Command getDeleteBendpointCommand(BendpointRequest request) {
+            return new DeleteBendpointCommand((ConnectionModel) getHost().getModel(), request.getIndex());
+         }
+
+         protected Command getMoveBendpointCommand(BendpointRequest request) {
+            Point location = request.getLocation();
+            getConnection().translateToRelative(location);
+            return new MoveBendpointCommand((ConnectionModel) request.getSource().getModel(), location,
+                  request.getIndex());
+         }
+      });
+
+      installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionModelEndpointEditPolicy());
+
    }
 
    protected IFigure createFigure() {
@@ -74,6 +101,7 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
       super.deactivate();
    }
 
+   @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (IPropertySource.class == adapter) {
          return PropertySourceFactory.getPropertySource(getModel());
