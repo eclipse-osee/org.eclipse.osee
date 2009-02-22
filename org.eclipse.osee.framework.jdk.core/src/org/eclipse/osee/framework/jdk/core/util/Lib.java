@@ -912,6 +912,17 @@ public final class Lib {
    }
 
    /**
+    * Remove the file extension from the file path
+    * 
+    * @param string
+    * @return string with no leading or trailing
+    */
+   public static String removeLeadingAndTrailingSpaces(String str) {
+      String ext = str.replaceFirst("^ *", "");
+      return ext.replaceFirst(" *$", "");
+   }
+
+   /**
     * Determine if file is a compressed file
     * 
     * @param file to check
