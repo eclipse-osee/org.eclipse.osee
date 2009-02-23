@@ -57,7 +57,7 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
          if (element instanceof Conflict) {
             return ((Conflict) element).getArtifact().getAttributesToString(attributeTypeName);
          }
-         return super.getColumnText(element, column, columnIndex);
+         return "";
       } catch (OseeCoreException ex) {
          throw new XViewerException(ex);
       }

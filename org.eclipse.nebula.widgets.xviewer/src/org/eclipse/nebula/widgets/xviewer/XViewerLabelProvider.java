@@ -14,7 +14,6 @@ package org.eclipse.nebula.widgets.xviewer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
@@ -80,7 +79,8 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
          // First check value column's methods
          if (xViewerColumn instanceof XViewerValueColumn) {
             String str = ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn, columnIndex);
-            if (str != null && !str.equals("")) return str;
+            if (str != null) return str;
+            return "";
          }
          // Return label provider's value
          return getColumnText(element, xViewerColumn, columnIndex);
@@ -92,13 +92,13 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
    @Override
    public Color getBackground(Object element, int columnIndex) {
       try {
-    	  if(viewer.isSearch()){
-	    	  String text = getColumnText(element,columnIndex);
-	          if(viewer.searchMatch(text)){
-	         	return viewer.getSearchMatchColor(); 
-	          }  
-    	  } 
-    	  
+         if (viewer.isSearch()) {
+            String text = getColumnText(element, columnIndex);
+            if (viewer.searchMatch(text)) {
+               return viewer.getSearchMatchColor();
+            }
+         }
+
          XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return null;
@@ -131,13 +131,13 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
    }
 
    public Color getBackground(Object element, XViewerColumn xCol, int columnIndex) {
-	  return null;
+      return null;
    }
 
    public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
       return null;
    }
-  
+
    public abstract Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws Exception;
 
    public abstract String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws Exception;
