@@ -12,11 +12,16 @@ package org.eclipse.osee.ats.task;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.world.AtsWorldEditorItems;
+import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -49,6 +54,16 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
             newCol.setShow(false);
             registerColumn(newCol);
          }
+      }
+      // Register any columns from other plugins
+      try {
+         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+            for (XViewerColumn xCol : item.getXViewerColumns()) {
+               registerColumn(xCol);
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       registerAllAttributeColumns();
    }
