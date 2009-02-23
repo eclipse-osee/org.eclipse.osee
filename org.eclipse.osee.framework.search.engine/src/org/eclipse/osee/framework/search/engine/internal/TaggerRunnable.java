@@ -117,7 +117,7 @@ class TaggerRunnable implements Runnable {
    }
 
    private final class AttributeToTagTx extends DbTransaction implements ITagCollector {
-      private static final int TOTAL_RETRIES = 3;
+      private static final int TOTAL_RETRIES = 10;
       private final Deque<SearchTag> searchTags;
       private SearchTag currentTag;
 
