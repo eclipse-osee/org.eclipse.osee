@@ -1261,6 +1261,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
    }
 
+   public void deleteRelations(IRelationEnumeration relationSide) throws OseeCoreException {
+      for (Artifact art : getRelatedArtifacts(relationSide)) {
+         deleteRelation(relationSide, art);
+      }
+   }
+
    /**
     * Overwrites all existing relations to this artifact with a single relation to an artifact
     * 
