@@ -31,8 +31,10 @@ import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.osee.framework.ui.data.model.editor.command.DeleteCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.IModelListener;
 import org.eclipse.osee.framework.ui.data.model.editor.model.NodeModel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel;
 import org.eclipse.osee.framework.ui.data.model.editor.policy.LabelSelectionEditPolicy;
 import org.eclipse.osee.framework.ui.data.model.editor.property.PropertySourceFactory;
@@ -77,16 +79,26 @@ public abstract class BaseEditPart extends AbstractGraphicalEditPart {
       installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new LabelSelectionEditPolicy());
       installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy() {
          protected Command createDeleteCommand(GroupRequest deleteRequest) {
+            Command toReturn = UnexecutableCommand.INSTANCE;
+
             Object model = ((AbstractGraphicalEditPart) getParent()).getModel();
             if (model != null) {
+               Boolean booleanObject =
+                     (Boolean) deleteRequest.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM_DIAGRAM);
+               boolean isDeleteFromDiagram = booleanObject == null ? false : booleanObject.booleanValue();
+
                if (model instanceof ContainerModel) {
-                  Boolean booleanObject = (Boolean) deleteRequest.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM);
-                  boolean isHardDelete = booleanObject == null ? false : booleanObject.booleanValue();
-                  DeleteCommand cmd = new DeleteCommand(isHardDelete);
-                  cmd.setPartToBeDeleted(getHost().getModel(), ((ContainerModel) model).getArtifact());
+                  DeleteCommand cmd = new DeleteCommand();
+                  cmd.setPartToBeDeleted(getHost().getModel(), ((ContainerModel) model).getArtifact(),
+                        isDeleteFromDiagram);
+                  toReturn = cmd;
+               } else if (model instanceof ODMDiagram && getHost().getModel() instanceof ArtifactDataType) {
+                  DeleteCommand cmd = new DeleteCommand();
+                  cmd.setPartToBeDeleted(getHost().getModel(), model, isDeleteFromDiagram);
+                  toReturn = cmd;
                }
             }
-            return UnexecutableCommand.INSTANCE;
+            return toReturn;
          }
       });
    }

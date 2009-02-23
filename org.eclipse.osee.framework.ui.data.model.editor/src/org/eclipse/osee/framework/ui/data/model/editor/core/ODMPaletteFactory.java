@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.gef.Tool;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
@@ -27,7 +28,10 @@ import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.requests.SimpleFactory;
+import org.eclipse.gef.tools.AbstractTool;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
@@ -36,6 +40,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Roberto E. Escobar
@@ -149,6 +155,43 @@ public class ODMPaletteFactory {
       toolbar.add(new ConnectionCreationToolEntry("Inheritance", "Inherit from an artifact", new SimpleFactory(
             ConnectionModel.class), img, img));
 
+      final Action action =
+            OseeAts.createBugAction(ODMEditorActivator.getInstance(), editor, "OSEE Data Model Editor",
+                  ODMEditor.EDITOR_ID);
+      img = action.getImageDescriptor();
+
+      toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
+
+         /* (non-Javadoc)
+          * @see org.eclipse.gef.palette.ToolEntry#createTool()
+          */
+         @Override
+         public Tool createTool() {
+            return new AbstractTool() {
+
+               @Override
+               protected String getCommandName() {
+                  return action.getText();
+               }
+
+               /* (non-Javadoc)
+                * @see org.eclipse.gef.tools.AbstractTool#activate()
+                */
+               @Override
+               public void activate() {
+                  super.activate();
+                  Display.getDefault().asyncExec(new Runnable() {
+                     public void run() {
+                        deactivate();
+                        action.run();
+                     }
+                  });
+
+               }
+            };
+         }
+
+      });
       return toolbar;
    }
 
@@ -164,4 +207,5 @@ public class ODMPaletteFactory {
       }
       return paletteRoot;
    }
+
 }

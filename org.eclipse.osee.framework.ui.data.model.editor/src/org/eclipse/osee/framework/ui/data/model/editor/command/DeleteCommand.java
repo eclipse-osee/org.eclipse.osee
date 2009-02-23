@@ -14,6 +14,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 
 /**
@@ -21,13 +22,11 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
  */
 public class DeleteCommand extends Command {
 
-   public static final Object DELETE_FROM_ODM = new Object();
-   private boolean isHardDelete;
+   public static final Object DELETE_FROM_ODM_DIAGRAM = new Object();
    private Command commandDelegate;
 
-   public DeleteCommand(boolean isHardDelete) {
+   public DeleteCommand() {
       super("Delete");
-      this.isHardDelete = isHardDelete;
    }
 
    public boolean canExecute() {
@@ -38,13 +37,13 @@ public class DeleteCommand extends Command {
       redo();
    }
 
-   public Command setPartToBeDeleted(Object toDelete, Object parent) {
+   public Command setPartToBeDeleted(Object toDelete, Object parent, boolean isArtifactDelete) {
       if (toDelete instanceof AttributeDataType) {
          commandDelegate = new DeleteAttributeCommand(toDelete, parent);
       } else if (toDelete instanceof RelationDataType) {
          commandDelegate = new DeleteRelationCommand(toDelete, parent);
-      } else if (toDelete instanceof ArtifactDataType) {
-         System.out.println("Delete Artifact");
+      } else if (isArtifactDelete && toDelete instanceof ArtifactDataType) {
+         commandDelegate = new DeleteArtifactCommand(toDelete, parent);
       } else if (toDelete instanceof ConnectionModel) {
          System.out.println("Delete connection");
       } else {
@@ -59,6 +58,32 @@ public class DeleteCommand extends Command {
 
    public void undo() {
       commandDelegate.undo();
+   }
+
+   private static class DeleteArtifactCommand extends Command {
+      private ArtifactDataType artifact;
+      private ODMDiagram container;
+
+      public DeleteArtifactCommand(Object model, Object parent) {
+         artifact = (ArtifactDataType) model;
+         container = (ODMDiagram) parent;
+      }
+
+      public void execute() {
+         redo();
+      }
+
+      public void redo() {
+         if (container != null) {
+            container.remove(artifact);
+         }
+      }
+
+      public void undo() {
+         if (container != null) {
+            container.add(artifact);
+         }
+      }
    }
 
    private static class DeleteAttributeCommand extends Command {

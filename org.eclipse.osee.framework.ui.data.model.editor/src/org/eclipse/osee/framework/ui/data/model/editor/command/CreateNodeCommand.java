@@ -47,7 +47,6 @@ public class CreateNodeCommand extends Command {
    }
 
    public void redo() {
-      System.out.println(String.format("Creating [%s]", node));
       if (node instanceof ArtifactDataType) {
          node.setLocation(location);
          node.setWidth(width);

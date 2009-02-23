@@ -16,7 +16,9 @@ import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.UnexecutableCommand;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.BendpointEditPolicy;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.requests.BendpointRequest;
@@ -57,11 +59,17 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
    protected void createEditPolicies() {
       installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy() {
          protected Command getDeleteCommand(GroupRequest request) {
-            Boolean isBooleanObject = (Boolean) request.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM);
-            boolean isHardDelete = isBooleanObject == null ? false : isBooleanObject.booleanValue();
-            DeleteCommand cmd = new DeleteCommand(isHardDelete);
-            //            cmd.setPartToBeDeleted(getHost().getModel());
-            return cmd;
+            Command toReturn = UnexecutableCommand.INSTANCE;
+            Object model = ((AbstractGraphicalEditPart) getParent()).getModel();
+            if (model != null) {
+               Boolean isBooleanObject = (Boolean) request.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM_DIAGRAM);
+               boolean isDeleteFromDiagram = isBooleanObject == null ? false : isBooleanObject.booleanValue();
+
+               DeleteCommand deleteCmd = new DeleteCommand();
+               deleteCmd.setPartToBeDeleted(getHost().getModel(), model, isDeleteFromDiagram);
+               toReturn = deleteCmd;
+            }
+            return toReturn;
          }
       });
 

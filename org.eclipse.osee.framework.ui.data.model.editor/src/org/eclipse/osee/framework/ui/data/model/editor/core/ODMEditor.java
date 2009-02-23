@@ -11,20 +11,27 @@
 package org.eclipse.osee.framework.ui.data.model.editor.core;
 
 import java.util.Arrays;
+import java.util.EventObject;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.ContextMenuProvider;
+import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.RootEditPart;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
@@ -38,11 +45,15 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.command.DeleteCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.operation.ODMLoadGraphRunnable;
 import org.eclipse.osee.framework.ui.data.model.editor.part.ODMEditPartFactory;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
@@ -59,7 +70,7 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
 
    public ODMEditor() {
       super();
-      setEditDomain(new ODMEditDomain(this));
+      setEditDomain(new DefaultEditDomain(this));
    }
 
    /* (non-Javadoc)
@@ -112,6 +123,13 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
          return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
       } else if (adapter == IContentOutlinePage.class) {
          return getOverviewOutlinePage();
+      } else if (adapter == IActionable.class) {
+         return new IActionable() {
+            @Override
+            public String getActionDescription() {
+               return "ODM Editor description here";
+            }
+         };
       }
       return super.getAdapter(adapter);
    }
@@ -145,6 +163,11 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       getActionRegistry().registerAction(zoomOut);
       getActionRegistry().registerAction(new ToggleSnapToGeometryAction(viewer));
 
+      viewer.setKeyHandler(getCommonKeyHandler());
+
+      // Scroll-wheel Zoom
+      viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
+
       // keyboard
       getSite().getKeyBindingService().registerAction(zoomIn); // deprecated
       getSite().getKeyBindingService().registerAction(zoomOut); // deprecated
@@ -152,16 +175,36 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
             Arrays.asList(new String[] {ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH});
       zoomManager.setZoomLevelContributions(zoomContributions);
 
-      viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
-      viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer).setParent(getCommonKeyHandler()));
-
       //      viewer.addDropTargetListener((TransferDropTargetListener) new DiagramDropTargetListener(viewer));
       viewer.addDropTargetListener((TransferDropTargetListener) new ODMPaletteDropListener(viewer));
    }
 
-   protected KeyHandler getCommonKeyHandler() {
+   private KeyHandler getCommonKeyHandler() {
       if (shareKeyHandler == null) {
-         shareKeyHandler = new KeyHandler();
+         shareKeyHandler = new GraphicalViewerKeyHandler(getViewer()) {
+            @SuppressWarnings("unchecked")
+            public boolean keyPressed(KeyEvent event) {
+               if (event.keyCode == SWT.DEL) {
+                  List objects = getGraphicalViewer().getSelectedEditParts();
+                  if (objects == null || objects.isEmpty()) {
+                     return true;
+                  }
+                  GroupRequest deleteReq = new GroupRequest(RequestConstants.REQ_DELETE);
+                  deleteReq.getExtendedData().put(DeleteCommand.DELETE_FROM_ODM_DIAGRAM, Boolean.TRUE);
+                  CompoundCommand compoundCmd = new CompoundCommand("Delete");
+                  for (int i = 0; i < objects.size(); i++) {
+                     EditPart object = (EditPart) objects.get(i);
+                     Command cmd = object.getCommand(deleteReq);
+                     if (cmd != null) {
+                        compoundCmd.add(cmd);
+                     }
+                  }
+                  getCommandStack().execute(compoundCmd);
+                  return true;
+               }
+               return super.keyPressed(event);
+            }
+         };
          shareKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0), getActionRegistry().getAction(
                GEFActionConstants.DIRECT_EDIT));
       }
@@ -173,6 +216,15 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
     */
    @Override
    protected void initializeGraphicalViewer() {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util.EventObject)
+    */
+   @Override
+   public void commandStackChanged(EventObject event) {
+      firePropertyChange(IEditorPart.PROP_DIRTY);
+      super.commandStackChanged(event);
    }
 
    private ODMOutlinePage getOverviewOutlinePage() {

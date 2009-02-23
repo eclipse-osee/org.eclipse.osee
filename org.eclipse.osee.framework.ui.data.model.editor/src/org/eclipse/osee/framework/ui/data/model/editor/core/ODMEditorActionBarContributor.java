@@ -63,6 +63,8 @@ public class ODMEditorActionBarContributor extends ActionBarContributor {
       toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
       toolBarManager.add(getAction(ActionFactory.REDO.getId()));
       toolBarManager.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY));
+      //      toolBarManager.add(getAction(ActionFactory.REFRESH.getId()));
+      toolBarManager.add(new Separator());
    }
 
    /*
@@ -73,5 +75,6 @@ public class ODMEditorActionBarContributor extends ActionBarContributor {
    protected void declareGlobalActionKeys() {
       addGlobalActionKey(ActionFactory.PRINT.getId());
       addGlobalActionKey(ActionFactory.SELECT_ALL.getId());
+      addGlobalActionKey(ActionFactory.DELETE.getId());
    }
 }
