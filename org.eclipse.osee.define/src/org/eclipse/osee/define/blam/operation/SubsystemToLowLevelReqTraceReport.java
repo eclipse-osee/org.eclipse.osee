@@ -154,7 +154,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
                row[1] = higherLevelReq.getDescriptiveName();
 
                for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL)) {
-                  if (lowerLevelReq.isOfType(reqtypeName)) {
+                  if (lowLevelReqs.contains(lowerLevelReq)) {
                      row[2] = correct(lowerLevelReq.getSoleAttributeValue("Imported Paragraph Number", ""));
                      row[3] = lowerLevelReq.getDescriptiveName();
                      excelWriter.writeRow(row);
