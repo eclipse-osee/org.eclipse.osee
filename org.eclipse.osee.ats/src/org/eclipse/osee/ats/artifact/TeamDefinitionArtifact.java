@@ -309,6 +309,10 @@ public class TeamDefinitionArtifact extends Artifact {
       return getRelatedArtifacts(AtsRelation.TeamLead_Lead, User.class);
    }
 
+   public Collection<User> getPrivilegedMembers() throws OseeCoreException {
+      return getRelatedArtifacts(AtsRelation.PrivilegedMember_Member, User.class);
+   }
+
    /**
     * Returns leads configured first by ActionableItems and only if this is an empty set, THEN defaults to those
     * configured by TeamDefinitions. Use getLeads() to only get the leads configured for this TeamDefinitionArtifact.

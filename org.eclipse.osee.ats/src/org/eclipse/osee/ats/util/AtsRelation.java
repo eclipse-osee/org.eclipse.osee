@@ -36,6 +36,9 @@ public enum AtsRelation implements IRelationEnumeration {
    TeamMember_Team(true, "TeamMember"),
    TeamMember_Member(false, "TeamMember"),
    //
+   PrivilegedMember_Team(true, "PrivilegedMember"),
+   PrivilegedMember_Member(false, "PrivilegedMember"),
+   //
    SmaToTask_Sma(true, "SmaToTask"),
    SmaToTask_Task(false, "SmaToTask"),
    //

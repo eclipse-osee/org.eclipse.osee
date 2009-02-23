@@ -59,9 +59,12 @@
    <Interior/>
   </Style>
   <Style ss:ID="s24">
-   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+   <NumberFormat ss:Format="@"/>
   </Style>
   <Style ss:ID="s25">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+  </Style>
+  <Style ss:ID="s26">
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
@@ -70,14 +73,14 @@
    </Borders>
    <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
   </Style>
-  <Style ss:ID="s26">
+  <Style ss:ID="s27">
    <Borders>
     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
    </Borders>
    <Font x:Family="Swiss" ss:Size="9"/>
   </Style>
-  <Style ss:ID="s27">
+  <Style ss:ID="s28">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
    <Borders>
     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
@@ -86,30 +89,28 @@
    <Font x:Family="Swiss" ss:Size="9"/>
    <NumberFormat/>
   </Style>
-  <Style ss:ID="s29">
+  <Style ss:ID="s30">
    <Alignment ss:Vertical="Bottom"/>
    <Borders/>
    <Interior/>
    <NumberFormat/>
    <Protection/>
   </Style>
-  <Style ss:ID="s32">
-   <NumberFormat ss:Format="@"/>
-  </Style>
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R211C1:R236C5"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R212C1:R237C5"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="240" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="243" x:FullColumns="1"
    x:FullRows="1">
    <Column ss:AutoFitWidth="0" ss:Width="286.5"/>
    <Column ss:AutoFitWidth="0" ss:Width="339.75"/>
    <Column ss:AutoFitWidth="0" ss:Width="186.75"/>
    <Column ss:AutoFitWidth="0" ss:Width="132.75"/>
    <Column ss:Width="147.75"/>
-   <Column ss:Index="7" ss:AutoFitWidth="0" ss:Width="91.5"/>
+   <Column ss:AutoFitWidth="0" ss:Width="76.5"/>
+   <Column ss:AutoFitWidth="0" ss:Width="91.5"/>
    <Column ss:Index="9" ss:Width="63.75"/>
    <Column ss:AutoFitWidth="0" ss:Width="57"/>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -366,7 +367,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.FloatingPointAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Estimated Hours</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s32"><Data ss:Type="String">0.0</Data></Cell>
+    <Cell ss:Index="6" ss:StyleID="s24"><Data ss:Type="String">0.0</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -384,7 +385,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.FloatingPointAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Man Days Needed</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s32"><Data ss:Type="String">0.0</Data></Cell>
+    <Cell ss:Index="6" ss:StyleID="s24"><Data ss:Type="String">0.0</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -515,7 +516,7 @@
     <Cell><Data ss:Type="String">ats.Log</Data></Cell>
     <Cell><Data ss:Type="String">xml</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
    </Row>
    <Row>
@@ -524,7 +525,7 @@
     <Cell><Data ss:Type="String">ats.State Notes</Data></Cell>
     <Cell><Data ss:Type="String">xml</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
    </Row>
    <Row>
@@ -532,7 +533,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s22"><Data ss:Type="String">ats.Related To State</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
    </Row>
    <Row>
@@ -645,20 +646,20 @@
     <Cell><Data ss:Type="String"># Map attribute to artifact type</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
-    <Cell ss:StyleID="s25"><Data ss:Type="String">Artifact Type Name</Data></Cell>
-    <Cell ss:StyleID="s25"><Data ss:Type="String">Attribute Name</Data></Cell>
+    <Cell ss:StyleID="s26"><Data ss:Type="String">Artifact Type Name</Data></Cell>
+    <Cell ss:StyleID="s26"><Data ss:Type="String">Attribute Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
     <Cell><Data ss:Type="String">Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell ss:StyleID="s26"><Data ss:Type="String">Annotation</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Annotation</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Static Id</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Static Id</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String">PeerToPeer Review</Data></Cell>
@@ -706,7 +707,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">PeerToPeer Review</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Estimated Release Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Estimated Release Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -717,7 +718,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">PeerToPeer Review</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Estimated Completion Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Estimated Completion Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -776,7 +777,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">Decision Review</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Estimated Release Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Estimated Release Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -787,7 +788,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">Decision Review</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Estimated Completion Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Estimated Completion Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -990,7 +991,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">Team Workflow</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Estimated Release Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Estimated Release Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -1001,7 +1002,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">Team Workflow</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Estimated Completion Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Estimated Completion Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -1012,7 +1013,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">Team Workflow</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Release Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Release Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -1106,7 +1107,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">Task</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Estimated Completion Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Estimated Completion Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -1117,7 +1118,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">Task</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Release Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Release Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -1176,7 +1177,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">Version</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Next Version</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Next Version</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -1198,7 +1199,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell ss:StyleID="Default"><Data ss:Type="String">Version</Data></Cell>
-    <Cell ss:StyleID="s29"><Data ss:Type="String">ats.Release Date</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">ats.Release Date</Data></Cell>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
     <Cell ss:StyleID="Default"/>
@@ -1240,6 +1241,15 @@
     <Cell><Data ss:Type="String">User</Data></Cell>
     <Cell><Data ss:Type="String">is member of </Data></Cell>
     <Cell><Data ss:Type="String">MEMB</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">PrivilegedMember</Data></Cell>
+    <Cell><Data ss:Type="String">Team Definition</Data></Cell>
+    <Cell><Data ss:Type="String">has member</Data></Cell>
+    <Cell><Data ss:Type="String">User</Data></Cell>
+    <Cell><Data ss:Type="String">is member of </Data></Cell>
+    <Cell><Data ss:Type="String">PMEMB</Data></Cell>
     <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
@@ -1383,9 +1393,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToWorkflowDiagram</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1394,9 +1404,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToWorkflowDiagram</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1406,9 +1416,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToTaskWorkflowDiagram</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1417,9 +1427,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToTaskWorkflowDiagram</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1429,9 +1439,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToDecisionReviewWorkflowDiagram</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1440,9 +1450,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToDecisionReviewWorkflowDiagram</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1452,9 +1462,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToPeerToPeerReviewWorkflowDiagram</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1463,9 +1473,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToPeerToPeerReviewWorkflowDiagram</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1475,9 +1485,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToVersion</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1485,9 +1495,9 @@
     <Cell><Data ss:Type="String">Version</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamDefinitionToVersion</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1496,9 +1506,9 @@
     <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">ActionToWorkflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1507,9 +1517,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">ActionToWorkflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1519,9 +1529,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamWorkflowToReview</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1530,9 +1540,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamWorkflowToReview</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1542,9 +1552,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamWorkflowToReview</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1554,9 +1564,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamWorkflowTargetedForVersion</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1564,9 +1574,9 @@
     <Cell><Data ss:Type="String">Version</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamWorkflowTargetedForVersion</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1575,9 +1585,9 @@
     <Cell><Data ss:Type="String">Task</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">SmaToTask</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Task</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1586,9 +1596,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">SmaToTask</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">Artifact</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1598,9 +1608,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamActionableItem</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">User</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1609,9 +1619,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamActionableItem</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">State</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1619,9 +1629,9 @@
     <Cell><Data ss:Type="String">User</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamLead</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">User</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1630,9 +1640,9 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamLead</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">State</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1640,9 +1650,9 @@
     <Cell><Data ss:Type="String">User</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamMember</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">User</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
@@ -1651,38 +1661,52 @@
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamMember</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data><NamedCell
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">State</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">User</Data></Cell>
+    <Cell><Data ss:Type="String">PrivilegedMember</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell><Data ss:Type="String">User</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell><Data ss:Type="String">PrivilegedMember</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="String">State</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">User</Data></Cell>
     <Cell><Data ss:Type="String">SubscribedUser</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell><Data ss:Type="String">User</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
     <Cell><Data ss:Type="String">SubscribedUser</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">User</Data></Cell>
     <Cell><Data ss:Type="String">FavoriteUser</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell><Data ss:Type="String">User</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
     <Cell><Data ss:Type="String">FavoriteUser</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">UNLIMITED</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
   </Table>
@@ -1694,12 +1718,12 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>9</TopRowVisible>
+   <TopRowVisible>165</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>36</ActiveRow>
-     <ActiveCol>5</ActiveCol>
+     <ActiveRow>192</ActiveRow>
+     <ActiveCol>3</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

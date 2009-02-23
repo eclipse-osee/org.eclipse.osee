@@ -160,6 +160,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    private void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) throws OseeCoreException {
       users.addAll(tda.getLeads());
+      users.addAll(tda.getPrivilegedMembers());
 
       // Walk up tree to get other editors
       if (tda.getParent() != null && (tda.getParent() instanceof TeamDefinitionArtifact)) {
