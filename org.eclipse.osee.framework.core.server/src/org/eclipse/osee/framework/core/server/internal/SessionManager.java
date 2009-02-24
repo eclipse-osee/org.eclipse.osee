@@ -61,9 +61,11 @@ public class SessionManager implements ISessionManager {
    @Override
    public List<SessionData> getSessionByClientAddress(String clientAddress) {
       List<SessionData> toReturn = new ArrayList<SessionData>();
-      for (SessionData sessionData : sessionCache.values()) {
-         if (sessionData.getSession().getClientAddress().equals(clientAddress)) {
-            toReturn.add(sessionData);
+      synchronized (sessionCache) {
+         for (SessionData sessionData : sessionCache.values()) {
+            if (sessionData.getSession().getClientAddress().equals(clientAddress)) {
+               toReturn.add(sessionData);
+            }
          }
       }
       return toReturn;
@@ -100,7 +102,6 @@ public class SessionManager implements ISessionManager {
 
          SessionData sessionData = new SessionData(sessionState, session);
          sessionCache.put(sessionData.getSessionId(), sessionData);
-
          sessionGrant = new OseeSessionGrant(sessionData.getSessionId());
          sessionGrant.setCreationRequired(oseeUserInfo.isCreationRequired());
          sessionGrant.setOseeUserInfo(oseeUserInfo);
@@ -156,21 +157,22 @@ public class SessionManager implements ISessionManager {
             List<String> deleteIds = new ArrayList<String>();
             List<OseeSession> createData = new ArrayList<OseeSession>();
             List<OseeSession> updateData = new ArrayList<OseeSession>();
-            for (String sessionId : sessionCache.keySet()) {
-               SessionData sessionData = sessionCache.get(sessionId);
-               if (sessionData != null) {
-                  switch (sessionData.getSessionState()) {
-                     case CREATED:
-                        createData.add(sessionData.getSession());
-                        break;
-                     case DELETED:
-                        deleteIds.add(sessionData.getSessionId());
-                        break;
-                     case UPDATED:
-                        updateData.add(sessionData.getSession());
-                        break;
-                     default:
-                        break;
+            synchronized (sessionCache) {
+               for (SessionData sessionData : sessionCache.values()) {
+                  if (sessionData != null) {
+                     switch (sessionData.getSessionState()) {
+                        case CREATED:
+                           createData.add(sessionData.getSession());
+                           break;
+                        case DELETED:
+                           deleteIds.add(sessionData.getSessionId());
+                           break;
+                        case UPDATED:
+                           updateData.add(sessionData.getSession());
+                           break;
+                        default:
+                           break;
+                     }
                   }
                }
             }
