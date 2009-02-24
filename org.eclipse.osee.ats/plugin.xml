@@ -182,8 +182,8 @@
       </AtsStateItem>
    </extension>
    <extension
-         id="ATS_Skynet_Types"
-         name="ATS_Skynet_Types"
+         id="OseeTypes_ATS"
+         name="OseeTypes_ATS"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <ExcelFile
             file="support/OseeTypes_ATS.xml"/>
