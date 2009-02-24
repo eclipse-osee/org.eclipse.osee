@@ -57,6 +57,19 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
    }
 
    protected void createEditPolicies() {
+      //      installEditPolicy(EditPolicy.LAYOUT_ROLE, new XYLayoutEditPolicy() {
+      //
+      //         @Override
+      //         protected Command createChangeConstraintCommand(EditPart child, Object constraint) {
+      //            return null;
+      //         }
+      //
+      //         @Override
+      //         protected Command getCreateCommand(CreateRequest request) {
+      //            return null;
+      //         }
+      //
+      //      });
       installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy() {
          protected Command getDeleteCommand(GroupRequest request) {
             Command toReturn = UnexecutableCommand.INSTANCE;

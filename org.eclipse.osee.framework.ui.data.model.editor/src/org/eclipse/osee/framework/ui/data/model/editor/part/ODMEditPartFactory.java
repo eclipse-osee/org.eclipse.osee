@@ -19,8 +19,10 @@ import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
+import org.eclipse.osee.framework.ui.data.model.editor.model.RelationLinkModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel;
 
 /**
@@ -47,6 +49,10 @@ public class ODMEditPartFactory implements EditPartFactory {
          editPart = new AttributeEditPart(model);
       } else if (model instanceof ContainerModel || model instanceof List) {
          editPart = new ContainerEditPart(model);
+      } else if (model instanceof InheritanceLinkModel) {
+         editPart = new InheritanceEditPart(model);
+      } else if (model instanceof RelationLinkModel) {
+         editPart = new RelationLinkEditPart(model);
       } else if (model instanceof ConnectionModel) {
          editPart = new ConnectionEditPart(model);
       } else if (model instanceof String) {

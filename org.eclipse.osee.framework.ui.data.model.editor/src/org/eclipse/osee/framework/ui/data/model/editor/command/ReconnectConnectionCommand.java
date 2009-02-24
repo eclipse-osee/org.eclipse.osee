@@ -58,11 +58,11 @@ public class ReconnectConnectionCommand extends Command {
       if (isSource) {
          oldNode = connectionModel.getSource();
          viewIndex = oldNode.getOutgoingConnections().indexOf(connectionModel);
-         connectionModel.setSource(newNode);
+         connectionModel.setSource((ArtifactDataType) newNode);
       } else {
          oldNode = connectionModel.getTarget();
          viewIndex = oldNode.getIncomingConnections().indexOf(connectionModel);
-         connectionModel.setTarget(newNode);
+         connectionModel.setTarget((ArtifactDataType) newNode);
       }
 
       // Reference

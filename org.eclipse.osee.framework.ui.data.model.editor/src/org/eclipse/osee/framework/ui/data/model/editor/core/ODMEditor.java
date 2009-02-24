@@ -231,7 +231,7 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       if (null == overviewOutlinePage && null != getGraphicalViewer()) {
          RootEditPart rootEditPart = getGraphicalViewer().getRootEditPart();
          if (rootEditPart instanceof ScalableFreeformRootEditPart) {
-            overviewOutlinePage = new ODMOutlinePage((ScalableFreeformRootEditPart) rootEditPart);
+            overviewOutlinePage = new ODMOutlinePage((ScalableFreeformRootEditPart) rootEditPart, getActionRegistry());
          }
       }
       return overviewOutlinePage;

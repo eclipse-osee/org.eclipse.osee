@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.NodeModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel;
@@ -67,12 +68,16 @@ public class ArtifactEditPart extends DataTypeEditPart {
 
    @SuppressWarnings("unchecked")
    protected List getModelChildren() {
-      List<ContainerModel> modelChildren = new ArrayList<ContainerModel>();
-      modelChildren.add(new ContainerModel(getArtifactDataType(), ContainerType.INHERITED_ATTRIBUTES));
-      modelChildren.add(new ContainerModel(getArtifactDataType(), ContainerType.LOCAL_ATTRIBUTES));
-      modelChildren.add(new ContainerModel(getArtifactDataType(), ContainerType.INHERITED_RELATIONS));
-      modelChildren.add(new ContainerModel(getArtifactDataType(), ContainerType.LOCAL_RELATIONS));
-      return modelChildren;
+      List children = new ArrayList();
+      children.add(new ContainerModel(getArtifactDataType(), ContainerType.INHERITED_ATTRIBUTES));
+      children.add(new ContainerModel(getArtifactDataType(), ContainerType.LOCAL_ATTRIBUTES));
+      children.add(new ContainerModel(getArtifactDataType(), ContainerType.INHERITED_RELATIONS));
+      children.add(new ContainerModel(getArtifactDataType(), ContainerType.LOCAL_RELATIONS));
+
+      for (ArtifactDataType ancestor : getArtifactDataType().getSuperTypes()) {
+         children.add(new InheritanceLinkModel(ancestor, getArtifactDataType()));
+      }
+      return children;
    }
 
    protected void refreshVisuals() {

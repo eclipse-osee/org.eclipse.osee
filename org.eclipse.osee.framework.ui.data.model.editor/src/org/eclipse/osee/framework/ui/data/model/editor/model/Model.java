@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,6 +36,10 @@ public class Model {
       if (listener != null) {
          listeners.remove(listener);
       }
+   }
+
+   protected List<IModelListener> getListeners() {
+      return new ArrayList<IModelListener>(listeners);
    }
 
    protected void fireModelEvent() {

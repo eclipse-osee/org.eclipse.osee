@@ -48,7 +48,8 @@ public class ConnectionPropertySource extends ModelPropertySource {
    public Object getPropertyValue(Object id) {
       if (id == idBendpoints) {
          StringBuffer buffer = new StringBuffer();
-         for (Bendpoint bendPoint : getConnectionModel().getBendpoints()) {
+         for (Object object : getConnectionModel().getBendpoints()) {
+            Bendpoint bendPoint = (Bendpoint) object;
             Point point = bendPoint.getLocation();
             buffer.append(point.x);
             buffer.append(',');

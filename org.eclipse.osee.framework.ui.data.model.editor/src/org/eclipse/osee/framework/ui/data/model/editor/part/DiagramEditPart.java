@@ -1,5 +1,6 @@
 package org.eclipse.osee.framework.ui.data.model.editor.part;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.FanRouter;
@@ -16,6 +17,7 @@ import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
+import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.IModelListener;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
 import org.eclipse.osee.framework.ui.data.model.editor.policy.DiagramLayoutEditPolicy;
@@ -86,7 +88,54 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements LayerC
 
    @SuppressWarnings("unchecked")
    protected List getModelChildren() {
-      return ((ODMDiagram) getModel()).getContent();
-   }
+      List toReturn = new ArrayList();
 
+      List<DataType> types = ((ODMDiagram) getModel()).getContent();
+      toReturn.addAll(types);
+
+      //      Map<ArtifactDataType, InheritanceLinkModel> inheritMap = new HashMap<ArtifactDataType, InheritanceLinkModel>();
+      //      Map<RelationDataType, RelationLinkModel> relationMap = new HashMap<RelationDataType, RelationLinkModel>();
+      //      for (DataType dataType : types) {
+      //         ArtifactDataType artifact = (ArtifactDataType) dataType;
+      //
+      //         for (ArtifactDataType ancestor : artifact.getSuperTypes()) {
+      //            InheritanceLinkModel inheritModel = inheritMap.get(ancestor);
+      //            if (inheritModel == null) {
+      //               inheritModel = inheritMap.get(artifact);
+      //               if (inheritModel == null) {
+      //                  inheritModel = new InheritanceLinkModel();
+      //                  inheritMap.put(ancestor, inheritModel);
+      //                  inheritMap.put(artifact, inheritModel);
+      //               }
+      //            }
+      //            inheritModel.setSource(artifact);
+      //            inheritModel.setTarget(ancestor);
+      //         }
+
+      //         for (RelationDataType relation : artifact.getLocalRelations()) {
+      //            RelationLinkModel linkModel = relationMap.get(relation);
+      //            if (linkModel == null) {
+      //               linkModel = new RelationLinkModel();
+      //               linkModel.setRelation(relation);
+      //               relationMap.put(relation, linkModel);
+      //            }
+      //            if (linkModel.getASide() == null) {
+      //               linkModel.setASide(artifact);
+      //            } else {
+      //               linkModel.setBSide(artifact);
+      //            }
+      //         }
+      //      }
+      //      for (InheritanceLinkModel inheritModel : inheritMap.values()) {
+      //         if (inheritModel.getSource() != null && inheritModel.getTarget() != null) {
+      //            toReturn.add(inheritModel);
+      //         }
+      //      }
+      //      for (RelationLinkModel linkModel : relationMap.values()) {
+      //         if (linkModel.getASide() != null && linkModel.getBSide() != null) {
+      //            toReturn.add(linkModel);
+      //         }
+      //      }
+      return toReturn;
+   }
 }
