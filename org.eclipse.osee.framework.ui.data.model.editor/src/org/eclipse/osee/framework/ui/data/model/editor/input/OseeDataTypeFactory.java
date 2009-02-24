@@ -98,19 +98,19 @@ public class OseeDataTypeFactory {
          }
       }
 
-      HashCollection<String, String> parentChildTable = OseeDataTypeDatastore.getArtifactInheritance();
-      for (String parentKey : parentChildTable.keySet()) {
-         ArtifactDataType parent = artifactDataType.getById(parentKey);
-         if (parent != null) {
-            Collection<String> children = parentChildTable.getValues(parentKey);
-            for (String childKey : children) {
-               ArtifactDataType child = artifactDataType.getById(childKey);
-               if (child != null) {
-                  child.setParent(parent);
-               }
-            }
-         }
-      }
+      //      HashCollection<String, String> parentChildTable = OseeDataTypeDatastore.getArtifactInheritance();
+      //      for (String parentKey : parentChildTable.keySet()) {
+      //         ArtifactDataType parent = artifactDataType.getById(parentKey);
+      //         if (parent != null) {
+      //            Collection<String> children = parentChildTable.getValues(parentKey);
+      //            for (String childKey : children) {
+      //               ArtifactDataType child = artifactDataType.getById(childKey);
+      //               if (child != null) {
+      //                  child.setParent(parent);
+      //               }
+      //            }
+      //         }
+      //      }
       cache.addDataTypeSource(dataTypeSource);
    }
 }

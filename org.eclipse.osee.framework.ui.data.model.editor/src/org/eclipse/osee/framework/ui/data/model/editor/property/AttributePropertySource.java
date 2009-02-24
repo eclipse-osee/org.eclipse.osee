@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.data.model.editor.property;
 import java.util.List;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.plugin.views.property.IntegerPropertyDescriptor;
+import org.eclipse.osee.framework.ui.plugin.views.property.ModelPropertySource;
 import org.eclipse.osee.framework.ui.plugin.views.property.PropertyId;
 import org.eclipse.osee.framework.ui.plugin.views.property.StringPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -20,7 +21,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributePropertySource extends DataTypeElementPropertySource {
+public class AttributePropertySource extends ModelPropertySource {
 
    protected final PropertyId idDefaultValue;
    protected final PropertyId idValidityXml;
@@ -35,7 +36,7 @@ public class AttributePropertySource extends DataTypeElementPropertySource {
    protected final PropertyId idProviderAttributeClass;
 
    public AttributePropertySource(String categoryName, Object dataType) {
-      super(categoryName, (AttributeDataType) dataType);
+      super(dataType);
       idDefaultValue = new PropertyId(categoryName, "Default Value");
       idValidityXml = new PropertyId(categoryName, "Validity Xml");
       idToolTipText = new PropertyId(categoryName, "ToolTip");
@@ -52,7 +53,6 @@ public class AttributePropertySource extends DataTypeElementPropertySource {
     */
    @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
-      super.addPropertyDescriptors(list);
       list.add(new StringPropertyDescriptor(idDefaultValue));
       list.add(new StringPropertyDescriptor(idValidityXml));
       list.add(new StringPropertyDescriptor(idToolTipText));
@@ -75,7 +75,7 @@ public class AttributePropertySource extends DataTypeElementPropertySource {
     */
    @Override
    public boolean isPropertyResettable(Object id) {
-      return super.isPropertyResettable(id) || id == idDefaultValue || id == idValidityXml || id == idToolTipText || id == idFileTypeExtension || id == idTaggerId || id == idMinOccurrence || id == idMaxOccurrence || id == idBaseAttributeClass || id == idProviderAttributeClass;
+      return id == idDefaultValue || id == idValidityXml || id == idToolTipText || id == idFileTypeExtension || id == idTaggerId || id == idMinOccurrence || id == idMaxOccurrence || id == idBaseAttributeClass || id == idProviderAttributeClass;
    }
 
    /* (non-Javadoc)
@@ -92,7 +92,7 @@ public class AttributePropertySource extends DataTypeElementPropertySource {
       if (id == idMaxOccurrence) return getDataTypeElement().getMaxOccurrence() != -1;
       if (id == idBaseAttributeClass) return getDataTypeElement().getBaseAttributeClass() != null;
       if (id == idProviderAttributeClass) return getDataTypeElement().getProviderAttributeClass() != null;
-      return super.isPropertySet(id);
+      return false;
    }
 
    /* (non-Javadoc)
@@ -109,7 +109,7 @@ public class AttributePropertySource extends DataTypeElementPropertySource {
       if (id == idMaxOccurrence) return IntegerPropertyDescriptor.fromModel(getDataTypeElement().getMaxOccurrence());
       if (id == idBaseAttributeClass) return AttributeBaseClassPropertyDescriptor.fromModel(getDataTypeElement().getBaseAttributeClass());
       if (id == idProviderAttributeClass) return AttributeProviderPropertyDescriptor.fromModel(getDataTypeElement().getProviderAttributeClass());
-      return super.getPropertyValue(id);
+      return false;
    }
 
    /* (non-Javadoc)
@@ -126,7 +126,6 @@ public class AttributePropertySource extends DataTypeElementPropertySource {
       if (id == idMaxOccurrence) getDataTypeElement().setMaxOccurrence(-1);
       if (id == idBaseAttributeClass) getDataTypeElement().setBaseAttributeClass(null);
       if (id == idProviderAttributeClass) getDataTypeElement().setProviderAttributeClass(null);
-      super.resetPropertyValue(id);
    }
 
    /* (non-Javadoc)
@@ -145,7 +144,6 @@ public class AttributePropertySource extends DataTypeElementPropertySource {
             AttributeBaseClassPropertyDescriptor.toModel(value));
       if (id == idProviderAttributeClass) getDataTypeElement().setProviderAttributeClass(
             AttributeProviderPropertyDescriptor.toModel(value));
-      super.setPropertyValue(id, value);
    }
 
 }

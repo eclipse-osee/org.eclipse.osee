@@ -23,34 +23,39 @@ import org.eclipse.ui.views.properties.IPropertySource;
  */
 public class PropertySourceFactory {
 
-   private static final String CATEGORY_DIAGRAM = "Diagram";
-   private static final String CATEGORY_ARTIFACT = "Artifact Model";
-   private static final String CATEGORY_ATTRIBUTE = "Attribute Model";
-   private static final String CATEGORY_RELATION = "Relation Model";
+   private static final String CATEGORY_WIDGET = "Widget";
+   private static final String CATEGORY_ARTIFACT = "Artifact";
+   private static final String CATEGORY_ATTRIBUTE = "Attribute";
+   private static final String CATEGORY_RELATION = "Relation";
+   private static final String CATEGORY_DATA = " Data";
+   private static final String CATEGORY_LINK = "Link";
 
    private PropertySourceFactory() {
       super();
    }
 
    public static IPropertySource getPropertySource(Object model) {
+      IPropertySource toReturn = null;
       if (model instanceof ConnectionModel) {
-         return new ConnectionPropertySource(CATEGORY_DIAGRAM, model);
+         toReturn = new ConnectionPropertySource(CATEGORY_LINK, model);
+      } else if (model instanceof AttributeDataType) {
+         toReturn =
+               new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_ATTRIBUTE, model),
+                     new AttributePropertySource(CATEGORY_ATTRIBUTE + CATEGORY_DATA, model), new NodePropertySource(
+                           CATEGORY_WIDGET, model));
+      } else if (model instanceof RelationDataType) {
+         toReturn =
+               new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_RELATION, model),
+                     new RelationPropertySource(CATEGORY_RELATION + CATEGORY_DATA, model), new NodePropertySource(
+                           CATEGORY_WIDGET, model));
+      } else if (model instanceof ArtifactDataType) {
+         toReturn =
+               new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_ARTIFACT, model),
+                     new ArtifactPropertySource(CATEGORY_ARTIFACT + CATEGORY_DATA, model), new NodePropertySource(
+                           CATEGORY_WIDGET, model));
+      } else if (model instanceof NodeModel) {
+         toReturn = new NodePropertySource(CATEGORY_WIDGET, model);
       }
-      if (model instanceof AttributeDataType) {
-         return new CompositePropertySource(new AttributePropertySource(CATEGORY_ATTRIBUTE, model),
-               new NodePropertySource(CATEGORY_DIAGRAM, model));
-      }
-      if (model instanceof RelationDataType) {
-         return new CompositePropertySource(new RelationPropertySource(CATEGORY_RELATION, model),
-               new NodePropertySource(CATEGORY_DIAGRAM, model));
-      }
-      if (model instanceof ArtifactDataType) {
-         return new CompositePropertySource(new ArtifactPropertySource(CATEGORY_ARTIFACT, model),
-               new NodePropertySource(CATEGORY_DIAGRAM, model));
-      }
-      if (model instanceof NodeModel) {
-         return new NodePropertySource(CATEGORY_DIAGRAM, model);
-      }
-      return null;
+      return toReturn;
    }
 }

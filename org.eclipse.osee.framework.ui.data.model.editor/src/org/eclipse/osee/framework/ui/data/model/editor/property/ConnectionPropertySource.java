@@ -41,8 +41,8 @@ public class ConnectionPropertySource extends ModelPropertySource {
       return id == idBendpoints;
    }
 
-   protected ConnectionModel getConnectionModel() {
-      return (ConnectionModel) getModel();
+   protected ConnectionModel<?> getConnectionModel() {
+      return (ConnectionModel<?>) getModel();
    }
 
    public Object getPropertyValue(Object id) {
