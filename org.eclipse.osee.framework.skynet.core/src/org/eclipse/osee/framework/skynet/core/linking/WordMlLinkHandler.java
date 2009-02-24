@@ -203,8 +203,9 @@ public class WordMlLinkHandler {
                   String internalLink =
                         String.format("http://none/unknown?guid=%s&amp;branchId=%s", guid, branch.getBranchId());
                   String link =
-                        String.format(WORDML_LINK_FORMAT, internalLink, String.format(
-                              "Artifact Not Found - guid:[%s] branchId:[%s]", guid, branch.getBranchId()));
+                        String.format(WORDML_LINK_FORMAT, internalLink,
+                              String.format("Invalid Link - artifact not found - guid:[%s] branchId:[%s]", guid,
+                                    branch.getBranchId()));
                   changeSet.replace(match.start, match.end, link);
                }
             }
