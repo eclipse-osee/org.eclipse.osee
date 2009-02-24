@@ -42,9 +42,6 @@ public class RevertTest extends TestCase {
 
    private static final String GET_TXS_ENTRIES = "SELECT * FROM osee_txs WHERE gamma_id = ? AND transaction_id = ?";
 
-   private static final String GET_GAMMAS_IN_DATA =
-         "SELECT gamma_id FROM osee_artifact_version WHERE gamma_id = ? UNION SELECT gamma_id FROM osee_attribute WHERE gamma_id = ? UNION SELECT gamma_id FROM osee_relation_link WHERE gamma_id = ?";
-
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
 
@@ -163,17 +160,6 @@ public class RevertTest extends TestCase {
                   pairs.getKey(), pairs.getValue()), !chStmt.next());
          }
 
-         for (Integer gammas : uniqueGammas) {
-            chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(), gammas.intValue());
-            assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d", gammas),
-                  !chStmt.next());
-         }
-
-         for (Integer gammas : keepGammas) {
-            chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(), gammas.intValue());
-            assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d", gammas),
-                  chStmt.next());
-         }
       } finally {
          chStmt.close();
       }
@@ -551,12 +537,8 @@ public class RevertTest extends TestCase {
 
       checkBaselines(baselines);
       checkNonBaselines(nonBaselines);
-      checkUniqueGammas(uniqueGammas);
-      checkKeepGammas(keepGammas);
       checkBaselines(artifactBaselines);
       checkNonBaselines(artifactNonBaselines);
-      checkUniqueGammas(artifactUniqueGammas);
-      checkKeepGammas(artifactKeepGammas);
 
    }
 
@@ -609,31 +591,4 @@ public class RevertTest extends TestCase {
 
    }
 
-   private void checkUniqueGammas(Set<Integer> uniqueGammas) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         for (Integer gammas : uniqueGammas) {
-            chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(), gammas.intValue());
-            assertTrue(String.format("Did not Delete A TXS Entry that should have been Deleted: Gamma %d", gammas),
-                  !chStmt.next());
-         }
-
-      } finally {
-         chStmt.close();
-      }
-   }
-
-   private void checkKeepGammas(Set<Integer> keepGammas) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         for (Integer gammas : keepGammas) {
-            chStmt.runPreparedQuery(GET_GAMMAS_IN_DATA, gammas.intValue(), gammas.intValue(), gammas.intValue());
-            assertTrue(String.format("Deleted A TXS Entry that should not have been Deleted: Gamma %d", gammas),
-                  chStmt.next());
-         }
-
-      } finally {
-         chStmt.close();
-      }
-   }
 }

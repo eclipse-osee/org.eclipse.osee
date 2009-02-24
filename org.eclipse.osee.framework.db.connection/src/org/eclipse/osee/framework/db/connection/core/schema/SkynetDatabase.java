@@ -24,6 +24,7 @@ public class SkynetDatabase {
    public static final Table ARTIFACT_VERSION_TABLE = new Table("OSEE_ARTIFACT_VERSION");
    public static final Table ARTIFACT_TABLE_ACL = new Table("OSEE_ARTIFACT_ACL");
    public static final Table TRANSACTIONS_TABLE = new Table("OSEE_TXS");
+   public static final Table REMOVED_TRANSACTIONS_TABLE = new Table("OSEE_REMOVED_TXS");
    public static final Table TRANSACTION_DETAIL_TABLE = new Table("OSEE_TX_DETAILS");
    public static final Table ARTIFACT_TYPE_TABLE = new Table("OSEE_ARTIFACT_TYPE");
    public static final Table ARTIFACT_TYPE_TABLE_ACL = new Table("OSEE_ARTIFACT_TYPE_ACL");

@@ -626,6 +626,9 @@ public class BranchManager {
       return instance.defaultBranch.get();
    }
 
+   public static Branch getLastBranch() {
+      return instance.defaultBranch.get();
+   }
    /**
     * @return the rootBranch
     * @throws OseeCoreException

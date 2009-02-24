@@ -94,7 +94,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       }
 
       builder.append(")\" displayName=\"Slave Template\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />");
-      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch (If Template specifies Artifacts)\" defaultValue=\"" + BranchManager.getDefaultBranch().getBranchName() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts (If Not Specified in Template)\" />");
+      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch (If Template specifies Artifacts)\" defaultValue=\"" + BranchManager.getLastBranch().getBranchName() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts (If Not Specified in Template)\" />");
 
       builder.append("</xWidgets>");
       return builder.toString();
