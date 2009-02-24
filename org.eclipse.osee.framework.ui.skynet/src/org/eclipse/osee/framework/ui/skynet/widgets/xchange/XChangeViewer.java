@@ -208,7 +208,7 @@ public class XChangeViewer extends XWidget implements IActionable {
          Artifact associatedArtifact = null;
          if (branch != null) {
             associatedArtifact = branch.getAssociatedArtifact();
-         } else if (transactionId != null) {
+         } else if (transactionId != null && transactionId.getCommitArtId() != 0) {
             associatedArtifact =
                   ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), transactionId.getBranch());
          }
@@ -316,9 +316,9 @@ public class XChangeViewer extends XWidget implements IActionable {
                            String infoLabel =
                                  String.format(
                                        "Changes %s to branch: %s\n%s",
-                                       hasBranch ? "made" : "committed",
+                                       hasBranch || transactionId.getComment() == null ? "made" : "committed",
                                        hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
-                                       hasBranch ? "" : "Comment: " + transactionId.getComment());
+                                       hasBranch || transactionId.getComment() == null ? "" : "Comment: " + transactionId.getComment());
                            extraInfoLabel.setText(infoLabel);
                            xChangeViewer.setInput(changes);
                         }

@@ -48,6 +48,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -63,7 +64,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
@@ -481,33 +482,36 @@ public class BranchView extends ViewPart implements IActionable {
       if (branchTable != null) {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
          if (selection != null && selection.getFirstElement() != null) {
-            Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-            if (selectedBranch != null) {
-               try {
-                  Collection<Integer> destBranches =
-                        ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getBranchId());
+            Object backingData = ((JobbedNode) selection.getFirstElement()).getBackingData();
+            if (backingData instanceof Branch) {
+               Branch selectedBranch = (Branch) backingData;
+               if (selectedBranch != null) {
                   try {
-                     if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getBranchId())) {
-                        destBranches.add(selectedBranch.getParentBranch().getBranchId());
+                     Collection<Integer> destBranches =
+                           ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getBranchId());
+                     try {
+                        if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getBranchId())) {
+                           destBranches.add(selectedBranch.getParentBranch().getBranchId());
+                        }
+                     } catch (BranchDoesNotExist ex) {
+                        destBranches.add(0);
                      }
-                  } catch (BranchDoesNotExist ex) {
-                     destBranches.add(0);
-                  }
-                  for (Integer branch : destBranches) {
+                     for (Integer branch : destBranches) {
 
-                     Map<String, String> parameters = new HashMap<String, String>();
-                     parameters.put(BRANCH_ID, Integer.toString(branch));
+                        Map<String, String> parameters = new HashMap<String, String>();
+                        parameters.put(BRANCH_ID, Integer.toString(branch));
 
-                     CommandContributionItem mergeCommand =
-                           Commands.getLocalCommandContribution(
-                                 getSite(),
-                                 menuManager.getId(),
-                                 branch == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branch).getBranchName(),
-                                 BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
-                     menuManager.add(mergeCommand);
+                        CommandContributionItem mergeCommand =
+                              Commands.getLocalCommandContribution(
+                                    getSite(),
+                                    menuManager.getId(),
+                                    branch == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branch).getBranchName(),
+                                    BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
+                        menuManager.add(mergeCommand);
+                     }
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          }
@@ -528,7 +532,8 @@ public class BranchView extends ViewPart implements IActionable {
       @Override
       public Object execute(ExecutionEvent event) throws ExecutionException {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-         Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+         Object backingData = ((JobbedNode) selection.getFirstElement()).getBackingData();
+         Branch selectedBranch = (Branch) backingData;
          try {
             Branch toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
             if (selectedBranch != null && toBranch != null) {
@@ -538,7 +543,6 @@ public class BranchView extends ViewPart implements IActionable {
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-
          return null;
       }
 
@@ -578,9 +582,13 @@ public class BranchView extends ViewPart implements IActionable {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+            Object selectedObject = ((JobbedNode) selection.getFirstElement()).getBackingData();
             try {
-               ChangeView.open(selectedBranch);
+               if (selectedObject instanceof TransactionId) {
+                  ChangeView.open((TransactionId)selectedObject);
+               } else if (selectedObject instanceof Branch) {
+                  ChangeView.open((Branch)selectedObject);
+               }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -590,7 +598,16 @@ public class BranchView extends ViewPart implements IActionable {
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
-            return true;
+            boolean enabled = true;
+            
+            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+            Object selectedObject = ((JobbedNode) selection.getFirstElement()).getBackingData();
+            
+            if (selectedObject instanceof TransactionId){
+               enabled = ((TransactionId)selectedObject).getTxType() != TransactionDetailsType.Baselined;
+            }
+            
+            return enabled;
          }
       });
    }
@@ -721,8 +738,8 @@ public class BranchView extends ViewPart implements IActionable {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            TransactionData selectedTransaction =
-                  (TransactionData) ((JobbedNode) selection.getFirstElement()).getBackingData();
+            TransactionId selectedTransaction =
+                  (TransactionId) ((JobbedNode) selection.getFirstElement()).getBackingData();
 
             if (MessageDialog.openConfirm(HandlerUtil.getActiveShell(event), "Delete Transaction",
                   "Are you sure you want to delete the transaction: " + selectedTransaction.getTransactionNumber())) {
@@ -1006,8 +1023,8 @@ public class BranchView extends ViewPart implements IActionable {
                   "All selected transactions will be moved to branch " + toBranch.getBranchName())) {
                Iterator<JobbedNode> iter = selection.iterator();
                while (iter.hasNext()) {
-                  TransactionData transactionData = (TransactionData) iter.next().getBackingData();
-                  BranchManager.moveTransaction(transactionData.getTransactionId(), toBranch);
+                  TransactionId transaction = (TransactionId) iter.next().getBackingData();
+                  BranchManager.moveTransaction(transaction, toBranch);
                }
             }
          } catch (Exception ex) {
@@ -1081,7 +1098,7 @@ public class BranchView extends ViewPart implements IActionable {
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return AccessControlManager.isOseeAdmin() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchManager.getDefaultBranch();
+            return AccessControlManager.isOseeAdmin() && SkynetSelections.oneBranchSelected(selection);
          }
       });
    }
@@ -1154,7 +1171,7 @@ public class BranchView extends ViewPart implements IActionable {
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return AccessControlManager.isOseeAdmin() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchManager.getDefaultBranch();
+            return AccessControlManager.isOseeAdmin() && SkynetSelections.oneBranchSelected(selection);
          }
       });
    }

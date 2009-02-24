@@ -62,9 +62,9 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
          if (backingData instanceof Branch) {
             Branch branch = (Branch) backingData;
             parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(branch);
-         } else if (backingData instanceof TransactionData) {
+         } else if (backingData instanceof TransactionId) {
 
-            parentTransactionId = ((TransactionData) backingData).getTransactionId();
+            parentTransactionId = ((TransactionId) backingData);
 
          } else {
             throw new OseeStateException(

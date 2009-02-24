@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -112,6 +113,24 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
          userNames[index++] = user.getDescriptiveName();
       }
       return userNames;
+   }
+   
+   public static String getUserNameById(int userArtifactId){
+      String name;
+      try {
+         User user = null;
+         if (userArtifactId == 0) {
+            user = UserManager.getUser(SystemUser.OseeSystem);
+            userArtifactId = user.getArtId();
+         } else {
+            user = UserManager.getUserByArtId(userArtifactId);
+         }
+         name = user.getDescriptiveName();
+      } catch (Exception ex) {
+         name = "Could not resolve artId: " + userArtifactId;
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      }
+      return name;
    }
 
    public static User getUserByArtId(int userArtifactId) throws OseeCoreException {

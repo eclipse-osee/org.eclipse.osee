@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.IAttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.IRevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
@@ -98,8 +98,8 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
 
-      } else if (element instanceof TransactionData && columnIndex == 0) {
-         return SkynetGuiPlugin.getInstance().getImage("transaction.gif");
+      } else if (element instanceof TransactionId && columnIndex == 0) {
+         return SkynetGuiPlugin.getInstance().getImage("DBiconBlue.gif");
 
       } else if (element instanceof RelationLinkChange && columnIndex == 2) {
          ArtifactType descriptor = ((RelationLinkChange) element).getOtherArtifactDescriptor();
@@ -167,22 +167,22 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             return String.valueOf(branch.getCreationDate());
          } else if (columnIndex == 3) {
             try {
-               return UserManager.getUserByArtId(branch.getAuthorId()).getDescriptiveName();
+               return UserManager.getUserNameById(branch.getAuthorId());
             } catch (Exception ex) {
                return "";
             }
          } else if (columnIndex == 4) {
             return branch.getCreationComment();
          }
-      } else if (element instanceof TransactionData) {
-         TransactionData transactionData = (TransactionData) element;
+      } else if (element instanceof TransactionId) {
+         TransactionId transactionData = (TransactionId) element;
 
          if (columnIndex == 0) {
             return String.valueOf(transactionData.getTransactionNumber());
          } else if (columnIndex == 2) {
-            return String.valueOf(transactionData.getTimeStamp());
+            return String.valueOf(transactionData.getTime());
          } else if (columnIndex == 3) {
-            return transactionData.getName();
+            return String.valueOf(UserManager.getUserNameById(transactionData.getAuthorArtId()));
          } else if (columnIndex == 4) {
             return transactionData.getComment();
          }
@@ -198,14 +198,14 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             tailCursor = list.get(list.size() - 1);
          }
 
-         if (headCursor instanceof TransactionData && tailCursor instanceof TransactionData) {
-            TransactionData headTransactionData = (TransactionData) headCursor;
-            TransactionData tailTransactionData = (TransactionData) tailCursor;
+         if (headCursor instanceof TransactionId && tailCursor instanceof TransactionId) {
+            TransactionId headTransaction = (TransactionId) headCursor;
+            TransactionId tailTransaction = (TransactionId) tailCursor;
 
             if (columnIndex == 0) {
-               return String.valueOf(headTransactionData.getTransactionNumber() + "..." + tailTransactionData.getTransactionNumber());
+               return String.valueOf(headTransaction.getTransactionNumber() + "..." + tailTransaction.getTransactionNumber());
             } else if (columnIndex == 2) {
-               return String.valueOf(headTransactionData.getTimeStamp());
+               return String.valueOf(headTransaction.getTime());
             }
          } else {
             return "Unexpected aggregation of " + headCursor.getClass().getSimpleName() + " and " + tailCursor.getClass().getSimpleName();

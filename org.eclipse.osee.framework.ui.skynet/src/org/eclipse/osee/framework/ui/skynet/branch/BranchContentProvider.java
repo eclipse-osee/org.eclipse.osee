@@ -163,9 +163,9 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
 
       private Collection<Object> getTransactions(Branch branch) throws OseeCoreException {
          if (!showTransactions) return Collections.emptyList();
-         List<TransactionData> transactions = RevisionManager.getInstance().getTransactionsPerBranch(branch);
-         Collections.sort(transactions, new Comparator<TransactionData>() {
-            public int compare(TransactionData o1, TransactionData o2) {
+         List<TransactionId> transactions = TransactionIdManager.getTransactionsForBranch(branch);
+         Collections.sort(transactions, new Comparator<TransactionId>() {
+            public int compare(TransactionId o1, TransactionId o2) {
                return o1.getTransactionNumber() - o2.getTransactionNumber();
             }
          });

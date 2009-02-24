@@ -11,8 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeSql;
@@ -39,6 +42,9 @@ public class TransactionIdManager {
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
          "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
+   private static final String SELECT_TRANSACTIONS =
+      "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time","author", "branch_id", "tx_type") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
+
 
    private final Map<Integer, TransactionId> nonEditableTransactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
@@ -46,6 +52,22 @@ public class TransactionIdManager {
    private TransactionIdManager() {
    }
 
+   public static List<TransactionId> getTransactionsForBranch(Branch branch) throws OseeCoreException {
+      ArrayList<TransactionId> transactions = new ArrayList<TransactionId>();
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+
+      try {
+         chStmt.runPreparedQuery(SELECT_TRANSACTIONS, branch.getBranchId());
+
+         while (chStmt.next()) {
+            transactions.add(getTransactionId(chStmt.getInt("transaction_id"), chStmt));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return transactions;
+   }
+   
    /**
     * @param branch
     * @return the largest (most recent) transaction on the given branch

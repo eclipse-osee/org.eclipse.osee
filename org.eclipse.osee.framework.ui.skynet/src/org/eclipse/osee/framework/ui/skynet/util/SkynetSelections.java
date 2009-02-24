@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
 
 /**
@@ -38,7 +39,7 @@ public final class SkynetSelections {
    }
 
    public static boolean oneTransactionSelected(IStructuredSelection selection) {
-      return selection.size() == 1 && boilDownObject(selection.getFirstElement()) instanceof TransactionData;
+      return selection.size() == 1 && boilDownObject(selection.getFirstElement()) instanceof TransactionId;
    }
 
    public static boolean transactionsSelected(IStructuredSelection selection) {
