@@ -178,7 +178,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          if (!fCachedMatches.isEmpty()) {
             AttributeMatch last = (AttributeMatch) fCachedMatches.get(fCachedMatches.size() - 1);
             AttributeLineElement lineElement = last.getLineElement();
-            if (lineElement.contains(offset)) {
+            if (lineElement.contains(offset) && lineElement.getAttribute().equals(attribute)) {
                return lineElement;
             }
             lineStart = lineElement.getOffset() + lineElement.getLength();

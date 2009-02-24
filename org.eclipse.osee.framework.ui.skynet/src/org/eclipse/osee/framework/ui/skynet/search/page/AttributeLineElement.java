@@ -84,6 +84,10 @@ public class AttributeLineElement implements IAdaptable {
       return count;
    }
 
+   public Attribute<?> getAttribute() {
+      return attribute;
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
@@ -92,7 +96,7 @@ public class AttributeLineElement implements IAdaptable {
       if (adapter == Artifact.class) {
          return getParent();
       } else if (adapter == Attribute.class) {
-         return attribute;
+         return getAttribute();
       }
       return null;
    }
