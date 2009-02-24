@@ -21,7 +21,6 @@ public class WordmlPicture {
    private int pictureStartIndex;
    private String binaryData;
    private String pictureDefinition;
-   private boolean missingImageData;
    private Attribute attribute;
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Word"));
@@ -33,13 +32,12 @@ public class WordmlPicture {
    public WordmlPicture(int pictureStartIndex, String pictureDefinition, String document, Attribute attribute) throws OseeCoreException {
       this.pictureStartIndex = pictureStartIndex;
       this.pictureDefinition = pictureDefinition;
-      this.missingImageData = false;
       this.attribute = attribute;
       findBinaryData(document);
    }
 
    private void findBinaryData(String document) throws OseeCoreException {
-      if (pictureDefinition.contains("<v:formulas>") || pictureDefinition.contains("<v:path ") || pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains("<v:rect ") || pictureDefinition.contains("<v:line ")) {
+      if (pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains("<v:rect ") || pictureDefinition.contains("<v:line ")) {
          //ignore this case
       } else if (pictureDefinition.contains("<w:binData")) {
          int index = pictureDefinition.indexOf(">", pictureDefinition.indexOf("<w:binData")) + 1;
@@ -49,7 +47,6 @@ public class WordmlPicture {
          String pictureId = pictureDefinition.substring(index, pictureDefinition.indexOf("\"", index));
          int dataIndex = document.indexOf("<w:binData w:name=\"" + pictureId + "\"");
          if (dataIndex < 0) {
-            missingImageData = true;
             if (DEBUG) {
                System.out.println(pictureDefinition);
             }
@@ -60,11 +57,13 @@ public class WordmlPicture {
                document.substring(document.indexOf(">", dataIndex) + 1, document.indexOf("<", document.indexOf(">",
                      dataIndex) + 1));
       } else {
-         if (DEBUG) {
-            System.out.println(pictureDefinition);
+         if (!(pictureDefinition.contains("<v:formulas>") || pictureDefinition.contains("<v:path ") || pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains("<v:rect ") || pictureDefinition.contains("<v:line "))) {
+            if (DEBUG) {
+               System.out.println(pictureDefinition);
+            }
+            throw new OseeCoreException(
+                  "This document contains undefined picture data.  Please report details to OSEE development team.    Artifact=> " + attribute.getArtifact().getSafeName() + "  " + attribute.getArtifact().getArtId());
          }
-         throw new OseeCoreException(
-               "This document contains undefined picture data.  Please report details to OSEE development team.    Artifact=> " + attribute.getArtifact().getSafeName() + "  " + attribute.getArtifact().getArtId());
       }
    }
 
