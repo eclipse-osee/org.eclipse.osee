@@ -99,7 +99,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          }
 
       } else if (element instanceof TransactionId && columnIndex == 0) {
-         return SkynetGuiPlugin.getInstance().getImage("DBiconBlue.gif");
+         return SkynetGuiPlugin.getInstance().getImage("DBiconBlue.GIF");
 
       } else if (element instanceof RelationLinkChange && columnIndex == 2) {
          ArtifactType descriptor = ((RelationLinkChange) element).getOtherArtifactDescriptor();

@@ -191,8 +191,12 @@ public class AttributeChanged extends Change {
          if (adapter.isInstance(getArtifact())) {
             return getArtifactChange().getArtifact();
          }
-         if (adapter.isInstance(getAttribute())) {
-            return getAttribute();
+         try {
+            if (adapter.isInstance(getAttribute())) {
+               return getAttribute();
+            }
+         } catch (AttributeDoesNotExist ex) {
+            return null;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);

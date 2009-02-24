@@ -12,6 +12,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -22,7 +23,9 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -177,7 +180,12 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
          @Override
          public void menuShown(MenuEvent e) {
-            changeReportMenuItem.setEnabled(((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList().size() == 1);
+            List<?> selections = ((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList();
+            try {
+               changeReportMenuItem.setEnabled(selections.size() == 1 && ((HistoryTransactionItem)selections.iterator().next()).getTransactionData().getTransactionId().getTxType() != TransactionDetailsType.Baselined);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
          
       });
