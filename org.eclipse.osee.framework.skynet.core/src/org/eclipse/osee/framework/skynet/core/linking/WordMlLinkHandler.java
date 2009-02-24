@@ -200,10 +200,11 @@ public class WordMlLinkHandler {
          } else {
             for (String guid : unknownGuids) {
                for (Match match : matchMap.getValues(guid)) {
-                  String guidBranch =
-                        String.format("http://none/unknown?guid=%s&branchId=%s", guid, branch.getBranchId());
+                  String internalLink =
+                        String.format("http://none/unknown?guid=%s&amp;branchId=%s", guid, branch.getBranchId());
                   String link =
-                        String.format(WORDML_LINK_FORMAT, guidBranch, String.format("Link Unknown: [%s]", guidBranch));
+                        String.format(WORDML_LINK_FORMAT, internalLink, String.format(
+                              "Artifact Not Found - guid:[%s] branchId:[%s]", guid, branch.getBranchId()));
                   changeSet.replace(match.start, match.end, link);
                }
             }
