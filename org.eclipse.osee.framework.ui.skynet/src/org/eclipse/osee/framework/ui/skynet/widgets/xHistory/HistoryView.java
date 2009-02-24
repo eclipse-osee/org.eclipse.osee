@@ -21,6 +21,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -39,7 +41,12 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
+import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -150,10 +157,54 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    private void setupMenus() {
       Menu popupMenu = new Menu(xHistoryWidget.getXViewer().getTree().getParent());
       createOpenWithMenuItem(popupMenu);
+      createChangeReportMenuItem(popupMenu);
       ArtifactDiffMenu.createDiffMenuItem(popupMenu, xHistoryWidget.getXViewer(), "Compare two Artifacts", null);
       xHistoryWidget.getXViewer().getTree().setMenu(popupMenu);
    }
    
+   /**
+    * @param popupMenu
+    */
+   private void createChangeReportMenuItem(Menu popupMenu) {
+      final MenuItem changeReportMenuItem = new MenuItem(popupMenu, SWT.CASCADE);
+      changeReportMenuItem.setText("&Change Report");
+      changeReportMenuItem.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
+      popupMenu.addMenuListener(new MenuListener(){
+
+         @Override
+         public void menuHidden(MenuEvent e) {
+         }
+
+         @Override
+         public void menuShown(MenuEvent e) {
+            changeReportMenuItem.setEnabled(((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList().size() == 1);
+         }
+         
+      });
+
+      changeReportMenuItem.addSelectionListener(new SelectionListener() {
+
+         @Override
+         public void widgetDefaultSelected(SelectionEvent e) {
+         }
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            IStructuredSelection selection = (IStructuredSelection) xHistoryWidget.getXViewer().getSelection();
+            Object selectedObject = selection.getFirstElement();
+
+            if (selectedObject instanceof HistoryTransactionItem) {
+               try {
+                  ChangeView.open(((HistoryTransactionItem) selectedObject).getTransactionData().getTransactionId());
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+
+      });
+   }
+
    private void createOpenWithMenuItem(Menu parentMenu) {
       MenuItem openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       openWithMenuItem.setText("&Open With");
