@@ -186,7 +186,7 @@
          name="ATS_Skynet_Types"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <ExcelFile
-            file="support/ATS_Skynet_Types.xml"/>
+            file="support/OseeTypes_ATS.xml"/>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">

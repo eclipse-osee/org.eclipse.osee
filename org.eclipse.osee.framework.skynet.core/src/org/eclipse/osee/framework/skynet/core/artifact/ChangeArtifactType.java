@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -59,6 +58,34 @@ public class ChangeArtifactType {
       // Kick Local and Remote Events
       OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getArtTypeId(),
             new LoadedArtifacts(artifacts));
+   }
+
+   public static void changeArtifactTypeReportOnly(StringBuffer results, Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
+      if (artifacts.isEmpty()) {
+         throw new OseeArgumentException("The artifact list can not be empty");
+      }
+
+      for (Artifact artifact : artifacts) {
+         processAttributes(artifact, artifactType);
+         processRelations(artifact, artifactType);
+
+         if (!relationsToDelete.isEmpty() || !attributesToPurge.isEmpty()) {
+            getConflictString(results, artifact, artifactType);
+         }
+      }
+   }
+
+   private static void getConflictString(StringBuffer results, Artifact artifact, ArtifactType artifactType) {
+      results.append("There has been a conflict in changing artifact " + artifact.getHumanReadableId() + " - \"" + artifact.getDescriptiveName() + "\"" +
+      //
+      " to \"" + artifactType.getName() + "\" type. \n" + "The following data will need to be purged ");
+      for (RelationLink relationLink : relationsToDelete) {
+         results.append("([Relation][" + relationLink + "])");
+      }
+      for (Attribute<?> attribute : attributesToPurge) {
+         results.append("([Attribute][" + attribute.getAttributeType().getName() + "][" + attribute.toString() + "])");
+      }
+      results.append("\n\n");
    }
 
    /**
@@ -117,21 +144,19 @@ public class ChangeArtifactType {
    private static class ArtifactChangeMessageRunnable implements Runnable {
       private boolean accept = false;
       private final Artifact artifact;
-      private final ArtifactType descriptor;
+      private final ArtifactType artifactType;
 
-      public ArtifactChangeMessageRunnable(Artifact artifact, ArtifactType descriptor) {
+      public ArtifactChangeMessageRunnable(Artifact artifact, ArtifactType artifactType) {
          this.artifact = artifact;
-         this.descriptor = descriptor;
+         this.artifactType = artifactType;
       }
 
       public void run() {
+         StringBuffer sb = new StringBuffer(50);
+         getConflictString(sb, artifact, artifactType);
          accept =
-               MessageDialog.openQuestion(
-                     Display.getCurrent().getActiveShell(),
-                     "Confirm Artifact Type Change ",
-                     "There has been a conflict in changing " + artifact.getDescriptiveName() + " to " + descriptor.getName() + " type. \n" + "The following data will need to be purged " + (relationsToDelete.isEmpty() ? "" : Collections.toString(
-                           relationsToDelete, ":", ",", null)) + (attributesToPurge.isEmpty() ? "" : Collections.toString(
-                           attributesToPurge, ":", ",", null)));
+               MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Confirm Artifact Type Change ",
+                     sb.toString());
       }
 
       /**

@@ -66,11 +66,10 @@ public class ParentBranchAction extends Action {
    public static Branch createNewParentBranch(String branchShortName, String branchName) throws OseeCoreException {
 
       List<String> skynetTypeImport = new ArrayList<String>();
-      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramAndCommon");
+      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon");
 
       // Create branch, import skynet types and initialize
-      Branch branch =
-            BranchManager.createRootBranch(branchShortName, branchName, null, skynetTypeImport, true);
+      Branch branch = BranchManager.createRootBranch(branchShortName, branchName, null, skynetTypeImport, true);
 
       if (PlatformUI.isWorkbenchRunning() && BranchView.getBranchView() != null) {
          BranchView.getBranchView().forcePopulateView();

@@ -120,8 +120,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    private void createProgramBranch(String branchName) throws OseeCoreException {
 
       List<String> skynetTypeImport = new ArrayList<String>();
-      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramAndCommon");
-      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramBranch");
+      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon");
+      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
 
       BranchManager.createRootBranch(null, branchName, branchName, skynetTypeImport, true);

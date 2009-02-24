@@ -344,7 +344,33 @@ public class ArtifactTypeManager {
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
+   }
 
+   /**
+    * Run code that will be run during purge with convert and report on what relations, attributes will be deleted as
+    * part of the conversion.
+    * 
+    * @param purgeArtifactTypes
+    * @param newArtifactType
+    * @return report
+    * @throws OseeCoreException
+    */
+   public static void purgeArtifactTypesWithConversionReportOnly(StringBuffer results, Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
+      try {
+         for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
+            // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
+            List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(purgeArtifactType, true);
+            if (artifacts.size() > 0) {
+               HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
+               for (Artifact artifact : artifacts) {
+                  artifactMap.put(artifact.getArtId(), artifact);
+               }
+               ChangeArtifactType.changeArtifactTypeReportOnly(results, artifactMap.values(), newArtifactType);
+            }
+         }
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    /**
@@ -354,6 +380,6 @@ public class ArtifactTypeManager {
     * @param artifactType
     */
    public static void changeArtifactType(Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
-      new ChangeArtifactType().changeArtifactType(artifacts, artifactType);
+      ChangeArtifactType.changeArtifactType(artifacts, artifactType);
    }
 }
