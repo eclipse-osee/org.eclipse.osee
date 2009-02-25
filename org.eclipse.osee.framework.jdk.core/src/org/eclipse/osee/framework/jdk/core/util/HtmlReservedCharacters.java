@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * <pre>
@@ -66,6 +67,7 @@ import java.util.Map;
 public class HtmlReservedCharacters {
 
    private static Map<String, Character> reservedCharacters = new HashMap<String, Character>();
+   private static Map<Character, String> charsToEncoding = new HashMap<Character, String>();
    static {
       reservedCharacters.put("&quot;", '"');
       reservedCharacters.put("&apos;", '\'');
@@ -106,10 +108,28 @@ public class HtmlReservedCharacters {
       reservedCharacters.put("&iquest;", '¿');
       reservedCharacters.put("&times;", '×');
       reservedCharacters.put("&divide;", '÷');
+
+      for (Entry<String, Character> entry : reservedCharacters.entrySet()) {
+         charsToEncoding.put(entry.getValue(), entry.getKey());
+      }
    }
 
    private HtmlReservedCharacters() {
 
+   }
+
+   public static String encode(String original) {
+      StringBuilder encodedItem = new StringBuilder();
+      for (int index = 0; index < original.length(); index++) {
+         char item = original.charAt(index);
+         String encode = charsToEncoding.get(item);
+         if (encode != null) {
+            encodedItem.append(encode);
+         } else {
+            encodedItem.append(item);
+         }
+      }
+      return encodedItem.toString();
    }
 
    public static Character toCharacter(String word) {

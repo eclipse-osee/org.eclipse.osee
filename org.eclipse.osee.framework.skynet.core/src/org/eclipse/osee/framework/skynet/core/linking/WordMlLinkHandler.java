@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -240,6 +241,7 @@ public class WordMlLinkHandler {
    private static String getWordMlLink(LinkType destLinkType, Artifact artifact, Branch branch) throws OseeCoreException {
       String toReturn = "";
       String linkText = artifact.getDescriptiveName() + (artifact.isDeleted() ? " (DELETED)" : "");
+      linkText = Xml.escape(linkText).toString();
       switch (destLinkType) {
          case OSEE_SERVER_LINK:
             String url = ArtifactURL.getOpenInOseeLink(artifact).toString();
