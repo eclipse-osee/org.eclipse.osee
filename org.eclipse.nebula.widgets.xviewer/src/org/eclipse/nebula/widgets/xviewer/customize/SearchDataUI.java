@@ -38,16 +38,16 @@ public class SearchDataUI {
    private Matcher match;
    private boolean search = false;
    private Button regularExpression;
-private boolean regex;
-   
+   private boolean regex;
+
    public SearchDataUI(XViewer xViewer) {
       this.xViewer = xViewer;
    }
 
    public void createWidgets(Composite bar) {
-	   
-//	  ExpandBar bar = new ExpandBar(comp, SWT.V_SCROLL);
-	   
+
+      //	  ExpandBar bar = new ExpandBar(comp, SWT.V_SCROLL);
+
       Label label = new Label(bar, SWT.NONE);
       label.setText("Search:");
       label.setToolTipText("Type string and press enter to filter.\nClear field to un-filter.");
@@ -55,7 +55,7 @@ private boolean regex;
       label.setLayoutData(gd);
 
       searchText = new Text(bar, SWT.SINGLE | SWT.BORDER);
-      
+
       gd = new GridData(SWT.RIGHT, SWT.NONE, false, false);
       gd.widthHint = 100;
       searchText.setLayoutData(gd);
@@ -77,22 +77,24 @@ private boolean regex;
          public void keyReleased(KeyEvent e) {
             // System.out.println(e.keyCode);
             if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-//               xViewer.getCustomizeMgr().setSearchText(searchText.getText());
-            	String newText = searchText.getText();
-            	if(newText.trim().length() == 0){
-            	   search = false;
+               //               xViewer.getCustomizeMgr().setSearchText(searchText.getText());
+               String newText = searchText.getText();
+               if (newText.trim().length() == 0) {
+                  search = false;
                   match = Pattern.compile(searchText.getText()).matcher("");
-            	} else {
-               	regex = true;
-               	if(!regularExpression.getSelection()){
-               		regex = false;
-               		newText = newText.replace("*", ".*");
-               		newText = ".*" + newText + ".*";
-               	}
-               	match = Pattern.compile(newText, Pattern.CASE_INSENSITIVE).matcher("");
-               	search = true;
-            	}
-            	xViewer.refresh();
+               } else {
+                  regex = true;
+                  if (!regularExpression.getSelection()) {
+                     regex = false;
+                     newText = newText.replace("*", ".*");
+                     newText = ".*" + newText + ".*";
+                  }
+                  match =
+                        Pattern.compile(newText, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
+                              "");
+                  search = true;
+               }
+               xViewer.refresh();
             }
          }
       });
@@ -104,17 +106,17 @@ private boolean regex;
       } else {
          searchLabel.setText("clear");
       }
-      
+
       regularExpression = new Button(bar, SWT.CHECK);
       regularExpression.setText("RE");
       regularExpression.setToolTipText("Enable Regular Expression Search");
       regularExpression.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
       searchLabel.addListener(SWT.MouseUp, new Listener() {
-		/*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
+         /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+             */
          public void handleEvent(Event event) {
             searchText.setText("");
             search = false;
@@ -138,29 +140,29 @@ private boolean regex;
       }
    }
 
-	/**
-	 * @param text 
-	 * @return
-	 */
-	public boolean match(String textString) {
-		if(search){
-			if(regex){
-				match.reset(textString);
-				return match.matches();
-			} else {
-				match.reset(textString);
-				return match.matches();
-			}
-		} else {
-			return false;
-		}
-	}
+   /**
+    * @param text
+    * @return
+    */
+   public boolean match(String textString) {
+      if (search) {
+         if (regex) {
+            match.reset(textString);
+            return match.matches();
+         } else {
+            match.reset(textString);
+            return match.matches();
+         }
+      } else {
+         return false;
+      }
+   }
 
-	/**
-	 * @return
-	 */
-	public boolean isSearch() {
-		return search;
-	}
+   /**
+    * @return
+    */
+   public boolean isSearch() {
+      return search;
+   }
 
 }
