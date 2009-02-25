@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.linking;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -195,22 +195,30 @@ public class WordMlLinkHandler {
          List<String> unknownGuids = Collections.setComplement(guidsFromLinks, artGuids);
 
          if (isUnliking) {
-            throw new OseeStateException(String.format("Artifact(s) with guid [%s] not found on branch [%s].",
-                  unknownGuids, branch));
+            // Ignore not found items and replace with osee marker
+            for (String guid : unknownGuids) {
+               Collection<Match> matches = matchMap.getValues(guid);
+               for (Match match : matches) {
+                  String replaceWith = String.format(OSEE_LINK_MARKER, guid);
+                  changeSet.replace(match.start, match.end, replaceWith);
+               }
+            }
          } else {
+            // Items not found
             for (String guid : unknownGuids) {
                for (Match match : matchMap.getValues(guid)) {
                   String internalLink =
                         String.format("http://none/unknown?guid=%s&amp;branchId=%s", guid, branch.getBranchId());
                   String link =
-                        String.format(WORDML_LINK_FORMAT, internalLink,
-                              String.format("Invalid Link - artifact not found - guid:[%s] branchId:[%s]", guid,
-                                    branch.getBranchId()));
+                        String.format(WORDML_LINK_FORMAT, internalLink, String.format(
+                              "Invalid Link: artifact with guid:[%s] on branchId:[%s] does not exist", guid,
+                              branch.getBranchId()));
                   changeSet.replace(match.start, match.end, link);
                }
             }
          }
       }
+      // Items found in branch
       for (Artifact artifact : artifactsFromSearch) {
          for (Match match : matchMap.getValues(artifact.getGuid())) {
             String replaceWith = null;
@@ -235,7 +243,7 @@ public class WordMlLinkHandler {
       switch (destLinkType) {
          case OSEE_SERVER_LINK:
             String url = ArtifactURL.getOpenInOseeLink(artifact).toString();
-            // XMl compliant url
+            // XML compliant url
             url = url.replaceAll("&", "&amp;");
             toReturn = String.format(WORDML_LINK_FORMAT, url, linkText);
             break;
