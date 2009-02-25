@@ -40,6 +40,7 @@ public class DetailsBrowserComposite extends BrowserComposite {
          sb.append(AHTML.getLabelValueStr("Artifact Type Id", String.valueOf(artifact.getArtTypeId())) + AHTML.newline());
          sb.append(AHTML.getLabelValueStr("Gamma Id", String.valueOf(artifact.getGammaId())) + AHTML.newline());
          sb.append(AHTML.getLabelValueStr("Historical", String.valueOf(artifact.isHistorical())) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Deleted", String.valueOf(artifact.isDeleted())) + AHTML.newline());
          sb.append(AHTML.getLabelValueStr("Revision", String.valueOf(artifact.getTransactionNumber())) + AHTML.newline());
          sb.append(AHTML.getLabelValueStr("Last Modified", String.valueOf(artifact.getLastModified())) + AHTML.newline());
          sb.append(AHTML.getLabelValueStr("Last Modified By", String.valueOf(artifact.getLastModifiedBy())) + AHTML.newline());
@@ -49,5 +50,4 @@ public class DetailsBrowserComposite extends BrowserComposite {
       }
       setHtml(AHTML.simplePage(sb.toString()));
    }
-
 }
