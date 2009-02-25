@@ -458,4 +458,18 @@
             className="org.eclipse.osee.ats.util.OpenInAtsLoopbackCmd">
       </ClientLoopbackCmd>
    </extension>
+   <extension
+         id="DuplicateWorkflowBlam"
+         name="DuplicateWorkflowBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.operation.DuplicateWorkflowBlam">
+      </Operation>
+   </extension>
+   <extension
+         point="org.eclipse.osee.ats.AtsWorldEditorItem">
+      <AtsWorldEditorItem
+            classname="org.eclipse.osee.ats.world.AtsWorldEditorItem">
+      </AtsWorldEditorItem>
+   </extension>
 </plugin>
