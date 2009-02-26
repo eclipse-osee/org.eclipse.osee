@@ -101,8 +101,8 @@ public class ArtifactQueryBuilder {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, null, allowDeleted, loadLevel, true);
    }
 
-   public ArtifactQueryBuilder(Collection<ArtifactType> artifactTypes, Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, null, null, artifactTypes, branch, null, false, loadLevel, true);
+   public ArtifactQueryBuilder(Collection<ArtifactType> artifactTypes, Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
+      this(null, 0, null, null, artifactTypes, branch, null, allowDeleted, loadLevel, true);
       emptyCriteria = artifactTypes.size() == 0;
    }
 

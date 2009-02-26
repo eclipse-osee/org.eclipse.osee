@@ -12,14 +12,15 @@ package org.eclipse.osee.framework.skynet.core.test.production;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder;
 
 /**
@@ -111,11 +112,8 @@ public class ArtifactQueryPerformanceTests extends TestCase {
    }
 
    public void testGetArtifactsByArtType() throws OseeCoreException {
-      Branch common = BranchManager.getCommonBranch();
-      ArtifactQueryBuilder builder =
-            new ArtifactQueryBuilder(ArtifactTypeManager.getType("Team Definition"), common, FULL);
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = builder.getArtifacts(1000, null);
+      List<Artifact> result = ArtifactQuery.getArtifactsFromType("Team Definition", BranchManager.getCommonBranch());
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByArtType took %dms for %d artifacts", elapsedTime,
             result.size()));
@@ -126,41 +124,30 @@ public class ArtifactQueryPerformanceTests extends TestCase {
    }
 
    public void testGetArtifactsByArtTypes() throws OseeCoreException {
+      internalTestGetArtifactsByArtTypes(false, 8000);
+   }
+
+   private void internalTestGetArtifactsByArtTypes(boolean allowDeleted, long expectedElapseTime) throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      List<String> artTypes = new ArrayList<String>();
-      artTypes.add("Actionable Item");
-      artTypes.add("General Document");
-      artTypes.add("Folder");
-      artTypes.add("Work Widget Definition");
-      ArtifactQueryBuilder builder = new ArtifactQueryBuilder(ArtifactTypeManager.getTypes(artTypes), common, FULL);
+      List<String> artTypes =
+            Arrays.asList("Actionable Item", "General Document", "Folder", "Work Widget Definition", "User",
+                  "Work Page Definition", "Work Rule Definition");
+
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = builder.getArtifacts(5000, null);
+      List<Artifact> result = ArtifactQuery.getArtifactsFromTypes(artTypes, common, false);
       long elapsedTime = System.currentTimeMillis() - startTime;
+
       System.out.println(String.format("testGetArtifactsByArtTypes took %dms for %d artifacts", elapsedTime,
             result.size()));
       assertTrue("No artifacts found", result.size() > 0);
-      assertTrue(String.format(
-            "Elapsed time for testGetArtifactsByArtTypes took %dms.  It should take less than 1600ms.", elapsedTime),
-            elapsedTime < 1600);
+      assertTrue(
+            String.format(
+                  "Elapsed time for testGetArtifactsByArtTypes took %dms to load %d artifacts.  It should take less than %dms.",
+                  elapsedTime, result.size(), expectedElapseTime), elapsedTime < expectedElapseTime);
    }
 
    public void testGetArtifactsByArtTypesAllowDeleted() throws OseeCoreException {
-      Branch common = BranchManager.getCommonBranch();
-      List<String> artTypes = new ArrayList<String>();
-      artTypes.add("User Group");
-      artTypes.add("User");
-      artTypes.add("Work Page Definition");
-      artTypes.add("Work Rule Definition");
-      ArtifactQueryBuilder builder = new ArtifactQueryBuilder(ArtifactTypeManager.getTypes(artTypes), common, FULL);
-      long startTime = System.currentTimeMillis();
-      List<Artifact> result = builder.getArtifacts(5000, null);
-      long elapsedTime = System.currentTimeMillis() - startTime;
-      System.out.println(String.format("testGetArtifactsByArtTypesAllowDeleted took %dms for %d artifacts",
-            elapsedTime, result.size()));
-      assertTrue("No artifacts found", result.size() > 0);
-      assertTrue(String.format(
-            "Elapsed time for testGetArtifactsByArtTypesAllowDeleted took %dms.  It should take less than 4300ms.",
-            elapsedTime), elapsedTime < 4300);
+      internalTestGetArtifactsByArtTypes(true, 5000);
    }
 
    public void testLoadAllBranch() throws OseeCoreException {
