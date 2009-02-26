@@ -580,11 +580,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return attributes.getValues();
    }
 
+   public void deleteAttributes(String attributeTypeName) throws OseeCoreException {
+      for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
+         attribute.delete();
+      }
+   }
+
    public void deleteAttributes() {
       for (Attribute<?> attribute : attributes.getValues()) {
-         if (attribute.isInDb()) {
-            attribute.delete();
-         }
+         attribute.delete();
       }
    }
 
