@@ -126,11 +126,22 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    }
 
    @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
       try {
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
-         // ContentProvider ensures in display thread
-         ((WorldContentProvider) getContentProvider()).removeAll(loadedArtifacts.getLoadedArtifacts());
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               try {
+                  ((WorldContentProvider) getContentProvider()).removeAll(loadedArtifacts.getLoadedArtifacts());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         });
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
