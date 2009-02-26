@@ -289,9 +289,8 @@ public final class ConnectionHandler {
             if (dataValue instanceof String) {
                int length = ((String) dataValue).length();
                if (length > 4000) {
-                  OseeLog.log(InternalActivator.class, Level.WARNING,
-                        "SQL value too long:" + length + "\nValue: " + dataValue);
-                  dataValue = ((String) dataValue).substring(0, 3999);
+                  throw new OseeDataStoreException(
+                        "SQL data value length must be  <= 4000 not " + length + "\nValue: " + dataValue);
                }
             }
 
