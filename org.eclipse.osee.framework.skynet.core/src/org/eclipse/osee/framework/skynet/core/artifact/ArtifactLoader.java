@@ -132,8 +132,12 @@ public final class ArtifactLoader {
             while (chStmt.next()) {
                int artId = chStmt.getInt("art_id");
                int branchId = chStmt.getInt("branch_id");
-               if (!historical || (previousArtId != artId || previousBranchId != branchId)) {
-                  artifacts.add(retrieveShallowArtifact(chStmt, reload, historical));
+               // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
+               if ((previousArtId != artId || previousBranchId != branchId)) {
+                  // assumption: sql is returning unwanted deleted artifacts only in the historical case
+                  if (!(historical && !allowDeleted && ModificationType.getMod(chStmt.getInt("mod_type")) == ModificationType.DELETED)) {
+                     artifacts.add(retrieveShallowArtifact(chStmt, reload, historical));
+                  }
                }
                previousArtId = artId;
                previousBranchId = branchId;

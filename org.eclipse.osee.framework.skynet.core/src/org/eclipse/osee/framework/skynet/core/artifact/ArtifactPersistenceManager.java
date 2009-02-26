@@ -346,18 +346,6 @@ public class ArtifactPersistenceManager {
    }
 
    /**
-    * This is method only exists to support the old change reports
-    */
-   @Deprecated
-   public static Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId, ISearchConfirmer confirmer) throws OseeCoreException {
-      LinkedList<Object> queryParameters = new LinkedList<Object>();
-      queryParameters.add(transactionId.getBranchId());
-      return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT_NOT_CURRENT, queryParameters,
-            transactionId.getBranch()), queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer,
-            transactionId, true);
-   }
-
-   /**
     * Acquires the user defined attributes for an artifact. If none are in the table, then it returns the 'default set'
     * of attributes for the artifact.
     * 
@@ -366,7 +354,7 @@ public class ArtifactPersistenceManager {
     * @throws OseeDataStoreException
     * @throws OseeCoreException
     */
-   public static void setAttributesOnHistoricalArtifact(Artifact artifact) throws OseeCoreException {
+   private static void setAttributesOnHistoricalArtifact(Artifact artifact) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          // Acquire previously stored attributes
@@ -585,7 +573,7 @@ public class ArtifactPersistenceManager {
 
       TransactionId transId =
             TransactionIdManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
-      
+
       try {
          chStmt.runPreparedQuery(GET_REALTION_GAMMAS_REVERT, branchId, relLinkId);
          revertActions(connection, chStmt, transId, time, totalTime, relLinkId, "Relation Link");
@@ -618,11 +606,11 @@ public class ArtifactPersistenceManager {
          chStmt.close();
       }
       if (DEBUG) {
-         System.out.println(String.format("  Revert%s: Ran the Select Query in %s",
-               objectReverted, Lib.getElapseString(time)));
+         System.out.println(String.format("  Revert%s: Ran the Select Query in %s", objectReverted,
+               Lib.getElapseString(time)));
          time = System.currentTimeMillis();
       }
-      
+
       if (!gammaIdsModifications.isEmpty()) {
          try {
             ConnectionHandler.runPreparedUpdate(connection, UPDATE_REVERT_TRANSACTION, transId.getTransactionNumber());
@@ -652,8 +640,7 @@ public class ArtifactPersistenceManager {
                         Lib.getElapseString(time)));
                   for (Object[] items : gammaIdsBaseline) {
                      System.out.println(String.format(" Revert %s: Baseline [gammaId, transactionId] = %s ",
-                           objectReverted,
-                           Arrays.deepToString(items)));
+                           objectReverted, Arrays.deepToString(items)));
                   }
                }
             }

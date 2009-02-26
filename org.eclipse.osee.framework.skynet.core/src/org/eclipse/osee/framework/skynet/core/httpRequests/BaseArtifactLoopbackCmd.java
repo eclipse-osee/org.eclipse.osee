@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * @author Roberto E. Escobar
@@ -28,14 +30,24 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
       final String branchId = parameters.get("branchId");
       final String guid = parameters.get("guid");
       final boolean isDeleted = Boolean.valueOf(parameters.get("isDeleted"));
+      final String transactionIdStr = parameters.get("transactionId");
 
       if (!Strings.isValid(branchId) || !Strings.isValid(guid)) {
          httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, String.format("Unable to process [%s]",
                parameters));
       } else {
          try {
-            final Branch branch = BranchManager.getBranch(Integer.parseInt(branchId));
-            final Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch, isDeleted);
+            final Artifact artifact;
+            final Branch branch;
+            if (Strings.isValid(transactionIdStr)) {
+               int transactionNumber = Integer.parseInt(transactionIdStr);
+               TransactionId transactionId = TransactionIdManager.getTransactionId(transactionNumber);
+               branch = transactionId.getBranch();
+               artifact = ArtifactQuery.getHistoricalArtifactFromId(guid, transactionId, isDeleted);
+            } else {
+               branch = BranchManager.getBranch(Integer.parseInt(branchId));
+               artifact = ArtifactQuery.getArtifactFromId(guid, branch, isDeleted);
+            }
             if (artifact == null) {
                httpResponse.outputStandardError(HttpURLConnection.HTTP_NOT_FOUND, String.format(
                      "Artifact can not be found in OSEE on branch [%s]", branch));

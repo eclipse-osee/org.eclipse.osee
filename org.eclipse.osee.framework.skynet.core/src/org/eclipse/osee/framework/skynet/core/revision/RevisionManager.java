@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -51,10 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -444,133 +440,6 @@ public class RevisionManager {
       }
 
       return deletedArtifacts;
-   }
-
-   public Collection<Artifact> getNewAndModifiedArtifacts(Branch branch, boolean includeRelationOnlyChanges) throws OseeCoreException {
-      List<TransactionData> transactionDataSet = getTransactionsPerBranch(branch);
-      if (transactionDataSet.size() == 0) return new ArrayList<Artifact>();
-      return getNewAndModifiedArtifacts(transactionDataSet.get(transactionDataSet.size() - 1).getTransactionId(),
-            transactionDataSet.get(0).getTransactionId(), includeRelationOnlyChanges);
-   }
-
-   public Collection<Artifact> getNewAndModifiedArtifacts(TransactionId baseTransaction, TransactionId toTransaction, boolean includeRelationOnlyChanges) throws OseeCoreException {
-      List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
-      criteria.add(new ArtifactInTransactionSearch(baseTransaction, toTransaction));
-
-      if (includeRelationOnlyChanges) {
-         criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
-      }
-      Set<Artifact> modOnlyArtifacts = new HashSet<Artifact>();
-      for (Artifact artifact : ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction, null)) {
-         if (!artifact.isDeleted()) {
-            modOnlyArtifacts.add(artifact);
-         }
-      }
-      return modOnlyArtifacts;
-   }
-
-   public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws OseeCoreException {
-      List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
-      criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
-      return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction, null);
-   }
-
-   /**
-    * @param newAndModArts
-    * @throws OseeDataStoreException
-    */
-   public Collection<ArtifactChange> getNewAndModArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws OseeCoreException {
-
-      Collection<Artifact> newAndModArts = getNewAndModifiedArtifacts(fromTransactionId, toTransactionId, true);
-
-      if (newAndModArts.isEmpty()) return new ArrayList<ArtifactChange>(0);
-
-      Collection<ArtifactChange> newAndModArtChanges = new LinkedList<ArtifactChange>();
-      Collection<Integer> artIds = new ArrayList<Integer>(newAndModArts.size());
-      Map<Integer, TransactionId> artIdToMinOver = new HashMap<Integer, TransactionId>();
-      Map<Integer, TransactionId> artIdToMaxUnder = new HashMap<Integer, TransactionId>();
-
-      for (Artifact artifact : newAndModArts)
-         artIds.add(artifact.getArtId());
-
-      try {
-         Queue<Integer> artIdQueue = new LinkedList<Integer>(artIds);
-         Collection<Integer> artIdBlock = new ArrayList<Integer>(1000);
-
-         while (!artIdQueue.isEmpty()) {
-            artIdBlock.clear();
-            if (artIdQueue.size() > 1000) {
-               for (int count = 0; count < 1000; count++) {
-                  artIdBlock.add(artIdQueue.poll());
-               }
-            } else {
-               artIdBlock.addAll(artIdQueue);
-               artIdQueue.clear();
-            }
-
-            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-            try {
-               String sql =
-                     "SELECT min(osee_tx_details.transaction_id) as base_tx, " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-                           artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
-
-               chStmt.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(),
-                     toTransactionId.getTransactionNumber(), fromTransactionId.getBranchId());
-
-               while (chStmt.next()) {
-                  artIdToMinOver.put(chStmt.getInt("art_id"),
-                        TransactionIdManager.getTransactionId(chStmt.getInt("base_tx")));
-               }
-            } finally {
-               chStmt.close();
-            }
-
-            ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
-            try {
-               String sql =
-                     "SELECT max(osee_txs.transaction_id) as base_tx, " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-                           artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
-               chStmt1.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(), fromTransactionId.getBranchId());
-
-               while (chStmt1.next()) {
-                  artIdToMaxUnder.put(chStmt1.getInt("art_id"),
-                        TransactionIdManager.getTransactionId(chStmt1.getInt("base_tx")));
-               }
-            } finally {
-               chStmt1.close();
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-
-      TransactionId baselineTransaction;
-      TransactionId minOverTransaction;
-      TransactionId maxUnderTransaction;
-      for (Artifact artifact : newAndModArts) {
-         artifactNameDescriptorCache.cache(artifact.getArtId(), artifact.getDescriptiveName(),
-               artifact.getArtifactType());
-
-         minOverTransaction = artIdToMinOver.get(artifact.getArtId());
-         maxUnderTransaction = artIdToMaxUnder.get(artifact.getArtId());
-         if (maxUnderTransaction != null)
-            baselineTransaction = maxUnderTransaction;
-         else
-            baselineTransaction = minOverTransaction;
-
-         ModificationType modificationType;
-         if (artifact.isDeleted()) {
-            modificationType = ModificationType.DELETED;
-         } else {
-            modificationType =
-                  (maxUnderTransaction == null && baselineTransaction != fromTransactionId) ? ModificationType.NEW : ModificationType.CHANGE;
-         }
-
-         newAndModArtChanges.add(new ArtifactChange(OUTGOING, modificationType, artifact, baseParentTransactionId,
-               headParentTransactionId, baselineTransaction, fromTransactionId, toTransactionId, -1));
-      }
-
-      return newAndModArtChanges;
    }
 
    /**

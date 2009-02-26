@@ -16,33 +16,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
@@ -51,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeSummary;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkSummary;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -137,23 +127,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             } else {
                return getTransactions(branch).toArray();
             }
-         } else if (parentElement instanceof TransactionData) {
-            TransactionId tranId = ((TransactionData) parentElement).getTransactionId();
-            return getArtifactChanges(tranId);
-         } else if (parentElement instanceof Pair) {
-            Pair pair = (Pair) parentElement;
-            if (pair.getKey() instanceof TransactionId && pair.getValue() instanceof TransactionId) {
-               return getArtifactChanges(null, (TransactionId) pair.getKey(), (TransactionId) pair.getValue());
-            }
-         } else if (parentElement instanceof ArtifactChange) {
-            ArtifactChange change = (ArtifactChange) parentElement;
-            if (change.getModType() != DELETED) {
-               return summarize(
-                     RevisionManager.getInstance().getTransactionChanges(change, artifactNameDescriptorCache)).toArray();
-            }
-         } else if (parentElement instanceof ChangeSummary) {
-            ChangeSummary change = (ChangeSummary) parentElement;
-            return change.getChanges().toArray();
          } else if (parentElement instanceof Collection) {
             Collection collection = (Collection) parentElement;
             return collection.toArray();
@@ -176,75 +149,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             return Collections.emptyList();
          }
       }
-   }
-
-   private static Object[] getArtifactChanges(TransactionId toTransaction) throws OseeCoreException {
-      TransactionId priorTransaction;
-      try {
-         priorTransaction = TransactionIdManager.getPriorTransaction(toTransaction);
-      } catch (TransactionDoesNotExist ex) {
-         priorTransaction = null;
-      }
-      return getArtifactChanges(null, priorTransaction, toTransaction);
-   }
-
-   private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws OseeCoreException {
-      TransactionId headParentTransaction =
-            baseParentTransaction == null ? null : TransactionIdManager.getStartEndPoint(
-                  baseParentTransaction.getBranch()).getValue();
-
-      Collection<ArtifactChange> deletedArtChanges =
-            RevisionManager.getInstance().getDeletedArtifactChanges(baseParentTransaction, headParentTransaction,
-                  baseTransaction, toTransaction, artifactNameDescriptorCache);
-      Collection<ArtifactChange> newAndModArtChanges =
-            RevisionManager.getInstance().getNewAndModArtifactChanges(baseParentTransaction, headParentTransaction,
-                  baseTransaction, toTransaction, artifactNameDescriptorCache);
-
-      // Combine both the collections into one of them to return one continuous data set
-      newAndModArtChanges.addAll(deletedArtChanges);
-
-      // Perform conflict detection if a baseParentTransaction is available.
-      if (baseParentTransaction != null) {
-
-         // If the baseline hasn't moved, then we don't care to check for conflicts.
-         // Note that attempting to do conflict detection will be inaccurate as the search
-         // API will include the lower bound when the lower and upper bound match, which
-         // is not what we want.
-         if (baseParentTransaction != headParentTransaction) {
-            Map<Integer, Artifact> parentBranchModConflicts = new HashMap<Integer, Artifact>();
-            Collection<Integer> parentBranchDelConflicts = new HashSet<Integer>();
-
-            ISearchPrimitive conflictCriteria =
-                  new ConflictingArtifactSearch(baseParentTransaction.getBranchId(),
-                        baseParentTransaction.getTransactionNumber(), headParentTransaction.getTransactionNumber(),
-                        baseTransaction.getBranchId(), baseTransaction.getTransactionNumber(),
-                        toTransaction.getTransactionNumber());
-
-            Collection<Artifact> artModConflicts =
-                  ArtifactPersistenceManager.getInstance().getArtifacts(conflictCriteria,
-                        headParentTransaction.getBranch());
-            for (Artifact artifact : artModConflicts)
-               parentBranchModConflicts.put(artifact.getArtId(), artifact);
-
-            Collection<ArtifactChange> artDelConflicts =
-                  RevisionManager.getInstance().getDeletedArtifactChanges(null, null, baseParentTransaction,
-                        headParentTransaction, null);
-            for (ArtifactChange change : artDelConflicts) {
-               parentBranchDelConflicts.add(change.getArtifact().getArtId());
-            }
-
-            for (ArtifactChange change : newAndModArtChanges) {
-               if (parentBranchDelConflicts.contains(change.getArtifact().getArtId())) {
-                  change.setChangeType(ChangeType.CONFLICTING);
-                  change.setConflictingModArtifact(change.getArtifact());
-               } else if (parentBranchModConflicts.containsKey(change.getArtifact().getArtId())) {
-                  change.setConflictingModArtifact(parentBranchModConflicts.get(change.getArtifact().getArtId()));
-               }
-            }
-         }
-      }
-
-      return newAndModArtChanges.toArray();
    }
 
    /**

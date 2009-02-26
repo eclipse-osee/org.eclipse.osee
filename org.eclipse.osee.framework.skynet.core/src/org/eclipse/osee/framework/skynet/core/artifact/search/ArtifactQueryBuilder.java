@@ -88,8 +88,8 @@ public class ArtifactQueryBuilder {
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionId transactionId2, boolean allowDeleted, ArtifactLoad loadLevel) {
-      this(null, 0, guidOrHrids, null, null, transactionId2.getBranch(), transactionId2, allowDeleted, loadLevel, true);
+   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionId transactionId, boolean allowDeleted, ArtifactLoad loadLevel) {
+      this(null, 0, guidOrHrids, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
@@ -413,7 +413,7 @@ public class ArtifactQueryBuilder {
       }
       List<Artifact> artifacts =
             ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
-                  loadLevel, reload, confirmer, null, allowDeleted);
+                  loadLevel, reload, confirmer, transactionId, allowDeleted);
       clearCriteria();
       return artifacts;
    }

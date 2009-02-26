@@ -50,8 +50,7 @@ public class ArtifactURL {
       parameters.put("branchId", String.valueOf(artifact.getBranch().getBranchId()));
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
       if (artifact.isHistorical()) {
-         // Add artifact gammaId
-         parameters.put("gammaId", String.valueOf(artifact.getGammaId()));
+         parameters.put("transactionId", String.valueOf(artifact.getTransactionNumber()));
       }
       parameters.put("cmd", cmd);
       String urlString =
