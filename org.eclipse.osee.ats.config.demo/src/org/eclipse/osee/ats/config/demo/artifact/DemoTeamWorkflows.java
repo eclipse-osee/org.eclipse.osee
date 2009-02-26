@@ -84,4 +84,11 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
       return workflowArtifactNames;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow#teamWorkflowCreated(org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact, org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact)
+    */
+   @Override
+   public void teamWorkflowDuplicating(TeamWorkFlowArtifact teamArt, TeamWorkFlowArtifact dupTeamArt) throws OseeCoreException {
+   }
+
 }

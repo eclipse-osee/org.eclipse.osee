@@ -44,8 +44,16 @@ public interface IAtsTeamWorkflow {
    public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
 
    /**
+    * Notification that a teamWorkflow is being duplicated. This allows the extension to do necessary changes to
+    * duplicated workflow.
+    * 
+    * @param teamArt
+    */
+   public void teamWorkflowDuplicating(TeamWorkFlowArtifact teamArt, TeamWorkFlowArtifact dupTeamArt) throws OseeCoreException;
+
+   /**
     * Notification that a teamWorkflow was created. This allows the extension to do necessary initial tasks after the
-    * team workflow artifact is created.
+    * team workflow artifact is created. All changes made to dupTeamArt will be persisted after this call.
     * 
     * @param teamArt
     */

@@ -15,9 +15,11 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -104,6 +106,11 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
                dupArt.persistAttributes(transaction);
             }
             dupArt.persistAttributesAndRelations(transaction);
+         }
+         // Notify all extension points that workflow is being duplicated in case they need to add, remove
+         // attributes or relations
+         for (IAtsTeamWorkflow teamExtension : TeamWorkflowExtensions.getInstance().getAtsTeamWorkflowExtensions()) {
+            teamExtension.teamWorkflowDuplicating(teamArt, dupArt);
          }
       }
       transaction.execute();
