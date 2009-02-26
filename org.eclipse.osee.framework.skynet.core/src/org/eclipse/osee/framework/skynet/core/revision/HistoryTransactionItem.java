@@ -48,6 +48,8 @@ public class HistoryTransactionItem implements IAdaptable{
          returnValue = ((IAttributeChange) revisionChange).getName();
       } else if (revisionChange instanceof RelationLinkChange) {
          returnValue = ((RelationLinkChange) revisionChange).getRelTypeName();
+      }else if (revisionChange instanceof ArtifactChange) {
+         returnValue = ((ArtifactChange) revisionChange).getChange();
       }
 
       return returnValue;

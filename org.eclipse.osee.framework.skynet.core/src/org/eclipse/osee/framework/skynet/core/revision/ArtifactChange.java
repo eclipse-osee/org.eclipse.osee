@@ -128,7 +128,7 @@ public class ArtifactChange extends RevisionChange {
     */
    @Override
    public String getChange() {
-      return null;
+      return "Artifact - "+getModType().getDisplayName();
    }
 
    /**
