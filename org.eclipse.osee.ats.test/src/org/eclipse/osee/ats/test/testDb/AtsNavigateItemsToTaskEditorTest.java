@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.testDb;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -58,13 +60,13 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       runGeneralTaskSearchOnCompletedCancelledTest(item, false, 0);
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 0);
       selectedUsers.clear();
-      for (TeamDefinitionArtifact art : TeamDefinitionArtifact.getTeamDefinitions(Active.Active)) {
-         selectedUsers.add(art);
-      }
-      runGeneralTaskSearchOnTeamTest(item, selectedUsers, 14);
+      List<String> teamDefs = new ArrayList<String>();
+      teamDefs.add("SAW Code");
+      Set<TeamDefinitionArtifact> tda = TeamDefinitionArtifact.getTeamDefinitions(teamDefs);
+      runGeneralTaskSearchOnTeamTest(item, tda, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Joe Smith", 14);
-      runGeneralTaskSearchOnVersionTest(item, "SAW_Bld_2", 14);
       runGeneralTaskSearchOnVersionTest(item, "SAW_Bld_1", 0);
+      runGeneralTaskSearchOnVersionTest(item, "SAW_Bld_2", 14);
       selectedUsers.clear();
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Kay Jones", 8);

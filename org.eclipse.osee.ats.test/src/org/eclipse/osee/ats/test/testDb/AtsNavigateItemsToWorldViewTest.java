@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.test.testDb;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import junit.framework.TestCase;
@@ -54,6 +56,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -67,6 +70,17 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    public void testDemoDatabase() throws Exception {
       DemoTestUtil.setUpTest();
       assertTrue(DemoUsers.getDemoUser(DemoUsers.Kay_Jones) != null);
+   }
+
+   public void testAttributeDeletion() throws Exception {
+      Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
+      arts.clear();
+      NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
+      // delete an artifact, look for expected !Errors in the XCol
+      deleteAttributesForXColErrorTest(arts, "ats.Team Definition");
+      deleteAttributesForXColErrorTest(arts, "ats.User Community");
+      deleteAttributesForXColErrorTest(arts, "ats.Current State");
+      deleteAttributesForXColErrorTest(arts, "ats.Change Type");
    }
 
    public void testMyWorld() throws Exception {
@@ -199,12 +213,13 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Kay Jones", 6);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Released, 0);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Both, 6);
-      for (TeamDefinitionArtifact art : TeamDefinitionArtifact.getTeamDefinitions(Active.Active)) {
-         selectedUsers.add(art);
-      }
-      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 6);
+      List<String> teamDefs = new ArrayList<String>();
+      teamDefs.add("SAW Test");
+      teamDefs.add("SAW Design");
+      Set<TeamDefinitionArtifact> tda = TeamDefinitionArtifact.getTeamDefinitions(teamDefs);
+      runGeneralTeamWorkflowSearchOnTeamTest(item, tda, 3);
       runGeneralTeamWorkflowSearchOnVersionTest(item, "SAW_Bld_1", 0);
-      runGeneralTeamWorkflowSearchOnVersionTest(item, "SAW_Bld_2", 5);
+      runGeneralTeamWorkflowSearchOnVersionTest(item, "SAW_Bld_2", 3);
       selectedUsers.clear();
       runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 6);
    }
@@ -322,16 +337,16 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 0);
    }
 
-   public void testAttributeDeletion() throws Exception {
-      Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
-      arts.clear();
-      NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
-      // delete an artifact, look for expected !Errors in the XCol
-      deleteAttributesForXColErrorTest(arts, "ats.Team Definition", "SAW Code");
-      deleteAttributesForXColErrorTest(arts, "ats.User Community", "Processes");
-      deleteAttributesForXColErrorTest(arts, "ats.Current State", "Problem");
-      deleteAttributesForXColErrorTest(arts, "ats.Priority", "1");
-   }
+   //   public void testAttributeDeletion() throws Exception {
+   //      Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
+   //      arts.clear();
+   //      NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
+   //      // delete an artifact, look for expected !Errors in the XCol
+   //      deleteAttributesForXColErrorTest(arts, "ats.Team Definition");
+   //      deleteAttributesForXColErrorTest(arts, "ats.User Community");
+   //      deleteAttributesForXColErrorTest(arts, "ats.Current State");
+   //      deleteAttributesForXColErrorTest(arts, "ats.Change Type");
+   //   }
 
    public Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, Class<?> clazz, int numOfType, User user) throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem(xNavigateItemName);
@@ -435,17 +450,28 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       cdialog.handleAddAllItemButtonClick();
    }
 
-   public void deleteAttributesForXColErrorTest(Collection<Artifact> arts, String attributeToDelete, String attributeValue) throws Exception {
+   public void deleteAttributesForXColErrorTest(Collection<Artifact> arts, String attributeToDelete) throws Exception {
+      Map<Artifact, Object> attributeValues = new HashMap<Artifact, Object>();
       getXViewer().expandAll();
       handleTableCustomization();
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       // select a workflow artifact; get its attributes; delete an attribute
       for (Artifact art : arts) {
-         art.deleteSoleAttribute(attributeToDelete);
+         attributeValues.put(art, art.getSoleAttributeValue(attributeToDelete));
+         art.deleteAttribute(attributeToDelete, art.getSoleAttributeValue(attributeToDelete));
+         art.persistAttributes(transaction);
       }
-      runGeneralXColTest(20, true, attributeToDelete, false);
-      // restore the attribute to leave the demo db back in its original state
-      for (Artifact art : arts) {
-         art.addAttributeFromString(attributeToDelete, attributeValue);
+      transaction.execute();
+      try {
+         runGeneralXColTest(20, true, attributeToDelete, false);
+      } finally {
+         transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         // restore the attribute to leave the demo db back in its original state      
+         for (Artifact art : arts) {
+            art.setSoleAttributeValue(attributeToDelete, attributeValues.get(art));
+            art.persistAttributes(transaction);
+         }
+         transaction.execute();
       }
    }
 
@@ -465,12 +491,14 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       int index = 0;
       for (String col : actualErrorCols) {
          NavigateTestUtil.testExpectedVersusActual("Expected xCol errors", true,
-               NavigateTestUtil.expectedErrorCols1[index++].equals(col));
+               NavigateTestUtil.expectedErrorCols1[index++].contains(col));
       }
    }
 
    public void verifyXCol2HasErrors(List<String> actualErrorCols) {
       int index = 0;
+      NavigateTestUtil.testExpectedVersusActual("Expected number of xCol errors",
+            NavigateTestUtil.expectedErrorCols2.length, actualErrorCols.size());
       for (String col : actualErrorCols) {
          NavigateTestUtil.testExpectedVersusActual("Expected xCol errors", true,
                NavigateTestUtil.expectedErrorCols2[index++].equals(col));

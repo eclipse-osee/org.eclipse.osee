@@ -16,9 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import junit.framework.TestCase;
-
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,9 +29,9 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class NavigateTestUtil {
    private static Map<String, List<XNavigateItem>> nameToNavItem;
-   public static String[] expectedErrorCols1 = {"ats.column.type", "ats.column.team"};
+   public static String[] expectedErrorCols1 = {"ats.column.type", "ats.column.team", "ats.column.initWf"};
    public static String[] expectedErrorCols2 =
-         {"ats.column.type", "ats.column.state", "ats.column.assignees", "ats.column.versionTarget", "ats.column.team", "ats.column.annualCostAvoidance",
+         {"ats.column.state", "ats.column.assignees", "ats.column.versionTarget", "ats.column.annualCostAvoidance",
                "ats.column.remainingHours", "ats.column.statePercentComplete", "ats.column.stateTaskPercentComplete",
                "ats.column.stateReviewPercentComplete", "ats.column.totalPercentComplete",
                "ats.column.stateHoursSpent", "ats.column.stateTaskHoursSpent", "ats.column.stateReviewHoursSpent",
