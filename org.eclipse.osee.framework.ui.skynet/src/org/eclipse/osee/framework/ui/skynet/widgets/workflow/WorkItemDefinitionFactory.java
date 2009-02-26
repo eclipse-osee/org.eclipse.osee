@@ -63,7 +63,8 @@ public class WorkItemDefinitionFactory {
          artifactTypeNames.add(WorkPageDefinition.ARTIFACT_NAME);
          artifactTypeNames.add(WorkFlowDefinition.ARTIFACT_NAME);
          artifactTypeNames.add(WorkWidgetDefinition.ARTIFACT_NAME);
-         for (Artifact art : ArtifactQuery.getArtifactsFromTypes(artifactTypeNames, BranchManager.getCommonBranch())) {
+         for (Artifact art : ArtifactQuery.getArtifactsFromTypes(artifactTypeNames, BranchManager.getCommonBranch(),
+               false)) {
             if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
             } else if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
