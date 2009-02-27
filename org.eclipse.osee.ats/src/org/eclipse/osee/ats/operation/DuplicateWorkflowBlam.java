@@ -91,6 +91,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
    }
 
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks) throws OseeCoreException {
+      AtsPlugin.setEmailEnabled(false);
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsPlugin.getAtsBranch());
@@ -114,6 +115,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
          }
       }
       transaction.execute();
+      AtsPlugin.setEmailEnabled(false);
    }
 
    /* (non-Javadoc)
