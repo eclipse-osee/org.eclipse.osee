@@ -35,18 +35,19 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
    }
 
    private static AtsBulkLoadCache bulkLoadAtsCacheJob;
-   private static boolean atsTypeDataLoading = false;
-   private static boolean atsTypeDataLoaded = false;
+   private static boolean atsTypeDataLoadedStarted = false;
+
+   private synchronized static void ensureBulkLoading() {
+      if (atsTypeDataLoadedStarted) return;
+      atsTypeDataLoadedStarted = true;
+      bulkLoadAtsCacheJob = new AtsBulkLoadCache();
+      bulkLoadAtsCacheJob.setPriority(Job.SHORT);
+      bulkLoadAtsCacheJob.setSystem(true);
+      bulkLoadAtsCacheJob.schedule();
+   }
 
    public static void run(boolean forcePend) {
-      if (atsTypeDataLoaded) return;
-      if (!atsTypeDataLoading) {
-         atsTypeDataLoading = true;
-         bulkLoadAtsCacheJob = new AtsBulkLoadCache();
-         bulkLoadAtsCacheJob.setPriority(Job.SHORT);
-         bulkLoadAtsCacheJob.setSystem(true);
-         bulkLoadAtsCacheJob.schedule();
-      }
+      ensureBulkLoading();
       try {
          if (forcePend) {
             bulkLoadAtsCacheJob.join();
@@ -62,7 +63,6 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
     */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
-      if (atsTypeDataLoaded) return Status.OK_STATUS;
       OseeLog.log(AtsPlugin.class, Level.INFO, getName());
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
@@ -73,7 +73,6 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
          }
          transaction.execute();
          WorkItemDefinitionFactory.loadDefinitions();
-         atsTypeDataLoaded = true;
       } catch (Exception ex) {
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {

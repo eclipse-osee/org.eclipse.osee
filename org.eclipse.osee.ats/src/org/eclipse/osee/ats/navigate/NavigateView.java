@@ -81,8 +81,8 @@ public class NavigateView extends ViewPart implements IActionable {
     */
    @Override
    public void createPartControl(Composite parent) {
-      AtsBulkLoadCache.run(false);
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+      AtsBulkLoadCache.run(false);
 
       OseeContributionItem.addTo(this, false);
 
@@ -131,6 +131,7 @@ public class NavigateView extends ViewPart implements IActionable {
       this.searchArea.setFont(parent.getFont());
       this.searchArea.setLayoutData(gd);
       this.searchArea.addKeyListener(new KeyAdapter() {
+         @Override
          public void keyPressed(KeyEvent event) {
             if (event.character == '\r') {
                try {
