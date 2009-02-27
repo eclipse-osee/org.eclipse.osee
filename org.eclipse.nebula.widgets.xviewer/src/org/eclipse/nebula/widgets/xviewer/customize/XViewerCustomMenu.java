@@ -36,6 +36,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumnSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.nebula.widgets.xviewer.util.internal.CollectionsUtil;
+import org.eclipse.nebula.widgets.xviewer.util.internal.HtmlUtil;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
 import org.eclipse.nebula.widgets.xviewer.util.internal.dialog.HtmlDialog;
@@ -267,8 +268,10 @@ public class XViewerCustomMenu {
             String data =
                   ((XViewerLabelProvider) xViewer.getLabelProvider()).getColumnText(treeItem.getData(), xCol,
                         xViewer.getRightClickSelectedColumnNum());
-            if (data != null && !data.equals("")) new HtmlDialog(treeCol.getText() + " Data",
-                  treeCol.getText() + " Data", data).open();
+            if (data != null && !data.equals("")) {
+               String html = HtmlUtil.simplePage(HtmlUtil.pre(HtmlUtil.textToHtml(data)));
+               new HtmlDialog(treeCol.getText() + " Data", treeCol.getText() + " Data", html).open();
+            }
          }
       } catch (Exception ex) {
          XViewerLog.logAndPopup(Activator.class, Level.SEVERE, ex);
@@ -355,8 +358,8 @@ public class XViewerCustomMenu {
       }
       textTransferData.add(sb.toString());
 
-      if (textTransferData.size() > 0) clipboard.setContents(new Object[] {CollectionsUtil.toString(textTransferData, null,
-            ", ", null)}, new Transfer[] {TextTransfer.getInstance()});
+      if (textTransferData.size() > 0) clipboard.setContents(new Object[] {CollectionsUtil.toString(textTransferData,
+            null, ", ", null)}, new Transfer[] {TextTransfer.getInstance()});
    }
 
    private void performCopy() {
@@ -381,8 +384,8 @@ public class XViewerCustomMenu {
          }
          textTransferData.add(sb.toString());
 
-         if (textTransferData.size() > 0) clipboard.setContents(new Object[] {CollectionsUtil.toString(textTransferData,
-               null, ", ", null)}, new Transfer[] {TextTransfer.getInstance()});
+         if (textTransferData.size() > 0) clipboard.setContents(new Object[] {CollectionsUtil.toString(
+               textTransferData, null, ", ", null)}, new Transfer[] {TextTransfer.getInstance()});
       }
    }
 
