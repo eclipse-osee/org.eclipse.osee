@@ -3,7 +3,7 @@
       id="org.eclipse.osee.required"
       label="External OSEE Dependancies Feature"
       version="0.4.0.qualifier"
-      provider-name="Boeing"
+      provider-name="Eclipse.org"
       plugin="org.eclipse.osee.framework.ui.product">
 
    <description url="http://www.example.com/description">
