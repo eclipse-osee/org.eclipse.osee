@@ -17,8 +17,9 @@
    <license url="%licenseURL">
       %license
    </license>
+
    <url>
-      <update url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
+      <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
 
    <requires>

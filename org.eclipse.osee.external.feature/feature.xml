@@ -18,6 +18,10 @@
       [Enter License Description here.]
    </license>
 
+   <url>
+      <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
+   </url>
+
    <includes
          id="org.eclipse.gef"
          version="0.0.0"/>
