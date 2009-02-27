@@ -33,6 +33,7 @@ public class DetailsBrowserComposite extends BrowserComposite {
             new StringBuffer(AHTML.getLabelValueStr("Name", artifact.getDescriptiveName()) + AHTML.newline());
       try {
          sb.append(AHTML.getLabelValueStr("GUID", artifact.getGuid()) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("HRID", artifact.getHumanReadableId()) + AHTML.newline());
          sb.append(AHTML.getLabelValueStr("Branch", artifact.getBranch().toString()) + AHTML.newline());
          sb.append(AHTML.getLabelValueStr("Branch Id", String.valueOf(artifact.getBranch().getBranchId())) + AHTML.newline());
          sb.append(AHTML.getLabelValueStr("Artifact Id", String.valueOf(artifact.getArtId())) + AHTML.newline());
