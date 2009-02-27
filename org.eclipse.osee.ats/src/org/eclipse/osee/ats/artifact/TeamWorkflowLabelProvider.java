@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 
 /**
@@ -30,7 +34,12 @@ public class TeamWorkflowLabelProvider extends ArtifactLabelProvider {
    @Override
    public String getText(Object element) {
       TeamWorkFlowArtifact wf = (TeamWorkFlowArtifact) element;
-      return wf.getTeamTitle();
+      try {
+         return wf.getTeamTitle();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         return "Exception: " + ex.getLocalizedMessage();
+      }
    }
 
 }

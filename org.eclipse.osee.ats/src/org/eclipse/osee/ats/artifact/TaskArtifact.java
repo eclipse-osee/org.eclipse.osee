@@ -395,6 +395,14 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return "";
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
+    */
+   @Override
+   public String getHyperTargetVersion() {
+      return null;
+   }
+
    @Override
    public String getWorldViewSWEnhancement() throws OseeCoreException {
       StateMachineArtifact sma = getParentSMA();

@@ -63,6 +63,7 @@ public class ActionHyperItem extends HyperViewItem {
       if (iHyperartifact instanceof IHyperArtifact) {
          if ((iHyperartifact).getHyperState() != null) builder.append("\nState: " + (iHyperartifact).getHyperState());
          if ((iHyperartifact).getHyperAssignee() != null) builder.append("\nAssignee: " + (iHyperartifact).getHyperAssignee());
+         if ((iHyperartifact).getHyperTargetVersion() != null) builder.append("\nVersion: " + (iHyperartifact).getHyperTargetVersion());
       }
       return builder.toString();
    }

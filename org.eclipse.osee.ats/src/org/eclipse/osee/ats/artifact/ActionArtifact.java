@@ -580,6 +580,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return "";
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
+    */
+   @Override
+   public String getHyperTargetVersion() {
+      return null;
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -1272,4 +1280,5 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       return Collections.toString("; ", teamNames);
    }
+
 }

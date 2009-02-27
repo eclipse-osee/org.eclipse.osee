@@ -55,7 +55,7 @@ public class TasksHyperViewArtifact implements IHyperArtifact {
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssigneeImage()
     */
    @Override
-   public Image getHyperAssigneeImage()throws OseeCoreException{
+   public Image getHyperAssigneeImage() throws OseeCoreException {
       return null;
    }
 
@@ -89,6 +89,14 @@ public class TasksHyperViewArtifact implements IHyperArtifact {
    @Override
    public String getHyperType() {
       return TaskArtifact.ARTIFACT_NAME;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
+    */
+   @Override
+   public String getHyperTargetVersion() {
+      return null;
    }
 
    /* (non-Javadoc)

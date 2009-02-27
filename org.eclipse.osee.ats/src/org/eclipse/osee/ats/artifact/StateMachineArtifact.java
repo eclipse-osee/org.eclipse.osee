@@ -357,7 +357,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return isTaskable();
    }
 
-   public String getEditorTitle() {
+   public String getEditorTitle() throws OseeCoreException {
       return getDescriptiveName();
    }
 

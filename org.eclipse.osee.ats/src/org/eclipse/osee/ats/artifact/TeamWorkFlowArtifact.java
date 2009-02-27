@@ -169,7 +169,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public String getEditorTitle() {
+   public String getEditorTitle() throws OseeCoreException {
       return getTeamTitle();
    }
 
@@ -222,8 +222,12 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return AtsCache.getTeamDefinitionArtifact(guid);
    }
 
-   public String getTeamTitle() {
-      return "[" + getTeamName() + "] - " + getDescriptiveName();
+   public String getTeamTitle() throws OseeCoreException {
+      if (getWorldViewTargetedVersion() != null) {
+         return "[" + getTeamName() + "][" + getWorldViewTargetedVersionStr() + "] - " + getDescriptiveName();
+      } else {
+         return "[" + getTeamName() + "] - " + getDescriptiveName();
+      }
    }
 
    public String getTeamName() {
@@ -316,6 +320,19 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public String getHyperName() {
       return getTeamName();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
+    */
+   @Override
+   public String getHyperTargetVersion() {
+      try {
+         return getWorldViewTargetedVersionStr().equals("") ? null : getWorldViewTargetedVersionStr();
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return null;
    }
 
    @Override

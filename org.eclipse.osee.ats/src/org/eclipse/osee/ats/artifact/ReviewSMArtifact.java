@@ -90,6 +90,14 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return defectManager;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
+    */
+   @Override
+   public String getHyperTargetVersion() {
+      return null;
+   }
+
    public UserRoleManager getUserRoleManager() {
       return userRoleManager;
    }

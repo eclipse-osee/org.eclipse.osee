@@ -30,6 +30,8 @@ public interface IHyperArtifact {
 
    public String getHyperAssignee();
 
+   public String getHyperTargetVersion();
+
    public Image getHyperImage();
 
    public Image getHyperAssigneeImage() throws Exception;
