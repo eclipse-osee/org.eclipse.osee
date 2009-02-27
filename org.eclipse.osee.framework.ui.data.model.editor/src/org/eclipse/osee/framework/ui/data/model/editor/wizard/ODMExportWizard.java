@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.data.model.editor.wizard;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -23,15 +25,19 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
 
    private ISelection selection;
    private ODMSelectTypesPage selectTypesPage;
+   private DataTypeCache dataTypeCache;
 
-   public ODMExportWizard() {
+   public ODMExportWizard(DataTypeCache dataTypeCache) {
+      this.dataTypeCache = dataTypeCache;
       setNeedsProgressMonitor(true);
       setWindowTitle("Osee Data Model Export Wizard");
+      setDefaultPageImageDescriptor(ODMImages.getImageDescriptor(ODMImages.EXPORT_IMAGE));
    }
 
    @Override
    public void addPages() {
       addPage(selectTypesPage = new ODMSelectTypesPage("Osee Data Model Wizard"));
+      selectTypesPage.setInput(dataTypeCache);
    }
 
    /* (non-Javadoc)
@@ -39,8 +45,10 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
     */
    @Override
    public boolean performFinish() {
-      System.out.println("Finish Selected");
-      return false;
+      IStructuredSelection selection = (IStructuredSelection) selectTypesPage.getTreeViewer().getSelection();
+
+      System.out.println("Finish Selected: " + selection.toList());
+      return true;
    }
 
    /* (non-Javadoc)

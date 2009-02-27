@@ -22,10 +22,15 @@ public class DataTypeSource {
    private final TypeManager<RelationDataType> relationTypeManager;
 
    private final String sourceId;
+   private final boolean isFromDataStore;
 
    public DataTypeSource(String sourceId) {
-      this.sourceId = sourceId;
+      this(sourceId, false);
+   }
 
+   public DataTypeSource(String sourceId, boolean isFromDataStore) {
+      this.sourceId = sourceId;
+      this.isFromDataStore = isFromDataStore;
       artifactTypeManager = new TypeManager<ArtifactDataType>();
       attributeTypeManager = new TypeManager<AttributeDataType>();
       relationTypeManager = new TypeManager<RelationDataType>();
@@ -33,6 +38,10 @@ public class DataTypeSource {
 
    public String getSourceId() {
       return sourceId;
+   }
+
+   public boolean isFromDataStore() {
+      return isFromDataStore;
    }
 
    public void add(DataType dataType) {
