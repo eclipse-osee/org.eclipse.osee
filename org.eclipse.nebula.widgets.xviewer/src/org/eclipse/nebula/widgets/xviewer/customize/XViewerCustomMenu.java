@@ -48,8 +48,12 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -80,6 +84,10 @@ public class XViewerCustomMenu {
     * @param factory
     */
    public XViewerCustomMenu() {
+   }
+
+   public XViewerCustomMenu(XViewer xViewer) {
+      this.xViewer = xViewer;
    }
 
    public void init(XViewer xviewer) {
@@ -118,6 +126,130 @@ public class XViewerCustomMenu {
       mm.add(removeSelected);
       mm.add(removeNonSelected);
       mm.add(new GroupMarker(XViewer.MENU_GROUP_POST));
+   }
+
+   public void createTableCustomizationMenuItem(Menu popupMenu) {
+      final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
+      item.setText("Table Customization");
+      item.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            xViewer.getCustomizeMgr().handleTableCustomization();
+         }
+      });
+   }
+
+   public void createViewTableReportMenuItem(Menu popupMenu) {
+      final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
+      item.setText("View Table Report");
+      item.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            performViewTableReport();
+         }
+      });
+   }
+
+   public void addFilterMenuBlock(Menu popupMenu) {
+      createFilterByColumnMenuItem(popupMenu);
+      createClearAllFiltersMenuItem(popupMenu);
+      createClearAllSortingMenuItem(popupMenu);
+   }
+
+   public void createFilterByColumnMenuItem(Menu popupMenu) {
+      final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
+      item.setText("Filter By Column");
+      item.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            performFilterByColumn();
+         }
+      });
+   }
+
+   public void createClearAllFiltersMenuItem(Menu popupMenu) {
+      final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
+      item.setText("Clear All Filters");
+      item.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            xViewer.getCustomizeMgr().clearFilters();
+         }
+      });
+   }
+
+   public void createClearAllSortingMenuItem(Menu popupMenu) {
+      final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
+      item.setText("Clear All Sorting");
+      item.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            xViewer.getCustomizeMgr().clearSorter();
+         }
+      });
+   }
+
+   public void addCopyViewMenuBlock(Menu popupMenu) {
+      createViewSelectedCellMenuItem(popupMenu);
+      createCopyRowsMenuItem(popupMenu);
+      createCopyCellsMenuItem(popupMenu);
+   }
+
+   public void createCopyRowsMenuItem(Menu popupMenu) {
+      final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
+      item.setText("Copy Selected Row(s)- Ctrl-C");
+      item.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            performCopy();
+         }
+      });
+   }
+
+   public void createCopyCellsMenuItem(Menu popupMenu) {
+      final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
+      item.setText("Copy Selected Column - Ctrl-Shift-C");
+      item.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            performCopyCell();
+         }
+      });
+   }
+
+   public void createViewSelectedCellMenuItem(Menu popupMenu) {
+      final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
+      item.setText("View Selected Cell Data");
+      item.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            performViewCell();
+         }
+      });
    }
 
    protected void setupActions() {
@@ -178,11 +310,7 @@ public class XViewerCustomMenu {
       viewTableReport = new Action("View Table Report") {
          @Override
          public void run() {
-            if (xViewer.getXViewerFactory().getXViewerTreeReport(xViewer) != null) {
-               xViewer.getXViewerFactory().getXViewerTreeReport(xViewer).open();
-            } else {
-               new XViewerTreeReport(xViewer).open();
-            }
+            performViewTableReport();
          }
       };
       columnMultiEdit = new Action("Column Multi Edit") {
@@ -210,6 +338,14 @@ public class XViewerCustomMenu {
             xViewer.handleColumnMultiEdit((TreeColumn) ld.getResult()[0], selectedTreeItems);
          }
       };
+   }
+
+   private void performViewTableReport() {
+      if (xViewer.getXViewerFactory().getXViewerTreeReport(xViewer) != null) {
+         xViewer.getXViewerFactory().getXViewerTreeReport(xViewer).open();
+      } else {
+         new XViewerTreeReport(xViewer).open();
+      }
    }
 
    private class KeySelectedListener implements KeyListener {

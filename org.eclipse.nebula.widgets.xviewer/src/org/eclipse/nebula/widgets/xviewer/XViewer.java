@@ -100,7 +100,7 @@ public class XViewer extends TreeViewer {
    }
 
    public void dispose() {
-	  searchDataUI.dispose();
+      searchDataUI.dispose();
       filterDataUI.dispose();
       columnFilterDataUI.dispose();
    }
@@ -136,21 +136,15 @@ public class XViewer extends TreeViewer {
 
    protected void createSupportWidgets(Composite parent) {
 
-	  searchColor = Display.getDefault().getSystemColor(SWT.COLOR_YELLOW);
-	   
+      searchColor = Display.getDefault().getSystemColor(SWT.COLOR_YELLOW);
+
       Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayout(XViewerLib.getZeroMarginLayout(11, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      //Composite searchAndFilter = new Composite(comp, SWT.NONE);
-//      searchAndFilter.setLayout(XViewerLib.getZeroMarginLayout(8, false));
-//      searchAndFilter.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//      GridData gd = new GridData(SWT.RIGHT, SWT.NONE, false, false);
-//      searchAndFilter.setLayoutData(gd);
-      
       filterDataUI.createWidgets(comp);
       Label sep1 = new Label(comp, SWT.SEPARATOR);
-      
+
       GridData gd = new GridData(SWT.RIGHT, SWT.NONE, false, false);
       gd.heightHint = 16;
       sep1.setLayoutData(gd);
@@ -161,12 +155,10 @@ public class XViewer extends TreeViewer {
       sep2.setLayoutData(gd);
       statusLabel = new Label(comp, SWT.NONE);
       statusLabel.setText(" ");
-      
+
       gd = new GridData(SWT.CENTER, SWT.NONE, false, false);
       statusLabel.setLayoutData(gd);
 
-     
-      
       getTree().addListener(SWT.MouseDown, new Listener() {
          public void handleEvent(Event event) {
             if (event.button == 3) {
@@ -215,16 +207,16 @@ public class XViewer extends TreeViewer {
             handleDoubleClick();
          };
       });
-      getTree().addMouseListener(new MouseListener(){
+      getTree().addMouseListener(new MouseListener() {
          @Override
          public void mouseDoubleClick(MouseEvent e) {
             int[] columnOrder = getTree().getColumnOrder();
             int sum = 0;
             int count = 0;
-            for(int column : columnOrder){
+            for (int column : columnOrder) {
                TreeColumn col = getTree().getColumn(column);
                sum = sum + col.getWidth();
-               if(sum > e.x){
+               if (sum > e.x) {
                   break;
                }
                count++;
@@ -232,9 +224,11 @@ public class XViewer extends TreeViewer {
             XViewerColumn xCol = getXTreeColumn(columnOrder[count]);
             handleDoubleClick(getTree().getColumn(columnOrder[count]), getTree().getItem(new Point(e.x, e.y)));
          }
+
          @Override
          public void mouseDown(MouseEvent e) {
          }
+
          @Override
          public void mouseUp(MouseEvent e) {
          }
@@ -535,36 +529,36 @@ public class XViewer extends TreeViewer {
       return altKeyDown;
    }
 
-	/**
-	 * @param text
-	 * @return
-	 */
-	boolean searchMatch(String text) {
-		return searchDataUI.match(text);
-	}
+   /**
+    * @param text
+    * @return
+    */
+   boolean searchMatch(String text) {
+      return searchDataUI.match(text);
+   }
 
-/**
- * @return
- */
-Color getSearchMatchColor() {
-	return searchColor;
-}
+   /**
+    * @return
+    */
+   Color getSearchMatchColor() {
+      return searchColor;
+   }
 
-/**
- * @return
- */
-public boolean isSearch() {
-	return searchDataUI.isSearch();
-}
+   /**
+    * @return
+    */
+   public boolean isSearch() {
+      return searchDataUI.isSearch();
+   }
 
-public String getColumnText(Object element, int col){
-	String returnVal = "";
-	if(getLabelProvider() instanceof XViewerLabelProvider){
-		returnVal = ((XViewerLabelProvider) getLabelProvider()).getColumnText(element, col);
-	} else {
-		returnVal = ((XViewerStyledTextLabelProvider) getLabelProvider()).getStyledText(element, col).getString();
-	}
-	return returnVal;
-}
+   public String getColumnText(Object element, int col) {
+      String returnVal = "";
+      if (getLabelProvider() instanceof XViewerLabelProvider) {
+         returnVal = ((XViewerLabelProvider) getLabelProvider()).getColumnText(element, col);
+      } else {
+         returnVal = ((XViewerStyledTextLabelProvider) getLabelProvider()).getStyledText(element, col).getString();
+      }
+      return returnVal;
+   }
 
 }

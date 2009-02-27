@@ -42,7 +42,6 @@ public class HtmlUtil {
       text = text.replaceAll("<", "&lt;");
       text = text.replaceAll("\"", "&quot;");
       text = text.replaceAll("\\n", "<br/>");
-      text = text.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
       text = text.replaceAll("[\\x0B\\f\\r]+", "");
       return text;
    }

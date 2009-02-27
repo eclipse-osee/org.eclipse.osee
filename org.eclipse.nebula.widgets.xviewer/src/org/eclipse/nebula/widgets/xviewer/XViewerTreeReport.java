@@ -95,19 +95,19 @@ public class XViewerTreeReport {
       return sb.toString();
    }
 
-   public void addRow(TreeItem item, ArrayList<String[]> rowData, XViewerLabelProvider labelProv, List<XViewerColumn> showCols, int level) throws XViewerException {
+   private void addRow(TreeItem item, ArrayList<String[]> rowData, XViewerLabelProvider labelProv, List<XViewerColumn> showCols, int level) throws XViewerException {
       List<String> cellData = new ArrayList<String>(showCols.size());
       boolean firstCell = true;
       for (XViewerColumn xCol : showCols) {
          String str = "";
          if (firstCell) {
-            for (int y = 0; y < level; y++) {
+            for (int y = 1; y < level; y++) {
                str += "&nbsp;&nbsp;&nbsp;&nbsp;";
             }
             firstCell = false;
          }
          str += labelProv.getColumnText(item.getData(), xColToColumnIndex.get(xCol));
-         cellData.add(str);
+         cellData.add(HtmlUtil.textToHtml(str));
       }
       rowData.add(cellData.toArray(new String[cellData.size()]));
       if (item.getExpanded()) {
