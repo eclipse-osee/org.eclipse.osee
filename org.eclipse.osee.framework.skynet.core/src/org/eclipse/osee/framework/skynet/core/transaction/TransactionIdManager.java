@@ -38,13 +38,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * 
  * @author Jeff C. Phillips
  */
-public class TransactionIdManager {
+public final class TransactionIdManager {
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
          "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
    private static final String SELECT_TRANSACTIONS =
-      "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time","author", "branch_id", "tx_type") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
-
+         "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author",
+               "branch_id", "tx_type") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
 
    private final Map<Integer, TransactionId> nonEditableTransactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
@@ -67,7 +67,7 @@ public class TransactionIdManager {
       }
       return transactions;
    }
-   
+
    /**
     * @param branch
     * @return the largest (most recent) transaction on the given branch
@@ -161,7 +161,7 @@ public class TransactionIdManager {
       return getTransactionId(chStmt.getInt("transaction_id"), chStmt);
    }
 
-   private static TransactionId getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeCoreException {
+   private synchronized static TransactionId getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeCoreException {
       TransactionId transactionId = instance.nonEditableTransactionIdCache.get(transactionNumber);
       boolean useLocalConnection = chStmt == null;
       if (transactionId == null) {
