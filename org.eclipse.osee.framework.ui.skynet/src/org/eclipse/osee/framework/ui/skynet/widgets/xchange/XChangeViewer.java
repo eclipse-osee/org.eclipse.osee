@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -210,7 +211,7 @@ public class XChangeViewer extends XWidget implements IActionable {
             associatedArtifact = branch.getAssociatedArtifact();
          } else if (transactionId != null && transactionId.getCommitArtId() != 0) {
             associatedArtifact =
-                  ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), transactionId.getBranch());
+                  ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), BranchManager.getCommonBranch());
          }
          if (associatedArtifact != null && !(associatedArtifact instanceof User)) {
             associatedArtifactToolItem.setImage(associatedArtifact.getImage());
