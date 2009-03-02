@@ -19,7 +19,6 @@ public class DatabaseConnectionInfo implements IDatabaseInfo {
    private final String databaseLoginName;
    private final String connectionPrefix;
    private final String databaseName;
-   private final String defaultArbitrationServer;
    private final String driver;
    private final String id;
    private final boolean isProduction;
@@ -28,17 +27,15 @@ public class DatabaseConnectionInfo implements IDatabaseInfo {
    /**
     * @param databaseLoginName
     * @param databaseName
-    * @param defaultArbitrationServer
     * @param driver
     * @param id
     * @param isProduction
     */
-   public DatabaseConnectionInfo(String databaseLoginName, String connectionPrefix, String databaseName, String defaultArbitrationServer, String driver, String id, Properties properties, boolean isProduction) {
+   public DatabaseConnectionInfo(String databaseLoginName, String connectionPrefix, String databaseName, String driver, String id, Properties properties, boolean isProduction) {
       super();
       this.databaseLoginName = databaseLoginName;
       this.connectionPrefix = connectionPrefix;
       this.databaseName = databaseName;
-      this.defaultArbitrationServer = defaultArbitrationServer;
       this.driver = driver;
       this.id = id;
       this.isProduction = isProduction;
@@ -76,14 +73,6 @@ public class DatabaseConnectionInfo implements IDatabaseInfo {
    @Override
    public String getDatabaseName() {
       return databaseName;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDefaultArbitrationServer()
-    */
-   @Override
-   public String getDefaultArbitrationServer() {
-      return defaultArbitrationServer;
    }
 
    /* (non-Javadoc)
