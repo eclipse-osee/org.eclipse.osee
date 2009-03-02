@@ -126,14 +126,6 @@ public class DbInformation implements IDatabaseInfo {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDefaultArbitrationServer()
-    */
-   @Override
-   public String getDefaultArbitrationServer() {
-      return getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getId()
     */
    @Override

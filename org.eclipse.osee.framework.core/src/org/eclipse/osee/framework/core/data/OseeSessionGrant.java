@@ -27,7 +27,6 @@ public class OseeSessionGrant extends BaseExchangeData {
    private static final String DB_DRIVER = "dbDriver";
    private static final String DB_CONNECTION_URL = "dbUrl";
    private static final String DB_CONNECT_PROPERTIES = "dbConnectionProperties";
-   private static final String DB_DEFAULT_ARB_SERVER = "dbArbServer";
    private static final String DB_LOGIN_NAME = "dbLogin";
    private static final String DB_DATABASE_NAME = "dbDatabaseName";
    private static final String DB_IS_PRODUCTION = "dbIsProduction";
@@ -65,7 +64,6 @@ public class OseeSessionGrant extends BaseExchangeData {
    public void setDatabaseInfo(IDatabaseInfo dbInfo) {
       this.backingData.put(DB_DRIVER, dbInfo.getDriver());
       this.backingData.put(DB_CONNECTION_URL, dbInfo.getConnectionUrl());
-      this.backingData.put(DB_DEFAULT_ARB_SERVER, dbInfo.getDefaultArbitrationServer());
       this.backingData.put(DB_LOGIN_NAME, dbInfo.getDatabaseLoginName());
       this.backingData.put(DB_DATABASE_NAME, dbInfo.getDatabaseName());
       this.backingData.put(DB_IS_PRODUCTION, dbInfo.isProduction());
@@ -181,14 +179,6 @@ public class OseeSessionGrant extends BaseExchangeData {
       @Override
       public String getDatabaseName() {
          return getString(DB_DATABASE_NAME);
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDefaultArbitrationServer()
-       */
-      @Override
-      public String getDefaultArbitrationServer() {
-         return getString(DB_DEFAULT_ARB_SERVER);
       }
 
       /* (non-Javadoc)

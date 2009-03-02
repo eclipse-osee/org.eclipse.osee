@@ -29,7 +29,5 @@ public interface IDatabaseInfo {
 
    Properties getConnectionProperties();
 
-   String getDefaultArbitrationServer();
-
    boolean isProduction();
 }
