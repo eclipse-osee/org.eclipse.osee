@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bad_container_name" value="\sampleOsgiServletSample\s"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="true"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/OseeApplicationServer [postgresql localhost demo]"/>
+<booleanAttribute key="default_auto_start" value="true"/>
+<intAttribute key="default_start_level" value="4"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -console"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m&#13;&#10;-XX:MaxPermSize=256m&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Declipse.ignoreApp=true&#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dequinox.ds.debug=true&#13;&#10;-Dorg.osgi.service.http.port=8089&#13;&#10;-Dosee.db.connection.id=postgresqlLocalhost"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="target_bundles" value="org.eclipse.equinox.app@default:default,org.eclipse.core.runtime@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.equinox.common@default:default,org.eclipse.equinox.http.servlet@default:default,org.apache.commons.logging@default:default,javax.servlet@default:default,org.apache.commons.codec@default:default,org.mortbay.jetty@default:default,org.eclipse.osgi.services@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.core.jobs@default:default,org.eclipse.equinox.util@default:default,org.eclipse.core.runtime.compatibility.auth@default:default,org.eclipse.equinox.ds@default:default,org.apache.commons.httpclient@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.osgi@:,org.eclipse.equinox.transforms.hook@default:false,org.eclipse.core.contenttype@default:default,org.eclipse.equinox.http.jetty@default:default"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<stringAttribute key="workspace_bundles" value="org.eclipse.osee.framework.logging@default:default,org.eclipse.osee.framework.branch.management@default:default,org.eclipse.osee.framework.resource.locator.snapshot@default:default,org.eclipse.osee.framework.resource.management.servlet@default:default,org.eclipse.osee.framework.resource.provider.attribute@default:default,org.eclipse.osee.framework.search.engine@default:default,org.eclipse.osee.framework.search.engine.servlet@default:default,org.eclipse.osee.framework.server.lookup.servlet@default:default,org.eclipse.osee.framework.jdk.core@default:default,org.eclipse.osee.framework.server.admin@default:default,org.eclipse.osee.framework.resource.provider.snapshot@default:default,org.eclipse.osee.framework.branch.management.servlet@default:default,org.eclipse.osee.framework.db.connection@default:default,org.eclipse.osee.demo.db.connection@default:default,org.eclipse.osee.framework.postgresql@default:default,org.postgresql.driver@default:default,org.eclipse.osee.framework.client.info.servlet@default:default,org.eclipse.osee.framework.resource.locator.attribute@default:default,org.eclipse.osee.framework.session.management.servlet@default:default,org.eclipse.osee.framework.resource.provider.common@default:default,org.eclipse.osee.framework.core.server@default:default,org.eclipse.osee.framework.core@default:default,org.eclipse.osee.framework.artifact.servlet@default:default,org.eclipse.osee.framework.resource.management@default:default"/>
+</launchConfiguration>
