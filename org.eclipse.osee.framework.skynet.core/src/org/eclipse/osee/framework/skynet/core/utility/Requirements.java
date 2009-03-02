@@ -52,5 +52,6 @@ public class Requirements {
    }
 
    public static List<String> Software_RequirementTypes =
-         Arrays.asList(SOFTWARE_REQUIREMENT, INDIRECT_SOFTWARE_REQUIREMENT);
+         Arrays.asList(SOFTWARE_REQUIREMENT, INDIRECT_SOFTWARE_REQUIREMENT, "Button Requirement", "UIG Artifact",
+               "Stand Alone Local Data");
 }
