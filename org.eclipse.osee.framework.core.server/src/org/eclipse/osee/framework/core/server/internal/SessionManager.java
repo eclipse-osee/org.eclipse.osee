@@ -52,7 +52,7 @@ public class SessionManager implements ISessionManager {
    public SessionManager() {
       this.sessionCache = Collections.synchronizedMap(new HashMap<String, SessionData>());
       this.updateTimer = new Timer("Persist Session Data Timer");
-      updateTimer.scheduleAtFixedRate(new UpdateDataStore(), 2000, DATASTORE_UPDATE);
+      updateTimer.scheduleAtFixedRate(new UpdateDataStore(), DATASTORE_UPDATE, DATASTORE_UPDATE);
    }
 
    /* (non-Javadoc)
@@ -153,29 +153,28 @@ public class SessionManager implements ISessionManager {
             }
          }
 
-         if (SessionDataStore.isSessionTableAvailable()) {
-            List<String> deleteIds = new ArrayList<String>();
-            List<OseeSession> createData = new ArrayList<OseeSession>();
-            List<OseeSession> updateData = new ArrayList<OseeSession>();
-            synchronized (sessionCache) {
-               for (SessionData sessionData : sessionCache.values()) {
-                  if (sessionData != null) {
-                     switch (sessionData.getSessionState()) {
-                        case CREATED:
-                           createData.add(sessionData.getSession());
-                           break;
-                        case DELETED:
-                           deleteIds.add(sessionData.getSessionId());
-                           break;
-                        case UPDATED:
-                           updateData.add(sessionData.getSession());
-                           break;
-                        default:
-                           break;
-                     }
+         List<String> deleteIds = new ArrayList<String>();
+         List<OseeSession> createData = new ArrayList<OseeSession>();
+         List<OseeSession> updateData = new ArrayList<OseeSession>();
+         synchronized (sessionCache) {
+            for (SessionData sessionData : sessionCache.values()) {
+               if (sessionData != null) {
+                  switch (sessionData.getSessionState()) {
+                     case CREATED:
+                        createData.add(sessionData.getSession());
+                        break;
+                     case DELETED:
+                        deleteIds.add(sessionData.getSessionId());
+                        break;
+                     case UPDATED:
+                        updateData.add(sessionData.getSession());
+                        break;
+                     default:
+                        break;
                   }
                }
             }
+
             createItems(createData);
             updateItems(updateData);
             deleteItems(deleteIds);
@@ -202,7 +201,7 @@ public class SessionManager implements ISessionManager {
 
       private void createUpdateHelper(List<OseeSession> sessionsList, boolean isCreate) {
          try {
-            if (!sessionsList.isEmpty()) {
+            if (!sessionsList.isEmpty() && SessionDataStore.isSessionTableAvailable()) {
                String serverId =
                      CoreServerActivator.getApplicationServerManager().getApplicationServerInfo().getServerId();
                OseeSession[] sessionsArray = sessionsList.toArray(new OseeSession[sessionsList.size()]);
@@ -227,7 +226,7 @@ public class SessionManager implements ISessionManager {
 
       private void deleteItems(List<String> sessionIds) {
          try {
-            if (!sessionIds.isEmpty()) {
+            if (!sessionIds.isEmpty() && SessionDataStore.isSessionTableAvailable()) {
                SessionDataStore.deleteSession(sessionIds.toArray(new String[sessionIds.size()]));
                for (String ids : sessionIds) {
                   sessionCache.remove(ids);
