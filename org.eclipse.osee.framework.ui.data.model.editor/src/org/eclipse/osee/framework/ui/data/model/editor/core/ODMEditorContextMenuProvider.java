@@ -38,6 +38,7 @@ public class ODMEditorContextMenuProvider extends ContextMenuProvider {
       menu.appendToGroup(GEFActionConstants.GROUP_UNDO, getAction(ActionFactory.REDO.getId()));
       menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.DELETE.getId()));
       menu.appendToGroup(GEFActionConstants.GROUP_PRINT, getAction(ActionFactory.PRINT.getId()));
+      menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.IMPORT.getId()));
       menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.EXPORT.getId()));
    }
 

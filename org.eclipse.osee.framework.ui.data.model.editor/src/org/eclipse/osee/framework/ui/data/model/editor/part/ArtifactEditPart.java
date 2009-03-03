@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkModel;
-import org.eclipse.osee.framework.ui.data.model.editor.model.NodeModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
+import org.eclipse.osee.framework.ui.data.model.editor.model.RelationLinkModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel.ContainerType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
  * @author Roberto E. Escobar
  */
 public class ArtifactEditPart extends DataTypeEditPart {
+
+   private List children;
 
    public ArtifactEditPart(Object model) {
       super((ArtifactDataType) model);
@@ -68,14 +70,17 @@ public class ArtifactEditPart extends DataTypeEditPart {
 
    @SuppressWarnings("unchecked")
    protected List getModelChildren() {
-      List children = new ArrayList();
-      children.add(new ContainerModel(getArtifactDataType(), ContainerType.INHERITED_ATTRIBUTES));
-      children.add(new ContainerModel(getArtifactDataType(), ContainerType.LOCAL_ATTRIBUTES));
-      children.add(new ContainerModel(getArtifactDataType(), ContainerType.INHERITED_RELATIONS));
-      children.add(new ContainerModel(getArtifactDataType(), ContainerType.LOCAL_RELATIONS));
+      if (children == null) {
+         children = new ArrayList();
+         ArtifactDataType model = getArtifactDataType();
+         children.add(new ContainerModel(model, ContainerType.INHERITED_ATTRIBUTES));
+         children.add(new ContainerModel(model, ContainerType.LOCAL_ATTRIBUTES));
+         children.add(new ContainerModel(model, ContainerType.INHERITED_RELATIONS));
+         children.add(new ContainerModel(model, ContainerType.LOCAL_RELATIONS));
 
-      for (ArtifactDataType ancestor : getArtifactDataType().getSuperTypes()) {
-         children.add(new InheritanceLinkModel(ancestor, getArtifactDataType()));
+         for (ArtifactDataType ancestor : model.getSuperTypes()) {
+            children.add(new InheritanceLinkModel(model, ancestor));
+         }
       }
       return children;
    }
@@ -131,35 +136,36 @@ public class ArtifactEditPart extends DataTypeEditPart {
       }
 
       protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
-         //            //            ConnectionModel connectionModel = (ConnectionModel) request.getNewObject();
-         //            //            if (link instanceof ReferenceView || link instanceof InheritanceView) {
-         Command cmd =
-               new CreateConnectionCommand((ConnectionModel) request.getNewObject(),
-                     (ArtifactDataType) getHost().getModel());
-         request.setStartCommand(cmd);
-         return cmd;
-         //            //            }
-         //            /*
-         //             * The disallow cursor will be shown If you return null.  If you return
-         //             * UnexecutableCommand.INSTANCE, the disallow cursor will not appear.  This is
-         //             * because since this is the first step of the Command it doesn't check to 
-         //             * see if it's executable or not (which it most likely isn't).
-         //             */
-         //            return null;
+         ConnectionModel connectionModel = (ConnectionModel) request.getNewObject();
+         if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
+            ArtifactDataType source = (ArtifactDataType) getHost().getModel();
+            Command cmd = new CreateConnectionCommand(connectionModel, source);
+            request.setStartCommand(cmd);
+            return cmd;
+         }
+         return null;
       }
 
       protected Command getReconnectSourceCommand(ReconnectRequest request) {
-         //            ConnectionModel connectionModel = (ConnectionModel) request.getConnectionEditPart().getModel();
-         //            if (link instanceof InheritanceView || link instanceof ReferenceView) {
-         //               return new ReconnectLinkCommand(link, (Node) getHost().getModel(), true);
-         //            }
+         ConnectionModel connectionModel = (ConnectionModel) request.getConnectionEditPart().getModel();
+         if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
+            ArtifactDataType source = (ArtifactDataType) getHost().getModel();
+            ReconnectConnectionCommand cmd = new ReconnectConnectionCommand(connectionModel);
+            cmd.setNewSource(source);
+            return cmd;
+         }
          return UnexecutableCommand.INSTANCE;
       }
 
       protected Command getReconnectTargetCommand(ReconnectRequest request) {
          ConnectionModel connectionModel = (ConnectionModel) request.getConnectionEditPart().getModel();
-         //            if (link instanceof ReferenceView || link instanceof InheritanceView) return UnexecutableCommand.INSTANCE;
-         return new ReconnectConnectionCommand(connectionModel, (NodeModel) getHost().getModel(), false);
+         if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
+            ArtifactDataType target = (ArtifactDataType) getHost().getModel();
+            ReconnectConnectionCommand cmd = new ReconnectConnectionCommand(connectionModel);
+            cmd.setNewTarget(target);
+            return cmd;
+         }
+         return UnexecutableCommand.INSTANCE;
       }
    }
 }

@@ -13,19 +13,23 @@ package org.eclipse.osee.framework.ui.data.model.editor.property;
 import java.util.List;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.plugin.views.property.ImagePropertyDescriptor;
+import org.eclipse.osee.framework.ui.plugin.views.property.ModelPropertySource;
 import org.eclipse.osee.framework.ui.plugin.views.property.PropertyId;
+import org.eclipse.osee.framework.ui.plugin.views.property.ReadOnlyPropertyDescriptor;
 import org.eclipse.osee.framework.ui.plugin.views.property.StringPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactPropertySource extends DataTypeElementPropertySource {
+public class ArtifactPropertySource extends ModelPropertySource {
    protected final PropertyId idImage;
+   private final PropertyId idSuperTypes;
 
    public ArtifactPropertySource(String categoryName, Object dataType) {
-      super(categoryName, (ArtifactDataType) dataType);
+      super(dataType);
       idImage = new PropertyId(categoryName, "Image");
+      idSuperTypes = new PropertyId(categoryName, "Super Types");
    }
 
    /* (non-Javadoc)
@@ -33,7 +37,7 @@ public class ArtifactPropertySource extends DataTypeElementPropertySource {
     */
    @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
-      super.addPropertyDescriptors(list);
+      list.add(new ReadOnlyPropertyDescriptor(idSuperTypes));
       list.add(new StringPropertyDescriptor(idImage));
    }
 
@@ -46,7 +50,7 @@ public class ArtifactPropertySource extends DataTypeElementPropertySource {
     */
    @Override
    public boolean isPropertyResettable(Object id) {
-      return super.isPropertyResettable(id) || id == idImage;
+      return id == idImage;
    }
 
    /* (non-Javadoc)
@@ -55,7 +59,8 @@ public class ArtifactPropertySource extends DataTypeElementPropertySource {
    @Override
    public boolean isPropertySet(Object id) {
       if (id == idImage) return getDataTypeElement().getImage() != null;
-      return super.isPropertySet(id);
+      if (id == idSuperTypes) return true;
+      return false;
    }
 
    /* (non-Javadoc)
@@ -64,7 +69,8 @@ public class ArtifactPropertySource extends DataTypeElementPropertySource {
    @Override
    public Object getPropertyValue(Object id) {
       if (id == idImage) return ImagePropertyDescriptor.fromModel(getDataTypeElement().getImage());
-      return super.getPropertyValue(id);
+      if (id == idSuperTypes) return ReadOnlyPropertyDescriptor.fromModel(getDataTypeElement().getSuperTypes().toString());
+      return false;
    }
 
    /* (non-Javadoc)
@@ -73,7 +79,6 @@ public class ArtifactPropertySource extends DataTypeElementPropertySource {
    @Override
    public void resetPropertyValue(Object id) {
       if (id == idImage) getDataTypeElement().setImage(null);
-      super.resetPropertyValue(id);
    }
 
    /* (non-Javadoc)
@@ -82,7 +87,6 @@ public class ArtifactPropertySource extends DataTypeElementPropertySource {
    @Override
    public void setPropertyValue(Object id, Object value) {
       if (id == idImage) getDataTypeElement().setImage(ImagePropertyDescriptor.toModel(value));
-      super.setPropertyValue(id, value);
    }
 
 }

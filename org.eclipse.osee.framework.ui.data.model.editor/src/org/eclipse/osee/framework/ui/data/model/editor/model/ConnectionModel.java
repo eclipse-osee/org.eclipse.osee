@@ -17,7 +17,7 @@ import org.eclipse.draw2d.Bendpoint;
 /**
  * @author Roberto E. Escobar
  */
-public class ConnectionModel<T extends DataType> extends Model {
+public class ConnectionModel<T extends NodeModel> extends Model {
 
    private boolean isConnected;
    private T source;
@@ -39,7 +39,7 @@ public class ConnectionModel<T extends DataType> extends Model {
          target.removeConnection(this);
          if (this.source != null) {
             for (IModelListener listener : getListeners()) {
-               this.target.removeListener(listener);
+               this.source.removeListener(listener);
             }
          }
          if (this.target != null) {
@@ -98,7 +98,7 @@ public class ConnectionModel<T extends DataType> extends Model {
          disconnect();
          this.source = newSource;
          this.target = newTarget;
-         //         reconnect();
+         reconnect();
       }
    }
 

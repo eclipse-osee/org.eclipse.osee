@@ -22,9 +22,12 @@ public abstract class NodeModel extends Model {
 
    private final Point location;
    private final Dimension size;
+   @SuppressWarnings("unchecked")
    private final List<ConnectionModel> sourceConnections;
+   @SuppressWarnings("unchecked")
    private final List<ConnectionModel> targetConnections;
 
+   @SuppressWarnings("unchecked")
    public NodeModel() {
       this.location = new Point(50, 50);
       this.size = new Dimension(100, 100);
@@ -33,12 +36,15 @@ public abstract class NodeModel extends Model {
 
    }
 
+   @SuppressWarnings("unchecked")
    void addConnection(ConnectionModel conn) {
       if (conn != null && conn.getSource() != conn.getTarget()) {
          if (conn.getSource() == this) {
             sourceConnections.add(conn);
+            fireModelEvent();
          } else if (conn.getTarget() == this) {
             targetConnections.add(conn);
+            fireModelEvent();
          }
       }
    }
@@ -59,20 +65,25 @@ public abstract class NodeModel extends Model {
       return getSize().height;
    }
 
+   @SuppressWarnings("unchecked")
    public List<ConnectionModel> getOutgoingConnections() {
       return new ArrayList<ConnectionModel>(sourceConnections);
    }
 
+   @SuppressWarnings("unchecked")
    public List<ConnectionModel> getIncomingConnections() {
       return new ArrayList<ConnectionModel>(targetConnections);
    }
 
+   @SuppressWarnings("unchecked")
    void removeConnection(ConnectionModel conn) {
       if (conn != null) {
          if (conn.getSource() == this) {
             sourceConnections.remove(conn);
+            fireModelEvent();
          } else if (conn.getTarget() == this) {
             targetConnections.remove(conn);
+            fireModelEvent();
          }
       }
    }
@@ -96,4 +107,19 @@ public abstract class NodeModel extends Model {
       dimension.width = newWidth;
       setSize(dimension);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.data.model.editor.model.Model#fireModelEvent()
+    */
+   @Override
+   protected void fireModelEvent() {
+      super.fireModelEvent();
+      for (ConnectionModel conn : getIncomingConnections()) {
+         conn.fireModelEvent();
+      }
+      for (ConnectionModel conn : getOutgoingConnections()) {
+         conn.fireModelEvent();
+      }
+   }
+
 }

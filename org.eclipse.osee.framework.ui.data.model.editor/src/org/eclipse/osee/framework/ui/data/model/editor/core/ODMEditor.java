@@ -42,23 +42,20 @@ import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.action.ODMExportAction;
+import org.eclipse.osee.framework.ui.data.model.editor.action.ODMImportAction;
 import org.eclipse.osee.framework.ui.data.model.editor.command.DeleteCommand;
 import org.eclipse.osee.framework.ui.data.model.editor.operation.ODMLoadGraphRunnable;
 import org.eclipse.osee.framework.ui.data.model.editor.part.ODMEditPartFactory;
-import org.eclipse.osee.framework.ui.data.model.editor.wizard.ODMExportWizard;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
@@ -245,27 +242,8 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
    public ActionRegistry getActionRegistry() {
       if (actionRegistry == null) {
          actionRegistry = new ActionRegistry();
-         actionRegistry.registerAction(new Action("Export") {
-
-            /* (non-Javadoc)
-             * @see org.eclipse.jface.action.Action#getId()
-             */
-            @Override
-            public String getId() {
-               return ActionFactory.EXPORT.getId();
-            }
-
-            @Override
-            public void run() {
-               super.run();
-               ODMExportWizard wizard = new ODMExportWizard(getEditorInput().getDataTypeCache());
-               WizardDialog dialog =
-                     new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
-               dialog.create();
-               dialog.open();
-            }
-
-         });
+         actionRegistry.registerAction(new ODMImportAction(this));
+         actionRegistry.registerAction(new ODMExportAction(this));
       }
       return actionRegistry;
    }

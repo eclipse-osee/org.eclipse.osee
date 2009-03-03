@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.command;
 
+import java.util.logging.Level;
 import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
 
@@ -26,7 +30,7 @@ public class CreateConnectionCommand extends Command {
    private ArtifactDataType oldAncestor;
 
    public CreateConnectionCommand(ConnectionModel connectionModel, ArtifactDataType source) {
-      super("Connection Creation");
+      super("Create connection");
       this.connectionModel = connectionModel;
       this.source = source;
       this.oldAncestor = null;
@@ -47,23 +51,31 @@ public class CreateConnectionCommand extends Command {
    }
 
    public void redo() {
-      oldAncestor = source.getAncestorType();
-      source.setParent(target);
-      if (source == target) {
-         connectionModel.getBendpoints().add(new AbsoluteBendpoint(source.getLocation().getTranslated(-10, 10)));
-         connectionModel.getBendpoints().add(new AbsoluteBendpoint(source.getLocation().getTranslated(-10, -10)));
-         connectionModel.getBendpoints().add(new AbsoluteBendpoint(source.getLocation().getTranslated(10, -10)));
+      try {
+         oldAncestor = source.getAncestorType();
+         source.setParent(target);
+         if (source == target) {
+            connectionModel.getBendpoints().add(new AbsoluteBendpoint(source.getLocation().getTranslated(-10, 10)));
+            connectionModel.getBendpoints().add(new AbsoluteBendpoint(source.getLocation().getTranslated(-10, -10)));
+            connectionModel.getBendpoints().add(new AbsoluteBendpoint(source.getLocation().getTranslated(10, -10)));
+         }
+         connectionModel.setSource(source);
+         connectionModel.setTarget(target);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ODMEditor.class, Level.SEVERE, ex);
       }
-      connectionModel.setSource(source);
-      connectionModel.setTarget(target);
    }
 
    public void undo() {
-      connectionModel.setSource(null);
-      connectionModel.setTarget(null);
-      if (source == target) {
-         connectionModel.getBendpoints().clear();
+      try {
+         connectionModel.setSource(null);
+         connectionModel.setTarget(null);
+         if (source == target) {
+            connectionModel.getBendpoints().clear();
+         }
+         source.setParent(oldAncestor);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ODMEditor.class, Level.SEVERE, ex);
       }
-      source.setParent(oldAncestor);
    }
 }

@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -83,29 +84,62 @@ public class ArtifactDataType extends DataType {
       }
    }
 
-   public void setParent(ArtifactDataType parent) {
-      if (this.ancestorType != parent) {
-         if (this.ancestorType != null) {
-            this.ancestorType.remoteChildType(this);
+   public void setParent(ArtifactDataType parent) throws OseeStateException {
+      if (ancestorType != parent && !this.equals(parent)) {
+         if (parent == null) {
+            ancestorType = parent;
+            fireModelEvent();
+         } else {
+            checkInheritance(parent);
+            if (ancestorType != null) {
+               ancestorType.removeDescendantType(this);
+            }
+            ancestorType = parent;
+            ancestorType.addDescendantType(this);
+            fireModelEvent();
          }
-         this.ancestorType = parent;
-         this.ancestorType.addChildType(this);
-         fireModelEvent();
       }
    }
 
-   private void addChildType(ArtifactDataType childType) {
-      descendantTypes.add(childType);
+   private void checkInheritance(ArtifactDataType item) throws OseeStateException {
+      boolean thisIsAItem = instanceOf(this, item);
+      boolean itemIsAThis = instanceOf(item, this);
+      String message = "Inheritance constraint violation - [%s] is a [%s]";
+      if (thisIsAItem) {
+         throw new OseeStateException(String.format(message, this, item));
+      } else if (itemIsAThis) {
+         throw new OseeStateException(String.format(message, item, this));
+      }
    }
 
-   private void remoteChildType(ArtifactDataType childType) {
+   public static boolean instanceOf(ArtifactDataType art1, ArtifactDataType art2) {
+      boolean toReturn = false;
+      if (art1 == art2) {
+         toReturn = true;
+      } else if (art1 != null && art2 != null) {
+         toReturn = art1.equals(art2) || art2.getDescendantTypes().contains(art1);
+      }
+      return toReturn;
+   }
+
+   private void addDescendantType(ArtifactDataType childType) throws OseeStateException {
+      if (childType != this) {
+         checkInheritance(childType);
+         descendantTypes.add(childType);
+      }
+   }
+
+   private void removeDescendantType(ArtifactDataType childType) {
       descendantTypes.remove(childType);
    }
 
    public List<ArtifactDataType> getDescendantTypes() {
-      List<ArtifactDataType> descendants = new ArrayList<ArtifactDataType>(descendantTypes);
+      List<ArtifactDataType> descendants = new ArrayList<ArtifactDataType>();
       for (ArtifactDataType descendant : descendantTypes) {
-         descendants.addAll(descendant.getDescendantTypes());
+         if (descendant != this) {
+            descendants.add(descendant);
+            descendants.addAll(descendant.getDescendantTypes());
+         }
       }
       return descendants;
    }

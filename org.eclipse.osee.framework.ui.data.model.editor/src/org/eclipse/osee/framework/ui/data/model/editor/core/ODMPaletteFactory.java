@@ -34,10 +34,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
-import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
+import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -153,7 +153,7 @@ public class ODMPaletteFactory {
 
       ImageDescriptor img = ODMImages.getImageDescriptor(ODMImages.INHERITANCE);
       toolbar.add(new ConnectionCreationToolEntry("Inheritance", "Inherit from an artifact", new SimpleFactory(
-            ConnectionModel.class), img, img));
+            InheritanceLinkModel.class), img, img));
 
       final Action action =
             OseeAts.createBugAction(ODMEditorActivator.getInstance(), editor, "OSEE Data Model Editor",

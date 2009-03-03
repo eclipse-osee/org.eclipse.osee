@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.model;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -82,7 +84,36 @@ public class DataType extends NodeModel {
       this.uniqueId = typeId;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof DataType) {
+         DataType other = (DataType) obj;
+         return objectEquals(getNamespace(), other.getNamespace()) && objectEquals(getName(), other.getName());
+      }
+      return false;
+   }
+
+   private boolean objectEquals(Object object1, Object object2) {
+      if (object1 == object2) {
+         return true;
+      } else if (object1 != null && object2 != null) {
+         return object1.equals(object2);
+      }
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      return super.hashCode();
+   }
+
    public String toString() {
-      return String.format("%s:%s", getNamespace(), getName());
+      return String.format("%s:%s", Strings.isValid(getNamespace()) ? getNamespace() : "undefined", getName());
    }
 }

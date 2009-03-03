@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.data.model.editor.property;
 import java.util.List;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 import org.eclipse.osee.framework.ui.plugin.views.property.BooleanPropertyDescriptor;
+import org.eclipse.osee.framework.ui.plugin.views.property.ModelPropertySource;
 import org.eclipse.osee.framework.ui.plugin.views.property.PropertyId;
 import org.eclipse.osee.framework.ui.plugin.views.property.StringPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -20,7 +21,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationPropertySource extends DataTypeElementPropertySource {
+public class RelationPropertySource extends ModelPropertySource {
 
    protected final PropertyId idSideAName;
    protected final PropertyId idSideBName;
@@ -30,7 +31,7 @@ public class RelationPropertySource extends DataTypeElementPropertySource {
    protected final PropertyId idOrdered;
 
    public RelationPropertySource(String categoryName, Object dataType) {
-      super(categoryName, (RelationDataType) dataType);
+      super((RelationDataType) dataType);
       idSideAName = new PropertyId(categoryName, "Side A Name");
       idSideBName = new PropertyId(categoryName, "Side B Name");
       idAToBPhrase = new PropertyId(categoryName, "A to B Phrase");
@@ -44,7 +45,6 @@ public class RelationPropertySource extends DataTypeElementPropertySource {
     */
    @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
-      super.addPropertyDescriptors(list);
       list.add(new StringPropertyDescriptor(idSideAName));
       list.add(new StringPropertyDescriptor(idSideBName));
       list.add(new StringPropertyDescriptor(idAToBPhrase));
@@ -62,7 +62,7 @@ public class RelationPropertySource extends DataTypeElementPropertySource {
     */
    @Override
    public boolean isPropertyResettable(Object id) {
-      return super.isPropertyResettable(id) || id == idSideAName || id == idSideBName || id == idAToBPhrase || id == idBToAPhrase || id == idShortName || id == idOrdered;
+      return id == idSideAName || id == idSideBName || id == idAToBPhrase || id == idBToAPhrase || id == idShortName || id == idOrdered;
    }
 
    /* (non-Javadoc)
@@ -78,7 +78,7 @@ public class RelationPropertySource extends DataTypeElementPropertySource {
       if (id == idOrdered) {
          return true;
       }
-      return super.isPropertySet(id);
+      return false;
    }
 
    /* (non-Javadoc)
@@ -92,7 +92,7 @@ public class RelationPropertySource extends DataTypeElementPropertySource {
       if (id == idBToAPhrase) return StringPropertyDescriptor.fromModel(getDataTypeElement().getBToAPhrase());
       if (id == idShortName) return StringPropertyDescriptor.fromModel(getDataTypeElement().getShortName());
       if (id == idOrdered) return BooleanPropertyDescriptor.fromModel(getDataTypeElement().getOrdered());
-      return super.getPropertyValue(id);
+      return false;
    }
 
    /* (non-Javadoc)
@@ -106,7 +106,6 @@ public class RelationPropertySource extends DataTypeElementPropertySource {
       if (id == idBToAPhrase) getDataTypeElement().setBToAPhrase(null);
       if (id == idShortName) getDataTypeElement().setShortName(null);
       if (id == idOrdered) getDataTypeElement().setOrdered(true);
-      super.resetPropertyValue(id);
    }
 
    /* (non-Javadoc)
@@ -120,7 +119,6 @@ public class RelationPropertySource extends DataTypeElementPropertySource {
       if (id == idBToAPhrase) getDataTypeElement().setBToAPhrase(StringPropertyDescriptor.toModel(value));
       if (id == idShortName) getDataTypeElement().setShortName(StringPropertyDescriptor.toModel(value));
       if (id == idOrdered) getDataTypeElement().setOrdered(BooleanPropertyDescriptor.toModel(value));
-      super.setPropertyValue(id, value);
    }
 
 }
