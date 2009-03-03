@@ -55,11 +55,12 @@ public class RelationManager {
    private static final HashMap<Artifact, List<RelationLink>> artifactToRelations =
          new HashMap<Artifact, List<RelationLink>>(1024);
 
+   private static final String[] DELETED = new String[]{"INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, ", ", branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND "," = ? AND tx_current in (2, 3))"}; 
    private static final String GET_DELETED_ARTIFACT_B =
-         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current in (2, 3))";
+      DELETED[0] + "b_art_id" + DELETED[1] + "a_art_id" + DELETED[2];
    private static final String GET_DELETED_ARTIFACT_A =
-         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = (2, 3))";
-
+      DELETED[0] + "a_art_id" + DELETED[1] + "b_art_id" + DELETED[2];
+   
    private static final int LINKED_LIST_KEY = -1;
 
    private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) {
@@ -270,17 +271,16 @@ public class RelationManager {
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, boolean includeDeleted) throws OseeCoreException {
       if (includeDeleted) {
-         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
          List<Artifact> artifacts =
                getRelatedArtifacts(artifact, relationEnum.getRelationType(), relationEnum.getSide());
          int queryId = ArtifactLoader.getNewQueryId();
          //(SELECT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = 3)"
          if (relationEnum.getSide().equals(RelationSide.SIDE_B)) {
-            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, SQL3DataType.TIMESTAMP,
+            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId,
                   SQL3DataType.INTEGER, artifact.getBranch().getBranchId(),
                   relationEnum.getRelationType().getRelationTypeId(), artifact.getArtId());
          } else {
-            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, SQL3DataType.TIMESTAMP,
+            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId,
                   SQL3DataType.INTEGER, artifact.getBranch().getBranchId(),
                   relationEnum.getRelationType().getRelationTypeId(), artifact.getArtId());
          }
