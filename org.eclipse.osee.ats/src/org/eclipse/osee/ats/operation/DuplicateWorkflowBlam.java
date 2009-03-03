@@ -75,11 +75,14 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
                   return;
                }
                try {
+                  AtsPlugin.setEmailEnabled(false);
                   Collection<TeamWorkFlowArtifact> teamArts = Collections.castAll(artifacts);
                   handleCreateDuplicate(teamArts, duplicateTasks);
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   return;
+               } finally {
+                  AtsPlugin.setEmailEnabled(true);
                }
 
                SMAEditor.editArtifact(artifact);
@@ -91,7 +94,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
    }
 
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks) throws OseeCoreException {
-      AtsPlugin.setEmailEnabled(false);
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsPlugin.getAtsBranch());
@@ -115,7 +117,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
          }
       }
       transaction.execute();
-      AtsPlugin.setEmailEnabled(false);
    }
 
    /* (non-Javadoc)
