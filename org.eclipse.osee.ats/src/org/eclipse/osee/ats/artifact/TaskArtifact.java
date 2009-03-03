@@ -410,4 +410,11 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return "";
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentID()
+    */
+   @Override
+   public String getWorldViewParentID() throws OseeCoreException {
+      return getParentTeamWorkflow().getHumanReadableId();
+   }
 }

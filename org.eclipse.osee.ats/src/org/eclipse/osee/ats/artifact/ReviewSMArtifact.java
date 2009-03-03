@@ -130,4 +130,11 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return null;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentID()
+    */
+   @Override
+   public String getWorldViewParentID() throws OseeCoreException {
+      return getParentTeamWorkflow().getHumanReadableId();
+   }
 }

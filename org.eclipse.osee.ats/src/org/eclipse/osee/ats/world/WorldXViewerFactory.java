@@ -56,6 +56,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String,
                false, null);
    public static final XViewerColumn ID_Col = new XViewerHridColumn("HRID");
+   public static final XViewerColumn Parent_ID_Col =
+         new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + ".parenthrid", "Parent HRID", 75, SWT.LEFT, false,
+               SortDataType.String, false, "Human Readable ID of Parent Action or Team Workflow");
    public static final XViewerColumn Created_Date_Col = new XViewerSmaCreatedDateColumn();
    public static final XViewerColumn Version_Target_Col =
          new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + ".versionTarget", "Version Target", 40, SWT.LEFT,
@@ -255,7 +258,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                Review_Reviewer_Col, Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Man_Days_Needed_Col,
                Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col,
                Validation_Required_Col, Review_Major_Defects, Review_Minor_Defects, Review_Issues,
-               Actions_Initiating_Workflow_Col, Artifact_Type_Col};
+               Actions_Initiating_Workflow_Col, Artifact_Type_Col, Parent_ID_Col};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {

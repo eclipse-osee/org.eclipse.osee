@@ -1281,4 +1281,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString("; ", teamNames);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentID()
+    */
+   @Override
+   public String getWorldViewParentID() throws OseeCoreException {
+      return "";
+   }
 }

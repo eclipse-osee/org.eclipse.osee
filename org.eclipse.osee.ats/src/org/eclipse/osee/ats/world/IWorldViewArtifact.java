@@ -85,6 +85,8 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewID() throws OseeCoreException;
 
+   public String getWorldViewParentID() throws OseeCoreException;
+
    public String getWorldViewImplementer() throws OseeCoreException;
 
    public String getWorldViewLegacyPCR() throws OseeCoreException;
