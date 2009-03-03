@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.messaging.event.skynet.service;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Dictionary;
-import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
@@ -47,8 +49,15 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
    private final Collection<ISkynetEventListener> nonfilteredListeners;
    private final ReadWriteLock nonfilteredListenersLock;
    private static JiniClassServer jiniClassServer;
+   private final ExecutorService executorService;
 
    protected SkynetEventService(String dbConfig) {
+      this.executorService = Executors.newFixedThreadPool(3, new ThreadFactory() {
+         @Override
+         public Thread newThread(Runnable r) {
+            return new Thread(r, "Event Dispatcher");
+         }
+      });
       this.filteredListeners = new HashCollection<IEventFilter, ISkynetEventListener>();
       this.nonfilteredListeners = new LinkedList<ISkynetEventListener>();
       this.filteredListenersLock = new ReentrantReadWriteLock();
@@ -58,6 +67,22 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
       } catch (Exception ex) {
          OseeLog.log(SkynetEventPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   final HashCollection<IEventFilter, ISkynetEventListener> getFilteredListeners() {
+      return filteredListeners;
+   }
+
+   final ReadWriteLock getFilteredListenersLock() {
+      return filteredListenersLock;
+   }
+
+   final Collection<ISkynetEventListener> getNonFilteredListeners() {
+      return nonfilteredListeners;
+   }
+
+   final ReadWriteLock getNonFilteredListenersLock() {
+      return nonfilteredListenersLock;
    }
 
    @SuppressWarnings("unchecked")
@@ -134,64 +159,8 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
       }
    }
 
-   // TODO thread pool this guy
    public void kick(final ISkynetEvent[] events, final ISkynetEventListener... except) throws RemoteException {
-      Thread thread = new Thread("kicker") {
-
-         @Override
-         public void run() {
-            HashCollection<ISkynetEventListener, ISkynetEvent> eventSets =
-                  new HashCollection<ISkynetEventListener, ISkynetEvent>(false, HashSet.class);
-            HashSet<ISkynetEventListener> exceptList =
-                  new HashSet<ISkynetEventListener>((int) (except.length / .75f) + 1, .75f);
-            for (ISkynetEventListener listener : except)
-               exceptList.add(listener);
-
-            nonfilteredListenersLock.readLock().lock();
-            try {
-               // The non-filtered listeners will receive all events by definition
-               for (ISkynetEventListener listener : nonfilteredListeners)
-                  for (ISkynetEvent event : events)
-                     if (!exceptList.contains(listener)) eventSets.put(listener, event);
-            } finally {
-               nonfilteredListenersLock.readLock().unlock();
-            }
-
-            // Build sets according to the filters that the event matches
-
-            filteredListenersLock.readLock().lock();
-            try {
-               // Iterate all of the filters that have mappings to listeners
-               for (IEventFilter filter : filteredListeners.keySet())
-                  // Check each event against a particular filter
-                  for (ISkynetEvent event : events)
-                     if (filter.accepts(event))
-                     // When a filter accepts an event, the event to everyone listening for it
-                     for (ISkynetEventListener listener : filteredListeners.getValues(filter))
-                        if (!exceptList.contains(listener)) eventSets.put(listener, event);
-            } finally {
-               filteredListenersLock.readLock().unlock();
-            }
-
-            // Kick all of the listeners with their set of events
-            for (ISkynetEventListener listener : eventSets.keySet())
-               try {
-
-                  if (listener != null) listener.onEvent(eventSets.getValues(listener).toArray(ISkynetEvent.EMPTY_ARRAY));
-
-               } catch (Exception ex) {
-
-                  // TODO Remove from filteredListeners
-
-                  nonfilteredListeners.remove(listener);
-                  OseeLog.log(SkynetEventPlugin.class, Level.SEVERE, ex);
-               }
-         }
-
-      };
-
-      thread.setPriority(Thread.MIN_PRIORITY);
-      thread.start();
+      executorService.submit(new EventDispatchRunnable(this, events, except));
    }
 
    public static void main(String[] args) {
@@ -202,8 +171,12 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
    }
 
    public void kill() throws RemoteException {
-      this.deregisterService();
-      this.commitSuicide();
+      try {
+         this.deregisterService();
+         this.commitSuicide();
+      } finally {
+         this.executorService.shutdown();
+      }
    }
 
    public boolean isAlive() throws RemoteException {

@@ -83,49 +83,71 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
  * 
  * @author Jeff C. Phillips
  */
-public class RemoteEventManager implements IServiceLookupListener {
+public class RemoteEventManager {
    private static String ACCEPTABLE_SERVICE;
-   private ISkynetEventService skynetEventService;
-   private ASkynetEventListener listener;
-   private ISkynetEventListener myReference;
 
    private static final RemoteEventManager instance = new RemoteEventManager();
 
+   private final InternalSkynetEventManager internalSkynetEventManager;
+   private final ISkynetEventListener clientEventListener;
+   private ISkynetEventListener clientEventListenerRemoteReference;
+
    private RemoteEventManager() {
       super();
-      try {
-         // We need to trigger authentication before attempting to get database information from client session manager.
-         UserManager.getUser();
-         ACCEPTABLE_SERVICE =
-               ClientSessionManager.getDataStoreName() + ":" + ClientSessionManager.getDataStoreLoginName();
-         this.listener = new EventListener();
-         this.myReference = (ISkynetEventListener) OseeJini.getRemoteReference(listener);
+      internalSkynetEventManager = new InternalSkynetEventManager();
+      clientEventListener = new EventListener();
+      checkJiniRegistration();
+   }
 
-         addListenerForEventService();
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+   private void checkJiniRegistration() {
+      if (clientEventListenerRemoteReference == null) {
+         try {
+            // We need to trigger authentication before attempting to get database information from client session manager.
+            UserManager.getUser();
+            ACCEPTABLE_SERVICE =
+                  ClientSessionManager.getDataStoreName() + ":" + ClientSessionManager.getDataStoreLoginName();
+            clientEventListenerRemoteReference =
+                  (ISkynetEventListener) OseeJini.getRemoteReference(clientEventListener);
+         } catch (Exception ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            clientEventListenerRemoteReference = null;
+         }
+
+         if (clientEventListenerRemoteReference != null) {
+            ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance()).addListener(
+                  internalSkynetEventManager, ISkynetEventService.class);
+         }
       }
+   }
+
+   private static ISkynetEventListener getClientEventListenerRemoteReference() {
+      instance.checkJiniRegistration();
+      return instance.clientEventListenerRemoteReference;
+   }
+
+   private static InternalSkynetEventManager getEventServiceManager() {
+      return instance.internalSkynetEventManager;
+   }
+
+   public static void deregisterFromRemoteEventManager() {
+      ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance()).removeListener(getEventServiceManager());
+      getEventServiceManager().reset();
    }
 
    public static void kick(Collection<ISkynetEvent> events) {
       kick(events.toArray(new ISkynetEvent[events.size()]));
    }
 
+   public static boolean isConnected() {
+      return getEventServiceManager().isValid();
+   }
+
    public static void kick(final ISkynetEvent... events) {
-      if (instance.skynetEventService != null) {
-
+      if (isConnected()) {
          Job job = new Job("Send Event") {
-
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-               try {
-                  instance.skynetEventService.kick(events, instance.myReference);
-               } catch (ExportException ex) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-
-               } catch (RemoteException ex) {
-                  instance.disconnectService(ex);
-               }
+               getEventServiceManager().kick(events, getClientEventListenerRemoteReference());
                return Status.OK_STATUS;
             }
          };
@@ -153,7 +175,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   for (ISkynetEvent event : events) {
                      event.getNetworkSender().sessionId = newSessionId;
                   }
-                  instance.listener.onEvent(events);
+                  instance.clientEventListener.onEvent(events);
                } catch (RemoteException ex) {
                   OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
 
@@ -164,79 +186,127 @@ public class RemoteEventManager implements IServiceLookupListener {
       }
    }
 
-   private void addListenerForEventService() {
-      ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance()).addListener(this,
-            ISkynetEventService.class);
-   }
+   private class InternalSkynetEventManager implements IServiceLookupListener {
+      private ISkynetEventService currentEventService;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jini.discovery.IServiceLookupListener#serviceAdded(net.jini.core.lookup.ServiceItem)
-    */
-   public void serviceAdded(ServiceItem serviceItem) {
+      private InternalSkynetEventManager() {
+         currentEventService = null;
+      }
 
-      if (serviceItem.service instanceof ISkynetEventService) {
-         boolean acceptable = false;
+      public ISkynetEventService getReference() {
+         return currentEventService;
+      }
 
-         // Check if the service is for the database we are using
-         for (Entry entry : serviceItem.attributeSets) {
-            if (entry instanceof SimpleFormattedEntry) {
-               SimpleFormattedEntry simpleEntry = (SimpleFormattedEntry) entry;
-               acceptable = "db".equals(simpleEntry.name) && ACCEPTABLE_SERVICE.equals(simpleEntry.value);
-               if (acceptable) break;
+      public boolean isValid() {
+         return isValidService(currentEventService);
+      }
+
+      public void reset() {
+         setEventService(null);
+      }
+
+      public void kick(ISkynetEvent[] events, ISkynetEventListener... except) {
+         try {
+            getReference().kick(events, except);
+         } catch (ExportException ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         } catch (RemoteException ex) {
+            disconnectService(ex);
+         }
+      }
+
+      private boolean isValidService(ISkynetEventService service) {
+         boolean result = false;
+         try {
+            if (service != null) {
+               result = service.isAlive();
+            }
+         } catch (Exception ex) {
+            // Do Nothing
+            result = false;
+         }
+         return result;
+      }
+
+      private synchronized void setEventService(ISkynetEventService service) {
+         if (isValidService(currentEventService)) {
+            try {
+               currentEventService.deregister(getClientEventListenerRemoteReference());
+            } catch (RemoteException ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
+         currentEventService = service;
+      }
 
-         if (acceptable) {
-            connectToService((ISkynetEventService) serviceItem.service);
+      private void disconnectService(Exception e) {
+         OseeLog.log(SkynetActivator.class, Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
+         setEventService(null);
+         try {
+            OseeEventManager.kickRemoteEventManagerEvent(instance, RemoteEventServiceEventType.DisConnected);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
       }
-   }
 
-   private void connectToService(ISkynetEventService service) {
-      skynetEventService = service;
-      try {
-         OseeLog.log(SkynetActivator.class, Level.INFO,
-               "Skynet Event Service connection established " + ACCEPTABLE_SERVICE);
-         skynetEventService.register(myReference);
-         OseeEventManager.kickRemoteEventManagerEvent(this, RemoteEventServiceEventType.Connected);
+      private void connectToService(ISkynetEventService service) {
+         try {
+            ISkynetEventListener clientListener = getClientEventListenerRemoteReference();
+            if (clientListener != null) {
+               service.register(clientListener);
+               setEventService(service);
+               OseeLog.log(SkynetActivator.class, Level.INFO,
+                     "Skynet Event Service connection established " + ACCEPTABLE_SERVICE);
+               OseeEventManager.kickRemoteEventManagerEvent(this, RemoteEventServiceEventType.Connected);
+            } else {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, "Client listener reference was null");
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         }
+      }
 
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      /*
+       * (non-Javadoc)
+       * 
+       * @see org.eclipse.osee.framework.jini.discovery.IServiceLookupListener#serviceAdded(net.jini.core.lookup.ServiceItem)
+       */
+      public void serviceAdded(ServiceItem serviceItem) {
+         if (serviceItem.service instanceof ISkynetEventService) {
+            ISkynetEventService service = (ISkynetEventService) serviceItem.service;
+            if (isValidService(service)) {
+               // Check if the service is for the database we are using
+               for (Entry entry : serviceItem.attributeSets) {
+                  if (entry instanceof SimpleFormattedEntry) {
+                     SimpleFormattedEntry simpleEntry = (SimpleFormattedEntry) entry;
+                     if ("db".equals(simpleEntry.name) && ACCEPTABLE_SERVICE.equals(simpleEntry.value)) {
+                        connectToService(service);
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+      /*
+       * (non-Javadoc)
+       * 
+       * @see org.eclipse.osee.framework.jini.discovery.IServiceLookupListener#serviceChanged(net.jini.core.lookup.ServiceItem)
+       */
+      public void serviceChanged(ServiceItem serviceItem) {
+         serviceAdded(serviceItem);
+      }
+
+      /*
+       * (non-Javadoc)
+       * 
+       * @see org.eclipse.osee.framework.jini.discovery.IServiceLookupListener#serviceRemoved(net.jini.core.lookup.ServiceItem)
+       */
+      public void serviceRemoved(ServiceItem serviceItem) {
       }
    }
 
-   private void disconnectService(Exception e) {
-      OseeLog.log(SkynetActivator.class, Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
-      skynetEventService = null;
-      try {
-         OseeEventManager.kickRemoteEventManagerEvent(this, RemoteEventServiceEventType.DisConnected);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jini.discovery.IServiceLookupListener#serviceChanged(net.jini.core.lookup.ServiceItem)
-    */
-   public void serviceChanged(ServiceItem serviceItem) {
-      serviceAdded(serviceItem);
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jini.discovery.IServiceLookupListener#serviceRemoved(net.jini.core.lookup.ServiceItem)
-    */
-   public void serviceRemoved(ServiceItem serviceItem) {
-   }
-
-   /**
-    * @author Jeff C. Phillips
-    */
    private static class EventListener extends ASkynetEventListener {
       private static final long serialVersionUID = -3017349745450262540L;
       private static final ISchedulingRule mutexRule = new ISchedulingRule() {
@@ -397,229 +467,221 @@ public class RemoteEventManager implements IServiceLookupListener {
          job.setRule(mutexRule);
          job.schedule();
       }
-   }
 
-   /**
-    * Updates local cache
-    * 
-    * @param event
-    */
-   private static void updateArtifacts(Sender sender, ISkynetArtifactEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
-      if (event == null) return;
+      /**
+       * Updates local cache
+       * 
+       * @param event
+       */
+      private static void updateArtifacts(Sender sender, ISkynetArtifactEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+         if (event == null) return;
 
-      try {
-         int artId = event.getArtId();
-         int artTypeId = event.getArtTypeId();
-         List<String> dirtyAttributeName = new LinkedList<String>();
+         try {
+            int artId = event.getArtId();
+            int artTypeId = event.getArtTypeId();
+            List<String> dirtyAttributeName = new LinkedList<String>();
 
-         if (event instanceof NetworkArtifactModifiedEvent) {
-            int branchId = ((NetworkArtifactModifiedEvent) event).getBranchId();
-            Artifact artifact = ArtifactCache.getActive(artId, branchId);
-            if (artifact == null) {
-               UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
-               xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, unloadedArtifact));
-            } else if (!artifact.isHistorical()) {
-               for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
-                  if (!InternalEventManager.enableRemoteEventLoopback) {
-                     boolean attributeNeedsCreation = true;
-                     AttributeType attributeType = AttributeTypeManager.getType(skynetAttributeChange.getTypeId());
-                     for (Attribute<Object> attribute : artifact.getAttributes(attributeType.getName())) {
-                        if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
-                           if (attribute.isDirty()) {
-                              dirtyAttributeName.add(attribute.getNameValueDescription());
-                              OseeLog.log(SkynetActivator.class, Level.INFO, String.format(
-                                    "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
-                                    attribute.getAttrId(), attribute.toString()));
+            if (event instanceof NetworkArtifactModifiedEvent) {
+               int branchId = ((NetworkArtifactModifiedEvent) event).getBranchId();
+               Artifact artifact = ArtifactCache.getActive(artId, branchId);
+               if (artifact == null) {
+                  UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
+                  xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, unloadedArtifact));
+               } else if (!artifact.isHistorical()) {
+                  for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
+                     if (!InternalEventManager.enableRemoteEventLoopback) {
+                        boolean attributeNeedsCreation = true;
+                        AttributeType attributeType = AttributeTypeManager.getType(skynetAttributeChange.getTypeId());
+                        for (Attribute<Object> attribute : artifact.getAttributes(attributeType.getName())) {
+                           if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
+                              if (attribute.isDirty()) {
+                                 dirtyAttributeName.add(attribute.getNameValueDescription());
+                                 OseeLog.log(SkynetActivator.class, Level.INFO, String.format(
+                                       "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
+                                       attribute.getAttrId(), attribute.toString()));
+                              }
+                              if (skynetAttributeChange.isDeleted()) {
+                                 attribute.internalSetDeleted();
+                              } else {
+                                 attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
+                              }
+                              attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
+                              attributeNeedsCreation = false;
+                              attribute.setNotDirty();
+                              break;
                            }
-                           if (skynetAttributeChange.isDeleted()) {
-                              attribute.internalSetDeleted();
-                           } else {
-                              attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
-                           }
-                           attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
-                           attributeNeedsCreation = false;
+                        }
+                        if (attributeNeedsCreation) {
+                           Attribute<?> attribute =
+                                 Attribute.initializeAttribute(artifact, AttributeTypeManager.getType(
+                                       skynetAttributeChange.getTypeId()).getAttrTypeId(),
+                                       skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
+                                       skynetAttributeChange.getData());
                            attribute.setNotDirty();
-                           break;
                         }
                      }
-                     if (attributeNeedsCreation) {
-                        Attribute<?> attribute =
-                              Attribute.initializeAttribute(artifact, AttributeTypeManager.getType(
-                                    skynetAttributeChange.getTypeId()).getAttrTypeId(),
-                                    skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
-                                    skynetAttributeChange.getData());
-                        attribute.setNotDirty();
+                  }
+
+                  xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact,
+                        ((NetworkArtifactModifiedEvent) event).getTransactionId(),
+                        ((NetworkArtifactModifiedEvent) event).getAttributeChanges()));
+
+               }
+            } else if (event instanceof NetworkArtifactDeletedEvent) {
+               int branchId = ((NetworkArtifactDeletedEvent) event).getBranchId();
+               Artifact artifact = ArtifactCache.getActive(artId, branchId);
+               if (artifact == null) {
+                  UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
+                  xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, unloadedArtifact));
+               } else if (!artifact.isHistorical()) {
+                  if (!InternalEventManager.enableRemoteEventLoopback) {
+                     artifact.setDeleted();
+                     artifact.setNotDirty();
+                  }
+
+                  xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact,
+                        ((NetworkArtifactDeletedEvent) event).getTransactionId(),
+                        new ArrayList<SkynetAttributeChange>()));
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         }
+      }
+
+      /**
+       * @param event
+       * @param newTransactionId
+       */
+      private static void updateRelations(Sender sender, ISkynetRelationLinkEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+         if (event == null) return;
+
+         try {
+            RelationType relationType = RelationTypeManager.getType(event.getRelTypeId());
+            Branch branch = BranchManager.getBranch(event.getBranchId());
+            Artifact aArtifact = ArtifactCache.getActive(event.getArtAId(), branch.getBranchId());
+            Artifact bArtifact = ArtifactCache.getActive(event.getArtBId(), branch.getBranchId());
+            boolean aArtifactLoaded = aArtifact != null;
+            boolean bArtifactLoaded = bArtifact != null;
+
+            if (!aArtifactLoaded && !bArtifactLoaded) {
+               if (event instanceof NetworkRelationLinkDeletedEvent) {
+                  UnloadedRelation unloadedRelation =
+                        new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
+                              event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Deleted, unloadedRelation));
+               } else if (event instanceof NetworkRelationLinkOrderModifiedEvent) {
+                  UnloadedRelation unloadedRelation =
+                        new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
+                              event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.ReOrdered, unloadedRelation));
+               } else if (event instanceof NetworkRelationLinkRationalModifiedEvent) {
+                  UnloadedRelation unloadedRelation =
+                        new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
+                              event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.RationaleMod, unloadedRelation));
+               } else if (event instanceof NetworkNewRelationLinkEvent) {
+                  UnloadedRelation unloadedRelation =
+                        new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
+                              event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Added, unloadedRelation));
+               }
+            }
+            if (aArtifactLoaded || bArtifactLoaded) {
+               //            if (aArtifactLoaded) {
+               //               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("%s - %s - %d", aArtifact.toString(),
+               //                     aArtifact.getArtifactTypeName(), aArtifact.getArtId()));
+               //               aArtifact.reloadArtifact();
+               //            }
+               //            if (bArtifactLoaded) {
+               //               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("%s - %s - %d", bArtifact.toString(),
+               //                     bArtifact.getArtifactTypeName(), bArtifact.getArtId()));
+               //               bArtifact.reloadArtifact();
+               //            }
+               //TODO Maybe just send a link change refresh event
+               if (event instanceof NetworkRelationLinkOrderModifiedEvent) {
+                  RelationLink relation =
+                        RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
+                              event.getArtAId(), event.getArtBId(), branch, branch);
+
+                  if (relation != null) {
+                     RelationModType relationModType = null;
+                     boolean aOrderChanged =
+                           ((NetworkRelationLinkOrderModifiedEvent) event).getAOrder() != relation.getAOrder();
+                     boolean bOrderChanged =
+                           ((NetworkRelationLinkOrderModifiedEvent) event).getBOrder() != relation.getBOrder();
+                     if (aOrderChanged) {
+                        relation.setAOrder(((NetworkRelationLinkOrderModifiedEvent) event).getAOrder());
+                        if (bArtifactLoaded) {
+                           RelationManager.sortRelations(bArtifact, relation.getRelationType(),
+                                 new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                        }
+                        relationModType = RelationModType.ReOrdered;
+                     }
+                     if (bOrderChanged) {
+                        relation.setBOrder(((NetworkRelationLinkOrderModifiedEvent) event).getBOrder());
+                        if (aArtifactLoaded) {
+                           RelationManager.sortRelations(aArtifact, relation.getRelationType(),
+                                 new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                        }
+                        relationModType = RelationModType.ReOrdered;
+                     }
+                     if (relation.getRationale().equals(((NetworkRelationLinkOrderModifiedEvent) event).getRationale())) {
+                        relation.setRationale(((NetworkRelationLinkOrderModifiedEvent) event).getRationale(), false);
+                        relationModType = RelationModType.RationaleMod;
+                     }
+                     if (relationModType == null) {
+                        OseeLog.log(SkynetActivator.class, Level.SEVERE,
+                              "Link Modified Type Can Not Be Determined; Event Ignored.  " + event);
+                     } else {
+                        relation.setNotDirty();
+
+                        xModifiedEvents.add(new RelationModifiedEvent(sender, relationModType, relation,
+                              relation.getBranch(), relation.getRelationType().getTypeName()));
                      }
                   }
-               }
+               } else if (event instanceof NetworkRelationLinkDeletedEvent) {
+                  RelationLink relation =
+                        RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
+                              event.getArtAId(), event.getArtBId(), branch, branch);
+                  if (relation != null) {
+                     relation.deleteWithoutDirtyAndEvent();
 
-               xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact,
-                     ((NetworkArtifactModifiedEvent) event).getTransactionId(),
-                     ((NetworkArtifactModifiedEvent) event).getAttributeChanges()));
+                     xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Deleted, relation,
+                           relation.getBranch(), relation.getRelationType().getTypeName()));
+                  }
+               } else if (event instanceof NetworkNewRelationLinkEvent) {
+                  RelationLink relation =
+                        RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
+                              event.getArtAId(), event.getArtBId(), branch, branch);
 
-            }
-         } else if (event instanceof NetworkArtifactDeletedEvent) {
-            int branchId = ((NetworkArtifactDeletedEvent) event).getBranchId();
-            Artifact artifact = ArtifactCache.getActive(artId, branchId);
-            if (artifact == null) {
-               UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
-               xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, unloadedArtifact));
-            } else if (!artifact.isHistorical()) {
-               if (!InternalEventManager.enableRemoteEventLoopback) {
-                  artifact.setDeleted();
-                  artifact.setNotDirty();
-               }
-
-               xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact,
-                     ((NetworkArtifactDeletedEvent) event).getTransactionId(), new ArrayList<SkynetAttributeChange>()));
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-   }
-
-   /**
-    * @param event
-    * @param newTransactionId
-    */
-   private static void updateRelations(Sender sender, ISkynetRelationLinkEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
-      if (event == null) return;
-
-      try {
-         RelationType relationType = RelationTypeManager.getType(event.getRelTypeId());
-         Branch branch = BranchManager.getBranch(event.getBranchId());
-         Artifact aArtifact = ArtifactCache.getActive(event.getArtAId(), branch.getBranchId());
-         Artifact bArtifact = ArtifactCache.getActive(event.getArtBId(), branch.getBranchId());
-         boolean aArtifactLoaded = aArtifact != null;
-         boolean bArtifactLoaded = bArtifact != null;
-
-         if (!aArtifactLoaded && !bArtifactLoaded) {
-            if (event instanceof NetworkRelationLinkDeletedEvent) {
-               UnloadedRelation unloadedRelation =
-                     new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
-                           event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-               xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Deleted, unloadedRelation));
-            } else if (event instanceof NetworkRelationLinkOrderModifiedEvent) {
-               UnloadedRelation unloadedRelation =
-                     new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
-                           event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-               xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.ReOrdered, unloadedRelation));
-            } else if (event instanceof NetworkRelationLinkRationalModifiedEvent) {
-               UnloadedRelation unloadedRelation =
-                     new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
-                           event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-               xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.RationaleMod, unloadedRelation));
-            } else if (event instanceof NetworkNewRelationLinkEvent) {
-               UnloadedRelation unloadedRelation =
-                     new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
-                           event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-               xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Added, unloadedRelation));
-            }
-         }
-         if (aArtifactLoaded || bArtifactLoaded) {
-            //            if (aArtifactLoaded) {
-            //               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("%s - %s - %d", aArtifact.toString(),
-            //                     aArtifact.getArtifactTypeName(), aArtifact.getArtId()));
-            //               aArtifact.reloadArtifact();
-            //            }
-            //            if (bArtifactLoaded) {
-            //               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("%s - %s - %d", bArtifact.toString(),
-            //                     bArtifact.getArtifactTypeName(), bArtifact.getArtId()));
-            //               bArtifact.reloadArtifact();
-            //            }
-            //TODO Maybe just send a link change refresh event
-            if (event instanceof NetworkRelationLinkOrderModifiedEvent) {
-               RelationLink relation =
-                     RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
-                           event.getArtAId(), event.getArtBId(), branch, branch);
-
-               if (relation != null) {
-                  RelationModType relationModType = null;
-                  boolean aOrderChanged =
-                        ((NetworkRelationLinkOrderModifiedEvent) event).getAOrder() != relation.getAOrder();
-                  boolean bOrderChanged =
-                        ((NetworkRelationLinkOrderModifiedEvent) event).getBOrder() != relation.getBOrder();
-                  if (aOrderChanged) {
-                     relation.setAOrder(((NetworkRelationLinkOrderModifiedEvent) event).getAOrder());
+                  if (relation == null) {
+                     relation =
+                           new RelationLink(event.getArtAId(), event.getArtBId(), branch, branch, relationType,
+                                 event.getRelId(), event.getGammaId(),
+                                 ((NetworkNewRelationLinkEvent) event).getRationale(),
+                                 ((NetworkNewRelationLinkEvent) event).getAOrder(),
+                                 ((NetworkNewRelationLinkEvent) event).getBOrder());
+                     RelationManager.manageRelation(relation, RelationSide.SIDE_A);
+                     RelationManager.manageRelation(relation, RelationSide.SIDE_B);
                      if (bArtifactLoaded) {
                         RelationManager.sortRelations(bArtifact, relation.getRelationType(),
                               new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
                      }
-                     relationModType = RelationModType.ReOrdered;
-                  }
-                  if (bOrderChanged) {
-                     relation.setBOrder(((NetworkRelationLinkOrderModifiedEvent) event).getBOrder());
                      if (aArtifactLoaded) {
                         RelationManager.sortRelations(aArtifact, relation.getRelationType(),
                               new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
                      }
-                     relationModType = RelationModType.ReOrdered;
-                  }
-                  if (relation.getRationale().equals(((NetworkRelationLinkOrderModifiedEvent) event).getRationale())) {
-                     relation.setRationale(((NetworkRelationLinkOrderModifiedEvent) event).getRationale(), false);
-                     relationModType = RelationModType.RationaleMod;
-                  }
-                  if (relationModType == null) {
-                     OseeLog.log(SkynetActivator.class, Level.SEVERE,
-                           "Link Modified Type Can Not Be Determined; Event Ignored.  " + event);
-                  } else {
-                     relation.setNotDirty();
 
-                     xModifiedEvents.add(new RelationModifiedEvent(sender, relationModType, relation,
+                     xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Added, relation,
                            relation.getBranch(), relation.getRelationType().getTypeName()));
                   }
                }
-            } else if (event instanceof NetworkRelationLinkDeletedEvent) {
-               RelationLink relation =
-                     RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
-                           event.getArtAId(), event.getArtBId(), branch, branch);
-               if (relation != null) {
-                  relation.deleteWithoutDirtyAndEvent();
-
-                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Deleted, relation,
-                        relation.getBranch(), relation.getRelationType().getTypeName()));
-               }
-            } else if (event instanceof NetworkNewRelationLinkEvent) {
-               RelationLink relation =
-                     RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
-                           event.getArtAId(), event.getArtBId(), branch, branch);
-
-               if (relation == null) {
-                  relation =
-                        new RelationLink(event.getArtAId(), event.getArtBId(), branch, branch, relationType,
-                              event.getRelId(), event.getGammaId(),
-                              ((NetworkNewRelationLinkEvent) event).getRationale(),
-                              ((NetworkNewRelationLinkEvent) event).getAOrder(),
-                              ((NetworkNewRelationLinkEvent) event).getBOrder());
-                  RelationManager.manageRelation(relation, RelationSide.SIDE_A);
-                  RelationManager.manageRelation(relation, RelationSide.SIDE_B);
-                  if (bArtifactLoaded) {
-                     RelationManager.sortRelations(bArtifact, relation.getRelationType(),
-                           new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
-                  }
-                  if (aArtifactLoaded) {
-                     RelationManager.sortRelations(aArtifact, relation.getRelationType(),
-                           new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
-                  }
-
-                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Added, relation,
-                        relation.getBranch(), relation.getRelationType().getTypeName()));
-               }
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
-   }
 
-   public static boolean isConnected() {
-      try {
-         return instance.skynetEventService != null && instance.skynetEventService.isAlive();
-      } catch (Throwable th) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, th);
-         return false;
-      }
    }
-
 }
