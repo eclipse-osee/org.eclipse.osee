@@ -240,6 +240,9 @@ public final class SkynetTransaction extends DbTransaction {
    private void addAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
       ModificationType modificationType;
       if (attribute.isDeleted()) {
+         if (!attribute.isInDb()) {
+            return;
+         }
          if (artifact.isDeleted()) {
             modificationType = ModificationType.ARTIFACT_DELETED;
          } else {
