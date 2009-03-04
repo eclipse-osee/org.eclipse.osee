@@ -23,27 +23,22 @@
 				href="reference/quickSearch/attribute_type_filter_option.html" />
 		<topic label="By Id Search Option"
 				href="reference/quickSearch/by_id_option.html" />
-  <topic href="reference/quickSearch/include_deleted_option.html" label="Include Deleted Search Option">
-  </topic>
-  <topic href="reference/quickSearch/word_order_match_option.html" label="Word Order Match Search Option">
-  </topic>
-  <topic href="reference/quickSearch/all_match_locations_option.html" label="Word Order Match Search Option">
-  </topic>		
-  </topic>
-  <topic href="reference/mass_artifact_editor.html" label="Mass Editor">
-  </topic>
-  <topic href="reference/Merge_Manager.html" label="Merge Manager">
-  </topic>
-  </topic>
-	<topic label="Table Customization">
-		<topic label="Table Customization"
-			href="reference/table_customization.html" />
+  		<topic label="Include Deleted Search Option" 
+  				href="reference/quickSearch/include_deleted_option.html" />
+  		<topic label="Word Order Match Search Option" 
+  				href="reference/quickSearch/word_order_match_option.html" />
+  		<topic label="All Match Locations Search Option" 
+  				href="reference/quickSearch/all_match_locations_option.html" />
+  </topic>				
+  <topic href="reference/mass_artifact_editor.html" label="Mass Editor" />
+  <topic href="reference/Merge_Manager.html" label="Merge Manager" />
+  <topic label="Table Customization">
+		<topic label="Table Customization" href="reference/table_customization.html" />
 	</topic>
 	<topic label="Spell Checking">
 		<topic label="Spell Checking" href="reference/spell_check.html" />
 	</topic>
 	<topic label="OSEE Branching and Differences Diagrams">
-		<topic label="OSEE Branching and Differences Diagrams"
-			href="reference/osee_branching.html" />
+		<topic label="OSEE Branching and Differences Diagrams" href="reference/osee_branching.html" />
 	</topic>
 </toc>
