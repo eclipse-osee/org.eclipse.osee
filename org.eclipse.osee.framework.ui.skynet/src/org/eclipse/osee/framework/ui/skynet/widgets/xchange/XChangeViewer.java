@@ -185,7 +185,7 @@ public class XChangeViewer extends XWidget implements IActionable {
                   associatedArtifact = branch.getAssociatedArtifact();
                } else if (transactionId != null) {
                   associatedArtifact =
-                        ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), transactionId.getBranch());
+                        ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), BranchManager.getCommonBranch());
                }
                if (associatedArtifact == null) {
                   AWorkbench.popup("ERROR", "Can not access associated artifact.");
