@@ -67,9 +67,15 @@ public class OpenWithMenuListener implements MenuListener {
    @Override
    public void menuShown(MenuEvent e) {
       try {
-         rebuildMenuListener.rebuildMenu();
-
          IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+         
+         if(selection.isEmpty()){
+            return;
+         }
+         
+         rebuildMenuListener.rebuildMenu();
+         
+         
          Iterator<?> iterator = selection.iterator();
          ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selection.size());
 
