@@ -27,31 +27,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.gef.all"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.gef.examples"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.gef.sdk"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.gef.source"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.draw2d"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.draw2d.sdk"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.draw2d.source"
          version="0.0.0"/>
 
    <includes
@@ -117,27 +93,6 @@
 
    <plugin
          id="org.mortbay.jetty"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.services"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osgi.util"
          download-size="0"
          install-size="0"
          version="0.0.0"
