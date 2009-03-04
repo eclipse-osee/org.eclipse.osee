@@ -17,12 +17,18 @@
 				href="reference/refresh_change_report.html" />
 		</topic>
   <topic label="Quick Search" href="reference/quickSearch/quick_search_view.html" >
-  		<topic label="In Name Search Option"
-				href="reference/quickSearch/in_name_option.html" />
-		<topic label="Include Deleted Search Option"
-				href="reference/quickSearch/include_deleted_option.html" />
 		<topic label="Attribute Tagging for Quick Search"
-				href="reference/quickSearch/attribute_tagging.html" />		
+				href="reference/quickSearch/attribute_tagging.html" />
+  		<topic label="Attribute Type Filter Search Option"
+				href="reference/quickSearch/attribute_type_filter_option.html" />
+		<topic label="By Id Search Option"
+				href="reference/quickSearch/by_id_option.html" />
+  <topic href="reference/quickSearch/include_deleted_option.html" label="Include Deleted Search Option">
+  </topic>
+  <topic href="reference/quickSearch/word_order_match_option.html" label="Word Order Match Search Option">
+  </topic>
+  <topic href="reference/quickSearch/all_match_locations_option.html" label="Word Order Match Search Option">
+  </topic>		
   </topic>
   <topic href="reference/mass_artifact_editor.html" label="Mass Editor">
   </topic>
