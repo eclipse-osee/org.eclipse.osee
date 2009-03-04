@@ -295,7 +295,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    private static void relateIfNotRelated(Artifact parent, Artifact child) throws OseeCoreException {
-      if (!parent.getChildren().contains(child) && child.getParent() == null) {
+      if (!parent.getChildren().contains(child) && !child.hasParent()) {
          parent.addChild(child);
       }
    }
