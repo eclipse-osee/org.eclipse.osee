@@ -41,6 +41,10 @@ public final class Artifacts {
       return toTextList(artifacts, ", ");
    }
 
+   public static String semmicolonArts(Collection<? extends Artifact> artifacts) {
+      return toTextList(artifacts, "; ");
+   }
+
    public static String toString(String separator, Collection<? extends Artifact> artifacts) {
       return toTextList(artifacts, separator);
    }

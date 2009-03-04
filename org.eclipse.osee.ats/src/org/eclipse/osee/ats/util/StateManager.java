@@ -13,8 +13,11 @@ package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.artifact.LogItem;
+import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.SMAState;
@@ -34,9 +37,11 @@ public class StateManager {
    private final XCurrentStateDam currentStateDam;
    private final XStateDam stateDam;
    private static Collection<User> EMPTY_USER_ARRAY = new ArrayList<User>(0);
+   private final SMAManager smaMgr;
 
    public StateManager(SMAManager smaMgr) {
       super();
+      this.smaMgr = smaMgr;
       currentStateDam = new XCurrentStateDam(smaMgr.getSma());
       stateDam = new XStateDam(smaMgr.getSma());
    }
@@ -295,4 +300,15 @@ public class StateManager {
       return names;
    }
 
+   public long getTimeInState() throws OseeCoreException {
+      return getTimeInState(getCurrentStateName());
+   }
+
+   public long getTimeInState(String stateName) throws OseeCoreException {
+      SMAState state = getSMAState(stateName, false);
+      if (state == null) return 0;
+      LogItem logItem = smaMgr.getLog().getLastEvent(LogType.StateEntered);
+      if (logItem == null) return 0;
+      return (new Date()).getTime() - logItem.getDate().getTime();
+   }
 }

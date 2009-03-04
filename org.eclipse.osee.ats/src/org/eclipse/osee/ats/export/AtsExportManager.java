@@ -20,10 +20,13 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPrint;
+import org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -41,7 +44,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class AtsExportManager {
+public class AtsExportManager implements IAtsWorldEditorMenuItem {
 
    public enum ExportOption {
       NONE,
@@ -161,5 +164,25 @@ public class AtsExportManager {
          }
       }
       return Result.TrueResult;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem#getMenuItemName()
+    */
+   @Override
+   public String getMenuItemName() throws OseeCoreException {
+      return "Export Selected ATS Artifacts";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem#runMenuItem(org.eclipse.osee.ats.world.WorldEditor)
+    */
+   @Override
+   public void runMenuItem(WorldEditor worldEditor) throws OseeCoreException {
+      try {
+         AtsExportManager.export(worldEditor.getWorldComposite().getXViewer().getSelection(), ExportOption.POPUP_DIALOG);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 }

@@ -45,6 +45,9 @@ public class XDate extends XWidget {
    private final ArrayList<ModifyListener> listeners = new ArrayList<ModifyListener>();
    private boolean requireFutureDate = false;
 
+   public static final long MILLISECONDS_IN_A_WEEK = 604800000;
+   public static final long MILLISECONDS_IN_A_DAY = 86400000;
+
    public XDate() {
       this("", "");
    }

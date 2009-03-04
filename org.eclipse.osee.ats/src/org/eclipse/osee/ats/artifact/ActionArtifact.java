@@ -59,6 +59,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public static String ARTIFACT_NAME = "Action";
    private XActionableItemsDam actionableItemsDam;
+   public static enum CreateTeamOption {
+      Duplicate_If_Exists; // If option exists, then duplication of workflow of same team definition is allowed
+   };
 
    /**
     * @param parentFactory
@@ -259,6 +262,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          strs.add(team.getWorldViewState());
+      }
+      return Collections.toString(";", strs);
+   }
+
+   public String getWorldViewDaysInCurrentState() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewDaysInCurrentState());
       }
       return Collections.toString(";", strs);
    }
@@ -689,7 +700,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return new Result(true, sb.toString());
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
       String teamWorkflowArtifactName = TeamWorkFlowArtifact.ARTIFACT_NAME;
       IAtsTeamWorkflow teamExt = null;
 
@@ -709,26 +720,31 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       // NOTE: The persist of the workflow will auto-email the assignees
       TeamWorkFlowArtifact teamArt =
-            createTeamWorkflow(teamDef, actionableItems, assignees, teamWorkflowArtifactName, transaction);
+            createTeamWorkflow(teamDef, actionableItems, assignees, teamWorkflowArtifactName, transaction,
+                  createTeamOption);
       // Notify extension that workflow was created
       if (teamExt != null) teamExt.teamWorkflowCreated(teamArt);
       return teamArt;
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String artifactName, SkynetTransaction transaction) throws OseeCoreException {
-      return createTeamWorkflow(teamDef, actionableItems, assignees, null, null, artifactName, transaction);
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String artifactName, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+      return createTeamWorkflow(teamDef, actionableItems, assignees, null, null, artifactName, transaction,
+            createTeamOption);
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, String artifactName, SkynetTransaction transaction) throws OseeCoreException {
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, String artifactName, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
-      // Make sure team doesn't already exist
-      for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
-         if (teamArt.getTeamDefinition().equals(teamDef)) {
-            AWorkbench.popup("ERROR", "Team already exist");
-            throw new IllegalArgumentException(
-                  "Team \"" + teamDef + "\" already exists for Action " + getHumanReadableId());
+      if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
+         // Make sure team doesn't already exist
+         for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
+            if (teamArt.getTeamDefinition().equals(teamDef)) {
+               AWorkbench.popup("ERROR", "Team already exist");
+               throw new IllegalArgumentException(
+                     "Team \"" + teamDef + "\" already exists for Action " + getHumanReadableId());
+            }
          }
       }
+
       TeamWorkFlowArtifact teamArt = null;
       if (guid == null)
          teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsPlugin.getAtsBranch());

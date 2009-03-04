@@ -796,49 +796,67 @@ public class SMAManager {
       return result;
    }
 
+   public Result transitionToCompleted(String reason, boolean persist, SkynetTransaction transaction) {
+      Result result =
+            transition(DefaultTeamState.Completed.name(), Arrays.asList(new User[] {}), persist, reason, false,
+                  transaction);
+      return result;
+   }
+
    public Result transition(String toStateName, Collection<User> toAssignees, boolean persist, boolean overrideTransitionCheck, SkynetTransaction transaction) {
       return transition(toStateName, toAssignees, persist, null, overrideTransitionCheck, transaction);
    }
 
-   private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck, SkynetTransaction transaction) {
-      try {
-         // Validate assignees
-         if (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || getStateMgr().getAssignees().contains(
-               UserManager.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
-               UserManager.getUser(SystemUser.UnAssigned))) {
-            return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
-         }
+   public Result isTransitionValid(final String toStateName, final Collection<User> toAssignees, boolean overrideTransitionCheck) throws OseeCoreException {
+      // Validate assignees
+      if (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || getStateMgr().getAssignees().contains(
+            UserManager.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
+            UserManager.getUser(SystemUser.UnAssigned))) {
+         return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
+      }
 
-         // Validate toState name
+      // Validate toState name
+      final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
+      final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
+      if (toWorkPageDefinition == null) return new Result("Invalid toState \"" + toStateName + "\"");
+
+      // Validate transition from fromPage to toPage
+      if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromWorkPageDefinition).contains(
+            toWorkPageDefinition)) {
+         String errStr =
+               "Not configured to transition to \"" + toStateName + "\" from \"" + fromWorkPageDefinition.getPageName() + "\"";
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);
+         return new Result(errStr);
+      }
+
+      // Don't transition with uncommitted branch if this is a commit state
+      if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranch()) return new Result(
+            "Working Branch exists.  Please commit or delete working branch before transition.");
+
+      // Check extension points for valid transition
+      List<IAtsStateItem> atsStateItems = stateItems.getStateItems(fromWorkPageDefinition.getId());
+      for (IAtsStateItem item : atsStateItems) {
+         Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
+         if (result.isFalse()) return result;
+      }
+      for (IAtsStateItem item : atsStateItems) {
+         Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
+         if (result.isFalse()) return result;
+      }
+      return Result.TrueResult;
+   }
+
+   private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String completeOrCancelReason, boolean overrideTransitionCheck, SkynetTransaction transaction) {
+      try {
+
+         Result result = isTransitionValid(toStateName, toAssignees, overrideTransitionCheck);
+         if (result.isFalse()) return result;
+
          final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
          final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
-         if (toWorkPageDefinition == null) return new Result("Invalid toState \"" + toStateName + "\"");
 
-         // Validate transition from fromPage to toPage
-         if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromWorkPageDefinition).contains(
-               toWorkPageDefinition)) {
-            String errStr =
-                  "Not configured to transition to \"" + toStateName + "\" from \"" + fromWorkPageDefinition.getPageName() + "\"";
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);
-            return new Result(errStr);
-         }
-
-         // Don't transition with uncommitted branch if this is a commit state
-         if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranch()) return new Result(
-               "Working Branch exists.  Please commit or delete working branch before transition.");
-
-         // Check extension points for valid transition
-         List<IAtsStateItem> atsStateItems = stateItems.getStateItems(fromWorkPageDefinition.getId());
-         for (IAtsStateItem item : atsStateItems) {
-            Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
-            if (result.isFalse()) return result;
-         }
-         for (IAtsStateItem item : atsStateItems) {
-            Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
-            if (result.isFalse()) return result;
-         }
          transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
-               cancelReason, transaction);
+               completeOrCancelReason, transaction);
          if (persist) {
             OseeNotificationManager.sendNotifications();
          }
@@ -849,16 +867,17 @@ public class SMAManager {
       return Result.TrueResult;
    }
 
-   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason, SkynetTransaction transaction) throws OseeCoreException {
+   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String completeOrCancelReason, SkynetTransaction transaction) throws OseeCoreException {
       // Log transition
       if (toPage.isCancelledPage()) {
-         atsLog.addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), cancelReason);
+         atsLog.addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), completeOrCancelReason);
       } else {
-         atsLog.addLog(LogType.StateComplete, stateMgr.getCurrentStateName(), "");
+         atsLog.addLog(LogType.StateComplete, stateMgr.getCurrentStateName(),
+               (completeOrCancelReason != null ? completeOrCancelReason : ""));
       }
       atsLog.addLog(LogType.StateEntered, toStateName, "");
 
-      stateMgr.transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
+      stateMgr.transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, completeOrCancelReason);
 
       if (getSma().isValidationRequired()) {
          getReviewManager().createValidateReview(false, transaction);

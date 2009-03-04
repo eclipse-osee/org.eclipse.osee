@@ -12,8 +12,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
  */
 public interface IAtsWorldEditorMenuItem {
 
-   public String getName() throws OseeCoreException;
+   public String getMenuItemName() throws OseeCoreException;
 
-   public void run(WorldEditor worldEditor) throws OseeCoreException;
+   public void runMenuItem(WorldEditor worldEditor) throws OseeCoreException;
 
 }

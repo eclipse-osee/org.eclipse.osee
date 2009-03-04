@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
+import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
 import org.eclipse.osee.ats.util.DoesNotWorkItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
@@ -207,6 +208,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          if (AtsPlugin.isAtsAdmin()) {
             XNavigateItem adminItems = new XNavigateItem(null, "Admin");
 
+            new AtsNotificationNavigateItem(adminItems);
             new UpdateAtsWorkItemDefinitions(adminItems);
             new UpdateAssigneesRelations(adminItems);
             new DisplayCurrentOseeEventListeners(adminItems);

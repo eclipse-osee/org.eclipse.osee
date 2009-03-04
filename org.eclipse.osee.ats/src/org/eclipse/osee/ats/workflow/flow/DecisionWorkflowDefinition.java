@@ -80,6 +80,7 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
             TransitionType.ToPage);
       addPageTransition(AtsDecisionDecisionWorkPageDefinition.ID, AtsDecisionPrepareWorkPageDefinition.ID,
             TransitionType.ToPageAsReturn);
+      addPageTransitionToPageAndReturn(AtsDecisionDecisionWorkPageDefinition.ID, DECISION_CANCELLED_STATE_ID);
 
       // Add Followup Transitions
       addPageTransition(AtsDecisionFollowupWorkPageDefinition.ID, AtsDecisionDecisionWorkPageDefinition.ID,

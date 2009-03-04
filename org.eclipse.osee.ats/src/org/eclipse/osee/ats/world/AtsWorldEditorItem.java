@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.world;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.operation.CancelMultipleWorkflows;
+import org.eclipse.osee.ats.operation.CompleteMultipleWorkflows;
 import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
@@ -27,7 +30,8 @@ public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
    @Override
    public List<? extends IAtsWorldEditorMenuItem> getWorldEditorMenuItems(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException {
       try {
-         return Arrays.asList(new DuplicateWorkflowBlam());
+         return Arrays.asList(new AtsExportManager(), new DuplicateWorkflowBlam(), new CompleteMultipleWorkflows(),
+               new CancelMultipleWorkflows());
       } catch (IOException ex) {
          throw new OseeCoreException(ex);
       }

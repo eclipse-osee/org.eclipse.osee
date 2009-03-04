@@ -211,6 +211,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Man_Days_Needed_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".manDaysNeeded", "Man Days Needed", 40, SWT.CENTER, false,
                SortDataType.Float, false, null);
+   public static final XViewerColumn Days_In_Current_State =
+         new XViewerColumn(COLUMN_NAMESPACE + ".daysInCurrState", "Days in Current State", 40, SWT.CENTER, false,
+               SortDataType.Float, false, null);
    public static final XViewerColumn Percent_Rework_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".percentRework", "Percent Rework", 40, SWT.CENTER, false,
                SortDataType.Percent, false, null);
@@ -258,7 +261,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                Review_Reviewer_Col, Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Man_Days_Needed_Col,
                Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col,
                Validation_Required_Col, Review_Major_Defects, Review_Minor_Defects, Review_Issues,
-               Actions_Initiating_Workflow_Col, Artifact_Type_Col, Parent_ID_Col};
+               Actions_Initiating_Workflow_Col, Artifact_Type_Col, Parent_ID_Col, Days_In_Current_State};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {
