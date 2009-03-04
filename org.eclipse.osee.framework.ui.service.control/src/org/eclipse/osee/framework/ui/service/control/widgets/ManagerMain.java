@@ -34,11 +34,13 @@ import org.eclipse.osee.framework.ui.service.control.managers.interfaces.IConnec
 import org.eclipse.osee.framework.ui.service.control.renderer.IRenderer;
 import org.eclipse.osee.framework.ui.service.control.renderer.IServiceRenderer;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
+import org.eclipse.osee.framework.ui.swt.StackedViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
 /**
@@ -207,7 +209,8 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
                try {
                   Object renderer = rendererClass.newInstance();
                   connectionManager.registerForConnection(interfaceClass, (IServiceRenderer) renderer);
-                  stackedViewer.addControl(interfaceClass.getCanonicalName(), (IRenderer) renderer);
+                  Control control = ((IRenderer) renderer).renderInComposite(stackedViewer.getStackComposite());
+                  stackedViewer.addControl(interfaceClass.getCanonicalName(), control);
                } catch (InstantiationException ex) {
                   OseeLog.log(ControlPlugin.class, Level.WARNING, "registerServiceRenderers: Instantiation Error.\n",
                         ex);

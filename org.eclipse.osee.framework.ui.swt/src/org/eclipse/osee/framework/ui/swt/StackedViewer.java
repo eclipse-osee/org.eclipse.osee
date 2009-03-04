@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.service.control.widgets;
+package org.eclipse.osee.framework.ui.swt;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.ui.service.control.renderer.IRenderer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
@@ -54,8 +53,8 @@ public class StackedViewer extends Composite {
       compositeMap.put(DEFAULT_CONTROL, createDefault(parent));
    }
 
-   public void addControl(String key, IRenderer renderer) {
-      compositeMap.put(key, renderer.renderInComposite(stackComposite));
+   public void addControl(String key, Control control) {
+      compositeMap.put(key, control);
    }
 
    private Composite createDefault(Composite parent) {
@@ -63,6 +62,10 @@ public class StackedViewer extends Composite {
       label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       label.setText("DEFAULT LAYER");
       return label.getShell();
+   }
+
+   public Composite getStackComposite() {
+      return stackComposite;
    }
 
    public void displayArea(String key) {
