@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.osee.required"
-      label="External OSEE Dependancies Feature"
-      version="0.4.0.qualifier"
+      id="org.eclipse.osee.external.feature"
+      label="External OSEE Dependancies Feature (Incubation)"
+      version="1.0.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.osee.framework.ui.product">
 
@@ -200,6 +200,27 @@
 
    <plugin
          id="javax.activation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.team.svn"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.team.svn.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.team.svn.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

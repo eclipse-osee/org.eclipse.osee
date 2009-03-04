@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.master.feature"
-      label="Feature Feature"
-      version="1.0.0">
+      label="OSEE Master Feature  (Incubation)"
+      version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -25,10 +25,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.osee.framework.server.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.osee.ats.feature"
          version="0.0.0"/>
 
@@ -44,11 +40,8 @@
          id="org.eclipse.osee.demo.feature"
          version="0.0.0"/>
 
-   <plugin
-         id="javax.mail.glassfish"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <includes
+         id="org.eclipse.osee.external.feature"
+         version="0.0.0"/>
 
 </feature>
