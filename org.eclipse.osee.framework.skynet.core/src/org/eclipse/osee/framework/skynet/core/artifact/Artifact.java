@@ -380,15 +380,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean hasChild(String descriptiveName) throws OseeCoreException {
-      boolean result = false;
-      try {
-         if (getChild(descriptiveName) != null) {
-            result = true;
+      for (Artifact artifact : getChildren()) {
+         if (artifact.getDescriptiveName().equals(descriptiveName)) {
+            return true;
          }
-      } catch (ArtifactDoesNotExist ex) {
-         // no action required because false will be returned
       }
-      return result;
+      return false;
    }
 
    /**
