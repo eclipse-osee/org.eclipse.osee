@@ -37,7 +37,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
- * This class converts between OSEE hyperlink markers into wordML style links. <br/><br/> <b>Example:</b>
+ * This class converts between OSEE hyperlink markers into wordML style links. <br/>
+ * <br/>
+ * <b>Example:</b>
  * 
  * <pre>
  * LinkType linkType = LinkType.OSEE_SERVER_LINK;
@@ -52,7 +54,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * String original = WordMlLinkHandler.unLink(linkType, source, linkedDoc);
  * </pre>
  * 
- * <b>Link types handled</b> <br/><br/>
+ * <b>Link types handled</b> <br/>
+ * <br/>
  * <ol>
  * <li><b>OSEE link:</b> This is a branch neutral marker placed in the wordML document.
  * 
@@ -81,8 +84,10 @@ public class WordMlLinkHandler {
 
    private static final Matcher OSEE_LINK_PATTERN = Pattern.compile("OSEE_LINK\\((.*?)\\)", Pattern.DOTALL).matcher("");
    private static final Matcher WORDML_LINK =
-         Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\".*?<w:t\\s*>(.*?)</w:t\\s*>\\s*</w:r\\s*>\\s*</w:hlink\\s*>",
-               Pattern.DOTALL).matcher("");
+         Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\".*?</w:hlink\\s*>", Pattern.DOTALL).matcher("");
+
+   //      Pattern.compile(<w:hlink\\s+w:dest=\"(.*?)\".*?<w:t\\s*>(.*?)</w:t\\s*>\\s*</w:r\\s*>\\s*</w:hlink\\s*>",
+   //               Pattern.DOTALL).matcher("");
    private static final String OSEE_LINK_MARKER = "OSEE_LINK(%s)";
    private static final String WORDML_LINK_FORMAT =
          "<w:hlink w:dest=\"%s\"><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r></w:hlink>";
