@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -20,6 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 
@@ -52,7 +55,7 @@ public class ArtifactDecorator {
       }
    }
 
-   public void addActions(IMenuManager manager) {
+   private void checkActionsCreated() {
       if (showArtType == null) {
          showArtType = new Action("Show Artifact Type") {
             @Override
@@ -76,42 +79,60 @@ public class ArtifactDecorator {
          showArtVersion.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
       }
 
-      updateShowArtVersionText();
-      updateShowArtTypeText();
-
-      manager.add(showArtVersion);
-      manager.add(showArtType);
-
-      try {
-         if (AccessControlManager.isOseeAdmin()) {
-            if (showArtIds == null) {
-               showArtIds = new Action("Show Artifact Ids") {
-                  @Override
-                  public void run() {
-                     setChecked(!isChecked());
-                     updateShowArtIdText();
-                     viewer.refresh();
-                  }
-               };
-               showArtIds.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
-            }
-            updateShowArtIdText();
-            manager.add(showArtIds);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      if (attributesAction == null) {
+         attributesAction = new ShowAttributeAction(viewer, preferenceKey);
+         attributesAction.setValidAttributeTypes(getValidAttributeTypes());
       }
 
+      if (showArtIds == null && isAdmin()) {
+         showArtIds = new Action("Show Artifact Ids") {
+            @Override
+            public void run() {
+               setChecked(!isChecked());
+               updateShowArtIdText();
+               viewer.refresh();
+            }
+         };
+         showArtIds.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+      }
+   }
+
+   private List<AttributeType> getValidAttributeTypes() {
+      List<AttributeType> toReturn = new ArrayList<AttributeType>();
       try {
-         if (attributesAction == null) {
-            attributesAction = new ShowAttributeAction(viewer, preferenceKey);
-            attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey,
-                  BranchManager.getDefaultBranch()));
-         }
-         manager.add(attributesAction);
+         toReturn.addAll(SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey, BranchManager.getDefaultBranch()));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
+      return toReturn;
+   }
+
+   private boolean isAdmin() {
+      boolean result = false;
+      try {
+         if (AccessControlManager.isOseeAdmin()) {
+            result = true;
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         result = false;
+      }
+      return result;
+   }
+
+   public void addActions(IMenuManager manager) {
+      checkActionsCreated();
+
+      manager.add(showArtVersion);
+      manager.add(showArtType);
+      updateShowArtTypeText();
+      updateShowArtVersionText();
+
+      if (showArtIds != null && isAdmin()) {
+         manager.add(showArtIds);
+         updateShowArtIdText();
+      }
+      manager.add(attributesAction);
    }
 
    private void updateShowArtIdText() {
