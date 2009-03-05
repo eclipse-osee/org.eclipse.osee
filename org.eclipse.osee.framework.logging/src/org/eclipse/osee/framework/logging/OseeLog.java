@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.logging;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -114,5 +115,14 @@ public class OseeLog {
 
    public static void deregister(IStatusListener listener) {
       getSM().deregister(listener);
+   }
+
+   /**
+    * @param status
+    */
+   public static void reportStatus(List<IHealthStatus> statuses) {
+      for(IHealthStatus status:statuses){
+         reportStatus(status);
+      }
    }
 }
