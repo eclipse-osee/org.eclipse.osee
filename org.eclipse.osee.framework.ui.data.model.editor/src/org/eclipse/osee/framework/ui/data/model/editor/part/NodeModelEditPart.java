@@ -74,11 +74,11 @@ public abstract class NodeModelEditPart extends BaseEditPart implements NodeEdit
    }
 
    protected List<ConnectionModel> getModelSourceConnections() {
-      return getNodeModel().getOutgoingConnections();
+      return getNodeModel().getSourceConnections();
    }
 
    protected List<ConnectionModel> getModelTargetConnections() {
-      return getNodeModel().getIncomingConnections();
+      return getNodeModel().getTargetConnections();
    }
 
    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {

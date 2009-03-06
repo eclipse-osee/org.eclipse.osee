@@ -11,7 +11,10 @@
 package org.eclipse.osee.framework.ui.data.model.editor.action;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
+import org.eclipse.osee.framework.ui.data.model.editor.wizard.ODMImportWizard;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 
 /**
@@ -22,7 +25,7 @@ public class ODMImportAction extends Action {
    private final ODMEditor editor;
 
    public ODMImportAction(ODMEditor editor) {
-      super("Osee Data Model Import");
+      super("Import");
       this.editor = editor;
    }
 
@@ -37,10 +40,9 @@ public class ODMImportAction extends Action {
    @Override
    public void run() {
       super.run();
-      System.out.println("Import from ??");
-      //      ODMExportWizard wizard = new ODMExportWizard(editor.getEditorInput().getDataTypeCache());
-      //      WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
-      //      dialog.create();
-      //      dialog.open();
+      ODMImportWizard wizard = new ODMImportWizard(editor);
+      WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+      dialog.create();
+      dialog.open();
    }
 }

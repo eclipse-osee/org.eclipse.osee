@@ -46,20 +46,4 @@
             file="help/contexts.xml">
       </contexts>
    </extension>
-   <extension
-         point="org.eclipse.ui.exportWizards">
-      <category
-            id="org.eclipse.osee.framework.ui.data.model.editor.export"
-            name="OSEE">
-      </category>
-      <wizard
-            category="OSEE"
-            class="org.eclipse.osee.framework.ui.data.model.editor.wizard.ODMExportWizard"
-            id="org.eclipse.osee.framework.ui.data.model.editor.export.wizard"
-            name="OSEE Data Model Export Wizard">
-         <description>
-            A wizard to export OSEE Data Model Types
-         </description>
-      </wizard>
-   </extension>
 </plugin>

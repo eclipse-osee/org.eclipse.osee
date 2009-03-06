@@ -275,37 +275,8 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
             });
             viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));
          }
-
-         //         protected void hookPaletteViewer(PaletteViewer viewer) {
-         //            super.hookPaletteViewer(viewer);
-         //            final CopyTemplateAction copy =
-         //                  (CopyTemplateAction) getActionRegistry().getAction(ActionFactory.COPY.getId());
-         //            viewer.addSelectionChangedListener(copy);
-         //            if (menuListener == null) {
-         //               menuListener = new IMenuListener() {
-         //                  public void menuAboutToShow(IMenuManager manager) {
-         //                     manager.appendToGroup(GEFActionConstants.GROUP_COPY, copy);
-         //                  }
-         //               };
-         //            }
-         //            viewer.getContextMenu().addMenuListener(menuListener);
-         //         }
       };
    }
-
-   //   /* (non-Javadoc)
-   //    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPalettePage()
-   //    */
-   //   @Override
-   //   protected CustomPalettePage createPalettePage() {
-   //      return new CustomPalettePage(getPaletteViewerProvider()) {
-   //         public void init(IPageSite pageSite) {
-   //            super.init(pageSite);
-   //            IAction copy = getActionRegistry().getAction(ActionFactory.COPY.getId());
-   //            pageSite.getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), copy);
-   //         }
-   //      };
-   //   }
 
    /* (non-Javadoc)
     * @see org.eclipse.ui.part.EditorPart#getEditorInput()

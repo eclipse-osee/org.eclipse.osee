@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.data.model.editor.wizard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,24 +21,20 @@ import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
-import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
-import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ArtifactTypeContentProvider;
+import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ArtifactTypeLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -53,7 +50,7 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 /**
  * @author Roberto E. Escobar
  */
-public class ODMSelectTypesPage extends WizardPage {
+public class ODMSelectPage extends WizardPage {
 
    private CheckboxTreeViewer fViewer;
    private ILabelProvider fLabelProvider;
@@ -69,15 +66,25 @@ public class ODMSelectTypesPage extends WizardPage {
    private int fHeight = 18;
    private boolean fContainerMode;
    private Object[] fExpandedElements;
+   private List<Object> fInitialSelections;
 
-   public ODMSelectTypesPage(String pageName) {
+   public ODMSelectPage(String pageName) {
       super(pageName, "Select Osee Data Types to export", null);
       setDescription("Select artifact types to export.");
       fContainerMode = false;
       fExpandedElements = null;
+      fInitialSelections = new ArrayList<Object>();
       fLabelProvider = new ArtifactTypeLabelProvider();
       fContentProvider = new ArtifactTypeContentProvider();
-      fContainerMode = true;
+      fContainerMode = false;
+      setPageComplete(false);
+   }
+
+   public void setInitialSelections(Object[] items) {
+      this.fInitialSelections.clear();
+      if (items != null && items.length > 0) {
+         this.fInitialSelections.addAll(Arrays.asList(items));
+      }
    }
 
    public void setComparator(ViewerComparator comparator) {
@@ -130,13 +137,17 @@ public class ODMSelectTypesPage extends WizardPage {
    public void create() {
       BusyIndicator.showWhile(null, new Runnable() {
          public void run() {
-            //            fViewer.setCheckedElements(getInitialElementSelections().toArray());
-            //            if (fExpandedElements != null) {
-            //               fViewer.setExpandedElements(fExpandedElements);
-            //            }
+            fViewer.setCheckedElements(getInitialElementSelections().toArray());
+            if (fExpandedElements != null) {
+               fViewer.setExpandedElements(fExpandedElements);
+            }
             updateOKStatus();
          }
       });
+   }
+
+   private List<Object> getInitialElementSelections() {
+      return fInitialSelections;
    }
 
    public void createControl(Composite parent) {
@@ -163,6 +174,14 @@ public class ODMSelectTypesPage extends WizardPage {
          treeWidget.setEnabled(false);
          buttonComposite.setEnabled(false);
       }
+      treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+         @Override
+         public void selectionChanged(SelectionChangedEvent event) {
+            setPageComplete(getSelected().length > 0);
+         }
+      });
+
       setControl(composite);
    }
 
@@ -265,145 +284,17 @@ public class ODMSelectTypesPage extends WizardPage {
       return elements.length == 0;
    }
 
-   private final class Node {
-      private String namespace;
-      private List<ArtifactDataType> artifacts;
-
-      public Node(String namespace, List<ArtifactDataType> artifacts) {
-         this.namespace = namespace;
-         this.artifacts = artifacts;
+   public ArtifactDataType[] getSelected() {
+      Object[] checked = getTreeViewer().getCheckedElements();
+      List<ArtifactDataType> selected = new ArrayList<ArtifactDataType>();
+      if (checked != null && checked.length > 0) {
+         for (Object object : checked) {
+            if (object instanceof ArtifactDataType) {
+               selected.add((ArtifactDataType) object);
+            }
+         }
       }
+      return selected.toArray(new ArtifactDataType[selected.size()]);
    }
 
-   private final class ArtifactTypeContentProvider implements ITreeContentProvider {
-
-      @Override
-      public Object[] getChildren(Object element) {
-         if (element instanceof DataTypeCache) {
-            List<DataTypeSource> sources = new ArrayList<DataTypeSource>();
-            DataTypeCache cache = (DataTypeCache) element;
-            for (String key : cache.getDataTypeSourceIds()) {
-               sources.add(cache.getDataTypeSourceById(key));
-            }
-            return sources.toArray();
-         }
-         if (element instanceof DataTypeSource) {
-            List<Node> data = new ArrayList<Node>();
-
-            List<ArtifactDataType> artifacts = ((DataTypeSource) element).getArtifactTypeManager().getAll();
-            String namespace = artifacts.get(0).getNamespace();
-            if (!Strings.isValid(namespace)) {
-               namespace = ODMConstants.DEFAULT_NAMESPACE;
-            }
-            List<ArtifactDataType> topLevel = new ArrayList<ArtifactDataType>();
-            for (ArtifactDataType artifact : artifacts) {
-               if (artifact.getAncestorType() == null) {
-                  topLevel.add(artifact);
-               }
-            }
-            data.add(new Node(namespace, topLevel));
-            return data.toArray();
-         }
-         if (element instanceof Node) {
-            return ((Node) element).artifacts.toArray();
-         }
-         if (element instanceof ArtifactDataType) {
-            return ((ArtifactDataType) element).getDescendantTypes().toArray();
-         }
-         return null;
-      }
-
-      @Override
-      public Object getParent(Object element) {
-         return null;
-      }
-
-      @Override
-      public boolean hasChildren(Object element) {
-         if (element instanceof DataTypeCache) {
-            return !((DataTypeCache) element).getDataTypeSourceIds().isEmpty();
-         }
-         if (element instanceof DataTypeSource) {
-            return ((DataTypeSource) element).getArtifactTypeManager().size() > 0;
-         }
-         if (element instanceof Node) {
-            return !((Node) element).artifacts.isEmpty();
-         }
-         if (element instanceof ArtifactDataType) {
-            return !((ArtifactDataType) element).getDescendantTypes().isEmpty();
-         }
-         return false;
-      }
-
-      @Override
-      public Object[] getElements(Object inputElement) {
-         return getChildren(inputElement);
-      }
-
-      @Override
-      public void dispose() {
-      }
-
-      @Override
-      public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      }
-
-   }
-
-   private final class ArtifactTypeLabelProvider implements ILabelProvider {
-
-      @Override
-      public void addListener(ILabelProviderListener listener) {
-      }
-
-      @Override
-      public void dispose() {
-      }
-
-      @Override
-      public boolean isLabelProperty(Object element, String property) {
-         return false;
-      }
-
-      @Override
-      public void removeListener(ILabelProviderListener listener) {
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-       */
-      @Override
-      public Image getImage(Object element) {
-         if (element instanceof ArtifactDataType) {
-            return ((ArtifactDataType) element).getImage();
-         }
-         if (element instanceof DataTypeSource) {
-            return ((DataTypeSource) element).isFromDataStore() ? ODMImages.getImage(ODMImages.DATASTORE_IMAGE) : ODMImages.getImage(ODMImages.FILE_SOURCE_IMAGE);
-         }
-         if (element instanceof Node) {
-            return ODMImages.getImage(ODMImages.NAMESPACE_IMAGE);
-         }
-         return null;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-       */
-      @Override
-      public String getText(Object element) {
-         if (element instanceof DataTypeSource) {
-            return ((DataTypeSource) element).getSourceId();
-         }
-         if (element instanceof Node) {
-            return ((Node) element).namespace;
-         }
-         if (element instanceof ArtifactDataType) {
-            return ((ArtifactDataType) element).getName();
-         }
-         if (element instanceof String) {
-            return (String) element;
-         }
-         return null;
-      }
-   }
 }

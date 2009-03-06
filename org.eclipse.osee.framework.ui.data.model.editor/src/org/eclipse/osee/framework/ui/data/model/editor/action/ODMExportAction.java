@@ -25,7 +25,7 @@ public class ODMExportAction extends Action {
    private final ODMEditor editor;
 
    public ODMExportAction(ODMEditor editor) {
-      super("Osee Data Model Export");
+      super("Export");
       this.editor = editor;
    }
 

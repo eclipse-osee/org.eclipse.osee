@@ -10,11 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.wizard;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
+import org.eclipse.osee.framework.ui.data.model.editor.operation.ODMToXmlOperation;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -24,19 +30,22 @@ import org.eclipse.ui.IWorkbench;
 public class ODMExportWizard extends Wizard implements IExportWizard {
 
    private ISelection selection;
-   private ODMSelectTypesPage selectTypesPage;
+   private ODMSelectPage selectTypesPage;
+   private ODMExportOutputPage exportToPage;
    private DataTypeCache dataTypeCache;
 
    public ODMExportWizard(DataTypeCache dataTypeCache) {
-      this.dataTypeCache = dataTypeCache;
+      setDialogSettings(ODMEditorActivator.getInstance().getDialogSettings());
+      setDefaultPageImageDescriptor(ODMImages.getImageDescriptor(ODMImages.EXPORT_IMAGE));
       setNeedsProgressMonitor(true);
       setWindowTitle("Osee Data Model Export Wizard");
-      setDefaultPageImageDescriptor(ODMImages.getImageDescriptor(ODMImages.EXPORT_IMAGE));
+      this.dataTypeCache = dataTypeCache;
    }
 
    @Override
    public void addPages() {
-      addPage(selectTypesPage = new ODMSelectTypesPage("Osee Data Model Wizard"));
+      addPage(selectTypesPage = new ODMSelectPage("Osee Data Model Wizard"));
+      addPage(exportToPage = new ODMExportOutputPage("Osee Data Model Wizard"));
       selectTypesPage.setInput(dataTypeCache);
    }
 
@@ -45,10 +54,51 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
     */
    @Override
    public boolean performFinish() {
-      IStructuredSelection selection = (IStructuredSelection) selectTypesPage.getTreeViewer().getSelection();
-
-      System.out.println("Finish Selected: " + selection.toList());
+      ArtifactDataType[] selectedTypes = selectTypesPage.getSelected();
+      if (selectedTypes != null && selectedTypes.length > 0) {
+         IExceptionableRunnable worker = null;
+         String jobName = null;
+         if (exportToPage.isDataStoreExport()) {
+            jobName = "Export artifact types into data store";
+            worker = createDataStoreExportWorker(selectedTypes);
+         } else {
+            jobName = "Export artifact types as xml";
+            worker = createXmlExportWorker(selectedTypes);
+         }
+         if (worker != null) {
+            Jobs.run(jobName, worker, ODMEditorActivator.class, ODMEditorActivator.PLUGIN_ID, true);
+         }
+      }
       return true;
+   }
+
+   private IExceptionableRunnable createDataStoreExportWorker(final ArtifactDataType[] selectedTypes) {
+      final String backupfilePath = exportToPage.getExportToDataStoreBackupFilePath();
+      final boolean isBackupEnabled = exportToPage.isDataStoreBackupOption();
+      return new IExceptionableRunnable() {
+
+         @Override
+         public void run(IProgressMonitor monitor) throws Exception {
+            String extra = " no backup";
+            if (isBackupEnabled) {
+               extra = " backup " + backupfilePath;
+            }
+            System.out.println(String.format("Export into data store - %s", extra));
+         }
+      };
+   }
+
+   private IExceptionableRunnable createXmlExportWorker(final ArtifactDataType[] selectedTypes) {
+      final String filePath = exportToPage.getExportToXmlPath();
+      final boolean exportToSingleFile = exportToPage.isExportToSingleXmlFileSelected();
+      return new IExceptionableRunnable() {
+
+         @Override
+         public void run(IProgressMonitor monitor) throws Exception {
+            ODMToXmlOperation operation = new ODMToXmlOperation(filePath, exportToSingleFile, selectedTypes);
+            operation.execute(monitor);
+         }
+      };
    }
 
    /* (non-Javadoc)
@@ -58,5 +108,4 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       this.selection = selection;
    }
-
 }

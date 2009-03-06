@@ -66,12 +66,12 @@ public abstract class NodeModel extends Model {
    }
 
    @SuppressWarnings("unchecked")
-   public List<ConnectionModel> getOutgoingConnections() {
+   public List<ConnectionModel> getSourceConnections() {
       return new ArrayList<ConnectionModel>(sourceConnections);
    }
 
    @SuppressWarnings("unchecked")
-   public List<ConnectionModel> getIncomingConnections() {
+   public List<ConnectionModel> getTargetConnections() {
       return new ArrayList<ConnectionModel>(targetConnections);
    }
 
@@ -114,10 +114,10 @@ public abstract class NodeModel extends Model {
    @Override
    protected void fireModelEvent() {
       super.fireModelEvent();
-      for (ConnectionModel conn : getIncomingConnections()) {
+      for (ConnectionModel conn : getTargetConnections()) {
          conn.fireModelEvent();
       }
-      for (ConnectionModel conn : getOutgoingConnections()) {
+      for (ConnectionModel conn : getSourceConnections()) {
          conn.fireModelEvent();
       }
    }

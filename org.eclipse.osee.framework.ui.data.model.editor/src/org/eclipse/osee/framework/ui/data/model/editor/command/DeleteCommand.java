@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.command;
 
+import java.util.logging.Level;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
@@ -40,15 +44,15 @@ public class DeleteCommand extends Command {
       redo();
    }
 
-   public Command setPartToBeDeleted(Object toDelete, Object parent, boolean isArtifactDelete) {
+   public Command setPartToBeDeleted(Object toDelete, Object parent, boolean isDeleteFromDiagram) {
       if (toDelete instanceof AttributeDataType) {
          commandDelegate = new DeleteAttributeCommand(toDelete, parent);
       } else if (toDelete instanceof RelationDataType) {
          commandDelegate = new DeleteRelationCommand(toDelete, parent);
-      } else if (isArtifactDelete && toDelete instanceof ArtifactDataType) {
+      } else if (isDeleteFromDiagram && toDelete instanceof ArtifactDataType) {
          commandDelegate = new DeleteArtifactCommand(toDelete, parent);
-      } else if (toDelete instanceof ConnectionModel) {
-         commandDelegate = new DeleteConnectionCommand(toDelete, parent, isArtifactDelete);
+      } else if (isDeleteFromDiagram && toDelete instanceof ConnectionModel) {
+         commandDelegate = new DeleteConnectionCommand(toDelete, parent);
       } else {
          commandDelegate = null;
       }
@@ -146,17 +150,11 @@ public class DeleteCommand extends Command {
       private ConnectionModel link;
       private NodeModel src, target;
       private int srcIndex, targetIndex, superIndex, parentIndex;
-      private boolean isHardDelete;
-
       private ArtifactDataType superClass, subClass;
 
-      //      private EReference reference;
-      //      private EClass parent;
-
-      public DeleteConnectionCommand(Object link, Object parent, boolean isHardDelete) {
+      public DeleteConnectionCommand(Object link, Object parent) {
          super("Delete Connection");
          this.link = (ConnectionModel) link;
-         this.isHardDelete = isHardDelete;
          src = this.link.getSource();
          target = this.link.getTarget();
       }
@@ -165,26 +163,33 @@ public class DeleteCommand extends Command {
          return link != null && src != null && target != null;
       }
 
-      /*
-       * This should work even if the link (view) was deleted.  Eg., user selects a class and
-       * one of its references, and hits Ctrl+Del.  The class will be deleted first and it
-       * will delete all its references.  When this command is executed, it should do the
-       * hard-delete part.
-       */
       public void execute() {
-         if (isHardDelete && link instanceof InheritanceLinkModel) {
-            subClass = (ArtifactDataType) src;
-            superClass = (ArtifactDataType) target;
-            superIndex = subClass.getSuperTypes().indexOf(superClass);
-            if (superIndex != -1) {
-               subClass.getSuperTypes().remove(superClass);
+         redo();
+      }
+
+      public void redo() {
+         boolean removeConnection = true;
+
+         if (link instanceof InheritanceLinkModel) {
+            superClass = (ArtifactDataType) src;
+            subClass = (ArtifactDataType) target;
+
+            try {
+               subClass.setSuperType(null);
+            } catch (OseeStateException ex) {
+               OseeLog.log(ODMEditorActivator.class, Level.SEVERE, String.format(
+                     "Unable to remove inheritance link between [%s] - [%s]", superClass, subClass), ex);
+               removeConnection = false;
             }
          }
-         srcIndex = src.getOutgoingConnections().indexOf(link);
-         targetIndex = target.getIncomingConnections().indexOf(link);
-         if (srcIndex != -1 && targetIndex != -1) {
-            src.getOutgoingConnections().remove(srcIndex);
-            target.getIncomingConnections().remove(targetIndex);
+
+         if (removeConnection) {
+            srcIndex = src.getSourceConnections().indexOf(link);
+            targetIndex = target.getTargetConnections().indexOf(link);
+            if (srcIndex != -1 && targetIndex != -1) {
+               src.getSourceConnections().remove(srcIndex);
+               target.getTargetConnections().remove(targetIndex);
+            }
          }
          //         if (isHardDelete && link instanceof RelationLinkModel) {
          //            reference = ((ReferenceView) link).getEReference();
@@ -195,17 +200,24 @@ public class DeleteCommand extends Command {
       }
 
       public void undo() {
-         if (isHardDelete && link instanceof RelationLinkModel) {
-            //            if (parentIndex != -1) parent.getEStructuralFeatures().add(parentIndex, reference);
-         }
-         if (srcIndex != -1 && targetIndex != -1) {
-            src.getOutgoingConnections().add(srcIndex, link);
-            target.getIncomingConnections().add(targetIndex, link);
-         }
-         if (isHardDelete && link instanceof InheritanceLinkModel) {
-            if (superIndex != -1) {
-               subClass.getSuperTypes().add(superIndex, superClass);
+         boolean addConnection = true;
+         if (link instanceof InheritanceLinkModel) {
+            try {
+               subClass.setSuperType(superClass);
+            } catch (OseeStateException ex) {
+               OseeLog.log(ODMEditorActivator.class, Level.SEVERE, String.format(
+                     "Unable to add inheritance link between [%s] - [%s]", superClass, subClass), ex);
+               addConnection = false;
             }
+         }
+
+         if (addConnection && srcIndex != -1 && targetIndex != -1) {
+            src.getSourceConnections().add(srcIndex, link);
+            target.getTargetConnections().add(targetIndex, link);
+         }
+
+         if (link instanceof RelationLinkModel) {
+            //            if (parentIndex != -1) parent.getEStructuralFeatures().add(parentIndex, reference);
          }
       }
 

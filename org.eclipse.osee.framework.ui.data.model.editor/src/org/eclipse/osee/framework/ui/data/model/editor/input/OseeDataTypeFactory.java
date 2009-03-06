@@ -106,7 +106,7 @@ public class OseeDataTypeFactory {
             for (String childKey : children) {
                ArtifactDataType child = artifactDataType.getById(childKey);
                if (child != null) {
-                  child.setParent(parent);
+                  child.setSuperType(parent);
                }
             }
          }

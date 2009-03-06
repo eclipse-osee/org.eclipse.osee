@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.data.model.editor.wizard;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -20,7 +21,10 @@ import org.eclipse.ui.IWorkbench;
  */
 public class ODMImportWizard extends Wizard implements IImportWizard {
 
-   public ODMImportWizard() {
+   private final ODMEditor editor;
+
+   public ODMImportWizard(ODMEditor editor) {
+      this.editor = editor;
    }
 
    /* (non-Javadoc)

@@ -67,7 +67,7 @@ public class ReconnectConnectionCommand extends Command {
          return false;
       }
       //      if (newSource != null) {
-      for (ConnectionModel<ArtifactDataType> connection : newSource.getIncomingConnections()) {
+      for (ConnectionModel<ArtifactDataType> connection : newSource.getTargetConnections()) {
          // return false if a newSource -> oldTarget connection exists already
          // and it is a different instance than the connection-field
          if (connection.getTarget().equals(oldTarget) && !this.connectionModel.equals(connection)) {
@@ -86,7 +86,7 @@ public class ReconnectConnectionCommand extends Command {
       }
       // return false, if the connection exists already
       //      if (newTarget != null) {
-      for (ConnectionModel<ArtifactDataType> connection : newTarget.getOutgoingConnections()) {
+      for (ConnectionModel<ArtifactDataType> connection : newTarget.getSourceConnections()) {
          // return false if a oldSource -> newTarget connection exists already
          // and it is a different instance that the connection-field
          if (connection.getSource().equals(oldSource) && !this.connectionModel.equals(connection)) {

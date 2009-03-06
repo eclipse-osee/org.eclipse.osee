@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.data.model.editor.utility;
 
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
 import org.eclipse.swt.graphics.Font;
 
@@ -20,15 +19,15 @@ import org.eclipse.swt.graphics.Font;
  */
 public class ODMConstants {
 
-   public static final String DEFAULT_NAMESPACE = "default";
+   public static final int TOTAL_STEPS = Integer.MAX_VALUE;
+   public static final int SHORT_TASK_STEPS = TOTAL_STEPS / 50;
+   public static final int VERY_LONG_TASK = TOTAL_STEPS / 2;
+   public static final int TASK_STEPS = (TOTAL_STEPS - SHORT_TASK_STEPS * 3 - VERY_LONG_TASK) / 2;
+
    public static final Font HEADER_FONT = JFaceResources.getTextFont();
 
    public static String getNamespace(DataType dataType) {
-      String namespace = dataType.getNamespace();
-      if (!Strings.isValid(namespace) || namespace.equals("null") || namespace.equals(ODMConstants.DEFAULT_NAMESPACE)) {
-         namespace = "<<" + ODMConstants.DEFAULT_NAMESPACE + ">>";
-      }
-      return namespace;
+      return String.format("<<%s>>", dataType.getNamespace());
    }
 
    public static String getDataTypeText(DataType dataType) {

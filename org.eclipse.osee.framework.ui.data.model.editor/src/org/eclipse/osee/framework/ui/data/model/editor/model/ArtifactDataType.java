@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -26,8 +29,8 @@ public class ArtifactDataType extends DataType {
    private Image image;
    private TypeManager<AttributeDataType> attributes;
    private TypeManager<RelationDataType> relations;
-   private ArtifactDataType ancestorType;
-   private Set<ArtifactDataType> descendantTypes;
+   private ArtifactDataType superType;
+   private Set<ArtifactDataType> subTypes;
 
    public ArtifactDataType() {
       this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, null);
@@ -42,7 +45,7 @@ public class ArtifactDataType extends DataType {
       this.image = image;
       this.attributes = new TypeManager<AttributeDataType>();
       this.relations = new TypeManager<RelationDataType>();
-      this.descendantTypes = new HashSet<ArtifactDataType>();
+      this.subTypes = new HashSet<ArtifactDataType>();
    }
 
    public void add(AttributeDataType attribute) {
@@ -84,18 +87,55 @@ public class ArtifactDataType extends DataType {
       }
    }
 
-   public void setParent(ArtifactDataType parent) throws OseeStateException {
-      if (ancestorType != parent && !this.equals(parent)) {
-         if (parent == null) {
-            ancestorType = parent;
+   @Override
+   public void addConnection(ConnectionModel connection) {
+      if (connection != null) {
+         try {
+            if (connection.getTarget() == this) {
+               setSuperType((ArtifactDataType) connection.getSource());
+            } else if (connection.getSource() == this) {
+               addSubType((ArtifactDataType) connection.getTarget());
+            }
+            super.addConnection(connection);
+         } catch (OseeStateException ex) {
+            OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+         }
+      }
+   }
+
+   @Override
+   public void removeConnection(ConnectionModel connection) {
+      if (connection != null) {
+         try {
+            if (connection.getTarget() == this) {
+               setSuperType(null);
+            } else if (connection.getSource() == this) {
+               removeSubType((ArtifactDataType) connection.getTarget());
+            }
+            super.removeConnection(connection);
+         } catch (OseeStateException ex) {
+            OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+         }
+      }
+   }
+
+   public void setSuperType(ArtifactDataType superType) throws OseeStateException {
+      getSourceConnections(); // I am the source;
+
+      if (this.superType != superType && !this.equals(superType)) {
+         if (superType == null) {
+            if (this.superType != null) {
+               this.superType.removeSubType(this);
+            }
+            this.superType = superType;
             fireModelEvent();
          } else {
-            checkInheritance(parent);
-            if (ancestorType != null) {
-               ancestorType.removeDescendantType(this);
+            checkInheritance(superType);
+            if (this.superType != null) {
+               this.superType.removeSubType(this);
             }
-            ancestorType = parent;
-            ancestorType.addDescendantType(this);
+            this.superType = superType;
+            this.superType.addSubType(this);
             fireModelEvent();
          }
       }
@@ -117,58 +157,58 @@ public class ArtifactDataType extends DataType {
       if (art1 == art2) {
          toReturn = true;
       } else if (art1 != null && art2 != null) {
-         toReturn = art1.equals(art2) || art2.getDescendantTypes().contains(art1);
+         toReturn = art1.equals(art2) || art2.getSubTypes().contains(art1);
       }
       return toReturn;
    }
 
-   private void addDescendantType(ArtifactDataType childType) throws OseeStateException {
+   private void addSubType(ArtifactDataType childType) throws OseeStateException {
       if (childType != this) {
          checkInheritance(childType);
-         descendantTypes.add(childType);
+         subTypes.add(childType);
       }
    }
 
-   private void removeDescendantType(ArtifactDataType childType) {
-      descendantTypes.remove(childType);
+   private void removeSubType(ArtifactDataType childType) {
+      subTypes.remove(childType);
    }
 
-   public List<ArtifactDataType> getDescendantTypes() {
+   public List<ArtifactDataType> getSubTypes() {
       List<ArtifactDataType> descendants = new ArrayList<ArtifactDataType>();
-      for (ArtifactDataType descendant : descendantTypes) {
+      for (ArtifactDataType descendant : subTypes) {
          if (descendant != this) {
             descendants.add(descendant);
-            descendants.addAll(descendant.getDescendantTypes());
+            descendants.addAll(descendant.getSubTypes());
          }
       }
       return descendants;
    }
 
-   public ArtifactDataType getAncestorType() {
-      return ancestorType;
+   public ArtifactDataType getSuperType() {
+      return this.superType;
    }
 
    public List<ArtifactDataType> getSuperTypes() {
       List<ArtifactDataType> toReturn = new ArrayList<ArtifactDataType>();
-      if (ancestorType != null) {
-         toReturn.add(ancestorType);
-         toReturn.addAll(ancestorType.getSuperTypes());
+      if (this.superType != null) {
+         toReturn.add(this.superType);
+         toReturn.addAll(this.superType.getSuperTypes());
       }
       return toReturn;
    }
 
    public List<AttributeDataType> getInheritedAttributes() {
       List<AttributeDataType> inherited = new ArrayList<AttributeDataType>();
-      if (ancestorType != null) {
-         inherited.addAll(ancestorType.getLocalAndInheritedAttributes());
+      if (this.superType != null) {
+         inherited.addAll(this.superType.getLocalAndInheritedAttributes());
       }
       return inherited;
    }
 
    public List<RelationDataType> getInheritedRelations() {
       List<RelationDataType> inherited = new ArrayList<RelationDataType>();
-      if (ancestorType != null) {
-         inherited.addAll(ancestorType.getLocalAndInheritedRelations());
+      if (this.superType != null) {
+         inherited.addAll(this.superType.getLocalAndInheritedRelations());
       }
       return inherited;
    }
@@ -201,7 +241,7 @@ public class ArtifactDataType extends DataType {
    @Override
    protected void fireModelEvent() {
       super.fireModelEvent();
-      for (ArtifactDataType descendant : getDescendantTypes()) {
+      for (ArtifactDataType descendant : getSubTypes()) {
          descendant.fireModelEvent();
       }
    }

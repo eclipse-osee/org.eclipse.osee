@@ -70,19 +70,28 @@ public class ArtifactEditPart extends DataTypeEditPart {
 
    @SuppressWarnings("unchecked")
    protected List getModelChildren() {
+      ArtifactDataType model = getArtifactDataType();
       if (children == null) {
          children = new ArrayList();
-         ArtifactDataType model = getArtifactDataType();
          children.add(new ContainerModel(model, ContainerType.INHERITED_ATTRIBUTES));
          children.add(new ContainerModel(model, ContainerType.LOCAL_ATTRIBUTES));
          children.add(new ContainerModel(model, ContainerType.INHERITED_RELATIONS));
          children.add(new ContainerModel(model, ContainerType.LOCAL_RELATIONS));
-
-         for (ArtifactDataType ancestor : model.getSuperTypes()) {
-            children.add(new InheritanceLinkModel(model, ancestor));
-         }
       }
+      //      checkInheritance();
       return children;
+   }
+
+   @SuppressWarnings("unchecked")
+   private void checkInheritance() {
+      //      ArtifactDataType model = getArtifactDataType();
+
+      //      for (ArtifactDataType key : toRemove) {
+      //         InheritanceLinkModel link = inheritanceMap.remove(key);
+      //         if (link != null) {
+      //            children.remove(link);
+      //         }
+      //      }
    }
 
    protected void refreshVisuals() {

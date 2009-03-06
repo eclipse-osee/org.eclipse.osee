@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.input.OseeDataTypeFactory
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.swt.widgets.Display;
@@ -35,11 +36,6 @@ public class ODMLoadGraphRunnable implements IExceptionableRunnable {
    private GraphicalViewer viewer;
    private ODMEditor editor;
    private ODMEditorInput input;
-
-   private static final int TOTAL_STEPS = Integer.MAX_VALUE;
-   private static final int SHORT_TASK_STEPS = TOTAL_STEPS / 50; // 2%
-   private static final int VERY_LONG_TASK = TOTAL_STEPS / 2; // 50%
-   private static final int TASK_STEPS = (TOTAL_STEPS - SHORT_TASK_STEPS * 3 - VERY_LONG_TASK) / 2;
 
    public ODMLoadGraphRunnable(GraphicalViewer viewer, ODMEditor editor, ODMEditorInput input) {
       super();
@@ -58,24 +54,24 @@ public class ODMLoadGraphRunnable implements IExceptionableRunnable {
    @Override
    public void run(IProgressMonitor monitor) throws Exception {
       boolean error = false;
-      monitor.beginTask(getName(), TOTAL_STEPS);
-      monitor.worked(SHORT_TASK_STEPS);
+      monitor.beginTask(getName(), ODMConstants.TOTAL_STEPS);
+      monitor.worked(ODMConstants.SHORT_TASK_STEPS);
       try {
 
          monitor.setTaskName("Initializating cache");
          DataTypeCache dataTypeCache = input.getDataTypeCache();
          dataTypeCache.clear();
-         monitor.worked(SHORT_TASK_STEPS);
+         monitor.worked(ODMConstants.SHORT_TASK_STEPS);
 
          OseeDataTypeFactory.addTypesFromDataStore(dataTypeCache);
-         monitor.worked(SHORT_TASK_STEPS);
+         monitor.worked(ODMConstants.SHORT_TASK_STEPS);
 
          IResource resource = input.getResource();
          if (resource != null) {
             DataTypeSource dataTypeSource = OseeDataTypeFactory.loadFromFile(resource.getFullPath());
             dataTypeCache.addDataTypeSource(dataTypeSource);
          }
-         monitor.worked(SHORT_TASK_STEPS);
+         monitor.worked(ODMConstants.SHORT_TASK_STEPS);
 
          if (editor != null) {
             if (error == true || monitor.isCanceled()) {
@@ -99,7 +95,7 @@ public class ODMLoadGraphRunnable implements IExceptionableRunnable {
 
    private void updateView(IProgressMonitor monitor, DataTypeCache dataTypeCache) throws OseeCoreException {
       monitor.setTaskName("Finding root node");
-      int unitWork = TASK_STEPS / (int) (dataTypeCache.getNumberOfSources());
+      int unitWork = ODMConstants.TASK_STEPS / (int) (dataTypeCache.getNumberOfSources());
       if (unitWork < 1) {
          unitWork = 1;
       }

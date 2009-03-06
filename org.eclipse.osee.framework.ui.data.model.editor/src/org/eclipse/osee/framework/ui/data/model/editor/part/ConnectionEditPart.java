@@ -66,10 +66,11 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
             if (model != null) {
                Boolean isBooleanObject = (Boolean) request.getExtendedData().get(DeleteCommand.DELETE_FROM_ODM_DIAGRAM);
                boolean isDeleteFromDiagram = isBooleanObject == null ? false : isBooleanObject.booleanValue();
-
-               DeleteCommand deleteCmd = new DeleteCommand();
-               deleteCmd.setPartToBeDeleted(getHost().getModel(), model, isDeleteFromDiagram);
-               toReturn = deleteCmd;
+               if (isDeleteFromDiagram) {
+                  DeleteCommand deleteCmd = new DeleteCommand();
+                  deleteCmd.setPartToBeDeleted(getHost().getModel(), model, isDeleteFromDiagram);
+                  toReturn = deleteCmd;
+               }
             }
             return toReturn;
          }

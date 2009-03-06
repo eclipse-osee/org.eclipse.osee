@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ConnectionModel;
+import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkModel;
 
 /**
  * @author Roberto E. Escobar
@@ -52,8 +53,11 @@ public class CreateConnectionCommand extends Command {
 
    public void redo() {
       try {
-         oldAncestor = source.getAncestorType();
-         source.setParent(target);
+         if (connectionModel instanceof InheritanceLinkModel) {
+
+         }
+         oldAncestor = source.getSuperType();
+         source.setSuperType(target);
          if (source == target) {
             connectionModel.getBendpoints().add(new AbsoluteBendpoint(source.getLocation().getTranslated(-10, 10)));
             connectionModel.getBendpoints().add(new AbsoluteBendpoint(source.getLocation().getTranslated(-10, -10)));
@@ -73,7 +77,7 @@ public class CreateConnectionCommand extends Command {
          if (source == target) {
             connectionModel.getBendpoints().clear();
          }
-         source.setParent(oldAncestor);
+         source.setSuperType(oldAncestor);
       } catch (OseeCoreException ex) {
          OseeLog.log(ODMEditor.class, Level.SEVERE, ex);
       }

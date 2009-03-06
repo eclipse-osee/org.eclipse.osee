@@ -10,9 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.data.model.editor.operation;
 
+import java.io.File;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+
 /**
  * @author Roberto E. Escobar
  */
 public class XmlToODMOperation {
 
+   private final File[] resources;
+
+   public XmlToODMOperation(File[] resources) {
+      this.resources = resources;
+   }
+
+   public void execute(IProgressMonitor listener) throws OseeCoreException {
+      try {
+
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
 }

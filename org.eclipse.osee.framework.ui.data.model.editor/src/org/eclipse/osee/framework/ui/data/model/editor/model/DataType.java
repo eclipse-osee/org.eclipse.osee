@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class DataType extends NodeModel {
+   private static final String DEFAULT_NAMESPACE = "default";
    protected static final String EMPTY_STRING = "";
    private String name;
    private String namespace;
@@ -48,7 +49,7 @@ public class DataType extends NodeModel {
     */
    public void setName(String name) {
       if (this.name != name) {
-         this.name = name;
+         this.name = Strings.isValid(name) ? name.trim() : name;
          fireModelEvent();
       }
    }
@@ -57,7 +58,7 @@ public class DataType extends NodeModel {
     * @return the namespace
     */
    public String getNamespace() {
-      return namespace;
+      return !Strings.isValid(namespace) ? DEFAULT_NAMESPACE : namespace;
    }
 
    /**
@@ -65,7 +66,7 @@ public class DataType extends NodeModel {
     */
    public void setNamespace(String namespace) {
       if (this.namespace != namespace) {
-         this.namespace = namespace;
+         this.namespace = Strings.isValid(namespace) ? namespace.trim() : DEFAULT_NAMESPACE;
          fireModelEvent();
       }
    }
@@ -114,6 +115,6 @@ public class DataType extends NodeModel {
    }
 
    public String toString() {
-      return String.format("%s:%s", Strings.isValid(getNamespace()) ? getNamespace() : "undefined", getName());
+      return String.format("%s:%s", getNamespace(), getName());
    }
 }
