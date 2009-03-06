@@ -92,7 +92,6 @@ public class ODMEditorInput implements IEditorInput {
     */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
-      //      System.out.println(String.format("ODMEditorInput getAdapter for [%s]", adapter));
       return null;
    }
 

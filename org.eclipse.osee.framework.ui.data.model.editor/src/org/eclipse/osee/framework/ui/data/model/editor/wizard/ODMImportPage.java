@@ -15,10 +15,8 @@ import java.util.logging.Level;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
-import org.eclipse.osee.framework.ui.data.model.editor.wizard.FileOrFolderSelectPanel.ButtonType;
 import org.eclipse.osee.framework.ui.swt.StackedViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,18 +26,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Widget;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ODMExportOutputPage extends WizardPage {
+public class ODMImportPage extends WizardPage {
 
-   private static final String DATASTORE_OPTIONS = "data.store.export.options";
-   private static final String XML_FILE_OPTIONS = "xml.export.options";
+   private static final String DATASTORE_OPTIONS = "data.store.import.options";
+   private static final String XML_FILE_OPTIONS = "xml.import.options";
 
    private StackedViewer stackedViewer;
    private boolean isDataStoreExport;
@@ -47,34 +43,17 @@ public class ODMExportOutputPage extends WizardPage {
    private Button xmlExportButton;
    private Button dataStoreExportButton;
 
-   private FileOrFolderSelectPanel dataStoreBackupOption;
    private FileOrFolderSelectPanel xmlSingleOption;
    private FileOrFolderSelectPanel xmlMultiOption;
 
-   protected ODMExportOutputPage(String pageName) {
-      super(pageName, "Select export location", null);
-      setDescription("Select an export location for the selected types.");
+   protected ODMImportPage(String pageName) {
+      super(pageName, "Select import location", null);
+      setDescription("Select an import location");
       isDataStoreExport = false;
    }
 
    public boolean isDataStoreExport() {
       return isDataStoreExport;
-   }
-
-   public boolean isDataStoreBackupOption() {
-      return dataStoreBackupOption.isSelected();
-   }
-
-   public String getExportToDataStoreBackupFilePath() {
-      return dataStoreBackupOption.getSelectedResource();
-   }
-
-   public boolean isExportToSingleXmlFileSelected() {
-      return xmlSingleOption.isSelected();
-   }
-
-   public String getExportToXmlPath() {
-      return isExportToSingleXmlFileSelected() ? xmlSingleOption.getSelectedResource() : xmlMultiOption.getSelectedResource();
    }
 
    /* (non-Javadoc)
@@ -89,7 +68,7 @@ public class ODMExportOutputPage extends WizardPage {
       dataStoreExportButton = createDataStoreButton(composite);
 
       xmlExportButton = new Button(composite, SWT.CHECK);
-      xmlExportButton.setText("To XML");
+      xmlExportButton.setText("From XML");
 
       stackedViewer = new StackedViewer(composite, SWT.NONE);
       GridLayout layout = new GridLayout();
@@ -106,13 +85,12 @@ public class ODMExportOutputPage extends WizardPage {
             Object object = e.getSource();
             if (object instanceof Button) {
                Button button = (Button) object;
-               setOutputFormat(button.equals(dataStoreExportButton) && button.getSelection());
-               updateStatus();
+               setImportFrom(button.equals(dataStoreExportButton) && button.getSelection());
             }
          }
       };
 
-      setOutputFormat(isDataStoreExport);
+      setImportFrom(isDataStoreExport);
 
       xmlExportButton.addSelectionListener(listener);
       dataStoreExportButton.addSelectionListener(listener);
@@ -124,19 +102,13 @@ public class ODMExportOutputPage extends WizardPage {
       Group group = new Group(parent, SWT.NONE);
       group.setLayout(new GridLayout());
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      group.setText("DataStore Export Options");
+      group.setText("DataStore Import Options");
 
-      dataStoreBackupOption =
-            FileOrFolderSelectPanel.createFileSelectPanel(group, SWT.NONE, "Backup Data Store Types",
-                  ButtonType.CHECK_BOX, new String[] {"xml"});
-      dataStoreBackupOption.setDefaultFileName("osee.types.db.backup.xml");
-      dataStoreBackupOption.addListener(new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            updateStatus();
-         }
-      });
-      dataStoreBackupOption.setSelected(true);
+      //      dataStoreBackupOption =
+      //            FileOrFolderSelectPanel.createFileSelectPanel(group, SWT.NONE, "Backup Data Store Types",
+      //                  ButtonType.CHECK_BOX, new String[] {"xml"});
+      //      dataStoreBackupOption.setDefaultFileName("osee.types.db.backup.xml");
+
       return group;
    }
 
@@ -144,51 +116,35 @@ public class ODMExportOutputPage extends WizardPage {
       Group group = new Group(parent, SWT.NONE);
       group.setLayout(new GridLayout());
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      group.setText("Xml Export Options");
+      group.setText("Xml Import Options");
 
-      xmlSingleOption =
-            FileOrFolderSelectPanel.createFileSelectPanel(group, SWT.NONE, "Export as single file",
-                  ButtonType.CHECK_BOX, new String[] {"xml"});
-      xmlSingleOption.setDefaultFileName("osee.types.xml");
-
-      xmlMultiOption =
-            FileOrFolderSelectPanel.createFolderSelectPanel(group, SWT.NONE, "Export as multiple files",
-                  ButtonType.CHECK_BOX);
-
-      Listener selectListener = new Listener() {
-
-         @Override
-         public void handleEvent(Event event) {
-            if (event.widget instanceof Button) {
-               Button button = (Button) event.widget;
-               if (button.getText().equals("Export as multiple files") && xmlMultiOption.isSelected()) {
-                  xmlSingleOption.setSelected(false);
-               } else if (button.getText().equals("Export as single file") && xmlSingleOption.isSelected()) {
-                  xmlMultiOption.setSelected(false);
-               }
-               updateStatus();
-            }
-         }
-      };
-
-      xmlMultiOption.addListener(selectListener);
-      xmlSingleOption.addListener(selectListener);
+      //      xmlSingleOption =
+      //            FileOrFolderSelectPanel.createFileSelectPanel(group, SWT.NONE, "Export as single file",
+      //                  ButtonType.CHECK_BOX, new String[] {"xml"});
+      //      xmlSingleOption.setDefaultFileName("osee.types.xml");
+      //
+      //      xmlMultiOption =
+      //            FileOrFolderSelectPanel.createFolderSelectPanel(group, SWT.NONE, "Export as multiple files",
+      //                  ButtonType.CHECK_BOX);
+      //
+      //      Listener selectListener = new Listener() {
+      //
+      //         @Override
+      //         public void handleEvent(Event event) {
+      //            if (event.widget instanceof Button) {
+      //               Button button = (Button) event.widget;
+      //               if (button.getText().equals("Export as multiple files") && xmlMultiOption.isSelected()) {
+      //                  xmlSingleOption.setSelected(false);
+      //               } else if (button.getText().equals("Export as single file") && xmlSingleOption.isSelected()) {
+      //                  xmlMultiOption.setSelected(false);
+      //               }
+      //            }
+      //         }
+      //      };
+      //
+      //      xmlMultiOption.addListener(selectListener);
+      //      xmlSingleOption.addListener(selectListener);
       return group;
-   }
-
-   private void updateStatus() {
-      boolean result = false;
-      if (isDataStoreExport) {
-         if (isDataStoreBackupOption()) {
-            System.out.println("Backup Option");
-            result = Strings.isValid(getExportToDataStoreBackupFilePath());
-         } else {
-            System.out.println("Can't allow an insert without a backup");
-         }
-      } else {
-         result = Strings.isValid(getExportToXmlPath());
-      }
-      setPageComplete(result);
    }
 
    private Button createDataStoreButton(Composite parent) {
@@ -211,7 +167,7 @@ public class ODMExportOutputPage extends WizardPage {
       return dataStoreButton;
    }
 
-   private void setOutputFormat(boolean isDataStoreExport) {
+   private void setImportFrom(boolean isDataStoreExport) {
       this.isDataStoreExport = isDataStoreExport;
       if (isWidgetValid(dataStoreExportButton) && isWidgetValid(xmlExportButton) && isWidgetValid(stackedViewer)) {
          if (isDataStoreExport) {

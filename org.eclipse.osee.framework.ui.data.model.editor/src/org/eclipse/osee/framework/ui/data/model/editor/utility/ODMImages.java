@@ -20,6 +20,8 @@ import org.eclipse.swt.graphics.Image;
 public class ODMImages {
 
    public static final String EXPORT_IMAGE = "extractsupertype_wiz.png";
+   public static final String IMPORT_IMAGE = "importsupertype_wiz.png";
+
    public static final String DATASTORE_IMAGE = "datastore.gif";
    public static final String NAMESPACE_IMAGE = "package_mode.gif";
    public static final String FILE_SOURCE_IMAGE = "file.gif";

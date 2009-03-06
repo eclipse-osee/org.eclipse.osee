@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.data.model.editor.operation;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditorInput;
@@ -25,8 +24,6 @@ import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 
 /**
  * @author Roberto E. Escobar
@@ -53,11 +50,9 @@ public class ODMLoadGraphRunnable implements IExceptionableRunnable {
     */
    @Override
    public void run(IProgressMonitor monitor) throws Exception {
-      boolean error = false;
       monitor.beginTask(getName(), ODMConstants.TOTAL_STEPS);
       monitor.worked(ODMConstants.SHORT_TASK_STEPS);
       try {
-
          monitor.setTaskName("Initializating cache");
          DataTypeCache dataTypeCache = input.getDataTypeCache();
          dataTypeCache.clear();
@@ -74,64 +69,18 @@ public class ODMLoadGraphRunnable implements IExceptionableRunnable {
          monitor.worked(ODMConstants.SHORT_TASK_STEPS);
 
          if (editor != null) {
-            if (error == true || monitor.isCanceled()) {
-               Display.getDefault().syncExec(new Runnable() {
-                  public void run() {
-                     IWorkbenchWindow window = editor.getEditorSite().getWorkbenchWindow();
-                     IWorkbenchPage page = window.getActivePage();
-                     page.activate(editor);
-                     page.closeEditor(editor, false);
-                  }
-               });
-            } else {
-               updateView(monitor, dataTypeCache);
-            }
+            monitor.setTaskName("Drawing graph");
+            Display.getDefault().syncExec(new Runnable() {
+               public void run() {
+                  viewer.setContents(new ODMDiagram(input.getDataTypeCache()));
+                  editor.updatePalette();
+               }
+            });
          }
-         monitor.done();
       } catch (Exception ex) {
-         AWorkbench.popup("Error Calculating Revision Graph Information", Lib.exceptionToString(ex));
+         AWorkbench.popup("Error Calculating Diagram Information", Lib.exceptionToString(ex));
+      } finally {
+         monitor.done();
       }
    }
-
-   private void updateView(IProgressMonitor monitor, DataTypeCache dataTypeCache) throws OseeCoreException {
-      monitor.setTaskName("Finding root node");
-      int unitWork = ODMConstants.TASK_STEPS / (int) (dataTypeCache.getNumberOfSources());
-      if (unitWork < 1) {
-         unitWork = 1;
-      }
-      monitor.setTaskName("Calculating graph");
-      final ODMDiagram graph = new ODMDiagram(dataTypeCache);
-      //      String id = dataTypeCache.getDataTypeSourceIds().iterator().next();
-      //      DataTypeSource source = dataTypeCache.getDataTypeSourceById(id);
-
-      //      TypeManager<ArtifactDataType> manager = source.getArtifactTypeManager();
-      //      ArtifactDataType artifact = manager.getAll().iterator().next();
-      //
-      //      graph.add(artifact);
-      //      graph.add(artifact.getParent());
-
-      monitor.setTaskName("Drawing graph");
-
-      Display.getDefault().syncExec(new Runnable() {
-         public void run() {
-            viewer.setContents(graph);
-            editor.updatePalette();
-         }
-      });
-   }
-
-   //   private final class InternalTaskProgressListener implements IProgressListener {
-   //
-   //      private IProgressMonitor monitor;
-   //      private int unitWork;
-   //
-   //      public InternalTaskProgressListener(IProgressMonitor monitor, int unitWork) {
-   //         this.monitor = monitor;
-   //         this.unitWork = unitWork;
-   //      }
-   //
-   //      public void worked() {
-   //         monitor.worked(unitWork);
-   //      }
-   //   }
 }

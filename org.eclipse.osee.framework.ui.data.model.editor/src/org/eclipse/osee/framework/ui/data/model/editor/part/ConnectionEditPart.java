@@ -48,7 +48,7 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
 
    public ConnectionEditPart(Object connectionModel) {
       super();
-      setModel((ConnectionModel) connectionModel);
+      setModel((ConnectionModel<?>) connectionModel);
    }
 
    public void activate() {
@@ -81,18 +81,18 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
          protected Command getCreateBendpointCommand(BendpointRequest request) {
             Point location = request.getLocation();
             getConnection().translateToRelative(location);
-            return new CreateBendpointCommand((ConnectionModel) request.getSource().getModel(), location,
+            return new CreateBendpointCommand((ConnectionModel<?>) request.getSource().getModel(), location,
                   request.getIndex());
          }
 
          protected Command getDeleteBendpointCommand(BendpointRequest request) {
-            return new DeleteBendpointCommand((ConnectionModel) getHost().getModel(), request.getIndex());
+            return new DeleteBendpointCommand((ConnectionModel<?>) getHost().getModel(), request.getIndex());
          }
 
          protected Command getMoveBendpointCommand(BendpointRequest request) {
             Point location = request.getLocation();
             getConnection().translateToRelative(location);
-            return new MoveBendpointCommand((ConnectionModel) request.getSource().getModel(), location,
+            return new MoveBendpointCommand((ConnectionModel<?>) request.getSource().getModel(), location,
                   request.getIndex());
          }
       });
@@ -118,8 +118,8 @@ public class ConnectionEditPart extends AbstractConnectionEditPart {
       return super.getAdapter(adapter);
    }
 
-   protected ConnectionModel getConnectionModel() {
-      return (ConnectionModel) getModel();
+   protected ConnectionModel<?> getConnectionModel() {
+      return (ConnectionModel<?>) getModel();
    }
 
    protected void handleModelEvent(Object object) {

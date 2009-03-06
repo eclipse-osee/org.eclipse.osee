@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
@@ -31,7 +32,7 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
 
    private ISelection selection;
    private ODMSelectPage selectTypesPage;
-   private ODMExportOutputPage exportToPage;
+   private ODMExportOutputPage exportOutputPage;
    private DataTypeCache dataTypeCache;
 
    public ODMExportWizard(DataTypeCache dataTypeCache) {
@@ -45,8 +46,17 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
    @Override
    public void addPages() {
       addPage(selectTypesPage = new ODMSelectPage("Osee Data Model Wizard"));
-      addPage(exportToPage = new ODMExportOutputPage("Osee Data Model Wizard"));
+      addPage(exportOutputPage = new ODMExportOutputPage("Osee Data Model Wizard"));
       selectTypesPage.setInput(dataTypeCache);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.jface.wizard.Wizard#canFinish()
+    */
+   @Override
+   public boolean canFinish() {
+      ArtifactDataType[] selectedTypes = selectTypesPage.getSelected();
+      return selectedTypes != null && selectedTypes.length > 0 && Strings.isValid(exportOutputPage.getExportToXmlPath());
    }
 
    /* (non-Javadoc)
@@ -58,7 +68,7 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
       if (selectedTypes != null && selectedTypes.length > 0) {
          IExceptionableRunnable worker = null;
          String jobName = null;
-         if (exportToPage.isDataStoreExport()) {
+         if (exportOutputPage.isDataStoreExport()) {
             jobName = "Export artifact types into data store";
             worker = createDataStoreExportWorker(selectedTypes);
          } else {
@@ -73,8 +83,8 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
    }
 
    private IExceptionableRunnable createDataStoreExportWorker(final ArtifactDataType[] selectedTypes) {
-      final String backupfilePath = exportToPage.getExportToDataStoreBackupFilePath();
-      final boolean isBackupEnabled = exportToPage.isDataStoreBackupOption();
+      final String backupfilePath = exportOutputPage.getExportToDataStoreBackupFilePath();
+      final boolean isBackupEnabled = exportOutputPage.isDataStoreBackupOption();
       return new IExceptionableRunnable() {
 
          @Override
@@ -89,8 +99,8 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
    }
 
    private IExceptionableRunnable createXmlExportWorker(final ArtifactDataType[] selectedTypes) {
-      final String filePath = exportToPage.getExportToXmlPath();
-      final boolean exportToSingleFile = exportToPage.isExportToSingleXmlFileSelected();
+      final String filePath = exportOutputPage.getExportToXmlPath();
+      final boolean exportToSingleFile = exportOutputPage.isExportToSingleXmlFileSelected();
       return new IExceptionableRunnable() {
 
          @Override

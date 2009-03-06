@@ -73,10 +73,12 @@ public abstract class NodeModelEditPart extends BaseEditPart implements NodeEdit
       return (NodeModel) getModel();
    }
 
+   @SuppressWarnings("unchecked")
    protected List<ConnectionModel> getModelSourceConnections() {
       return getNodeModel().getSourceConnections();
    }
 
+   @SuppressWarnings("unchecked")
    protected List<ConnectionModel> getModelTargetConnections() {
       return getNodeModel().getTargetConnections();
    }

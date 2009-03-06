@@ -39,16 +39,17 @@ public class FileOrFolderSelectPanel extends Composite {
       CHECK_BOX, RADIO;
    }
 
+   private final boolean isFolderSelect;
+   private final String label;
+   private final String[] filterExtensions;
+   private final ListenerRelay eventRelay;
+   private final ButtonType buttonType;
+   private final Set<Listener> listeners;
+
    private boolean isSelected;
-   private ButtonType buttonType;
-   private boolean isFolderSelect;
    private Button button;
    private String resource;
-   private String label;
-   private String[] filterExtensions;
    private String defaultFileName;
-   private Set<Listener> listeners;
-   private ListenerRelay eventRelay;
 
    public static FileOrFolderSelectPanel createFileSelectPanel(Composite parent, int style, String label, ButtonType buttonType, String[] filterExtensions) {
       return new FileOrFolderSelectPanel(parent, style, label, buttonType, false, filterExtensions);
@@ -66,6 +67,7 @@ public class FileOrFolderSelectPanel extends Composite {
       this.filterExtensions = filterExtensions;
       this.listeners = Collections.synchronizedSet(new HashSet<Listener>());
       this.eventRelay = new ListenerRelay();
+      this.isFolderSelect = isFolderSelect;
 
       GridLayout layout = new GridLayout(3, false);
       layout.marginWidth = 0;
@@ -86,14 +88,21 @@ public class FileOrFolderSelectPanel extends Composite {
       text.setLayoutData(gridData);
 
       final Button fileDialogButton = new Button(composite, SWT.PUSH);
-      fileDialogButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
+      fileDialogButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
+            isFolderSelect ? ISharedImages.IMG_OBJ_FOLDER : ISharedImages.IMG_OBJ_FILE));
       fileDialogButton.addSelectionListener(new SelectionAdapter() {
 
          public void widgetSelected(SelectionEvent e) {
             String result = null;
             if (isFolderSelect) {
                DirectoryDialog directoryDialog = new DirectoryDialog(getShell(), SWT.SAVE | SWT.SINGLE);
-               directoryDialog.setFilterPath(Lib.removeExtension(resource));
+               if (Strings.isValid(resource)) {
+                  directoryDialog.setFilterPath(resource);
+               } else {
+                  if (Strings.isValid(defaultFileName)) {
+                     directoryDialog.setFilterPath(defaultFileName);
+                  }
+               }
                result = directoryDialog.open();
             } else {
                FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE | SWT.SINGLE);
@@ -129,6 +138,7 @@ public class FileOrFolderSelectPanel extends Composite {
          }
       });
       text.addListener(SWT.Modify, eventRelay);
+      fileDialogButton.addListener(SWT.Selection, eventRelay);
       button.addListener(SWT.Selection, eventRelay);
    }
 

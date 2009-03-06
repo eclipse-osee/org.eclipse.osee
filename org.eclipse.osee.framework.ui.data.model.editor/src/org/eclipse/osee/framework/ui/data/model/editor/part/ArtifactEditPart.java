@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
  */
 public class ArtifactEditPart extends DataTypeEditPart {
 
+   @SuppressWarnings("unchecked")
    private List children;
 
    public ArtifactEditPart(Object model) {
@@ -82,17 +83,16 @@ public class ArtifactEditPart extends DataTypeEditPart {
       return children;
    }
 
-   @SuppressWarnings("unchecked")
-   private void checkInheritance() {
-      //      ArtifactDataType model = getArtifactDataType();
-
-      //      for (ArtifactDataType key : toRemove) {
-      //         InheritanceLinkModel link = inheritanceMap.remove(key);
-      //         if (link != null) {
-      //            children.remove(link);
-      //         }
-      //      }
-   }
+   //   private void checkInheritance() {
+   //      //      ArtifactDataType model = getArtifactDataType();
+   //
+   //      //      for (ArtifactDataType key : toRemove) {
+   //      //         InheritanceLinkModel link = inheritanceMap.remove(key);
+   //      //         if (link != null) {
+   //      //            children.remove(link);
+   //      //         }
+   //      //      }
+   //   }
 
    protected void refreshVisuals() {
       super.refreshVisuals();
@@ -145,7 +145,7 @@ public class ArtifactEditPart extends DataTypeEditPart {
       }
 
       protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
-         ConnectionModel connectionModel = (ConnectionModel) request.getNewObject();
+         ConnectionModel<?> connectionModel = (ConnectionModel<?>) request.getNewObject();
          if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
             ArtifactDataType source = (ArtifactDataType) getHost().getModel();
             Command cmd = new CreateConnectionCommand(connectionModel, source);
@@ -155,8 +155,10 @@ public class ArtifactEditPart extends DataTypeEditPart {
          return null;
       }
 
+      @SuppressWarnings("unchecked")
       protected Command getReconnectSourceCommand(ReconnectRequest request) {
-         ConnectionModel connectionModel = (ConnectionModel) request.getConnectionEditPart().getModel();
+         ConnectionModel<ArtifactDataType> connectionModel =
+               (ConnectionModel<ArtifactDataType>) request.getConnectionEditPart().getModel();
          if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
             ArtifactDataType source = (ArtifactDataType) getHost().getModel();
             ReconnectConnectionCommand cmd = new ReconnectConnectionCommand(connectionModel);
@@ -166,8 +168,10 @@ public class ArtifactEditPart extends DataTypeEditPart {
          return UnexecutableCommand.INSTANCE;
       }
 
+      @SuppressWarnings("unchecked")
       protected Command getReconnectTargetCommand(ReconnectRequest request) {
-         ConnectionModel connectionModel = (ConnectionModel) request.getConnectionEditPart().getModel();
+         ConnectionModel<ArtifactDataType> connectionModel =
+               (ConnectionModel<ArtifactDataType>) request.getConnectionEditPart().getModel();
          if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
             ArtifactDataType target = (ArtifactDataType) getHost().getModel();
             ReconnectConnectionCommand cmd = new ReconnectConnectionCommand(connectionModel);

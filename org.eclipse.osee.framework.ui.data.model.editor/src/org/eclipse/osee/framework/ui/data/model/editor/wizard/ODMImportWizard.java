@@ -12,7 +12,10 @@ package org.eclipse.osee.framework.ui.data.model.editor.wizard;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
+import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -22,9 +25,17 @@ import org.eclipse.ui.IWorkbench;
 public class ODMImportWizard extends Wizard implements IImportWizard {
 
    private final ODMEditor editor;
+   private ODMImportPage importPage;
+   private ODMSelectPage selectTypesPage;
+   private DataTypeCache dataTypeCache;
 
    public ODMImportWizard(ODMEditor editor) {
       this.editor = editor;
+      dataTypeCache = new DataTypeCache();
+      setDialogSettings(ODMEditorActivator.getInstance().getDialogSettings());
+      setDefaultPageImageDescriptor(ODMImages.getImageDescriptor(ODMImages.IMPORT_IMAGE));
+      setNeedsProgressMonitor(true);
+      setWindowTitle("Osee Data Model Import Wizard");
    }
 
    /* (non-Javadoc)
@@ -40,7 +51,9 @@ public class ODMImportWizard extends Wizard implements IImportWizard {
     */
    @Override
    public void addPages() {
-      super.addPages();
+      addPage(importPage = new ODMImportPage("Osee Data Model Wizard"));
+      addPage(selectTypesPage = new ODMSelectPage("Osee Data Model Wizard"));
+      selectTypesPage.setInput(dataTypeCache);
    }
 
    /* (non-Javadoc)
