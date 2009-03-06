@@ -94,7 +94,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private boolean historical;
    private static String[] WholeArtifactMatches =
          new String[] {"Checklist (WordML)", "Guideline", "How To", "Renderer Template", "Roadmap",
-               "Template (WordML)", "Test Procedure WML", "Work Instruction", "Work Sheet (WordML)",};
+               "Template (WordML)", "Test Information Sheet", "Test Procedure WML", "Work Instruction",
+               "Work Sheet (WordML)"};
    static {
       Arrays.sort(WholeArtifactMatches);
    }
