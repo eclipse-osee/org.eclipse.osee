@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
+import org.eclipse.osee.ats.world.WorldComposite;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -236,6 +238,38 @@ public class TaskComposite extends Composite implements IActionable {
 
       }
 
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
+      item.setToolTipText("Refresh Tasks");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            try {
+               if (iXTaskViewer.isRefreshActionHandled()) {
+                  iXTaskViewer.handleRefreshAction();
+               } else {
+                  loadTable();
+               }
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.SEPARATOR);
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
+      item.setToolTipText("Customize Table");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            taskXViewer.getCustomizeMgr().handleTableCustomization();
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.SEPARATOR);
+
       if (iXTaskViewer.getEditor() != null && (iXTaskViewer.getEditor() instanceof TaskEditor)) {
          item = new ToolItem(toolBar, SWT.PUSH);
          item.setImage(AtsPlugin.getInstance().getImage("task.gif"));
@@ -275,35 +309,13 @@ public class TaskComposite extends Composite implements IActionable {
          }
       });
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
-      item.setToolTipText("Refresh Tasks");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               if (iXTaskViewer.isRefreshActionHandled()) {
-                  iXTaskViewer.handleRefreshAction();
-               } else {
-                  loadTable();
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
+      item = new ToolItem(toolBar, SWT.SEPARATOR);
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            taskXViewer.getCustomizeMgr().handleTableCustomization();
-         }
-      });
-
+      WorldComposite.actionToToolItem(toolBar, new NewAction(), "newAction.gif");
       OseeAts.addButtonToEditorToolBar(this, AtsPlugin.getInstance(), toolBar, SMAEditor.EDITOR_ID, "ATS Task Tab");
+
+      item = new ToolItem(toolBar, SWT.SEPARATOR);
+
       createTaskActionBarPulldown(toolBar, toolBar.getParent());
 
    }

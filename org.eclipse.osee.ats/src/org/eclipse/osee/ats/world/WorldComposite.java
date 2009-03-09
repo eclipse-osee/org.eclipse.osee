@@ -363,6 +363,16 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       expandAllAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("expandAll.gif"));
       expandAllAction.setToolTipText("Expand All");
 
+      Action collapseAllAction = new Action("Collapse All") {
+
+         @Override
+         public void run() {
+            worldXViewer.collapseAll();
+         }
+      };
+      collapseAllAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("collapseAll.gif"));
+      collapseAllAction.setToolTipText("Collapse All");
+
       filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", Action.AS_CHECK_BOX) {
 
          @Override
@@ -460,6 +470,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          actionToToolItem(toolBar, refreshAction, "refresh.gif");
          new ToolItem(toolBar, SWT.SEPARATOR);
          actionToToolItem(toolBar, expandAllAction, "expandAll.gif");
+         actionToToolItem(toolBar, collapseAllAction, "collapseAll.gif");
          actionToToolItem(toolBar, worldXViewer.getCustomizeAction(), "customize.gif");
          new ToolItem(toolBar, SWT.SEPARATOR);
          actionToToolItem(toolBar, newWorldEditor, "globe.gif");
@@ -527,7 +538,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
    }
 
-   private ToolItem actionToToolItem(ToolBar toolBar, Action action, String imageName) {
+   public static ToolItem actionToToolItem(ToolBar toolBar, Action action, String imageName) {
       final Action fAction = action;
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(AtsPlugin.getInstance().getImage(imageName));
