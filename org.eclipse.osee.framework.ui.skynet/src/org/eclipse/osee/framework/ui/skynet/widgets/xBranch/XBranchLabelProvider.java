@@ -15,10 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
@@ -28,35 +25,35 @@ import org.eclipse.swt.graphics.Image;
 public class XBranchLabelProvider extends XViewerLabelProvider {
 
    Font font = null;
-   private final BranchXViewer changeXViewer;
+   private final BranchXViewer branchXViewer;
 
-   public XBranchLabelProvider(BranchXViewer changeXViewer) {
-      super(changeXViewer);
-      this.changeXViewer = changeXViewer;
+   public XBranchLabelProvider(BranchXViewer branchXViewer) {
+      super(branchXViewer);
+      this.branchXViewer = branchXViewer;
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
             try {
-         if (!(element instanceof HistoryTransactionItem)) return "";
-         HistoryTransactionItem data = (HistoryTransactionItem) element;
+         if (!(element instanceof Branch)) return "";
+         Branch data = (Branch) element;
 
          if (cCol.equals(BranchXViewerFactory.transaction)) {
-            return String.valueOf(data.getTransactionNumber());
+            return String.valueOf(data.getBranchName());
          } else if (cCol.equals(BranchXViewerFactory.gamma)) {
-            return String.valueOf(data.getGamma());
+            return String.valueOf(data.getBranchName());
          } else if (cCol.equals(BranchXViewerFactory.itemType)) {
-            return data.getChangeType();
+            return String.valueOf(data.getBranchName());
          } else if (cCol.equals(BranchXViewerFactory.was)) {
-            return data.getWasValue();
+            return String.valueOf(data.getBranchName());
          } else if (cCol.equals(BranchXViewerFactory.is)) {
-            return data.getIsValue();
+            return String.valueOf(data.getBranchName());
          } else if (cCol.equals(BranchXViewerFactory.timeStamp)) {
-            return data.getTimeStamp();
+            return String.valueOf(data.getBranchName());
          } else if (cCol.equals(BranchXViewerFactory.author)) {
-            return data.getAuthorName();
+            return String.valueOf(data.getBranchName());
          }else if (cCol.equals(BranchXViewerFactory.comment)) {
-            return data.getComment();
+            return String.valueOf(data.getBranchName());
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
@@ -80,29 +77,29 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    }
 
    public BranchXViewer getTreeViewer() {
-      return changeXViewer;
+      return branchXViewer;
    }
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      try {
-         if (!(element instanceof HistoryTransactionItem)) return null;
-         HistoryTransactionItem change = (HistoryTransactionItem) element;
-         if (xCol.equals(BranchXViewerFactory.transaction)) {
-            try {
-               return SkynetGuiPlugin.getInstance().getImage("DBiconBlue.GIF");
-            } catch (IllegalArgumentException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         } else if (xCol.equals(BranchXViewerFactory.itemType)) {
-            return change.getChangeImage();
-         }
-
-      } catch (Exception ex) {
-         // do nothing
-      }
+//      try {
+//         if (!(element instanceof Branch)) return null;
+//         Branch change = (Branch) element;
+//         if (xCol.equals(BranchXViewerFactory.transaction)) {
+//            try {
+//               return SkynetGuiPlugin.getInstance().getImage("DBiconBlue.GIF");
+//            } catch (IllegalArgumentException ex) {
+//               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+//            } catch (Exception ex) {
+//               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+//            }
+//         } else if (xCol.equals(BranchXViewerFactory.itemType)) {
+//            return change.getChangeImage();
+//         }
+//
+//      } catch (Exception ex) {
+//         // do nothing
+//      }
       return null;
    }
 }

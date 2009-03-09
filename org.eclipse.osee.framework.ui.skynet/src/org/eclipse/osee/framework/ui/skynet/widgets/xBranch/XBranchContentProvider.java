@@ -10,9 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
 
 /**
  * @author Jeff C. Phillips
@@ -20,6 +31,8 @@ import org.eclipse.jface.viewers.Viewer;
 public class XBranchContentProvider implements ITreeContentProvider {
 
    private final BranchXViewer changeXViewer;
+   private boolean showChildBranchesAtMainLevel;
+   private boolean showMergeBranches;
    private static Object[] EMPTY_ARRAY = new Object[0];
 
    public XBranchContentProvider(BranchXViewer commitXViewer) {
@@ -28,6 +41,29 @@ public class XBranchContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getChildren(Object parentElement) {
+      if (parentElement instanceof BranchManager) {
+         List<BranchType> branchTypes = new ArrayList<BranchType>(4);
+         branchTypes.add(BranchType.TOP_LEVEL);
+
+         try {
+            if (AccessControlManager.isOseeAdmin() && showMergeBranches) {
+               branchTypes.add(BranchType.MERGE);
+            }
+
+            if (showChildBranchesAtMainLevel) {
+               branchTypes.add(BranchType.BASELINE);
+               branchTypes.add(BranchType.WORKING);
+            }
+
+            List<Branch> branches =
+                  BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.ALL,
+                        branchTypes.toArray(new BranchType[branchTypes.size()]));
+            return branches.toArray();
+            
+         } catch (OseeCoreException ex) {
+            OseeLog.log(this.getClass(), Level.WARNING, ex);
+         }
+      }
       if (parentElement instanceof Collection) {
          return ((Collection<?>) parentElement).toArray();
       }

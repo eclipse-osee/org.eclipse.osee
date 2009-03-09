@@ -12,10 +12,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,26 +21,18 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -59,12 +49,10 @@ import org.eclipse.swt.widgets.Tree;
  */
 public class XBranchWidget extends XWidget implements IActionable {
 
-   private BranchXViewer xHistoryViewer;
+   private BranchXViewer xBranchViewer;
    public final static String normalColor = "#EEEEEE";
    private static final String LOADING = "Loading ...";
-   private static final String NO_HISTORY = "No History changes were found";
    protected Label extraInfoLabel;
-   private Artifact artifact;
 
    /**
     * @param label
@@ -100,23 +88,21 @@ public class XBranchWidget extends XWidget implements IActionable {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      xHistoryViewer = new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
-      xHistoryViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+      xBranchViewer = new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      xBranchViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xHistoryViewer.setContentProvider(new XBranchContentProvider(xHistoryViewer));
-      xHistoryViewer.setLabelProvider(new XBranchLabelProvider(xHistoryViewer));
+      xBranchViewer.setContentProvider(new XBranchContentProvider(xBranchViewer));
+      xBranchViewer.setLabelProvider(new XBranchLabelProvider(xBranchViewer));
 
-      if (toolkit != null) toolkit.adapt(xHistoryViewer.getStatusLabel(), false, false);
+      if (toolkit != null) toolkit.adapt(xBranchViewer.getStatusLabel(), false, false);
 
-      Tree tree = xHistoryViewer.getTree();
+      Tree tree = xBranchViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.heightHint = 100;
       tree.setLayout(ALayout.getZeroMarginLayout());
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-
-      new HistoryDragAndDrop(tree, BranchXViewerFactory.NAMESPACE);
    }
 
    public void createTaskActionBar(Composite parent) throws OseeCoreException {
@@ -150,7 +136,7 @@ public class XBranchWidget extends XWidget implements IActionable {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            setInputData(artifact, true);
+            loadData();
          }
       });
 
@@ -160,7 +146,7 @@ public class XBranchWidget extends XWidget implements IActionable {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            xHistoryViewer.getCustomizeMgr().handleTableCustomization();
+            xBranchViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 
@@ -174,9 +160,9 @@ public class XBranchWidget extends XWidget implements IActionable {
    @SuppressWarnings("unchecked")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
-      if (xHistoryViewer == null) return items;
-      if (xHistoryViewer.getSelection().isEmpty()) return items;
-      Iterator i = ((IStructuredSelection) xHistoryViewer.getSelection()).iterator();
+      if (xBranchViewer == null) return items;
+      if (xBranchViewer.getSelection().isEmpty()) return items;
+      Iterator i = ((IStructuredSelection) xBranchViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
          items.add((Branch) obj);
@@ -186,22 +172,22 @@ public class XBranchWidget extends XWidget implements IActionable {
 
    @Override
    public Control getControl() {
-      return xHistoryViewer.getTree();
+      return xBranchViewer.getTree();
    }
 
    @Override
    public void dispose() {
-      xHistoryViewer.dispose();
+      xBranchViewer.dispose();
    }
 
    @Override
    public void setFocus() {
-      xHistoryViewer.getTree().setFocus();
+      xBranchViewer.getTree().setFocus();
    }
 
    @Override
    public void refresh() {
-      xHistoryViewer.refresh();
+      xBranchViewer.refresh();
       setLabelError();
    }
 
@@ -219,7 +205,7 @@ public class XBranchWidget extends XWidget implements IActionable {
     * @return Returns the xViewer.
     */
    public BranchXViewer getXViewer() {
-      return xHistoryViewer;
+      return xBranchViewer;
    }
 
    /*
@@ -229,47 +215,23 @@ public class XBranchWidget extends XWidget implements IActionable {
     */
    @Override
    public Object getData() {
-      return xHistoryViewer.getInput();
+      return xBranchViewer.getInput();
    }
 
-   public void setInputData(final Artifact artifact, final boolean loadHistory) {
-      this.artifact = artifact;
+   public void loadData() {
       extraInfoLabel.setText(LOADING);
 
-      Job job = new Job("History: " + artifact.getDescriptiveName()) {
+      Job job = new Job("Banch Manager") {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            final Collection<HistoryTransactionItem> historyItems = new ArrayList<HistoryTransactionItem>();
 
-            try {
-               if (loadHistory) {
-                  for(TransactionData transactionData : RevisionManager.getInstance().getTransactionsPerArtifact(artifact, true)){
-                     for(RevisionChange revisionChange : RevisionManager.getInstance().getTransactionChanges(transactionData)){
-                        historyItems.add(new HistoryTransactionItem(transactionData, revisionChange));
-                     }
-                  }
+            Displays.ensureInDisplayThread(new Runnable() {
+               public void run() {
+                  extraInfoLabel.setText("");
+                  xBranchViewer.setInput(BranchManager.getInstance());
                }
-
-               Displays.ensureInDisplayThread(new Runnable() {
-                  public void run() {
-                     if (loadHistory) {
-                        if (historyItems.size() == 0) {
-                           extraInfoLabel.setText(NO_HISTORY);
-                           xHistoryViewer.setInput(historyItems);
-                        } else {
-                           String infoLabel = String.format("History: %s on branch: %s", artifact.getDescriptiveName(), artifact.getBranch().getBranchShortName());
-                           extraInfoLabel.setText(infoLabel);
-                           xHistoryViewer.setInput(historyItems);
-                        }
-                     } else {
-                        extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
-                     }
-                  }
-               });
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
+            });
             return Status.OK_STATUS;
          }
       };
@@ -298,50 +260,12 @@ public class XBranchWidget extends XWidget implements IActionable {
    @Override
    public void setXmlData(String str) {
    }
-   public class HistoryDragAndDrop extends SkynetDragAndDrop {
-
-      public HistoryDragAndDrop(Tree tree, String viewId) {
-         super(tree, viewId);
-      }
-
-      @Override
-      public void performDragOver(DropTargetEvent event) {
-         event.detail = DND.DROP_NONE;
-      }
-
-      @Override
-      public Artifact[] getArtifacts() {
-         IStructuredSelection selection = (IStructuredSelection) xHistoryViewer.getSelection();
-         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
-
-         if (selection != null && !selection.isEmpty()) {
-            for (Object object : selection.toArray()) {
-
-               if (object instanceof IAdaptable) {
-                  Artifact artifact = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
-
-                  if (artifact != null) {
-                     artifacts.add(artifact);
-                  }
-               }
-            }
-         }
-         return artifacts.toArray(new Artifact[artifacts.size()]);
-      }
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
     */
    @Override
    public String getActionDescription() {
-      StringBuffer sb = new StringBuffer();
-      if (artifact != null) sb.append("\nHistory : " + artifact.getDescriptiveName());
-      return sb.toString();
+      return null;
    }
-
-   public Artifact getArtifact() {
-      return artifact;
-   }
-
 }

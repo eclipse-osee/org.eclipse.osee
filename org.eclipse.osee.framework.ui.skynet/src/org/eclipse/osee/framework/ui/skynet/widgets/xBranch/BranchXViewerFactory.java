@@ -22,26 +22,26 @@ import org.eclipse.swt.SWT;
  */
 public class BranchXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn transaction =
-         new XViewerColumn("framework.history.transaction", "Transaction", 100, SWT.LEFT, true, SortDataType.String,
+         new XViewerColumn("framework.branch.transaction", "Transaction", 100, SWT.LEFT, true, SortDataType.String,
                false, null);
    public static XViewerColumn gamma =
-         new XViewerColumn("framework.history.gamma", "Gamma", 70, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.branch.gamma", "Gamma", 70, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn itemType =
-         new XViewerColumn("framework.history.itemType", "Item Type", 150, SWT.LEFT, true, SortDataType.String,
+         new XViewerColumn("framework.branch.itemType", "Item Type", 150, SWT.LEFT, true, SortDataType.String,
                false, null);
    public static XViewerColumn was =
-         new XViewerColumn("framework.history.was", "Was", 250, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.branch.was", "Was", 250, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn is =
-         new XViewerColumn("framework.history.is", "Is", 250, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.branch.is", "Is", 250, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn timeStamp =
-         new XViewerColumn("framework.history.timeStamp", "Time Stamp", 110, SWT.LEFT, true, SortDataType.String,
+         new XViewerColumn("framework.branch.timeStamp", "Time Stamp", 110, SWT.LEFT, true, SortDataType.String,
                false, null);
    public static XViewerColumn author =
-         new XViewerColumn("framework.history.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.branch.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn comment =
-         new XViewerColumn("framework.history.comment", "Comment", 70, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.branch.comment", "Comment", 70, SWT.LEFT, true, SortDataType.String, false, null);
 
-   public static String NAMESPACE = "osee.skynet.gui.HisotryXViewer";
+   public static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 
    public BranchXViewerFactory() {
       super(NAMESPACE);

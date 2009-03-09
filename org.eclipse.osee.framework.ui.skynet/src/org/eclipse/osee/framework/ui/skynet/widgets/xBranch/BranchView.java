@@ -12,7 +12,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -22,40 +21,20 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
-import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
-import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
-import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -68,23 +47,18 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Jeff C. Phillips
  */
-public class BranchView extends ViewPart implements IActionable, IBranchEventListener, IRebuildMenuListener {
+public class BranchView extends ViewPart implements IActionable, IBranchEventListener{
 
-   public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView";
+   public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    private static String HELP_CONTEXT_ID = "BranchView";
    private XBranchWidget xBranchWidget;
-   private Artifact artifact;
 
    public BranchView() {
+      open();
    }
 
-   public static void open(Artifact artifact) throws OseeArgumentException {
-      if (artifact == null) throw new OseeArgumentException("Artifact can't be null");
-      BranchView.openViewUpon(artifact, true);
-   }
-
-   private static void openViewUpon(final Artifact artifact, final Boolean loadHistory) {
-      Job job = new Job("Open History: " + artifact.getDescriptiveName()) {
+   private static void open() {
+      Job job = new Job("Open Branch Manager") {
 
          @Override
          protected IStatus run(final IProgressMonitor monitor) {
@@ -92,11 +66,10 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                public void run() {
                   try {
                      IWorkbenchPage page = AWorkbench.getActivePage();
-                     BranchView historyView =
-                           (BranchView) page.showView(VIEW_ID,
-                                 artifact.getGuid() + artifact.getBranch().getBranchId(), IWorkbenchPage.VIEW_VISIBLE);
+                     BranchView branchView =
+                           (BranchView) page.showView(VIEW_ID, VIEW_ID, IWorkbenchPage.VIEW_VISIBLE);
 
-                     historyView.explore(artifact, loadHistory);
+                     branchView.explore();
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
@@ -155,92 +128,11 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
       getSite().setSelectionProvider(xBranchWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
-
-      setupMenus();
    }
 
-   private void setupMenus() {
-      Menu popupMenu = new Menu(xBranchWidget.getXViewer().getTree().getParent());
-      createOpenWithMenuItem(popupMenu);
-      createChangeReportMenuItem(popupMenu);
-      ArtifactDiffMenu.createDiffMenuItem(popupMenu, xBranchWidget.getXViewer(), "Compare two Artifacts", null);
-
-      // Setup generic xviewer menu items
-      XViewerCustomMenu xMenu = new XViewerCustomMenu(xBranchWidget.getXViewer());
-      new MenuItem(popupMenu, SWT.SEPARATOR);
-      xMenu.createTableCustomizationMenuItem(popupMenu);
-      xMenu.createViewTableReportMenuItem(popupMenu);
-      new MenuItem(popupMenu, SWT.SEPARATOR);
-      xMenu.addCopyViewMenuBlock(popupMenu);
-      new MenuItem(popupMenu, SWT.SEPARATOR);
-      xMenu.addFilterMenuBlock(popupMenu);
-      new MenuItem(popupMenu, SWT.SEPARATOR);
-      xBranchWidget.getXViewer().getTree().setMenu(popupMenu);
-   }
-
-   /**
-    * @param popupMenu
-    */
-   private void createChangeReportMenuItem(Menu popupMenu) {
-      final MenuItem changeReportMenuItem = new MenuItem(popupMenu, SWT.CASCADE);
-      changeReportMenuItem.setText("&Change Report");
-      changeReportMenuItem.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
-      popupMenu.addMenuListener(new MenuListener() {
-
-         @Override
-         public void menuHidden(MenuEvent e) {
-         }
-
-         @Override
-         public void menuShown(MenuEvent e) {
-            List<?> selections = ((IStructuredSelection) xBranchWidget.getXViewer().getSelection()).toList();
-            try {
-               changeReportMenuItem.setEnabled(selections.size() == 1 && ((HistoryTransactionItem) selections.iterator().next()).getTransactionData().getTransactionId().getTxType() != TransactionDetailsType.Baselined);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-
-      });
-
-      changeReportMenuItem.addSelectionListener(new SelectionListener() {
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            IStructuredSelection selection = (IStructuredSelection) xBranchWidget.getXViewer().getSelection();
-            Object selectedObject = selection.getFirstElement();
-
-            if (selectedObject instanceof HistoryTransactionItem) {
-               try {
-                  ChangeView.open(((HistoryTransactionItem) selectedObject).getTransactionData().getTransactionId());
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         }
-
-      });
-   }
-
-   private void createOpenWithMenuItem(Menu parentMenu) {
-      MenuItem openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      openWithMenuItem.setText("&Open With");
-      final Menu submenu = new Menu(openWithMenuItem);
-      openWithMenuItem.setMenu(submenu);
-      parentMenu.addMenuListener(new OpenWithMenuListener(submenu, xBranchWidget.getXViewer(), this));
-   }
-
-   private void explore(final Artifact artifact, boolean loadHistory) {
-      if (xBranchWidget != null) {
-         this.artifact = artifact;
-
-         setPartName("History: " + artifact.getDescriptiveName());
-         xBranchWidget.setInputData(artifact, loadHistory);
-      }
+   private void explore() {
+         setPartName("Branch Manager");
+         xBranchWidget.loadData();
    }
 
    public String getActionDescription() {
@@ -248,8 +140,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    private static final String INPUT = "input";
-   private static final String ART_GUID = "artifactGuid";
-   private static final String BRANCH_ID = "branchId";
 
    /*
     * (non-Javadoc)
@@ -260,11 +150,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    public void saveState(IMemento memento) {
       super.saveState(memento);
       memento = memento.createChild(INPUT);
-      if (artifact != null) {
-         memento.putString(ART_GUID, artifact.getGuid());
-         memento.putInteger(BRANCH_ID, artifact.getBranch().getBranchId());
-         SkynetViews.addDatabaseSourceId(memento);
-      }
    }
 
    @Override
@@ -275,10 +160,10 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             memento = memento.getChild(INPUT);
             if (memento != null) {
                if (SkynetViews.isSourceValid(memento)) {
-                  String guid = memento.getString(ART_GUID);
-                  Integer branchId = memento.getInteger(BRANCH_ID);
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranch(branchId));
-                  openViewUpon(artifact, false);
+//                  String guid = memento.getString(ART_GUID);
+//                  Integer branchId = memento.getInteger(BRANCH_ID);
+//                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranch(branchId));
+                  open();
                } else {
                   closeView();
                }
@@ -305,22 +190,10 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                try {
-                  explore(artifact, true);
+                  explore();
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
-            }
-         });
-         // refresh view with new branch and transaction id
-      } else if (branchModType == BranchEventType.DefaultBranchChanged) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            @Override
-            public void run() {
-               if (xBranchWidget == null || xBranchWidget.getXViewer().getTree() == null || xBranchWidget.getXViewer().getTree().isDisposed()) return;
-               xBranchWidget.getXViewer().getTree().setEnabled(artifact.getBranch().getBranchId() == branchId);
             }
          });
       }
@@ -335,13 +208,5 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    private void closeView() {
       SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener#rebuildMenu()
-    */
-   @Override
-   public void rebuildMenu() {
-      setupMenus();
    }
 }

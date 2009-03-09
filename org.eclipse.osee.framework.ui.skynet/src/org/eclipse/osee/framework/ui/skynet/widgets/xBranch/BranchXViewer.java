@@ -10,78 +10,65 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
-import java.util.ArrayList;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Jeff C. Phillips
  */
 public class BranchXViewer extends XViewer {
-   private final XBranchWidget xHistoryViewer;
+   private final XBranchWidget xBranchViewer;
 
    public BranchXViewer(Composite parent, int style, XBranchWidget xRoleViewer) {
       super(parent, style, new BranchXViewerFactory());
-      this.xHistoryViewer = xRoleViewer;
+      this.xBranchViewer = xRoleViewer;
    }
 
    @Override
    public void handleDoubleClick() {
-      try {
-         if (getSelectedChanges().size() == 0) return;
-
-         Artifact artifact = getSelectedChanges().iterator().next();
-
-         if (artifact != null) {
-            ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-            artifacts.add(artifact);
-
-            if (StaticIdManager.hasValue(UserManager.getUser(),
-                  EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
-               RendererManager.previewInJob(artifacts);
-            } else {
-               RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+//      try {
+//         if (getSelectedChanges().size() == 0) return;
+//
+//         Artifact artifact = getSelectedChanges().iterator().next();
+//
+//         if (artifact != null) {
+//            ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
+//            artifacts.add(artifact);
+//
+//            if (StaticIdManager.hasValue(UserManager.getUser(),
+//                  EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
+//               RendererManager.previewInJob(artifacts);
+//            } else {
+//               RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
+//            }
+//         }
+//      } catch (OseeCoreException ex) {
+//         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+//      }
    }
 
-   public ArrayList<Artifact> getSelectedChanges() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      TreeItem items[] = getTree().getSelection();
-
-      if (items.length > 0) {
-         for (TreeItem item : items) {
-            Artifact artifact = null;
-            if(item.getData() instanceof IAdaptable){
-               artifact = (Artifact)((IAdaptable)item.getData()).getAdapter(Artifact.class);
-               
-               if(artifact != null){
-                  arts.add(artifact);
-               }
-            }
-         }
-      }
-      return arts;
-   }
+//   public ArrayList<Artifact> getSelectedChanges() {
+//      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+//      TreeItem items[] = getTree().getSelection();
+//
+//      if (items.length > 0) {
+//         for (TreeItem item : items) {
+//            Artifact artifact = null;
+//            if(item.getData() instanceof IAdaptable){
+//               artifact = (Artifact)((IAdaptable)item.getData()).getAdapter(Artifact.class);
+//               
+//               if(artifact != null){
+//                  arts.add(artifact);
+//               }
+//            }
+//         }
+//      }
+//      return arts;
+//   }
 
    @Override
    protected void createSupportWidgets(Composite parent) {
@@ -115,8 +102,8 @@ public class BranchXViewer extends XViewer {
    /**
     * @return the xHistoryViewer
     */
-   public XBranchWidget getXHisotryViewer() {
-      return xHistoryViewer;
+   public XBranchWidget getXBrznchViewer() {
+      return xBranchViewer;
    }
 
 }
