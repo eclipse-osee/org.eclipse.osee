@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -873,7 +874,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public String getInternalDescriptiveName() {
       String name = getInternalAttributeValue("Name");
-      if (name.equals("")) return UNNAMED;
+      if (!Strings.isValid(name)) return UNNAMED;
       return name;
    }
 
