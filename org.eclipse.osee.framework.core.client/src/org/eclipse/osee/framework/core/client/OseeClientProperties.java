@@ -42,8 +42,13 @@ public class OseeClientProperties extends OseeProperties {
    private static final String OSEE_IMPORT_DURING_DB_INIT = "osee.import.on.db.init";
    private static final String OSEE_IMPORT_FROM_DB_SERVICE = "osee.import.from.connection.id.on.db.init";
    private static final String OSEE_USE_FILE_SPECIFIED_SCHEMAS = "osee.file.specified.schema.names.on.db.init";
+
+   private static final String OSEE_TABLE_DATA_SPACE_ON_DB_INIT = "osee.table.data.space.on.db.init";
+   private static final String OSEE_INDEX_DATA_SPACE_ON_DB_INIT = "osee.index.data.space.on.db.init";
+
    private static final String OSEE_PROMPT_ON_DB_INIT = "osee.prompt.on.db.init";
    private static final String OSEE_CHOICE_ON_DB_INIT = "osee.choice.on.db.init";
+
    private enum InitializerFlag {
       overwrite_settings, client_defaults;
 
@@ -90,6 +95,24 @@ public class OseeClientProperties extends OseeProperties {
     */
    public static boolean useSchemasSpecifiedInDbConfigFiles() {
       return Boolean.valueOf(getProperty(OSEE_USE_FILE_SPECIFIED_SCHEMAS));
+   }
+
+   /**
+    * Retrieves the table data space to use during OSEE database initialization
+    * 
+    * @return table data space
+    */
+   public static String getOseeTableDataSpaceForDbInit() {
+      return getProperty(OSEE_TABLE_DATA_SPACE_ON_DB_INIT);
+   }
+
+   /**
+    * Retrieves the index data space to use during OSEE database initialization
+    * 
+    * @return index data space
+    */
+   public static String getOseeIndexDataSpaceForDbInit() {
+      return getProperty(OSEE_INDEX_DATA_SPACE_ON_DB_INIT);
    }
 
    /**

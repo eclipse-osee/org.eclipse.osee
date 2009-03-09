@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFie
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class DatabaseConfigurationData {
 
@@ -65,11 +66,42 @@ public class DatabaseConfigurationData {
             throw new OseeWrappedException(ex);
          }
       }
+
+      String tableDataSpace = OseeClientProperties.getOseeTableDataSpaceForDbInit();
+      if (Strings.isValid(tableDataSpace)) {
+         updateTableDataSpace(tableDataSpace, schemasFromUserFiles);
+      }
+
+      String indexDataSpace = OseeClientProperties.getOseeIndexDataSpaceForDbInit();
+      if (Strings.isValid(indexDataSpace)) {
+         updateIndexDataSpace(indexDataSpace, schemasFromUserFiles);
+      }
+
       return schemasFromUserFiles;
    }
 
    private boolean useFileSpecifiedSchemas() {
       return OseeClientProperties.useSchemasSpecifiedInDbConfigFiles();
+   }
+
+   private void updateTableDataSpace(String tableDataSpace, Map<String, SchemaData> userSchemas) {
+      for (String key : userSchemas.keySet()) {
+         SchemaData schemaData = userSchemas.get(key);
+         for (TableElement table : schemaData.getTableMap().values()) {
+            table.setTablespace(tableDataSpace);
+         }
+      }
+   }
+
+   private void updateIndexDataSpace(String indexDataSpace, Map<String, SchemaData> userSchemas) {
+      for (String key : userSchemas.keySet()) {
+         SchemaData schemaData = userSchemas.get(key);
+         for (TableElement table : schemaData.getTableMap().values()) {
+            for (IndexElement indexElement : table.getIndexData()) {
+               indexElement.setTablespace(indexDataSpace);
+            }
+         }
+      }
    }
 
    private Map<String, SchemaData> useUserNameAsSchema(String userName, Map<String, SchemaData> userSchemas) {

@@ -235,4 +235,8 @@ public class TableElement implements Xmlizable {
       String toReturn = getDescription().get(TableDescriptionFields.tablespace);
       return Strings.isValid(toReturn) ? toReturn : "";
    }
+   
+   public void setTablespace(String value){
+      getDescription().put(TableDescriptionFields.tablespace, value);
+   }
 }
