@@ -144,9 +144,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col)) return wva.getWorldViewEstimatedReleaseDateStr();
          if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) return wva.getWorldViewEstimatedCompletionDateStr();
          if (xCol.equals(WorldXViewerFactory.Release_Date_Col)) return wva.getWorldViewReleaseDateStr();
-         if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
-            return wva.getWorldViewDeadlineDateStr();
-         }
+         if (xCol.equals(WorldXViewerFactory.Deadline_Col)) return wva.getWorldViewDeadlineDateStr();
          if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) return wva.getWorldViewWorkPackage();
          if (xCol.equals(WorldXViewerFactory.Category_Col)) return wva.getWorldViewCategory();
          if (xCol.equals(WorldXViewerFactory.Category2_Col)) return wva.getWorldViewCategory2();

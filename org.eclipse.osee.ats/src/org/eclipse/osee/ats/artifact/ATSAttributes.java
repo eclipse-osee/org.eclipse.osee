@@ -24,7 +24,8 @@ public class ATSAttributes {
    private static Map<String, ATSAttributes> attrNameToAttr = new HashMap<String, ATSAttributes>();
 
    public static final ATSAttributes ROLE_ATTRIBUTE = new ATSAttributes("Role");
-   public static final ATSAttributes ACTIONABLE_ITEM_GUID_ATTRIBUTE = new ATSAttributes("Actionable Item");
+   public static final ATSAttributes ACTIONABLE_ITEM_GUID_ATTRIBUTE =
+         new ATSAttributes("Actionable Item", "Actionable Items that are impacted by this change.");
    public static final ATSAttributes TEAM_DEFINITION_GUID_ATTRIBUTE = new ATSAttributes("Team Definition");
    public static final ATSAttributes TITLE_ATTRIBUTE =
          new ATSAttributes("Title", "Name", "Enter clear and consise title that can be generally understood.");
@@ -35,6 +36,8 @@ public class ATSAttributes {
          new ATSAttributes("Full Name", "Expanded and descriptive name.");
    public static final ATSAttributes DESCRIPTION_ATTRIBUTE = new ATSAttributes("Description", "Detailed explanation.");
    public static final ATSAttributes CHANGE_TYPE_ATTRIBUTE = new ATSAttributes("Change Type", "Type of change.");
+   public static final ATSAttributes ASSIGNEE_ATTRIBUTE =
+         new ATSAttributes("Assignees", "Users currently assigned to do work.");
    public static final ATSAttributes PRIORITY_TYPE_ATTRIBUTE = new ATSAttributes("Priority", "1 = High; 5 = Low");
    public static final ATSAttributes USER_COMMUNITY_ATTRIBUTE =
          new ATSAttributes(
@@ -52,9 +55,12 @@ public class ATSAttributes {
    public static final ATSAttributes REVIEW_DEFECT_ATTRIBUTE = new ATSAttributes("Review Defect");
    public static final ATSAttributes STATE_NOTES_ATTRIBUTE = new ATSAttributes("State Notes");
    public static final ATSAttributes ESTIMATED_HOURS_ATTRIBUTE =
-         new ATSAttributes("Estimated Hours", "Estimated time to complete workflow.");
+         new ATSAttributes(
+               "Estimated Hours",
+               "Hours estimated to implement the changes associated with this Action.\nIncludes estimated hours for workflows, tasks and reviews.");
    public static final ATSAttributes WEEKLY_BENEFIT_ATTRIBUTE =
-         new ATSAttributes("Weekly Benefit", "Estimated hours saved by changes made.");
+         new ATSAttributes("Weekly Benefit",
+               "Estimated number of hours that will be saved over a single year if this change is completed.");
    public static final ATSAttributes PERCENT_REWORK_ATTRIBUTE = new ATSAttributes("Percent Rework");
    public static final ATSAttributes TASK_USES_RESOLUTION_OPTIONS_ATTRIBUTE =
          new ATSAttributes("Task Uses Resolution Options",
@@ -69,11 +75,11 @@ public class ATSAttributes {
    public static final ATSAttributes WORK_PACKAGE_ATTRIBUTE =
          new ATSAttributes("Work Package", "Designated accounting work package for completing workflow.");
    public static final ATSAttributes CATEGORY_ATTRIBUTE =
-         new ATSAttributes("Category", "Free text field for categorizing objects.");
+         new ATSAttributes("Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final ATSAttributes CATEGORY2_ATTRIBUTE =
-         new ATSAttributes("Category2", "Free text field for categorizing objects.");
+         new ATSAttributes("Category2", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final ATSAttributes CATEGORY3_ATTRIBUTE =
-         new ATSAttributes("Category3", "Free text field for categorizing objects.");
+         new ATSAttributes("Category3", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final ATSAttributes CANCELLED_FROM_STATE_ATTRIBUTE =
          new ATSAttributes("Cancelled From State", "State prior to cancellation of workflow.");
    public static final ATSAttributes RELEASED_ATTRIBUTE =
@@ -114,10 +120,12 @@ public class ATSAttributes {
                "True if workflow should be blocked from contining until review is completed.");
    public static final ATSAttributes REVIEW_BLOCKS_ATTRIBUTE =
          new ATSAttributes("Review Blocks", "Review Completion will block it's parent workflow in this manner.");
-   public static final ATSAttributes ESTIMATED_RELEASE_DATE_ATTRIBUTE = new ATSAttributes("Estimated Release Date");
+   public static final ATSAttributes ESTIMATED_RELEASE_DATE_ATTRIBUTE =
+         new ATSAttributes("Estimated Release Date", "Date the changes will be made available to the users.");
    public static final ATSAttributes ESTIMATED_COMPLETION_DATE_ATTRIBUTE =
-         new ATSAttributes("Estimated Completion Date");
-   public static final ATSAttributes RELEASE_DATE_ATTRIBUTE = new ATSAttributes("Release Date");
+         new ATSAttributes("Estimated Completion Date", "Date the changes will be completed.");
+   public static final ATSAttributes RELEASE_DATE_ATTRIBUTE =
+         new ATSAttributes("Release Date", "Date the changes were made available to the users.");
    public static final ATSAttributes MAN_DAYS_NEEDED_ATTRIBUTE = new ATSAttributes("Man Days Needed");
 
    protected ATSAttributes(String displayName, String storeName, String description) {
