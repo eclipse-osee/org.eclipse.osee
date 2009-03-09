@@ -653,6 +653,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       if (!isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName())) return Result.TrueResult;
       try {
          Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), null);
+         if (getSmaMgr().isCancelled()) return Result.TrueResult;
          if (value == null) return new Result("Estimated Hours not set.");
          return Result.TrueResult;
       } catch (Exception ex) {
