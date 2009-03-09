@@ -532,16 +532,18 @@ public class BranchView extends ViewPart implements IActionable {
       @Override
       public Object execute(ExecutionEvent event) throws ExecutionException {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-         Object backingData = ((JobbedNode) selection.getFirstElement()).getBackingData();
-         Branch selectedBranch = (Branch) backingData;
-         try {
-            Branch toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
-            if (selectedBranch != null && toBranch != null) {
-               MergeView.openView(selectedBranch, toBranch,
-                     TransactionIdManager.getStartEndPoint(selectedBranch).getKey());
+         if (!selection.isEmpty()) {
+            Object backingData = ((JobbedNode) selection.getFirstElement()).getBackingData();
+            Branch selectedBranch = (Branch) backingData;
+            try {
+               Branch toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
+               if (selectedBranch != null && toBranch != null) {
+                  MergeView.openView(selectedBranch, toBranch,
+                        TransactionIdManager.getStartEndPoint(selectedBranch).getKey());
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return null;
       }
@@ -582,31 +584,34 @@ public class BranchView extends ViewPart implements IActionable {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            Object selectedObject = ((JobbedNode) selection.getFirstElement()).getBackingData();
-            try {
-               if (selectedObject instanceof TransactionId) {
-                  ChangeView.open((TransactionId)selectedObject);
-               } else if (selectedObject instanceof Branch) {
-                  ChangeView.open((Branch)selectedObject);
+            if (!selection.isEmpty()) {
+               Object selectedObject = ((JobbedNode) selection.getFirstElement()).getBackingData();
+               try {
+                  if (selectedObject instanceof TransactionId) {
+                     ChangeView.open((TransactionId) selectedObject);
+                  } else if (selectedObject instanceof Branch) {
+                     ChangeView.open((Branch) selectedObject);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
-
             return null;
          }
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
             boolean enabled = true;
-            
+
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            Object selectedObject = ((JobbedNode) selection.getFirstElement()).getBackingData();
-            
-            if (selectedObject instanceof TransactionId){
-               enabled = ((TransactionId)selectedObject).getTxType() != TransactionDetailsType.Baselined;
+            if (!selection.isEmpty()) {
+               Object selectedObject = ((JobbedNode) selection.getFirstElement()).getBackingData();
+
+               if (selectedObject instanceof TransactionId) {
+                  enabled = ((TransactionId) selectedObject).getTxType() != TransactionDetailsType.Baselined;
+               }
             }
-            
+
             return enabled;
          }
       });
