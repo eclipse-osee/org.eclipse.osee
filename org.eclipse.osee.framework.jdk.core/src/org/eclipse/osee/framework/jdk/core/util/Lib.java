@@ -1511,6 +1511,27 @@ public final class Lib {
       out.close();
    }
 
+   public static String decompressStream(InputStream inputStream, OutputStream outputStream) throws IOException {
+      String zipEntryName = null;
+      ZipInputStream zipInputStream = null;
+      try {
+         zipInputStream = new ZipInputStream(inputStream);
+         ZipEntry entry = zipInputStream.getNextEntry();
+         zipEntryName = entry.getName();
+         // Transfer bytes from the ZIP file to the output file
+         byte[] buf = new byte[1024];
+         int len;
+         while ((len = zipInputStream.read(buf)) > 0) {
+            outputStream.write(buf, 0, len);
+         }
+      } finally {
+         if (zipInputStream != null) {
+            zipInputStream.close();
+         }
+      }
+      return zipEntryName;
+   }
+
    public static void decompressStream(InputStream inputStream, File targetDirectory) throws IOException {
       ZipInputStream zipInputStream = null;
       try {
