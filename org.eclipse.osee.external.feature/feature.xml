@@ -30,39 +30,6 @@
          id="org.eclipse.draw2d"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.zest"
-         version="0.0.0"/>
-
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.draw2d"/>
-      <import plugin="com.ibm.icu"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.jobs"/>
-      <import plugin="org.eclipse.osgi" version="3.2.0" match="compatible"/>
-   </requires>
-
-   <plugin
-         id="org.eclipse.zest.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.zest.layouts"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
    <plugin
          id="org.eclipse.nebula.widgets.calendarcombo"
          download-size="0"
