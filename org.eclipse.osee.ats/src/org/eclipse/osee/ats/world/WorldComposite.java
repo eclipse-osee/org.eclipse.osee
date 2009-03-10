@@ -80,11 +80,12 @@ import org.eclipse.swt.widgets.Tree;
  */
 public class WorldComposite extends ScrolledComposite implements IFrameworkTransactionEventListener {
 
-   private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction, toAction, toReview, toWorkFlow,
-         toTask;
+   private Action filterCompletedAction, filterMyAssigneeAction, releaseMetricsAction, selectionMetricsAction,
+         toAction, toReview, toWorkFlow, toTask;
    private Label extraInfoLabel;
    private final WorldXViewer worldXViewer;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
+   private WorldAssigneeFilter worldAssigneeFilter = null;
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
    private TableLoadOption[] tableLoadOptions;
@@ -100,6 +101,11 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
+      try {
+         worldAssigneeFilter = new WorldAssigneeFilter();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       mainComp = new Composite(this, SWT.NONE);
       mainComp.setLayout(new GridLayout());
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -159,6 +165,14 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                } else if (event.keyCode == 'f') {
                   filterCompletedAction.setChecked(!filterCompletedAction.isChecked());
                   filterCompletedAction.run();
+               } else if (event.keyCode == 'g') {
+                  filterMyAssigneeAction.setChecked(!filterMyAssigneeAction.isChecked());
+                  filterMyAssigneeAction.run();
+               } else if (event.keyCode == 'd') {
+                  filterMyAssigneeAction.setChecked(!filterMyAssigneeAction.isChecked());
+                  filterCompletedAction.setChecked(!filterCompletedAction.isChecked());
+                  filterCompletedAction.run();
+                  filterMyAssigneeAction.run();
                }
             }
          }
@@ -389,6 +403,21 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       };
       filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
 
+      filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", Action.AS_CHECK_BOX) {
+
+         @Override
+         public void run() {
+            if (filterMyAssigneeAction.isChecked()) {
+               worldXViewer.addFilter(worldAssigneeFilter);
+            } else {
+               worldXViewer.removeFilter(worldAssigneeFilter);
+            }
+            updateExtendedStatusString();
+            worldXViewer.refresh();
+         }
+      };
+      filterMyAssigneeAction.setToolTipText("Filter My Assignee - Ctrl-G");
+
       Action refreshAction = new Action("Refresh") {
 
          @Override
@@ -503,6 +532,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       });
 
       actionToMenuItem(menu, filterCompletedAction, SWT.CHECK);
+      actionToMenuItem(menu, filterMyAssigneeAction, SWT.CHECK);
       new MenuItem(menu, SWT.SEPARATOR);
       actionToMenuItem(menu, releaseMetricsAction, SWT.CHECK);
       actionToMenuItem(menu, selectionMetricsAction, SWT.CHECK);
@@ -577,7 +607,11 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    }
 
    public void updateExtendedStatusString() {
-      worldXViewer.setExtendedStatusString(filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "");
+      worldXViewer.setExtendedStatusString(
+      //
+      (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
+      //
+      (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
    }
 
    public void redisplayAsAction() {
