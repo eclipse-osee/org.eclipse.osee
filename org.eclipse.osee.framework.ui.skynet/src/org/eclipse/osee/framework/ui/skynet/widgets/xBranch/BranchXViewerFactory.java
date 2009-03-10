@@ -27,15 +27,15 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn gamma =
          new XViewerColumn("framework.branch.gamma", "Gamma", 70, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn itemType =
-         new XViewerColumn("framework.branch.itemType", "Item Type", 150, SWT.LEFT, true, SortDataType.String,
-               false, null);
+         new XViewerColumn("framework.branch.itemType", "Item Type", 150, SWT.LEFT, true, SortDataType.String, false,
+               null);
    public static XViewerColumn was =
          new XViewerColumn("framework.branch.was", "Was", 250, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn is =
          new XViewerColumn("framework.branch.is", "Is", 250, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn timeStamp =
-         new XViewerColumn("framework.branch.timeStamp", "Time Stamp", 110, SWT.LEFT, true, SortDataType.String,
-               false, null);
+         new XViewerColumn("framework.branch.timeStamp", "Time Stamp", 110, SWT.LEFT, true, SortDataType.String, false,
+               null);
    public static XViewerColumn author =
          new XViewerColumn("framework.branch.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn comment =
@@ -46,9 +46,9 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public BranchXViewerFactory() {
       super(NAMESPACE);
       registerColumn(transaction, gamma, itemType, was, is, timeStamp, author, comment);
-      registerAllAttributeColumns();
    }
 
+   @Override
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new XViewerSorter(xViewer);
    }

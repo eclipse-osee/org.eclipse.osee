@@ -59,7 +59,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
                   BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.ALL,
                         branchTypes.toArray(new BranchType[branchTypes.size()]));
             return branches.toArray();
-            
+
          } catch (OseeCoreException ex) {
             OseeLog.log(this.getClass(), Level.WARNING, ex);
          }
@@ -75,15 +75,13 @@ public class XBranchContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
+      if (element instanceof BranchManager) return true;
       if (element instanceof Collection) return true;
       return false;
    }
 
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof Collection) {
-         return ((Collection<?>) inputElement).toArray();
-      }
-      return EMPTY_ARRAY;
+      return getChildren(inputElement);
    }
 
    public void dispose() {

@@ -58,7 +58,7 @@ public class XBranchWidget extends XWidget implements IActionable {
     * @param label
     */
    public XBranchWidget() {
-      super("History");
+      super("BrachView");
    }
 
    /*
