@@ -430,13 +430,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    private ToolBar createToolBar(Composite parent) {
       ToolBar toolBar = AtsLib.createCommonToolBar(parent);
-      SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
       ToolItem item;
 
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Editor");
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(skynetGuiPlugin.getImage("edit.gif"));
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("DBiconBlueEdit.GIF"));
       item.setToolTipText("Show this artifact in the Resource History");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
