@@ -482,18 +482,18 @@ public class AtsBranchManager {
       private class ParentMismatchWarning implements Runnable {
          private final Branch configuredBranch;
          private final Branch workflowWorkingBranchParent;
-         private final String versionName;
+         private final String sourceBranchDetails;
          private boolean commit;
 
          /**
           * @param configuredBranch
-          * @param versionName
+          * @param sourceBranchDetails
           * @param workflowWorkingBranchParent
           */
-         public ParentMismatchWarning(Branch configuredBranch, String versionName, Branch workflowWorkingBranchParent) {
+         public ParentMismatchWarning(Branch configuredBranch, String sourceBranchDetails, Branch workflowWorkingBranchParent) {
             super();
             this.configuredBranch = configuredBranch;
-            this.versionName = versionName;
+            this.sourceBranchDetails = sourceBranchDetails;
             this.workflowWorkingBranchParent = workflowWorkingBranchParent;
          }
 
@@ -505,7 +505,7 @@ public class AtsBranchManager {
             commit =
                   MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
                         "Warning: committing into a branch other than its direct parent", String.format(
-                              "Targeted version \"%s\" branch \"%s\" does not match parent branch \"%s\"", versionName,
+                              "\"%s\" branch \"%s\" does not match parent branch \"%s\"", sourceBranchDetails,
                               configuredBranch.getBranchShortName(), workflowWorkingBranchParent.getBranchShortName()));
          }
 
@@ -530,39 +530,45 @@ public class AtsBranchManager {
             // If team uses versions, then validate that the parent branch id is specified by either
             // the team definition's attribute or the related version's attribute
             if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-               // Only perform checks if team definition uses ATS versions
                final TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
-               if (team.getTeamDefinition().isTeamUsesVersions()) {
 
-                  // Confirm that team is targeted for version
-                  if (team.getWorldViewTargetedVersion() == null) {
-                     return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, String.format(
-                           "Commit Branch Failed: Workflow \"%s\" must be targeted for a version.",
-                           smaMgr.getSma().getHumanReadableId()));
+               // If team uses versions, Confirm that team is targeted for version
+               if (team.getTeamDefinition().isTeamUsesVersions() && team.getWorldViewTargetedVersion() == null) {
+                  return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, String.format(
+                        "Commit Branch Failed: Workflow \"%s\" must be targeted for a version.",
+                        smaMgr.getSma().getHumanReadableId()));
+               }
+
+               // Validate that a parent branch is specified in ATS configuration; first targted version, then
+               // team definition
+               configuredBranch = getConfiguredBranchForWorkflow();
+               if (configuredBranch == null) {
+                  return new Status(
+                        Status.ERROR,
+                        AtsPlugin.PLUGIN_ID,
+                        String.format(
+                              "Commit Branch Failed: Workflow \"%s\" can't access parent branch to commit to.\n\nSince the configured Team Definition uses versions, the parent branch must be specified in either the targeted Version Artifact or the Team Definition Artifact.",
+                              smaMgr.getSma().getHumanReadableId()));
+               }
+
+               // Validate that the configured parentBranch is the same as the working branch's
+               // parent branch.
+               Branch workflowWorkingBranchParent = workflowWorkingBranch.getParentBranch();
+               if (!configuredBranch.equals(workflowWorkingBranchParent)) {
+                  String sourceBranchDetails = "";
+                  if (team.getTeamDefinition().isTeamUsesVersions()) {
+                     sourceBranchDetails =
+                           String.format("Targeted version \"%s\" ",
+                                 team.getWorldViewTargetedVersion().getDescriptiveName());
+                  } else {
+                     sourceBranchDetails =
+                           String.format("Team Definition's \"%s\" ", team.getTeamDefinition().getDescriptiveName());
                   }
-
-                  // Validate that a parent branch is specified in ATS configuration
-                  configuredBranch = getConfiguredBranchForWorkflow();
-                  if (configuredBranch == null) {
-                     return new Status(
-                           Status.ERROR,
-                           AtsPlugin.PLUGIN_ID,
-                           String.format(
-                                 "Commit Branch Failed: Workflow \"%s\" can't access parent branch to commit to.\n\nSince the configured Team Definition uses versions, the parent branch must be specified in either the targeted Version Artifact or the Team Definition Artifact.",
-                                 smaMgr.getSma().getHumanReadableId()));
-                  }
-
-                  // Validate that the configured parentBranch is the same as the working branch's
-                  // parent branch.
-                  Branch workflowWorkingBranchParent = workflowWorkingBranch.getParentBranch();
-                  if (!configuredBranch.equals(workflowWorkingBranchParent)) {
-                     ParentMismatchWarning runnable =
-                           new ParentMismatchWarning(configuredBranch,
-                                 team.getWorldViewTargetedVersion().getDescriptiveName(), workflowWorkingBranchParent);
-                     Displays.ensureInDisplayThread(runnable, true);
-                     if (runnable.stopCommit()) {
-                        return Status.OK_STATUS;
-                     }
+                  ParentMismatchWarning runnable =
+                        new ParentMismatchWarning(configuredBranch, sourceBranchDetails, workflowWorkingBranchParent);
+                  Displays.ensureInDisplayThread(runnable, true);
+                  if (runnable.stopCommit()) {
+                     return Status.OK_STATUS;
                   }
                }
             }
