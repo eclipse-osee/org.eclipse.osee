@@ -44,7 +44,7 @@ public class SMAMetrics {
    double percentCompleteByWorkflowPercents = 0;
    double percentCompleteByNumWorkflow = 0;
 
-   Date estRelDate;
+   Date estimatedReleaseDate;
    long daysTillRel = 0;
    VersionArtifact versionArtifact = null;
    String str = "";
@@ -63,9 +63,10 @@ public class SMAMetrics {
          new HashCollection<User, Artifact>(true, HashSet.class, 100);
    private final double manHoursPerDay;
 
-   public SMAMetrics(Collection<? extends Artifact> artifacts, VersionArtifact versionArtifact, double manHoursPerDay) throws OseeCoreException {
+   public SMAMetrics(Collection<? extends Artifact> artifacts, VersionArtifact versionArtifact, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
       this.manHoursPerDay = manHoursPerDay;
       this.versionArtifact = versionArtifact;
+      this.estimatedReleaseDate = estimatedReleaseDate;
       if (artifacts.size() == 0) return;
       for (Artifact art : artifacts) {
          if (art instanceof ActionArtifact) {
@@ -116,23 +117,30 @@ public class SMAMetrics {
          percentCompleteByWorkflowPercents = cummulativeWorkflowPercentComplete / getNumSMAs();
       }
 
-      estRelDate = null;
       Date today = new Date();
       daysTillRel = 0;
-      if (versionArtifact != null) {
-         estRelDate = versionArtifact.getEstimatedReleaseDate();
-         if (estRelDate != null && estRelDate.after(today)) {
-            daysTillRel = (estRelDate.getTime() - today.getTime()) / MILLISECS_PER_DAY;
-         }
+      if (versionArtifact != null && estimatedReleaseDate == null) {
+         estimatedReleaseDate = versionArtifact.getEstimatedReleaseDate();
+      }
+      if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
+         daysTillRel = (estimatedReleaseDate.getTime() - today.getTime()) / MILLISECS_PER_DAY;
       }
       str =
-            String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
-                  getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByWorkflowPercents,
-                  hrsRemainFromEstimates, hrsSpent, (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ",
-                        manDaysNeeded) : ""),
-                  (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
-                        versionArtifact.getDescriptiveName(), (estRelDate == null ? "Not Set" : XDate.getDateStr(
-                              estRelDate, XDate.MMDDYY)), daysTillRel) : ""));
+            String.format(
+                  "TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
+                  getNumTeamWfs(),
+                  getNumTasks(),
+                  estHours,
+                  "%",
+                  percentCompleteByWorkflowPercents,
+                  hrsRemainFromEstimates,
+                  hrsSpent,
+                  (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
+                  (versionArtifact != null ? String.format(
+                        "Version: %s  EstRelDate: %s DaysLeft: %d ",
+                        versionArtifact.getDescriptiveName(),
+                        (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(estimatedReleaseDate, XDate.MMDDYY)),
+                        daysTillRel) : ""));
    }
 
    /**
@@ -229,8 +237,8 @@ public class SMAMetrics {
       return str;
    }
 
-   public static String getEstRemainMetrics(Collection<? extends Artifact> smas, VersionArtifact versionArtifact, double manHoursPerDay) throws OseeCoreException {
-      return new SMAMetrics(smas, versionArtifact, manHoursPerDay).str;
+   public static String getEstRemainMetrics(Collection<? extends Artifact> smas, VersionArtifact versionArtifact, double manHoursPerDay, Date estimatedrelDate) throws OseeCoreException {
+      return new SMAMetrics(smas, versionArtifact, manHoursPerDay, estimatedrelDate).str;
    }
 
    /**
@@ -251,21 +259,22 @@ public class SMAMetrics {
             toStringObjectBreakout(), estHours, percentCompleteByWorkflowPercents, hrsRemainFromEstimates,
             manDaysNeeded, hrsSpent, (versionArtifact != null ? String.format(
                   "\nVersion: %s  Estimated Release Date: %s Days Left: %d ", versionArtifact.getDescriptiveName(),
-                  (estRelDate == null ? "Not Set" : XDate.getDateStr(estRelDate, XDate.MMDDYY)), daysTillRel) : ""));
+                  (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(estimatedReleaseDate, XDate.MMDDYY)),
+                  daysTillRel) : ""));
    }
 
    /**
     * @return the estRelDate
     */
    public Date getEstRelDate() {
-      return estRelDate;
+      return estimatedReleaseDate;
    }
 
    /**
     * @param estRelDate the estRelDate to set
     */
    public void setEstRelDate(Date estRelDate) {
-      this.estRelDate = estRelDate;
+      this.estimatedReleaseDate = estRelDate;
    }
 
    /**

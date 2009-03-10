@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,8 +21,10 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,6 +59,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    private final Color FOREGROUND_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
    private final Composite mainComp;
    private boolean refreshedOnce = true;
+   private XDate estimatedReleaseXDate;
 
    /**
     * @param iAtsMetricsProvider
@@ -90,7 +94,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    private void creatToolBar(Composite composite) {
       toolBarComposite = new Composite(composite, SWT.NONE);
       toolBarComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false, 1, 1));
-      toolBarComposite.setLayout(new GridLayout(2, false));
+      toolBarComposite.setLayout(new GridLayout(4, false));
       adapt(toolBarComposite);
 
       Button refresh = new Button(toolBarComposite, SWT.PUSH);
@@ -111,6 +115,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
       });
       adapt(refresh);
 
+      estimatedReleaseXDate = new XDate("Estimated Release Date - Override");
+      estimatedReleaseXDate.createWidgets(toolBarComposite, 2);
+      adapt(estimatedReleaseXDate.getLabelWidget());
+
       if (!refreshedOnce) {
          Label label = new Label(toolBarComposite, SWT.NONE);
          label.setText("        Last Updated: " + XDate.getDateNow(XDate.MMDDYYHHMM));
@@ -130,17 +138,54 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(metricsComposite);
 
       addSpace();
+
+      try {
+         if (estimatedReleaseXDate.getDate() == null && iAtsMetricsProvider.getMetricsVersionArtifact() != null && iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate() != null) {
+            estimatedReleaseXDate.setDate(iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
       SMAMetrics sMet =
             new SMAMetrics(iAtsMetricsProvider.getMetricsArtifacts(), iAtsMetricsProvider.getMetricsVersionArtifact(),
-                  iAtsMetricsProvider.getManHoursPerDayPreference());
+                  iAtsMetricsProvider.getManHoursPerDayPreference(), getEstimatedReleaseDate());
       createOverviewChart(sMet, metricsComposite);
       addSpace();
-      createCompletedByAssigneesChart(sMet, metricsComposite);
-      addSpace();
       createHoursRemainingByAssigneesChart(sMet, metricsComposite);
+      addSpace();
+      createCompletedByAssigneesChart(sMet, metricsComposite);
 
       mainComp.layout();
       computeScrollSize();
+   }
+
+   private Date getEstimatedReleaseDate() throws OseeCoreException {
+      if (estimatedReleaseXDate != null && estimatedReleaseXDate.getDate() != null) {
+         return estimatedReleaseXDate.getDate();
+      }
+      if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
+         return iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate();
+      }
+      // Try to find an estimated release date from one of the workflows
+      for (Artifact art : iAtsMetricsProvider.getMetricsArtifacts()) {
+         if (art instanceof TeamWorkFlowArtifact) {
+            VersionArtifact verArt = ((TeamWorkFlowArtifact) art).getWorldViewTargetedVersion();
+            if (verArt != null) {
+               if (verArt.getEstimatedReleaseDate() != null) {
+                  return verArt.getEstimatedReleaseDate();
+               }
+            }
+         }
+      }
+      return null;
+   }
+
+   private boolean isUsingEstimatedReleaseDateFromOverride() throws OseeCoreException {
+      if (estimatedReleaseXDate != null && estimatedReleaseXDate.getDate() != null) {
+         return true;
+      }
+      return false;
    }
 
    public void computeScrollSize() {
@@ -188,17 +233,17 @@ public class AtsMetricsComposite extends ScrolledComposite {
          lines.add(new XBarGraphLine(
                "Targeted Version",
                0,
-               iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().toString()));
+               iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getDescriptiveName()));
          lines.add(new XBarGraphLine(
-               "Estimated Release Date",
+               "Version Estimated Release Date",
                0,
                iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValueAsString(
                      ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), "Not Set")));
+         lines.add(new XBarGraphLine("Metrics Estimated Release Date", 0,
+               getEstimatedReleaseDate() == null ? "Not Set" : getEstimatedReleaseDate().toString()));
          double hoursTillRelease = sMet.getHoursTillRel();
-         lines.add(new XBarGraphLine(
-               "Hours Till Release",
-               0,
-               iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Estimated Release Date Not Set" : sMet.getHoursTillRelStr()));
+         lines.add(new XBarGraphLine("Hours Till Release", 0,
+               getEstimatedReleaseDate() == null ? "Estimated Release Date Not Set" : sMet.getHoursTillRelStr()));
          double hoursRemainingFromEstimates = sMet.getHrsRemainFromEstimates();
          int percent = 0;
          if (hoursTillRelease != 0) {

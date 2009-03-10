@@ -299,13 +299,14 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          Set<StateMachineArtifact> smaArts = getXViewer().getSelectedSMAArtifacts();
          if (smaArts.size() != 0) {
             verArt = smaArts.iterator().next().getWorldViewTargetedVersion();
-            SMAMetrics sMet = new SMAMetrics(smaArts, verArt, smaArts.iterator().next().getManHrsPerDayPreference());
+            SMAMetrics sMet =
+                  new SMAMetrics(smaArts, verArt, smaArts.iterator().next().getManHrsPerDayPreference(), null);
             str = sMet.toString();
          }
       } else if (selectionMetricsAction.isChecked() && getXViewer().getSelectedSMAArtifacts().size() > 0) {
          SMAMetrics sMet =
                new SMAMetrics(getXViewer().getSelectedSMAArtifacts(), null,
-                     getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference());
+                     getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(), null);
          str = sMet.toString();
       }
 
