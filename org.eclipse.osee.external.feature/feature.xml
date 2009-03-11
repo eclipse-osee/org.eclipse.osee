@@ -30,6 +30,10 @@
          id="org.eclipse.draw2d"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.birt"
+         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.nebula.widgets.calendarcombo"
          download-size="0"
@@ -153,19 +157,5 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.birt.chart.engine"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.birt.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
 </feature>
