@@ -59,9 +59,12 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
     */
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationTypeSide && columnIndex == 0) {
-         return ((RelationTypeSide) element).getSideName();
+         RelationTypeSide side = (RelationTypeSide) element;
+         return side.getSideName() + " \"" + (side.isSideA() ? side.getRelationType().getAToBPhrasing() : side.getRelationType().getBToAPhrasing()) + "\" " + (side.isSideA() ? side.getRelationType().getSideBName() : side.getRelationType().getSideAName()) + " \"" + artifact.getDescriptiveName() + "\"";
       } else if (element instanceof RelationType) {
-         if (columnIndex == 0) return ((RelationType) element).getTypeName();
+         if (columnIndex == 0) {
+            return ((RelationType) element).getTypeName();
+         }
       } else if (element instanceof RelationLink) {
          RelationLink link = (RelationLink) element;
          if (columnIndex == 0) {
