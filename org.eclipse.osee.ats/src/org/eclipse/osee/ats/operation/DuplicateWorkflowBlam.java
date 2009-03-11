@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
@@ -210,9 +209,13 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
          AWorkbench.popup("ERROR", "Must select one or more team workflows to duplicate");
          return;
       }
-      BlamOperation blamOperation = BlamOperations.getBlamOperation("DuplicateWorkflowBlam");
-      ((DuplicateWorkflowBlam) blamOperation).setDefaultTeamWorkflows(worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts());
-      BlamEditor.edit(blamOperation);
+      try {
+         BlamOperation blamOperation = new DuplicateWorkflowBlam();
+         ((DuplicateWorkflowBlam) blamOperation).setDefaultTeamWorkflows(worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts());
+         BlamEditor.edit(blamOperation);
+      } catch (IOException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    /**
@@ -235,6 +238,14 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
    @Override
    public String getMenuItemName() {
       return "Duplicate Team Workflow";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Duplicate Workflow";
    }
 
 }

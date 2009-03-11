@@ -39,7 +39,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
    private static final String update_version = "update osee_relation_link set modification_id = ? where gamma_id = ?";
    private static final String SELECT_DUPLICATE_RELATIONS =
          "select rel1.a_art_id, rel1.b_art_id, rel1.rel_link_type_id, txd1.branch_id, rel1.REL_LINK_ID, rel1.gamma_id, txd1.transaction_id from osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1 , (select rel2.*, txd2.branch_id, txd2.transaction_id from osee_relation_link rel2, osee_txs txs2, osee_tx_details txd2 where txs2.transaction_id = txd2.transaction_id and txs2.tx_current = 1 and txs2.gamma_id = rel2.gamma_id) other_rel_link where txs1.transaction_id = txd1.transaction_id and txs1.tx_current = 1 and txs1.gamma_id = rel1.gamma_id and txd1.branch_id = other_rel_link.branch_id and rel1.a_art_id = other_rel_link.a_art_id and rel1.b_art_id = other_rel_link.b_art_id and rel1.REL_LINK_TYPE_ID = other_rel_link.rel_link_type_id and rel1.REL_LINK_ID <> other_rel_link.rel_link_id order by txd1.branch_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rel_link_id";
-   private CompositeKeyQuadHashMap<Integer, Integer, Integer, Integer, RelationInfo> relationInfo =
+   private final CompositeKeyQuadHashMap<Integer, Integer, Integer, Integer, RelationInfo> relationInfo =
          new CompositeKeyQuadHashMap<Integer, Integer, Integer, Integer, RelationInfo>(1000);
 
    int[] gammaIds =
@@ -57,6 +57,14 @@ public class DuplicateRelationOpertions extends AbstractBlam {
                1806445, 1806442, 1806443, 1806249, 1806440, 1806441, 1806251, 1806454, 1806453, 1806452, 1806451,
                1953629, 1806450, 2080927, 1806449, 1806448, 1806463, 1806462, 1806461, 1806460, 1806459, 261366,
                1806458, 1806457, 1806456, 261365};
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Duplicate Relation Opertions";
+   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
@@ -181,6 +189,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
       //*/
    }
 
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Branch List\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Parent Branch\" /></xWidgets>";
    }
@@ -205,10 +214,10 @@ public class DuplicateRelationOpertions extends AbstractBlam {
    }
 
    private class RelationInfo {
-      private int rel_link_type;
-      private int art_a;
-      private int art_b;
-      private List<Pair<Long, Integer>> relLinksToGammas;
+      private final int rel_link_type;
+      private final int art_a;
+      private final int art_b;
+      private final List<Pair<Long, Integer>> relLinksToGammas;
 
       RelationInfo(int a_art_id, int b_art_id, int relLinkTypeId, int branchId) {
          this.rel_link_type = relLinkTypeId;

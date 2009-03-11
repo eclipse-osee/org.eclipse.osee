@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.operation;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,7 +46,12 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public static String EMAIL_POCS = "Email POCs (if persist)";
    private TaskableStateMachineArtifact taskableStateMachineArtifact;
 
-   public ImportTasksFromSpreadsheet() throws IOException {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Import Tasks From Spreadsheet";
    }
 
    /* (non-Javadoc)
@@ -66,6 +70,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");

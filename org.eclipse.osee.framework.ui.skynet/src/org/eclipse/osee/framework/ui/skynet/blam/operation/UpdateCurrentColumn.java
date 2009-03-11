@@ -112,8 +112,17 @@ public class UpdateCurrentColumn extends AbstractBlam {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Update Current Column";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
@@ -365,7 +374,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
    private final class UpdateTxModTypeSingleCallOperation implements IOperation {
 
-      private Map<TypesEnum, String> modTypeInnerSelectMap;
+      private final Map<TypesEnum, String> modTypeInnerSelectMap;
 
       public UpdateTxModTypeSingleCallOperation() {
          modTypeInnerSelectMap = new HashMap<TypesEnum, String>();
@@ -444,7 +453,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
    private final class VerifyTxModTypeOperation implements IOperation {
 
-      private Map<TypesEnum, String> modTypeVerificationMap;
+      private final Map<TypesEnum, String> modTypeVerificationMap;
 
       public VerifyTxModTypeOperation() {
          modTypeVerificationMap = new HashMap<TypesEnum, String>();

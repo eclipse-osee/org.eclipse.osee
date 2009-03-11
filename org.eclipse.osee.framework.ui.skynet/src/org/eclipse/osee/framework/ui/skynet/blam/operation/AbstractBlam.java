@@ -27,6 +27,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayoutListener {
    private BlamEditor blamEditor;
 
+   public AbstractBlam() {
+   }
+
    /*
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
@@ -42,9 +45,7 @@ public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayou
       return "Select parameters below and click the play button at the top right.";
    }
 
-   public String getName() {
-      return getClassSimpleName();
-   }
+   public abstract String getName();
 
    public String getClassSimpleName() {
       return getClass().getSimpleName();

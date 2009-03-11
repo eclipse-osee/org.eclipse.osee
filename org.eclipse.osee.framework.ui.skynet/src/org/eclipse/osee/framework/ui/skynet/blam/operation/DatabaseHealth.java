@@ -28,14 +28,22 @@ import org.osgi.framework.Bundle;
  * @author Jeff C. Phillips
  */
 public class DatabaseHealth extends AbstractBlam {
-   private Map<String, DatabaseHealthTask> dbFix = new TreeMap<String, DatabaseHealthTask>();
-   private Map<String, DatabaseHealthTask> dbVerify = new TreeMap<String, DatabaseHealthTask>();
+   private final Map<String, DatabaseHealthTask> dbFix = new TreeMap<String, DatabaseHealthTask>();
+   private final Map<String, DatabaseHealthTask> dbVerify = new TreeMap<String, DatabaseHealthTask>();
    private static final String SHOW_DETAILS_PROMPT = "Show Details of Operations";
    private static final String CLEAN_ALL_PROMPT = "Run all the Cleanup Operations";
    private static final String SHOW_ALL_PROMPT = "Run all the Verification Operations";;
 
    public DatabaseHealth() {
       loadExtensions();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Database Health";
    }
 
    @Override
@@ -116,6 +124,7 @@ public class DatabaseHealth extends AbstractBlam {
 
    }
 
+   @Override
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");

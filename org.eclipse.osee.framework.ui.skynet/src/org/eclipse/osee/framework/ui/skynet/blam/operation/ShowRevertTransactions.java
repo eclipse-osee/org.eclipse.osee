@@ -24,6 +24,14 @@ public class ShowRevertTransactions extends AbstractBlam {
          "Select DISTINCT Branch_id, Value, txs.transaction_id, Time FROM osee_removed_txs txs, osee_tx_details det, osee_attribute attr, osee_txs txs1 WHERE txs.transaction_id = det.transaction_id AND det.author = attr.art_id AND attr.attr_type_id = 30 AND attr.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 ORDER BY time";
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Show Revert Transactions";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
  * @author Jeff C. Phillips
  */
 public class AddEveryoneGroupToBranches extends AbstractBlam {
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
@@ -36,5 +37,13 @@ public class AddEveryoneGroupToBranches extends AbstractBlam {
             AccessControlManager.getInstance().setPermission(everyone, brnch, PermissionEnum.READ);
          }
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Add Everone Group to Branches";
    }
 }

@@ -25,6 +25,14 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
          "select count(*) from v$session t1 where t1.username='OSEE_CLIENT' and not exists (select null from v$session t2 where t1.machine=t2.machine and t2.sid < t1.sid)";
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Unique Number Of Current Osee Users";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -50,6 +58,7 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return emptyXWidgetsXml;
    }

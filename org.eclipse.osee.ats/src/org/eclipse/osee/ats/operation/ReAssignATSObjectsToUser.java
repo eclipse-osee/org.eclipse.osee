@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.operation;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +39,12 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
    public static String FROM_ASSIGNEE = "From Assignee";
    public static String TO_ASSIGNEE = "To Assignee";
 
-   public ReAssignATSObjectsToUser() throws IOException {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Re-Assign ATS Objects To User";
    }
 
    /* (non-Javadoc)
@@ -106,6 +110,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XMembersCombo\" displayName=\"" + FROM_ASSIGNEE + "\" />");

@@ -81,10 +81,6 @@ public class BlamEditor extends AbstractArtifactEditor implements IBlamEventList
       });
    }
 
-   public static void edit(String workflowId) throws OseeCoreException {
-      BlamEditor.edit(new BlamEditorInput(workflowId));
-   }
-
    public static void edit(BlamOperation blamOperation) throws OseeCoreException {
       BlamEditor.edit(new BlamEditorInput(blamOperation));
    }

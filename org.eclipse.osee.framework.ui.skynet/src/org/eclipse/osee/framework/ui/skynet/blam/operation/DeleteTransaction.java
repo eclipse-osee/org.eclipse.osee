@@ -22,6 +22,15 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Ryan D. Brooks
  */
 public class DeleteTransaction extends AbstractBlam {
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Delete Transaction";
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
@@ -41,12 +50,13 @@ public class DeleteTransaction extends AbstractBlam {
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
-	      StringBuilder builder = new StringBuilder();
-	      builder.append("<xWidgets>");
-	      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Transaction List\" />");
-	      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Force Delete\" />");
-	      builder.append("</xWidgets>");
-	      return builder.toString();
+      StringBuilder builder = new StringBuilder();
+      builder.append("<xWidgets>");
+      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Transaction List\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Force Delete\" />");
+      builder.append("</xWidgets>");
+      return builder.toString();
    }
 }

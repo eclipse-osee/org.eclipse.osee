@@ -28,14 +28,11 @@ public class BlamEditorInput implements IEditorInput {
       this.artifact = artifact;
    }
 
-   public BlamEditorInput(String workflowId) throws OseeCoreException {
-      this.artifact = BlamWorkflow.getOrCreateBlamWorkflow(BlamOperations.getBlamOperation(workflowId));
-   }
-
    public BlamEditorInput(BlamOperation blamOperation) throws OseeCoreException {
       this.artifact = BlamWorkflow.getOrCreateBlamWorkflow(blamOperation);
    }
 
+   @Override
    public boolean equals(Object obj) {
       boolean equals = false;
       if (obj instanceof BlamEditorInput) {

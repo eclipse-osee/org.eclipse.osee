@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -41,6 +40,14 @@ public class CheckValidType extends AbstractBlam {
       this.sql = sql;
       this.headers = headers;
       this.colNames = colNames;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Check Valid Type";
    }
 
    /* (non-Javadoc)

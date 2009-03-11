@@ -33,6 +33,14 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
    public static String SELECT_IMAGE = "Select Image GIF";
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Update ArtifactType Image";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -49,8 +57,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
                   AWorkbench.popup("ERROR", "Invalid image filename.");
                   return;
                }
-               ArtifactType artifactSubtypeDescriptor =
-                     variableMap.getArtifactType("Select Artifact Type");
+               ArtifactType artifactSubtypeDescriptor = variableMap.getArtifactType("Select Artifact Type");
                if (!MessageDialog.openConfirm(
                      Display.getCurrent().getActiveShell(),
                      "Update Artifact Type Image",
@@ -72,6 +79,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
     */
+   @Override
    public String getDescriptionUsage() {
       return "This BLAM will import the selected 16x16 pixel gif image as the image for the selected artifact type.  Existing image will be overwritten.\n\nNOTE: Change default branch for other Artifact Types.";
    }
@@ -79,6 +87,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"" + SELECT_IMAGE + "\" />");

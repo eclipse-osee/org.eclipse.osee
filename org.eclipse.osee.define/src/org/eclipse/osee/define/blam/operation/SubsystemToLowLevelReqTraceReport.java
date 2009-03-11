@@ -43,9 +43,17 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
    private final HashMap<String, List<Artifact>> subsysToSubsysReqsMap;
-   private List<Artifact> lowLevelReqs;
-   private HashSet<Artifact> components;
+   private final List<Artifact> lowLevelReqs;
+   private final HashSet<Artifact> components;
    private String reqtypeName;
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Subsystem To Low Level Req Trace Report";
+   }
 
    public SubsystemToLowLevelReqTraceReport() {
       subsysToSubsysReqsMap = new HashMap<String, List<Artifact>>();

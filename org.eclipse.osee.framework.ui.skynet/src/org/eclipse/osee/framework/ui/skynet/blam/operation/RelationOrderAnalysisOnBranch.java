@@ -53,7 +53,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class RelationOrderAnalysisOnBranch extends AbstractBlam {
    private static Matcher getIds = Pattern.compile(".*?artId\\[(\\d+?)\\].*?relTypeId\\[(\\d+?)\\].*").matcher("");
    final List<String> messages = new ArrayList<String>();
-   private Map<Branch, Map<Integer, ArtifactOrder>> branchToArtifactsToSort =
+   private final Map<Branch, Map<Integer, ArtifactOrder>> branchToArtifactsToSort =
          new HashMap<Branch, Map<Integer, ArtifactOrder>>();
    private Branch currentBranch;
 
@@ -61,7 +61,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
       Set<Integer> unsortedRelTypeIds = new HashSet<Integer>();
    }
 
-   private ILoggerListener listener = new ILoggerListener() {
+   private final ILoggerListener listener = new ILoggerListener() {
 
       @Override
       public void log(String loggerName, Level level, String message, Throwable th) {
@@ -82,6 +82,14 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
       }
 
    };
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Relation Order Analysis On Branch";
+   }
 
    /*
     * (non-Javadoc)
@@ -124,6 +132,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
       }
    }
 
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Branch List\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    }

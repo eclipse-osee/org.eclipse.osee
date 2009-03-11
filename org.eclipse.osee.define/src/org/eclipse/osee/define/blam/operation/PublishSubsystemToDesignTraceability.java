@@ -37,8 +37,12 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
    private ISheetWriter excelWriter;
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
     */
+   @Override
+   public String getName() {
+      return "Publish Subsystem To Design Traceability";
+   }
 
    private void init() throws IOException {
       charBak = new CharBackedInputStream();
@@ -120,6 +124,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Subsystem Root Artifacts\" /></xWidgets>";
    }

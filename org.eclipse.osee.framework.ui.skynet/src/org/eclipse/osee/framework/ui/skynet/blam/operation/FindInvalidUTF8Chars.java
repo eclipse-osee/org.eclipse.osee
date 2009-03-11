@@ -22,6 +22,14 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
    private static final String READ_ATTRIBUTE_VALUES = "SELECT art_id, value FROM " + ATTRIBUTE_VERSION_TABLE;
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Find Invalid UTF8 Chars";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -53,6 +61,7 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return emptyXWidgetsXml;
    }

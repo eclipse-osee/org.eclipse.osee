@@ -32,7 +32,12 @@ public class ImageCaptureBlam extends AbstractBlam {
    public Point botRightPoint;
    public boolean listenerAdded = false;
 
-   public ImageCaptureBlam() {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Image Capture";
    }
 
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {

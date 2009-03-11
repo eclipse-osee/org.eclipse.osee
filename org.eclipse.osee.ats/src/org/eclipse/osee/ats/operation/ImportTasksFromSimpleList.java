@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.operation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -48,7 +47,12 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private TaskableStateMachineArtifact taskableStateMachineArtifact;
 
-   public ImportTasksFromSimpleList() throws IOException {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Import Tasks From Simple List";
    }
 
    /* (non-Javadoc)

@@ -26,6 +26,14 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
    private List<Attribute<?>> attributesToPurge;
    private List<RelationLink> relationsToDelete;
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Change Artifact Type";
+   }
+
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       ChangeArtifactType.changeArtifactType(variableMap.getArtifacts("artifacts"),
             variableMap.getArtifactType("New Artifact Type"));
@@ -42,4 +50,5 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
       //
       "<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
    }
+
 }

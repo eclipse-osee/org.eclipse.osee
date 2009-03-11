@@ -36,6 +36,14 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private List<Artifact> templates;
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Publish With Specified Template";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -69,6 +77,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
     */
+   @Override
    public String getDescriptionUsage() {
       return "Select a Master or Master/Slave template and click the play button at the top right.";
    }
@@ -76,6 +85,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       populateTemplateList();
       StringBuilder builder = new StringBuilder();

@@ -25,6 +25,14 @@ public class ParseWindowsDirectoryListing extends AbstractBlam {
    private static final String DIRECTORY_PREFIX = " Directory of Y:\\";
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Parse Windows Directory Listing";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
@@ -56,6 +64,7 @@ public class ParseWindowsDirectoryListing extends AbstractBlam {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Directory Listing File\" defaultValue=\"c:\\UserData\\cte.txt\" /></xWidgets>";
    }

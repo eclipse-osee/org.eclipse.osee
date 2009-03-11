@@ -43,6 +43,14 @@ public class ExportArtifacts extends AbstractBlam {
    private static final int NUM_FIXED_COLUMNS = 4;
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Export Artifacts";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -122,6 +130,7 @@ public class ExportArtifacts extends AbstractBlam {
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Include Children\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";
    }
@@ -129,6 +138,7 @@ public class ExportArtifacts extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
     */
+   @Override
    public String getDescriptionUsage() {
       return "Select parameters below and click the play button at the top right.";
    }

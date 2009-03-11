@@ -121,6 +121,8 @@ public class XWidgetFactory {
          xWidget = new XFloatDam(name);
       else if (xWidgetName.equals("XIntegerDam"))
          xWidget = new org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam(name);
+      else if (xWidgetName.equals("XFileTextWithSelectionDialog"))
+         xWidget = new XFileTextWithSelectionDialog(name);
       else if (xWidgetName.equals("XLabel"))
          xWidget = new XLabel(name);
       else if (xWidgetName.equals("XCheckBox")) {

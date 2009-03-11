@@ -20,6 +20,14 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 public class DeleteArchivedBranches extends AbstractBlam {
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Delete Archived Branches";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -30,6 +38,7 @@ public class DeleteArchivedBranches extends AbstractBlam {
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return emptyXWidgetsXml;
    }
@@ -37,6 +46,7 @@ public class DeleteArchivedBranches extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
     */
+   @Override
    public String getDescriptionUsage() {
       return "Permantly purges all branches that are archived";
    }

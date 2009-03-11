@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -425,14 +424,14 @@ public class TaskComposite extends Composite implements IActionable {
    }
 
    public void handleImportTasksViaList() throws OseeCoreException {
-      BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSimpleList");
+      BlamOperation blamOperation = new ImportTasksFromSimpleList();
       ((ImportTasksFromSimpleList) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       BlamEditor.edit(blamOperation);
       loadTable();
    }
 
    public void handleImportTasksViaSpreadsheet() throws OseeCoreException {
-      BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSpreadsheet");
+      BlamOperation blamOperation = new ImportTasksFromSpreadsheet();
       ((ImportTasksFromSpreadsheet) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       BlamEditor.edit(blamOperation);
       loadTable();

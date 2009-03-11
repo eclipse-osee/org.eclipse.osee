@@ -56,6 +56,14 @@ public class TaskMetrics extends AbstractBlam {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Task Metrics";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
@@ -65,8 +73,7 @@ public class TaskMetrics extends AbstractBlam {
 
          ArtifactType descriptor = variableMap.getArtifactType("Artifact Type");
 
-         List<Artifact> artifacts =
-               ArtifactQuery.getArtifactsFromType(descriptor.getName(), AtsPlugin.getAtsBranch());
+         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(descriptor.getName(), AtsPlugin.getAtsBranch());
          Set<Artifact> tasks = RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.SmaToTask_Task);
          for (Artifact artifact : tasks) {
             if (artifact instanceof TaskArtifact) {

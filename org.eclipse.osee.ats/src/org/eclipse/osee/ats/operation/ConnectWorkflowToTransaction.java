@@ -31,6 +31,14 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    private static final Pattern hridPattern = Pattern.compile("Commit Branch ([A-Z0-9]{5})[ _]");
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Connect Workflow To Transaction";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
@@ -65,6 +73,7 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return emptyXWidgetsXml;
    }

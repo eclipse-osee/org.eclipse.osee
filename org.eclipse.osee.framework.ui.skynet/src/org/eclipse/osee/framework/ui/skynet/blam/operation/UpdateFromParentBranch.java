@@ -41,6 +41,14 @@ public class UpdateFromParentBranch extends AbstractBlam {
          "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT DISTINCT ?, tx1.gamma_id, tx1.mod_type, tx1.tx_current FROM osee_txs tx1, osee_tx_details td1, osee_relation_link rl1, osee_join_artifact ja1 WHERE td1.branch_id = ? AND td1.transaction_id = tx1.transaction_id AND tx1.tx_current = " + TxChange.CURRENT.getValue() + " AND tx1.gamma_id = rl1.gamma_id AND td1.branch_id = ja1.branch_id AND (rl1.a_art_id = ja1.art_id OR rl1.b_art_id = ja1.art_id) AND ja1.query_id = ?";
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Update From ParentBranch";
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -68,22 +76,22 @@ public class UpdateFromParentBranch extends AbstractBlam {
                ConnectionHandler.runPreparedUpdate(DELETE_GAMMAS_FOR_UPDATES, childBranch.getBranchId(),
                      parentBranch.getBranchId(), queryId, childBranch.getBranchId(), parentBranch.getBranchId(),
                      queryId, childBranch.getBranchId(), parentBranch.getBranchId(), queryId);
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "deleted " + count + " gammas");
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "deleted " + count + " gammas");
 
          count =
                ConnectionHandler.runPreparedUpdate(INSERT_UPDATED_ARTIFACTS, baselineTransactionNumber,
                      parentBranch.getBranchId(), queryId);
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "inserted " + count + " artifacts");
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "inserted " + count + " artifacts");
 
          count =
                ConnectionHandler.runPreparedUpdate(INSERT_UPDATED_ATTRIBUTES_GAMMAS, baselineTransactionNumber,
                      parentBranch.getBranchId(), queryId);
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "inserted " + count + " attributes");
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "inserted " + count + " attributes");
 
          count =
                ConnectionHandler.runPreparedUpdate(INSERT_UPDATED_LINKS_GAMMAS, baselineTransactionNumber,
                      parentBranch.getBranchId(), queryId);
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "inserted " + count + " relations");
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "inserted " + count + " relations");
 
          monitor.done();
       } finally {
@@ -94,6 +102,7 @@ public class UpdateFromParentBranch extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Child Branch Name\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Parent Branch Artifacts to update to Child Branch\" /></xWidgets>";
    }

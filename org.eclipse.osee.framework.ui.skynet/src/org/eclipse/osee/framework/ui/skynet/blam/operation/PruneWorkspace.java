@@ -23,6 +23,15 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Ryan D. Brooks
  */
 public class PruneWorkspace extends AbstractBlam {
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Prune Workspace";
+   }
+
    /**
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap,
     *      org.eclipse.core.runtime.IProgressMonitor)
@@ -50,6 +59,7 @@ public class PruneWorkspace extends AbstractBlam {
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Preserve List File\" /><XWidget xwidgetType=\"XText\" displayName=\"Workspace Path\" /><XWidget xwidgetType=\"XText\" displayName=\"File Path Pattern\" /></xWidgets>";
    }

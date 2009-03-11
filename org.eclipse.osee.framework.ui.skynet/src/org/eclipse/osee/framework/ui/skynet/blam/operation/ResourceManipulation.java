@@ -68,13 +68,21 @@ public class ResourceManipulation extends AbstractBlam {
          "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null";
    private static final String GET_ATTRS_TEST = GET_ATTRS + " AND t1.gamma_id = 4259157";
 
-   private Collection<String> badData = new LinkedList<String>();
+   private final Collection<String> badData = new LinkedList<String>();
    private static final String[] columnHeaders = new String[] {"Corrupted Data"};
 
    private static File createTempFolder() {
       File rootDirectory = OseeData.getFile("FixTemplate_" + Lib.getDateTimeString() + File.separator);
       rootDirectory.mkdirs();
       return rootDirectory;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
+    */
+   @Override
+   public String getName() {
+      return "Resource Manipulation";
    }
 
    @Override
@@ -432,9 +440,9 @@ public class ResourceManipulation extends AbstractBlam {
    }
 
    class AttrData {
-      private String gammaId;
-      private String hrid;
-      private String uri;
+      private final String gammaId;
+      private final String hrid;
+      private final String uri;
 
       public AttrData(String gammaId, String hrid, String uri) {
          super();
