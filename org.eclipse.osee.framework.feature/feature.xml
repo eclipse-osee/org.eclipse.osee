@@ -22,30 +22,6 @@
       <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
 
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.apache.commons.lang"/>
-      <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.osee.framework.ui.plugin" version="0.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.update.core"/>
-      <import plugin="org.eclipse.pde.core"/>
-      <import plugin="org.eclipse.equinox.ds" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.postgresql.driver"/>
-      <import plugin="org.eclipse.team.ui"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.polarion.eclipse.team.svn.connector"/>
-      <import plugin="org.eclipse.team.svn"/>
-      <import plugin="org.eclipse.team.svn.core"/>
-      <import plugin="org.eclipse.team.svn.ui"/>
-      <import plugin="org.apache.derby.core"/>
-      <import plugin="org.eclipse.osee.framework.plugin.core" version="0.4.0" match="greaterOrEqual"/>
-      <import plugin="javax.servlet"/>
-      <import plugin="org.eclipse.osgi.services"/>
-   </requires>
-
    <plugin
          id="org.eclipse.osee.framework.database"
          download-size="0"
