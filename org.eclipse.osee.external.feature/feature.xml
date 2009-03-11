@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.external.feature"
-      label="External OSEE Dependancies Feature (Incubation)"
+      label="Eclipse OSEE Dependancies Feature (Incubation)"
       version="1.0.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.osee.framework.ui.product">
@@ -21,10 +21,6 @@
    <url>
       <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
-
-   <includes
-         id="org.eclipse.draw2d"
-         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.nebula.widgets.calendarcombo"

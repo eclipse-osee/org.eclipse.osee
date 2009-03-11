@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.framework.feature"
-      label="OSEE Framework (Incubation)"
+      label="Eclipse OSEE Framework (Incubation)"
       version="0.4.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.osee.framework.ui.product">
