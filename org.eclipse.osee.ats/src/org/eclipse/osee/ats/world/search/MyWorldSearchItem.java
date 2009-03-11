@@ -15,8 +15,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,14 +50,13 @@ public class MyWorldSearchItem extends UserSearchItem {
       Set<Artifact> assigned =
             RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationEnumeration.Users_Artifact);
 
-      Set<Artifact> artifacts =
-            RelationManager.getRelatedArtifacts(assigned, 4, AtsRelation.SmaToTask_Sma,
-                  AtsRelation.TeamWorkflowToReview_Team, AtsRelation.ActionToWorkflow_Action);
-
-      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
-      for (Artifact artifact : artifacts) {
-         if (artifact instanceof ActionArtifact) {
+      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(assigned.size());
+      for (Artifact artifact : assigned) {
+         if ((artifact instanceof TeamWorkFlowArtifact) || (artifact instanceof ReviewSMArtifact)) {
             artifactsToReturn.add(artifact);
+         }
+         if (artifact instanceof TaskArtifact) {
+            artifactsToReturn.add(((TaskArtifact) artifact).getParentTeamWorkflow());
          }
       }
       return artifactsToReturn;
