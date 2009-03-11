@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.master.feature"
-      label="OSEE Master Feature  (Incubation)"
+      label="Eclipse OSEE Master Feature  (Incubation)"
       version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
