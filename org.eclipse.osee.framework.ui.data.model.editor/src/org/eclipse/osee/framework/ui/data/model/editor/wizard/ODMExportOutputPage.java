@@ -51,9 +51,9 @@ public class ODMExportOutputPage extends WizardPage {
    private FileOrFolderSelectPanel xmlSingleOption;
    private FileOrFolderSelectPanel xmlMultiOption;
 
-   protected ODMExportOutputPage(String pageName) {
-      super(pageName, "Select export location", null);
-      setDescription("Select an export location for the selected types.");
+   protected ODMExportOutputPage(String pageName, String description) {
+      super(pageName, pageName, null);
+      setDescription(description);
       isDataStoreExport = false;
    }
 
@@ -128,7 +128,7 @@ public class ODMExportOutputPage extends WizardPage {
 
       dataStoreBackupOption =
             FileOrFolderSelectPanel.createFileSelectPanel(group, SWT.NONE, "Backup Data Store Types",
-                  ButtonType.CHECK_BOX, new String[] {"xml"});
+                  SWT.SAVE | SWT.SINGLE, ButtonType.CHECK_BOX, new String[] {"xml"});
       dataStoreBackupOption.setDefaultFileName("osee.types.db.backup.xml");
       dataStoreBackupOption.addListener(new Listener() {
          @Override
@@ -148,12 +148,12 @@ public class ODMExportOutputPage extends WizardPage {
 
       xmlSingleOption =
             FileOrFolderSelectPanel.createFileSelectPanel(group, SWT.NONE, "Export as single file",
-                  ButtonType.CHECK_BOX, new String[] {"xml"});
+                  SWT.SAVE | SWT.SINGLE, ButtonType.CHECK_BOX, new String[] {"xml"});
       xmlSingleOption.setDefaultFileName("osee.types.xml");
 
       xmlMultiOption =
             FileOrFolderSelectPanel.createFolderSelectPanel(group, SWT.NONE, "Export as multiple files",
-                  ButtonType.CHECK_BOX);
+                  SWT.SAVE | SWT.SINGLE, ButtonType.CHECK_BOX);
 
       Listener selectListener = new Listener() {
 

@@ -45,8 +45,8 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
 
    @Override
    public void addPages() {
-      addPage(selectTypesPage = new ODMSelectPage("Osee Data Model Wizard"));
-      addPage(exportOutputPage = new ODMExportOutputPage("Osee Data Model Wizard"));
+      addPage(selectTypesPage = new ODMSelectPage("Osee Data Type Select", "Select Osee Data Types to export."));
+      addPage(exportOutputPage = new ODMExportOutputPage("Osee Data Type Export", "Select export destination."));
       selectTypesPage.setInput(dataTypeCache);
    }
 

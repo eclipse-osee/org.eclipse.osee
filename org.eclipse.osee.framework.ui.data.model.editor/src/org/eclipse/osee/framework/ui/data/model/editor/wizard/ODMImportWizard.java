@@ -51,8 +51,8 @@ public class ODMImportWizard extends Wizard implements IImportWizard {
     */
    @Override
    public void addPages() {
-      addPage(importPage = new ODMImportPage("Osee Data Model Wizard"));
-      addPage(selectTypesPage = new ODMSelectPage("Osee Data Model Wizard"));
+      addPage(importPage = new ODMImportPage("Osee Data Type Source", "Select Osee Data Type Sources."));
+      addPage(selectTypesPage = new ODMSelectPage("Osee Data Type Select", "Select Osee Data Types to import."));
       selectTypesPage.setInput(dataTypeCache);
    }
 

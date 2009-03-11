@@ -68,9 +68,9 @@ public class ODMSelectPage extends WizardPage {
    private Object[] fExpandedElements;
    private List<Object> fInitialSelections;
 
-   public ODMSelectPage(String pageName) {
-      super(pageName, "Select Osee Data Types to export", null);
-      setDescription("Select artifact types to export.");
+   public ODMSelectPage(String pageName, String description) {
+      super(pageName, pageName, null);
+      setDescription(description);
       fContainerMode = false;
       fExpandedElements = null;
       fInitialSelections = new ArrayList<Object>();

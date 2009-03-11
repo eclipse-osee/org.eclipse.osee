@@ -45,22 +45,24 @@ public class FileOrFolderSelectPanel extends Composite {
    private final ListenerRelay eventRelay;
    private final ButtonType buttonType;
    private final Set<Listener> listeners;
+   private final int fileSelectStyle;
 
    private boolean isSelected;
    private Button button;
    private String resource;
    private String defaultFileName;
 
-   public static FileOrFolderSelectPanel createFileSelectPanel(Composite parent, int style, String label, ButtonType buttonType, String[] filterExtensions) {
-      return new FileOrFolderSelectPanel(parent, style, label, buttonType, false, filterExtensions);
+   public static FileOrFolderSelectPanel createFileSelectPanel(Composite parent, int style, String label, int fileSelectStyle, ButtonType buttonType, String[] filterExtensions) {
+      return new FileOrFolderSelectPanel(parent, style, label, fileSelectStyle, buttonType, false, filterExtensions);
    }
 
-   public static FileOrFolderSelectPanel createFolderSelectPanel(Composite parent, int style, String label, ButtonType buttonType) {
-      return new FileOrFolderSelectPanel(parent, style, label, buttonType, true, null);
+   public static FileOrFolderSelectPanel createFolderSelectPanel(Composite parent, int style, String label, int fileSelectStyle, ButtonType buttonType) {
+      return new FileOrFolderSelectPanel(parent, style, label, fileSelectStyle, buttonType, true, null);
    }
 
-   private FileOrFolderSelectPanel(Composite parent, int style, String label, ButtonType buttonType, boolean isFolderSelect, String[] filterExtensions) {
+   private FileOrFolderSelectPanel(Composite parent, int style, String label, int fileSelectStyle, ButtonType buttonType, boolean isFolderSelect, String[] filterExtensions) {
       super(parent, style);
+      this.fileSelectStyle = fileSelectStyle;
       this.isSelected = false;
       this.buttonType = buttonType;
       this.label = label;
@@ -82,8 +84,8 @@ public class FileOrFolderSelectPanel extends Composite {
       button.setText(label);
       button.setSelection(isSelected);
 
-      final Text text = new Text(composite, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
-      GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+      final Text text = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
+      GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
       gridData.widthHint = 100;
       text.setLayoutData(gridData);
 
@@ -95,7 +97,7 @@ public class FileOrFolderSelectPanel extends Composite {
          public void widgetSelected(SelectionEvent e) {
             String result = null;
             if (isFolderSelect) {
-               DirectoryDialog directoryDialog = new DirectoryDialog(getShell(), SWT.SAVE | SWT.SINGLE);
+               DirectoryDialog directoryDialog = new DirectoryDialog(getShell(), fileSelectStyle);
                if (Strings.isValid(resource)) {
                   directoryDialog.setFilterPath(resource);
                } else {
@@ -105,7 +107,7 @@ public class FileOrFolderSelectPanel extends Composite {
                }
                result = directoryDialog.open();
             } else {
-               FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE | SWT.SINGLE);
+               FileDialog fileDialog = new FileDialog(getShell(), fileSelectStyle);
                if (filterExtensions != null && filterExtensions.length > 0) {
                   fileDialog.setFilterExtensions(filterExtensions);
                }

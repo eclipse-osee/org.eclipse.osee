@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.data.model.editor.wizard;
 
 import java.sql.DatabaseMetaData;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -43,12 +44,11 @@ public class ODMImportPage extends WizardPage {
    private Button xmlExportButton;
    private Button dataStoreExportButton;
 
-   private FileOrFolderSelectPanel xmlSingleOption;
-   private FileOrFolderSelectPanel xmlMultiOption;
+   private FileOrFolderTreeSelecPanel xmlImportSelect;
 
-   protected ODMImportPage(String pageName) {
-      super(pageName, "Select import location", null);
-      setDescription("Select an import location");
+   protected ODMImportPage(String pageName, String description) {
+      super(pageName, pageName, null);
+      setDescription(description);
       isDataStoreExport = false;
    }
 
@@ -102,7 +102,7 @@ public class ODMImportPage extends WizardPage {
       Group group = new Group(parent, SWT.NONE);
       group.setLayout(new GridLayout());
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      group.setText("DataStore Import Options");
+      group.setText("Import From Data Store Options");
 
       //      dataStoreBackupOption =
       //            FileOrFolderSelectPanel.createFileSelectPanel(group, SWT.NONE, "Backup Data Store Types",
@@ -116,34 +116,9 @@ public class ODMImportPage extends WizardPage {
       Group group = new Group(parent, SWT.NONE);
       group.setLayout(new GridLayout());
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      group.setText("Xml Import Options");
+      group.setText("Import From Xml Options");
 
-      //      xmlSingleOption =
-      //            FileOrFolderSelectPanel.createFileSelectPanel(group, SWT.NONE, "Export as single file",
-      //                  ButtonType.CHECK_BOX, new String[] {"xml"});
-      //      xmlSingleOption.setDefaultFileName("osee.types.xml");
-      //
-      //      xmlMultiOption =
-      //            FileOrFolderSelectPanel.createFolderSelectPanel(group, SWT.NONE, "Export as multiple files",
-      //                  ButtonType.CHECK_BOX);
-      //
-      //      Listener selectListener = new Listener() {
-      //
-      //         @Override
-      //         public void handleEvent(Event event) {
-      //            if (event.widget instanceof Button) {
-      //               Button button = (Button) event.widget;
-      //               if (button.getText().equals("Export as multiple files") && xmlMultiOption.isSelected()) {
-      //                  xmlSingleOption.setSelected(false);
-      //               } else if (button.getText().equals("Export as single file") && xmlSingleOption.isSelected()) {
-      //                  xmlMultiOption.setSelected(false);
-      //               }
-      //            }
-      //         }
-      //      };
-      //
-      //      xmlMultiOption.addListener(selectListener);
-      //      xmlSingleOption.addListener(selectListener);
+      xmlImportSelect = new FileOrFolderTreeSelecPanel(group, SWT.NONE);
       return group;
    }
 
@@ -182,8 +157,11 @@ public class ODMImportPage extends WizardPage {
       }
    }
 
+   public List<String> getSelected() {
+      return xmlImportSelect.getCheckedItems();
+   }
+
    private boolean isWidgetValid(Widget widget) {
       return widget != null & !widget.isDisposed();
    }
-
 }
