@@ -30,45 +30,7 @@ public class BranchXViewer extends XViewer {
 
    @Override
    public void handleDoubleClick() {
-      //      try {
-      //         if (getSelectedChanges().size() == 0) return;
-      //
-      //         Artifact artifact = getSelectedChanges().iterator().next();
-      //
-      //         if (artifact != null) {
-      //            ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-      //            artifacts.add(artifact);
-      //
-      //            if (StaticIdManager.hasValue(UserManager.getUser(),
-      //                  EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
-      //               RendererManager.previewInJob(artifacts);
-      //            } else {
-      //               RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
-      //            }
-      //         }
-      //      } catch (OseeCoreException ex) {
-      //         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      //      }
    }
-
-   //   public ArrayList<Artifact> getSelectedChanges() {
-   //      ArrayList<Artifact> arts = new ArrayList<Artifact>();
-   //      TreeItem items[] = getTree().getSelection();
-   //
-   //      if (items.length > 0) {
-   //         for (TreeItem item : items) {
-   //            Artifact artifact = null;
-   //            if(item.getData() instanceof IAdaptable){
-   //               artifact = (Artifact)((IAdaptable)item.getData()).getAdapter(Artifact.class);
-   //               
-   //               if(artifact != null){
-   //                  arts.add(artifact);
-   //               }
-   //            }
-   //         }
-   //      }
-   //      return arts;
-   //   }
 
    @Override
    protected void createSupportWidgets(Composite parent) {

@@ -110,7 +110,17 @@ public class XBranchContentProvider implements ITreeContentProvider {
 
    public boolean hasChildren(Object element) {
       if (element instanceof BranchManager) return true;
-      if (element instanceof Branch) return true;
+      if (element instanceof Branch) {
+         boolean hasChildren = true;
+         if(!showTransactions){
+            try {
+               hasChildren = !((Branch)element).getChildBranches().isEmpty();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(this.getClass(), Level.WARNING, ex);
+            }
+         }
+         return hasChildren;
+      }
       if (element instanceof Collection) return true;
       return false;
    }

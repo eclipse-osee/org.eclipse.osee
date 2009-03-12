@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.branch;
+package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
 import java.util.Map;
 import org.eclipse.core.commands.AbstractHandler;

@@ -158,6 +158,18 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       }
    }
    
+   public void changeTransactionPresentation(boolean showTransactions){
+      if(branchViewPresentationPreferences != null){
+         branchViewPresentationPreferences.getViewPreference().putBoolean(BranchViewPresentationPreferences.SHOW_TRANSACTIONS, showTransactions);
+      }
+   }
+   
+   public void changeMergeBranchPresentation(boolean showMergeBranches){
+      if(branchViewPresentationPreferences != null){
+         branchViewPresentationPreferences.getViewPreference().putBoolean(BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, showMergeBranches);
+      }
+   }
+   
    protected void setPresentation(boolean flat) {
       xBranchWidget.setPresentation(flat);
    }

@@ -13,8 +13,10 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.branch.FlatPresentationHandler;
-import org.eclipse.osee.framework.ui.skynet.branch.HierarchicalPresentationHandler;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.FlatPresentationHandler;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.HierarchicalPresentationHandler;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowMergeBranchPresentationHandler;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowTransactionPresentationHandler;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.osgi.service.prefs.BackingStoreException;
@@ -79,8 +81,8 @@ public class BranchViewPresentationPreferences {
                   ((IEclipsePreferences) event.getNode()).removePreferenceChangeListener(this);
                } else {
                   String propertyName = event.getKey();
-                  ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(HierarchicalPresentationHandler.COMMAND_ID, null);
-                  ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(FlatPresentationHandler.COMMAND_ID, null);
+                  
+                  refreshCommands();
                   
                   if (propertyName.equals(FLAT_KEY)) {
                      setPresentation(getViewPreference().getBoolean(FLAT_KEY, true));
@@ -100,6 +102,13 @@ public class BranchViewPresentationPreferences {
       }
 
       return preferenceChangeListener;
+   }
+   
+   private void refreshCommands(){
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(HierarchicalPresentationHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(FlatPresentationHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowTransactionPresentationHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowMergeBranchPresentationHandler.COMMAND_ID, null);
    }
 
    private void loadPreferences() {
