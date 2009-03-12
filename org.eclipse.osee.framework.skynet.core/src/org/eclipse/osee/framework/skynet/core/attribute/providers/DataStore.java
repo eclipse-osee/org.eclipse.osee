@@ -42,6 +42,7 @@ public class DataStore {
 
    public void setLocator(String locator) {
       this.locator = locator;
+      needToReadFromRemote = true;
    }
 
    public boolean isLocatorValid() {
