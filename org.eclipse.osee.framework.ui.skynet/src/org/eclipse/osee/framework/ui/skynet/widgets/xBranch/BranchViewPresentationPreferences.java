@@ -114,6 +114,7 @@ public class BranchViewPresentationPreferences {
    private void loadPreferences() {
       setPresentation(getViewPreference().getBoolean(FLAT_KEY, true));
       setShowTransactions(getViewPreference().getBoolean(SHOW_TRANSACTIONS, true));
+      setShowMergeBranches(getViewPreference().getBoolean(SHOW_MERGE_BRANCHES, true));
    }
 
    private void setFavoritesFirst(boolean favoritesFirst) {
