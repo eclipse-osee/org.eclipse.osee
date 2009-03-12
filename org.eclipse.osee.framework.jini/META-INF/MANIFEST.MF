@@ -16,8 +16,6 @@ Export-Package: org.eclipse.osee.framework.jini,
  org.eclipse.osee.framework.jini.service.interfaces,
  org.eclipse.osee.framework.jini.service.report,
  org.eclipse.osee.framework.jini.service.scheduler,
- org.eclipse.osee.framework.jini.service.test,
- org.eclipse.osee.framework.jini.service.test.enums,
  org.eclipse.osee.framework.jini.service.test.interfaces,
  org.eclipse.osee.framework.jini.util,
  org.eclipse.osee.framework.jini.utility
