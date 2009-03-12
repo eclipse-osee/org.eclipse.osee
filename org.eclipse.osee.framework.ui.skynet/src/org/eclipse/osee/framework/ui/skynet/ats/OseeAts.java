@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.ats;
 
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -232,4 +233,39 @@ public class OseeAts {
       }
    }
 
+   public static Action createBugAction(OseeUiActivator oseePlugin, IAdaptable target, String itemId, String actionableItem) {
+      return new BugAction(oseePlugin, target, itemId, actionableItem);
+   }
+
+   private static final class BugAction extends Action {
+      private static String BUG_TITLE = "Generate Action Against This Tool";
+      private final OseeUiActivator oseePlugin;
+      private final String itemId;
+      private final IAdaptable target;
+      private final String actionableItem;
+
+      public BugAction(OseeUiActivator oseePlugin, IAdaptable target, String itemId, String actionableItem) {
+         super(BUG_TITLE, Action.AS_PUSH_BUTTON);
+         this.oseePlugin = oseePlugin;
+         this.itemId = itemId;
+         this.target = target;
+         this.actionableItem = actionableItem;
+         setToolTipText(BUG_TITLE);
+         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("bug.gif"));
+      }
+
+      @Override
+      public void run() {
+         String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
+         String desc = String.format("Found in \"%s\" version %s.", itemId, version);
+         IActionable actionable = (IActionable) target.getAdapter(IActionable.class);
+         if (actionable != null) {
+            String moreDesc = actionable.getActionDescription();
+            if (moreDesc != null && !moreDesc.equals("")) {
+               desc += "\n" + moreDesc;
+            }
+         }
+         createActionViaBug(desc, actionableItem);
+      }
+   }
 }
