@@ -49,10 +49,11 @@ import org.eclipse.swt.widgets.Tree;
  */
 public class XBranchWidget extends XWidget implements IActionable {
 
-   private BranchXViewer xBranchViewer;
+   private BranchXViewer branchXViewer;
    public final static String normalColor = "#EEEEEE";
    private static final String LOADING = "Loading ...";
    protected Label extraInfoLabel;
+   private XBranchContentProvider branchContentProvider;
 
    /**
     * @param label
@@ -88,15 +89,16 @@ public class XBranchWidget extends XWidget implements IActionable {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      xBranchViewer = new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
-      xBranchViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+      branchXViewer = new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      branchXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xBranchViewer.setContentProvider(new XBranchContentProvider(xBranchViewer));
-      xBranchViewer.setLabelProvider(new XBranchLabelProvider(xBranchViewer));
+      branchContentProvider = new XBranchContentProvider(branchXViewer);
+      branchXViewer.setContentProvider(branchContentProvider);
+      branchXViewer.setLabelProvider(new XBranchLabelProvider(branchXViewer));
 
-      if (toolkit != null) toolkit.adapt(xBranchViewer.getStatusLabel(), false, false);
+      if (toolkit != null) toolkit.adapt(branchXViewer.getStatusLabel(), false, false);
 
-      Tree tree = xBranchViewer.getTree();
+      Tree tree = branchXViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.heightHint = 100;
       tree.setLayout(ALayout.getZeroMarginLayout());
@@ -146,7 +148,7 @@ public class XBranchWidget extends XWidget implements IActionable {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            xBranchViewer.getCustomizeMgr().handleTableCustomization();
+            branchXViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 
@@ -160,9 +162,9 @@ public class XBranchWidget extends XWidget implements IActionable {
    @SuppressWarnings("unchecked")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
-      if (xBranchViewer == null) return items;
-      if (xBranchViewer.getSelection().isEmpty()) return items;
-      Iterator i = ((IStructuredSelection) xBranchViewer.getSelection()).iterator();
+      if (branchXViewer == null) return items;
+      if (branchXViewer.getSelection().isEmpty()) return items;
+      Iterator i = ((IStructuredSelection) branchXViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
          items.add((Branch) obj);
@@ -172,22 +174,22 @@ public class XBranchWidget extends XWidget implements IActionable {
 
    @Override
    public Control getControl() {
-      return xBranchViewer.getTree();
+      return branchXViewer.getTree();
    }
 
    @Override
    public void dispose() {
-      xBranchViewer.dispose();
+      branchXViewer.dispose();
    }
 
    @Override
    public void setFocus() {
-      xBranchViewer.getTree().setFocus();
+      branchXViewer.getTree().setFocus();
    }
 
    @Override
    public void refresh() {
-      xBranchViewer.refresh();
+      branchXViewer.refresh();
       setLabelError();
    }
 
@@ -205,7 +207,7 @@ public class XBranchWidget extends XWidget implements IActionable {
     * @return Returns the xViewer.
     */
    public BranchXViewer getXViewer() {
-      return xBranchViewer;
+      return branchXViewer;
    }
 
    /*
@@ -215,7 +217,7 @@ public class XBranchWidget extends XWidget implements IActionable {
     */
    @Override
    public Object getData() {
-      return xBranchViewer.getInput();
+      return branchXViewer.getInput();
    }
 
    public void loadData() {
@@ -229,7 +231,7 @@ public class XBranchWidget extends XWidget implements IActionable {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
                   extraInfoLabel.setText("");
-                  xBranchViewer.setInput(BranchManager.getInstance());
+                  branchXViewer.setInput(BranchManager.getInstance());
                }
             });
             return Status.OK_STATUS;
@@ -267,5 +269,45 @@ public class XBranchWidget extends XWidget implements IActionable {
    @Override
    public String getActionDescription() {
       return null;
+   }
+
+   /**
+    * @param favoritesFirst
+    */
+   public void setFavoritesFirst(boolean favoritesFirst) {
+      if (branchContentProvider != null) {
+         branchContentProvider.setFavoritesFirst(favoritesFirst);
+         refresh();
+      }
+   }
+
+   /**
+    * @param flat
+    */
+   public void setPresentation(boolean flat) {
+      if (branchContentProvider != null) {
+         branchContentProvider.setPresentation(flat);
+         refresh();
+      }
+   }
+
+   /**
+    * @param showMergeBranches
+    */
+   public void setShowMergeBranches(boolean showMergeBranches) {
+      if (branchContentProvider != null) {
+         branchContentProvider.setShowMergeBranches(showMergeBranches);
+         refresh();
+      }
+   }
+
+   /**
+    * @param showTransactions
+    */
+   public void setShowTransactions(boolean showTransactions) {
+      if (branchContentProvider != null) {
+         branchContentProvider.setShowTransactions(showTransactions);
+         refresh();
+      }
    }
 }

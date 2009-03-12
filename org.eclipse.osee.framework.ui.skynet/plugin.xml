@@ -32,6 +32,30 @@
    </objectContribution>
    
 </extension>
+<extension
+      name="Menus for the new branch view"
+      point="org.eclipse.ui.menus">
+   <menuContribution
+         locationURI="menu:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
+      <menu
+            label="Branch Presentation">
+         <command
+               commandId="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command"
+               icon="images/flat_layout.gif"
+               id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.flatCommand"
+               style="radio"
+               tooltip="Show branches as a flat listing">
+         </command>
+         <command
+               commandId="org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command"
+               icon="images/tree_layout.gif"
+               id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.hierarchicalCommand"
+               style="radio"
+               tooltip="Show branches as a hierarchical listing">
+         </command>
+      </menu>
+   </menuContribution>
+</extension>
  <extension
        name="The merge view"
        point="org.eclipse.ui.menus">

@@ -21,31 +21,21 @@ import org.eclipse.swt.SWT;
  * @author Jeff C. Phillips
  */
 public class BranchXViewerFactory extends SkynetXViewerFactory {
-   public static XViewerColumn transaction =
-         new XViewerColumn("framework.branch.transaction", "Transaction", 100, SWT.LEFT, true, SortDataType.String,
-               false, null);
-   public static XViewerColumn gamma =
-         new XViewerColumn("framework.branch.gamma", "Gamma", 70, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn itemType =
-         new XViewerColumn("framework.branch.itemType", "Item Type", 150, SWT.LEFT, true, SortDataType.String, false,
-               null);
-   public static XViewerColumn was =
-         new XViewerColumn("framework.branch.was", "Was", 250, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn is =
-         new XViewerColumn("framework.branch.is", "Is", 250, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn timeStamp =
-         new XViewerColumn("framework.branch.timeStamp", "Time Stamp", 110, SWT.LEFT, true, SortDataType.String, false,
+   public static XViewerColumn branch_name =
+         new XViewerColumn("framework.branch.branchName", "Branch Name", 250, SWT.LEFT, true, SortDataType.String, false, null);
+   public static XViewerColumn time_stamp =
+         new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.String, false,
                null);
    public static XViewerColumn author =
          new XViewerColumn("framework.branch.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn comment =
-         new XViewerColumn("framework.branch.comment", "Comment", 70, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.branch.comment", "Comment", 250, SWT.LEFT, true, SortDataType.String, false, null);
 
    public static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(transaction, gamma, itemType, was, is, timeStamp, author, comment);
+      registerColumn(branch_name, time_stamp, author, comment);
    }
 
    @Override
