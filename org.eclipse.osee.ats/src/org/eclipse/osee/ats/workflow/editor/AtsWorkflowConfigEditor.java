@@ -220,7 +220,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
     */
    @Override
    protected PaletteRoot getPaletteRoot() {
-      if (PALETTE_MODEL == null) PALETTE_MODEL = AtsWorkflowConfigEditorPaletteFactory.createPalette();
+      if (PALETTE_MODEL == null) PALETTE_MODEL = AtsWorkflowConfigEditorPaletteFactory.createPalette(this);
       return PALETTE_MODEL;
    }
 

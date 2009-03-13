@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor;
 
+import org.eclipse.gef.Tool;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.MarqueeToolEntry;
@@ -21,6 +22,9 @@ import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.requests.SimpleFactory;
+import org.eclipse.gef.tools.AbstractTool;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.actions.ValidateDiagramToolEntry;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
@@ -29,6 +33,8 @@ import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Utility class that can create a GEF Palette.
@@ -44,6 +50,7 @@ final class AtsWorkflowConfigEditorPaletteFactory {
    private static final String PALETTE_SIZE = "ShapesEditorPaletteFactory.Size";
    /** Preference ID used to persist the flyout palette's state. */
    private static final String PALETTE_STATE = "ShapesEditorPaletteFactory.State";
+   private static AtsWorkflowConfigEditor editor;
 
    /** Create the "States" drawer. */
    private static PaletteContainer createStatesDrawer() {
@@ -125,16 +132,16 @@ final class AtsWorkflowConfigEditorPaletteFactory {
     * 
     * @return a new PaletteRoot
     */
-   static PaletteRoot createPalette() {
+   static PaletteRoot createPalette(AtsWorkflowConfigEditor editor) {
       PaletteRoot palette = new PaletteRoot();
-      palette.add(createToolsGroup(palette));
+      palette.add(createToolsGroup(palette, editor));
       palette.add(createStatesDrawer());
       palette.add(createTransitionsDrawer());
       return palette;
    }
 
    /** Create the "Tools" group. */
-   private static PaletteContainer createToolsGroup(PaletteRoot palette) {
+   private static PaletteContainer createToolsGroup(PaletteRoot palette, AtsWorkflowConfigEditor editor) {
       PaletteToolbar toolbar = new PaletteToolbar("Tools");
 
       // Add a selection tool to the group
@@ -146,6 +153,44 @@ final class AtsWorkflowConfigEditorPaletteFactory {
       toolbar.add(new MarqueeToolEntry());
 
       toolbar.add(new ValidateDiagramToolEntry());
+
+      final Action action =
+            OseeAts.createBugAction(AtsPlugin.getInstance(), editor, AtsWorkflowConfigEditor.EDITOR_ID,
+                  "ATS Workflow Config Editor");
+      final ImageDescriptor img = action.getImageDescriptor();
+
+      toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
+
+         /* (non-Javadoc)
+          * @see org.eclipse.gef.palette.ToolEntry#createTool()
+          */
+         @Override
+         public Tool createTool() {
+            return new AbstractTool() {
+
+               @Override
+               protected String getCommandName() {
+                  return action.getText();
+               }
+
+               /* (non-Javadoc)
+                * @see org.eclipse.gef.tools.AbstractTool#activate()
+                */
+               @Override
+               public void activate() {
+                  super.activate();
+                  Display.getDefault().asyncExec(new Runnable() {
+                     public void run() {
+                        deactivate();
+                        action.run();
+                     }
+                  });
+
+               }
+            };
+         }
+
+      });
 
       return toolbar;
    }
