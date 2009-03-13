@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
-<stringAttribute key="application" value="org.eclipse.osee.framework.application.server.DbInit"/>
+<stringAttribute key="application" value="org.eclipse.osee.framework.database.configClient"/>
 <booleanAttribute key="askclear" value="true"/>
 <booleanAttribute key="automaticAdd" value="true"/>
 <booleanAttribute key="automaticValidate" value="false"/>
@@ -9,7 +9,7 @@
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="clearws" value="false"/>
 <booleanAttribute key="clearwslog" value="false"/>
-<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/DB Config [postgresql localhost, skynet import]"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/DB Config [localhost, skynet import]"/>
 <booleanAttribute key="default" value="true"/>
 <booleanAttribute key="includeFragments" value="false"/>
 <booleanAttribute key="includeOptional" value="true"/>
@@ -17,7 +17,7 @@
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-nosplash"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx768M&#13;&#10;-XX:MaxPermSize=256m&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dosee.import.on.db.init=true&#13;&#10;-Dosee.choice.on.db.init=&quot;Base - for importing USG branches&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx768M&#13;&#10;-XX:MaxPermSize=256m&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dosee.import.on.db.init=true&#13;&#10;-Dosee.choice.on.db.init=&quot;Base - for importing USG branches&quot;&#13;&#10;-Dosee.authentication.protocol=trustAll"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="lba.ote.server.LbaTestServerProduct"/>
 <booleanAttribute key="restart" value="false"/>
