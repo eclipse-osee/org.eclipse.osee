@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.jini.discovery.OseeJiniConfiguration;
 import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnectorListener,
       ServiceDiscoveryListener, DiscoveryListener {

@@ -13,7 +13,7 @@ package org.eclipse.osee.connection.service;
 import java.util.Collection;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public interface IConnectorListener {
 

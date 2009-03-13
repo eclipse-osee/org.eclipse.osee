@@ -17,7 +17,7 @@ import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class ExportClassLoader extends ClassLoader {
 

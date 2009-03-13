@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class JiniServiceSideConnector extends JiniConnector implements
 	IJiniConnectorLink {

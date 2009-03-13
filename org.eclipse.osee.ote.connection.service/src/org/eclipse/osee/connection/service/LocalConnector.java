@@ -19,7 +19,7 @@ import java.util.HashSet;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class LocalConnector implements IServiceConnector {
    public static final String TYPE = "local";

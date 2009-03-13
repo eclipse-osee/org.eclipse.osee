@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class EnhancedProperties implements Serializable {
    /**

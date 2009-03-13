@@ -13,7 +13,7 @@ package org.eclipse.osee.connection.service;
 import java.io.File;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 class LocalFileKey implements IFileKey {
 

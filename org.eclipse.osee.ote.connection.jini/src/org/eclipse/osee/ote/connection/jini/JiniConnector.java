@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jini.service.core.PropertyEntry;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public abstract class JiniConnector implements IServiceConnector {
     protected final static String LINK_PROPERTY = "JINI_CONNECTOR_LINK";

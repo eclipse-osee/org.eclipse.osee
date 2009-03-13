@@ -17,7 +17,7 @@ import java.rmi.RemoteException;
 import net.jini.core.lookup.ServiceItem;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class JiniClientSideConnector extends JiniConnector {
    public static final String TYPE = "jini.client-end";

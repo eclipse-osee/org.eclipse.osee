@@ -16,7 +16,7 @@ import java.net.MalformedURLException;
 import net.jini.core.discovery.LookupLocator;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public interface IJiniConnectorRegistrar {
    void addLocators(String... hosts) throws MalformedURLException, ClassNotFoundException, IOException;

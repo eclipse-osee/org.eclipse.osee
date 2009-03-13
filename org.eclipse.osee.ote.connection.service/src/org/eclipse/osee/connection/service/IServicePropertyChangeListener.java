@@ -13,7 +13,7 @@ package org.eclipse.osee.connection.service;
 import java.io.Serializable;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public interface IServicePropertyChangeListener {
    void propertyChanged(IServiceConnector connector, String key, Serializable value);

@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.connection.jini;
 import net.jini.entry.AbstractEntry;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class TestEntry extends AbstractEntry {
    /**

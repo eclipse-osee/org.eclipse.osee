@@ -14,7 +14,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class TestJiniService implements Remote {
 
