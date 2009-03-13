@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Xviewer Plug-in
-Bundle-SymbolicName: org.eclipse.nebula.widgets.xviewer
+Bundle-SymbolicName: org.eclipse.nebula.widgets.xviewer;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.nebula.widgets.xviewer.Activator
-Bundle-Vendor: Eclipse Nebula Project
+Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.nebula.widgets.calendarcombo;bundle-version="1.0.0",
- org.eclipse.ui.forms;bundle-version="3.3.100"
+ org.eclipse.nebula.widgets.calendarcombo,
+ org.eclipse.ui.forms
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.nebula.widgets.xviewer,
