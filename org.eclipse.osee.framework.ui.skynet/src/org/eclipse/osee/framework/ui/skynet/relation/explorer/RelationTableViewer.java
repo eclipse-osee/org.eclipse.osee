@@ -25,10 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -38,10 +36,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 public class RelationTableViewer {
-   private Table validTable;
+   private final Table validTable;
    private TableViewer tableViewer;
 
-   private Table invalidTable;
+   private final Table invalidTable;
 
    private ArtifactModelList artifactList;
 
@@ -68,9 +66,7 @@ public class RelationTableViewer {
    public RelationTableViewer(Table validTable, Table invalidTable) {
       try {
          fullDescriptorList =
-               new ArrayList<ArtifactType>(
-                     TypeValidityManager.getValidArtifactTypes(BranchManager.getDefaultBranch()));
-         defaultArtifactType = ArtifactTypeManager.getType(Requirements.TEST_SCRIPT);
+               new ArrayList<ArtifactType>(TypeValidityManager.getValidArtifactTypes(BranchManager.getDefaultBranch()));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -85,15 +81,8 @@ public class RelationTableViewer {
       tableViewer.setInput(artifactList);
    }
 
-   public void addValidItem(String name, Artifact artifact) {
-      ArtifactModel model;
-
-      if (artifact == null) {
-         model = new ArtifactModel(name, defaultArtifactType);
-      } else {
-         model = new ArtifactModel(artifact);
-      }
-
+   public void addValidItem(Artifact artifact) {
+      ArtifactModel model = new ArtifactModel(artifact);
       artifactList.addArtifact(model, true);
    }
 
@@ -155,6 +144,7 @@ public class RelationTableViewer {
       column.setText(validColumnNames[ARTIFACT_NAME_NUM]);
       column.setWidth(validColumnWidths[ARTIFACT_NAME_NUM]);
       column.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             tableViewer.setSorter(new RelationTableSorter(RelationTableSorter.ARTIFACT_NAME));
          }
@@ -164,6 +154,7 @@ public class RelationTableViewer {
       column.setText(validColumnNames[ARTIFACT_TYPE_NUM]);
       column.setWidth(validColumnWidths[ARTIFACT_TYPE_NUM]);
       column.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             tableViewer.setSorter(new RelationTableSorter(RelationTableSorter.ARTIFACT_TYPE));
          }

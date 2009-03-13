@@ -13,6 +13,11 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.OseeInfo;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -20,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class Requirements {
    public static String HARDWARE_REQUIREMENT = "Hardware Requirement";
+   public static String HARDWARE_REQUIREMENTS = "Hardware Requirements";
    public static String SOFTWARE_REQUIREMENT = "Software Requirement";
    public static String SOFTWARE_REQUIREMENTS = "Software Requirements";
    public static String INDIRECT_SOFTWARE_REQUIREMENT = "Indirect Software Requirement";
@@ -42,12 +48,27 @@ public class Requirements {
    public static String COMPONENT = "Component";
 
    public static String TEST_INFORMATION_SHEET = "Test Information Sheet";
-   public static String TEST_SCRIPT = "Test Script";
+   public static String TEST_CASE = getTestCaseString();
+   public static String TEST_CASES = "Test Cases";
    public static String TEST_PROCEDURE = "Test Procedure";
 
    public static String SUBSYSTEM = "Subsystem";
    public static String PARTITION = "Partition";
    public static String CSCI = "CSCI";
+
+   public static String OSEE_INFO_TEST_CASE_KEY = "Test Case Type Name";
+
+   public static String getTestCaseString() {
+      try {
+         if (OseeInfo.getValue(OSEE_INFO_TEST_CASE_KEY) == null) {
+            return "Test Case";
+         }
+         return OseeInfo.getValue(OSEE_INFO_TEST_CASE_KEY);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, OseeLevel.SEVERE, ex);
+      }
+      return "Test Case";
+   }
 
    public static boolean isSoftwareRequirement(Artifact artifact) {
       return Requirements.Software_RequirementTypes.contains(artifact.getArtifactTypeName());

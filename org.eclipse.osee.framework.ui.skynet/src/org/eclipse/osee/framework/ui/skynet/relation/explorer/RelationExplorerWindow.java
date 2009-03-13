@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
-import java.io.File;
 import java.util.ArrayList;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -20,7 +18,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -45,19 +42,19 @@ import org.eclipse.swt.widgets.Table;
 public class RelationExplorerWindow {
 
    private RelationTableViewer relationTableViewer;
-   private RelationTypeSide relationGroup;
-   private boolean persistOnOk;
+   private final RelationTypeSide relationGroup;
+   private final boolean persistOnOk;
    private boolean cancelled = false;
 
    // Private arrays for valid drops
-   private ArrayList<Artifact> validArtifacts;
-   private ArrayList<String> urls;
-   private ArrayList<String> names;
+   private final ArrayList<Artifact> validArtifacts;
+   private final ArrayList<String> urls;
+   private final ArrayList<String> names;
 
    // Private arrays for invalid drops
-   private ArrayList<String> invalidName;
-   private ArrayList<String> invalidReason;
-   private ArrayList<Artifact> invalidArtifacts;
+   private final ArrayList<String> invalidName;
+   private final ArrayList<String> invalidReason;
+   private final ArrayList<Artifact> invalidArtifacts;
 
    private boolean needWindow;
 
@@ -65,7 +62,7 @@ public class RelationExplorerWindow {
 
    private ArtifactType descriptor = null;
 
-   private StructuredViewer viewer;
+   private final StructuredViewer viewer;
    private OnCloseListener onCloseListener;
 
    public static final int ADD_NUM = 0;
@@ -95,22 +92,6 @@ public class RelationExplorerWindow {
 
    public RelationExplorerWindow(StructuredViewer viewer, RelationTypeSide group) {
       this(viewer, group, false);
-   }
-
-   public void addValid(Artifact artifact, String url) {
-      this.validArtifacts.add(artifact);
-      this.urls.add(url);
-
-      if (artifact == null) needWindow = true;
-
-      IFile tempIFile = WorkspaceURL.getIFile(url);
-      if (tempIFile != null) {
-         String tempName = new String(tempIFile.getName());
-         names.add(tempName.substring(0, tempName.length() - (tempIFile.getFileExtension().length() + 1)));
-      } else {
-         File file = new File(url);
-         names.add(file.getName());
-      }
    }
 
    public void addValid(Artifact artifact) {
@@ -240,7 +221,7 @@ public class RelationExplorerWindow {
       // Populate Tables
       relationTableViewer = new RelationTableViewer(validTable, invalidTable);
       for (int i = 0; i < validArtifacts.size(); i++)
-         relationTableViewer.addValidItem(names.get(i), validArtifacts.get(i));
+         relationTableViewer.addValidItem(validArtifacts.get(i));
       for (int i = 0; i < invalidName.size(); i++)
          relationTableViewer.addInvalidItem(invalidName.get(i), invalidReason.get(i));
 

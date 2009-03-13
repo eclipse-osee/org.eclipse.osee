@@ -121,13 +121,13 @@ public class ExtractTestRelations {
 
    private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws OseeCoreException {
       try {
-         return ArtifactQuery.getArtifactFromTypeAndName(Requirements.TEST_SCRIPT, testArtifactFile.getName(), branch);
+         return ArtifactQuery.getArtifactFromTypeAndName(Requirements.TEST_CASE, testArtifactFile.getName(), branch);
       } catch (MultipleArtifactsExist ex) {
          OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
          return null;
       } catch (ArtifactDoesNotExist ex) {
          Artifact testArtifact =
-               ArtifactTypeManager.addArtifact(Requirements.TEST_SCRIPT, branch, testArtifactFile.getName());
+               ArtifactTypeManager.addArtifact(Requirements.TEST_CASE, branch, testArtifactFile.getName());
          testArtifact.setSoleAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
          testArtifact.persistAttributes();
          return testArtifact;

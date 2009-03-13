@@ -170,17 +170,17 @@ public class OverviewPage extends FormPage implements IActionable {
    private Section createUsageSection(Composite body) {
       Section section = toolkit.createSection(body, Section.TITLE_BAR);
       section.setText("Description and Usage");
-      section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      section.setLayoutData(new GridData(GridData.FILL_BOTH));
       toolkit.addHelpLinkToSection(section, "/org.eclipse.pde.doc.user/guide/pde_running.htm");
 
       Composite mainComp = toolkit.createClientContainer(section, 1);
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-      mainComp.layout();
 
-      Text formText = toolkit.createText(mainComp, workflow.getDescriptionUsage(), SWT.NONE);
+      Text formText = toolkit.createText(mainComp, workflow.getDescriptionUsage(), SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
       formText.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
 
+      mainComp.layout();
       section.layout();
       return section;
    }
