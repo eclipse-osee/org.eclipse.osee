@@ -23,7 +23,6 @@ public class BranchViewImageHandler {
    private static Image changeManagedBranchImage = SkynetGuiPlugin.getInstance().getImage("change_managed_branch.gif");
    private static Image favoriteBranchImage = null;
    private static Image defaultBranchImage = null;
-   private static Image defaultChangeManagedBranchImage = null;
    private static Image favoriteChangeManagedBranchImage = null;
    
    public static Image getImage(Object element, int columnIndex){
@@ -68,9 +67,6 @@ public class BranchViewImageHandler {
       if (defaultBranchImage == null) {
          favoriteBranchImage =
                new OverlayImage(branchImage, SkynetGuiPlugin.getInstance().getImageDescriptor("star_9_9.gif"), 0, 7).createImage();
-         defaultChangeManagedBranchImage =
-               new OverlayImage(changeManagedBranchImage, SkynetGuiPlugin.getInstance().getImageDescriptor(
-                     "black_check.gif"), 8, 0).createImage();
          favoriteChangeManagedBranchImage =
                new OverlayImage(changeManagedBranchImage, SkynetGuiPlugin.getInstance().getImageDescriptor(
                      "star_9_9.gif"), 0, 7).createImage();
