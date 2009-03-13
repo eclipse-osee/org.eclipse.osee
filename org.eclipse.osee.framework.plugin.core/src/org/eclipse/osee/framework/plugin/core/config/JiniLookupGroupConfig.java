@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 
 /**
- * @author b1541174
+ * @author Michael P. Masterson
  */
 public class JiniLookupGroupConfig {
 

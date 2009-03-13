@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * @author B1375980
+ * @author Megumi Telles
  */
 public class CustomizeDemoTableTestUtil extends XViewerCustomizeDialog {
 
