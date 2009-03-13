@@ -524,6 +524,16 @@
             style="toggle">
       </command>
    </menuContribution>
+   <menuContribution
+         locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
+            style="push">
+      </command>
+      <command
+            commandId="org.eclipse.ui.edit.copy">
+      </command>
+   </menuContribution>
 </extension>
  <extension
        name="The merge view"
@@ -540,7 +550,9 @@
           </command>
     </menuContribution>
  </extension>
-	<extension point="org.eclipse.ui.handlers">
+	<extension
+       name="OSEE Core Handlers"
+       point="org.eclipse.ui.handlers">
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CopyHandler" commandId="org.eclipse.ui.edit.copy">
      <activeWhen>
         <or>
@@ -775,9 +787,22 @@
         </or>
      </activeWhen>
   </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ChangeReportHandler"
+        commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
+  </handler>
 	</extension>
 <extension
       id="Open With Handlers"
+      name="Open With Handlers"
       point="org.eclipse.ui.handlers">
    <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.ArtifactEditorHandler"
@@ -920,6 +945,10 @@
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
         icon="images/laser_16_16.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
+        icon="images/branch_change.gif">
   </image>
 	</extension>
  <extension
@@ -1196,6 +1225,10 @@
     <command
           id="org.eclipse.osee.framework.ui.atseditor.command"
           name="ATS Editor">
+    </command>
+    <command
+          id="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
+          name="Change Report">
     </command>
  </extension>
 	<extension name="Commands of BranchView" point="org.eclipse.ui.commands">
