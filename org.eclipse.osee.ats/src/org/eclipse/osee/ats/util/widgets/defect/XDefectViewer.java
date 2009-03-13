@@ -13,9 +13,10 @@ package org.eclipse.osee.ats.util.widgets.defect;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -62,6 +63,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * @author Donald G. Dunne
@@ -69,11 +71,17 @@ import org.eclipse.ui.PlatformUI;
 public class XDefectViewer extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener {
 
    private DefectXViewer xViewer;
+   private final int defaultTableHeightHint = 100;
+   private final int paddedTableHeightHint = 2;
    private IDirtiableEditor editor;
    private IReviewArtifact reviewArt;
    public final static String normalColor = "#EEEEEE";
    private static ToolItem newDefectItem, deleteDefectItem;
    private Label extraInfoLabel;
+   private Tree tree;
+   private Composite parentComposite;
+   private static ToolItem expandDefectItem, collapseDefectItem;
+   private static Map<IReviewArtifact, Boolean> mapOfReviewArtifacts = new LinkedHashMap<IReviewArtifact, Boolean>();
 
    /**
     * @param label
@@ -91,6 +99,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
    @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
 
+      parentComposite = parent;
       // Create Text Widgets
       if (displayLabel && !label.equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
@@ -108,8 +117,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       createTaskActionBar(mainComp);
 
       xViewer = new DefectXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
-      xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-
       xViewer.setContentProvider(new DefectContentProvider(xViewer));
       xViewer.setLabelProvider(new DefectLabelProvider(xViewer));
       xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -125,17 +132,39 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
       if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
 
-      Tree tree = xViewer.getTree();
+      handleExpandCollapseDefectTableList();
+
+      // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
+      (new Label(mainComp, SWT.None)).setText("Select \"New Defect\" to add.  Select icon in cell to update value or Alt-Left-Click to update field.");
+      loadTable();
+   }
+
+   public void setXviewerTree(boolean expand) {
+      tree = xViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
-      gridData.heightHint = 100;
+      gridData.heightHint = getTableHeightHint(expand);
       tree.setLayout(ALayout.getZeroMarginLayout());
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-      // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
+   }
 
-      (new Label(mainComp, SWT.None)).setText("Select \"New Defect\" to add.  Select icon in cell to update value or Alt-Left-Click to update field.");
-      loadTable();
+   private int getTableHeightHint(boolean expand) {
+      try {
+         int defectListSize = reviewArt.getDefectManager().getDefectItems().size();
+         int treeItemHeight = tree.getItemHeight();
+         int calculatedTableHeightHint = treeItemHeight * (defectListSize + 1);
+         if (expand && calculatedTableHeightHint > defaultTableHeightHint) {
+            // allow expansion to approximately 50 items 
+            if (defectListSize > (defaultTableHeightHint / 2)) {
+               return treeItemHeight * (paddedTableHeightHint + defaultTableHeightHint);
+            } else
+               return treeItemHeight * (paddedTableHeightHint + defectListSize);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(DefectManager.class, Level.SEVERE, ex.toString());
+      }
+      return defaultTableHeightHint;
    }
 
    public void createTaskActionBar(Composite parent) {
@@ -163,6 +192,28 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
+
+      expandDefectItem = new ToolItem(toolBar, SWT.PUSH);
+      expandDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("expandAll.gif"));
+      expandDefectItem.setToolTipText("Expand Defect List");
+      expandDefectItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            mapOfReviewArtifacts.put(reviewArt, true);
+            handleExpandCollapseDefectTableList();
+         }
+      });
+
+      collapseDefectItem = new ToolItem(toolBar, SWT.PUSH);
+      collapseDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("collapseAll.gif"));
+      collapseDefectItem.setToolTipText("Collapse Defect List");
+      collapseDefectItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            mapOfReviewArtifacts.put(reviewArt, false);
+            handleExpandCollapseDefectTableList();
+         }
+      });
 
       newDefectItem = new ToolItem(toolBar, SWT.PUSH);
       newDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("greenPlus.gif"));
@@ -241,6 +292,28 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    }
 
+   private void handleExpandCollapseDefectTableList() {
+      if (mapOfReviewArtifacts != null && mapOfReviewArtifacts.containsKey(reviewArt) && mapOfReviewArtifacts.get(reviewArt)) {
+         setXviewerTree(true);
+      } else {
+         setXviewerTree(false);
+      }
+      xViewer.refresh();
+      if (getForm(parentComposite) != null) {
+         ((ScrolledForm) getForm(parentComposite)).reflow(true);
+      }
+   }
+
+   public ScrolledForm getForm(Composite composite) {
+      ScrolledForm form = null;
+      if (composite == null) return null;
+      if (composite instanceof ScrolledForm) return (ScrolledForm) composite;
+      if (!(composite instanceof ScrolledForm)) {
+         form = getForm(composite.getParent());
+      }
+      return form;
+   }
+
    public void loadTable() {
       try {
          if (reviewArt != null && xViewer != null) {
@@ -249,6 +322,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      handleExpandCollapseDefectTableList();
       refresh();
    }
 
