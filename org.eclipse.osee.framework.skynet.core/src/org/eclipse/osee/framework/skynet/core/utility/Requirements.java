@@ -48,6 +48,7 @@ public class Requirements {
    public static String COMPONENT = "Component";
 
    public static String TEST_INFORMATION_SHEET = "Test Information Sheet";
+   public static String OSEE_INFO_TEST_CASE_KEY = "Test Case Type Name";
    public static String TEST_CASE = getTestCaseString();
    public static String TEST_CASES = "Test Cases";
    public static String TEST_PROCEDURE = "Test Procedure";
@@ -55,8 +56,6 @@ public class Requirements {
    public static String SUBSYSTEM = "Subsystem";
    public static String PARTITION = "Partition";
    public static String CSCI = "CSCI";
-
-   public static String OSEE_INFO_TEST_CASE_KEY = "Test Case Type Name";
 
    public static String getTestCaseString() {
       try {

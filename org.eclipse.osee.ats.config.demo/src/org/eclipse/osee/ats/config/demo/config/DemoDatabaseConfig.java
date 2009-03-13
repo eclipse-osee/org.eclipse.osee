@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.vue.AtsDbConfig;
+import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -72,6 +73,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), CISBuilds.CIS_Bld_1.name(),
             CISBuilds.CIS_Bld_1.name(), transaction);
       transaction.execute();
+
+      OseeInfo.putValue(Requirements.OSEE_INFO_TEST_CASE_KEY, "Test Case");
    }
 
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName, SkynetTransaction transaction) throws OseeCoreException {
@@ -107,8 +110,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       programRoot.addChild(sawProduct);
 
       for (String name : new String[] {Requirements.SYSTEM_REQUIREMENTS, Requirements.SUBSYSTEM_REQUIREMENTS,
-            Requirements.SOFTWARE_REQUIREMENTS, "Hardware Requirements", "Verification Tests", "Validation Tests",
-            "Integration Tests"}) {
+            Requirements.SOFTWARE_REQUIREMENTS, Requirements.HARDWARE_REQUIREMENTS, "Verification Tests",
+            "Validation Tests", "Integration Tests"}) {
          programRoot.addChild(ArtifactTypeManager.addArtifact("Folder", programBranch, name));
       }
 

@@ -506,7 +506,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          if (verificationHeader == null) throw new IllegalStateException("Could not find Verification Tests header");
          for (String str : new String[] {"A", "B", "C"}) {
             Artifact newArt =
-                  ArtifactTypeManager.addArtifact(Requirements.TEST_SCRIPT, verificationHeader.getBranch(),
+                  ArtifactTypeManager.addArtifact(Requirements.TEST_CASE, verificationHeader.getBranch(),
                         "Verification Test " + str);
             verificationTests.add(newArt);
             verificationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
