@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class DialogPopupLoggerListener implements ILoggerListener {
 

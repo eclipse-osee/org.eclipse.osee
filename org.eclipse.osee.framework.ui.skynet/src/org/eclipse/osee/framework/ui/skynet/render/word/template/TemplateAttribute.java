@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class TemplateAttribute implements ITemplateTask {
 

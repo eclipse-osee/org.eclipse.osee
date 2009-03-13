@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class SevereLogMonitorTest extends TestCase {

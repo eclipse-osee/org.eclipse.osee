@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class RelationTypeSide implements IRelationEnumeration {
 

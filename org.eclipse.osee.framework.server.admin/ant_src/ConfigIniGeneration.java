@@ -10,7 +10,7 @@ import java.io.IOException;
  */
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class ConfigIniGeneration {
    public static void main(String[] args) {

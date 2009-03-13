@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.template.WordAttributeTy
 import org.eclipse.osee.framework.ui.skynet.render.word.template.WordTemplateManager;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class TisRenderer extends WordTemplateRenderer {
 

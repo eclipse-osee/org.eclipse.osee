@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class SRSSpecialPublishingAttributeHandler implements ITemplateAttributeHandler {
 

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class TemplateManager {
    private static final String EXTENSION_ID = "org.eclipse.osee.framework.ui.skynet.TemplateProvider";

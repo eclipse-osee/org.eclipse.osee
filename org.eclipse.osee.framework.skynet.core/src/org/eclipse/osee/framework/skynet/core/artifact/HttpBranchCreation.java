@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class HttpBranchCreation {
 
