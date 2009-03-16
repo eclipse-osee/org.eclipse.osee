@@ -64,6 +64,28 @@ public class UserRoleManager {
       return uRoles;
    }
 
+   public Set<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
+      Set<UserRole> cRoles = new HashSet<UserRole>();
+      for (UserRole role : getUserRoles(Role.Reviewer)) {
+         if (role.isCompleted()) {
+            cRoles.add(role);
+         }
+      }
+      return cRoles;
+   }
+
+   public Set<User> getRoleUsersAuthorModerator() throws OseeCoreException {
+      Set<User> roles = new HashSet<User>();
+      roles = getRoleUsers(Role.Author);
+      if (roles.isEmpty()) {
+         roles = getRoleUsers(Role.Moderator);
+      }
+      if (roles.isEmpty()) {
+         roles.add(UserManager.getUser());
+      }
+      return roles;
+   }
+
    public Set<UserRole> getUserRoles(Role role) throws OseeCoreException {
       Set<UserRole> roles = new HashSet<UserRole>();
       for (UserRole uRole : getUserRoles())

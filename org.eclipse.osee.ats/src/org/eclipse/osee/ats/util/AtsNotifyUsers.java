@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,7 +39,7 @@ public class AtsNotifyUsers {
 
    private static boolean testing = false; // Email goes to current user (set OseeNotifyUsersJob.testing also)
    public static enum NotifyType {
-      Subscribed, Cancelled, Completed, Assigned, Originator
+      Subscribed, Cancelled, Completed, Assigned, Originator, Reviewed
    };
 
    public static void notify(StateMachineArtifact sma, NotifyType... notifyTypes) throws OseeCoreException {
@@ -59,6 +60,9 @@ public class AtsNotifyUsers {
       SMAManager smaMgr = sma.getSmaMgr();
       if (types.contains(NotifyType.Originator)) {
          User originator = smaMgr.getOriginator();
+         if (testing) {
+            originator = UserManager.getUser();
+         }
          if (!UserManager.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                Arrays.asList(originator),
                getIdString(sma),
@@ -68,6 +72,10 @@ public class AtsNotifyUsers {
       if (types.contains(NotifyType.Assigned)) {
          Collection<User> assignees = notifyUsers != null ? notifyUsers : smaMgr.getStateMgr().getAssignees();
          assignees.remove(UserManager.getUser());
+         if (testing) {
+            assignees.clear();
+            assignees.add(UserManager.getUser());
+         }
          if (testing || assignees.size() > 0) {
             OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                   assignees,
@@ -78,6 +86,10 @@ public class AtsNotifyUsers {
       }
       if (types.contains(NotifyType.Subscribed)) {
          Collection<User> subscribed = sma.getSubscribed();
+         if (testing) {
+            subscribed.clear();
+            subscribed.add(UserManager.getUser());
+         }
          if (subscribed.size() > 0) {
             OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                   subscribed,
@@ -89,6 +101,9 @@ public class AtsNotifyUsers {
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed)) {
          if (((sma instanceof TeamWorkFlowArtifact) || (sma instanceof ReviewSMArtifact)) && (smaMgr.isCompleted() || smaMgr.isCancelled())) {
             User originator = smaMgr.getOriginator();
+            if (testing) {
+               originator = UserManager.getUser();
+            }
             if (!UserManager.getUser().equals(originator)) {
                if (smaMgr.isCompleted()) {
                   OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
@@ -106,6 +121,25 @@ public class AtsNotifyUsers {
                         String.format(
                               sma.getArtifactTypeName() + " titled \"" + sma.getDescriptiveName() + "\" was cancelled from the \"%s\" state on \"%s\".<br>Reason: \"%s\"",
                               cancelledItem.getState(), cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg())));
+               }
+            }
+         }
+      }
+      if (types.contains(NotifyType.Reviewed)) {
+         if (sma instanceof ReviewSMArtifact) {
+            if (((ReviewSMArtifact) sma).getUserRoleManager() != null) {
+               Collection<User> authorModerator =
+                     ((ReviewSMArtifact) sma).getUserRoleManager().getRoleUsersAuthorModerator();
+               if (testing) {
+                  authorModerator.clear();
+                  authorModerator.add(UserManager.getUser());
+               }
+               for (UserRole role : ((ReviewSMArtifact) sma).getUserRoleManager().getRoleUsersReviewComplete()) {
+                  OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
+                        authorModerator,
+                        getIdString(sma),
+                        NotifyType.Reviewed.name(),
+                        "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\" has been Reviewed by " + role.getUser().getName()));
                }
             }
          }

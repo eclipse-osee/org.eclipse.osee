@@ -31,6 +31,9 @@ import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
+import org.eclipse.osee.ats.util.widgets.role.UserRole;
+import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
+import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -71,6 +74,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> preSaveStateAssignees;
    private User preSaveOriginator;
+   private Collection<UserRole> preSaveReviewRoleComplete;
    public static double DEFAULT_MAN_HOURS_PER_DAY = 8;
    protected WorkFlowDefinition workFlowDefinition;
 
@@ -118,6 +122,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
             preSaveOriginator = UserManager.getUser();
          else
             preSaveOriginator = smaMgr.getOriginator();
+         preSaveReviewRoleComplete = getRoleUsersReviewComplete();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -235,6 +240,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       try {
          notifyNewAssigneesAndReset();
          notifyOriginatorAndReset();
+         notifyReviewersComplete();
          updateAssigneeRelations();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -250,6 +256,40 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     */
    public boolean isCurrentSectionExpanded(String stateName) throws OseeCoreException {
       return smaMgr.getStateMgr().getCurrentStateName().equals(stateName);
+   }
+
+   private Collection<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
+      if (getUserRoleManager() != null) {
+         return getUserRoleManager().getRoleUsersReviewComplete();
+      }
+      return null;
+   }
+
+   private ReviewSMArtifact getReviewSMArtifact() {
+      if (smaMgr.getSma() != null && smaMgr.getSma() instanceof ReviewSMArtifact) {
+         return (ReviewSMArtifact) smaMgr.getSma();
+      }
+      return null;
+   }
+
+   private UserRoleManager getUserRoleManager() {
+      if (getReviewSMArtifact() != null) {
+         return getReviewSMArtifact().getUserRoleManager();
+      }
+      return null;
+   }
+
+   public void notifyReviewersComplete() throws OseeCoreException {
+      if (preSaveReviewRoleComplete != null && getUserRoleManager() != null) {
+         if (!preSaveReviewRoleComplete.equals(getUserRoleManager().getRoleUsersReviewComplete())) {
+            //all reviewers are complete; send notification to author/moderator
+            if (getUserRoleManager().getUserRoles(Role.Reviewer).equals(
+                  getUserRoleManager().getRoleUsersReviewComplete())) {
+               AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Reviewed);
+            }
+         }
+      }
+      preSaveReviewRoleComplete = getUserRoleManager().getRoleUsersReviewComplete();
    }
 
    public void notifyNewAssigneesAndReset() throws OseeCoreException {
