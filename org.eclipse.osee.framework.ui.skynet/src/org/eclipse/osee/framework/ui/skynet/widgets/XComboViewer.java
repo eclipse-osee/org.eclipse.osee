@@ -111,6 +111,7 @@ public class XComboViewer extends XWidget {
    /**
     * Create List Widgets. Widgets Created: List: horizonatalSpan takes up 2 columns; horizontalSpan must be >=2
     */
+   @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
 
       this.parent = parent;
@@ -174,12 +175,14 @@ public class XComboViewer extends XWidget {
       if (parent != null && !parent.isDisposed()) parent.layout();
    }
 
+   @Override
    public void setFocus() {
    }
 
    /**
     * Don't need this since overriding toReport and toXml
     */
+   @Override
    public String getXmlData() {
       return "";
    }
@@ -187,6 +190,7 @@ public class XComboViewer extends XWidget {
    /**
     * Don't need this since overriding setFromXml
     */
+   @Override
    public void setXmlData(String str) {
       return;
    }
@@ -196,6 +200,7 @@ public class XComboViewer extends XWidget {
       notifyXModifiedListeners();
    }
 
+   @Override
    public void refresh() {
       updateListWidget();
    }
@@ -212,6 +217,7 @@ public class XComboViewer extends XWidget {
       return null;
    }
 
+   @Override
    public void setFromXml(String xml) {
    }
 
@@ -243,6 +249,7 @@ public class XComboViewer extends XWidget {
       updateListWidget();
    }
 
+   @Override
    public Result isValid() {
       if (!requiredEntry) return Result.TrueResult;
       Object selected = getSelected();
@@ -250,6 +257,7 @@ public class XComboViewer extends XWidget {
       return Result.TrueResult;
    }
 
+   @Override
    public String getReportData() {
       String s = "\n";
       Object obj = getSelected();
@@ -258,14 +266,17 @@ public class XComboViewer extends XWidget {
       return s;
    }
 
+   @Override
    public String toXml() {
       return toXml(xmlRoot, xmlSubRoot);
    }
 
+   @Override
    public String toXml(String xmlRoot, String xmlSubRoot) {
       return "";
    }
 
+   @Override
    public String toHTML(String labelFont) {
       String s = "<dl><dt>" + AHTML.getLabelStr(labelFont, label + ": ") + "<dt><ul type=\"disc\">";
       Object xItem = getSelected();
