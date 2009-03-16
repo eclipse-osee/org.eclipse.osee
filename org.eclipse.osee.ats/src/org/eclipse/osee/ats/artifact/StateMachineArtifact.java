@@ -259,37 +259,20 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    private Collection<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
-      if (getUserRoleManager() != null) {
-         return getUserRoleManager().getRoleUsersReviewComplete();
-      }
-      return null;
-   }
-
-   private ReviewSMArtifact getReviewSMArtifact() {
-      if (smaMgr.getSma() != null && smaMgr.getSma() instanceof ReviewSMArtifact) {
-         return (ReviewSMArtifact) smaMgr.getSma();
-      }
-      return null;
-   }
-
-   private UserRoleManager getUserRoleManager() {
-      if (getReviewSMArtifact() != null) {
-         return getReviewSMArtifact().getUserRoleManager();
-      }
-      return null;
+      if (!(this instanceof ReviewSMArtifact)) return Collections.emptyList();
+      return ((ReviewSMArtifact) this).getUserRoleManager().getRoleUsersReviewComplete();
    }
 
    public void notifyReviewersComplete() throws OseeCoreException {
-      if (preSaveReviewRoleComplete != null && getUserRoleManager() != null) {
-         if (!preSaveReviewRoleComplete.equals(getUserRoleManager().getRoleUsersReviewComplete())) {
-            //all reviewers are complete; send notification to author/moderator
-            if (getUserRoleManager().getUserRoles(Role.Reviewer).equals(
-                  getUserRoleManager().getRoleUsersReviewComplete())) {
-               AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Reviewed);
-            }
+      if (!(this instanceof ReviewSMArtifact)) return;
+      UserRoleManager userRoleManager = ((ReviewSMArtifact) this).getUserRoleManager();
+      if (!preSaveReviewRoleComplete.equals(userRoleManager.getRoleUsersReviewComplete())) {
+         //all reviewers are complete; send notification to author/moderator
+         if (userRoleManager.getUserRoles(Role.Reviewer).equals(userRoleManager.getRoleUsersReviewComplete())) {
+            AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Reviewed);
          }
       }
-      preSaveReviewRoleComplete = getUserRoleManager().getRoleUsersReviewComplete();
+      preSaveReviewRoleComplete = userRoleManager.getRoleUsersReviewComplete();
    }
 
    public void notifyNewAssigneesAndReset() throws OseeCoreException {
