@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.world;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -29,7 +28,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 public class WorldContentProvider implements ITreeContentProvider {
 
-   protected Collection<Artifact> rootSet = new HashSet<Artifact>();
+   protected List<Artifact> rootSet = new ArrayList<Artifact>();
    private final WorldXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
    private final ActionDebug debug = new ActionDebug(false, "WorldTreeContentProvider");
