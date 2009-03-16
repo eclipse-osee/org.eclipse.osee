@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -42,8 +44,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
 
    public static String TASK_IMPORT_SPREADSHEET = "Task Import Spreadsheet";
    public static String TEAM_WORKFLOW = "Taskable Workflow (drop here)";
-   public static String PERSIST = "Persist";
-   public static String EMAIL_POCS = "Email POCs (if persist)";
+   public static String EMAIL_POCS = "Email POCs";
    private TaskableStateMachineArtifact taskableStateMachineArtifact;
 
    /* (non-Javadoc)
@@ -75,7 +76,6 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");
       buffer.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"" + TASK_IMPORT_SPREADSHEET + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + PERSIST + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       buffer.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + EMAIL_POCS + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       buffer.append("</xWidgets>");
       return buffer.toString();
@@ -113,7 +113,6 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
                String filename = variableMap.getString(TASK_IMPORT_SPREADSHEET);
-               boolean persist = variableMap.getBoolean(PERSIST);
                boolean emailPocs = variableMap.getBoolean(EMAIL_POCS);
 
                if (artifacts.size() == 0) {
@@ -135,10 +134,12 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                }
                File file = new File(filename);
                try {
-                  //this is odd, but this is passed into the TaskImportJob and the excel extractor, execute() is called after the extractor has been run
-                  //                  SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-                  Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
-                        (TeamWorkFlowArtifact) artifact, emailPocs, persist)));
+                  SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+                  Job job =
+                        Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
+                              (TeamWorkFlowArtifact) artifact, emailPocs, transaction)));
+                  job.join();
+                  transaction.execute();
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   return;

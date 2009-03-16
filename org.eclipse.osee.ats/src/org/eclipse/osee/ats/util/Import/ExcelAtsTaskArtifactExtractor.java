@@ -45,26 +45,26 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
    private static final String description = "Extract each row as a task";
    private ExcelSaxHandler excelHandler;
    private String[] headerRow;
-   private StateMachineArtifact sma;
+   private final StateMachineArtifact sma;
    private IProgressMonitor monitor;
    private int rowNum;
    private final boolean emailPOCs;
-   private SMAManager smaMgr;
-   private final boolean persist;
+   private final SMAManager smaMgr;
+   private final SkynetTransaction transaction;
 
    public static String getDescription() {
       return description;
    }
 
-   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, boolean persist) {
+   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, SkynetTransaction transaction) {
       super(artifact.getBranch());
       this.emailPOCs = emailPOCs;
-      this.persist = persist;
+      this.transaction = transaction;
       if (!(artifact instanceof StateMachineArtifact)) {
          throw new IllegalArgumentException("Artifact must be StateMachineArtifact");
       }
 
-      sma = (StateMachineArtifact) artifact;
+      sma = artifact;
       smaMgr = new SMAManager(sma);
    }
 
@@ -99,7 +99,6 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
             return;
          }
-
          AtsPlugin.setEmailEnabled(false);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) {
@@ -122,10 +121,18 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   User user = null;
                   if (userName == null || userName.equals(""))
                      user = UserManager.getUser();
-                  else
-                     user = UserManager.getUserByName(userName);
-                  if (user == null) throw new IllegalArgumentException(String.format(
-                        "Invalid Assignee \"%s\" for row %d", userName, rowNum));
+                  else {
+                     try {
+                        user = UserManager.getUserByName(userName);
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                     }
+                  }
+                  if (user == null) {
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
+                           "Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum));
+                     user = UserManager.getUser();
+                  }
                   assignees.add(user);
                }
                taskArt.getSmaMgr().getStateMgr().setAssignees(assignees);
@@ -133,6 +140,11 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                String str = row[i];
                if (str != null && !str.equals("")) {
                   taskArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), str);
+               }
+            } else if (headerRow[i].equalsIgnoreCase("Description")) {
+               String str = row[i];
+               if (str != null && !str.equals("")) {
+                  taskArt.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), str);
                }
             } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
                String str = row[i];
@@ -195,13 +207,9 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
             }
          }
          AtsPlugin.setEmailEnabled(true);
-
-         SkynetTransaction transaction = new SkynetTransaction(taskArt.getBranch());
          if (taskArt.isCompleted()) taskArt.transitionToCompleted(false, transaction);
-         if (persist) {
-            taskArt.persistAttributesAndRelations(transaction);
-         }
-         transaction.execute();
+         // always persist
+         taskArt.persistAttributesAndRelations(transaction);
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
             AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Assigned);
          }
