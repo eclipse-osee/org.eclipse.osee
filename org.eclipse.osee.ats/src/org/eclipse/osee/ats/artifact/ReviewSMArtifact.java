@@ -10,12 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
+import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
+import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -29,6 +37,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    protected DefectManager defectManager;
    protected UserRoleManager userRoleManager;
    private XActionableItemsDam actionableItemsDam;
+   private Collection<UserRole> preSaveReviewRoleComplete;
    public static enum ReviewBlockType {
       None, Transition, Commit
    };
@@ -48,6 +57,50 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       super.onInitializationComplete();
       initializeSMA();
    };
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#persistAttributes()
+    */
+   @Override
+   public void onAttributePersist() throws OseeCoreException {
+      super.onAttributePersist();
+      // Since multiple ways exist to change the assignees, notification is performed on the persist
+      if (isDeleted()) {
+         return;
+      }
+      try {
+         notifyReviewersComplete();
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   @Override
+   public void initalizePreSaveCache() {
+      super.initalizePreSaveCache();
+      try {
+         preSaveReviewRoleComplete = getRoleUsersReviewComplete();
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private Collection<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
+      if (!(this instanceof ReviewSMArtifact)) return Collections.emptyList();
+      return (this).getUserRoleManager().getRoleUsersReviewComplete();
+   }
+
+   public void notifyReviewersComplete() throws OseeCoreException {
+      if (!(this instanceof ReviewSMArtifact)) return;
+      UserRoleManager userRoleManager = (this).getUserRoleManager();
+      if (!preSaveReviewRoleComplete.equals(userRoleManager.getRoleUsersReviewComplete())) {
+         //all reviewers are complete; send notification to author/moderator
+         if (userRoleManager.getUserRoles(Role.Reviewer).equals(userRoleManager.getRoleUsersReviewComplete())) {
+            AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Reviewed);
+         }
+      }
+      preSaveReviewRoleComplete = userRoleManager.getRoleUsersReviewComplete();
+   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#initialize()
