@@ -102,7 +102,9 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       preSaveReviewRoleComplete = userRoleManager.getRoleUsersReviewComplete();
    }
 
-   /* (non-Javadoc)
+   /**
+    * Reset managers for case where artifact is re-loaded/initialized (non-Javadoc)
+    * 
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#initialize()
     */
    @Override
@@ -140,6 +142,9 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    public DefectManager getDefectManager() {
+      if (defectManager == null) {
+         defectManager = new DefectManager(this);
+      }
       return defectManager;
    }
 
@@ -152,6 +157,9 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    public UserRoleManager getUserRoleManager() {
+      if (userRoleManager == null) {
+         return userRoleManager = new UserRoleManager(this);
+      }
       return userRoleManager;
    }
 
@@ -162,8 +170,8 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       if (getParentTeamWorkflow() != null) teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
-      if (actionableItemsDam.getActionableItems().size() > 0) {
-         teamDefs.addAll(ActionableItemArtifact.getImpactedTeamDefs(actionableItemsDam.getActionableItems()));
+      if (getActionableItemsDam().getActionableItems().size() > 0) {
+         teamDefs.addAll(ActionableItemArtifact.getImpactedTeamDefs(getActionableItemsDam().getActionableItems()));
       }
       return teamDefs;
    }
@@ -172,6 +180,9 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
     * @return the actionableItemsDam
     */
    public XActionableItemsDam getActionableItemsDam() {
+      if (actionableItemsDam == null) {
+         actionableItemsDam = new XActionableItemsDam(this);
+      }
       return actionableItemsDam;
    }
 
