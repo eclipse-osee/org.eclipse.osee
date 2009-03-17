@@ -86,6 +86,9 @@ public class RelationChanged extends Change {
          if (adapter.isInstance(getArtifact())) {
             return getArtifact();
          }
+         if(adapter.isInstance(getToTransactionId()) && isHistorical()){
+            return getToTransactionId();
+         }
       } catch (IllegalArgumentException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       } catch (ArtifactDoesNotExist ex) {

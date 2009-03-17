@@ -489,6 +489,14 @@
              name="org.eclipse.ui.edit.ChangeView.revert.seperator"
              visible="true">
        </separator>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
+             style="push">
+       </command>
+       <separator
+             name="org.eclipse.ui.edit.ChangeView.seperator1"
+             visible="true">
+       </separator>
     </menuContribution>
  </extension>
 <extension
@@ -523,15 +531,105 @@
             icon="images/branch_merge.gif"
             style="toggle">
       </command>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches"
+            style="toggle">
+      </command>
    </menuContribution>
    <menuContribution
          locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
       <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setDefaultBranch"
+            style="push">
+      </command>
+      <separator
+            name="separator.xBranch.BranchView7"
+            visible="true">
+      </separator>
+      <command
             commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
             style="push">
       </command>
+      <menu
+            label="Merge Manager">
+         <dynamic
+               class="org.eclipse.osee.framework.ui.skynet.commandHandlers.merge.MergeCompoundContributionItem"
+               id="org.eclipse.osee.framework.ui.skynet.dynamicMergeCommands">
+         </dynamic>
+      </menu>
+      <separator
+            name="separator.xBranch.BranchView1"
+            visible="true">
+      </separator>
       <command
-            commandId="org.eclipse.ui.edit.copy">
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator"
+            style="push">
+      </command>
+      <dynamic
+            class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitIntoParentCompoundContributionItem"
+            id="org.eclipse.osee.framework.ui.skynet.dynamic.commitIntoParent">
+      </dynamic>
+      <menu
+            label="Commit Into">
+         <dynamic
+               class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitIntoCompoundContributionItem"
+               id="org.eclipse.osee.framework.ui.skynet.dynamic.commitInto">
+         </dynamic>
+      </menu>
+      <separator
+            name="separator.xBranch.BranchView2"
+            visible="true">
+      </separator>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
+            style="push">
+      </command>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
+            style="push">
+      </command>
+      <separator
+            name="separator.xBranch.BranchView3"
+            visible="true">
+      </separator>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.rename"
+            style="push">
+      </command>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.renameShortName"
+            style="push">
+      </command>
+      <separator
+            name="separator.xBranch.BranchView4"
+            visible="true">
+      </separator>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.openAssociatedArtifact"
+            style="push">
+      </command>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setAssociatedArtifact"
+            style="push">
+      </command>
+      <separator
+            name="separator.xBranch.BranchView5"
+            visible="true">
+      </separator>
+      <dynamic
+            class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ArchiveBranchCompoundContributionItem"
+            id="org.eclipse.osee.framework.ui.skynet.dynamic.archive">
+      </dynamic>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.accessControl">
+      </command>
+      <separator
+            name="separator.xBranch.BranchView6"
+            visible="true">
+      </separator>
+      <command
+            commandId="org.eclipse.ui.edit.copy"
+            style="push">
       </command>
    </menuContribution>
 </extension>
@@ -559,7 +657,7 @@
            <with
                  variable="activePartId">
               <equals
-                    value="org.eclipse.osee.framework.ui.skynet.branch.BranchView">
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
               </equals>
            </with>
            <with
@@ -799,6 +897,10 @@
         </with>
      </enabledWhen>
   </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.AccessControlHandler"
+        commandId="org.eclipse.osee.framework.ui.skynet.accessControl">
+  </handler>
 	</extension>
 <extension
       id="Open With Handlers"
@@ -932,6 +1034,58 @@
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowMergeBranchPresentationHandler"
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches">
     </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.merge.MergeManagerHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.BranchCreationHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.DeleteBranchHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.DeleteTransactionHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitIntoParentHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitIntoHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitInto">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.RenameBranchHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.rename">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.RenameShortBranchNameHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.renameShortName">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.OpenAssociatedArtifactHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.openAssociatedArtifact">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowArchivedBranchHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ArchiveBranchHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.archiveBranch">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.SetDefaultBranchHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setDefaultBranch">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.SetAssociatedBranchArtifactHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setAssociatedArtifact">
+    </handler>
  </extension>
 	<extension point="org.eclipse.ui.commandImages">
   <image
@@ -949,6 +1103,26 @@
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
         icon="images/branch_change.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager"
+        icon="images/branch_merge.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator"
+        icon="images/branch.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
+        icon="images/delete.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
+        icon="images/delete.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.accessControl"
+        icon="images/authenticated.gif">
   </image>
 	</extension>
  <extension
@@ -1230,6 +1404,10 @@
           id="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
           name="Change Report">
     </command>
+    <command
+          id="org.eclipse.osee.framework.ui.skynet.accessControl"
+          name="Access Control">
+    </command>
  </extension>
 	<extension name="Commands of BranchView" point="org.eclipse.ui.commands">
 		<command description="Show the branches in a flat listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command" name="Flat">
@@ -1243,6 +1421,58 @@
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches"
         name="Show Merge Branches">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager"
+        name="Merge">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator"
+        name="Branch">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
+        name="Delete Branch">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
+        name="Delete Transaction">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent"
+        name="Commit Into Parent">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitInto"
+        name="Commit Into">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.rename"
+        name="Rename">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.renameShortName"
+        name="Rename Short Name">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.openAssociatedArtifact"
+        name="Open Associated Artifact">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches"
+        name="Show Archived Branches">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.archiveBranch"
+        name="Archive/unarchive">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setDefaultBranch"
+        name="Set Default Branch">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setAssociatedArtifact"
+        name="Set Associated Artifact">
   </command>
 	</extension>
 	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">

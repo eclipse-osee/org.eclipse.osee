@@ -199,6 +199,28 @@ public class Branch implements Comparable<Branch>, IAdaptable {
          }
       }
    }
+   
+   /**
+    * 
+    * @return Returns all children branches including archived branches
+    */
+   public Collection<Branch> getAllChildBranches() throws OseeCoreException {
+      Set<Branch> children = new HashSet<Branch>();
+      getALLChildBranches(this, children, false);
+      
+      return children;
+   }
+   
+   private void getALLChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
+      for (Branch branch : BranchManager.getNormalAllBranches()) {
+         if (branch.getParentBranchId() == parentBranch.getBranchId()) {
+            children.add(branch);
+            if (recurse) {
+               getChildBranches(branch, children, recurse);
+            }
+         }
+      }
+   }
 
    /**
     * @return Returns the parentBranchId.

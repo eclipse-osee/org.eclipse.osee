@@ -1,0 +1,59 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
+
+import java.util.List;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.swt.widgets.Display;
+
+/**
+ * @author Jeff C. Phillips
+ */
+public class DeleteBranchHandler extends CommandHandler {
+
+   @Override
+   public Object execute(ExecutionEvent arg0) throws ExecutionException {
+      IStructuredSelection selection =
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
+
+      MessageDialog dialog =
+            new MessageDialog(Display.getCurrent().getActiveShell(), "Delete Branch", null,
+                  "Are you sure you want to delete the branch: " + selectedBranch.getBranchName(),
+                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+
+      if (dialog.open() == 0) {
+         BranchManager.deleteBranch(selectedBranch);
+      }
+
+      return null;
+   }
+
+   @Override
+   public boolean isEnabledWithException() throws OseeCoreException {
+      IStructuredSelection selection =
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+  
+      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+      return branches.size() == 1 && AccessControlManager.isOseeAdmin();
+   }
+}

@@ -32,23 +32,23 @@ import org.eclipse.ui.menus.UIElement;
 /**
  * @author Jeff C. Phillips
  */
-public class ShowMergeBranchPresentationHandler extends AbstractHandler implements IElementUpdater {
-   public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches";
+public class ShowArchivedBranchHandler extends AbstractHandler implements IElementUpdater {
+   public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches";
    boolean itemChk;
    private ICommandService service;
 
-   public ShowMergeBranchPresentationHandler(){
+   public ShowArchivedBranchHandler(){
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ((BranchView) HandlerUtil.getActivePartChecked(event)).changeMergeBranchPresentation(!itemChk);
+      ((BranchView) HandlerUtil.getActivePartChecked(event)).changeArchivedBranchPresentation(!itemChk);
       return null;
    }
 
    @Override
    public void updateElement(UIElement element, Map parameters) {
-      itemChk = Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, false);
+      itemChk = Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.SHOW_ARCHIVED_BRANCHES, false);
       element.setChecked(itemChk);
    }
 

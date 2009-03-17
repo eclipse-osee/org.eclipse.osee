@@ -191,6 +191,9 @@ public class AttributeChanged extends Change {
          if (adapter.isInstance(getArtifact())) {
             return getArtifactChange().getArtifact();
          }
+         if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
+            return getToTransactionId();
+         }
          try {
             if (adapter.isInstance(getAttribute())) {
                return getAttribute();

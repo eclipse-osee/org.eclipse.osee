@@ -152,7 +152,7 @@ public class XBranchWidget extends XWidget implements IActionable {
          }
       });
 
-      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, BranchView.VIEW_ID, "Hisotry");
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, BranchView.VIEW_ID, "Branch");
    }
 
    public void loadTable() {
@@ -167,7 +167,10 @@ public class XBranchWidget extends XWidget implements IActionable {
       Iterator i = ((IStructuredSelection) branchXViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         items.add((Branch) obj);
+         
+         if(obj instanceof Branch){
+            items.add((Branch) obj);
+         }
       }
       return items;
    }
@@ -300,6 +303,16 @@ public class XBranchWidget extends XWidget implements IActionable {
          refresh();
       }
    }
+   
+   /**
+    * @param showArchivedBranches
+    */
+   public void setShowArchivedBranches(boolean showArchivedBranches) {
+      if (branchContentProvider != null) {
+         branchContentProvider.setShowArchivedBranches(showArchivedBranches);
+         refresh();
+      }
+   }
 
    /**
     * @param showTransactions
@@ -307,6 +320,16 @@ public class XBranchWidget extends XWidget implements IActionable {
    public void setShowTransactions(boolean showTransactions) {
       if (branchContentProvider != null) {
          branchContentProvider.setShowTransactions(showTransactions);
+         refresh();
+      }
+   }
+   
+   /**
+    * @param showTransactions
+    */
+   public void setShowWorkingBranchesOnly(boolean allowOnlyWorkingBranches) {
+      if (branchContentProvider != null) {
+         branchContentProvider.setShowOnlyWorkingBranches(allowOnlyWorkingBranches);
          refresh();
       }
    }

@@ -28,12 +28,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -51,7 +54,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Jeff C. Phillips
  * @author Donald G. Dunne
  */
-public class ChangeView extends ViewPart implements IActionable, IBranchEventListener {
+public class ChangeView extends ViewPart implements IActionable, IBranchEventListener, ITransactionsDeletedEventListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView";
    private static String HELP_CONTEXT_ID = "ChangeView";
@@ -60,6 +63,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    private TransactionId transactionId;
 
    public ChangeView() {
+      OseeEventManager.addListener(this);
    }
 
    public static void open(Branch branch) throws OseeArgumentException {
@@ -85,7 +89,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
                            (ChangeView) page.showView(
                                  VIEW_ID,
                                  String.valueOf(branch != null ? branch.getBranchId() : transactionId.getTransactionNumber()),
-                                 IWorkbenchPage.VIEW_VISIBLE);
+                                 IWorkbenchPage.VIEW_ACTIVATE);
 
                      changeView.explore(branch, transactionId, loadChangeReport);
                   } catch (Exception ex) {
@@ -103,6 +107,8 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
 
    @Override
    public void dispose() {
+      OseeEventManager.removeListener(this);
+      
       super.dispose();
    }
 
@@ -146,6 +152,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
 
       getSite().setSelectionProvider(xChangeViewer.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
+      OseeContributionItem.addTo(this, true);
    }
 
    private void explore(final Branch branch, final TransactionId transactionId, boolean loadChangeReport) {
@@ -267,5 +274,26 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
 
    private void closeView() {
       SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener#handleTransactionsDeletedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int[])
+    */
+   @Override
+   public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
+      if (transactionId == null) {
+         return;
+      }
+
+      for (int transactionNumber : transactionIds) {
+         if (transactionNumber == transactionId.getTransactionNumber()) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               public void run() {
+                  closeView();
+               }
+            });
+            return;
+         }
+      }
    }
 }

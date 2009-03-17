@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.search.ui.text.Match;
 
 /**
@@ -32,17 +33,25 @@ public class Handlers {
     * found.
     * 
     * @param selection
-    * @return
     */
    public static List<ArtifactChange> getArtifactChangesFromStructuredSelection(IStructuredSelection structuredSelection) {
       return processSelectionObjects(ArtifactChange.class, structuredSelection);
+   }
+   
+   /**
+    * Populates a list of TransactionIds from a IStructuredSelection. Returns an empty list if no TransactionIds were
+    * found.
+    * 
+    * @param selection
+    */
+   public static List<TransactionId> getTransactionsFromStructuredSelection(IStructuredSelection structuredSelection) {
+      return processSelectionObjects(TransactionId.class, structuredSelection);
    }
 
    /**
     * Populates a list of branches from a IStructuredSelection. Returns an empty list if no branches were found.
     * 
     * @param selection
-    * @return
     */
    public static List<Branch> getBranchesFromStructuredSelection(IStructuredSelection structuredSelection) {
       return processSelectionObjects(Branch.class, structuredSelection);
@@ -52,7 +61,6 @@ public class Handlers {
     * Populates a list of artifacts from a IStructuredSelection. Returns an empty list if no artifacts were found.
     * 
     * @param selection
-    * @return
     */
    public static List<Artifact> getArtifactsFromStructuredSelection(IStructuredSelection structuredSelection) {
       return processSelectionObjects(Artifact.class, structuredSelection);

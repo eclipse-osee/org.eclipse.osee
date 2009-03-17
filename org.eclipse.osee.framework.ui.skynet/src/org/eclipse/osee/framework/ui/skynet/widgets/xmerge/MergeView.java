@@ -131,7 +131,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                            (MergeView) page.showView(
                                  MergeView.VIEW_ID,
                                  String.valueOf(sourceBranch != null ? sourceBranch.getBranchId() * 100000 + destBranch.getBranchId() : commitTrans.getTransactionNumber()),
-                                 IWorkbenchPage.VIEW_VISIBLE);
+                                 IWorkbenchPage.VIEW_ACTIVATE);
                      mergeView.showConflicts = showConflicts;
                      mergeView.explore(sourceBranch, destBranch, tranId, commitTrans, showConflicts);
                   } catch (Exception ex) {

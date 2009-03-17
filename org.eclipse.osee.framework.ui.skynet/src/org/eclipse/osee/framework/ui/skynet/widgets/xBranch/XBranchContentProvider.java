@@ -35,24 +35,37 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  */
 public class XBranchContentProvider implements ITreeContentProvider {
 
+   /**
+    * @param showOnlyWorkingBranches the showOnlyWorkingBranches to set
+    */
+   public void setShowOnlyWorkingBranches(boolean showOnlyWorkingBranches) {
+      this.showOnlyWorkingBranches = showOnlyWorkingBranches;
+   }
+
    private final BranchXViewer changeXViewer;
    private boolean showChildBranchesAtMainLevel;
    private boolean showMergeBranches;
+   private boolean showArchivedBranches;
    private boolean showTransactions;
    private boolean showChildBranchesUnderParents;
+   private boolean showOnlyWorkingBranches;
+   
    private static Object[] EMPTY_ARRAY = new Object[0];
 
    public XBranchContentProvider(BranchXViewer commitXViewer) {
       super();
-      
+
       this.changeXViewer = commitXViewer;
       this.showChildBranchesAtMainLevel = false;
       this.showMergeBranches = false;
       this.showTransactions = false;
       this.showChildBranchesUnderParents = false;
+      this.showArchivedBranches = false;
    }
 
    public Object[] getChildren(Object parentElement) {
+      BranchState branchState = BranchState.ACTIVE;
+
       if (parentElement instanceof BranchManager) {
          List<BranchType> branchTypes = new ArrayList<BranchType>(4);
          branchTypes.add(BranchType.TOP_LEVEL);
@@ -61,13 +74,17 @@ public class XBranchContentProvider implements ITreeContentProvider {
             if (AccessControlManager.isOseeAdmin() && showMergeBranches) {
                branchTypes.add(BranchType.MERGE);
             }
+            if (AccessControlManager.isOseeAdmin() && showArchivedBranches) {
+               branchState = BranchState.ALL;
+            }
             if (showChildBranchesAtMainLevel) {
                branchTypes.add(BranchType.BASELINE);
                branchTypes.add(BranchType.WORKING);
             }
-            List<Branch> branches =
-                  BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.ALL,
+            List<Branch> branches = showOnlyWorkingBranches ? BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.WORKING) : 
+                  BranchManager.getBranches(branchState, BranchControlled.ALL,
                         branchTypes.toArray(new BranchType[branchTypes.size()]));
+            
             return branches.toArray();
          } catch (OseeCoreException ex) {
             OseeLog.log(this.getClass(), Level.WARNING, ex);
@@ -77,7 +94,9 @@ public class XBranchContentProvider implements ITreeContentProvider {
             Branch branch = (Branch) parentElement;
             if (showChildBranchesUnderParents) {
                List<Object> items = new LinkedList<Object>();
-               items.addAll(branch.getChildBranches());
+               Collection<Branch> childBrances =
+                     showArchivedBranches ? branch.getAllChildBranches() : branch.getChildBranches();
+               items.addAll(childBrances);
                items.addAll(getTransactions(branch));
                return items.toArray();
             } else {
@@ -117,9 +136,15 @@ public class XBranchContentProvider implements ITreeContentProvider {
       if (element instanceof BranchManager) return true;
       if (element instanceof Branch) {
          boolean hasChildren = true;
-         if(!showTransactions){
+         
+         if (!showTransactions) {
             try {
-               hasChildren = !((Branch)element).getChildBranches().isEmpty();
+               if (!showChildBranchesAtMainLevel) {
+                  hasChildren =
+                        showArchivedBranches ? !((Branch) element).getAllChildBranches().isEmpty() : !((Branch) element).getChildBranches().isEmpty();
+               } else {
+                  hasChildren = false;
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(this.getClass(), Level.WARNING, ex);
             }
@@ -162,10 +187,17 @@ public class XBranchContentProvider implements ITreeContentProvider {
    }
 
    /**
-    * @param showMergeBranches2
+    * @param showMergeBranches
     */
    public void setShowMergeBranches(boolean showMergeBranches) {
       this.showMergeBranches = showMergeBranches;
+   }
+
+   /**
+    * @param showArchivedBranches
+    */
+   public void setShowArchivedBranches(boolean showArchivedBranches) {
+      this.showArchivedBranches = showArchivedBranches;
    }
 
    /**
@@ -174,5 +206,4 @@ public class XBranchContentProvider implements ITreeContentProvider {
    public void setShowTransactions(boolean showTransactions) {
       this.showTransactions = showTransactions;
    }
-
 }

@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.FlatPresentationHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.HierarchicalPresentationHandler;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowArchivedBranchHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowMergeBranchPresentationHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowTransactionPresentationHandler;
 import org.eclipse.ui.PlatformUI;
@@ -29,8 +30,9 @@ public class BranchViewPresentationPreferences {
    public static final String FAVORITE_KEY = "favorites_first";
    public static final String SHOW_TRANSACTIONS = "show_transactions";
    public static final String SHOW_MERGE_BRANCHES = "show_merge_branches";
+   public static final String SHOW_ARCHIVED_BRANCHES = "show_archived_branches";
    public static final String FLAT_KEY = "flat";
-   static final String BRANCH_ID = "branchId";
+   public static final String BRANCH_ID = "branchId";
 
    private final IPreferencesService preferencesService;
    private IPreferenceChangeListener preferenceChangeListener;
@@ -93,6 +95,9 @@ public class BranchViewPresentationPreferences {
                   if (propertyName.equals(SHOW_MERGE_BRANCHES)) {
                      setShowMergeBranches(getViewPreference().getBoolean(SHOW_MERGE_BRANCHES, true));
                   }
+                  if (propertyName.equals(SHOW_ARCHIVED_BRANCHES)) {
+                     setShowArchivedBranches(getViewPreference().getBoolean(SHOW_ARCHIVED_BRANCHES, true));
+                  }
                   if (propertyName.equals(FAVORITE_KEY)) {
                      setFavoritesFirst(getViewPreference().getBoolean(FAVORITE_KEY, false));
                   }
@@ -109,12 +114,14 @@ public class BranchViewPresentationPreferences {
       ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(FlatPresentationHandler.COMMAND_ID, null);
       ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowTransactionPresentationHandler.COMMAND_ID, null);
       ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowMergeBranchPresentationHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowArchivedBranchHandler.COMMAND_ID, null);
    }
 
    private void loadPreferences() {
       setPresentation(getViewPreference().getBoolean(FLAT_KEY, true));
       setShowTransactions(getViewPreference().getBoolean(SHOW_TRANSACTIONS, true));
-      setShowMergeBranches(getViewPreference().getBoolean(SHOW_MERGE_BRANCHES, true));
+      setShowMergeBranches(getViewPreference().getBoolean(SHOW_MERGE_BRANCHES, false));
+      setShowArchivedBranches(getViewPreference().getBoolean(SHOW_ARCHIVED_BRANCHES, false));
    }
 
    private void setFavoritesFirst(boolean favoritesFirst) {
@@ -131,6 +138,10 @@ public class BranchViewPresentationPreferences {
 
    private void setShowTransactions(boolean showTransactions) {
       branchView.setShowTransactions(showTransactions);
+   }
+   
+   private void setShowArchivedBranches(boolean showArchivedBranches) {
+      branchView.setShowArchivedBranches(showArchivedBranches);      
    }
 
    /**

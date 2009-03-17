@@ -122,6 +122,9 @@ public class ArtifactChanged extends Change {
          if (adapter.isInstance(getArtifact())) {
             return getArtifactChange().getArtifact();
          }
+         if(adapter.isInstance(getToTransactionId()) && isHistorical()){
+            return getToTransactionId();
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }

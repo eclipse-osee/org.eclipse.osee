@@ -101,6 +101,10 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
+      if(branch.isArchived()){
+         branchName = branchName + " (Archived)";
+      }
+      
       if (cCol.equals(BranchXViewerFactory.branch_name)) {
          columnText = branchName;
       } else if (cCol.equals(BranchXViewerFactory.time_stamp)) {

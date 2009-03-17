@@ -15,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  * 
  * @author Jeff C. Phillips
  */
-public class TransactionId implements Serializable {
+public class TransactionId implements Serializable, IAdaptable {
    private static final long serialVersionUID = 7295589339029402964L;
    private int transactionNumber;
    private final Branch branch;
@@ -180,5 +181,18 @@ public class TransactionId implements Serializable {
     */
    public TransactionDetailsType getTxType() {
       return txType;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+    */
+   @Override
+   public Object getAdapter(Class adapter) {
+      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+
+      if (adapter.isInstance(this)) {
+         return this;
+      }
+      return null;
    }
 }

@@ -11,19 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
-import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -40,7 +31,7 @@ import org.eclipse.swt.widgets.Listener;
 public class BranchSelectionDialog extends MessageDialog {
 
    Branch selected = null;
-   BranchListComposite branchListComposite;
+   XBranchWidget branchWidget;
    private final boolean allowOnlyWorkingBranches;
 
    public BranchSelectionDialog(String title, boolean allowOnlyWorkingBranches) {
@@ -56,25 +47,18 @@ public class BranchSelectionDialog extends MessageDialog {
 
    @Override
    protected Control createDialogArea(Composite container) {
-      List<Branch> branches = null;
-      try {
-         if (allowOnlyWorkingBranches) {
-            branches =
-                  BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.WORKING);
-         } else {
-            branches = BranchManager.getNormalBranches();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      branchListComposite = new BranchListComposite(branches, container);
-      branchListComposite.setPresentation(true);
+      branchWidget = new XBranchWidget();
+      branchWidget.setDisplayLabel(false);
+      branchWidget.createWidgets(container, 1);
+      branchWidget.setPresentation(true);
+      branchWidget.setShowWorkingBranchesOnly(allowOnlyWorkingBranches);
+      branchWidget.loadData();
+      
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 500;
-      gd.widthHint = 400;
-      branchListComposite.getBranchTable().getTree().setLayoutData(gd);
-      branchListComposite.getFilterText().setFocus();
-      branchListComposite.getBranchTable().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
+      gd.widthHint = 800;
+      branchWidget.getXViewer().getTree().setLayoutData(gd);
+      branchWidget.getXViewer().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
          /* (non-Javadoc)
           * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
           */
@@ -83,7 +67,7 @@ public class BranchSelectionDialog extends MessageDialog {
             handleDoubleClick();
          }
       });
-      branchListComposite.getBranchTable().getTree().addSelectionListener(new SelectionListener() {
+      branchWidget.getXViewer().getTree().addSelectionListener(new SelectionListener() {
          /* (non-Javadoc)
           * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
           */
@@ -96,7 +80,7 @@ public class BranchSelectionDialog extends MessageDialog {
          public void widgetDefaultSelected(SelectionEvent e) {
          }
       });
-      return branchListComposite.getBranchTable().getControl();
+      return branchWidget.getControl();
    }
 
    public Branch getSelected() {
@@ -104,9 +88,10 @@ public class BranchSelectionDialog extends MessageDialog {
    }
 
    private void storeSelectedBranch() {
-      IStructuredSelection sel = (IStructuredSelection) branchListComposite.getBranchTable().getSelection();
-      if (!sel.isEmpty() && (sel.getFirstElement() instanceof JobbedNode)) {
-         selected = (Branch) ((JobbedNode) sel.getFirstElement()).getBackingData();
+      List<Branch> branches = branchWidget.getSelectedBranches();
+
+      if (!branches.isEmpty()) {
+         selected = branches.iterator().next();
       }
    }
 

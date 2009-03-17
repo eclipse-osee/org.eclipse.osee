@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
@@ -94,7 +95,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      HistoryView historyView =
                            (HistoryView) page.showView(VIEW_ID,
-                                 artifact.getGuid() + artifact.getBranch().getBranchId(), IWorkbenchPage.VIEW_VISIBLE);
+                                 artifact.getGuid() + artifact.getBranch().getBranchId(), IWorkbenchPage.VIEW_ACTIVATE);
 
                      historyView.explore(artifact, loadHistory);
                   } catch (Exception ex) {
@@ -155,6 +156,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
       getSite().setSelectionProvider(xHistoryWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
+      OseeContributionItem.addTo(this, true);
 
       setupMenus();
    }

@@ -77,6 +77,7 @@ public class BranchManager {
 
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
    private static final String ARCHIVE_BRANCH = "UPDATE osee_branch set archived = 1 WHERE branch_id = ?";
+   private static final String UN_ARCHIVE_BRANCH = "UPDATE osee_branch set archived = 0 WHERE branch_id = ?";
    private static final String UPDATE_ASSOCIATED_ART_BRANCH =
          "UPDATE  osee_branch set associated_art_id = ? WHERE branch_id = ?";
 
@@ -128,6 +129,20 @@ public class BranchManager {
    public static List<Branch> getNormalBranches() throws OseeCoreException {
       List<Branch> branches =
             getBranches(BranchState.ACTIVE, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
+                  BranchType.BASELINE);
+      Collections.sort(branches);
+      return branches;
+   }
+   
+   /**
+    * Excludes branches of type MERGE and SYSTEM_ROOT
+    * 
+    * @return branches that are of type STANDARD, TOP_LEVEL, or BASELINE
+    * @throws OseeCoreException
+    */
+   public static List<Branch> getNormalAllBranches() throws OseeCoreException {
+      List<Branch> branches =
+            getBranches(BranchState.ALL, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
                   BranchType.BASELINE);
       Collections.sort(branches);
       return branches;
@@ -410,6 +425,14 @@ public class BranchManager {
    public static void archive(Branch branch) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
       branch.setArchived(true);
+   }
+   
+   /**
+    * Unarchives a branch in the database by changing its archived value from 1 to 0.
+    */
+   public static void unArchive(Branch branch) throws OseeCoreException {
+      ConnectionHandler.runPreparedUpdate(UN_ARCHIVE_BRANCH, branch.getBranchId());
+      branch.setArchived(false);
    }
 
    /**

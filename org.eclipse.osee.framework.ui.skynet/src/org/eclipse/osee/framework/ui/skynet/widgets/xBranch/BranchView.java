@@ -20,11 +20,13 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -36,37 +38,45 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Jeff C. Phillips
  */
-public class BranchView extends ViewPart implements IActionable, IBranchEventListener{
+public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionsDeletedEventListener {
+
+   public BranchView() {
+      super();
+
+      OseeEventManager.addListener(this);
+   }
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
    private static String HELP_CONTEXT_ID = "BranchView";
+   public static final String BRANCH_ID = "branchId";
    private XBranchWidget xBranchWidget;
    private BranchOptions[] branchOptions;
 
-   private void setBranchOptions(BranchOptions[] options){
-      if(options == null){
+   private void setBranchOptions(BranchOptions[] options) {
+      if (options == null) {
          return;
       }
-      
-      for(BranchOptions option : options){
-         if(option == BranchOptions.FAVORITES_FIRST){
+
+      for (BranchOptions option : options) {
+         if (option == BranchOptions.FAVORITES_FIRST) {
             setFavoritesFirst(true);
-         } else if (option == BranchOptions.FLAT){
+         } else if (option == BranchOptions.FLAT) {
             setPresentation(true);
-         } else if (option == BranchOptions.SHOW_MERGE_BRANCHES){
+         } else if (option == BranchOptions.SHOW_MERGE_BRANCHES) {
             setShowMergeBranches(true);
-         }else if(option == BranchOptions.SHOW_TRANSACTIONS){
+         } else if (option == BranchOptions.SHOW_TRANSACTIONS) {
             setShowTransactions(true);
          }
       }
    }
-   
+
    @Override
    public void dispose() {
       super.dispose();
-      
+
       branchViewPresentationPreferences.setDisposed(true);
+      OseeEventManager.removeListener(this);
    }
 
    @Override
@@ -79,7 +89,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void createPartControl(Composite parent) {
       setPartName("Branch Manager");
-      
+
       GridLayout layout = new GridLayout();
       layout.numColumns = 1;
       layout.verticalSpacing = 0;
@@ -91,10 +101,10 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       xBranchWidget = new XBranchWidget();
       xBranchWidget.setDisplayLabel(false);
       xBranchWidget.createWidgets(parent, 1);
-      
+
       setBranchOptions(branchOptions);
       branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
-      
+
       xBranchWidget.loadData();
 
       MenuManager menuManager = new MenuManager();
@@ -107,12 +117,12 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       });
 
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-      xBranchWidget.getXViewer().getTree().setMenu(
-            menuManager.createContextMenu(xBranchWidget.getXViewer().getTree()));
+      xBranchWidget.getXViewer().getTree().setMenu(menuManager.createContextMenu(xBranchWidget.getXViewer().getTree()));
       getSite().registerContextMenu(VIEW_ID, menuManager, xBranchWidget.getXViewer());
 
       getSite().setSelectionProvider(xBranchWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
+      OseeContributionItem.addTo(this, true);
    }
 
    public String getActionDescription() {
@@ -121,18 +131,11 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
-      if (branchModType == BranchEventType.Deleted) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            public void run() {
-               closeView();
-            }
-         });
-         return;
-      } else if (branchModType == BranchEventType.Committed) {
+      if (branchModType == BranchEventType.Committed || branchModType == BranchEventType.Added) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                try {
-                 xBranchWidget.refresh();
+                  xBranchWidget.refresh();
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -147,33 +150,55 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
+   
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener#handleTransactionsDeletedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int[])
+    */
+   @Override
+   public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            try {
+               xBranchWidget.refresh();
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+   }
 
-   private void closeView() {
-      SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
+   public void changeBranchPresentation(boolean flat) {
+      if (branchViewPresentationPreferences != null) {
+         branchViewPresentationPreferences.getViewPreference().putBoolean(BranchViewPresentationPreferences.FLAT_KEY,
+               flat);
+      }
    }
 
-   public void changeBranchPresentation(boolean flat){
-      if(branchViewPresentationPreferences != null){
-         branchViewPresentationPreferences.getViewPreference().putBoolean(BranchViewPresentationPreferences.FLAT_KEY, flat);
+   public void changeTransactionPresentation(boolean showTransactions) {
+      if (branchViewPresentationPreferences != null) {
+         branchViewPresentationPreferences.getViewPreference().putBoolean(
+               BranchViewPresentationPreferences.SHOW_TRANSACTIONS, showTransactions);
+      }
+   }
+
+   public void changeMergeBranchPresentation(boolean showMergeBranches) {
+      if (branchViewPresentationPreferences != null) {
+         branchViewPresentationPreferences.getViewPreference().putBoolean(
+               BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, showMergeBranches);
       }
    }
    
-   public void changeTransactionPresentation(boolean showTransactions){
-      if(branchViewPresentationPreferences != null){
-         branchViewPresentationPreferences.getViewPreference().putBoolean(BranchViewPresentationPreferences.SHOW_TRANSACTIONS, showTransactions);
+   public void changeArchivedBranchPresentation(boolean showArchivedBranches) {
+      if (branchViewPresentationPreferences != null) {
+         branchViewPresentationPreferences.getViewPreference().putBoolean(
+               BranchViewPresentationPreferences.SHOW_ARCHIVED_BRANCHES, showArchivedBranches);
       }
    }
-   
-   public void changeMergeBranchPresentation(boolean showMergeBranches){
-      if(branchViewPresentationPreferences != null){
-         branchViewPresentationPreferences.getViewPreference().putBoolean(BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, showMergeBranches);
-      }
-   }
-   
+
    protected void setPresentation(boolean flat) {
       xBranchWidget.setPresentation(flat);
    }
-   
+
    protected void setFavoritesFirst(boolean favoritesFirst) {
       xBranchWidget.setFavoritesFirst(favoritesFirst);
    }
@@ -184,5 +209,9 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    protected void setShowTransactions(boolean showTransactions) {
       xBranchWidget.setShowTransactions(showTransactions);
+   }
+
+   public void setShowArchivedBranches(boolean showArchivedBranches) {
+      xBranchWidget.setShowArchivedBranches(showArchivedBranches);
    }
 }
