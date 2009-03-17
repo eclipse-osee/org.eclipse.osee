@@ -236,38 +236,37 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (result.isFalse()) result.popup();
    }
 
-   public void transitionToInWork(User toUser, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitionToInWork(User toUser, int percentComplete, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name())) return;
       Result result = smaMgr.transition(TaskStates.InWork.name(), toUser, false, transaction);
       if (smaMgr.getStateMgr().getPercentComplete() == 100) {
-         smaMgr.getStateMgr().updateMetrics(0, 99, true);
+         smaMgr.getStateMgr().updateMetrics(0, percentComplete, true);
       }
       if (persist) smaMgr.getSma().saveSMA(transaction);
       if (result.isFalse()) result.popup();
    }
 
-   /*
-    * (non-Javadoc)
+   /**
+    * Tasks must transition in/out of completed when percent changes between 100 and <100. This method will handle these
+    * cases.
     * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#statusChanged()
+    * @param percentComplete
+    * @param transaction
+    * @throws OseeCoreException
     */
-   @Override
-   public void statusChanged() throws OseeCoreException {
-      super.statusChanged();
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+   public void statusPercentChanged(int percentComplete, SkynetTransaction transaction) throws OseeCoreException {
       if (smaMgr.getStateMgr().getPercentComplete() == 100 && !isCompleted())
          transitionToCompleted(false, transaction);
       else if (smaMgr.getStateMgr().getPercentComplete() != 100 && isCompleted()) {
-         transitionToInWork(UserManager.getUser(), true, transaction);
+         transitionToInWork(UserManager.getUser(), percentComplete, true, transaction);
       }
-      transaction.execute();
    }
 
    public void parentWorkFlowTransitioned(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isInWork())
          transitionToCancelled("Parent Cancelled", persist, transaction);
       else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) transitionToInWork(
-            UserManager.getUser(), persist, transaction);
+            UserManager.getUser(), 99, persist, transaction);
    }
 
    /*

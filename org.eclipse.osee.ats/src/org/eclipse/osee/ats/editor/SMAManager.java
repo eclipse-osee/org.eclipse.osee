@@ -506,6 +506,10 @@ public class SMAManager {
                if (tsd.isSplitHours()) {
                   hours = hours / smas.size();
                }
+               SkynetTransaction transaction = null;
+               if (persist) {
+                  transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+               }
                for (StateMachineArtifact sma : smas) {
                   sma.getSmaMgr().getStateMgr().updateMetrics(hours, tsd.getPercent().getInt(), true);
                   if (sma.getSmaMgr().getStateMgr().isUnAssigned()) {
@@ -514,7 +518,15 @@ public class SMAManager {
                   }
                   sma.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
                         tsd.getSelectedOptionDef().getName());
-                  sma.statusChanged();
+                  if (sma instanceof TaskArtifact) {
+                     ((TaskArtifact) sma).statusPercentChanged(tsd.getPercent().getInt(), transaction);
+                  }
+                  if (persist) {
+                     sma.persistAttributesAndRelations(transaction);
+                  }
+               }
+               if (persist) {
+                  transaction.execute();
                }
                return true;
             }
@@ -529,9 +541,21 @@ public class SMAManager {
                if (tsd.isSplitHours()) {
                   hours = hours / smas.size();
                }
+               SkynetTransaction transaction = null;
+               if (persist) {
+                  transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+               }
                for (StateMachineArtifact sma : smas) {
                   sma.getSmaMgr().getStateMgr().updateMetrics(hours, tsd.getPercent().getInt(), true);
-                  sma.statusChanged();
+                  if (sma instanceof TaskArtifact) {
+                     ((TaskArtifact) sma).statusPercentChanged(tsd.getPercent().getInt(), transaction);
+                  }
+                  if (persist) {
+                     sma.persistAttributesAndRelations(transaction);
+                  }
+               }
+               if (persist) {
+                  transaction.execute();
                }
                return true;
             }

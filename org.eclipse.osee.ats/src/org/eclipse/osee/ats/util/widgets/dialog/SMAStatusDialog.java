@@ -116,7 +116,7 @@ public class SMAStatusDialog extends MessageDialog {
 
       if (smas.size() > 1) {
          Composite comp = new Composite(parent, SWT.NONE);
-         comp.setLayout(new GridLayout(4, false));
+         comp.setLayout(new GridLayout(2, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          eachRadio.createWidgets(comp, 2);

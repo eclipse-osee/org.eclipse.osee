@@ -845,14 +845,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    /**
-    * Will be called when status for this SMA has been changed. SMA's can override this to perform tasks.
-    * 
-    * @throws Exception TODO
-    */
-   public void statusChanged() throws OseeCoreException {
-   }
-
-   /**
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
     * 
