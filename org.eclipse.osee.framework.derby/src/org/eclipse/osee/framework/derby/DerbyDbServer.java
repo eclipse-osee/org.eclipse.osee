@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.derby;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.logging.Level;
+import org.apache.derby.drda.NetworkServerControl;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -22,12 +23,17 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class DerbyDbServer {
    protected static Object keepAlive;
    private NetworkServerUtil nwServer;
+   private static final DerbyDbServer instance = new DerbyDbServer();
 
-   public DerbyDbServer() {
+   private DerbyDbServer() {
       this.nwServer = null;
    }
 
-   public void startServer(String host, int port) throws Exception {
+   public static void startServer(String host, int port) throws Exception {
+      instance.startServerInternal(host, port);
+   }
+
+   private void startServerInternal(String host, int port) throws Exception {
       try {
          OseeLog.log(Activator.class, Level.INFO, "Starting Derby Network Server ....");
          nwServer = new NetworkServerUtil(InetAddress.getByName(host), port);
@@ -35,8 +41,8 @@ public class DerbyDbServer {
 
          if (isConnectionAvailable()) {
             nwServer.printInfo();
-            this.addShutdownHook();
-            this.stayAlive();
+            addShutdownHook();
+            stayAlive();
          } else {
             OseeLog.log(Activator.class, Level.INFO, "Exiting, since unable to connect to Derby Network Server.");
             OseeLog.log(Activator.class, Level.INFO,
@@ -80,7 +86,7 @@ public class DerbyDbServer {
       });
    }
 
-   public boolean isConnectionAvailable() throws InterruptedException {
+   private boolean isConnectionAvailable() throws InterruptedException {
       boolean knowIfServerUp = false;
       int numTimes = 5;
 
