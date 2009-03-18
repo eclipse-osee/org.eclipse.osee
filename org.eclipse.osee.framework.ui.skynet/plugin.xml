@@ -157,7 +157,7 @@
         name="History">
   </view>
   <view
-        allowMultiple="false"
+        allowMultiple="true"
         category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
         icon="images/branch.gif"
@@ -505,8 +505,7 @@
          </command>
       </menu>
       <command
-            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showTransactions"
-            icon="images/DBicon2.GIF"
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches"
             style="toggle">
       </command>
       <command
@@ -515,7 +514,13 @@
             style="toggle">
       </command>
       <command
-            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches"
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showTransactions"
+            icon="images/DBicon2.GIF"
+            style="toggle">
+      </command>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.ShowFavoriteBranchesFirst"
+            icon="images/star_9_9.gif"
             style="toggle">
       </command>
    </menuContribution>
@@ -572,18 +577,6 @@
             style="push">
       </command>
       <separator
-            name="separator.xBranch.BranchView3"
-            visible="true">
-      </separator>
-      <command
-            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.rename"
-            style="push">
-      </command>
-      <command
-            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.renameShortName"
-            style="push">
-      </command>
-      <separator
             name="separator.xBranch.BranchView4"
             visible="true">
       </separator>
@@ -608,6 +601,26 @@
       </command>
       <separator
             name="separator.xBranch.BranchView6"
+            visible="true">
+      </separator>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.rename"
+            style="push">
+      </command>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.renameShortName"
+            style="push">
+      </command>
+      <separator
+            name="separator.xBranch.BranchView3"
+            visible="true">
+      </separator>
+      <dynamic
+            class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchContributionItem"
+            id="org.eclipse.osee.framework.ui.skynet.dynamicToggleFavorite">
+      </dynamic>
+      <separator
+            name="separator.xBranch.BranchView8"
             visible="true">
       </separator>
       <command
@@ -1069,6 +1082,14 @@
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.SetAssociatedBranchArtifactHandler"
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setAssociatedArtifact">
     </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowFavoriteBranchesFirstHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.ShowFavoriteBranchesFirst">
+    </handler>
+    <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler">
+    </handler>
  </extension>
 	<extension point="org.eclipse.ui.commandImages">
   <image
@@ -1106,6 +1127,10 @@
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.accessControl"
         icon="images/authenticated.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler"
+        icon="images/star_9_9.gif">
   </image>
 	</extension>
  <extension
@@ -1456,6 +1481,14 @@
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setAssociatedArtifact"
         name="Set Associated Artifact">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.ShowFavoriteBranchesFirst"
+        name="Show Favorites First">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler"
+        name="Toggle Favorite">
   </command>
 	</extension>
 	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
