@@ -51,6 +51,7 @@ public class BranchSelectionDialog extends MessageDialog {
       branchWidget.setDisplayLabel(false);
       branchWidget.createWidgets(container, 1);
       branchWidget.setPresentation(true);
+      branchWidget.setFavoritesFirst(true);
       branchWidget.setShowWorkingBranchesOnly(allowOnlyWorkingBranches);
       branchWidget.loadData();
       
