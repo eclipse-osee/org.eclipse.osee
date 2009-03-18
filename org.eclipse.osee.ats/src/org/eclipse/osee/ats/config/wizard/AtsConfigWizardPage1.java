@@ -117,7 +117,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
 
          setControl(comp);
          ((XText) getXWidget(CONFIG_NAMESPACE)).setFocus();
-
+         ((XText) getXWidget(WORKFLOW_ID)).setText("osee.ats.teamWorkflow");
          ((XText) getXWidget(CONFIG_NAMESPACE)).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
             public void handleEvent(Event event) {
                if (event.button == 3) {
@@ -126,6 +126,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
                   ((XText) getXWidget(TEAMDEF_NAME)).set(namespace + " Team");
                   ((XText) getXWidget(ACTIONABLE_ITEMS)).set(namespace + " a, " + namespace + " b, " + namespace + " c");
                   ((XText) getXWidget(VERSIONS)).set(namespace + " 1.0, " + namespace + " 2.0, " + namespace + " 3.0");
+                  ((XText) getXWidget(WORKFLOW_ID)).setText("osee.ats.teamWorkflow");
                }
             }
          });

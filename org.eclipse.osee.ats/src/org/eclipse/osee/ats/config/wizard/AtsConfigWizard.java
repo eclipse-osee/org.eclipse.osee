@@ -24,12 +24,15 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard;
+import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard.WorkflowData;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -116,11 +119,33 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
          }
 
          // create workflow
-         WorkFlowDefinition workFlowDefinition =
-               AtsWorkflowConfigCreationWizard.generateWorkflow(namespace, transaction, teamDef);
+         String workflowId = page1.getWorkflowId();
+         Artifact workflowArt = null;
+         try {
+            workflowArt =
+                  ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
+                        AtsPlugin.getAtsBranch());
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
+         }
+         WorkFlowDefinition workFlowDefinition;
+         // If can't be found, create a new one
+         if (workflowArt == null) {
+            WorkflowData workflowData =
+                  AtsWorkflowConfigCreationWizard.generateWorkflow(namespace, transaction, teamDef);
+            workFlowDefinition = workflowData.getWorkDefinition();
+            workflowArt = workflowData.getWorkFlowArtifact();
+         }
+         // Else, use existing one
+         else {
+            workFlowDefinition = (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workflowId);
+         }
+         // Relate new team def to workflow artifact
+         teamDef.addRelation(AtsRelation.WorkItem__Child, workflowArt);
 
          // persist everything
          teamDef.persistAttributesAndRelations(transaction);
+         workflowArt.persistAttributesAndRelations(transaction);
          for (Artifact artifact : aias) {
             artifact.persistAttributesAndRelations(transaction);
          }

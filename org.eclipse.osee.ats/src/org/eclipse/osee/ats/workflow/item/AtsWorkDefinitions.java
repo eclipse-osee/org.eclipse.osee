@@ -265,38 +265,28 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       // Relate if not already related
       if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent, Artifact.class).size() == 0) {
          if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
-            // Add to workflow artifact if can
-            WorkPageDefinition workPageDefinition = new WorkPageDefinition(art);
-            Artifact parentArt = null;
-            WorkFlowDefinition workFlowDefinition = workPageDefinition.getWorkFlowDefinitionById();
-            if (workFlowDefinition != null) {
-               Artifact workflowArt =
-                     WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workFlowDefinition.getId());
-               if (workflowArt != null) {
-                  parentArt = workflowArt;
-               }
-            }
-            // Else, add to work pages folder
-            if (parentArt == null) {
-               parentArt = AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(transaction);
-            }
-            relateIfNotRelated(parentArt, art);
+            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(transaction), art,
+                  transaction);
          }
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
-            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(transaction), art);
+            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(transaction), art,
+                  transaction);
          }
          if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
-            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact(transaction), art);
+            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact(transaction), art,
+                  transaction);
          }
          if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
-            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact(transaction), art);
+            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact(transaction), art,
+                  transaction);
          }
       }
    }
 
-   private static void relateIfNotRelated(Artifact parent, Artifact child) throws OseeCoreException {
+   private static void relateIfNotRelated(Artifact parent, Artifact child, SkynetTransaction transaction) throws OseeCoreException {
       if (!parent.getChildren().contains(child) && !child.hasParent()) {
          parent.addChild(child);
+         parent.persistRelations(transaction);
       }
    }
 

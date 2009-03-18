@@ -328,9 +328,9 @@ public class AtsMetricsComposite extends ScrolledComposite {
 
    public void createHoursRemainingByAssigneesChart(SMAMetrics sMet, Composite parent) throws OseeCoreException {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
-      Double versionHoursRemain = null;
-      if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
-         versionHoursRemain = sMet.getHoursTillRel();
+      Double hoursRemain = null;
+      if (sMet.getEstRelDate() != null) {
+         hoursRemain = sMet.getHoursTillRel();
       }
       for (User user : sMet.getAssigneesAssignedOrCompleted()) {
          try {
@@ -347,22 +347,22 @@ public class AtsMetricsComposite extends ScrolledComposite {
             if (sMet.getEstRelDate() == null) {
                lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format(
                      "%5.2f - (Estimated release date not set)", userHoursRemain)));
-            } else if (versionHoursRemain == null) {
+            } else if (hoursRemain == null) {
                lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format("%5.2f",
                      userHoursRemain)));
             } else {
                if (userHoursRemain == 0.0) {
                   lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
                         XBarGraphLine.DEFAULT_GREEN_BACKGROUND, 100, "No Estimated Hours Remain"));
-               } else if (userHoursRemain > versionHoursRemain) {
+               } else if (userHoursRemain > hoursRemain) {
                   lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_RED_FOREGROUND,
                         XBarGraphLine.DEFAULT_RED_BACKGROUND,
                         (((int) userHoursRemain) > 1 ? (int) userHoursRemain : 1), String.format(
-                              "%5.2f - Exceeds release remaining hours %5.2f.", userHoursRemain, versionHoursRemain)));
+                              "%5.2f - Exceeds release remaining hours %5.2f.", userHoursRemain, hoursRemain)));
                } else {
                   lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
                         XBarGraphLine.DEFAULT_GREEN_BACKGROUND, (int) userHoursRemain, String.format(
-                              "%5.2f - Within remaining hours %5.2f.", userHoursRemain, versionHoursRemain)));
+                              "%5.2f - Within remaining hours %5.2f.", userHoursRemain, hoursRemain)));
                }
             }
          } catch (OseeCoreException ex) {

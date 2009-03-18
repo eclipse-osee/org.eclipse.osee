@@ -47,7 +47,7 @@ public enum DemoUsers implements IOseeUserInfo {
    }
 
    public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {
-      return UserManager.getUserByName(demoUser.name());
+      return UserManager.getUserByName(demoUser.getName());
    }
 
    /**

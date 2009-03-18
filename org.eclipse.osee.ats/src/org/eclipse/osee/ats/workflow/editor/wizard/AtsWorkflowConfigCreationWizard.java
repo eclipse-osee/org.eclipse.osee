@@ -80,7 +80,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
             // do nothing
          }
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         WorkFlowDefinition workflow = generateWorkflow(namespace, transaction, null);
+         WorkFlowDefinition workflow = generateWorkflow(namespace, transaction, null).getWorkDefinition();
          transaction.execute();
 
          AtsWorkflowConfigEditor.editWorkflow(workflow);
@@ -92,7 +92,31 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
 
    }
 
-   public static WorkFlowDefinition generateWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   public static class WorkflowData {
+      private final WorkFlowDefinition workDefinition;
+      private final Artifact workFlowArtifact;
+
+      public WorkflowData(WorkFlowDefinition workDefinition, Artifact workFlowArtifact) {
+         this.workDefinition = workDefinition;
+         this.workFlowArtifact = workFlowArtifact;
+      }
+
+      /**
+       * @return the workDefinition
+       */
+      public WorkFlowDefinition getWorkDefinition() {
+         return workDefinition;
+      }
+
+      /**
+       * @return the workFlowArtifact
+       */
+      public Artifact getWorkFlowArtifact() {
+         return workFlowArtifact;
+      }
+   }
+
+   public static WorkflowData generateWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       WorkFlowDefinition workflow = new WorkFlowDefinition(namespace, namespace, null);
       WorkPageDefinition endorsePage =
             new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID);
@@ -134,6 +158,6 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
          artifact.persistAttributesAndRelations(transaction);
       }
-      return workflow;
+      return new WorkflowData(workflow, workflowArt);
    }
 }
