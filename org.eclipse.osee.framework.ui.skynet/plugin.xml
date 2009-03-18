@@ -504,6 +504,10 @@
                tooltip="Show branches as a hierarchical listing">
          </command>
       </menu>
+      <separator
+            name="org.eclipse.osee.framework.ui.skynet.separator1"
+            visible="true">
+      </separator>
       <command
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches"
             style="toggle">
