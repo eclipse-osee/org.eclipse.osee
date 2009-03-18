@@ -149,7 +149,7 @@ public class DefaultBranchContributionItem extends OseeContributionItem implemen
     */
    @Override
    protected Image getEnabledImage() {
-      return null;
+      return SkynetGuiPlugin.getInstance().getImage("branch.gif");
    }
 
    /* (non-Javadoc)

@@ -128,7 +128,6 @@
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" icon="images/artifact_explorer.gif" id="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" name="Artifact Explorer"/>
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" icon="images/group.gif" id="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" name="OSEE Group Explorer"/>
 		<category id="osee.jdk.core.category" name="OSEE"/>
-		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.branch.BranchView" icon="images/branch.gif" id="org.eclipse.osee.framework.ui.skynet.branch.BranchView" name="Branch Manager"/>
 		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.queryLog.QueryLogView" icon="images/query_log.gif" id="org.eclipse.osee.framework.ui.skynet.QueryLogView" name="Query Log"/>
 		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.search.QuickSearchView" icon="images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.QuickSearchView" name="Quick Search"/>
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" icon="images/skywalker.gif" id="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" name="Sky Walker"/>
@@ -158,7 +157,7 @@
         name="History">
   </view>
   <view
-        allowMultiple="true"
+        allowMultiple="false"
         category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
         icon="images/branch.gif"
@@ -342,22 +341,6 @@
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser">
     </Operation>
  </extension>
-	<extension name="The menus for the Branch View." point="org.eclipse.ui.menus">
-		<menuContribution locationURI="menu:org.eclipse.osee.framework.ui.skynet.branch.BranchView">
-			<menu label="Branch Presentation">
-				<command commandId="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command" icon="images/flat_layout.gif" id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.flatCommand" style="radio" tooltip="Show branches as a flat listing">
-               </command>
-				<command commandId="org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command" icon="images/tree_layout.gif" id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.hierarchicalCommand" style="radio" tooltip="Show branches as a hierarchical listing">
-               </command>
-			</menu>
-		</menuContribution>
-  <menuContribution
-        locationURI="popup:org.eclipse.osee.framework.ui.skynet.branch.BranchView">
-     <command
-           commandId="org.eclipse.ui.edit.copy">
-     </command>
-  </menuContribution>
-	</extension>
 	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.search.ui.views.SearchView">
      <command
@@ -845,7 +828,7 @@
            <with
                  variable="activePartId">
               <equals
-                    value="org.eclipse.osee.framework.ui.skynet.branch.BranchView">
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
               </equals>
            </with>
         </or>
@@ -879,7 +862,7 @@
            <with
                  variable="activePartId">
               <equals
-                    value="org.eclipse.osee.framework.ui.skynet.branch.BranchView">
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
               </equals>
            </with>
         </or>
