@@ -298,7 +298,7 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">Test Script</Data></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">Test Case</Data></Cell>
     <Cell ss:StyleID="s26"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -999,7 +999,7 @@
     <Cell ss:StyleID="s38"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s24"><Data ss:Type="String">Test Script</Data><NamedCell
+    <Cell ss:StyleID="s24"><Data ss:Type="String">Test Case</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Qualification</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1557,12 +1557,11 @@
    </Print>
    <Zoom>75</Zoom>
    <Selected/>
-   <TopRowVisible>30</TopRowVisible>
+   <TopRowVisible>62</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>89</ActiveRow>
-     <ActiveCol>6</ActiveCol>
+     <ActiveRow>106</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

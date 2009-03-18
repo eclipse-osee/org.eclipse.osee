@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
+import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.config.demo.workflow.DemoCodeWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
@@ -72,6 +74,14 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             SawBuilds.SAW_Bld_1.name(), transaction);
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), CISBuilds.CIS_Bld_1.name(),
             CISBuilds.CIS_Bld_1.name(), transaction);
+
+      // Set Joe Smith as Priviledged Member of SAW Test
+      Artifact teamDef =
+            ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, "SAW Test",
+                  AtsPlugin.getAtsBranch());
+      teamDef.addRelation(AtsRelation.PrivilegedMember_Member, DemoUsers.getDemoUser(DemoUsers.Joe_Smith));
+      teamDef.persistAttributesAndRelations(transaction);
+
       transaction.execute();
 
       OseeInfo.putValue(Requirements.OSEE_INFO_TEST_CASE_KEY, "Test Case");
