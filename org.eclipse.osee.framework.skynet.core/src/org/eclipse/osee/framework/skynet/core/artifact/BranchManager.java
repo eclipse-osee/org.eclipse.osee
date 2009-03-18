@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.core.enums.BranchStorageState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -76,8 +77,8 @@ public class BranchManager {
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
 
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
-   private static final String ARCHIVE_BRANCH = "UPDATE osee_branch set archived = 1 WHERE branch_id = ?";
-   private static final String UN_ARCHIVE_BRANCH = "UPDATE osee_branch set archived = 0 WHERE branch_id = ?";
+   private static final String ARCHIVE_BRANCH = "UPDATE osee_branch set archived = "+BranchStorageState.ARCHIVED.getValue()+" WHERE branch_id = ?";
+   private static final String UN_ARCHIVE_BRANCH = "UPDATE osee_branch set archived = "+BranchStorageState.UN_ARCHIVED.getValue()+" WHERE branch_id = ?";
    private static final String UPDATE_ASSOCIATED_ART_BRANCH =
          "UPDATE  osee_branch set associated_art_id = ? WHERE branch_id = ?";
 

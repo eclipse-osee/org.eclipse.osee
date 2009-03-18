@@ -158,6 +158,28 @@ public class XBranchContentProvider implements ITreeContentProvider {
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
+   
+   public Object[] getAllElements(Object inputElement){
+      ArrayList<Object> objects = new ArrayList<Object>();
+      
+      objects.addAll(recurseAllElements(inputElement));
+      
+      for(Object object : recurseAllElements(inputElement)){
+         objects.addAll(recurseAllElements(object));
+      }
+      
+      return objects.toArray();
+   }
+   
+   private ArrayList<Object> recurseAllElements(Object inputElement){
+      ArrayList<Object> objects = new ArrayList<Object>();
+      
+      for(Object object : getChildren(inputElement)){
+         objects.add(object);
+      }
+      
+      return objects;
+   }
 
    public void dispose() {
    }

@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -167,8 +168,8 @@ public class XBranchWidget extends XWidget implements IActionable {
       Iterator i = ((IStructuredSelection) branchXViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         
-         if(obj instanceof Branch){
+
+         if (obj instanceof Branch) {
             items.add((Branch) obj);
          }
       }
@@ -303,7 +304,7 @@ public class XBranchWidget extends XWidget implements IActionable {
          refresh();
       }
    }
-   
+
    /**
     * @param showArchivedBranches
     */
@@ -323,7 +324,7 @@ public class XBranchWidget extends XWidget implements IActionable {
          refresh();
       }
    }
-   
+
    /**
     * @param showTransactions
     */
@@ -331,6 +332,19 @@ public class XBranchWidget extends XWidget implements IActionable {
       if (branchContentProvider != null) {
          branchContentProvider.setShowOnlyWorkingBranches(allowOnlyWorkingBranches);
          refresh();
+      }
+   }
+
+   /**
+    * @param branch
+    */
+   public void reveal(Branch branch) {
+      for (Object obj : ((XBranchContentProvider) branchXViewer.getContentProvider()).getAllElements(BranchManager.getInstance())) {
+         if (obj instanceof Branch && (Branch) obj == branch) {
+            branchXViewer.reveal(obj);
+            branchXViewer.setSelection(new StructuredSelection(obj), true);
+            return;
+         }
       }
    }
 }

@@ -18,11 +18,13 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -31,6 +33,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -127,6 +130,27 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    public String getActionDescription() {
       return "";
+   }
+   
+   /**
+    * Reveal a branch in the viewer and select it.
+    */
+   public static void revealBranch(Branch branch) {
+      IWorkbenchPage page = AWorkbench.getActivePage();
+      BranchView branchView;
+      try {
+         branchView = (BranchView) page.showView(VIEW_ID);
+         branchView.reveal(branch);
+      } catch (Exception ex) {
+         throw new RuntimeException(ex);
+      }
+   }
+
+   /**
+    * @param branch
+    */
+   private void reveal(Branch branch) {
+      xBranchWidget.reveal(branch);
    }
 
    @Override

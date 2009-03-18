@@ -12,9 +12,9 @@ package org.eclipse.osee.define;
 
 import org.eclipse.osee.define.navigate.DefineNavigateView;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.queryLog.QueryLogView;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -150,7 +149,7 @@ public class DefaultBranchContributionItem extends OseeContributionItem implemen
     */
    @Override
    protected Image getEnabledImage() {
-      return BranchLabelProvider.getBranchImage(BranchManager.getDefaultBranch());
+      return null;
    }
 
    /* (non-Javadoc)
