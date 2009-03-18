@@ -39,6 +39,7 @@ public class BranchViewImageHandler {
          try {
             checkImages();
             Branch branch = (Branch) element;
+            
             boolean favorite = UserManager.getUser().isFavoriteBranch(branch);
             boolean action = branch.isChangeManaged();
 
@@ -64,7 +65,7 @@ public class BranchViewImageHandler {
    
    
    private static synchronized void checkImages() {
-      if (defaultBranchImage == null) {
+      if (favoriteBranchImage == null) {
          favoriteBranchImage =
                new OverlayImage(branchImage, SkynetGuiPlugin.getInstance().getImageDescriptor("star_9_9.gif"), 0, 7).createImage();
          favoriteChangeManagedBranchImage =

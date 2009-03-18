@@ -54,25 +54,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    private static String HELP_CONTEXT_ID = "BranchView";
    public static final String BRANCH_ID = "branchId";
    private XBranchWidget xBranchWidget;
-   private BranchOptions[] branchOptions;
-
-   private void setBranchOptions(BranchOptions[] options) {
-      if (options == null) {
-         return;
-      }
-
-      for (BranchOptions option : options) {
-         if (option == BranchOptions.FAVORITES_FIRST) {
-            setFavoritesFirst(true);
-         } else if (option == BranchOptions.FLAT) {
-            setPresentation(true);
-         } else if (option == BranchOptions.SHOW_MERGE_BRANCHES) {
-            setShowMergeBranches(true);
-         } else if (option == BranchOptions.SHOW_TRANSACTIONS) {
-            setShowTransactions(true);
-         }
-      }
-   }
 
    @Override
    public void dispose() {
@@ -105,9 +86,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       xBranchWidget.setDisplayLabel(false);
       xBranchWidget.createWidgets(parent, 1);
 
-      setBranchOptions(branchOptions);
       branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
-
       xBranchWidget.loadData();
 
       MenuManager menuManager = new MenuManager();
@@ -216,6 +195,13 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       if (branchViewPresentationPreferences != null) {
          branchViewPresentationPreferences.getViewPreference().putBoolean(
                BranchViewPresentationPreferences.SHOW_ARCHIVED_BRANCHES, showArchivedBranches);
+      }
+   }
+   
+   public void changeFavoritesFirstPresentation(boolean showArchivedBranches) {
+      if (branchViewPresentationPreferences != null) {
+         branchViewPresentationPreferences.getViewPreference().putBoolean(
+               BranchViewPresentationPreferences.FAVORITE_KEY, showArchivedBranches);
       }
    }
 

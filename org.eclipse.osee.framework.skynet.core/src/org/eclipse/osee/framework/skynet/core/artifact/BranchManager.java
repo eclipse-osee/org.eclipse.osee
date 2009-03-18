@@ -151,7 +151,7 @@ public class BranchManager {
 
    public static List<Branch> getBranches(BranchState branchState, BranchControlled branchControlled, BranchType... branchTypes) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
-      List<Branch> branches = new ArrayList<Branch>(500);
+      List<Branch> branches = new ArrayList<Branch>(1000);
       for (Branch branch : instance.branchCache.values()) {
          if (branch.matchesState(branchState) && branch.matchesControlled(branchControlled) && branch.isOfType(branchTypes)) {
             branches.add(branch);

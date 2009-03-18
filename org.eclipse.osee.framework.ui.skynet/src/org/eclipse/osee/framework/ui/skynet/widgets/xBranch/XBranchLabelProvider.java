@@ -89,24 +89,24 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
 
    private String getBranchText(Branch branch, XViewerColumn cCol, int columnIndex) {
       String columnText = "";
-      String branchName = "";
+      StringBuilder stringBuilder = new StringBuilder(); 
 
       try {
          if (AccessControlManager.isOseeAdmin()) {
-            branchName = "(" + branch.getBranchId() + ") " + branch.getBranchName();
+            stringBuilder.append("(" + branch.getBranchId() + ") " + branch.getBranchName());
          } else {
-            branchName = branch.getBranchName();
+            stringBuilder.append(branch.getBranchName());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
       if(branch.isArchived()){
-         branchName = branchName + " (Archived)";
+         stringBuilder.insert(0, "[Archived] - ");
       }
       
       if (cCol.equals(BranchXViewerFactory.branch_name)) {
-         columnText = branchName;
+         columnText = stringBuilder.toString();
       } else if (cCol.equals(BranchXViewerFactory.time_stamp)) {
          columnText = String.valueOf(branch.getCreationDate());
       } else if (cCol.equals(BranchXViewerFactory.author)) {

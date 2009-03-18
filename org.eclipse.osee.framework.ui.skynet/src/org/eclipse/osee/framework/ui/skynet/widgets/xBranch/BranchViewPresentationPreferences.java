@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.FlatPresentationHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.HierarchicalPresentationHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowArchivedBranchHandler;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowFavoriteBranchesFirstHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowMergeBranchPresentationHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ShowTransactionPresentationHandler;
 import org.eclipse.ui.PlatformUI;
@@ -115,6 +116,7 @@ public class BranchViewPresentationPreferences {
       ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowTransactionPresentationHandler.COMMAND_ID, null);
       ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowMergeBranchPresentationHandler.COMMAND_ID, null);
       ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowArchivedBranchHandler.COMMAND_ID, null);
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ShowFavoriteBranchesFirstHandler.COMMAND_ID, null);
    }
 
    private void loadPreferences() {
@@ -122,6 +124,7 @@ public class BranchViewPresentationPreferences {
       setShowTransactions(getViewPreference().getBoolean(SHOW_TRANSACTIONS, true));
       setShowMergeBranches(getViewPreference().getBoolean(SHOW_MERGE_BRANCHES, false));
       setShowArchivedBranches(getViewPreference().getBoolean(SHOW_ARCHIVED_BRANCHES, false));
+      setFavoritesFirst(getViewPreference().getBoolean(FAVORITE_KEY, false));
    }
 
    private void setFavoritesFirst(boolean favoritesFirst) {

@@ -49,7 +49,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
    private boolean showTransactions;
    private boolean showChildBranchesUnderParents;
    private boolean showOnlyWorkingBranches;
-   
+
    private static Object[] EMPTY_ARRAY = new Object[0];
 
    public XBranchContentProvider(BranchXViewer commitXViewer) {
@@ -64,50 +64,62 @@ public class XBranchContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getChildren(Object parentElement) {
-      BranchState branchState = BranchState.ACTIVE;
-
       if (parentElement instanceof BranchManager) {
-         List<BranchType> branchTypes = new ArrayList<BranchType>(4);
-         branchTypes.add(BranchType.TOP_LEVEL);
+         return getBranchManagerChildren((BranchManager) parentElement);
 
-         try {
-            if (AccessControlManager.isOseeAdmin() && showMergeBranches) {
-               branchTypes.add(BranchType.MERGE);
-            }
-            if (AccessControlManager.isOseeAdmin() && showArchivedBranches) {
-               branchState = BranchState.ALL;
-            }
-            if (showChildBranchesAtMainLevel) {
-               branchTypes.add(BranchType.BASELINE);
-               branchTypes.add(BranchType.WORKING);
-            }
-            List<Branch> branches = showOnlyWorkingBranches ? BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.WORKING) : 
-                  BranchManager.getBranches(branchState, BranchControlled.ALL,
-                        branchTypes.toArray(new BranchType[branchTypes.size()]));
-            
-            return branches.toArray();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(this.getClass(), Level.WARNING, ex);
-         }
       } else if (parentElement instanceof Branch) {
-         try {
-            Branch branch = (Branch) parentElement;
-            if (showChildBranchesUnderParents) {
-               List<Object> items = new LinkedList<Object>();
-               Collection<Branch> childBrances =
-                     showArchivedBranches ? branch.getAllChildBranches() : branch.getChildBranches();
-               items.addAll(childBrances);
-               items.addAll(getTransactions(branch));
-               return items.toArray();
-            } else {
-               return getTransactions(branch).toArray();
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(this.getClass(), Level.WARNING, ex);
-         }
-      }
-      if (parentElement instanceof Collection) {
+         return getBranchChildren((Branch) parentElement);
+
+      } else if (parentElement instanceof Collection) {
          return ((Collection<?>) parentElement).toArray();
+      }
+      return EMPTY_ARRAY;
+   }
+
+   private Object[] getBranchChildren(Branch branch) {
+      try {
+         if (showChildBranchesUnderParents) {
+            List<Object> items = new LinkedList<Object>();
+            Collection<Branch> childBrances =
+                  showArchivedBranches ? branch.getAllChildBranches() : branch.getChildBranches();
+                  
+            items.addAll(childBrances);
+            items.addAll(getTransactions(branch));
+
+            return items.toArray();
+         } else {
+            return getTransactions(branch).toArray();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(this.getClass(), Level.WARNING, ex);
+      }
+      return EMPTY_ARRAY;
+   }
+
+   private Object[] getBranchManagerChildren(BranchManager branchManager) {
+      BranchState branchState = BranchState.ACTIVE;
+      List<BranchType> branchTypes = new ArrayList<BranchType>(4);
+      branchTypes.add(BranchType.TOP_LEVEL);
+
+      try {
+         if (AccessControlManager.isOseeAdmin() && showMergeBranches) {
+            branchTypes.add(BranchType.MERGE);
+         }
+         if (AccessControlManager.isOseeAdmin() && showArchivedBranches) {
+            branchState = BranchState.ALL;
+         }
+         if (showChildBranchesAtMainLevel) {
+            branchTypes.add(BranchType.BASELINE);
+            branchTypes.add(BranchType.WORKING);
+         }
+         List<Branch> branches =
+               showOnlyWorkingBranches ? BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED,
+                     BranchType.WORKING) : BranchManager.getBranches(branchState, BranchControlled.ALL,
+                     branchTypes.toArray(new BranchType[branchTypes.size()]));
+
+         return branches.toArray();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(this.getClass(), Level.WARNING, ex);
       }
       return EMPTY_ARRAY;
    }
@@ -136,7 +148,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       if (element instanceof BranchManager) return true;
       if (element instanceof Branch) {
          boolean hasChildren = true;
-         
+
          if (!showTransactions) {
             try {
                if (!showChildBranchesAtMainLevel) {
@@ -158,26 +170,26 @@ public class XBranchContentProvider implements ITreeContentProvider {
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
-   
-   public Object[] getAllElements(Object inputElement){
+
+   public Object[] getAllElements(Object inputElement) {
       ArrayList<Object> objects = new ArrayList<Object>();
-      
+
       objects.addAll(recurseAllElements(inputElement));
-      
-      for(Object object : recurseAllElements(inputElement)){
+
+      for (Object object : recurseAllElements(inputElement)) {
          objects.addAll(recurseAllElements(object));
       }
-      
+
       return objects.toArray();
    }
-   
-   private ArrayList<Object> recurseAllElements(Object inputElement){
+
+   private ArrayList<Object> recurseAllElements(Object inputElement) {
       ArrayList<Object> objects = new ArrayList<Object>();
-      
-      for(Object object : getChildren(inputElement)){
+
+      for (Object object : getChildren(inputElement)) {
          objects.add(object);
       }
-      
+
       return objects;
    }
 
@@ -192,12 +204,6 @@ public class XBranchContentProvider implements ITreeContentProvider {
     */
    public BranchXViewer getChangeXViewer() {
       return changeXViewer;
-   }
-
-   /**
-    * @param favoritesFirst
-    */
-   public void setFavoritesFirst(boolean favoritesFirst) {
    }
 
    /**

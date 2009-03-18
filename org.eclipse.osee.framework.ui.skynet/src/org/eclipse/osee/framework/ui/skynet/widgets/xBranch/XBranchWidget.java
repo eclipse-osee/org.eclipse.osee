@@ -55,6 +55,7 @@ public class XBranchWidget extends XWidget implements IActionable {
    private static final String LOADING = "Loading ...";
    protected Label extraInfoLabel;
    private XBranchContentProvider branchContentProvider;
+   private FavoriteSorter sorter;
 
    /**
     * @param label
@@ -95,7 +96,10 @@ public class XBranchWidget extends XWidget implements IActionable {
 
       branchContentProvider = new XBranchContentProvider(branchXViewer);
       branchXViewer.setContentProvider(branchContentProvider);
-      branchXViewer.setLabelProvider(new XBranchLabelProvider(branchXViewer));
+      XBranchLabelProvider xBranchLabelProvider = new XBranchLabelProvider(branchXViewer);
+      branchXViewer.setLabelProvider(xBranchLabelProvider);
+      sorter = new FavoriteSorter(xBranchLabelProvider);
+      branchXViewer.setSorter(sorter);
 
       if (toolkit != null) toolkit.adapt(branchXViewer.getStatusLabel(), false, false);
 
@@ -280,8 +284,8 @@ public class XBranchWidget extends XWidget implements IActionable {
     */
    public void setFavoritesFirst(boolean favoritesFirst) {
       if (branchContentProvider != null) {
-         branchContentProvider.setFavoritesFirst(favoritesFirst);
-         refresh();
+         sorter.setFavoritesFirst(favoritesFirst);
+         branchXViewer.refresh();
       }
    }
 
