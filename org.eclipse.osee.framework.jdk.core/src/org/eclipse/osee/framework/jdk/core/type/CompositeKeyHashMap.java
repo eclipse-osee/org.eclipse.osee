@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +99,9 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
 
    public List<Value> getValues(KeyOne key1) {
       Collection<KeyTwo> key2s = signleKeyMap.getValues(key1);
+      if (key2s == null) {
+         return Collections.emptyList();
+      }
       ArrayList<Value> values = new ArrayList<Value>(key2s.size());
       for (KeyTwo key2 : key2s) {
          values.add(get(key1, key2));
