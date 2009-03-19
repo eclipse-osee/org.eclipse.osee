@@ -82,7 +82,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             List<Object> items = new LinkedList<Object>();
             Collection<Branch> childBrances =
                   showArchivedBranches ? branch.getAllChildBranches() : branch.getChildBranches();
-                  
+
             items.addAll(childBrances);
             items.addAll(getTransactions(branch));
 
@@ -99,7 +99,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
    private Object[] getBranchManagerChildren(BranchManager branchManager) {
       BranchState branchState = BranchState.ACTIVE;
       List<BranchType> branchTypes = new ArrayList<BranchType>(4);
-      branchTypes.add(BranchType.TOP_LEVEL);
+      branchTypes.add(BranchType.SYSTEM_ROOT);
 
       try {
          if (AccessControlManager.isOseeAdmin() && showMergeBranches) {
@@ -109,6 +109,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchState = BranchState.ALL;
          }
          if (showChildBranchesAtMainLevel) {
+            branchTypes.add(BranchType.TOP_LEVEL);
             branchTypes.add(BranchType.BASELINE);
             branchTypes.add(BranchType.WORKING);
          }

@@ -21,13 +21,14 @@ import org.eclipse.swt.graphics.Image;
 public class BranchViewImageHandler {
    private static Image branchImage = SkynetGuiPlugin.getInstance().getImage("branch.gif");
    private static Image changeManagedBranchImage = SkynetGuiPlugin.getInstance().getImage("change_managed_branch.gif");
+   private static Image systemBranchImage = SkynetGuiPlugin.getInstance().getImage("gear.gif");
    private static Image favoriteBranchImage = null;
    private static Image defaultBranchImage = null;
    private static Image favoriteChangeManagedBranchImage = null;
-   
-   public static Image getImage(Object element, int columnIndex){
+
+   public static Image getImage(Object element, int columnIndex) {
       Image returnImage = null;
-      
+
       //lazy loading of images
       checkImages();
       // Seek down through aggregation lists to the lowest level to get an actual element
@@ -39,31 +40,34 @@ public class BranchViewImageHandler {
          try {
             checkImages();
             Branch branch = (Branch) element;
-            
             boolean favorite = UserManager.getUser().isFavoriteBranch(branch);
-            boolean action = branch.isChangeManaged();
+            boolean isChangeManaged = branch.isChangeManaged();
+            boolean isSystemBranch = branch.isSystemRootBranch();
 
-            if (favorite && action) {
-               returnImage = favoriteChangeManagedBranchImage;
-            } else if (favorite) {
-               returnImage = favoriteBranchImage;
-            } else if (action) {
-               returnImage = changeManagedBranchImage;
+            if (isSystemBranch) {
+               returnImage = systemBranchImage;
             } else {
-               returnImage = branchImage;
+               if (favorite && isChangeManaged) {
+                  returnImage = favoriteChangeManagedBranchImage;
+               } else if (favorite) {
+                  returnImage = favoriteBranchImage;
+               } else if (isChangeManaged) {
+                  returnImage = changeManagedBranchImage;
+               } else {
+                  returnImage = branchImage;
+               }
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
 
       } else if (element instanceof TransactionId && columnIndex == 0) {
-         returnImage=  SkynetGuiPlugin.getInstance().getImage("DBiconBlue.GIF");
+         returnImage = SkynetGuiPlugin.getInstance().getImage("DBiconBlue.GIF");
 
       }
       return returnImage;
    }
-   
-   
+
    private static synchronized void checkImages() {
       if (favoriteBranchImage == null) {
          favoriteBranchImage =
