@@ -37,7 +37,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
@@ -47,7 +51,7 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
  * @author Jeff C. Phillips
  */
 
-public class AccessControlManager {
+public class AccessControlManager implements IBranchEventListener, IArtifactsPurgedEventListener {
    private static final String INSERT_INTO_ARTIFACT_ACL =
          "INSERT INTO " + SkynetDatabase.ARTIFACT_TABLE_ACL + " (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
    private static final String INSERT_INTO_BRANCH_ACL =
@@ -126,6 +130,8 @@ public class AccessControlManager {
       } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
+
+      OseeEventManager.addListener(this);
    }
 
    /**
@@ -539,27 +545,36 @@ public class AccessControlManager {
 
          if (accessObject == null) return datas;
 
-         Collection<Integer> subjects = objectToSubjectCache.getValues(accessObject);
-         if (subjects == null) {
-            return datas;
-         }
+         datas = generateAccessControlList(accessObject);
 
-         for (int subjectId : subjects) {
-            Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, BranchManager.getCommonBranch());
-            PermissionEnum permissionEnum = accessControlListCache.get(subjectId, accessObject);
-            AccessControlData accessControlData =
-                  new AccessControlData(subject, accessObject, permissionEnum, false, false);
-            if (accessObject instanceof ArtifactAccessObject) {
-               accessControlData.setArtifactPermission(permissionEnum);
-               accessControlData.setBranchPermission(getBranchPermission(subject, accessObject));
-            } else if (accessObject instanceof BranchAccessObject) {
-               accessControlData.setBranchPermission(getBranchPermission(subject, accessObject));
-            }
-            datas.add(accessControlData);
-         }
       } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
+      return datas;
+   }
+
+   private List<AccessControlData> generateAccessControlList(AccessObject accessObject) throws OseeCoreException {
+      List<AccessControlData> datas = new LinkedList<AccessControlData>();
+
+      Collection<Integer> subjects = objectToSubjectCache.getValues(accessObject);
+      if (subjects == null) {
+         return datas;
+      }
+
+      for (int subjectId : subjects) {
+         Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, BranchManager.getCommonBranch());
+         PermissionEnum permissionEnum = accessControlListCache.get(subjectId, accessObject);
+         AccessControlData accessControlData =
+               new AccessControlData(subject, accessObject, permissionEnum, false, false);
+         if (accessObject instanceof ArtifactAccessObject) {
+            accessControlData.setArtifactPermission(permissionEnum);
+            accessControlData.setBranchPermission(getBranchPermission(subject, accessObject));
+         } else if (accessObject instanceof BranchAccessObject) {
+            accessControlData.setBranchPermission(getBranchPermission(subject, accessObject));
+         }
+         datas.add(accessControlData);
+      }
+
       return datas;
    }
 
@@ -584,10 +599,12 @@ public class AccessControlManager {
          ArtifactAccessObject object = (ArtifactAccessObject) data.getObject();
          ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, data.getSubject().getArtId(), object.getArtId(),
                object.getBranchId());
+         accessControlListCache.remove(object.getArtId(), object.getBranchId());
 
       } else if (data.getObject() instanceof BranchAccessObject) {
          BranchAccessObject object = (BranchAccessObject) data.getObject();
          ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, data.getSubject().getArtId(), object.getBranchId());
+         branchAccessObjectCache.remove(object.getBranchId());
       }
       deCacheAccessControlData(data);
    }
@@ -777,5 +794,45 @@ public class AccessControlManager {
     */
    public static boolean isOseeAdmin() throws OseeCoreException {
       return SystemGroup.OseeAdmin.isCurrentUserMember();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      if (branchModType == BranchEventType.Deleted) {
+         try {
+            for (AccessControlData accessControlData : generateAccessControlList(branchAccessObjectCache.get(branchId))) {
+               AccessControlManager.getInstance().removeAccessControlData(accessControlData);
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         }
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
+    */
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+      try {
+         for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
+            for (AccessControlData accessControlData : generateAccessControlList(accessObjectCache.get(
+                  artifact.getArtId(), artifact.getBranch().getBranchId()))) {
+               AccessControlManager.getInstance().removeAccessControlData(accessControlData);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      }
    }
 }
