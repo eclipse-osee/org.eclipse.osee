@@ -955,6 +955,18 @@
       </enabledWhen>
    </handler>
    <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.OtherEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.othereditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.WholeDocumentEditorHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command">
       <enabledWhen>
@@ -1359,6 +1371,10 @@
    <command
          id="org.eclipse.osee.framework.ui.skynet.nativeeditor.command"
          name="Native Editor">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.othereditor.command"
+         name="Other Editor">
    </command>
    <command
          id="org.eclipse.osee.framework.ui.skynet.wordpreview.command"

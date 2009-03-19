@@ -136,5 +136,4 @@ public abstract class FileRenderer extends FileSystemRenderer {
 
    public abstract InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException;
 
-   public abstract String getAssociatedExtension(Artifact artifact) throws OseeCoreException;
 }

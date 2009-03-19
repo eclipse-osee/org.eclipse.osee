@@ -21,6 +21,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.swt.program.Program;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * @author Ryan D. Brooks
@@ -67,12 +73,43 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    }
 
    private void internalOpen(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      IFile file = getRenderedFile(artifacts, presentationType);
+      if (file != null) {
+         String dummyName = file.getName();
+         if (!artifacts.isEmpty()) {
+            Artifact firstArtifact = artifacts.iterator().next();
+            try {
+               Program program = getAssociatedProgram(firstArtifact);
+               program.execute(file.getLocation().toFile().getAbsolutePath());
+            } catch (Exception ex) {
+               IWorkbench workbench = PlatformUI.getWorkbench();
+               IEditorDescriptor editorDescriptor = workbench.getEditorRegistry().getDefaultEditor(dummyName);
+               if (editorDescriptor != null) {
+                  try {
+                     IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                     page.openEditor(new FileEditorInput(file), editorDescriptor.getId());
+                  } catch (PartInitException ex1) {
+                     throw new OseeArgumentException(
+                           "No program associated with the extension " + file.getFileExtension() + " found on your local machine.");
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   public IFile getRenderedFileForOpen(List<Artifact> artifacts) throws OseeCoreException {
+      return getRenderedFile(artifacts, PresentationType.SPECIALIZED_EDIT);
+   }
+
+   public IFile getRenderedFile(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      IFile toReturn = null;
       if (!artifacts.isEmpty()) {
          Artifact firstArtifact = artifacts.iterator().next();
          IFolder baseFolder = getRenderFolder(firstArtifact.getBranch(), presentationType);
-         IFile file = renderToFileSystem(baseFolder, artifacts, presentationType);
-         getAssociatedProgram(firstArtifact).execute(file.getLocation().toFile().getAbsolutePath());
+         toReturn = renderToFileSystem(baseFolder, artifacts, presentationType);
       }
+      return toReturn;
    }
 
    public static IFolder ensureRenderFolderExists(PresentationType presentationType) throws OseeCoreException {
@@ -133,4 +170,5 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
    public abstract Program getAssociatedProgram(Artifact artifact) throws OseeCoreException;
 
+   public abstract String getAssociatedExtension(Artifact artifact) throws OseeCoreException;
 }
