@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.importing.DbOseeDataTypeProcessor;
 import org.eclipse.osee.framework.skynet.core.importing.ExcelOseeTypeDataParser;
@@ -55,10 +54,10 @@ public class MasterSkynetTypesImport {
     * @throws Exception
     * @see BranchManager#createRootBranch(String, String, String, Collection, boolean)
     */
-   public static void importSkynetDbTypes(Collection<String> skynetTypesImportExtensionsUniqueIds, Branch branch) throws OseeCoreException {
+   public static void importSkynetDbTypes(Collection<String> skynetTypesImportExtensionsUniqueIds) throws OseeCoreException {
       try {
          runSkynetDbTypesImport(ExtensionPoints.getExtensionsByUniqueId(skynetDbTypesExtensionPointId,
-               skynetTypesImportExtensionsUniqueIds), branch);
+               skynetTypesImportExtensionsUniqueIds));
       } catch (IOException ex) {
          throw new OseeCoreException(ex);
       } catch (SAXException ex) {
@@ -75,9 +74,8 @@ public class MasterSkynetTypesImport {
     * @throws IOException
     * @throws OseeCoreException
     */
-   private static void runSkynetDbTypesImport(List<IExtension> skynetDbTypesExtensions, Branch branch) throws IOException, SAXException, OseeCoreException {
+   private static void runSkynetDbTypesImport(List<IExtension> skynetDbTypesExtensions) throws IOException, SAXException, OseeCoreException {
       ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor());
-      OseeLog.log(SkynetActivator.class, Level.INFO, "Importing into [" + branch.getBranchName() + "]");
       for (IExtension extension : skynetDbTypesExtensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
          for (IConfigurationElement el : elements) {
@@ -91,6 +89,5 @@ public class MasterSkynetTypesImport {
          }
       }
       importer.finish();
-      OseeLog.log(SkynetActivator.class, Level.INFO, "Completed import into [" + branch.getBranchName() + "]");
    }
 }

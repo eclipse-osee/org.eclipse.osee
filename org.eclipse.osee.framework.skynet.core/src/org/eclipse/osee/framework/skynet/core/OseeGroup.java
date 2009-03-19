@@ -31,12 +31,9 @@ public class OseeGroup {
 
    private final String groupName;
    private Artifact groupArtifact;
-   private boolean isCurrentUserAMember;
-   private boolean isCheckAllowed = true;
 
    public OseeGroup(String groupName) {
       this.groupName = groupName;
-      this.isCurrentUserAMember = false;
       this.groupArtifact = null;
       this.groupArtifact = null;
    }
@@ -77,11 +74,7 @@ public class OseeGroup {
     * @throws OseeCoreException
     */
    public boolean isCurrentUserMember() throws OseeCoreException {
-      if (isCheckAllowed) {
-         isCurrentUserAMember = isMember(UserManager.getUser());
-         isCheckAllowed = false;
-      }
-      return isCurrentUserAMember;
+      return isMember(UserManager.getUser());
    }
 
    private void checkGroupExists() throws OseeCoreException {

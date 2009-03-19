@@ -77,8 +77,10 @@ public class BranchManager {
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
 
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
-   private static final String ARCHIVE_BRANCH = "UPDATE osee_branch set archived = "+BranchStorageState.ARCHIVED.getValue()+" WHERE branch_id = ?";
-   private static final String UN_ARCHIVE_BRANCH = "UPDATE osee_branch set archived = "+BranchStorageState.UN_ARCHIVED.getValue()+" WHERE branch_id = ?";
+   private static final String ARCHIVE_BRANCH =
+         "UPDATE osee_branch set archived = " + BranchStorageState.ARCHIVED.getValue() + " WHERE branch_id = ?";
+   private static final String UN_ARCHIVE_BRANCH =
+         "UPDATE osee_branch set archived = " + BranchStorageState.UN_ARCHIVED.getValue() + " WHERE branch_id = ?";
    private static final String UPDATE_ASSOCIATED_ART_BRANCH =
          "UPDATE  osee_branch set associated_art_id = ? WHERE branch_id = ?";
 
@@ -134,7 +136,7 @@ public class BranchManager {
       Collections.sort(branches);
       return branches;
    }
-   
+
    /**
     * Excludes branches of type MERGE and SYSTEM_ROOT
     * 
@@ -427,7 +429,7 @@ public class BranchManager {
       ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
       branch.setArchived(true);
    }
-   
+
    /**
     * Unarchives a branch in the database by changing its archived value from 1 to 0.
     */
@@ -521,22 +523,20 @@ public class BranchManager {
     * @see BranchManager#getKeyedBranch(String)
     */
    public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws OseeCoreException {
-      // Create branch with name and static name; short name will be computed from full name
+      if (skynetTypesImportExtensionsIds != null && skynetTypesImportExtensionsIds.size() > 0) {
+         MasterSkynetTypesImport.importSkynetDbTypes(skynetTypesImportExtensionsIds);
+      }
+      return createRootBranch(shortBranchName, branchName, staticBranchName, initializeArtifacts);
+   }
 
+   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, boolean initializeArtifacts) throws OseeCoreException {
       Branch systemRootBranch = BranchManager.getSystemRootBranch();
-
       Branch branch =
             HttpBranchCreation.createRootBranch(null, branchName, staticBranchName, systemRootBranch.getBranchId(),
                   systemRootBranch.getParentTransactionId(), false);
-      // Add name to cached keyname if static branch name is desired
       if (staticBranchName != null) {
          createKeyedBranch(staticBranchName, branch);
       }
-      // Import skynet types if specified
-      if (skynetTypesImportExtensionsIds != null && skynetTypesImportExtensionsIds.size() > 0) {
-         MasterSkynetTypesImport.importSkynetDbTypes(skynetTypesImportExtensionsIds, branch);
-      }
-      // Initialize branch with common artifacts
       if (initializeArtifacts) {
          RootBranchInitializer rootInitializer = new RootBranchInitializer();
          rootInitializer.initialize(branch);
@@ -653,6 +653,7 @@ public class BranchManager {
    public static Branch getLastBranch() {
       return instance.defaultBranch.get();
    }
+
    /**
     * @return the rootBranch
     * @throws OseeCoreException

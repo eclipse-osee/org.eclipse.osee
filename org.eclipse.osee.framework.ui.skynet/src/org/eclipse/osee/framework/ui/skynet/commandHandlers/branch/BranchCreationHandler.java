@@ -43,7 +43,7 @@ public class BranchCreationHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Object backingData = selection.getFirstElement();
 
       final TransactionId parentTransactionId;
@@ -72,7 +72,12 @@ public class BranchCreationHandler extends CommandHandler {
 
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
             public void run(IProgressMonitor monitor) throws Exception {
-               BranchManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
+               Branch branch = parentTransactionId.getBranch();
+               if (branch != null && branch.isSystemRootBranch()) {
+                  BranchManager.createRootBranch(null, dialog.getEntry(), dialog.getEntry(), true);
+               } else {
+                  BranchManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
+               }
             }
          };
 
@@ -85,25 +90,25 @@ public class BranchCreationHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       boolean enabled;
-      if(selection.size() != 1){
+      if (selection.size() != 1) {
          return false;
       }
-      
+
       Object object = selection.getFirstElement();
       Branch branch = null;
-      
-      if(object instanceof Branch){
-         branch = (Branch) object; 
-      } else if(object instanceof TransactionId){
+
+      if (object instanceof Branch) {
+         branch = (Branch) object;
+      } else if (object instanceof TransactionId) {
          branch = ((TransactionId) object).getBranch();
       }
-      
-      if(branch == null){
+
+      if (branch == null) {
          return false;
       }
-      
+
       enabled = AccessControlManager.checkObjectPermission(branch, PermissionEnum.READ);
       return enabled;
    }

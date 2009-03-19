@@ -99,9 +99,14 @@ public class XBranchContentProvider implements ITreeContentProvider {
    private Object[] getBranchManagerChildren(BranchManager branchManager) {
       BranchState branchState = BranchState.ACTIVE;
       List<BranchType> branchTypes = new ArrayList<BranchType>(4);
-      branchTypes.add(BranchType.SYSTEM_ROOT);
 
       try {
+         if (AccessControlManager.isOseeAdmin()) {
+            branchTypes.add(BranchType.SYSTEM_ROOT);
+         } else {
+            branchTypes.add(BranchType.TOP_LEVEL);
+         }
+
          if (AccessControlManager.isOseeAdmin() && showMergeBranches) {
             branchTypes.add(BranchType.MERGE);
          }
