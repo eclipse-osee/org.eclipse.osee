@@ -205,23 +205,38 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       }
    }
 
+   /**
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    */
    protected void setPresentation(boolean flat) {
       xBranchWidget.setPresentation(flat);
    }
 
+   /**
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    */
    protected void setFavoritesFirst(boolean favoritesFirst) {
       xBranchWidget.setFavoritesFirst(favoritesFirst);
    }
 
+   /**
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    */
    protected void setShowMergeBranches(boolean showMergeBranches) {
       xBranchWidget.setShowMergeBranches(showMergeBranches);
    }
 
+   /**
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    */
    protected void setShowTransactions(boolean showTransactions) {
       xBranchWidget.setShowTransactions(showTransactions);
    }
 
-   public void setShowArchivedBranches(boolean showArchivedBranches) {
+   /**
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    */
+   protected void setShowArchivedBranches(boolean showArchivedBranches) {
       xBranchWidget.setShowArchivedBranches(showArchivedBranches);
    }
 }

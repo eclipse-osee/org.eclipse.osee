@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptions;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -50,8 +51,7 @@ public class BranchSelectionDialog extends MessageDialog {
       branchWidget = new XBranchWidget();
       branchWidget.setDisplayLabel(false);
       branchWidget.createWidgets(container, 1);
-      branchWidget.setPresentation(true);
-      branchWidget.setFavoritesFirst(true);
+      branchWidget.setBranchOptions(BranchOptions.FAVORITES_FIRST, BranchOptions.FLAT);
       branchWidget.setShowWorkingBranchesOnly(allowOnlyWorkingBranches);
       branchWidget.loadData();
       

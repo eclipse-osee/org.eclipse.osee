@@ -56,14 +56,33 @@ public class XBranchWidget extends XWidget implements IActionable {
    protected Label extraInfoLabel;
    private XBranchContentProvider branchContentProvider;
    private FavoriteSorter sorter;
+   private static final String VIEW_ID = "BrachView";
 
    /**
     * @param label
     */
    public XBranchWidget() {
-      super("BrachView");
+      super(VIEW_ID);
    }
-
+   
+   public void setBranchOptions(BranchOptions ... options){
+      for(BranchOptions option : options){
+         
+         if(option == BranchOptions.FAVORITES_FIRST){
+            setFavoritesFirst(true);
+         } else if(option == BranchOptions.FLAT){
+            setPresentation(true);
+         }else if(option == BranchOptions.SHOW_MERGE_BRANCHES){
+            setShowMergeBranches(true);
+         }else if(option == BranchOptions.SHOW_TRANSACTIONS){
+            setShowTransactions(true);
+         }else if(option == BranchOptions.SHOW_ARCHIVED){
+            setShowArchivedBranches (true);
+         }else if(option == BranchOptions.SHOW_ARCHIVED){
+            setShowArchivedBranches (true);
+         }
+      }
+   }
    /*
     * (non-Javadoc)
     * 
