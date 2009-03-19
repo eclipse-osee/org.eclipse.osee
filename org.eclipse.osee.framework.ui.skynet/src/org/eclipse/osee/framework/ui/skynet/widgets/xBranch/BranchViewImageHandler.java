@@ -16,12 +16,11 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
- *
  */
 public class BranchViewImageHandler {
    private static Image branchImage = SkynetGuiPlugin.getInstance().getImage("branch.gif");
    private static Image changeManagedBranchImage = SkynetGuiPlugin.getInstance().getImage("change_managed_branch.gif");
-   private static Image systemBranchImage = SkynetGuiPlugin.getInstance().getImage("gear.gif");
+   private static Image systemBranchImage = SkynetGuiPlugin.getInstance().getImage("branchYellow.gif");
    private static Image favoriteBranchImage = null;
    private static Image defaultBranchImage = null;
    private static Image favoriteChangeManagedBranchImage = null;
