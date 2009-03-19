@@ -111,7 +111,7 @@ public class RoughArtifact {
       try {
          for (NameAndVal roughtAttribute : attributes) {
             if (roughtAttribute.getValue() != null) {
-               artifact.addAttribute(roughtAttribute.getName(), roughtAttribute.getValue());
+               artifact.addAttributeFromString(roughtAttribute.getName(), roughtAttribute.getValue());
             }
          }
          setFileAttributes(artifact);
