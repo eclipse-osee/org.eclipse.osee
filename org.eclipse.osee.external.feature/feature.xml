@@ -26,6 +26,18 @@
          id="org.eclipse.zest"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.datatools.connectivity.oda.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.datatools.enablement.oda.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.birt.chart.runtime"
+         version="0.0.0"/>
+
    <plugin
          id="javax.servlet"
          download-size="0"
