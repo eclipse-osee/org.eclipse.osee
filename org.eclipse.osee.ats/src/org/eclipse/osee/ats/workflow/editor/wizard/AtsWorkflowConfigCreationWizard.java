@@ -17,6 +17,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -28,6 +29,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -70,6 +73,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
    @Override
    public boolean performFinish() {
       final String namespace = page1.getNamespace();
+      final String startingWorkflow = page1.getStartingWorkflow();
       try {
          try {
             if (WorkItemDefinitionFactory.getWorkItemDefinition(namespace) != null) {
@@ -80,7 +84,12 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
             // do nothing
          }
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         WorkFlowDefinition workflow = generateWorkflow(namespace, transaction, null).getWorkDefinition();
+         WorkFlowDefinition workflow = null;
+         if (startingWorkflow.contains("Simple")) {
+            workflow = generateSimpleWorkflow(namespace, transaction, null).getWorkDefinition();
+         } else {
+            workflow = generateDefaultWorkflow(namespace, transaction, null).getWorkDefinition();
+         }
          transaction.execute();
 
          AtsWorkflowConfigEditor.editWorkflow(workflow);
@@ -91,7 +100,6 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       return true;
 
    }
-
    public static class WorkflowData {
       private final WorkFlowDefinition workDefinition;
       private final Artifact workFlowArtifact;
@@ -116,7 +124,43 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       }
    }
 
-   public static WorkflowData generateWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   public static WorkflowData generateDefaultWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+      // Duplicate default workflow artifact w/ namespace changes
+      Artifact defaultWorkflow = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow");
+      Artifact newWorkflowArt = defaultWorkflow.duplicate(AtsPlugin.getAtsBranch());
+      for (Attribute<?> attr : newWorkflowArt.getAttributes(false)) {
+         if (attr instanceof StringAttribute) {
+            attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
+         }
+      }
+
+      AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newWorkflowArt, transaction);
+      newWorkflowArt.persistAttributesAndRelations(transaction);
+
+      // Duplicate work pages w/ namespace changes
+      for (DefaultTeamState state : DefaultTeamState.values()) {
+         Artifact defaultStateArt =
+               WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow." + state.name());
+         Artifact newStateArt = defaultStateArt.duplicate(AtsPlugin.getAtsBranch());
+         for (Attribute<?> attr : newStateArt.getAttributes(false)) {
+            if (attr instanceof StringAttribute) {
+               attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
+            }
+         }
+
+         // Add same relations as default work pages to new work pages (widgets and rules)
+         for (Artifact art : defaultStateArt.getRelatedArtifacts(AtsRelation.WorkItem__Child)) {
+            newStateArt.addRelation(AtsRelation.WorkItem__Child, art);
+         }
+
+         AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newStateArt, transaction);
+         newStateArt.persistAttributesAndRelations(transaction);
+      }
+      return new WorkflowData(new WorkFlowDefinition(newWorkflowArt), newWorkflowArt);
+
+   }
+
+   public static WorkflowData generateSimpleWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       WorkFlowDefinition workflow = new WorkFlowDefinition(namespace, namespace, null);
       WorkPageDefinition endorsePage =
             new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID);

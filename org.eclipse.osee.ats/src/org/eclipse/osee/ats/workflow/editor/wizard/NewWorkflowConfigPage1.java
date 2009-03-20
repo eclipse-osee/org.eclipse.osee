@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class NewWorkflowConfigPage1 extends WizardPage {
-   private final AtsWorkflowConfigCreationWizard wizard;
    private WorkPage page;
 
    /**
@@ -38,7 +37,6 @@ public class NewWorkflowConfigPage1 extends WizardPage {
    public NewWorkflowConfigPage1(AtsWorkflowConfigCreationWizard actionWizard) {
       super("Create new ATS Workflow Configuration", "Create ATS Workflow Configuration", null);
       setMessage("Enter workflow namespace.");
-      this.wizard = actionWizard;
    }
 
    private final XModifiedListener xModListener = new XModifiedListener() {
@@ -51,11 +49,21 @@ public class NewWorkflowConfigPage1 extends WizardPage {
       return (String) getXWidget("Namespace").getData();
    }
 
+   public String getStartingWorkflow() {
+      return (String) getXWidget("Starting Workflow").getData();
+   }
+
    public void createControl(Composite parent) {
 
       try {
          String xWidgetXml =
-               "<WorkPage><XWidget displayName=\"Namespace\" required=\"true\" xwidgetType=\"XText\"/></WorkPage>";
+               "<WorkPage>" +
+               //
+               "<XWidget displayName=\"Namespace\" required=\"true\" xwidgetType=\"XText\"/>" +
+               //
+               "<XWidget displayName=\"Starting Workflow\" required=\"true\" xwidgetType=\"XCombo(Simple: Implement-Complete,Default: Analyze-Authorize-Implement-Complete)\"/>" +
+               //
+               "</WorkPage>";
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

@@ -132,7 +132,7 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
          // If can't be found, create a new one
          if (workflowArt == null) {
             WorkflowData workflowData =
-                  AtsWorkflowConfigCreationWizard.generateWorkflow(namespace, transaction, teamDef);
+                  AtsWorkflowConfigCreationWizard.generateSimpleWorkflow(namespace, transaction, teamDef);
             workFlowDefinition = workflowData.getWorkDefinition();
             workflowArt = workflowData.getWorkFlowArtifact();
          }
