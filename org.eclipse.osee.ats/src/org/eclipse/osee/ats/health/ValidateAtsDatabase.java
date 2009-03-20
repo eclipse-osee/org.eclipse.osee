@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.health;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,6 +24,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSLog;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.LogItem;
@@ -60,6 +63,8 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
 
    private final boolean fixAssignees = true;
    private final boolean fixAttributeValues = true;
+   private final Set<String> hrids = new HashSet<String>();
+   private final Map<String, String> legacyPcrIdToParentHrid = new HashMap<String, String>();
 
    /**
     * @param parent
@@ -118,8 +123,10 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
-      monitor.beginTask(getName(), 10);
+      monitor.beginTask(getName(), 11);
       loadAtsBranchArtifacts();
+      monitor.worked(1);
+      testArtifactIds();
       monitor.worked(1);
       testAtsBranchAttributeValues();
       monitor.worked(1);
@@ -141,6 +148,34 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       monitor.worked(1);
       this.xResultData.reportSevereLoggingMonitor(monitorLog);
       xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
+   }
+
+   public void testArtifactIds() throws OseeCoreException {
+      xResultData.log(monitor, "testArtifactIds");
+      this.hrids.clear();
+      this.legacyPcrIdToParentHrid.clear();
+      for (Artifact artifact : artifacts) {
+         // Check that HRIDs not duplicated on Common branch
+         if (hrids.contains(artifact.getHumanReadableId())) {
+            xResultData.logError("Duplicate HRIDs: " + artifact.getHumanReadableId());
+         }
+         // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions 
+         if (artifact instanceof TeamWorkFlowArtifact) {
+            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+            String legacyPcrId =
+                  artifact.getSoleAttributeValueAsString(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), null);
+            if (legacyPcrId != null) {
+               if (legacyPcrIdToParentHrid.containsKey(legacyPcrId)) {
+                  if (!legacyPcrIdToParentHrid.get(legacyPcrId).equals(
+                        teamArt.getParentActionArtifact().getHumanReadableId())) {
+                     xResultData.logError("Duplicate Legacy PCR Ids in Different Actions: " + legacyPcrId);
+                  }
+               } else {
+                  legacyPcrIdToParentHrid.put(legacyPcrId, teamArt.getParentActionArtifact().getHumanReadableId());
+               }
+            }
+         }
+      }
    }
 
    public void testTeamWorkflows() throws OseeCoreException {
