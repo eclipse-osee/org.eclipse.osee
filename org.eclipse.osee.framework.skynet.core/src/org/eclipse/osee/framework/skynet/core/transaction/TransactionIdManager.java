@@ -46,7 +46,7 @@ public final class TransactionIdManager {
          "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author",
                "branch_id", "tx_type") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
 
-   private final Map<Integer, TransactionId> nonEditableTransactionIdCache = new HashMap<Integer, TransactionId>();
+   private final Map<Integer, TransactionId> transactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
 
    private TransactionIdManager() {
@@ -98,7 +98,7 @@ public final class TransactionIdManager {
             new TransactionId(transactionNumber, branch, comment, transactionTime, authorArtId, -1,
                   TransactionDetailsType.NonBaselined);
 
-      instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
+      instance.transactionIdCache.put(transactionNumber, transactionId);
       return transactionId;
    }
 
@@ -162,7 +162,7 @@ public final class TransactionIdManager {
    }
 
    private synchronized static TransactionId getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeCoreException {
-      TransactionId transactionId = instance.nonEditableTransactionIdCache.get(transactionNumber);
+      TransactionId transactionId = instance.transactionIdCache.get(transactionNumber);
       boolean useLocalConnection = chStmt == null;
       if (transactionId == null) {
          try {
@@ -181,7 +181,7 @@ public final class TransactionIdManager {
             transactionId =
                   new TransactionId(transactionNumber, branch, chStmt.getString("osee_comment"),
                         chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
-            instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
+            instance.transactionIdCache.put(transactionNumber, transactionId);
          } finally {
             if (useLocalConnection) {
                chStmt.close();
