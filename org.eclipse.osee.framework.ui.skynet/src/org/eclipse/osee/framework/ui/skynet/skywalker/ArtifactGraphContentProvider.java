@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.skywalker.RelTypeContentProvider.RelationLinkDescriptorSide;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -32,7 +32,7 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  */
 public class ArtifactGraphContentProvider implements IGraphEntityContentProvider {
    // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<Artifact>(0);
-   private SkyWalkerOptions options;
+   private final SkyWalkerOptions options;
 
    /**
     * @param levels
@@ -53,23 +53,46 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       // Don't want to create any links to artifacts that are NOT in displayArtifacts
       try {
          Artifact artifact = (Artifact) entity;
-         List<RelationType> validTypes =
-               RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
-         for (RelationType relationType : validTypes) {
-            if (options.isValidRelationType(relationType)) {
-               for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
-                  if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
-                     otherItems.add(art);
+         //         List<RelationType> validTypes =
+         //               RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
+         //         for (RelationType relationType : validTypes) {
+         //            if (options.isValidRelationType(relationType)) {
+         //               for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
+         //                  if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
+         //                     otherItems.add(art);
+         //                  }
+         //               }
+         //            }
+         //         }
+         for (Object obj : options.getSelectedRelTypes()) {
+            if (obj instanceof RelationType) {
+               RelationType relationType = (RelationType) obj;
+               if (options.isValidRelationType(relationType)) {
+                  for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
+                     if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
+                        otherItems.add(art);
+                     }
+                  }
+               }
+            }
+            if (obj instanceof RelationLinkDescriptorSide) {
+               RelationLinkDescriptorSide side = (RelationLinkDescriptorSide) obj;
+               if (options.isValidRelationLinkDescriptorSide(side)) {
+                  for (Artifact art : artifact.getRelatedArtifacts(side)) {
+                     if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
+                        otherItems.add(art);
+                     }
                   }
                }
             }
          }
+
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return otherItems.toArray();
    }
-   private Set<Artifact> displayArtifacts = new HashSet<Artifact>();
+   private final Set<Artifact> displayArtifacts = new HashSet<Artifact>();
 
    /*
     * (non-Javadoc)
@@ -93,14 +116,38 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
          return;
       } else {
          try {
-            List<RelationType> validTypes =
-                  RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
-            for (RelationType relationType : validTypes) {
-               if (options.isValidRelationType(relationType)) {
-                  for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
-                     if (options.isValidArtifactType(art.getArtifactType())) {
-                        displayArtifacts.add(art);
-                        getDescendants(displayArtifacts, art, level - 1);
+            //            List<RelationType> validTypes =
+            //                  RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
+            //            for (RelationType relationType : validTypes) {
+            //               if (options.isValidRelationType(relationType)) {
+            //                  for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
+            //                     if (options.isValidArtifactType(art.getArtifactType())) {
+            //                        displayArtifacts.add(art);
+            //                        getDescendants(displayArtifacts, art, level - 1);
+            //                     }
+            //                  }
+            //               }
+            //            }
+            for (Object obj : options.getSelectedRelTypes()) {
+               if (obj instanceof RelationType) {
+                  RelationType relationType = (RelationType) obj;
+                  if (options.isValidRelationType(relationType)) {
+                     for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
+                        if (options.isValidArtifactType(art.getArtifactType())) {
+                           displayArtifacts.add(art);
+                           getDescendants(displayArtifacts, art, level - 1);
+                        }
+                     }
+                  }
+               }
+               if (obj instanceof RelationLinkDescriptorSide) {
+                  RelationLinkDescriptorSide side = (RelationLinkDescriptorSide) obj;
+                  if (options.isValidRelationLinkDescriptorSide(side)) {
+                     for (Artifact art : artifact.getRelatedArtifacts(side)) {
+                        if (options.isValidArtifactType(art.getArtifactType())) {
+                           displayArtifacts.add(art);
+                           getDescendants(displayArtifacts, art, level - 1);
+                        }
                      }
                   }
                }

@@ -14,6 +14,11 @@ package org.eclipse.osee.framework.ui.skynet.skywalker;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
@@ -43,7 +48,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
       return new Object[] {};
    }
 
-   public static class RelationLinkDescriptorSide {
+   public static class RelationLinkDescriptorSide implements IRelationEnumeration {
       private final RelationType desc;
       private final Boolean sideA;
 
@@ -52,6 +57,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
          this.sideA = sideA;
       }
 
+      @Override
       public String toString() {
          return (sideA ? desc.getSideAName() : desc.getSideBName()) + " - " + desc.getTypeName();
       }
@@ -91,6 +97,50 @@ public class RelTypeContentProvider implements ITreeContentProvider {
        */
       public RelationType getDesc() {
          return desc;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getRelationType()
+       */
+      @Override
+      public RelationType getRelationType() throws OseeTypeDoesNotExist, OseeDataStoreException {
+         return desc;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getSide()
+       */
+      @Override
+      public RelationSide getSide() {
+         return sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getSideName()
+       */
+      @Override
+      public String getSideName() throws OseeTypeDoesNotExist, OseeDataStoreException {
+         return getRelationType().getSideName(getSide());
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getTypeName()
+       */
+      @Override
+      public String getTypeName() {
+         try {
+            return getRelationType().getNamespace();
+         } catch (Exception ex) {
+            return ex.getLocalizedMessage();
+         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#isThisType(org.eclipse.osee.framework.skynet.core.relation.RelationLink)
+       */
+      @Override
+      public boolean isThisType(RelationLink link) {
+         return link.getRelationType().getTypeName().equals(getTypeName());
       }
 
    }

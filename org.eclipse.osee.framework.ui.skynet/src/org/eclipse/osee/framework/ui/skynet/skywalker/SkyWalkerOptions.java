@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
+import org.eclipse.osee.framework.ui.skynet.skywalker.RelTypeContentProvider.RelationLinkDescriptorSide;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.AbstractLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
@@ -56,7 +57,7 @@ public class SkyWalkerOptions {
    // RelationLinkDescriptor and RelationLinkDescriptorSide
    private Map<Object, Boolean> relTypes;
    private boolean filterEnabled = true;
-   private Set<ISkyWalkerOptionsChangeListener> listeners = new HashSet<ISkyWalkerOptionsChangeListener>();
+   private final Set<ISkyWalkerOptionsChangeListener> listeners = new HashSet<ISkyWalkerOptionsChangeListener>();
    public static String RADIAL_DOWN_LAYOUT = "Radial - Down";
    public static String SPRING_LAYOUT = "Spring";
    public static enum LinkName {
@@ -299,6 +300,11 @@ public class SkyWalkerOptions {
    public boolean isValidRelationType(RelationType type) {
       if (!isFilterEnabled()) return true;
       return getSelectedRelTypes().contains(type);
+   }
+
+   public boolean isValidRelationLinkDescriptorSide(RelationLinkDescriptorSide side) {
+      if (!isFilterEnabled()) return true;
+      return getSelectedRelTypes().contains(side);
    }
 
    /**
