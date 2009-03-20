@@ -98,13 +98,21 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
 
          // Create actionable items
          List<ActionableItemArtifact> aias = new ArrayList<ActionableItemArtifact>();
+         // Create top actionable item
+         ActionableItemArtifact topAia =
+               (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
+                     AtsPlugin.getAtsBranch(), page1.getTeamDefName());
+         topAia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
+         AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact(transaction).addChild(topAia);
+         teamDef.addRelation(AtsRelation.TeamActionableItem_ActionableItem, topAia);
+         aias.add(topAia);
+         // Create childrent actionable item
          for (String name : page1.getActionableItems()) {
             ActionableItemArtifact aia =
                   (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
                         AtsPlugin.getAtsBranch(), name);
             aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), true);
-            AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact(transaction).addChild(aia);
-            teamDef.addRelation(AtsRelation.TeamActionableItem_ActionableItem, aia);
+            topAia.addChild(aia);
             aias.add(aia);
          }
 
