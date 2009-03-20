@@ -53,6 +53,13 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             return change.getArtifact().getArtifactTypeName();
          } else if (cCol.equals(ChangeXViewerFactory.Hrid)) {
             return change.getArtifact().getHumanReadableId();
+         } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
+            String paragraphNum = "";
+            
+            if (change.getArtifact().isAttributeTypeValid("Imported Paragraph Number")) {
+               paragraphNum = change.getArtifact().getSoleAttributeValue("Imported Paragraph Number", "");
+            }
+            return paragraphNum;
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);

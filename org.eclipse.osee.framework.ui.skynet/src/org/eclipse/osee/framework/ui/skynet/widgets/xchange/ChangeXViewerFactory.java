@@ -45,12 +45,14 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
                false, null);
    public static XViewerColumn Hrid =
          new XViewerColumn("framework.change.hrid", "HRID", 50, SWT.LEFT, false, SortDataType.String, false, null);
-
+   public static XViewerColumn paraNumber =
+      new XViewerColumn("attribute.Imported Paragraph Number", "Imported Paragraph Number", 50, SWT.LEFT, false, SortDataType.Paragraph_Number, false, null);
+   
    public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
 
    public ChangeXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, Artifact_Type, Hrid);
+      registerColumn(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, Artifact_Type, Hrid, paraNumber);
       registerAllAttributeColumns();
    }
 

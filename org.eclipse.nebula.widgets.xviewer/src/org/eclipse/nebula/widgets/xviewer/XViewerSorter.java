@@ -15,8 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
@@ -45,7 +45,7 @@ public class XViewerSorter extends ViewerSorter {
       XViewerColumn sortXCol = sortXCols.get(sortXColIndex);
       try {
          int columnNum = treeViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(sortXCol);
-         
+
          String o1Str = treeViewer.getColumnText(o1, columnNum);
          String o2Str = treeViewer.getColumnText(o2, columnNum);
 
@@ -64,6 +64,8 @@ public class XViewerSorter extends ViewerSorter {
             compareInt = getCompareForFloat(o1Str, o2Str);
          else if (sortXCol.getSortDataType() == SortDataType.Integer)
             compareInt = getCompareForInteger(o1Str, o2Str);
+         else if (sortXCol.getSortDataType() == SortDataType.Paragraph_Number)
+            compareInt = paragraphNumberCompare(o1Str, o2Str);
          else
             compareInt = getComparator().compare(o1Str, o2Str);
 
@@ -77,6 +79,29 @@ public class XViewerSorter extends ViewerSorter {
    @Override
    public int compare(Viewer viewer, Object o1, Object o2) {
       return compare(viewer, o1, o2, 0);
+   }
+
+   public int paragraphNumberCompare(String s1, String s2) {
+      StringTokenizer st1 = new StringTokenizer(s1, ".");
+      StringTokenizer st2 = new StringTokenizer(s2, ".");
+      while (st1.hasMoreTokens() && st2.hasMoreTokens()) {
+         String t1 = st1.nextToken();
+         String t2 = st2.nextToken();
+
+         int result;
+         try {
+            Integer i1 = new Integer(t1);
+            Integer i2 = new Integer(t2);
+            result = i1.compareTo(i2);
+         } catch (NumberFormatException e) {
+            result = t1.compareTo(t2);
+         }
+         if (result != 0) {
+            return result;
+         }
+      }
+
+      return s1.compareTo(s2);
    }
 
    public int getCompareBasedOnDirection(XViewerColumn sortXCol, int compareInt, Viewer viewer, Object o1, Object o2, int sortXColIndex) {

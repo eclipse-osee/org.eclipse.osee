@@ -30,7 +30,7 @@ public class XViewerColumn {
    private SortDataType sortDataType = SortDataType.String;
    private String toolTip = "";
    public enum SortDataType {
-      Date, Float, Percent, String, String_MultiLine, Boolean, Integer
+      Date, Float, Percent, String, String_MultiLine, Boolean, Integer, Paragraph_Number
    };
 
    public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
