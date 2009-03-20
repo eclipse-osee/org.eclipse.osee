@@ -11,14 +11,25 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -37,7 +48,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
     * @param parent
     */
    public DoesNotWorkItem(XNavigateItem parent) {
-      super(parent, "Does Not Work - convertAtsLogUserIds");
+      super(parent, "Does Not Work - ??");
    }
 
    /*
@@ -64,10 +75,10 @@ public class DoesNotWorkItem extends XNavigateItemAction {
       //         }
       //      }
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-      //      convertAtsLogUserIds(transaction);
-      transaction.execute();
+      //      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      //      transaction.execute();
 
+      //      convertAtsLogUserIds(transaction);
       //      deleteUnAssignedUserRelations();
       //      relateDonDunne();
 
@@ -82,6 +93,45 @@ public class DoesNotWorkItem extends XNavigateItemAction {
       // fixOseePeerReviews();
 
       AWorkbench.popup("Completed", "Complete");
+   }
+
+   private void purgeHrids() throws OseeCoreException {
+      String[] hrids = AFile.readFile("O:\\hrids_to_delete.txt").split("\r\n");
+      int x = 0;
+      for (String hrid : hrids) {
+         hrid = hrid.replaceAll(" ", "");
+         System.out.println("Processing " + x++ + " of " + hrids.length);
+         try {
+            Artifact art = null;
+            // Handle case where duplicate hrids
+            try {
+               art = ArtifactQuery.getArtifactFromId(hrid, AtsPlugin.getAtsBranch());
+            } catch (MultipleArtifactsExist ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               continue;
+            }
+            Set<Artifact> artsToDelete = new HashSet<Artifact>();
+            if (art instanceof TeamWorkFlowArtifact) {
+               art = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
+            }
+            if (art instanceof ActionArtifact) {
+               artsToDelete.add(art);
+               artsToDelete.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
+            }
+            if (artsToDelete.size() > 0) {
+               System.out.println("Sleeping 5 sec...");
+               Thread.sleep(5000);
+               System.out.println("Purging " + artsToDelete.size() + " artifacts...");
+               ArtifactPersistenceManager.purgeArtifacts(artsToDelete);
+            }
+         } catch (ArtifactDoesNotExist ex) {
+            System.out.println("Artifact with hrid does not exist: " + hrid);
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+
+      }
+
    }
 
    private void convertAtsLogUserIds(SkynetTransaction transaction) throws OseeCoreException {
