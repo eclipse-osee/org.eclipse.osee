@@ -24,12 +24,19 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.eclipse.osee.framework.ui.skynet.branch.BranchView">
+            locationURI="menu:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
          <command
                commandId="org.eclipse.osee.framework.ui.data.model.editor.command.ODMOpen"
                icon="images/workflowConfig.gif"
                style="push"
                tooltip="Opens the Osee Data Model Editor">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
+         <command
+               commandId="org.eclipse.osee.framework.ui.data.model.editor.command.ODMOpen"
+               style="push">
          </command>
       </menuContribution>
    </extension>
