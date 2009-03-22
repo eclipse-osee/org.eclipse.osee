@@ -92,7 +92,7 @@ public class WorkPageShape extends RectangleShape {
                workPageDefinition.getPageName());
          super.setPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), workPageDefinition.getId());
          super.setPropertyValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(),
-               workPageDefinition.getParentId());
+               workPageDefinition.getParentId() == null ? "" : workPageDefinition.getParentId());
       }
    }
 

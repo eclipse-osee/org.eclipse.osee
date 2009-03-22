@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
@@ -146,6 +147,10 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
             if (attr instanceof StringAttribute) {
                attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
             }
+         }
+         if (state == DefaultTeamState.Completed || state == DefaultTeamState.Cancelled) {
+            newStateArt.setSoleAttributeFromString(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(),
+                  "osee.ats.teamWorkflow." + state.name());
          }
 
          // Add same relations as default work pages to new work pages (widgets and rules)
