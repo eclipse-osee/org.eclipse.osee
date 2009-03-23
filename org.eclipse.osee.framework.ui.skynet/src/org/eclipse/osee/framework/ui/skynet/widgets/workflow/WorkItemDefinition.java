@@ -195,7 +195,7 @@ public abstract class WorkItemDefinition {
          artifact = ArtifactTypeManager.addArtifact(getArtifactTypeName(), BranchManager.getCommonBranch());
       }
       artifact.setDescriptiveName(getName());
-      if (getParentId() != null) artifact.setSoleAttributeValue(
+      if (getParentId() != null && !getParentId().equals("")) artifact.setSoleAttributeValue(
             WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), getParentId());
       if (getDescription() != null) artifact.setSoleAttributeValue(
             WorkItemAttributes.WORK_DESCRIPTION.getAttributeTypeName(), getDescription());
