@@ -4,5 +4,4 @@ Bundle-Name: Source Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.feature.source;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Vendor: Eclipse.org
-Require-Bundle: org.eclipse.pde.core
 Bundle-ActivationPolicy: lazy
