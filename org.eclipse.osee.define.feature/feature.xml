@@ -22,23 +22,6 @@
       <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
 
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.osee.framework.jdk.core"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.osee.framework.skynet.core"/>
-      <import plugin="org.eclipse.osee.framework.ui.skynet"/>
-      <import plugin="org.eclipse.osee.framework.plugin.core"/>
-      <import plugin="org.eclipse.osee.framework.ui.plugin"/>
-      <import plugin="org.eclipse.osee.framework.database"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.osee.framework.db.connection"/>
-      <import plugin="org.eclipse.pde.core"/>
-   </requires>
-
    <plugin
          id="org.eclipse.osee.define"
          download-size="0"
