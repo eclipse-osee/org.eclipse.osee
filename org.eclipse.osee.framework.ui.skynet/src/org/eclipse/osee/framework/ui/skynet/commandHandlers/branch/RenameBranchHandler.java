@@ -32,18 +32,18 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Jeff C. Phillips
  * @author Paul Waldfogel
- *
  */
-public class RenameBranchHandler extends CommandHandler{
+public class RenameBranchHandler extends CommandHandler {
    private TreeViewer treeViewer;
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ISelectionProvider selectionProvider = AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-      
+      ISelectionProvider selectionProvider =
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+
       if (selectionProvider instanceof TreeViewer) {
          this.treeViewer = (TreeViewer) selectionProvider;
          Tree tree = treeViewer.getTree();
@@ -51,17 +51,16 @@ public class RenameBranchHandler extends CommandHandler{
 
          final Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
          TreeItem[] myTreeItemsSelected = tree.getSelection();
-         
+
          if (myTreeItemsSelected.length != 1) {
             return null;
          }
-         
+
          TreeEditor myTreeEditor = new TreeEditor(tree);
          myTreeEditor.horizontalAlignment = SWT.LEFT;
          myTreeEditor.grabHorizontal = true;
          myTreeEditor.minimumWidth = 50;
 
-         
          final TreeItem myTreeItem = myTreeItemsSelected[0];
          Control oldEditor = myTreeEditor.getEditor();
          if (oldEditor != null) {
@@ -69,7 +68,7 @@ public class RenameBranchHandler extends CommandHandler{
          }
          final Text textBeingRenamed = new Text(tree, SWT.BORDER);
          textBeingRenamed.setText(selectedBranch.getBranchName());
-         
+
          textBeingRenamed.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -98,7 +97,7 @@ public class RenameBranchHandler extends CommandHandler{
       }
       return null;
    }
-   
+
    private void updateText(String newLabel, Branch selectedBranch) {
       selectedBranch.setBranchName(newLabel);
       try {
@@ -108,18 +107,18 @@ public class RenameBranchHandler extends CommandHandler{
       }
       treeViewer.refresh();
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.plugin.util.CommandHandler#isEnabledWithException()
     */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-      
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-      
-      return AccessControlManager.isOseeAdmin() && branches.size() == 1;
+
+      return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(0).isWorkingBranch());
    }
 
 }
