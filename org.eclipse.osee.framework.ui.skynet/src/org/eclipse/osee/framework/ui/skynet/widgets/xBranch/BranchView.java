@@ -42,19 +42,18 @@ import org.eclipse.ui.part.ViewPart;
  * @author Jeff C. Phillips
  */
 public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionsDeletedEventListener {
-
-   public BranchView() {
-      super();
-
-      OseeEventManager.addListener(this);
-   }
-
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
    private static String HELP_CONTEXT_ID = "BranchView";
    public static final String BRANCH_ID = "branchId";
    private XBranchWidget xBranchWidget;
 
+   public BranchView() {
+      super();
+
+      OseeEventManager.addListener(this);
+   }
+   
    @Override
    public void dispose() {
       super.dispose();
@@ -85,7 +84,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       xBranchWidget = new XBranchWidget();
       xBranchWidget.setDisplayLabel(false);
       xBranchWidget.createWidgets(parent, 1);
-
+      
       branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
       xBranchWidget.loadData();
 

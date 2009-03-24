@@ -145,7 +145,7 @@
         category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView"
         icon="images/branch_change.gif"
-        id="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView"
+        id="org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView"
         name="Change Report">
   </view>
   <view
@@ -411,6 +411,13 @@
  <extension
        name="The new change view"
        point="org.eclipse.ui.menus">
+    <menuContribution
+          locationURI="menu:org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView">
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
+             style="toggle">
+       </command>
+    </menuContribution>
     <menuContribution
           locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView">
        <command
@@ -1107,6 +1114,14 @@
           commandId="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler">
     </handler>
  </extension>
+  <extension
+        id="Change View"
+        point="org.eclipse.ui.handlers">
+     <handler
+           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ToggleChangeViewDocOrderHandler"
+           commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder">
+     </handler>
+  </extension>
 	<extension point="org.eclipse.ui.commandImages">
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
@@ -1147,6 +1162,18 @@
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler"
         icon="images/star_9_9.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitInto"
+        icon="images/commit.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent"
+        icon="images/commit.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
+        icon="images/docOrder.gif">
   </image>
 	</extension>
  <extension
@@ -1537,6 +1564,10 @@
         description="Collapse  a Tree Viewer"
         id="org.eclipse.osee.framework.ui.skynet.collapseTree.command"
         name="TreeCollapse">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
+        name="Show Document Order">
   </command>
 	</extension>
 	<extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">

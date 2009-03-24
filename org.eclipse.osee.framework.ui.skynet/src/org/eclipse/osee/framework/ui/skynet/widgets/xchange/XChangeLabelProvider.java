@@ -53,6 +53,8 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             return change.getArtifact().getArtifactTypeName();
          } else if (cCol.equals(ChangeXViewerFactory.Hrid)) {
             return change.getArtifact().getHumanReadableId();
+         } else if (cCol.equals(ChangeXViewerFactory.lastModDate)) {
+            return String.valueOf(change.getArtifact().getLastModified());
          } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
             String paragraphNum = "";
             

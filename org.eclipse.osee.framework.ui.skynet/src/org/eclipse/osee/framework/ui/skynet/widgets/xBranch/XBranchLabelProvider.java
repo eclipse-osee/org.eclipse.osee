@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -32,7 +31,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XBranchLabelProvider extends XViewerLabelProvider {
 
-   Font font = null;
    private final BranchXViewer branchXViewer;
 
    public XBranchLabelProvider(BranchXViewer branchXViewer) {
@@ -132,11 +130,6 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       return columnText;
    }
 
-   public void dispose() {
-      if (font != null) font.dispose();
-      font = null;
-   }
-
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
@@ -155,5 +148,12 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       Image returnImage = BranchViewImageHandler.getImage(element, columnIndex);
       return returnImage;
+   }
+   
+   /* (non-Javadoc)
+    * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
+    */
+   @Override
+   public void dispose() {
    }
 }

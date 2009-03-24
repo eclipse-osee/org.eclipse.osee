@@ -55,6 +55,7 @@ public class XBranchWidget extends XWidget implements IActionable {
    private static final String LOADING = "Loading ...";
    protected Label extraInfoLabel;
    private XBranchContentProvider branchContentProvider;
+   XBranchLabelProvider xBranchLabelProvider;
    private FavoriteSorter sorter;
    private static final String VIEW_ID = "BrachView";
 
@@ -65,21 +66,25 @@ public class XBranchWidget extends XWidget implements IActionable {
       super(VIEW_ID);
    }
    
-   public void setBranchOptions(BranchOptions ... options){
-      for(BranchOptions option : options){
-         
-         if(option == BranchOptions.FAVORITES_FIRST){
-            setFavoritesFirst(true);
-         } else if(option == BranchOptions.FLAT){
-            setPresentation(true);
-         }else if(option == BranchOptions.SHOW_MERGE_BRANCHES){
-            setShowMergeBranches(true);
-         }else if(option == BranchOptions.SHOW_TRANSACTIONS){
-            setShowTransactions(true);
-         }else if(option == BranchOptions.SHOW_ARCHIVED){
-            setShowArchivedBranches (true);
-         }else if(option == BranchOptions.SHOW_ARCHIVED){
-            setShowArchivedBranches (true);
+   public void setBranchOptions(BranchOptions... options) {
+      for (BranchOptions option : options) {
+
+         switch (option) {
+            case FAVORITES_FIRST:
+               setFavoritesFirst(true);
+               break;
+            case FLAT:
+               setPresentation(true);
+               break;
+            case SHOW_MERGE_BRANCHES:
+               setShowMergeBranches(true);
+               break;
+            case SHOW_TRANSACTIONS:
+               setShowMergeBranches(true);
+               break;
+            case SHOW_ARCHIVED:
+               setShowMergeBranches(true);
+               break;
          }
       }
    }
@@ -115,7 +120,7 @@ public class XBranchWidget extends XWidget implements IActionable {
 
       branchContentProvider = new XBranchContentProvider(branchXViewer);
       branchXViewer.setContentProvider(branchContentProvider);
-      XBranchLabelProvider xBranchLabelProvider = new XBranchLabelProvider(branchXViewer);
+      xBranchLabelProvider = new XBranchLabelProvider(branchXViewer);
       branchXViewer.setLabelProvider(xBranchLabelProvider);
       sorter = new FavoriteSorter(xBranchLabelProvider);
       branchXViewer.setSorter(sorter);

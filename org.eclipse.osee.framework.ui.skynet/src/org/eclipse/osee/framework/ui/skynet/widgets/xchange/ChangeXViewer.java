@@ -43,19 +43,10 @@ public class ChangeXViewer extends XViewer {
    private static final boolean CHANGE_DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Change"));
 
-   private final XChangeViewer xChangeViewer;
+   private final XChangeWidget xChangeViewer;
 
-   public ChangeXViewer(Composite parent, int style, XChangeViewer xRoleViewer) {
+   public ChangeXViewer(Composite parent, int style, XChangeWidget xRoleViewer) {
       super(parent, style, new ChangeXViewerFactory());
-      //      this.addDoubleClickListener(new IDoubleClickListener() {
-      //         public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
-      //            try {
-      //               handleDoubleClick();
-      //            } catch (Exception ex) {
-      //               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      //            }
-      //         };
-      //      });
       this.xChangeViewer = xRoleViewer;
    }
 
@@ -161,7 +152,7 @@ public class ChangeXViewer extends XViewer {
    /**
     * @return the xChangeViewer
     */
-   public XChangeViewer getXChangeViewer() {
+   public XChangeWidget getXChangeViewer() {
       return xChangeViewer;
    }
 

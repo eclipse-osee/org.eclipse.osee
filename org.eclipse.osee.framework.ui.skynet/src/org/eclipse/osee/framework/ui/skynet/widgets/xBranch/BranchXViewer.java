@@ -58,7 +58,9 @@ public class BranchXViewer extends XViewer {
     */
    @Override
    public void dispose() {
-      getLabelProvider().dispose();
+      if(getLabelProvider() != null){
+         getLabelProvider().dispose();
+      }
    }
 
    /**

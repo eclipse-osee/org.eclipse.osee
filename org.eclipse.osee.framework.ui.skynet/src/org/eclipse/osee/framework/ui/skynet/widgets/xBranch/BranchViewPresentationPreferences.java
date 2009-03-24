@@ -51,7 +51,7 @@ public class BranchViewPresentationPreferences {
 
       try {
          if (instanceNode.nodeExists(BranchView.VIEW_ID)) {
-            ((IEclipsePreferences) instanceNode.node(BranchView.VIEW_ID)).addPreferenceChangeListener(getSingleton());
+            ((IEclipsePreferences) instanceNode.node(BranchView.VIEW_ID)).addPreferenceChangeListener(singletonPreferenceChangeListener());
          }
       } catch (BackingStoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -61,13 +61,13 @@ public class BranchViewPresentationPreferences {
 
          public void added(NodeChangeEvent event) {
             if (event.getChild().name().equals(BranchView.VIEW_ID)) {
-               ((IEclipsePreferences) event.getChild()).addPreferenceChangeListener(getSingleton());
+               ((IEclipsePreferences) event.getChild()).addPreferenceChangeListener(singletonPreferenceChangeListener());
             }
          }
 
          public void removed(NodeChangeEvent event) {
             if (event.getChild().name().equals(BranchView.VIEW_ID)) {
-               ((IEclipsePreferences) event.getChild()).removePreferenceChangeListener(getSingleton());
+               ((IEclipsePreferences) event.getChild()).removePreferenceChangeListener(singletonPreferenceChangeListener());
             }
          }
       });
@@ -75,7 +75,7 @@ public class BranchViewPresentationPreferences {
       loadPreferences();
    }
 
-   private synchronized IPreferenceChangeListener getSingleton() {
+   private synchronized IPreferenceChangeListener singletonPreferenceChangeListener() {
       if (preferenceChangeListener == null) {
          preferenceChangeListener = new IPreferenceChangeListener() {
 

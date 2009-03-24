@@ -56,11 +56,12 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ChangeView extends ViewPart implements IActionable, IBranchEventListener, ITransactionsDeletedEventListener {
 
-   public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView";
+   public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView";
    private static String HELP_CONTEXT_ID = "ChangeView";
-   private XChangeViewer xChangeViewer;
+   private XChangeWidget xChangeWidget;
    private Branch branch;
    private TransactionId transactionId;
+   private ChangeViewPresentationPreferences changeViewPresentationPreferences;
 
    public ChangeView() {
       OseeEventManager.addListener(this);
@@ -108,7 +109,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
-      
+      changeViewPresentationPreferences.setDisposed(true);
       super.dispose();
    }
 
@@ -132,10 +133,12 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       parent.setLayout(layout);
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xChangeViewer = new XChangeViewer();
-      xChangeViewer.setDisplayLabel(false);
-      xChangeViewer.createWidgets(parent, 1);
+      xChangeWidget = new XChangeWidget();
+      xChangeWidget.setDisplayLabel(false);
+      xChangeWidget.createWidgets(parent, 1);
 
+      changeViewPresentationPreferences = new ChangeViewPresentationPreferences(this);
+      
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
@@ -146,17 +149,17 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       });
 
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-      xChangeViewer.getXViewer().getTree().setMenu(menuManager.createContextMenu(xChangeViewer.getXViewer().getTree()));
-      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView", menuManager,
-            xChangeViewer.getXViewer());
+      xChangeWidget.getXViewer().getTree().setMenu(menuManager.createContextMenu(xChangeWidget.getXViewer().getTree()));
+      getSite().registerContextMenu(VIEW_ID, menuManager,
+            xChangeWidget.getXViewer());
 
-      getSite().setSelectionProvider(xChangeViewer.getXViewer());
+      getSite().setSelectionProvider(xChangeWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
       OseeContributionItem.addTo(this, true);
    }
 
    private void explore(final Branch branch, final TransactionId transactionId, boolean loadChangeReport) {
-      if (xChangeViewer != null) {
+      if (xChangeWidget != null) {
          this.branch = branch;
          this.transactionId = transactionId;
 
@@ -167,7 +170,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
             setPartName("Change Report: " + branch.getBranchShortName());
          }
 
-         xChangeViewer.setInputData(branch, transactionId, loadChangeReport);
+         xChangeWidget.setInputData(branch, transactionId, loadChangeReport);
       }
    }
 
@@ -258,8 +261,8 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
              */
             @Override
             public void run() {
-               if (xChangeViewer == null || xChangeViewer.getXViewer().getTree() == null || xChangeViewer.getXViewer().getTree().isDisposed()) return;
-               xChangeViewer.getXViewer().getTree().setEnabled(branch.getBranchId() == branchId);
+               if (xChangeWidget == null || xChangeWidget.getXViewer().getTree() == null || xChangeWidget.getXViewer().getTree().isDisposed()) return;
+               xChangeWidget.getXViewer().getTree().setEnabled(branch.getBranchId() == branchId);
             }
          });
       }
@@ -295,5 +298,20 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
             return;
          }
       }
+   }
+
+   public void changeShowDocumentOrder(boolean showDocOrder) {
+      if (changeViewPresentationPreferences != null) {
+         changeViewPresentationPreferences.getViewPreference().putBoolean(
+               ChangeViewPresentationPreferences.SHOW_DOC_ORDER, showDocOrder);
+      }
+   }
+   
+   /**
+    * @param showArchivedBranches
+    */
+   protected void setShowDocumentOrder(boolean showDocOrder) {
+      xChangeWidget.setShowDocumentOrder(showDocOrder);
+      
    }
 }

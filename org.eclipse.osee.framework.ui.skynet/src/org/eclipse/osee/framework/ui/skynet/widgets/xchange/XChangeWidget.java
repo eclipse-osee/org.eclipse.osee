@@ -64,9 +64,10 @@ import org.eclipse.swt.widgets.Tree;
  * @author Donald G. Dunne
  * @author Jeff C. Phillips
  */
-public class XChangeViewer extends XWidget implements IActionable {
+public class XChangeWidget extends XWidget implements IActionable {
 
    private ChangeXViewer xChangeViewer;
+   private XChangeContentProvider contentProvider;
    public final static String normalColor = "#EEEEEE";
    private static final String LOADING = "Loading ...";
    private static final String NOT_CHANGES = "No changes were found";
@@ -77,7 +78,7 @@ public class XChangeViewer extends XWidget implements IActionable {
    /**
     * @param label
     */
-   public XChangeViewer() {
+   public XChangeWidget() {
       super("Change Report");
    }
 
@@ -111,7 +112,8 @@ public class XChangeViewer extends XWidget implements IActionable {
       xChangeViewer = new ChangeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xChangeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xChangeViewer.setContentProvider(new XChangeContentProvider(xChangeViewer));
+      contentProvider = new XChangeContentProvider(xChangeViewer);
+      xChangeViewer.setContentProvider(contentProvider);
       xChangeViewer.setLabelProvider(new XChangeLabelProvider(xChangeViewer));
 
       if (toolkit != null) toolkit.adapt(xChangeViewer.getStatusLabel(), false, false);
@@ -256,6 +258,7 @@ public class XChangeViewer extends XWidget implements IActionable {
 
    @Override
    public void refresh() {
+      contentProvider.refeshDocOrder();
       xChangeViewer.refresh();
       setLabelError();
    }
@@ -416,6 +419,17 @@ public class XChangeViewer extends XWidget implements IActionable {
     */
    public Branch getBranch() {
       return branch;
+   }
+
+   /**
+    * @param showDocOrder
+    */
+   public void setShowDocumentOrder(boolean showDocOrder) {
+      if(contentProvider != null){
+         contentProvider.setShowDocOrder(showDocOrder);
+         refresh();
+      }
+      
    }
 
 }
