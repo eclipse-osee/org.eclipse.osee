@@ -1477,7 +1477,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          if (loadedArtifacts.isNotForDefaultBranch()) {
             return;
          }
-         if (accessControlEventType == AccessControlEventType.UserAuthenticated || accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
+         if (accessControlEventType == AccessControlEventType.UserAuthenticated || accessControlEventType == AccessControlEventType.ArtifactsUnlocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)
                 * @see java.lang.Runnable#run()
