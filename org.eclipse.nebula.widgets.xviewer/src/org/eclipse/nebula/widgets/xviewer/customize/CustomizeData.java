@@ -71,15 +71,15 @@ public class CustomizeData {
    public Image getImage(boolean isDefault) {
       if (!isWorkbench) return null;
       if (name.equals(CustomizeManager.TABLE_DEFAULT_LABEL) || name.equals(CustomizeManager.CURRENT_LABEL)) {
-         return Activator.getInstance().getImage("customize.gif");
+         return XViewerLib.getImage("customize.gif");
       }
       String index = "" + personal + isDefault;
       if (imageMap.containsKey(index)) return imageMap.get(index);
-      Image image = Activator.getInstance().getImage("customize.gif");
+      Image image = XViewerLib.getImage("customize.gif");
       if (!personal) image =
-            new OverlayUtil(image, Activator.getInstance().getImageDescriptor("customizeG.gif"), Location.BOT_RIGHT).createImage();
+            new OverlayUtil(image, XViewerLib.getImageDescriptor("customizeG.gif"), Location.BOT_RIGHT).createImage();
       if (isDefault) image =
-            new OverlayUtil(image, Activator.getInstance().getImageDescriptor("customizeD.gif"), Location.TOP_RIGHT).createImage();
+            new OverlayUtil(image, XViewerLib.getImageDescriptor("customizeD.gif"), Location.TOP_RIGHT).createImage();
       imageMap.put(index, image);
       return image;
    }

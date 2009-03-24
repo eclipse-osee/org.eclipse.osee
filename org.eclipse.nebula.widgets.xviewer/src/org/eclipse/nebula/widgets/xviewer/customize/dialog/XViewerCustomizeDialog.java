@@ -16,8 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,6 +36,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeManager;
 import org.eclipse.nebula.widgets.xviewer.customize.SortingData;
 import org.eclipse.nebula.widgets.xviewer.util.internal.ArrayTreeContentProvider;
 import org.eclipse.nebula.widgets.xviewer.util.internal.CollectionsUtil;
+import org.eclipse.nebula.widgets.xviewer.util.internal.PatternFilter;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerFilteredTree;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
@@ -66,7 +65,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 public class XViewerCustomizeDialog extends MessageDialog {
    private String title = "Customize Table";
@@ -87,7 +85,6 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private static String SET_AS_DEFAULT = " Set as Default ";
    private static String REMOVE_DEFAULT = "Remove Default";
    private CustomizeData defaultTableCustData;
-   private boolean inWorkbench = false;
    boolean isFeedbackAfter = false;
 
    public XViewerCustomizeDialog(XViewer xViewer) {
@@ -97,7 +94,6 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private XViewerCustomizeDialog(XViewer xViewer, Shell parentShell) {
       super(parentShell, "", null, "", MessageDialog.NONE, buttons, 0);
       this.xViewerToCustomize = xViewer;
-      inWorkbench = Platform.isRunning();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -518,10 +514,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       sorterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       final Label clearSorterLabel = new Label(composite_2, SWT.PUSH);
-      if (inWorkbench)
-         clearSorterLabel.setImage(Activator.getInstance().getImage("clear.gif"));
-      else
-         clearSorterLabel.setText("clear");
+      clearSorterLabel.setImage(XViewerLib.getImage("clear.gif"));
       clearSorterLabel.addMouseListener(new MouseListener() {
          public void mouseDown(MouseEvent e) {
          }
@@ -549,10 +542,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       final Label clearFilterLabel = new Label(composite_7, SWT.PUSH);
-      if (inWorkbench)
-         clearFilterLabel.setImage(Activator.getInstance().getImage("clear.gif"));
-      else
-         clearFilterLabel.setText("clear");
+      clearFilterLabel.setImage(XViewerLib.getImage("clear.gif"));
       clearFilterLabel.addMouseListener(new MouseListener() {
          public void mouseDown(MouseEvent e) {
          }
@@ -580,10 +570,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       columnFilterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       final Label clearColumnFilterLabel = new Label(composite_8, SWT.PUSH);
-      if (inWorkbench)
-         clearColumnFilterLabel.setImage(Activator.getInstance().getImage("clear.gif"));
-      else
-         clearColumnFilterLabel.setText("clear");
+      clearColumnFilterLabel.setImage(XViewerLib.getImage("clear.gif"));
       clearColumnFilterLabel.addMouseListener(new MouseListener() {
          public void mouseDown(MouseEvent e) {
          }
@@ -703,7 +690,6 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
       return comp;
    }
-     
 
    @SuppressWarnings("unchecked")
    private void handleAddItemButton() {
@@ -801,15 +787,14 @@ public class XViewerCustomizeDialog extends MessageDialog {
       updateSortTextField();
       updateColumnFilterField();
    }
-   
+
    /**
     * for testing purposes
     */
-   protected void handleAddAllItem() {	   
-	   handleAddAllItemButton();
+   protected void handleAddAllItem() {
+      handleAddAllItemButton();
    }
 
-   
    @SuppressWarnings("unchecked")
    private void handleRemoveAllItemButton() {
 
@@ -951,12 +936,12 @@ public class XViewerCustomizeDialog extends MessageDialog {
       xViewerToCustomize.getCustomizeMgr().loadCustomization(getConfigCustomizeCustData());
       xViewerToCustomize.refresh();
    }
-   
+
    /**
     * for testing purposes
     */
    protected void handleLoadConfigCust() {
-	   handleLoadConfigCustButton();
+      handleLoadConfigCustButton();
    }
 
    private void handleSetDefaultButton() {
@@ -964,10 +949,8 @@ public class XViewerCustomizeDialog extends MessageDialog {
          CustomizeData custData = getCustTableSelection();
          if (custData.getName().equals(CustomizeManager.TABLE_DEFAULT_LABEL) || custData.getName().equals(
                CustomizeManager.CURRENT_LABEL)) {
-            if (inWorkbench)
-               XViewerLib.popup("ERROR", "Can't set table default or current as default");
-            else
-               System.err.println("Can't set table default or current as default");
+            XViewerLib.popup("ERROR", "Can't set table default or current as default");
+            System.err.println("Can't set table default or current as default");
             return;
          }
          if (xViewerToCustomize.getCustomizeMgr().isCustomizationUserDefault(custData)) {
@@ -990,19 +973,12 @@ public class XViewerCustomizeDialog extends MessageDialog {
          CustomizeData custSel = getCustTableSelection();
          if (custSel.getName().equals(CustomizeManager.TABLE_DEFAULT_LABEL) || custSel.getName().equals(
                CustomizeManager.CURRENT_LABEL)) {
-            if (inWorkbench)
-               XViewerLib.popup("ERROR", "Can't delete defaults.");
-            else
-               System.err.println("Can't delete defaults");
+            XViewerLib.popup("ERROR", "Can't delete defaults.");
             return;
          }
          if (custSel == null) return;
          if (!custSel.isPersonal() && !xViewerToCustomize.getXViewerFactory().isAdmin()) {
             XViewerLib.popup("ERROR", "Global Customizations can only be deleted by admin");
-            if (inWorkbench)
-               XViewerLib.popup("ERROR", "Global Customizations can only be deleted by admin");
-            else
-               System.err.println("Global Customizations can only be deleted by admin");
             return;
          }
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Customization",

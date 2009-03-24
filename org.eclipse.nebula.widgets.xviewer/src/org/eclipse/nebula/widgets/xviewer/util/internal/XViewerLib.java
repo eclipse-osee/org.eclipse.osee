@@ -15,7 +15,10 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
+import org.eclipse.nebula.widgets.xviewer.util.internal.images.XViewerImageCache;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -172,4 +175,11 @@ public class XViewerLib {
       return Display.getCurrent().getThread() == Thread.currentThread();
    }
 
+   public static Image getImage(String imageName) {
+      return XViewerImageCache.getImage(imageName);
+   }
+
+   public static ImageDescriptor getImageDescriptor(String imageName) {
+      return XViewerImageCache.getImageDescriptor(imageName);
+   }
 }

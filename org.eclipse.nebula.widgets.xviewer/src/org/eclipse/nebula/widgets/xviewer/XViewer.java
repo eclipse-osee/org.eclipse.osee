@@ -125,7 +125,7 @@ public class XViewer extends TreeViewer {
             customizeMgr.handleTableCustomization();
          }
       };
-      customizeAction.setImageDescriptor(Activator.getInstance().getImageDescriptor("customize.gif"));
+      customizeAction.setImageDescriptor(XViewerLib.getImageDescriptor("customize.gif"));
       customizeAction.setToolTipText("Customize Table");
       return customizeAction;
    }

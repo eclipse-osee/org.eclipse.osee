@@ -13,8 +13,8 @@ package org.eclipse.nebula.widgets.xviewer.customize;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -101,11 +100,7 @@ public class SearchDataUI {
 
       searchLabel = new Label(bar, SWT.NONE);
       searchLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
-      if (PlatformUI.isWorkbenchRunning()) {
-         searchLabel.setImage(Activator.getInstance().getImage("clear.gif"));
-      } else {
-         searchLabel.setText("clear");
-      }
+      searchLabel.setImage(XViewerLib.getImage("clear.gif"));
 
       regularExpression = new Button(bar, SWT.CHECK);
       regularExpression.setText("RE");

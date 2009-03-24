@@ -11,8 +11,8 @@
 
 package org.eclipse.nebula.widgets.xviewer.customize;
 
-import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -73,11 +72,7 @@ public class FilterDataUI {
 
       filterLabel = new Label(comp, SWT.NONE);
       filterLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
-      if (PlatformUI.isWorkbenchRunning()) {
-         filterLabel.setImage(Activator.getInstance().getImage("clear.gif"));
-      } else {
-         filterLabel.setText("clear");
-      }
+      filterLabel.setImage(XViewerLib.getImage("clear.gif"));
       filterLabel.addListener(SWT.MouseUp, new Listener() {
          /*
           * (non-Javadoc)
@@ -104,5 +99,5 @@ public class FilterDataUI {
          sb.append("[Text Filter]");
       }
    }
-   
+
 }

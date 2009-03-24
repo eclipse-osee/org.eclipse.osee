@@ -12,10 +12,10 @@ package org.eclipse.nebula.widgets.xviewer.test;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerStyledTextLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
+import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -48,28 +48,16 @@ public class XViewerTestStyledStringLabelProvider extends XViewerStyledTextLabel
    public void removeListener(ILabelProviderListener listener) {
    }
 
-   /**
-    * Allows test to be run as standalone without workbench kickoff.<br>
-    * TODO Add ability to display images when XViewerTest kicked off as Java Application
-    * 
-    * @param imageName
-    * @return
-    */
-   private Image getSkynetImages(String imageName) {
-      if (Activator.getInstance() != null) return Activator.getInstance().getImage(imageName);
-      return null;
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider#getColumnImage(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       if (xCol.equals(XViewerTestFactory.Run_Col)) {
-         return xViewerTest.isRun((IXViewerTestTask) element) ? getSkynetImages("chkbox_enabled.gif") : getSkynetImages("chkbox_disabled.gif");
+         return xViewerTest.isRun((IXViewerTestTask) element) ? XViewerLib.getImage("chkbox_enabled.gif") : XViewerLib.getImage("chkbox_disabled.gif");
       }
       if (xCol.equals(XViewerTestFactory.Name_Col) && xViewerTest.isScheduled((IXViewerTestTask) element)) {
-         return getSkynetImages("clock.gif");
+         return XViewerLib.getImage("clock.gif");
       }
       return null;
    }
