@@ -14,10 +14,8 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -44,7 +42,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class ViewWordChangeReportHandler extends AbstractHandler {
-   private final Map<Integer, ArtifactChange> artifactChangeMap = new HashMap<Integer, ArtifactChange>();
+   private List<ArtifactChange> artifactChanges = new LinkedList<ArtifactChange>();
 
    /*
     * (non-Javadoc)
@@ -53,12 +51,12 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) {
-      ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(artifactChangeMap.size());
-      ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(artifactChangeMap.size());
+      ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(artifactChanges.size());
+      ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(artifactChanges.size());
       VariableMap variableMap = new VariableMap();
       String fileName = null;
 
-      for (ArtifactChange artifactChange : artifactChangeMap.values()) {
+      for (ArtifactChange artifactChange : artifactChanges) {
          try {
             Artifact baseArtifact =
                   artifactChange.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
@@ -71,7 +69,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             newerArtifacts.add(newerArtifact);
 
             if (fileName == null) {
-               if (artifactChangeMap.values().size() == 1) {
+               if (artifactChanges.size() == 1) {
                   fileName = baseArtifact != null ? baseArtifact.getSafeName() : newerArtifact.getSafeName();
                } else {
                   fileName =
@@ -113,7 +111,6 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          return false;
       }
 
-      artifactChangeMap.clear();
       List<Artifact> artifacts = new LinkedList<Artifact>();
       boolean isEnabled = false;
 
@@ -123,12 +120,10 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-            List<ArtifactChange> artifactChanges =
-                  Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+            artifactChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
 
             for (ArtifactChange artifactChange : artifactChanges) {
                artifacts.add(artifactChange.getArtifact());
-               artifactChangeMap.put(artifactChange.getArtifact().getArtId(), artifactChange);
             }
             isEnabled = AccessControlManager.getInstance().checkObjectListPermission(artifacts, PermissionEnum.READ);
          }
