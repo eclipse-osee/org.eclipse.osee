@@ -48,8 +48,8 @@ public class DerbyDbServer {
             OseeLog.log(Activator.class, Level.INFO,
                   "Please try to increase the amount of time to keep trying to connect to the Server.");
          }
-      } catch (Exception e) {
-         OseeLog.log(Activator.class, Level.SEVERE, e.getMessage(), e);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex.getMessage(), ex);
       }
    }
 
