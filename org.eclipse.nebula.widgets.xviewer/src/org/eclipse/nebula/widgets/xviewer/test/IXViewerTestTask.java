@@ -5,6 +5,7 @@
  */
 package org.eclipse.nebula.widgets.xviewer.test;
 
+import java.util.Date;
 
 /**
  * @author Donald G. Dunne
@@ -31,4 +32,8 @@ public interface IXViewerTestTask {
    public RunDb getRunDb();
 
    public String getCategory();
+
+   public Date getLastRunDate();
+
+   public String getLastRunDateStr();
 }

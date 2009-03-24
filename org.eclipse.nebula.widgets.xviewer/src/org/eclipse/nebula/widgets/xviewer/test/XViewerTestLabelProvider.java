@@ -45,6 +45,7 @@ public class XViewerTestLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(XViewerTestFactory.Description)) return task.getDescription();
       if (xCol.equals(XViewerTestFactory.Category)) return task.getCategory();
       if (xCol.equals(XViewerTestFactory.Notification)) return task.getEmailAddress();
+      if (xCol.equals(XViewerTestFactory.Last_Run_Date)) return task.getLastRunDateStr();
       return "unhandled column";
    }
 
@@ -94,7 +95,7 @@ public class XViewerTestLabelProvider extends XViewerLabelProvider {
     */
    @Override
    public Color getBackground(Object element, int columnIndex) {
-      return null;
+      return super.getBackground(element, columnIndex);
    }
 
 }

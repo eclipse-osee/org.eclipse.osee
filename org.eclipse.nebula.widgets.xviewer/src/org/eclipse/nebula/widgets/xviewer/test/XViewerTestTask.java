@@ -5,6 +5,9 @@
  */
 package org.eclipse.nebula.widgets.xviewer.test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author Donald G. Dunne
  */
@@ -17,13 +20,19 @@ public class XViewerTestTask implements IXViewerTestTask {
    private final String description;
    private final String category;
    private final String emailAddress;
+   private final Date lastRunDate;
 
    /**
     * 
     */
    public XViewerTestTask(RunDb runDb, TaskType taskType, String id, String startTime, String description, String category, String emailAddress) {
+      this(runDb, taskType, new Date(), id, startTime, description, category, emailAddress);
+   }
+
+   public XViewerTestTask(RunDb runDb, TaskType taskType, Date lastRunDate, String id, String startTime, String description, String category, String emailAddress) {
       this.runDb = runDb;
       this.taskType = taskType;
+      this.lastRunDate = lastRunDate;
       this.id = id;
       this.startTime = startTime;
       this.description = description;
@@ -78,6 +87,21 @@ public class XViewerTestTask implements IXViewerTestTask {
     */
    public String getEmailAddress() {
       return emailAddress;
+   }
+
+   /**
+    * @return the lastRunDate
+    */
+   public Date getLastRunDate() {
+      return lastRunDate;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.test.IXViewerTestTask#getLastRunDateStr()
+    */
+   @Override
+   public String getLastRunDateStr() {
+      return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(getLastRunDate());
    }
 
 }
