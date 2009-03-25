@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +28,6 @@ public class GlobalMenuPermissions {
    private boolean writePermission;
    private boolean readPermission;
    private boolean fullAccess;
-   private boolean defaultBranchReadable;
    private String subjectFromLockedObjectName;
    private boolean hasArtifacts;
 
@@ -62,7 +61,6 @@ public class GlobalMenuPermissions {
       readPermission = true;
       fullAccess = true;
       isLocked = false;
-      defaultBranchReadable = true;
       accessToRemoveLock = true;
       Artifact combinationSubject = null;
 
@@ -72,8 +70,6 @@ public class GlobalMenuPermissions {
          readPermission &= AccessControlManager.checkObjectPermission(objectArtifact, PermissionEnum.READ);
          fullAccess &= AccessControlManager.checkObjectPermission(objectArtifact, PermissionEnum.FULLACCESS);
          isLocked |= AccessControlManager.hasLock(objectArtifact);
-         defaultBranchReadable =
-               AccessControlManager.checkObjectPermission(BranchManager.getDefaultBranch(), PermissionEnum.READ);
          accessToRemoveLock &= AccessControlManager.canUnlockObject(objectArtifact, UserManager.getUser());
 
          // acquire the name of the subject that has the lock
@@ -135,8 +131,8 @@ public class GlobalMenuPermissions {
    /**
     * @return the branchReadable
     */
-   public boolean isDefaultBranchReadable() {
-      return defaultBranchReadable;
+   public boolean isBranchReadable(Branch branch) throws OseeCoreException {
+      return AccessControlManager.checkObjectPermission(branch, PermissionEnum.READ);
    }
 
    /**

@@ -102,7 +102,7 @@ public class PublishRequirements extends AbstractBlam {
 
       ArrayList<Artifact> nonFolderChildren = new ArrayList<Artifact>();
       if (artifact.isOfType("Folder")) {
-         for (Artifact child : artifact.getChildren(true)) {
+         for (Artifact child : artifact.getChildren(publishAsDiff)) {
             if (child.isOfType("Folder")) {
                publish(monitor, child, options);
             } else {

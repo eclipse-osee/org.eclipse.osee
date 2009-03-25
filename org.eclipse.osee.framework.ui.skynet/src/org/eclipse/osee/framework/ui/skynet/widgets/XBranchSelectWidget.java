@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -210,7 +211,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       notifyListeners(event);
    }
 
-   public void setDefaultBranch(Branch branch) {
+   public void setBranch(Branch branch) {
       defaultBranch = branch;
    }
 
@@ -228,4 +229,9 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       }
    }
 
+   public void setSelection(Branch branch) {
+      defaultBranch = branch;
+      selectComposite.setSelected(branch);
+   }
+   
 }

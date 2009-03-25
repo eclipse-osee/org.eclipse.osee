@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -50,6 +50,7 @@ public class RelationExplorerWindow {
    private final ArrayList<Artifact> validArtifacts;
    private final ArrayList<String> urls;
    private final ArrayList<String> names;
+   private Branch branch;
 
    // Private arrays for invalid drops
    private final ArrayList<String> invalidName;
@@ -95,6 +96,7 @@ public class RelationExplorerWindow {
    }
 
    public void addValid(Artifact artifact) {
+      this.branch = artifact.getBranch();
       this.validArtifacts.add(artifact);
       this.names.add(artifact.getDescriptiveName());
       if (artifact == null) needWindow = true;
@@ -219,7 +221,7 @@ public class RelationExplorerWindow {
       okButton.setLayoutData(data);
 
       // Populate Tables
-      relationTableViewer = new RelationTableViewer(validTable, invalidTable);
+      relationTableViewer = new RelationTableViewer(validTable, invalidTable, branch);
       for (int i = 0; i < validArtifacts.size(); i++)
          relationTableViewer.addValidItem(validArtifacts.get(i));
       for (int i = 0; i < invalidName.size(); i++)
@@ -280,7 +282,7 @@ public class RelationExplorerWindow {
             if (artifact == null) {
                if (descriptor != null) {
                   try {
-                     artifact = descriptor.makeNewArtifact(BranchManager.getDefaultBranch());
+                     artifact = descriptor.makeNewArtifact(branch);
                      artifact.setSoleAttributeValue("Name", model.getName());
                      artifact.setSoleAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
                      artifact.persistAttributes();

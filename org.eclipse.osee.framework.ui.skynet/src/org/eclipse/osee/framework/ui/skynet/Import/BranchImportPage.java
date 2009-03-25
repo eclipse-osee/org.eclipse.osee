@@ -90,7 +90,6 @@ public class BranchImportPage extends WizardDataTransferPage {
             }
          }
       }
-
       this.destinationBranch = selectedBranch;
    }
 
@@ -195,19 +194,14 @@ public class BranchImportPage extends WizardDataTransferPage {
       gridData.heightHint = 300;
       branchList.setLayoutData(gridData);
 
-      Branch defaultBranch;
-      if (destinationBranch == null) {
-         defaultBranch = BranchManager.getDefaultBranch();
-      } else {
-         defaultBranch = destinationBranch;
-      }
+      if (destinationBranch != null) {
 
       try {
          int defaultBranchIndex = 0;
          for (Branch branch : BranchManager.getNormalBranches()) {
             branchList.add(branch.getBranchName());
             branchList.setData(branch.getBranchName(), branch);
-            if (branch.equals(defaultBranch)) {
+            if (branch.equals(destinationBranch)) {
                branchList.select(defaultBranchIndex);
             } else {
                defaultBranchIndex++;
@@ -215,6 +209,7 @@ public class BranchImportPage extends WizardDataTransferPage {
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
       }
    }
 

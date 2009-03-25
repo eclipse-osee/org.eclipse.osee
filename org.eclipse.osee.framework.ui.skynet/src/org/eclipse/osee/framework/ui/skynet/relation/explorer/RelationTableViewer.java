@@ -25,7 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -63,10 +64,11 @@ public class RelationTableViewer {
     * @param validTable -
     * @param invalidTable -
     */
-   public RelationTableViewer(Table validTable, Table invalidTable) {
+   public RelationTableViewer(Table validTable, Table invalidTable, Branch branch) {
       try {
          fullDescriptorList =
-               new ArrayList<ArtifactType>(TypeValidityManager.getValidArtifactTypes(BranchManager.getDefaultBranch()));
+               new ArrayList<ArtifactType>(
+                     TypeValidityManager.getValidArtifactTypes(branch));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

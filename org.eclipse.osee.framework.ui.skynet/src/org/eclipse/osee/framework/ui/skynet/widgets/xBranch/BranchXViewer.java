@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import java.util.ArrayList;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -30,6 +33,14 @@ public class BranchXViewer extends XViewer {
 
    @Override
    public void handleDoubleClick() {
+      ArrayList<Branch> branches = xBranchViewer.getSelectedBranches();
+      if (branches != null && !branches.isEmpty()) {
+         for (Branch branch : branches) {
+            if (!branch.isSystemRootBranch()) {
+               ArtifactExplorer.exploreBranch(branch);
+            }
+         }
+      }
    }
 
    @Override
@@ -59,8 +70,8 @@ public class BranchXViewer extends XViewer {
    @Override
    public void dispose() {
       if(getLabelProvider() != null){
-         getLabelProvider().dispose();
-      }
+      getLabelProvider().dispose();
+   }
    }
 
    /**

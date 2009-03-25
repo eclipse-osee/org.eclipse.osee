@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -48,11 +48,13 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
    private final TreeViewer treeViewer;
    private final String viewId;
    private boolean isCtrlPressed = false;
+   private Branch branch;
 
-   public GroupExplorerDragAndDrop(TreeViewer treeViewer, String viewId) {
+   public GroupExplorerDragAndDrop(TreeViewer treeViewer, String viewId, Branch branch) {
       super(treeViewer.getTree(), viewId);
       this.treeViewer = treeViewer;
       this.viewId = viewId;
+      this.branch = branch;
       treeViewer.getTree().addKeyListener(new keySelectedListener());
    }
    private class keySelectedListener implements KeyListener {
@@ -109,7 +111,6 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
             return;
          }
       }
-
       Tree tree = treeViewer.getTree();
       TreeItem dragOverTreeItem = tree.getItem(treeViewer.getTree().toControl(event.x, event.y));
 
@@ -285,7 +286,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
          return;
       }
       try {
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getDefaultBranch());
+         SkynetTransaction transaction = new SkynetTransaction(branch);
 
          for (Artifact art : artsToRelate) {
             if (!dragOverExplorerItem.contains(art)) {
@@ -298,5 +299,9 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+   
+   public void setBranch(Branch branch) {
+      this.branch = branch;
    }
 }

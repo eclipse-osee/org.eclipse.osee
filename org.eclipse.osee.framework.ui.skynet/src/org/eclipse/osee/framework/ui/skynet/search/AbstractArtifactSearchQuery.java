@@ -26,7 +26,7 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
 
    public String getLabel() {
       return "Artifact Search";
-   }
+         }
 
    protected void setIsDoneRunning(boolean isDoneRunning) {
       this.doneRunning = isDoneRunning;
@@ -35,7 +35,11 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
    public abstract IStatus run(final IProgressMonitor pm);
 
    public String getResultLabel() {
-      return getCriteriaLabel() + " - " + (doneRunning ? (aResult.getMatchCount() + " matches") : "busy");
+      String branch = "";
+      if (aResult.getArtifactResults() != null && !aResult.getArtifactResults().isEmpty()) {
+         branch = " on Branch: \"" + aResult.getArtifactResults().get(0).getBranch().getBranchShortName() + "\"";
+      }
+      return getCriteriaLabel() + " - " + (doneRunning ? (aResult.getMatchCount() + " matches" + branch) : "busy");
    }
 
    public abstract String getCriteriaLabel();

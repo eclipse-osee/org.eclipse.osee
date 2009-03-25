@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,8 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -374,7 +371,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       });
-      item.setEnabled(artifact.getBranch().equals(BranchManager.getDefaultBranch()));
+      item.setEnabled(true);
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -447,7 +444,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             deleteAction.run();
          }
       });
-      item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchManager.getDefaultBranch()));
+      item.setEnabled(!artifact.isReadOnly());
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -507,7 +504,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       Text artifactInfoLabel = new Text(toolBarComposite, SWT.END);
       artifactInfoLabel.setEditable(false);
 
-      artifactInfoLabel.setText("Type: \"" + artifact.getArtifactTypeName() + "\"   HRID: " + artifact.getHumanReadableId());
+      artifactInfoLabel.setText("Branch: \"" + artifact.getBranch().getBranchShortName() + "\"   Type: \"" + artifact.getArtifactTypeName() + "\"   HRID: " + artifact.getHumanReadableId());
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;
@@ -517,20 +514,17 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       if (!attributeComposite.isDisposed()) {
          Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-               boolean areBranchesEqual = artifact.getBranch().equals(BranchManager.getDefaultBranch());
                boolean isEditAllowed = artifact.isReadOnly() != true;
 
                if (attributeComposite.getToolBar() == null || attributeComposite.getToolBar().isDisposed()) {
                   return;
                }
-               attributeComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
-               attributeComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(
-                     isEditAllowed && areBranchesEqual);
+               attributeComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(true);
+               attributeComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed);
                attributeComposite.getToolBar().update();
 
-               relationsComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
-               relationsComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(
-                     isEditAllowed && areBranchesEqual);
+               relationsComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(true);
+               relationsComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed);
                relationsComposite.getToolBar().update();
             }
          });
@@ -560,31 +554,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       }
    }
 
-   private void changeToArtifact(final Artifact artifact) {
-      if (artifact == null || artifact == null) {
-         closeEditor();
-         return;
-      }
-
-      // The events coming to this editor are based on guid, so it is important that this case is
-      // always true.
-      if (!artifact.getGuid().equals(artifact.getGuid())) throw new IllegalArgumentException(
-            "Can only change the editor to a different version of the Artifact being editted");
-
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-
-            ArtifactEditorInput input = new ArtifactEditorInput(artifact);
-            setInput(input);
-            setPartName(artifact.getDescriptiveName());
-            setTitleImage(artifact.getImage());
-
-            attributeComposite.refreshArtifact(artifact);
-            relationsComposite.refreshArtifact(artifact);
-         }
-      });
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.ui.part.EditorPart#setInput(org.eclipse.ui.IEditorInput)
     */
@@ -600,26 +569,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       if (branchModType == BranchEventType.Committed) {
-         try {
-            changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getDefaultBranch()));
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         if (artifact.getBranch().getBranchId() == branchId) {
             closeEditor();
-         }
-      }
-      if (branchModType == BranchEventType.DefaultBranchChanged) {
-         try {
-            if (artifact.getBranch().equals(BranchManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
-               try {
-                  changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getDefaultBranch()));
-               } catch (ArtifactDoesNotExist ex) {
-                  System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
-                  closeEditor();
-               }
-            }
-            checkEnabledTooltems();
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }

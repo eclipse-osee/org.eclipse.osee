@@ -57,7 +57,6 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
    }
 
    public static void addTo(IStatusLineManager manager) {
-      DefaultBranchContributionItem.addTo(manager);
       if (OseeAts.isAtsAdmin()) {
          AdminContributionItem.addTo(manager);
       }

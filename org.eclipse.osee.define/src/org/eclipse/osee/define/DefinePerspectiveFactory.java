@@ -42,6 +42,7 @@ public class DefinePerspectiveFactory implements IPerspectiveFactory {
 
       // Top left: Artifact Explorer
       IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, editorArea);
+      topLeft.addPlaceholder(ArtifactExplorer.VIEW_ID + ":*");
       topLeft.addView(ArtifactExplorer.VIEW_ID);
       topLeft.addView(DefineNavigateView.VIEW_ID);
 

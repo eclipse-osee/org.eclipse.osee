@@ -24,11 +24,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -56,7 +51,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class MassArtifactEditor extends AbstractArtifactEditor implements IDirtiableEditor, IBranchEventListener, IActionable {
+public class MassArtifactEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor";
    private int artifactsPageIndex;
    private Collection<? extends Artifact> artifacts = new HashSet<Artifact>();
@@ -193,7 +188,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListener(this);
       super.dispose();
 
       for (Artifact taskArt : artifacts)
@@ -270,7 +264,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-      OseeEventManager.addListener(this);
 
       setActivePage(artifactsPageIndex);
       try {
@@ -335,37 +328,4 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    public String getActionDescription() {
       return "";
    }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
-    */
-   @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      if (branchModType == BranchEventType.DefaultBranchChanged) {
-         final MassArtifactEditor editor = this;
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               if (artifacts.size() == 0) return;
-               Artifact artifact = artifacts.iterator().next();
-               try {
-                  if (artifact.getBranch() != BranchManager.getCommonBranch() && artifact.getBranch() != BranchManager.getDefaultBranch()) {
-                     AWorkbench.getActivePage().closeEditor(editor, false);
-                     return;
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
-            }
-         });
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-   }
-
 }

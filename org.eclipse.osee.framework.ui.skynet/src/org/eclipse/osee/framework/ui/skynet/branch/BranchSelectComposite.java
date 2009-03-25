@@ -16,10 +16,12 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -53,12 +55,13 @@ public class BranchSelectComposite extends Composite implements Listener {
 
    private void createControl(Composite parent) {
       parent.setLayout(new GridLayout(2, false));
-      parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       branchSelectTextWidget = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
       GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
       data.widthHint = SIZING_TEXT_FIELD_WIDTH;
       branchSelectTextWidget.setLayoutData(data);
+      branchSelectTextWidget.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
       branchSelectButton = new Button(parent, SWT.PUSH);
       branchSelectButton.setText("Select Branch...");

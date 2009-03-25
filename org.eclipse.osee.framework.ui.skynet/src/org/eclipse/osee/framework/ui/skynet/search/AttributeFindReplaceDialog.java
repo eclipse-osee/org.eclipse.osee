@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -62,13 +61,17 @@ public class AttributeFindReplaceDialog extends Dialog {
    private ComboViewer cmbAttributeDescriptors;
    private Text txtFindRegEx;
    private Text txtReplaceStr;
-
+   private Branch branch;
+   
    private List<Artifact> artifacts;
 
    public AttributeFindReplaceDialog(Shell parentShell, List<Artifact> artifacts) {
       super(parentShell);
 
       this.artifacts = artifacts;
+      if (artifacts != null && !artifacts.isEmpty()) {
+         this.branch = artifacts.get(0).getBranch();
+      }
       setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation() | SWT.RESIZE);
    }
 
@@ -96,7 +99,7 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void setInputs() {
       try {
-         cmbAttributeDescriptors.setInput(TypeValidityManager.getValidAttributeTypes(BranchManager.getDefaultBranch()).toArray(
+         cmbAttributeDescriptors.setInput(TypeValidityManager.getValidAttributeTypes(branch).toArray(
                AttributeType.EMPTY_ARRAY));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (OseeCoreException ex) {

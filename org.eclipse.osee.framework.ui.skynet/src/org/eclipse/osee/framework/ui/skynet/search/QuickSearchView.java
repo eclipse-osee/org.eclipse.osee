@@ -25,14 +25,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -40,6 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
@@ -58,7 +53,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class QuickSearchView extends ViewPart implements IActionable, Listener, IBranchEventListener {
+public class QuickSearchView extends ViewPart implements IActionable, Listener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.QuickSearchView";
 
    private static final String ENTRY_SEPARATOR = "##";
@@ -153,6 +148,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    }
 
    private Label branchLabel;
+   private XBranchSelectWidget branchSelect;
    private SearchComposite searchComposite;
    private IMemento memento;
 
@@ -239,15 +235,13 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       parent.setLayout(new GridLayout());
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      branchLabel = new Label(parent, SWT.NONE);
-      branchLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      branchSelect = new XBranchSelectWidget("");
+      branchSelect.setDisplayLabel(false);
+      branchSelect.createWidgets(parent, 2);
 
       OseeContributionItem.addTo(this, true);
 
       createActions();
-
-      OseeEventManager.addListener(this);
-      updateWidgetEnablements();
 
       Composite panel = new Composite(parent, SWT.NONE);
       GridLayout gL = new GridLayout();
@@ -268,6 +262,11 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
          searchComposite.setHelpContextForOption(option.asLabel(), option.getHelpContext());
          searchComposite.setToolTipForOption(option.asLabel(), option.getToolTip());
       }
+      
+      branchLabel = new Label(parent, SWT.NONE);
+      branchLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      branchLabel.setText("");
+      
    }
 
    private void createActions() {
@@ -283,25 +282,23 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       return "";
    }
 
-   private void updateWidgetEnablements() {
-      if (branchLabel != null && branchLabel.isDisposed() != true) {
-         branchLabel.setText("Searching on current default branch \"" + BranchManager.getDefaultBranch() + "\"");
-      }
-   }
-
    public void handleEvent(Event event) {
-      updateWidgetEnablements();
+      branchLabel.setText("");
+      if (branchSelect.getData() == null) {
+         branchLabel.setText("Error: Must Select a Branch");
+         throw new IllegalArgumentException("Must select a Branch");
+      }
       if (searchComposite != null) {
          if (searchComposite.isExecuteSearchEvent(event)) {
             NewSearchUI.activateSearchResultView();
             if (searchComposite.isOptionSelected(SearchOption.By_Id.asLabel())) {
                NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(),
-                     BranchManager.getDefaultBranch(),
+                     branchSelect.getData(),
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel())));
             } else {
                NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(
                      searchComposite.getQuery(),
-                     BranchManager.getDefaultBranch(),
+                     branchSelect.getData(),
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.Match_Word_Order.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.All_Match_Locations.asLabel()),
@@ -316,30 +313,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListener(this);
       super.dispose();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
-    */
-   @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      if (branchModType == BranchEventType.DefaultBranchChanged) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               updateWidgetEnablements();
-            }
-         });
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
    private final static class AttributeTypeFilterConfigHandler implements IOptionConfigurationHandler {

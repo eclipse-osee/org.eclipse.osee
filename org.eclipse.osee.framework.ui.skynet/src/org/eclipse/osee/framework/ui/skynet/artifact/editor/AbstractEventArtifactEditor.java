@@ -4,21 +4,19 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -84,29 +82,10 @@ public abstract class AbstractEventArtifactEditor extends FormEditor implements 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       if (branchModType == BranchEventType.Committed) {
-         try {
-            changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getDefaultBranch()));
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         if (artifact.getBranch().getBranchId() == branchId) {
             closeEditor();
          }
       }
-      if (branchModType == BranchEventType.DefaultBranchChanged) {
-         try {
-            if (artifact.getBranch().equals(BranchManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
-               try {
-                  changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getDefaultBranch()));
-               } catch (ArtifactDoesNotExist ex) {
-                  System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
-                  closeEditor();
-               }
-            }
-            checkEnabledTooltems();
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
-
    }
 
    /* (non-Javadoc)
@@ -207,8 +186,6 @@ public abstract class AbstractEventArtifactEditor extends FormEditor implements 
    protected abstract void abstractOnDirty();
 
    protected abstract void checkEnabledTooltems();
-
-   protected abstract void changeToArtifact(final Artifact artifact);
 
    protected abstract void refreshDirtyArtifact();
 

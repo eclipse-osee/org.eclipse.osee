@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.REMOVED_TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.logging.Level;
@@ -45,10 +46,15 @@ class DeleteBranchJob extends Job {
          "SELECT count(branch_id) as child_branches FROM " + BRANCH_TABLE + " WHERE " + BRANCH_TABLE.column("parent_branch_id") + "=?";
    private static final LocalAliasTable T1 = new LocalAliasTable(TRANSACTION_DETAIL_TABLE, "t1");
    private static final LocalAliasTable T2 = new LocalAliasTable(TRANSACTIONS_TABLE, "t2");
+   private static final LocalAliasTable T3 = new LocalAliasTable(REMOVED_TRANSACTIONS_TABLE, "t3");
    private static final String SEARCH_FOR_DELETABLE_GAMMAS =
-         " SELECT ?, gamma_id FROM " + T1 + ", " + T2 + " WHERE " + T1.column("branch_id") + " = ? AND " + T1.column("transaction_id") + " = " + T2.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> (SELECT MIN(transaction_id) FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id = ?) and NOT EXISTS (SELECT 'not_matter' FROM " + TRANSACTION_DETAIL_TABLE + ", " + TRANSACTIONS_TABLE + " WHERE " + T2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = " + TRANSACTIONS_TABLE.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")";
+      " SELECT ?, gamma_id FROM " + T1 + ", " + T2 + " WHERE " + T1.column("branch_id") + " = ? AND " + T1.column("transaction_id") + " = " + T2.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> (SELECT MIN(transaction_id) FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id = ?) and NOT EXISTS (SELECT 'not_matter' FROM " + TRANSACTION_DETAIL_TABLE + ", " + TRANSACTIONS_TABLE + " WHERE " + T2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = " + TRANSACTIONS_TABLE.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")";
    private static final String POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS =
          " INSERT INTO " + SkynetDatabase.BRANCH_DELETE_HELPER + "(branch_id, gamma_id) " + SEARCH_FOR_DELETABLE_GAMMAS;
+   private static final String SEARCH_FOR_REMOVED_DELETABLE_GAMMAS =
+         " SELECT ?, rem_gamma_id AS gamma_id FROM " + T1 + ", " + T3 + " WHERE " + T1.column("branch_id") + " = ? AND " + T1.column("transaction_id") + " = " + T3.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> (SELECT MIN(transaction_id) FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id = ?) and NOT EXISTS (SELECT 'not_matter' FROM " + TRANSACTION_DETAIL_TABLE + ", " + REMOVED_TRANSACTIONS_TABLE + " WHERE " + T3.column("rem_gamma_id") + " = " + REMOVED_TRANSACTIONS_TABLE.column("rem_gamma_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = " + REMOVED_TRANSACTIONS_TABLE.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")";
+   private static final String POPULATE_BRANCH_DELETE_HELPER_WITH_REMOVED_GAMMAS =
+         " INSERT INTO " + SkynetDatabase.BRANCH_DELETE_HELPER + "(branch_id, gamma_id) " + SEARCH_FOR_REMOVED_DELETABLE_GAMMAS;
    private static final LocalAliasTable T2_BDH = new LocalAliasTable(SkynetDatabase.BRANCH_DELETE_HELPER, "t2");
    private static final String DELETE_GAMMAS_RIGHT_HAND_SIDE =
          " where exists ( select 'x' from " + T2_BDH + " where t2.branch_id = ? and t2.gamma_id = ";
@@ -125,6 +131,15 @@ class DeleteBranchJob extends Job {
                // before inserting into delete table
                ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS, branch.getBranchId(),
                      branch.getBranchId(), branch.getBranchId());
+               monitor.worked(1);
+            }
+            chStmt.runPreparedQuery(SEARCH_FOR_REMOVED_DELETABLE_GAMMAS, branch.getBranchId(), branch.getBranchId(),
+                  branch.getBranchId());
+
+            if (chStmt.next()) {// checking to see if there are any gammas to delete
+               // before inserting into delete table
+               ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_REMOVED_GAMMAS,
+                     branch.getBranchId(), branch.getBranchId(), branch.getBranchId());
                monitor.worked(1);
             }
             deleteAttributeVersions();

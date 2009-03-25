@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -271,17 +270,11 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       gridData.heightHint = 300;
       typeList.setLayoutData(gridData);
 
-      Branch defaultBranch;
-      if (destinationArtifact == null) {
-         defaultBranch = BranchManager.getDefaultBranch();
-      } else {
-         defaultBranch = destinationArtifact.getBranch();
-      }
-
-      populateTypeList(defaultBranch);
+      populateTypeList(destinationArtifact != null ? destinationArtifact.getBranch() : null);
       // Start out with an item selected
       typeList.setSelection(0);
 
+      final ArtifactImportPage page = this;
       branchSelectComposite.addListener(new Listener() {
          /* (non-Javadoc)
           * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
@@ -289,12 +282,25 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          @Override
          public void handleEvent(Event event) {
             populateTypeList(branchSelectComposite.getSelectedBranch());
+            page.handleEvent(event);
          }
       });
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()
+    */
+   @Override
+   public boolean canFlipToNextPage() {
+      return super.canFlipToNextPage() && branchSelectComposite.getSelectedBranch() != null;
+   }
+
    private void populateTypeList(Branch branch) {
-      if (branch == null) return;
+      if (branch == null) {
+         typeList.removeAll();
+         typeList.add("Select a Branch to Populate List");
+         return;
+      }
       try {
          String[] selection = typeList.getSelection();
          typeList.removeAll();

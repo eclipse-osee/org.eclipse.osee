@@ -763,7 +763,9 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                 */
                @Override
                public void run() {
-                  treeViewer.refresh();
+                  if (!treeViewer.getControl().isDisposed()) {
+                     treeViewer.refresh();
+                  }
                }
             });
          }
@@ -784,7 +786,9 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
              */
             @Override
             public void run() {
-               treeViewer.refresh();
+               if (!treeViewer.getControl().isDisposed()) {
+                  treeViewer.refresh();
+               }
             }
          });
       }

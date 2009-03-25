@@ -56,7 +56,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
       this.entryChanged = false;
       this.listeners = Collections.synchronizedSet(new HashSet<Listener>());
-      this.currentBranch = BranchManager.getDefaultBranch();
+      this.currentBranch = null;
       createControl(this);
    }
 
@@ -70,7 +70,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
 
    private void createControl(Composite parent) {
       parent.setLayout(new GridLayout(2, false));
-      parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      parent.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
       branchSelectCombo = new Combo(parent, SWT.BORDER | SWT.READ_ONLY);
       GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);

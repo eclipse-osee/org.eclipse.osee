@@ -75,6 +75,11 @@ public class ArtifactListDialog extends ListDialog {
    public void setArtifacts(Collection<? extends Artifact> artifacts) {
       setInput(artifacts);
    }
+   
+   public void updateArtifacts(Collection<? extends Artifact> artifacts) {
+      getTableViewer().setInput(artifacts);
+      getTableViewer().refresh();
+   }
 
    @Override
    protected void okPressed() {

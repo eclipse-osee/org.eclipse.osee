@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,7 +24,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -51,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -82,7 +82,6 @@ import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
@@ -95,6 +94,7 @@ import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
@@ -121,6 +121,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -129,6 +130,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -140,10 +142,11 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, IAccessControlEventListener, IRelationModifiedEventListener, IArtifactModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IActionable, ISelectionProvider {
+public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, IAccessControlEventListener, IRelationModifiedEventListener, IArtifactModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IActionable, ISelectionProvider, IBranchProvider {
    private static final Image ACCESS_DENIED_IMAGE = SkynetGuiPlugin.getInstance().getImage("lockkey.gif");
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
+   private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
    private static final ArtifactClipboard artifactClipboard = new ArtifactClipboard(VIEW_ID);
    private static final LinkedList<Tree> trees = new LinkedList<Tree>();
 
@@ -168,7 +171,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private Text myTextBeingRenamed;
    private Action newArtifactExplorer;
    private Action collapseAllAction;
-
+   private XBranchSelectWidget branchSelect;
+   private Branch branch;
    IGlobalMenuHelper globalMenuHelper;
 
    private Composite stackComposite;
@@ -183,14 +187,38 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    public static void explore(Collection<Artifact> artifacts, IWorkbenchPage page) {
-      ArtifactExplorer artifactExplorer;
+      Artifact sampleArtifact = null;
+      Branch inputBranch = null;
+      if (artifacts != null && !artifacts.isEmpty()) {
+         sampleArtifact = artifacts.iterator().next();
+         inputBranch = sampleArtifact.getBranch();
+      }
+      ArtifactExplorer artifactExplorer = findView(inputBranch, page);
+
+      artifactExplorer.setPartName("Artifacts");
+      artifactExplorer.setContentDescription("These artifact must be handled individually");
+      artifactExplorer.treeViewer.setInput(artifacts);
+      artifactExplorer.initializeSelectionBox();
+   }
+
+   private static ArtifactExplorer findView(Branch inputBranch, IWorkbenchPage page) {
+      for (IViewReference view : page.getViewReferences()) {
+         if (view.getId().equals(ArtifactExplorer.VIEW_ID)) {
+            if (view.getView(false) != null && inputBranch.equals(((ArtifactExplorer) view.getView(false)).branch)) {
+               try {
+                  return (ArtifactExplorer) page.showView(view.getId(), view.getSecondaryId(),
+                        IWorkbenchPage.VIEW_ACTIVATE);
+               } catch (Exception ex) {
+                  throw new RuntimeException(ex);
+               }
+            }
+         }
+      }
       try {
-         artifactExplorer =
-               (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
-                     IWorkbenchPage.VIEW_ACTIVATE);
-         artifactExplorer.setPartName("Artifacts");
-         artifactExplorer.setContentDescription("These artifact must be handled individually");
-         artifactExplorer.treeViewer.setInput(artifacts);
+         ArtifactExplorer explorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
+               IWorkbenchPage.VIEW_ACTIVATE);
+         explorer.explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(inputBranch));
+         return explorer;
       } catch (Exception ex) {
          throw new RuntimeException(ex);
       }
@@ -219,8 +247,11 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    private void checkBranchReadable() throws OseeCoreException {
+      if (treeViewer == null) {
+         return;
+      }
       Control control = branchUnreadableWarning;
-      if (false != (new GlobalMenuPermissions(globalMenuHelper)).isDefaultBranchReadable()) {
+      if (branch == null || new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
          control = treeViewer.getTree();
       }
       stackLayout.topControl = control;
@@ -245,6 +276,24 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
          parent.setLayout(new GridLayout(1, false));
          parent.setLayoutData(gridData);
+
+         branchSelect = new XBranchSelectWidget("");
+         branchSelect.setDisplayLabel(false);
+         branchSelect.setBranch(branch);
+         branchSelect.createWidgets(parent, 1);
+
+         branchSelect.addListener(new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               try {
+                  branch = branchSelect.getData();
+                  explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
+               } catch (Exception ex) {
+                  OseeLog.log(getClass(), Level.SEVERE, ex);
+               }
+            }
+
+         });
 
          stackComposite = new Composite(parent, SWT.NONE);
          stackLayout = new StackLayout();
@@ -277,7 +326,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          createUpAction();
          createNewArtifactExplorerAction();
 
-         artifactDecorator.addActions(getViewSite().getActionBars().getMenuManager());
+         artifactDecorator.addActions(getViewSite().getActionBars().getMenuManager(), this);
 
          getSite().setSelectionProvider(treeViewer);
          addExploreSelection();
@@ -292,7 +341,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          new ArtifactExplorerDragAndDrop(tree, VIEW_ID);
          parent.layout();
 
-         createSetDefaultBranchAction();
+         //         createSetDefaultBranchAction();
          OseeAts.addBugToViewToolbar(this, this, SkynetActivator.getInstance(), VIEW_ID, "Artifact Explorer");
 
          OseeContributionItem.addTo(this, false);
@@ -317,7 +366,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
     */
    public static void revealArtifact(Artifact artifact) {
       try {
-
          if (artifact.isDeleted()) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
                   "The artifact " + artifact.getDescriptiveName() + " has been deleted.");
@@ -330,12 +378,24 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                      "The artifact " + artifact.getDescriptiveName() + " does not have a parent (orphan).");
             } else {
                IWorkbenchPage page = AWorkbench.getActivePage();
-               ArtifactExplorer artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID);
+               ArtifactExplorer artifactExplorer = findView(artifact.getBranch(), page);
                artifactExplorer.treeViewer.setSelection(new StructuredSelection(artifact), true);
             }
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+   
+   /**
+    * Reveal an artifact in the viewer and select it.
+    * 
+    * @param artifact TODO
+    */
+   public static void exploreBranch(Branch branch) {
+      if (branch != null) {
+         IWorkbenchPage page = AWorkbench.getActivePage();
+         findView(branch, page);
       }
    }
 
@@ -405,26 +465,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       toolbarManager.add(upAction);
    }
 
-   private void createSetDefaultBranchAction() {
-      Action setDefaultBranch = new Action("Set Default Branch", Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch", false);
-            int result = branchSelection.open();
-            if (result == Window.OK) {
-               try {
-                  BranchManager.setDefaultBranch(branchSelection.getSelection());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         }
-      };
-      setDefaultBranch.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
-      IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
-      toolbarManager.add(setDefaultBranch);
-   }
-
    private void createNewArtifactExplorerAction() {
 
       newArtifactExplorer = new Action("New Artifact Explorer") {
@@ -436,7 +476,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                artifactExplorer =
                      (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
                            IWorkbenchPage.VIEW_ACTIVATE);
-               artifactExplorer.explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getDefaultBranch()));
+               artifactExplorer.explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
                throw new RuntimeException(ex);
@@ -485,7 +525,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       createMenuItem.setEnabled(true);
 
       try {
-         Collection<ArtifactType> data = TypeValidityManager.getValidArtifactTypes(BranchManager.getDefaultBranch());
+         Collection<ArtifactType> data = TypeValidityManager.getValidArtifactTypes(branchSelect.getData());
          List<ArtifactType> descriptors = new ArrayList<ArtifactType>(data);
          Collections.sort(descriptors);
          for (ArtifactType descriptor : descriptors) {
@@ -894,7 +934,21 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }
 
+      if (branch != null && branch != artifact.getBranch()) {
+         explore(Arrays.asList(artifact));
+         return;
+      }
+      try {
+         checkBranchReadable();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+      }
       exploreRoot = artifact;
+      branch = artifact.getBranch();
+      
+      
+      
+      initializeSelectionBox();
 
       if (treeViewer != null) {
          Object objects[] = treeViewer.getExpandedElements();
@@ -995,6 +1049,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       if (exploreRoot != null) {
          try {
             treeViewer.setInput(exploreRoot);
+            initializeSelectionBox();
          } catch (IllegalArgumentException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
@@ -1039,9 +1094,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       if (SkynetGuiPlugin.areOSEEServicesAvailable().isFalse()) return;
 
       try {
-         if (memento != null && memento.getString(ROOT_GUID) != null) {
+         if (memento != null && memento.getString(ROOT_GUID) != null && memento.getString(ROOT_BRANCH) != null) {
             Artifact previousArtifact =
-                  ArtifactQuery.getArtifactFromId(memento.getString(ROOT_GUID), BranchManager.getDefaultBranch());
+                  ArtifactQuery.getArtifactFromId(memento.getString(ROOT_GUID),
+                        BranchManager.getBranch(Integer.parseInt(memento.getString(ROOT_BRANCH))));
             explore(previousArtifact);
             return;
          }
@@ -1055,11 +1111,11 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      try {
-         explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getDefaultBranch()));
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      //      try {
+      //         explore();
+      //      } catch (Exception ex) {
+      //         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      //      }
    }
 
    @Override
@@ -1067,6 +1123,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       super.saveState(memento);
       if (exploreRoot != null) {
          memento.putString(ROOT_GUID, exploreRoot.getGuid());
+         memento.putString(ROOT_BRANCH, String.valueOf(exploreRoot.getBranch().getBranchId()));
       }
    }
 
@@ -1242,7 +1299,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
       try {
-         if (loadedArtifacts.isNotForDefaultBranch()) {
+         if (loadedArtifacts.isNotForBranch(branch)) {
             return;
          }
       } catch (Exception ex) {
@@ -1262,7 +1319,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
       try {
-         if (loadedArtifacts.isNotForDefaultBranch()) {
+         if (loadedArtifacts.isNotForBranch(branch)) {
             return;
          }
       } catch (Exception ex) {
@@ -1296,7 +1353,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != BranchManager.getDefaultBranch().getBranchId()) {
+      if (branch == null || transData.branchId != branch.getBranchId()) {
          return;
       }
       Displays.ensureInDisplayThread(new Runnable() {
@@ -1336,7 +1393,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, final RelationLink link, Branch branch, String relationType) {
       try {
-         if (!BranchManager.getDefaultBranch().equals(branch)) return;
+         if (this.branch == null || !this.branch.equals(branch)) return;
          if (link.getRelationType().equals(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)
@@ -1371,7 +1428,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void handleArtifactModifiedEvent(Sender sender, final ArtifactModType artifactModType, final Artifact artifact) {
       try {
-         if (!artifact.getBranch().equals(BranchManager.getDefaultBranch())) {
+         if (branch == null || !artifact.getBranch().equals(branch)) {
             return;
          }
       } catch (Exception ex) {
@@ -1408,35 +1465,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      if (branchModType == BranchEventType.DefaultBranchChanged) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            @Override
-            public void run() {
-               try {
-                  Branch defaultBranch = BranchManager.getDefaultBranch();
-                  Artifact candidateRoot = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(defaultBranch);
-
-                  if (exploreRoot != null) {
-                     try {
-                        candidateRoot = ArtifactQuery.getArtifactFromId(exploreRoot.getGuid(), defaultBranch);
-                     } catch (OseeCoreException ex) {
-                        // this will happen if the previous root does not exist on this branch, so the DefaultHierarchyRootArtifact will be used if we do nothing
-                     }
-                  }
-
-                  explore(candidateRoot);
-                  updateEnablementsEtAl();
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
-            }
-         });
-      }
-      if (branchModType == BranchEventType.Committed) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
+      if (branchModType == BranchEventType.Committed && branch != null && branch.getBranchId() == branchId) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()
@@ -1448,7 +1478,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   if (object instanceof Artifact) {
                      Artifact artifact = (Artifact) object;
                      try {
-                        explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getDefaultBranch()));
+                        explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getBranch(branchId)));
                      } catch (CoreException ex) {
                         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                      }
@@ -1474,7 +1504,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
       try {
-         if (loadedArtifacts.isNotForDefaultBranch()) {
+         if (loadedArtifacts.isNotForBranch(branch)) {
             return;
          }
          if (accessControlEventType == AccessControlEventType.UserAuthenticated || accessControlEventType == AccessControlEventType.ArtifactsUnlocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
@@ -1499,6 +1529,29 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void rebuildMenu() {
       setupPopupMenu();
+   }
+
+   public void setBranch(Branch branch) {
+      this.branch = branch;
+   }
+
+   public void initializeSelectionBox() {
+      if (branch != null && branchSelect != null && !branch.equals(branchSelect.getData())) {
+         branchSelect.setSelection(branch);
+         try {
+            checkBranchReadable();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+         }
+      }
+   }
+
+   public void refreshWidgets() {
+
+   }
+   
+   public Branch getBranch() {
+      return branch;
    }
 
 }

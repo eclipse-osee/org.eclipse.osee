@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -45,6 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -53,6 +55,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -68,6 +71,9 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    private GroupExplorerItem rootItem;
    private Collection<GroupExplorerItem> selected;
    private Object[] expanded = new Object[] {};
+   private XBranchSelectWidget branchSelect;
+   private Branch branch;
+   private GroupExplorerDragAndDrop groupExpDnd;
 
    public GroupExplorer() {
    }
@@ -94,6 +100,26 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
 
       parent.setLayout(gridLayout);
       parent.setLayoutData(gridData);
+      
+      branchSelect = new XBranchSelectWidget("");
+      branchSelect.setDisplayLabel(false);
+      branch = BranchManager.getLastBranch();
+      branchSelect.setBranch(branch);
+      branchSelect.createWidgets(parent, 1);
+
+      branchSelect.addListener(new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            try {
+               branch = branchSelect.getData();
+               refresh();
+               groupExpDnd.setBranch(branch);
+            } catch (Exception ex) {
+               OseeLog.log(getClass(), Level.SEVERE, ex);
+            }
+         }
+
+      });
 
       treeViewer = new GroupTreeViewer(this, parent);
       treeViewer.setContentProvider(new GroupContentProvider(this));
@@ -115,7 +141,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
 
       OseeEventManager.addListener(this);
 
-      new GroupExplorerDragAndDrop(treeViewer, VIEW_ID);
+      groupExpDnd = new GroupExplorerDragAndDrop(treeViewer, VIEW_ID, branch);
 
       getSite().setSelectionProvider(treeViewer);
       parent.layout();
@@ -210,7 +236,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
                   MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            UniversalGroup.addGroup(ed.getEntry(), BranchManager.getDefaultBranch());
+            UniversalGroup.addGroup(ed.getEntry(), branch);
             treeViewer.refresh();
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -227,7 +253,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove From Group",
             "Remove From Group - (Artifacts will not be deleted)\n\nAre you sure?")) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getDefaultBranch());
+            SkynetTransaction transaction = new SkynetTransaction(branch);
             for (GroupExplorerItem item : items) {
                item.getArtifact().deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP,
                      item.getParentItem().getArtifact());
@@ -252,7 +278,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Groups",
             "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getDefaultBranch());
+            SkynetTransaction transaction = new SkynetTransaction(branch);
             for (GroupExplorerItem item : items) {
                item.getArtifact().delete(transaction);
             }
@@ -353,7 +379,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
 
       Artifact topArt = null;
       try {
-         topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchManager.getDefaultBranch());
+         topArt = UniversalGroup.getTopUniversalGroupArtifact(branch);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -416,7 +442,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (rootArt != null && transData.branchId != rootArt.getBranch().getBranchId()) return;
       try {
-         Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchManager.getDefaultBranch());
+         Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(branch);
          if (topArt != null) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override

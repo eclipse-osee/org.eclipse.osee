@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.osee.framework.ui.skynet.search.page.AbstractArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.HyperLinkLabel;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.search.ui.IReplacePage;
 import org.eclipse.search.ui.ISearchPage;
 import org.eclipse.search.ui.ISearchPageContainer;
@@ -91,6 +92,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private Composite artifactTypeControls;
    private ListViewer artifactTypeList;
 
+   private XBranchSelectWidget branchSelect;
+
    private SearchFilter HRID_VALUE_FILTER;
    private SearchFilter ATTRIBUTE_VALUE_FILTER;
    private static int lastSearchTypeListSelected = 2; // Attribute
@@ -108,12 +111,11 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
          mainComposite.setLayout(new GridLayout());
 
-         Label label = new Label(mainComposite, SWT.NONE);
-         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-         Branch branch = getSelectedBranch();
-         String defaultBranch = branch != null ? branch.toString() : "None Found";
-         label.setText(String.format("Searching on current default branch: [%s]", defaultBranch));
-
+         branchSelect = new XBranchSelectWidget("Branch To Search");
+         branchSelect.setDisplayLabel(false);
+         branchSelect.setBranch(BranchManager.getLastBranch());
+         branchSelect.createWidgets(mainComposite, 2);
+         
          addFilterControls(mainComposite);
          addTableControls(mainComposite);
          addSearchScope(mainComposite);
@@ -133,7 +135,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    private Branch getSelectedBranch() {
-      return BranchManager.getDefaultBranch();
+      return branchSelect.getData();
    }
 
    /**

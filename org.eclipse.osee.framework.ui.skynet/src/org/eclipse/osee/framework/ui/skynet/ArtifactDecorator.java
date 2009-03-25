@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -37,6 +37,7 @@ public class ArtifactDecorator {
    private ShowAttributeAction attributesAction;
    private StructuredViewer viewer;
    private String preferenceKey;
+   private IBranchProvider branchProvider;
 
    public ArtifactDecorator(StructuredViewer viewer, String preferenceKey) {
       this.viewer = viewer;
@@ -81,7 +82,9 @@ public class ArtifactDecorator {
 
       if (attributesAction == null) {
          attributesAction = new ShowAttributeAction(viewer, preferenceKey);
-         attributesAction.setValidAttributeTypes(getValidAttributeTypes());
+         if (branchProvider != null && branchProvider.getBranch() != null){
+            attributesAction.setValidAttributeTypes(getValidAttributeTypes());
+         }
       }
 
       if (showArtIds == null && isAdmin()) {
@@ -100,7 +103,7 @@ public class ArtifactDecorator {
    private List<AttributeType> getValidAttributeTypes() {
       List<AttributeType> toReturn = new ArrayList<AttributeType>();
       try {
-         toReturn.addAll(SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey, BranchManager.getDefaultBranch()));
+         toReturn.addAll(SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey, branchProvider.getBranch()));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -120,7 +123,9 @@ public class ArtifactDecorator {
       return result;
    }
 
-   public void addActions(IMenuManager manager) {
+
+   public void addActions(IMenuManager manager, IBranchProvider provider) {
+      this.branchProvider = provider;
       checkActionsCreated();
 
       manager.add(showArtVersion);
