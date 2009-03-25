@@ -140,7 +140,7 @@ public class XViewer extends TreeViewer {
 
       Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayout(XViewerLib.getZeroMarginLayout(11, false));
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      comp.setLayoutData(new GridData(SWT.FILL, SWT.None, true, false));
 
       filterDataUI.createWidgets(comp);
       Label sep1 = new Label(comp, SWT.SEPARATOR);
@@ -153,11 +153,10 @@ public class XViewer extends TreeViewer {
       gd = new GridData(SWT.RIGHT, SWT.NONE, false, false);
       gd.heightHint = 16;
       sep2.setLayoutData(gd);
+
       statusLabel = new Label(comp, SWT.NONE);
       statusLabel.setText(" ");
-
-      gd = new GridData(SWT.CENTER, SWT.NONE, false, false);
-      statusLabel.setLayoutData(gd);
+      statusLabel.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
       getTree().addListener(SWT.MouseDown, new Listener() {
          public void handleEvent(Event event) {
