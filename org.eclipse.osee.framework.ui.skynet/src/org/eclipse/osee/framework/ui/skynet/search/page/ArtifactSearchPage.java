@@ -117,13 +117,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       }
    }
 
-   //   private static final String[] SHOW_IN_TARGETS = new String[] {IPageLayout.ID_RES_NAV};
-   //   private static final IShowInTargetList SHOW_IN_TARGET_LIST = new IShowInTargetList() {
-   //      public String[] getShowInTargetIds() {
-   //         return SHOW_IN_TARGETS;
-   //      }
-   //   };
-
    private static final String KEY_LIMIT = "org.eclipse.search.resultpage.limit"; //$NON-NLS-1$
    private static final int DEFAULT_ELEMENT_LIMIT = 1000;
 
@@ -250,6 +243,10 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       memento.putInteger(KEY_LIMIT, getElementLimit().intValue());
    }
 
+   @SuppressWarnings("unchecked")
+   public Object getAdapter(Class adapter) {
+      return null;
+   }
 
    public String getLabel() {
       String label = super.getLabel();
@@ -370,21 +367,19 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
       Set<Artifact> artifacts = new HashSet<Artifact>();
       for (Object object : objects) {
+         Artifact toAdd = null;
          if (object instanceof AttributeLineElement) {
-            Artifact toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
+            toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
             artifacts.add(toAdd);
-         } else {
-            int matchCount = resultInput.getMatchCount(object);
-            if (matchCount >= 1) {
-               if (object instanceof IAdaptable) {
-                  Artifact toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
-                  artifacts.add(toAdd);
+         } else if (object instanceof IAdaptable) {
+            toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
                } else if (object instanceof Match) {
-                  artifacts.add((Artifact) ((Match) object).getElement());
+            toAdd = (Artifact) ((Match) object).getElement();
                }
+         if (toAdd != null) {
+            artifacts.add(toAdd);
             }
          }
-      }
       return artifacts;
    }
    private class SearchDragAndDrop extends SkynetDragAndDrop {
@@ -488,6 +483,13 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
       }
    }
+   
+   public Branch getBranch() {
+      if (getInput() != null && getInput().getArtifactResults() != null && !getInput().getArtifactResults().isEmpty()) {
+         return getInput().getArtifactResults().get(0).getBranch();
+      }
+      return null;
+   }
 
    private final class ArtifactSelection implements IStructuredSelection {
       private final Collection<Artifact> collection;
@@ -515,6 +517,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       /* (non-Javadoc)
        * @see org.eclipse.jface.viewers.IStructuredSelection#iterator()
        */
+      @SuppressWarnings("unchecked")
       @Override
       public Iterator iterator() {
          return collection.iterator();
@@ -541,51 +544,10 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       /* (non-Javadoc)
        * @see org.eclipse.jface.viewers.IStructuredSelection#toList()
        */
+      @SuppressWarnings("unchecked")
       @Override
       public List toList() {
          return new ArrayList<Artifact>(collection);
       }
-
-   }
-
-   //   protected void showMatch(Match match, int offset, int length, boolean activate) throws PartInitException {
-   //      System.out.println("Show Match");
-   //      //      IFile file = (IFile) match.getElement();
-   //      //      IWorkbenchPage page = getSite().getPage();
-   //      //      if (offset >= 0 && length != 0) {
-   //      //         fEditorOpener.openAndSelect(page, file, offset, length, activate);
-   //      //      } else {
-   //      //         fEditorOpener.open(page, file, activate);
-   //      //      }
-   //   }
-
-   //      FileSearchQuery query = (FileSearchQuery) getInput().getQuery();
-   //      if (query.getSearchString().length() > 0) {
-   //         IStructuredSelection selection = (IStructuredSelection) getViewer().getSelection();
-   //         if (!selection.isEmpty()) {
-   //            ReplaceAction replaceSelection =
-   //                  new ReplaceAction(getSite().getShell(), (FileSearchResult) getInput(), selection.toArray(), true);
-   //            replaceSelection.setText(SearchMessages.ReplaceAction_label_selected);
-   //            mgr.appendToGroup(IContextMenuConstants.GROUP_REORGANIZE, replaceSelection);
-   //
-   //         }
-   //         ReplaceAction replaceAll = new ReplaceAction(getSite().getShell(), (FileSearchResult) getInput(), null, true);
-   //         replaceAll.setText(SearchMessages.ReplaceAction_label_all);
-   //         mgr.appendToGroup(IContextMenuConstants.GROUP_REORGANIZE, replaceAll);
-   //      }
-   
-   public Branch getBranch() {
-      if (getInput() != null && getInput().getArtifactResults() != null && !getInput().getArtifactResults().isEmpty()) {
-         return getInput().getArtifactResults().get(0).getBranch();
-      }
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
-   @Override
-   public Object getAdapter(Class adapter) {
-      return null;
    }
 }

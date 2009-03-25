@@ -96,10 +96,13 @@ public class RelationExplorerWindow {
    }
 
    public void addValid(Artifact artifact) {
-      this.branch = artifact.getBranch();
-      this.validArtifacts.add(artifact);
-      this.names.add(artifact.getDescriptiveName());
-      if (artifact == null) needWindow = true;
+      if (artifact == null) {
+         needWindow = true;
+      } else {
+         this.branch = artifact.getBranch();
+         this.validArtifacts.add(artifact);
+         this.names.add(artifact.getDescriptiveName());
+      }
    }
 
    public void addInvalid(String name, String reason) {

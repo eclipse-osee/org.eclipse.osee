@@ -11,13 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.REMOVED_TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -27,8 +20,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -43,29 +34,25 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
  */
 class DeleteBranchJob extends Job {
    private static final String COUNT_CHILD_BRANCHES =
-         "SELECT count(branch_id) as child_branches FROM " + BRANCH_TABLE + " WHERE " + BRANCH_TABLE.column("parent_branch_id") + "=?";
-   private static final LocalAliasTable T1 = new LocalAliasTable(TRANSACTION_DETAIL_TABLE, "t1");
-   private static final LocalAliasTable T2 = new LocalAliasTable(TRANSACTIONS_TABLE, "t2");
-   private static final LocalAliasTable T3 = new LocalAliasTable(REMOVED_TRANSACTIONS_TABLE, "t3");
+         "SELECT count(branch_id) as child_branches FROM OSEE_BRANCH WHERE parent_branch_id = ?";
    private static final String SEARCH_FOR_DELETABLE_GAMMAS =
-      " SELECT ?, gamma_id FROM " + T1 + ", " + T2 + " WHERE " + T1.column("branch_id") + " = ? AND " + T1.column("transaction_id") + " = " + T2.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> (SELECT MIN(transaction_id) FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id = ?) and NOT EXISTS (SELECT 'not_matter' FROM " + TRANSACTION_DETAIL_TABLE + ", " + TRANSACTIONS_TABLE + " WHERE " + T2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = " + TRANSACTIONS_TABLE.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")";
+         " SELECT ?, gamma_id FROM OSEE_TX_DETAILS det1, OSEE_TXS txs1 WHERE det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND det1.transaction_id <> (SELECT MIN(transaction_id) FROM OSEE_TX_DETAILS WHERE branch_id = ?) and NOT EXISTS (SELECT 'not_matter' FROM OSEE_TX_DETAILS det2, OSEE_TXS txs2 WHERE txs1.gamma_id = txs2.gamma_id AND det2.transaction_id = txs2.transaction_id AND det1.transaction_id <> det2.transaction_id)";
    private static final String POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS =
-         " INSERT INTO " + SkynetDatabase.BRANCH_DELETE_HELPER + "(branch_id, gamma_id) " + SEARCH_FOR_DELETABLE_GAMMAS;
+         " INSERT INTO OSEE_BRANCH_DELETE_HELPER (branch_id, gamma_id) " + SEARCH_FOR_DELETABLE_GAMMAS;
    private static final String SEARCH_FOR_REMOVED_DELETABLE_GAMMAS =
-         " SELECT ?, rem_gamma_id AS gamma_id FROM " + T1 + ", " + T3 + " WHERE " + T1.column("branch_id") + " = ? AND " + T1.column("transaction_id") + " = " + T3.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> (SELECT MIN(transaction_id) FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id = ?) and NOT EXISTS (SELECT 'not_matter' FROM " + TRANSACTION_DETAIL_TABLE + ", " + REMOVED_TRANSACTIONS_TABLE + " WHERE " + T3.column("rem_gamma_id") + " = " + REMOVED_TRANSACTIONS_TABLE.column("rem_gamma_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = " + REMOVED_TRANSACTIONS_TABLE.column("transaction_id") + " AND " + T1.column("transaction_id") + " <> " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")";
+         " SELECT ?, rem_gamma_id AS gamma_id FROM OSEE_TX_DETAILS det1, OSEE_REMOVED_TXS txs1  WHERE det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND det1.transaction_id <> (SELECT MIN(transaction_id) FROM OSEE_TX_DETAILS WHERE branch_id = ?) and NOT EXISTS (SELECT 'not_matter' FROM OSEE_TX_DETAILS det2, OSEE_REMOVED_TXS txs2 WHERE txs1.rem_gamma_id = txs2.rem_gamma_id AND det2.transaction_id = txs2.transaction_id AND det1.transaction_id <> det2.transaction_id)";
    private static final String POPULATE_BRANCH_DELETE_HELPER_WITH_REMOVED_GAMMAS =
-         " INSERT INTO " + SkynetDatabase.BRANCH_DELETE_HELPER + "(branch_id, gamma_id) " + SEARCH_FOR_REMOVED_DELETABLE_GAMMAS;
-   private static final LocalAliasTable T2_BDH = new LocalAliasTable(SkynetDatabase.BRANCH_DELETE_HELPER, "t2");
-   private static final String DELETE_GAMMAS_RIGHT_HAND_SIDE =
-         " where exists ( select 'x' from " + T2_BDH + " where t2.branch_id = ? and t2.gamma_id = ";
+         " INSERT INTO OSEE_BRANCH_DELETE_HELPER (branch_id, gamma_id) " + SEARCH_FOR_REMOVED_DELETABLE_GAMMAS;
+    private static final String DELETE_GAMMAS_RIGHT_HAND_SIDE =
+         " where exists ( select 'x' from OSEE_BRANCH_DELETE_HELPER t2 where t2.branch_id = ? and t2.gamma_id = ";
    private static final String DELETE_ATTRIBUTE_VERSIONS =
-         "delete from " + ATTRIBUTE_VERSION_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + ")";
+         "delete from OSEE_ATTRIBUTE attr " + DELETE_GAMMAS_RIGHT_HAND_SIDE + "attr.gamma_id)";
    private static final String DELETE_RELATION_VERSIONS =
-         "delete from " + RELATION_LINK_VERSION_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + RELATION_LINK_VERSION_TABLE.column("gamma_id") + ")";
+         "delete from OSEE_RELATION_LINK rel " + DELETE_GAMMAS_RIGHT_HAND_SIDE + "rel.gamma_id)";
    private static final String DELETE_ARTIFACT_VERSIONS =
-         "delete from " + ARTIFACT_VERSION_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + ARTIFACT_VERSION_TABLE.column("gamma_id") + ")";
+         "delete from OSEE_ARTIFACT_VERSION art" + DELETE_GAMMAS_RIGHT_HAND_SIDE + "art.gamma_id)";
    private static final String DELETE_FROM_BRANCH_TABLE =
-         "DELETE FROM " + BRANCH_TABLE + " WHERE " + BRANCH_TABLE.column("branch_id") + " = ?";
+         "DELETE FROM OSEE_BRANCH WHERE branch_id = ?";
 
    private final Branch branch;
 

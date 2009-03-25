@@ -371,7 +371,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       });
-      item.setEnabled(true);
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 

@@ -54,6 +54,7 @@ public class RevertAction {
    private OseeConnection connection;
    private ConnectionHandlerStatement chStmt;
    private TransactionId transId;
+   private String objectReverted;
 
    public RevertAction(OseeConnection connection, ConnectionHandlerStatement chStmt, TransactionId transId){
       this.connection = connection;
@@ -62,18 +63,15 @@ public class RevertAction {
    }
    
    public void revertObject(long totalTime, int id, String objectReverted) throws OseeCoreException {
-      gammaIdsModifications.clear();
-      gammaIdsToInsert.clear();
-      gammaIdsBaseline.clear();
-      transactionIds.clear();
+      this.objectReverted = objectReverted;
       
-      processChStmt(objectReverted);
+      processChStmtSortGammas();
       
       
       if (!gammaIdsModifications.isEmpty()) {
-         updateTransactionTables(objectReverted);
+         updateTransactionTables();
          if (!gammaIdsBaseline.isEmpty()) {
-            setTxCurrentForRevertedObjects(objectReverted, gammaIdsBaseline);
+            setTxCurrentForRevertedObjects();
          }
       }
       if (DEBUG) {
@@ -87,16 +85,18 @@ public class RevertAction {
          chStmt = new ConnectionHandlerStatement(connection);
          chStmt.runPreparedQuery(String.format(REVERT_ARTIFACT_VERSION_SELECT,
                Collections.toString(",", transactionIds)));
-         processChStmt("Atrtribute");
-         updateTransactionTables("Attribute");
+         objectReverted = "Atrtribute";
+         processChStmtSortGammas();
+         updateTransactionTables();
          updateArtifactVersionTxCurrents(branchId, artId);
       }
    }
    
-   private void processChStmt(String objectReverted) throws OseeDataStoreException {
+   private void processChStmtSortGammas() throws OseeDataStoreException {
       gammaIdsModifications.clear();
       gammaIdsToInsert.clear();
       gammaIdsBaseline.clear();
+      transactionIds.clear();
       long time = System.currentTimeMillis();
       try {
          while (chStmt.next()) {
@@ -123,7 +123,7 @@ public class RevertAction {
       }
    }
 
-   private void updateTransactionTables(String objectReverted) throws OseeDataStoreException, OseeCoreException {
+   private void updateTransactionTables() throws OseeDataStoreException, OseeCoreException {
       long time = System.currentTimeMillis();
       ConnectionHandler.runPreparedUpdate(connection, UPDATE_DETAILS_TABLE, transId.getTransactionNumber());
       int count1 = ConnectionHandler.runBatchUpdate(connection, UPDATE_REVERT_TABLE, gammaIdsToInsert);
@@ -149,7 +149,7 @@ public class RevertAction {
    }
 
    
-   private void setTxCurrentForRevertedObjects(String objectReverted, List<Object[]> gammaIdsBaseline) throws OseeDataStoreException {
+   private void setTxCurrentForRevertedObjects() throws OseeDataStoreException {
       int count2;
       long time = System.currentTimeMillis();
       count2 = ConnectionHandler.runBatchUpdate(connection, SET_TX_CURRENT_REVERT, gammaIdsBaseline);
