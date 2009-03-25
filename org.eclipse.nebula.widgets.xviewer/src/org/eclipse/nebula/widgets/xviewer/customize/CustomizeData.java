@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.util.internal.OverlayUtil;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
@@ -45,10 +44,8 @@ public class CustomizeData {
 
    protected ColumnData columnData = new ColumnData();
    private final Map<String, Image> imageMap = new HashMap<String, Image>();
-   private boolean isWorkbench = false;
 
    public CustomizeData() {
-      isWorkbench = Platform.isRunning();
    }
 
    public boolean isTableDefaultCustData() {
@@ -69,7 +66,6 @@ public class CustomizeData {
    }
 
    public Image getImage(boolean isDefault) {
-      if (!isWorkbench) return null;
       if (name.equals(CustomizeManager.TABLE_DEFAULT_LABEL) || name.equals(CustomizeManager.CURRENT_LABEL)) {
          return XViewerLib.getImage("customize.gif");
       }
