@@ -147,9 +147,9 @@ public class SessionManager implements ISessionManager {
       @Override
       public void run() {
          if (firstTimeThrough) {
+            firstTimeThrough = false;
             if (SessionDataStore.isSessionTableAvailable()) {
                recoverSessions();
-               firstTimeThrough = false;
             }
          }
 
