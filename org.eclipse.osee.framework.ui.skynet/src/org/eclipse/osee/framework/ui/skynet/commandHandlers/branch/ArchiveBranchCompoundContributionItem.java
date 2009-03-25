@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.commands.Command;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -66,7 +67,8 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
                   Command command = commandService.getCommand(commandId);
                   CommandContributionItem contributionItem = null;
                   String label = selectedBranch.isArchived() ? "Unarchive" : "Archive";
-                  contributionItem = createCommand(label, selectedBranch, commandId);
+                  ImageDescriptor descriptor = selectedBranch.isArchived()? SkynetGuiPlugin.getInstance().getImageDescriptor("unarchive.gif") : SkynetGuiPlugin.getInstance().getImageDescriptor("archive.gif");
+                  contributionItem = createCommand(label, selectedBranch, commandId, descriptor);
                   
                   if (command != null && command.isEnabled()) {
                      contributionItems.add(contributionItem);
@@ -80,12 +82,12 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(String label, Branch branch, String commandId) throws OseeCoreException {
+   private CommandContributionItem createCommand(String label, Branch branch, String commandId, ImageDescriptor descriptor) throws OseeCoreException {
       CommandContributionItem contributionItem;
 
       contributionItem =
             new CommandContributionItem(new CommandContributionItemParameter(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP, null,
+                  PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP, descriptor,
                   null, null, label, null, null, SWT.NONE, null, false));
 
       return contributionItem;
