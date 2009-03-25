@@ -68,7 +68,7 @@ public class XChangeContentProvider implements ITreeContentProvider {
             }
          }
          
-         DefaultHierArtifactSorter sorter = new DefaultHierArtifactSorter();
+         DefaultHierSorter sorter = new DefaultHierSorter();
          
          for(Artifact artifact : sorter.sort(artifacts)){
             docOrderedChnages.add(artifactToChangeMap.get(artifact));

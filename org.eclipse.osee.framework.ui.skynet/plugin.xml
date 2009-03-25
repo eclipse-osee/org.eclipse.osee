@@ -1175,6 +1175,10 @@
         commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
         icon="images/docOrder.gif">
   </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches"
+        icon="images/archive.gif">
+  </image>
 	</extension>
  <extension
        id="DeleteArchivedBranches"

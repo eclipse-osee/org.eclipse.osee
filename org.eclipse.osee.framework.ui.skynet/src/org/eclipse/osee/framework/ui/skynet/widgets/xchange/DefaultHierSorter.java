@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 /**
  * @author Jeff C. Phillips
  */
-public class DefaultHierArtifactSorter {
+public class DefaultHierSorter {
    private Map<Artifact, Set<Artifact>> childrenMap;
    private ArrayList<Artifact> orderedList;
    private Set<Artifact> orginalList;
@@ -28,7 +28,7 @@ public class DefaultHierArtifactSorter {
       orginalList = new HashSet<Artifact>();
 
       for (Artifact artifact : artifacts) {
-         createChildTree(artifact);
+         createAncestorTree(artifact);
          orginalList.add(artifact);
       }
 
@@ -72,7 +72,7 @@ public class DefaultHierArtifactSorter {
       }
    }
 
-   private void createChildTree(Artifact child) throws OseeCoreException {
+   private void createAncestorTree(Artifact child) throws OseeCoreException {
       Artifact parent = child.getParent();
 
       while (parent != null) {
@@ -84,7 +84,7 @@ public class DefaultHierArtifactSorter {
          parent = child.getParent();
 
          if (parent != null) {
-            createChildTree(parent);
+            createAncestorTree(parent);
          }
       }
    }
