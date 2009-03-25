@@ -86,8 +86,9 @@ public class CustomizationDataSelectionDialog extends ListDialog {
       custTextLabel = new Label(comp, SWT.None);
       custTextLabel.setText("Enter New Customization Name");
 
-      custText = new Text(comp, SWT.None);
+      custText = new Text(comp, SWT.BORDER);
       custText.setFocus();
+      custText.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
       custText.addModifyListener(new ModifyListener() {
          /*
           * (non-Javadoc)
