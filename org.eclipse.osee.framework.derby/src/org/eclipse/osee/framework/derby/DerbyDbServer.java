@@ -42,7 +42,7 @@ public class DerbyDbServer {
          if (isConnectionAvailable()) {
             nwServer.printInfo();
             addShutdownHook();
-            stayAlive();
+            //            stayAlive();
          } else {
             OseeLog.log(Activator.class, Level.INFO, "Exiting, since unable to connect to Derby Network Server.");
             OseeLog.log(Activator.class, Level.INFO,
