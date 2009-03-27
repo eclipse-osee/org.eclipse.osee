@@ -82,7 +82,6 @@ public class NavigateView extends ViewPart implements IActionable {
    @Override
    public void createPartControl(Composite parent) {
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
-      AtsBulkLoadCache.run(false);
 
       OseeContributionItem.addTo(this, false);
 
@@ -116,6 +115,7 @@ public class NavigateView extends ViewPart implements IActionable {
       gridData.heightHint = 15;
       label.setLayoutData(gridData);
 
+      AtsBulkLoadCache.run(false);
    }
 
    public void createSearchInputPart(Composite parent) {
