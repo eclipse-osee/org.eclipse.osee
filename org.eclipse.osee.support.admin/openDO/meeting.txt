@@ -30,7 +30,9 @@ DO-178x categories:
 
 Willie Fizpatrick
 
-Topcased to become and Eclippse project
+Topcased to become and Eclipse project
+
+http://www.slideshare.net/AdaCore/opendo-initial-concepts-and-idea
 
 
 need:  PSAC, SAS, DTP, 66 objectives,
@@ -68,3 +70,5 @@ inside test case use an annotation like "@Interesting 1" and "@InterestingEnd 1"
 
 
 fitnesse ochem@adacore.com
+
+AdaCore is a major sponsor of this event and Franco Gasperoni will be giving a talk entitled “Open-DO: A Call to Action for DO-178B and other Safety-Critical Software”
