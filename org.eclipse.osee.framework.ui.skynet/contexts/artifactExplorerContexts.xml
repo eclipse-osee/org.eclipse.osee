@@ -4,6 +4,6 @@
 		<topic href="reference/creating_new_artifact.html" label="Creating a new artifact"/>
 		<topic href="reference/deleting_artifacts.html" label="Deleting artifacts"/>
 				<topic href="reference/go_into.html" label="Rooting on an artifact"/>
-		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+		<topic label="Report a bug" href="../org.eclipse.osee.ats/reference/report_a_bug.html"/>
 	</context>
 </contexts>

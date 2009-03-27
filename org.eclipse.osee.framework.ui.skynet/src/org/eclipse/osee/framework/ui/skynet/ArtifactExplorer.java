@@ -341,7 +341,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          new ArtifactExplorerDragAndDrop(tree, VIEW_ID);
          parent.layout();
 
-         //         createSetDefaultBranchAction();
          OseeAts.addBugToViewToolbar(this, this, SkynetActivator.getInstance(), VIEW_ID, "Artifact Explorer");
 
          OseeContributionItem.addTo(this, false);
@@ -1111,11 +1110,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      //      try {
-      //         explore();
-      //      } catch (Exception ex) {
-      //         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      //      }
    }
 
    @Override
