@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -49,5 +51,9 @@ public class DeleteArchivedBranches extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Permantly purges all branches that are archived";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

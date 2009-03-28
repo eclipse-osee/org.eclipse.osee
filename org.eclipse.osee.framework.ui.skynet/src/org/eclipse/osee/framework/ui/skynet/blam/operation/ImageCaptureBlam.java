@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -93,5 +95,9 @@ public class ImageCaptureBlam extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Mouse Down on top left location, Mouse Up on bottom right.  Only works within bounds of workbench window.";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Util");
    }
 }

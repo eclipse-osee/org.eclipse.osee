@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -63,5 +65,9 @@ public class DatastoreStatistics extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Reports statistics about the datastore including artifact counts by type.";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin.Health");
    }
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -90,5 +92,9 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /></xWidgets>";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

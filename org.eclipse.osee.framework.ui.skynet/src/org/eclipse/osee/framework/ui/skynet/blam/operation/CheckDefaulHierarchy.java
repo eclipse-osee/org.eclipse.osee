@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
@@ -61,4 +63,7 @@ public class CheckDefaulHierarchy extends AbstractBlam {
       "<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" /></xWidgets>";
    }
 
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin.Health");
+   }
 }

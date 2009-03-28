@@ -241,4 +241,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          relLinksToGammas.add(new Pair<Long, Integer>(gammaId, transactionId));
       }
    }
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin.Health");
+   }
 }

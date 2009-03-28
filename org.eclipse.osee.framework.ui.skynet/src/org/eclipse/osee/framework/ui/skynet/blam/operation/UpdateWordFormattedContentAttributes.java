@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -50,5 +52,9 @@ public class UpdateWordFormattedContentAttributes extends AbstractBlam {
       monitor.setTaskName("UPDATE_ATTR_VAL_WORD_TEMP");
       ConnectionHandler.runPreparedUpdate(UPDATE_ATTR_VAL_WORD_TEMP);
       monitor.done();
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

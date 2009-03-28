@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -45,5 +47,9 @@ public class AddEveryoneGroupToBranches extends AbstractBlam {
    @Override
    public String getName() {
       return "Add Everone Group to Branches";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Define");
    }
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -79,4 +81,7 @@ public class XWidgetPopulateExample extends AbstractBlam {
       " selected value may come from another dynamic source such as a database query.";
    }
 
+   public Collection<String> getCategories() {
+      return Arrays.asList("Example");
+   }
 }

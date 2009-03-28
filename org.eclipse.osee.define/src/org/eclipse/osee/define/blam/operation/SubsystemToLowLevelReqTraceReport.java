@@ -12,6 +12,8 @@ package org.eclipse.osee.define.blam.operation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -237,5 +239,9 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" toolTip=\"Select a requirements branch.\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Lower Level Requirements\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Low Level Requirement Type\" defaultValue=\"Software Requirement\" /></xWidgets>";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Define.Publish");
    }
 }

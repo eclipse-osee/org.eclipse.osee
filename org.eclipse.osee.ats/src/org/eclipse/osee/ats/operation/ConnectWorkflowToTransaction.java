@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -76,5 +78,9 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return emptyXWidgetsXml;
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("ATS.Admin");
    }
 }

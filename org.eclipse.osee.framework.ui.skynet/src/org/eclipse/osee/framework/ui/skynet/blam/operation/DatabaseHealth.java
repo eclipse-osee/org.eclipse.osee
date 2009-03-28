@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -152,5 +154,9 @@ public class DatabaseHealth extends AbstractBlam {
       builder.append(checkboxName);
       builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       return builder.toString();
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin.Health");
    }
 }

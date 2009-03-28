@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -166,5 +168,9 @@ public class SortRelationsByBranch extends AbstractBlam {
       Object[] getUpdateData() {
          return new Object[] {new_order, gammaId};
       }
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

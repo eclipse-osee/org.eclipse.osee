@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -211,4 +213,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
       }
    }
 
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
+   }
 }

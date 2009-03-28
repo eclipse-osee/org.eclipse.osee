@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -61,5 +63,9 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return emptyXWidgetsXml;
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Util");
    }
 }

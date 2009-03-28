@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -154,5 +155,9 @@ public class CreateNewUser extends AbstractBlam {
       //
       widgetXml += "</xWidgets>";
       return widgetXml;
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

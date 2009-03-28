@@ -60,12 +60,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups.GroupType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
 import org.osgi.framework.Bundle;
 
@@ -199,11 +197,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new ImportActionsViaSpreadsheet(importItems);
          items.add(importItems);
 
-         XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations");
-         for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
-            new XNavigateItemBlam(blamOperationItems, blamOperation);
-         }
-         items.add(blamOperationItems);
+         BlamOperations.addBlamOperationsToNavigator(items);
 
          if (AtsPlugin.isAtsAdmin()) {
             XNavigateItem adminItems = new XNavigateItem(null, "Admin");

@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -94,5 +96,9 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
       buffer.append("<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"" + ARTIFACT_TYPE_NAME + "\" />");
       buffer.append("</xWidgets>");
       return buffer.toString();
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.operation;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -248,4 +249,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       return "Duplicate Workflow";
    }
 
+   public Collection<String> getCategories() {
+      return Arrays.asList("ATS");
+   }
 }

@@ -11,6 +11,8 @@
 package org.eclipse.osee.define.blam.operation;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -127,5 +129,9 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Subsystem Root Artifacts\" /></xWidgets>";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Define.Publish");
    }
 }

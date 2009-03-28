@@ -20,10 +20,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.osgi.framework.Bundle;
 
 /**
@@ -66,4 +69,52 @@ public class BlamOperations {
       return blamOperations;
    }
 
+   public static void addBlamOperationsToNavigator(List<XNavigateItem> items) throws OseeCoreException {
+      Map<String, XNavigateItem> nameToParent = new HashMap<String, XNavigateItem>();
+      XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations");
+      for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
+         // If categories not specified, add to top level
+         if (blamOperation.getCategories().size() == 0) {
+            new XNavigateItemBlam(blamOperationItems, blamOperation);
+         }
+         // Create categories
+         for (String category : blamOperation.getCategories()) {
+            createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
+         }
+         // Add this navigate item to categories
+         for (String category : blamOperation.getCategories()) {
+            new XNavigateItemBlam(nameToParent.get(category), blamOperation);
+         }
+      }
+      items.add(blamOperationItems);
+   }
+
+   private static void createCategories(String[] categoryElements, int index, XNavigateItem parentItem, Map<String, XNavigateItem> nameToParent) throws OseeCoreException {
+      String firstElement = categoryElements[index];
+      XNavigateItem thisCategoryItem = null;
+      for (XNavigateItem childItem : parentItem.getChildren()) {
+         if (childItem.getName().equals(firstElement)) {
+            thisCategoryItem = childItem;
+            break;
+         }
+      }
+      // Create new folder category
+      if (thisCategoryItem == null) {
+         // Add to parentItem
+         thisCategoryItem = new XNavigateItem(parentItem, firstElement);
+         String catName = "";
+         for (int x = 0; x <= index; x++) {
+            if (!catName.equals("")) {
+               catName += ".";
+            }
+            catName += categoryElements[x];
+         }
+         // Add to lookup map
+         nameToParent.put(catName, thisCategoryItem);
+      }
+      // Process children categories
+      if (categoryElements.length > index + 1) {
+         createCategories(categoryElements, index + 1, thisCategoryItem, nameToParent);
+      }
+   }
 }

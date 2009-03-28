@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -69,4 +70,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
       return "Performs ArtifactQuery search on all attribyte types for a selected branch and reports usage by \"current\" artifacts.";
    }
 
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
+   }
 }

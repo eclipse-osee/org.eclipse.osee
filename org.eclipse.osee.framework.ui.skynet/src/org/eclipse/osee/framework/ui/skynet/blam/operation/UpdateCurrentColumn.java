@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -526,5 +528,9 @@ public class UpdateCurrentColumn extends AbstractBlam {
          chStmt.close();
       }
       return totalRowCount;
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

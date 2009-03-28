@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -67,5 +69,9 @@ public class ParseWindowsDirectoryListing extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Directory Listing File\" defaultValue=\"c:\\UserData\\cte.txt\" /></xWidgets>";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Util");
    }
 }

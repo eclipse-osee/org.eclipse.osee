@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
@@ -49,6 +51,10 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" />" +
       //
       "<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 
 }

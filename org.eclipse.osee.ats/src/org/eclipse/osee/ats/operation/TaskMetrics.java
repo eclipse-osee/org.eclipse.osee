@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.operation;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -136,5 +138,9 @@ public class TaskMetrics extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" keyedBranch=\"common\" defaultValue=\"Lba B3 Test Team Workflow\" /></xWidgets>";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("ATS.Report");
    }
 }

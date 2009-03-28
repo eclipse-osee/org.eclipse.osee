@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.operation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -170,4 +171,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }
 
+   public Collection<String> getCategories() {
+      return Arrays.asList("ATS");
+   }
 }

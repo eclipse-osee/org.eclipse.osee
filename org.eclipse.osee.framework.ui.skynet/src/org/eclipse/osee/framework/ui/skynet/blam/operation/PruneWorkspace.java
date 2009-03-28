@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -62,5 +64,9 @@ public class PruneWorkspace extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Preserve List File\" /><XWidget xwidgetType=\"XText\" displayName=\"Workspace Path\" /><XWidget xwidgetType=\"XText\" displayName=\"File Path Pattern\" /></xWidgets>";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

@@ -12,6 +12,8 @@ package org.eclipse.osee.define.blam.operation;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -201,5 +203,9 @@ public class PublishRequirements extends AbstractBlam {
          artifacts.add(loopArtifact);
          addChildren(artifacts, loopArtifact);
       }
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Define.Publish");
    }
 }

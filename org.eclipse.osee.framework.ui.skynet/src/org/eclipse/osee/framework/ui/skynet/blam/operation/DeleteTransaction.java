@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -58,5 +60,9 @@ public class DeleteTransaction extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Force Delete\" />");
       builder.append("</xWidgets>");
       return builder.toString();
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

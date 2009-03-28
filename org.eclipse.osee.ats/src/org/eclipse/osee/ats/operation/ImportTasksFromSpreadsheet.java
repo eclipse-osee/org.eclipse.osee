@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.operation;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -153,4 +154,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       });
    }
 
+   public Collection<String> getCategories() {
+      return Arrays.asList("ATS");
+   }
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
@@ -141,5 +142,9 @@ public class ExportArtifacts extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Select parameters below and click the play button at the top right.";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Util");
    }
 }

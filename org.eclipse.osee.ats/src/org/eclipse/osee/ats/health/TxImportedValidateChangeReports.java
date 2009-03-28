@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.health;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -302,5 +304,9 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
             chStmt.close();
          }
       }
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("ATS.Admin");
    }
 }

@@ -11,6 +11,8 @@
 package org.eclipse.osee.define.blam.operation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -131,5 +133,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          }
       }
       return null;
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Define.Publish");
    }
 }

@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -105,5 +107,9 @@ public class UpdateFromParentBranch extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Child Branch Name\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Parent Branch Artifacts to update to Child Branch\" /></xWidgets>";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Define");
    }
 }

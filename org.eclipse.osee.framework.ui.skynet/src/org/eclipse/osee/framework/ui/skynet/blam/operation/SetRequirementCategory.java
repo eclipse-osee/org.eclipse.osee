@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -118,5 +120,9 @@ public class SetRequirementCategory extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Sets the Category attribute on software requirements.";
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Admin");
    }
 }

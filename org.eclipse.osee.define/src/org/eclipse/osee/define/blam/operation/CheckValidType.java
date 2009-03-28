@@ -11,7 +11,9 @@
 package org.eclipse.osee.define.blam.operation;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
@@ -73,5 +75,9 @@ public class CheckValidType extends AbstractBlam {
       } finally {
          chStmt.close();
       }
+   }
+
+   public Collection<String> getCategories() {
+      return Arrays.asList("Define");
    }
 }
