@@ -804,7 +804,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             "Attempting to set " + dataStrs.size() + " when min =" + minOccur);
       // If size to replace is same as size filled, need to reset existing attributes cause can't
       // add and then remove
-      if (dataStrs.size() == maxOccur && !storedNames.equals(dataStrs)) {
+      if (dataStrs.size() == maxOccur && storedNames.size() == dataStrs.size()) {
          String[] dataStrsArr = dataStrs.toArray(new String[dataStrs.size()]);
          int x = 0;
          for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
