@@ -6,12 +6,12 @@ Bundle-Version: 0.5.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.server.lookup.servlet.ServerLookupActivator
 Bundle-Vendor: Boeing
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: javax.servlet;version="2.4.0",
- javax.servlet.http;version="2.4.0",
+Import-Package: javax.servlet,
+ javax.servlet.http,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.server,
  org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
- org.osgi.framework;version="1.3.0",
- org.osgi.util.tracker;version="1.3.3"
+ org.osgi.framework,
+ org.osgi.util.tracker

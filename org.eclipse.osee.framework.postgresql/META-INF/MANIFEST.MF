@@ -12,4 +12,4 @@ Import-Package: org.eclipse.osee.framework.db.connection,
  org.osgi.framework,
  org.postgresql;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.equinox.ds;bundle-version="1.0.0"
+Require-Bundle: org.eclipse.equinox.ds
