@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -79,11 +80,15 @@ public class BlamOperations {
          }
          // Create categories
          for (String category : blamOperation.getCategories()) {
-            createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
+            if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || (category.contains("Admin") && AccessControlManager.isOseeAdmin())) {
+               createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
+            }
          }
          // Add this navigate item to categories
          for (String category : blamOperation.getCategories()) {
-            new XNavigateItemBlam(nameToParent.get(category), blamOperation);
+            if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || (category.contains("Admin") && AccessControlManager.isOseeAdmin())) {
+               new XNavigateItemBlam(nameToParent.get(category), blamOperation);
+            }
          }
       }
       items.add(blamOperationItems);
