@@ -115,7 +115,8 @@ public class OseeApplicationServer {
       if (matcher.find()) {
          String address = matcher.group(1);
          int port = Integer.valueOf(matcher.group(2));
-         return new OseeServerInfo("OVERRIDE", address, port, "OVERRIDE", new Timestamp(new Date().getTime()), true);
+         return new OseeServerInfo("OVERRIDE", address, port, new String[] {"OVERRIDE"}, new Timestamp(
+               new Date().getTime()), true);
       }
       return null;
    }
