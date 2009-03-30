@@ -66,7 +66,7 @@ public class PostgresqlDataType extends SqlDataType {
 
    @Override
    protected String getClobType() {
-      return "bytea";
+      return "text";
    }
 
    @Override
