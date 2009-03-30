@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -62,6 +61,7 @@ public class BranchSelectComposite extends Composite implements Listener {
       data.widthHint = SIZING_TEXT_FIELD_WIDTH;
       branchSelectTextWidget.setLayoutData(data);
       branchSelectTextWidget.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+      branchSelectTextWidget.setText(" -- Select A Branch -- ");
 
       branchSelectButton = new Button(parent, SWT.PUSH);
       branchSelectButton.setText("Select Branch...");
@@ -95,6 +95,8 @@ public class BranchSelectComposite extends Composite implements Listener {
       if (branch != null) {
          selectedBranch = branch;
          branchSelectTextWidget.setText(selectedBranch.getBranchName());
+      } else {
+         branchSelectTextWidget.setText(" -- Select A Branch -- ");
       }
    }
 
