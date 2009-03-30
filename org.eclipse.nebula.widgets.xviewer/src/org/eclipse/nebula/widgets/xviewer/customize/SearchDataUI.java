@@ -38,9 +38,11 @@ public class SearchDataUI {
    private boolean search = false;
    private Button regularExpression;
    private boolean regex;
+   private boolean searchRealTime;
 
-   public SearchDataUI(XViewer xViewer) {
+   public SearchDataUI(XViewer xViewer, boolean searchRealTime) {
       this.xViewer = xViewer;
+      this.searchRealTime = searchRealTime;
    }
 
    public void createWidgets(Composite bar) {
@@ -75,7 +77,7 @@ public class SearchDataUI {
           */
          public void keyReleased(KeyEvent e) {
             // System.out.println(e.keyCode);
-            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR || searchRealTime) {
                //               xViewer.getCustomizeMgr().setSearchText(searchText.getText());
                String newText = searchText.getText();
                if (newText.trim().length() == 0) {

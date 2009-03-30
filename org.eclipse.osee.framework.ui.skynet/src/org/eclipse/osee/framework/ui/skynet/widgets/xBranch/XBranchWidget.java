@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.Tree;
  * @author Jeff C. Phillips
  */
 public class XBranchWidget extends XWidget implements IActionable {
-
    private BranchXViewer branchXViewer;
    public final static String normalColor = "#EEEEEE";
    private static final String LOADING = "Loading ...";
@@ -58,12 +57,24 @@ public class XBranchWidget extends XWidget implements IActionable {
    XBranchLabelProvider xBranchLabelProvider;
    private FavoriteSorter sorter;
    private static final String VIEW_ID = "BrachView";
+   private boolean filterRealTime;
+   private boolean searchRealTime;
 
+   
+   public XBranchWidget(boolean filterRealTime, boolean searchRealTime) {
+      this();
+      
+      this.filterRealTime = filterRealTime;
+      this.searchRealTime = searchRealTime;
+   }
    /**
     * @param label
     */
    public XBranchWidget() {
       super(VIEW_ID);
+      
+      this.filterRealTime = false;
+      this.searchRealTime = false;
    }
    
    public void setBranchOptions(BranchOptions... options) {
@@ -115,7 +126,7 @@ public class XBranchWidget extends XWidget implements IActionable {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      branchXViewer = new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      branchXViewer = new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, filterRealTime, searchRealTime);
       branchXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       branchContentProvider = new XBranchContentProvider(branchXViewer);

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -45,17 +45,19 @@ public class AttributeCheckListDialog extends SelectionDialog {
    private CheckboxTreeViewer treeViewer;
    private final ArrayList<AttributeType> selectedAttributes;
    private String preferenceKey;
+   private Branch branch;
 
-   public AttributeCheckListDialog(Shell parent, String preferenceKey) {
-      this(parent, null, preferenceKey);
+   public AttributeCheckListDialog(Shell parent, String preferenceKey, Branch branch) {
+      this(parent, null, preferenceKey, branch);
    }
 
-   public AttributeCheckListDialog(Shell parent, Collection<AttributeType> attrTypes, String preferenceKey) {
+   public AttributeCheckListDialog(Shell parent, Collection<AttributeType> attrTypes, String preferenceKey, Branch branch) {
       super(parent);
       setTitle("Select Attributes");
       setMessage("Select Attributes");
       this.selectedAttributes = new ArrayList<AttributeType>();
       this.preferenceKey = preferenceKey;
+      this.branch = branch;
 
       if (attrTypes != null && !attrTypes.isEmpty()) {
          selectedAttributes.addAll(attrTypes);
@@ -107,7 +109,11 @@ public class AttributeCheckListDialog extends SelectionDialog {
          }
       });
       try {
-         treeViewer.setInput(TypeValidityManager.getValidAttributeTypes(BranchManager.getDefaultBranch()));
+         if (branch != null){
+            treeViewer.setInput(TypeValidityManager.getValidAttributeTypes(branch));
+         } else {
+            treeViewer.setInput(selectedAttributes);
+         }
          treeViewer.setCheckedElements(objs.toArray(new Object[objs.size()]));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

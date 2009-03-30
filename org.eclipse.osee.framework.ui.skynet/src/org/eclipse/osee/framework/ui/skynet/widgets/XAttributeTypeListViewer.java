@@ -29,7 +29,7 @@ public class XAttributeTypeListViewer extends XTypeListViewer {
    public XAttributeTypeListViewer(String keyedBranchName, String defaultValue) {
       super(NAME);
 
-      setContentProvider(new DefaultBranchContentProvider(new AttributeContentProvider()));
+      setContentProvider(new DefaultBranchContentProvider(new AttributeContentProvider(), resolveBranch(keyedBranchName)));
       ArrayList<Object> input = new ArrayList<Object>(1);
       input.add(resolveBranch(keyedBranchName));
 

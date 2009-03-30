@@ -33,6 +33,7 @@ public class DemoDbUtil {
 
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
    private static List<DemoCodeTeamWorkflowArtifact> codeArts;
+   private static Branch branch;
 
    public static List<DemoCodeTeamWorkflowArtifact> getSampleCodeWorkflows() throws Exception {
       if (codeArts == null) {
@@ -58,14 +59,11 @@ public class DemoDbUtil {
    }
 
    public static void setDefaultBranch(Branch branch) throws Exception {
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Setting default branch to \"" + branch + "\".");
-      BranchManager.setDefaultBranch(branch);
-      sleep(2000L);
-      Branch defaultBranch = BranchManager.getDefaultBranch();
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Current Default == \"" + defaultBranch + "\".");
-      if (!branch.equals(defaultBranch)) {
-         throw new IllegalStateException("Default Branch did not change on setDefaultBranch.");
-      }
+      DemoDbUtil.branch = branch;
+   }
+   
+   public static Branch getDefaultBranch(){
+      return branch;
    }
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
@@ -84,10 +82,10 @@ public class DemoDbUtil {
       OseeLog.log(
             OseeAtsConfigDemoPlugin.class,
             Level.INFO,
-            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + BranchManager.getDefaultBranch().getBranchName());
+            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getBranchName());
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactsFromTypeAndName(artifactType, "%" + artifactNameStr + "%",
-                  BranchManager.getDefaultBranch());
+                  branch);
 
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Found " + arts.size() + " Artifacts");
       return arts;
@@ -101,7 +99,7 @@ public class DemoDbUtil {
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,
             "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       return ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
-            BranchManager.getDefaultBranch());
+            branch);
    }
 
 }

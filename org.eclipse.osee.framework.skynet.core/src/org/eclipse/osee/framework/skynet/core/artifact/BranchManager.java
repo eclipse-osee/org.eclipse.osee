@@ -52,8 +52,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -557,20 +555,6 @@ public class BranchManager {
             BranchType.BASELINE);
    }
 
-   public static void setDefaultBranch(Branch branch) throws OseeCoreException {
-      if (branch == null) throw new OseeArgumentException("The branch argument can not be null");
-
-      if (branch != instance.defaultBranch.get()) {
-         instance.defaultBranch.set(branch);
-         UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, String.valueOf(branch.getBranchId()));
-         try {
-            OseeEventManager.kickBranchEvent(instance, BranchEventType.DefaultBranchChanged, branch.getBranchId());
-         } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-         }
-      }
-   }
-
    private static final String SELECT_MAPPED_ID =
          "SELECT mapped_id FROM osee_import_map oim, osee_import_index_map oiim WHERE oim.sequence_id = oiim.sequence_id AND oiim.sequence_id = oiim.sequence_id AND oim.sequence_name = 'SKYNET_BRANCH_ID_SEQ' AND oiim.original_id = ?";
    private final WindowLocal<Branch> defaultBranch = new WindowLocal<Branch>() {
@@ -646,12 +630,15 @@ public class BranchManager {
       return getCommonBranch();
    }
 
-   public static Branch getDefaultBranch() {
-      return instance.defaultBranch.get();
-   }
-
    public static Branch getLastBranch() {
       return instance.defaultBranch.get();
+   }
+   
+
+   public static void setLastBranch(Branch branch) {
+      if (branch != null){
+         instance.defaultBranch.set(branch);
+      }
    }
 
    /**

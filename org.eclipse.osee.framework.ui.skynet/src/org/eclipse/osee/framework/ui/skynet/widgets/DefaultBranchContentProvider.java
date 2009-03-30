@@ -12,6 +12,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
@@ -25,13 +29,15 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 public class DefaultBranchContentProvider implements ITreeContentProvider, IBranchEventListener {
    private final ITreeContentProvider provider;
    private Viewer viewer;
+   private Branch branch;
 
    /**
     * @param provider
     */
-   public DefaultBranchContentProvider(final ITreeContentProvider provider) {
+   public DefaultBranchContentProvider(final ITreeContentProvider provider, Branch branch) {
       if (provider == null) throw new IllegalArgumentException("provider can not be null");
 
+      this.branch = branch;
       this.provider = provider;
       this.viewer = null;
 
@@ -58,19 +64,24 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
    }
 
    public Object[] getElements(Object inputElement) {
-      return provider.getElements(BranchManager.getDefaultBranch());
+      return provider.getElements(branch);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
       if (branchModType == BranchEventType.DefaultBranchChanged) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
                if (viewer != null) {
+                  try {
+                     branch = BranchManager.getBranch(branchId);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(DefaultBranchContentProvider.class,OseeLevel.SEVERE, ex);
+                  } 
                   viewer.refresh();
                }
             }

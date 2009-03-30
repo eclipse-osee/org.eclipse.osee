@@ -28,12 +28,13 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Donald G. Dunne
  */
 public class DemoTestUtil {
-
+   private static Branch branch;
+   
    public static Result isDbPopulatedWithDemoData() throws Exception {
-      setDefaultBranch(BranchManager.getKeyedBranch("SAW_Bld_1"));
+      branch = BranchManager.getKeyedBranch("SAW_Bld_1");
 
       if (ArtifactQuery.getArtifactsFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, "%Robot%",
-            BranchManager.getDefaultBranch()).size() != 6) return new Result(
+            branch).size() != 6) return new Result(
             "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
       return Result.TrueResult;
    }
@@ -54,12 +55,7 @@ public class DemoTestUtil {
    }
 
    public static void setDefaultBranch(Branch branch) throws Exception {
-      BranchManager.setDefaultBranch(branch);
-      Thread.sleep(2000L);
-      Branch defaultBranch = BranchManager.getDefaultBranch();
-      if (!branch.equals(defaultBranch)) {
-         throw new IllegalStateException("Default Branch did not change on setDefaultBranch.");
-      }
+     DemoTestUtil.branch = branch;
    }
 
    public static void setUpTest() throws Exception {

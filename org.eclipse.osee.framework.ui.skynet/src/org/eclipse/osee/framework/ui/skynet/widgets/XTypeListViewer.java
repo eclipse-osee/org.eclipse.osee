@@ -38,6 +38,6 @@ public abstract class XTypeListViewer extends XListViewer {
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return BranchManager.getDefaultBranch();
+      return BranchManager.getLastBranch();
    }
 }

@@ -130,7 +130,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(otherItems);
 
          items.add(new SearchNavigateItem(null, new TaskSearchWorldSearchItem()));
-         items.add(new SearchNavigateItem(null, new GroupWorldSearchItem()));
+	         items.add(new SearchNavigateItem(null, new GroupWorldSearchItem(null)));
          items.add(new SearchNavigateItem(null, new TeamWorkflowSearchWorkflowSearchItem()));
          items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));
          items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search",

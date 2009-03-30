@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialogWithBranchSelect;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -61,12 +61,12 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      EntryDialog ed =
-            new EntryDialog(
+      EntryDialogWithBranchSelect ed =
+            new EntryDialogWithBranchSelect(
                   getName(),
-                  "Searching on current default branch \"" + BranchManager.getDefaultBranch().getBranchShortName() + "\"\n\nEnter Artifact Name (or string) to search (no wildcards)");
+                  "Enter Artifact Name (or string) to search (no wildcards)");
       if (ed.open() == 0) {
-         ActionToArtifactImpactJob job = new ActionToArtifactImpactJob(ed.getEntry());
+         ActionToArtifactImpactJob job = new ActionToArtifactImpactJob(ed.getEntry(), ed.getBranch());
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();
@@ -77,10 +77,12 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       private IProgressMonitor monitor;
       private final String artifactName;
       private final XResultData rd = new XResultData();
+      private final Branch branch;
 
-      public ActionToArtifactImpactJob(String artifactName) {
+      public ActionToArtifactImpactJob(String artifactName, Branch branch) {
          super("Searching \"" + artifactName + "\"...");
          this.artifactName = artifactName;
+         this.branch = branch;
       }
 
       @Override
@@ -98,7 +100,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
       private void getMatrixItems() throws OseeCoreException {
          final Collection<Artifact> srchArts =
-               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%", BranchManager.getDefaultBranch(), true);
+               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%", branch, true);
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.size() == 0) return;
          if (srchArts.size() > 1) {
@@ -121,7 +123,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             processArts.addAll(srchArts);
          }
          int x = 1;
-         rd.log("Artifact Impact to Action for artifact(s) on default branch \"" + BranchManager.getDefaultBranch().getBranchName() + "\"");
+         rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getBranchShortName() + "\"");
 
          HashCollection<Artifact, TransactionId> transactionMap = ChangeManager.getModifingTransactions(processArts);
          HashCollection<Artifact, Branch> branchMap = ChangeManager.getModifingBranches(processArts);

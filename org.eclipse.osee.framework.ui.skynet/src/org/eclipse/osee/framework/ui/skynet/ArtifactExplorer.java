@@ -215,8 +215,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          }
       }
       try {
-         ArtifactExplorer explorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
-               IWorkbenchPage.VIEW_ACTIVATE);
+         ArtifactExplorer explorer =
+               (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
+                     IWorkbenchPage.VIEW_ACTIVATE);
          explorer.explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(inputBranch));
          return explorer;
       } catch (Exception ex) {
@@ -385,7 +386,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
-   
+
    /**
     * Reveal an artifact in the viewer and select it.
     * 
@@ -944,9 +945,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
       exploreRoot = artifact;
       branch = artifact.getBranch();
-      
-      
-      
+
       initializeSelectionBox();
 
       if (treeViewer != null) {
@@ -1209,38 +1208,86 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          final Artifact parentArtifact = getSelectedArtifact(event);
 
          if (parentArtifact != null) {
-
-            if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType) && isValidForArtifactDrop(event) && MessageDialog.openQuestion(
-                  getViewSite().getShell(),
-                  "Confirm Move",
-                  "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getDescriptiveName() + "?")) {
-               ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-               final Artifact[] artifactsToBeRelated = artData.getArtifacts();
+            ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
+            final Artifact[] artifactsToBeRelated = artData.getArtifacts();
+            if (artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
+                  parentArtifact.getBranch())) {
                try {
-                  SkynetTransaction transaction = new SkynetTransaction(parentArtifact.getBranch());
-                  // Replace all of the parent relations
-                  for (Artifact artifact : artifactsToBeRelated) {
-                     artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
-                     artifact.persistAttributesAndRelations(transaction);
-                  }
-                  transaction.execute();
-               } catch (Exception ex) {
-                  OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+                  dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
                }
-            }
+            } else {
+               if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType) && isValidForArtifactDrop(event) && MessageDialog.openQuestion(
+                     getViewSite().getShell(),
+                     "Confirm Move",
+                     "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getDescriptiveName() + "?")) {
+                  try {
+                     SkynetTransaction transaction = new SkynetTransaction(parentArtifact.getBranch());
+                     // Replace all of the parent relations
+                     for (Artifact artifact : artifactsToBeRelated) {
+                        artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+                        artifact.persistAttributesAndRelations(transaction);
+                     }
+                     transaction.execute();
+                  } catch (Exception ex) {
+                     OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+                  }
+               }
 
-            else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-               Object object = FileTransfer.getInstance().nativeToJava(event.currentDataType);
-               if (object instanceof String[]) {
-                  String filename = ((String[]) object)[0];
+               else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+                  Object object = FileTransfer.getInstance().nativeToJava(event.currentDataType);
+                  if (object instanceof String[]) {
+                     String filename = ((String[]) object)[0];
 
-                  ArtifactImportWizard wizard = new ArtifactImportWizard();
-                  wizard.setImportResourceAndArtifactDestination(new File(filename), parentArtifact);
+                     ArtifactImportWizard wizard = new ArtifactImportWizard();
+                     wizard.setImportResourceAndArtifactDestination(new File(filename), parentArtifact);
 
-                  Wizards.initAndOpen(wizard, ArtifactExplorer.this);
+                     Wizards.initAndOpen(wizard, ArtifactExplorer.this);
+                  }
                }
             }
          }
+      }
+
+      /**
+       * @param parentArtifact
+       * @param artifactsToBeRelated
+       * @throws OseeCoreException 
+       */
+      private void dropArtifactIntoDifferentBranch(Artifact parentArtifact, Artifact[] artifactsToBeRelated) throws OseeCoreException {
+         //TODO need to lock this down if user doesn't have access to the parent Artifacts branch..
+         List<Artifact> descendents = parentArtifact.getDescendants();
+         List<Integer> artifactIds = new ArrayList<Integer>();
+         artifactIds.add(parentArtifact.getArtId());
+         for (Artifact artifact : descendents){
+            artifactIds.add(artifact.getArtId());
+         }
+         for (Artifact newArtifact : artifactsToBeRelated){
+            if (artifactIds.contains(newArtifact.getArtId())){
+               //update the artifact
+            } else if(artifactIsAlreadyOnTheBranch()){
+                  //move artifact and update
+            } else if(artifactsShareHierarchy()){
+               //Copy artifact onto branch as baseline.
+            } else {
+               //copy artifact onto branch as a modification.
+            }
+         }
+      }
+
+      /**
+       * @return
+       */
+      private boolean artifactsShareHierarchy() {
+         return false;
+      }
+
+      /**
+       * @return
+       */
+      private boolean artifactIsAlreadyOnTheBranch() {
+         return false;
       }
    }
 
@@ -1543,7 +1590,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    public void refreshWidgets() {
 
    }
-   
+
    public Branch getBranch() {
       return branch;
    }

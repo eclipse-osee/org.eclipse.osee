@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactDescriptorDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.widgets.Shell;
@@ -178,12 +179,12 @@ public class ArtifactDragDropSupport {
       int descriptorSelected = -1;
       ArtifactType descriptor = null;
       ArtifactDescriptorDialog dialog = null;
-
+      Branch branch = BranchSelectionDialog.getBranchFromUser();
       try {
-         artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, BranchManager.getDefaultBranch());
+         artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, branch);
       } catch (ArtifactDoesNotExist ex) {
          Collection<ArtifactType> descriptors =
-               TypeValidityManager.getArtifactTypesFromAttributeType("Content URL", BranchManager.getDefaultBranch());
+               TypeValidityManager.getArtifactTypesFromAttributeType("Content URL", branch);
          dialog =
                new ArtifactDescriptorDialog(
                      shell,
@@ -194,7 +195,7 @@ public class ArtifactDragDropSupport {
          descriptorSelected = dialog.open();
          if (descriptorSelected == 0) {
             descriptor = dialog.getEntry();
-            artifact = descriptor.makeNewArtifact(BranchManager.getDefaultBranch());
+            artifact = descriptor.makeNewArtifact(branch);
             artifact.setSoleAttributeValue("Content URL", location);
             artifact.setSoleAttributeValue("Name", new File(location).getName());
             artifact.persistAttributes();

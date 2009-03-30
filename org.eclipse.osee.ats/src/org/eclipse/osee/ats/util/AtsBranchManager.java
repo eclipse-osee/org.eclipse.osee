@@ -93,18 +93,6 @@ public class AtsBranchManager {
       this.smaMgr = smaMgr;
    }
 
-   public void setAsDefaultBranch() {
-      try {
-         if (!isWorkingBranch()) {
-            AWorkbench.popup("ERROR", "No Current Working Branch");
-            return;
-         }
-         BranchManager.setDefaultBranch(getWorkingBranch());
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
    public void showMergeManager() {
       try {
          if (!isWorkingBranch() && !isCommittedBranch()) {

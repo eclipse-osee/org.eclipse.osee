@@ -17,6 +17,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.swt.widgets.Composite;
 
@@ -26,8 +27,8 @@ import org.eclipse.swt.widgets.Composite;
 public class BranchXViewer extends XViewer {
    private final XBranchWidget xBranchViewer;
 
-   public BranchXViewer(Composite parent, int style, XBranchWidget xRoleViewer) {
-      super(parent, style, new BranchXViewerFactory());
+   public BranchXViewer(Composite parent, int style, XBranchWidget xRoleViewer, boolean filterRealTime, boolean searchRealTime) {
+      super(parent, style, new BranchXViewerFactory(), filterRealTime, searchRealTime);
       this.xBranchViewer = xRoleViewer;
    }
 
@@ -38,6 +39,7 @@ public class BranchXViewer extends XViewer {
          for (Branch branch : branches) {
             if (!branch.isSystemRootBranch()) {
                ArtifactExplorer.exploreBranch(branch);
+               BranchManager.setLastBranch(branch);
             }
          }
       }

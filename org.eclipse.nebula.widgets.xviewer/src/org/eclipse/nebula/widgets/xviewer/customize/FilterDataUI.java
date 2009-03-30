@@ -31,9 +31,11 @@ public class FilterDataUI {
    private Text filterText;
    private Label filterLabel;
    private final XViewer xViewer;
+   private boolean filterRealTime;
 
-   public FilterDataUI(XViewer xViewer) {
+   public FilterDataUI(XViewer xViewer, boolean filterRealTime) {
       this.xViewer = xViewer;
+      this.filterRealTime = filterRealTime;
    }
 
    public void createWidgets(Composite comp) {
@@ -64,7 +66,7 @@ public class FilterDataUI {
           */
          public void keyReleased(KeyEvent e) {
             // System.out.println(e.keyCode);
-            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR || filterRealTime) {
                xViewer.getCustomizeMgr().setFilterText(filterText.getText());
             }
          }

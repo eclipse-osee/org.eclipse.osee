@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -52,7 +53,7 @@ public class ShowAttributeAction extends Action {
             attributeDialog =
                   new AttributeCheckListDialog(Display.getCurrent().getActiveShell(),
                         SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey, branchProvider.getBranch()),
-                        preferenceKey);
+                        preferenceKey, branchProvider.getBranch());
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
@@ -77,8 +78,8 @@ public class ShowAttributeAction extends Action {
       return attributeDialog != null ? attributeDialog.getSelectedAttributes() : null;
    }
 
-   public void setValidAttributeTypes(Collection<AttributeType> attrTypes) {
-      attributeDialog = new AttributeCheckListDialog(Display.getCurrent().getActiveShell(), attrTypes, preferenceKey);
+   public void setValidAttributeTypes(Collection<AttributeType> attrTypes, Branch branch) {
+      attributeDialog = new AttributeCheckListDialog(Display.getCurrent().getActiveShell(), attrTypes, preferenceKey, branch);
    }
    
    public void setBranchForAttributeTypes(IBranchProvider branchProvider) throws OseeCoreException {
@@ -87,7 +88,7 @@ public class ShowAttributeAction extends Action {
             attributeDialog =
                   new AttributeCheckListDialog(Display.getCurrent().getActiveShell(),
                         SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey, branchProvider.getBranch()),
-                        preferenceKey);
+                        preferenceKey, branchProvider.getBranch());
       }
    }
 }

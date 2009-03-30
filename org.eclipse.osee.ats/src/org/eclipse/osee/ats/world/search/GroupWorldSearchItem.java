@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
@@ -27,21 +27,24 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    private Artifact group;
    private Artifact selectedGroup;
    private final String groupName;
+   private Branch branch;
 
-   public GroupWorldSearchItem(String displayName, String groupName) {
+   public GroupWorldSearchItem(String displayName, String groupName, Branch branch) {
       super(displayName);
       this.groupName = groupName;
+      this.branch = branch;
    }
 
-   public GroupWorldSearchItem() {
-      this("Group Search", null);
+   public GroupWorldSearchItem(Branch branch) {
+      this("Group Search", null, branch);
    }
 
-   public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem) {
+   public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem, int toDifferentiateFromBranch) {
       super(groupWorldSearchItem);
       this.group = groupWorldSearchItem.group;
       this.groupName = groupWorldSearchItem.groupName;
       this.selectedGroup = groupWorldSearchItem.selectedGroup;
+      this.branch = groupWorldSearchItem.branch;
    }
 
    public String getGroupSearchName() {
@@ -60,8 +63,8 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
 
    public void getProduct() throws OseeCoreException {
       if (groupName == null) return;
-      if (group == null) group =
-            UniversalGroup.getGroups(groupName, BranchManager.getDefaultBranch()).iterator().next();
+      if (group == null && branch != null) group =
+            UniversalGroup.getGroups(groupName, branch).iterator().next();
       if (group == null) throw new IllegalArgumentException("Can't Find Universal Group for " + getName());
    }
 
@@ -110,7 +113,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
     */
    @Override
    public WorldUISearchItem copy() {
-      return new GroupWorldSearchItem(this);
+      return new GroupWorldSearchItem(this, 0);
    }
 
 }

@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.branch.CommitWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
-import org.eclipse.osee.ats.editor.service.branch.SetAsDefaultBranchService;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
 import org.eclipse.osee.ats.editor.service.branch.ShowMergeManagerService;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
@@ -90,7 +89,6 @@ public class ServicesArea {
          if (page != null && (page.isAllowCommitBranch() || page.isAllowCreateBranch())) {
             if (page.isAllowCreateBranch()) sideBarServices.add(new CreateWorkingBranchService(smaMgr));
             sideBarServices.add(new ShowWorkingBranchService(smaMgr));
-            sideBarServices.add(new SetAsDefaultBranchService(smaMgr));
             sideBarServices.add(new ShowChangeReportService(smaMgr));
             sideBarServices.add(new ShowMergeManagerService(smaMgr));
             if (page.isAllowCommitBranch()) {

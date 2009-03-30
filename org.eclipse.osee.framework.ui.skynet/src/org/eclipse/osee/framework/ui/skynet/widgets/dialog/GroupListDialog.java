@@ -108,6 +108,7 @@ public class GroupListDialog extends ArtifactListDialog {
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);
       branchSelect = new BranchSelectComposite(container, SWT.NONE, false);
+      branchSelect.setDefaultSelectedBranch(BranchManager.getLastBranch());
       branchSelect.addListener(new Listener() {
          @Override
          public void handleEvent(Event event) {

@@ -83,7 +83,7 @@ public class ArtifactDecorator {
       if (attributesAction == null) {
          attributesAction = new ShowAttributeAction(viewer, preferenceKey);
          if (branchProvider != null && branchProvider.getBranch() != null){
-            attributesAction.setValidAttributeTypes(getValidAttributeTypes());
+            attributesAction.setValidAttributeTypes(getValidAttributeTypes(), branchProvider.getBranch());
          }
       }
 

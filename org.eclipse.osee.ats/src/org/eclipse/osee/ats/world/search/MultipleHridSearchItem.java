@@ -27,11 +27,12 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
@@ -43,6 +44,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
    private String enteredIds = "";
    Pattern numberPattern = Pattern.compile("^[0-9]+$");
    private boolean includeArtIds = false;
+   private Branch branch;
 
    public MultipleHridSearchItem(String name) {
       super(name);
@@ -88,9 +90,9 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
       }
 
       // This does artId search
-      if (includeArtIds) {
+      if (includeArtIds && branch != null) {
          for (Artifact art : ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
-               BranchManager.getDefaultBranch(), false)) {
+               branch, false)) {
             artifacts.add(art);
          }
       }
@@ -144,6 +146,9 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          enteredIds = ed.getEntry();
          if (ed instanceof EntryCheckDialog) {
             includeArtIds = ((EntryCheckDialog) ed).isChecked();
+            if (includeArtIds){
+               branch = BranchSelectionDialog.getBranchFromUser();
+            }
          }
          if (enteredIds.equals("oseerocks") || enteredIds.equals("osee rocks")) {
             AWorkbench.popup("Confirmation", "Confirmed!  Osee Rocks!");

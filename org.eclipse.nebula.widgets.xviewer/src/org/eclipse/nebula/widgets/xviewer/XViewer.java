@@ -76,14 +76,18 @@ public class XViewer extends TreeViewer {
    private TreeItem rightClickSelectedItem = null;
    private Color searchColor;
 
-   public XViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
+	public XViewer(Composite parent, int style, IXViewerFactory xViewerFactory){
+	   this (parent, style, xViewerFactory, false, false);
+	}
+	
+   public XViewer(Composite parent, int style, IXViewerFactory xViewerFactory, boolean filterRealTime, boolean searchRealTime) {
       super(parent, style);
       this.xViewerFactory = xViewerFactory;
       this.menuManager = new MenuManager();
       this.menuManager.setRemoveAllWhenShown(true);
       this.menuManager.createContextMenu(parent);
-      this.filterDataUI = new FilterDataUI(this);
-      this.searchDataUI = new SearchDataUI(this);
+      this.filterDataUI = new FilterDataUI(this, filterRealTime);
+      this.searchDataUI = new SearchDataUI(this, searchRealTime);
       this.columnFilterDataUI = new ColumnFilterDataUI(this);
       try {
          customizeMgr = new CustomizeManager(this, xViewerFactory);

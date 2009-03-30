@@ -220,7 +220,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Navigation.name());
          Artifact navArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Navigation",
-                     BranchManager.getDefaultBranch());
+                     DemoDbUtil.getDefaultBranch());
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, navArt);
          art.persistAttributesAndRelations();
       }
@@ -233,7 +233,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
          Artifact robotArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                     BranchManager.getDefaultBranch());
+                     DemoDbUtil.getDefaultBranch());
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, robotArt);
          art.persistAttributesAndRelations();
       }
@@ -293,7 +293,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       branchArtifact.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
       Artifact comArt =
             ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                  BranchManager.getDefaultBranch());
+                  DemoDbUtil.getDefaultBranch());
       branchArtifact.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
       branchArtifact.persistAttributesAndRelations();
 
@@ -336,7 +336,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
          Artifact comArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                     BranchManager.getDefaultBranch());
+                     DemoDbUtil.getDefaultBranch());
 
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
          art.persistAttributesAndRelations();
@@ -502,7 +502,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Set<Artifact> verificationTests = new HashSet<Artifact>();
          Artifact verificationHeader =
                ArtifactQuery.getArtifactFromTypeAndName("Folder", "Verification Tests",
-                     BranchManager.getDefaultBranch());
+                     DemoDbUtil.getDefaultBranch());
          if (verificationHeader == null) throw new IllegalStateException("Could not find Verification Tests header");
          for (String str : new String[] {"A", "B", "C"}) {
             Artifact newArt =
@@ -517,7 +517,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create Validation Test Procedure Artifacts
          Set<Artifact> validationTests = new HashSet<Artifact>();
          Artifact validationHeader =
-               ArtifactQuery.getArtifactFromTypeAndName("Folder", "Validation Tests", BranchManager.getDefaultBranch());
+               ArtifactQuery.getArtifactFromTypeAndName("Folder", "Validation Tests", DemoDbUtil.getDefaultBranch());
          if (validationHeader == null) throw new IllegalStateException("Could not find Validation Tests header");
          for (String str : new String[] {"1", "2", "3"}) {
             Artifact newArt =
@@ -532,7 +532,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create Integration Test Procedure Artifacts
          Set<Artifact> integrationTests = new HashSet<Artifact>();
          Artifact integrationHeader =
-               ArtifactQuery.getArtifactFromTypeAndName("Folder", "Integration Tests", BranchManager.getDefaultBranch());
+               ArtifactQuery.getArtifactFromTypeAndName("Folder", "Integration Tests", DemoDbUtil.getDefaultBranch());
          if (integrationHeader == null) throw new IllegalStateException("Could not find integration Tests header");
          for (String str : new String[] {"X", "Y", "Z"}) {
             Artifact newArt =

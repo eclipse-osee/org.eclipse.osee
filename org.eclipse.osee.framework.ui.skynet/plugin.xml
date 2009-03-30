@@ -538,14 +538,6 @@
    <menuContribution
          locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
       <command
-            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setDefaultBranch"
-            style="push">
-      </command>
-      <separator
-            name="separator.xBranch.BranchView7"
-            visible="true">
-      </separator>
-      <command
             commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
             style="push">
       </command>
@@ -1098,10 +1090,6 @@
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.archiveBranch">
     </handler>
     <handler
-          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.SetDefaultBranchHandler"
-          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setDefaultBranch">
-    </handler>
-    <handler
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.SetAssociatedBranchArtifactHandler"
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setAssociatedArtifact">
     </handler>
@@ -1524,10 +1512,6 @@
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.archiveBranch"
         name="Archive/unarchive">
-  </command>
-  <command
-        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setDefaultBranch"
-        name="Set Default Branch">
   </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.setAssociatedArtifact"
