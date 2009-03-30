@@ -594,16 +594,22 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
     * @param data
     * @throws OseeDataStoreException
     */
-   public void removeAccessControlData(AccessControlData data) throws OseeDataStoreException {
+   public void removeAccessControlData(AccessControlData data, boolean removeFromDb) throws OseeDataStoreException {
       if (data.getObject() instanceof ArtifactAccessObject) {
          ArtifactAccessObject object = (ArtifactAccessObject) data.getObject();
-         ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, data.getSubject().getArtId(), object.getArtId(),
+         
+         if(removeFromDb){
+            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, data.getSubject().getArtId(), object.getArtId(),
                object.getBranchId());
+         }
          accessControlListCache.remove(object.getArtId(), object.getBranchId());
 
       } else if (data.getObject() instanceof BranchAccessObject) {
          BranchAccessObject object = (BranchAccessObject) data.getObject();
-         ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, data.getSubject().getArtId(), object.getBranchId());
+         
+         if(removeFromDb){
+            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, data.getSubject().getArtId(), object.getBranchId());
+         }
          branchAccessObjectCache.remove(object.getBranchId());
       }
       deCacheAccessControlData(data);
@@ -721,7 +727,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
          if (branchId.equals(lockedBranchId)) {
             AccessObject accessObject = getAccessObject(object);
-            removeAccessControlData(new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false));
+            removeAccessControlData(new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false), true);
             objectToBranchLockCache.remove(objectArtId);
             lockedObjectToSubject.remove(objectArtId);
 
@@ -804,7 +810,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       if (branchModType == BranchEventType.Deleted) {
          try {
             for (AccessControlData accessControlData : generateAccessControlList(branchAccessObjectCache.get(branchId))) {
-               AccessControlManager.getInstance().removeAccessControlData(accessControlData);
+               AccessControlManager.getInstance().removeAccessControlData(accessControlData, sender.isLocal());
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
@@ -828,7 +834,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
             for (AccessControlData accessControlData : generateAccessControlList(accessObjectCache.get(
                   artifact.getArtId(), artifact.getBranch().getBranchId()))) {
-               AccessControlManager.getInstance().removeAccessControlData(accessControlData);
+               AccessControlManager.getInstance().removeAccessControlData(accessControlData, sender.isLocal());
             }
          }
       } catch (OseeCoreException ex) {
