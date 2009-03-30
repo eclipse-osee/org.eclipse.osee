@@ -141,7 +141,7 @@ public class PolicyTableViewer {
 
    public void removeData(AccessControlData data) {
       try {
-         accessManager.removeAccessControlData(data);
+         accessManager.removeAccessControlData(data, true);
       } catch (OseeDataStoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
