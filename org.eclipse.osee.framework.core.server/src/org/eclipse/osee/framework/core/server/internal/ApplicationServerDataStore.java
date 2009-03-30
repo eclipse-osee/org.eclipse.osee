@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
@@ -19,6 +21,8 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -40,7 +44,7 @@ public class ApplicationServerDataStore {
    private static final String GET_NUMBER_OF_SESSIONS =
          "SELECT count(1) FROM osee_session WHERE managed_by_server_id = ?";
 
-   private static final String SELECT_FROM_LOOKUP_TABLE = "SELECT * FROM osee_server_lookup where version_id%s";
+   private static final String SELECT_FROM_LOOKUP_TABLE = "SELECT * FROM osee_server_lookup";
 
    static void removeByServerId(List<OseeServerInfo> infos) throws OseeDataStoreException {
       if (!infos.isEmpty()) {
@@ -56,8 +60,13 @@ public class ApplicationServerDataStore {
       boolean status = false;
       try {
          if (ConnectionHandler.doesTableExist("osee_server_lookup")) {
-            ConnectionHandler.runPreparedUpdate(DELETE_FROM_LOOKUP_TABLE, applicationServerInfo.getServerAddress(),
-                  applicationServerInfo.getPort(), applicationServerInfo.getVersion());
+            String address = applicationServerInfo.getServerAddress();
+            int port = applicationServerInfo.getPort();
+            List<Object[]> data = new ArrayList<Object[]>();
+            for (String version : applicationServerInfo.getVersion()) {
+               data.add(new Object[] {address, port, version});
+            }
+            ConnectionHandler.runBatchUpdate(DELETE_FROM_LOOKUP_TABLE, data);
             status = true;
          } else {
             OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
@@ -72,9 +81,16 @@ public class ApplicationServerDataStore {
       boolean status = false;
       try {
          if (ConnectionHandler.doesTableExist("osee_server_lookup")) {
-            ConnectionHandler.runPreparedUpdate(INSERT_LOOKUP_TABLE, applicationServerInfo.getServerId(),
-                  applicationServerInfo.getVersion(), applicationServerInfo.getServerAddress(),
-                  applicationServerInfo.getPort(), applicationServerInfo.getDateStarted(), 1);
+            String serverId = applicationServerInfo.getServerId();
+            String address = applicationServerInfo.getServerAddress();
+            int port = applicationServerInfo.getPort();
+            Timestamp dateStarted = applicationServerInfo.getDateStarted();
+            int acceptingRequests = applicationServerInfo.isAcceptingRequests() ? 1 : 0;
+            List<Object[]> data = new ArrayList<Object[]>();
+            for (String version : applicationServerInfo.getVersion()) {
+               data.add(new Object[] {serverId, version, address, port, dateStarted, acceptingRequests});
+            }
+            ConnectionHandler.runBatchUpdate(INSERT_LOOKUP_TABLE, data);
             status = true;
          } else {
             OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
@@ -91,22 +107,53 @@ public class ApplicationServerDataStore {
       return true;
    }
 
-   static List<OseeServerInfo> getApplicationServerInfos(String version) throws OseeDataStoreException {
-      List<OseeServerInfo> toReturn = new ArrayList<OseeServerInfo>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         String query = String.format(SELECT_FROM_LOOKUP_TABLE, version.contains("%") ? " LIKE ?" : " = ?");
-         chStmt.runPreparedQuery(query, version);
-         while (chStmt.next()) {
-            toReturn.add(new OseeServerInfo(chStmt.getString("server_id"), chStmt.getString("server_address"),
-                  chStmt.getInt("port"), chStmt.getString("version_id"), chStmt.getTimestamp("start_time"),
-                  chStmt.getInt("accepts_requests") != 0 ? true : false));
+   static boolean isCompatibleVersion(String serverVersion, String clientVersion) {
+      boolean result = false;
+      if (serverVersion.equals(clientVersion)) {
+         result = true;
+      } else {
+         result = clientVersion.matches(serverVersion);
+         if (!result) {
+            result = serverVersion.matches(clientVersion);
          }
-
-      } finally {
-         chStmt.close();
       }
-      return toReturn;
+      return result;
+   }
+
+   static Collection<OseeServerInfo> getApplicationServerInfos(String clientVersion) throws OseeDataStoreException {
+      CompositeKeyHashMap<String, Integer, OseeServerInfo> servers =
+            new CompositeKeyHashMap<String, Integer, OseeServerInfo>();
+      if (Strings.isValid(clientVersion)) {
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         try {
+            chStmt.runPreparedQuery(SELECT_FROM_LOOKUP_TABLE);
+            while (chStmt.next()) {
+               String serverVersion = chStmt.getString("version_id");
+               if (Strings.isValid(serverVersion)) {
+                  if (isCompatibleVersion(serverVersion, clientVersion)) {
+                     String serverAddress = chStmt.getString("server_address");
+                     int port = chStmt.getInt("port");
+                     InternalOseeServerInfo info = (InternalOseeServerInfo) servers.get(serverAddress, port);
+                     if (info == null) {
+                        info =
+                              new InternalOseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
+                                    chStmt.getTimestamp("start_time"),
+                                    chStmt.getInt("accepts_requests") != 0 ? true : false);
+                        servers.put(serverAddress, port, info);
+                     }
+                     try {
+                        info.addVersion(serverVersion);
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(CoreServerActivator.class, Level.SEVERE, ex);
+                     }
+                  }
+               }
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
+      return servers.values();
    }
 
    static int getNumberOfSessions(String serverId) throws OseeDataStoreException {

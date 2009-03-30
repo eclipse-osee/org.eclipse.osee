@@ -19,9 +19,10 @@ import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
  */
 public class OseeServerInfo extends BaseExchangeData {
    private static final long serialVersionUID = 2696663265012016128L;
+   private static final String[] EMPTY_ARRAY = new String[0];
    private static final String SERVER_ADDRESS = "serverAddress";
    private static final String PORT = "port";
-   private static final String VERSION = "version";
+   protected static final String VERSION = "version";
    private static final String DATE_CREATED = "creationDate";
    private static final String SERVER_ID = "serverId";
    private static final String IS_ACCEPTING_REQUESTS = "isAcceptingRequests";
@@ -30,7 +31,7 @@ public class OseeServerInfo extends BaseExchangeData {
       super();
    }
 
-   public OseeServerInfo(String serverId, String serverAddress, int port, String version, Timestamp dateStarted, boolean isAcceptingRequests) {
+   public OseeServerInfo(String serverId, String serverAddress, int port, String[] version, Timestamp dateStarted, boolean isAcceptingRequests) {
       this();
       this.backingData.put(SERVER_ID, serverId);
       this.backingData.put(SERVER_ADDRESS, serverAddress);
@@ -64,8 +65,9 @@ public class OseeServerInfo extends BaseExchangeData {
    /**
     * @return the version
     */
-   public String getVersion() {
-      return getString(VERSION);
+   public String[] getVersion() {
+      String[] toReturn = backingData.getArray(VERSION);
+      return toReturn != null ? toReturn : EMPTY_ARRAY;
    }
 
    /**

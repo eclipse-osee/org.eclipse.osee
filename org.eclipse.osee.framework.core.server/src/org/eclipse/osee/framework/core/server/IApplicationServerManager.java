@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.server;
 
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
-import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
@@ -34,6 +33,11 @@ public interface IApplicationServerManager {
 
    public boolean executeLookupRegistration();
 
-   public OseeServerInfo getApplicationServerInfo();
+   public String getId();
 
+   public String[] getSupportedVersions();
+
+   public void addSupportedVersion(String version) throws OseeCoreException;
+
+   public void removeSupportedVersion(String version) throws OseeCoreException;
 }

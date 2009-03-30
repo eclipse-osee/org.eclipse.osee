@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.server.internal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
@@ -30,7 +31,7 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
    private static ThreadFactory threadFactory = null;
 
    public OseeServerInfo getServerInfoBy(String version) throws OseeDataStoreException {
-      List<OseeServerInfo> infos = ApplicationServerDataStore.getApplicationServerInfos(version);
+      Collection<OseeServerInfo> infos = ApplicationServerDataStore.getApplicationServerInfos(version);
 
       List<OseeServerInfo> healthyServers = new ArrayList<OseeServerInfo>();
       List<OseeServerInfo> unHealthyServers = new ArrayList<OseeServerInfo>();

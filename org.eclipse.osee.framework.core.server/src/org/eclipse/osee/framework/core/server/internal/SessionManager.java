@@ -183,8 +183,7 @@ public class SessionManager implements ISessionManager {
 
       private void recoverSessions() {
          try {
-            String serverId =
-                  CoreServerActivator.getApplicationServerManager().getApplicationServerInfo().getServerId();
+            String serverId = CoreServerActivator.getApplicationServerManager().getId();
             SessionDataStore.loadSessions(serverId, sessionCache);
          } catch (OseeDataStoreException ex) {
             OseeLog.log(CoreServerActivator.class, Level.WARNING, "Error loading sessions.", ex);
@@ -202,8 +201,7 @@ public class SessionManager implements ISessionManager {
       private void createUpdateHelper(List<OseeSession> sessionsList, boolean isCreate) {
          try {
             if (!sessionsList.isEmpty() && SessionDataStore.isSessionTableAvailable()) {
-               String serverId =
-                     CoreServerActivator.getApplicationServerManager().getApplicationServerInfo().getServerId();
+               String serverId = CoreServerActivator.getApplicationServerManager().getId();
                OseeSession[] sessionsArray = sessionsList.toArray(new OseeSession[sessionsList.size()]);
                SessionState stateToSet = isCreate ? SessionState.CREATED : SessionState.UPDATED;
                if (isCreate) {

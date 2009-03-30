@@ -44,6 +44,18 @@ public class ServerAdminCommandProvider implements CommandProvider {
       AdminCommands.getInstance().setServletRequestProcessing(ci);
    }
 
+   public void _add_osee_version(CommandInterpreter ci) {
+      AdminCommands.getInstance().addServerVersion(ci);
+   }
+
+   public void _remove_osee_version(CommandInterpreter ci) {
+      AdminCommands.getInstance().removeServerVersion(ci);
+   }
+
+   public void _osee_version(CommandInterpreter ci) {
+      AdminCommands.getInstance().getServerVersion(ci);
+   }
+
    public void _configini(CommandInterpreter ci) {
       StringBuilder sb = new StringBuilder();
       sb.append("eclipse.ignoreApp=true\n");
@@ -73,6 +85,9 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("\n---OSEE Server Admin Commands---\n");
       sb.append("        server_status - displays server status\n");
       sb.append("        server_process_requests [true | false]- command servlets to accept/reject requests\n");
+      sb.append("        osee_version - displays the supported osee versions\n");
+      sb.append("        add_osee_version [version string]- add the version string to the list of supported osee versions\n");
+      sb.append("        remove_osee_version [version string]- removes the version string from the list of supported osee versions\n");
       //      sb.append("        native_content_fix - converts some data\n");
       //      sb.append("        native_content_fix_stop - stop the conversion\n");
       //      sb.append("        convert - converts some data\n");

@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
@@ -39,14 +37,12 @@ public class ApplicationServerManager implements IApplicationServerManager {
    private final Map<String, OseeServerThreadFactory> threadFactories;
    private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
 
-   private final OseeServerInfo applicationServerInfo;
-   private boolean isRegistered;
+   private final InternalOseeServerInfo applicationServerInfo;
 
    public ApplicationServerManager() {
       this.oseeHttpServlets = Collections.synchronizedMap(new HashMap<String, InternalOseeHttpServlet>());
       this.threadFactories = Collections.synchronizedMap(new HashMap<String, OseeServerThreadFactory>());
       this.applicationServerInfo = createOseeServerInfo();
-      this.isRegistered = false;
       applicationServerInfo.setAcceptingRequests(true);
 
       new Thread(new Runnable() {
@@ -61,7 +57,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       }).start();
    }
 
-   private OseeServerInfo createOseeServerInfo() {
+   private InternalOseeServerInfo createOseeServerInfo() {
       String serverAddress = "127.0.0.1";
       try {
          serverAddress = InetAddress.getLocalHost().getCanonicalHostName();
@@ -78,16 +74,12 @@ public class ApplicationServerManager implements IApplicationServerManager {
          OseeLog.log(CoreServerActivator.class, Level.SEVERE, "Error generating application server id", ex);
       }
 
-      return new OseeServerInfo(checkSum, serverAddress, port, OseeCodeVersion.getVersion(),
-            GlobalTime.GreenwichMeanTimestamp(), false);
+      return new InternalOseeServerInfo(checkSum, serverAddress, port, GlobalTime.GreenwichMeanTimestamp(), false);
    }
 
    public boolean executeLookupRegistration() {
-      this.isRegistered = false;
-      ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
-      boolean status = ApplicationServerDataStore.registerWithDb(getApplicationServerInfo());
-      this.isRegistered = status;
-      if (this.isRegistered) {
+      boolean isRegistered = getApplicationServerInfo().updateRegistration();
+      if (isRegistered) {
          OseeLog.log(CoreServerActivator.class, Level.INFO, String.format("Application Server: [%s] registered.",
                getApplicationServerInfo().getServerId()));
       }
@@ -104,7 +96,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.threadFactories.remove(key);
    }
 
-   public OseeServerInfo getApplicationServerInfo() {
+   private InternalOseeServerInfo getApplicationServerInfo() {
       return applicationServerInfo;
    }
 
@@ -202,5 +194,37 @@ public class ApplicationServerManager implements IApplicationServerManager {
          }
       }
       return totalProcesses;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.IApplicationServerManager#getId()
+    */
+   @Override
+   public String getId() {
+      return getApplicationServerInfo().getServerId();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.IApplicationServerManager#getSupportedVersions()
+    */
+   @Override
+   public String[] getSupportedVersions() {
+      return getApplicationServerInfo().getVersion();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.IApplicationServerManager#addSupportedVersion(java.lang.String)
+    */
+   @Override
+   public void addSupportedVersion(String version) throws OseeCoreException {
+      getApplicationServerInfo().addVersion(version);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.IApplicationServerManager#removeSupportedVersion(java.lang.String)
+    */
+   @Override
+   public void removeSupportedVersion(String version) throws OseeCoreException {
+      getApplicationServerInfo().removeVersion(version);
    }
 }

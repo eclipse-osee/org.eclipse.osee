@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.management;
 
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
@@ -31,6 +32,9 @@ class ServerStats extends BaseCmdWorker {
       buffer.append("\n----------------------------------------------\n");
       buffer.append("                  Server Stats                \n");
       buffer.append("----------------------------------------------\n");
+      buffer.append("Osee Application Server: ");
+      buffer.append(Arrays.deepToString(CoreServerActivator.getApplicationServerManager().getSupportedVersions()));
+      buffer.append("\n");
       buffer.append(String.format("Server State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
       buffer.append(String.format("Active Threads: [%s]\n", manager.getNumberOfActiveThreads()));
       buffer.append("Current Tasks: ");

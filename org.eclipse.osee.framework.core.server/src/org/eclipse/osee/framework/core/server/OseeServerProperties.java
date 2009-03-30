@@ -24,11 +24,26 @@ public class OseeServerProperties {
    private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
    private static final String CHECK_TAG_QUEUE_ON_START_UP = "osee.check.tag.queue.on.startup";
    public static final String OSEE_DERBY_SERVER = "osee.derby.server";
+   private static final String OSEE_VERSION = "osee.version";
 
    private static boolean wasBinaryDataChecked = false;
 
    private OseeServerProperties() {
       super();
+   }
+
+   /**
+    * Get OSEE application server version settings
+    * 
+    * @return OSEE application server versions
+    */
+   public static String[] getOseeVersion() {
+      String[] toReturn = new String[0];
+      String versionString = System.getProperty(OSEE_VERSION, "");
+      if (Strings.isValid(versionString)) {
+         toReturn = versionString.split(";");
+      }
+      return toReturn;
    }
 
    private static String internalGetOseeApplicationServerData() {

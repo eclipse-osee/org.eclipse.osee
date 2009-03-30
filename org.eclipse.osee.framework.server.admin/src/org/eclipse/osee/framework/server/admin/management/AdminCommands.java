@@ -19,6 +19,8 @@ public class AdminCommands {
    private static AdminCommands instance = null;
 
    private ServerShutdownWorker shutdownWorker;
+   private RemoveServerVersionWorker removeServerVersion;
+   private AddServerVersionWorker addServerVersion;
 
    public static AdminCommands getInstance() {
       if (instance == null) {
@@ -30,6 +32,12 @@ public class AdminCommands {
    private AdminCommands() {
       this.shutdownWorker = new ServerShutdownWorker();
       this.shutdownWorker.setExecutionAllowed(true);
+
+      this.addServerVersion = new AddServerVersionWorker();
+      this.addServerVersion.setExecutionAllowed(true);
+
+      this.removeServerVersion = new RemoveServerVersionWorker();
+      this.removeServerVersion.setExecutionAllowed(true);
    }
 
    public void getServerStatus(CommandInterpreter ci) {
@@ -39,6 +47,37 @@ public class AdminCommands {
       Thread th = new Thread(stats);
       th.setName("Server Statistics");
       th.start();
+   }
+
+   public void getServerVersion(CommandInterpreter ci) {
+      GetServerVersionWorker serverVersion = new GetServerVersionWorker();
+      serverVersion.setCommandInterpreter(ci);
+      serverVersion.setExecutionAllowed(true);
+      Thread th = new Thread(serverVersion);
+      th.setName("Server Version");
+      th.start();
+   }
+
+   public void addServerVersion(CommandInterpreter ci) {
+      if (!this.removeServerVersion.isRunning()) {
+         this.addServerVersion.setCommandInterpreter(ci);
+         Thread th = new Thread(addServerVersion);
+         th.setName("Add Server Version");
+         th.start();
+      } else {
+         ci.println("Waiting for remove server version");
+      }
+   }
+
+   public void removeServerVersion(CommandInterpreter ci) {
+      if (!this.addServerVersion.isRunning()) {
+         this.removeServerVersion.setCommandInterpreter(ci);
+         Thread th = new Thread(removeServerVersion);
+         th.setName("Remove Server Version");
+         th.start();
+      } else {
+         ci.println("Waiting for add server version");
+      }
    }
 
    public void startServerShutdown(CommandInterpreter ci) {
