@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.util.widgets.role;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -20,7 +21,9 @@ import org.eclipse.nebula.widgets.xviewer.XPromptChange;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -64,6 +67,7 @@ public class UserRoleXViewer extends XViewer {
    }
 
    public void createMenuActions() {
+      setColumnMultiEditEnabled(true);
       MenuManager mm = getMenuManager();
       mm.createContextMenu(getControl());
       mm.addMenuListener(new IMenuListener() {
@@ -80,9 +84,7 @@ public class UserRoleXViewer extends XViewer {
 
    public void updateMenuActions() {
       MenuManager mm = getMenuManager();
-
       updateEditMenuActions();
-
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
@@ -108,7 +110,7 @@ public class UserRoleXViewer extends XViewer {
    @Override
    public void dispose() {
       // Dispose of the table objects is done through separate dispose listener off tree
-      // Tell the label provider to release its ressources
+      // Tell the label provider to release its resources
       getLabelProvider().dispose();
    }
 
@@ -118,6 +120,21 @@ public class UserRoleXViewer extends XViewer {
       if (items.length > 0) for (TreeItem item : items)
          arts.add((UserRole) item.getData());
       return arts;
+   }
+
+   public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      if (!xUserRoleViewer.isEditable()) {
+         return;
+      }
+      ArrayList<UserRole> userRoles = new ArrayList<UserRole>();
+      for (TreeItem item : treeItems) {
+         userRoles.add((UserRole) item.getData());
+      }
+      try {
+         promptChangeDate((XViewerColumn) treeColumn.getData(), userRoles, isColumnMultiEditEnabled());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    /* (non-Javadoc)
@@ -144,61 +161,110 @@ public class UserRoleXViewer extends XViewer {
          // treeItem);
          XViewerColumn aCol = (XViewerColumn) treeColumn.getData();
          UserRole userRole = (UserRole) treeItem.getData();
-         boolean modified = false;
-         if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
-            String hours =
-                  XPromptChange.promptChangeFloat(aCol.getName(),
-                        userRole.getHoursSpent() == null ? 0 : userRole.getHoursSpent());
-            if (hours != null) {
-               modified = true;
-               userRole.setHoursSpent(hours.equals("") ? 0 : (new Double(hours)).doubleValue());
-            }
-         } else if (aCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || aCol.equals(UserRoleXViewerFactory.Num_Major_Col) || aCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
-            AWorkbench.popup("ERROR", "Field is calculated");
-         } else if (aCol.equals(UserRoleXViewerFactory.Completed_Col)) {
-            if (userRole.getHoursSpent() == null) {
-               AWorkbench.popup("ERROR", "Must enter Hours Spent");
-               return false;
-            }
-            modified = true;
-            userRole.setCompleted(!userRole.isCompleted());
-         } else if (aCol.equals(UserRoleXViewerFactory.User_Col)) {
-            UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
-            int result = ld.open();
-            if (result == 0) {
-               User selectedUser = ld.getSelection();
-               if (selectedUser != null && userRole.getUser() != selectedUser) {
-                  modified = true;
-                  userRole.setUser(selectedUser);
-               }
-            }
-         } else if (aCol.equals(UserRoleXViewerFactory.Role_Col)) {
-            EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Role.strValues(),
-                        userRole.getRole().name());
-            if (enumDialog != null) {
-               if (enumDialog.getResult()[0] != null) {
-                  modified = true;
-                  userRole.setRole(Role.valueOf((String) enumDialog.getResult()[0]));
-               }
-            }
+         List<UserRole> userRoles = new ArrayList<UserRole>();
+         userRoles.add(userRole);
+
+         if (aCol.equals(UserRoleXViewerFactory.Completed_Col) || aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col) || aCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || aCol.equals(UserRoleXViewerFactory.Num_Major_Col) || aCol.equals(UserRoleXViewerFactory.Num_Issues_Col) || aCol.equals(UserRoleXViewerFactory.User_Col) || aCol.equals(UserRoleXViewerFactory.Role_Col)) {
+            promptChangeDate(aCol, userRoles, false);
          } else
             throw new OseeStateException("Unhandled user role column");
 
-         if (modified) {
-            SkynetTransaction transaction =
-                  new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch());
-            xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false, transaction);
-            transaction.execute();
-            xUserRoleViewer.refresh();
-            xUserRoleViewer.notifyXModifiedListeners();
-            update(userRole, null);
-            return true;
-         }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiDebug.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
+   }
+
+   private boolean setHoursSpent(Collection<UserRole> userRoles, String hours) {
+      boolean modified = false;
+      for (UserRole userRole : userRoles) {
+         userRole.setHoursSpent(hours.equals("") ? 0 : (new Double(hours)).doubleValue());
+         if (!modified) modified = true;
+      }
+      return modified;
+   }
+
+   private boolean setCompleted(Collection<UserRole> userRoles) {
+      boolean modified = false;
+      for (UserRole userRole : userRoles) {
+         if (userRole.getHoursSpent() == null) {
+            AWorkbench.popup("ERROR", "Must enter Hours Spent");
+            return false;
+         }
+         userRole.setCompleted(!userRole.isCompleted());
+         if (!modified) modified = true;
+      }
+      return modified;
+   }
+
+   private boolean setUser(Collection<UserRole> userRoles, User user) {
+      boolean modified = false;
+      for (UserRole userRole : userRoles) {
+         if (user != null && userRole.getUser() != user) {
+            userRole.setUser(user);
+            if (!modified) modified = true;
+         }
+      }
+      return modified;
+   }
+
+   private boolean setRole(Collection<UserRole> userRoles, String role) {
+      boolean modified = false;
+      for (UserRole userRole : userRoles) {
+         userRole.setRole(Role.valueOf((String) role));
+         if (!modified) modified = true;
+      }
+      return modified;
+   }
+
+   public boolean promptChangeDate(XViewerColumn xCol, Collection<UserRole> userRoles, boolean columnMultiEdit) throws OseeCoreException {
+      boolean modified = false;
+      if (userRoles != null && !userRoles.isEmpty()) {
+         UserRole userRole = (UserRole) userRoles.toArray()[0];
+         if (xCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
+            String hours =
+                  XPromptChange.promptChangeFloat(xCol.getName(),
+                        (columnMultiEdit ? 0 : (userRole.getHoursSpent() == null ? 0 : userRole.getHoursSpent())));
+            if (hours != null) {
+               modified = setHoursSpent(userRoles, hours);
+            }
+         } else if (xCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || xCol.equals(UserRoleXViewerFactory.Num_Major_Col) || xCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
+            AWorkbench.popup("ERROR", "Field is calculated");
+         } else if (xCol.equals(UserRoleXViewerFactory.Completed_Col)) {
+            modified = setCompleted(userRoles);
+         } else if (xCol.equals(UserRoleXViewerFactory.User_Col)) {
+            UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
+            int result = ld.open();
+            if (result == 0) {
+               modified = setUser(userRoles, ld.getSelection());
+            }
+         } else if (xCol.equals(UserRoleXViewerFactory.Role_Col)) {
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Role.strValues(),
+                        (columnMultiEdit ? null : userRole.getRole().name()));
+            if (enumDialog != null) {
+               if (enumDialog.getResult()[0] != null) {
+                  modified = setRole(userRoles, (String) enumDialog.getResult()[0]);
+               }
+            }
+         }
+         if (modified) {
+            return executeTransaction(userRoles);
+         }
+      }
+      return false;
+   }
+
+   public boolean executeTransaction(Collection<UserRole> userRoles) throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch());
+      for (UserRole userRole : userRoles) {
+         xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false, transaction);
+         update(userRole, null);
+      }
+      transaction.execute();
+      xUserRoleViewer.refresh();
+      xUserRoleViewer.notifyXModifiedListeners();
+      return true;
    }
 
    /**

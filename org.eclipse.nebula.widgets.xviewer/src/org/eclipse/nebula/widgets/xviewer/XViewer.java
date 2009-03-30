@@ -190,14 +190,17 @@ public class XViewer extends TreeViewer {
             for (int colNum = 0; colNum < getTree().getColumnCount(); colNum++) {
                Rectangle rect = item.getBounds(colNum);
                if (rect.contains(pt)) {
-                  if (event.button == 1 && ((event.stateMask & SWT.MODIFIER_MASK) == SWT.ALT)) {
-                     // System.out.println("Column " + colNum);
-                     handleAltLeftClick(getTree().getColumns()[colNum], item);
-                  } else if (event.x <= (rect.x + 18)) {
-                     handleLeftClickInIconArea(getTree().getColumns()[colNum], item);
+                  if (event.button == 1 && !((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL)) {
+                     if (((event.stateMask & SWT.MODIFIER_MASK) == SWT.ALT)) {
+                        // System.out.println("Column " + colNum);
+                        handleAltLeftClick(getTree().getColumns()[colNum], item);
+                     } else if ((event.x <= (rect.x + 18))) {
+                        handleLeftClickInIconArea(getTree().getColumns()[colNum], item);
+                     } else {
+                        // System.out.println("Column " + colNum);
+                        handleLeftClick(getTree().getColumns()[colNum], item);
+                     }
                   }
-                  // System.out.println("Column " + colNum);
-                  handleLeftClick(getTree().getColumns()[colNum], item);
                }
             }
             updateStatusLabel();

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets.defect;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -73,6 +75,7 @@ public class DefectXViewer extends XViewer {
    }
 
    public void createMenuActions() {
+      setColumnMultiEditEnabled(true);
       MenuManager mm = getMenuManager();
       mm.createContextMenu(getControl());
       mm.addMenuListener(new IMenuListener() {
@@ -84,15 +87,12 @@ public class DefectXViewer extends XViewer {
 
    public void updateEditMenuActions() {
       // MenuManager mm = getMenuManager();
-
       // EDIT MENU BLOCK
    }
 
    public void updateMenuActions() {
       MenuManager mm = getMenuManager();
-
       updateEditMenuActions();
-
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
@@ -118,7 +118,7 @@ public class DefectXViewer extends XViewer {
    @Override
    public void dispose() {
       // Dispose of the table objects is done through separate dispose listener off tree
-      // Tell the label provider to release its ressources
+      // Tell the label provider to release its resources
       getLabelProvider().dispose();
    }
 
@@ -128,6 +128,21 @@ public class DefectXViewer extends XViewer {
       if (items.length > 0) for (TreeItem item : items)
          arts.add((DefectItem) item.getData());
       return arts;
+   }
+
+   public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      if (!xDefectViewer.isEditable()) {
+         return;
+      }
+      ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+      for (TreeItem item : treeItems) {
+         defectItems.add((DefectItem) item.getData());
+      }
+      try {
+         promptChangeDate((XViewerColumn) treeColumn.getData(), defectItems, isColumnMultiEditEnabled());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    /* (non-Javadoc)
@@ -153,42 +168,12 @@ public class DefectXViewer extends XViewer {
          return false;
       }
       try {
-         XViewerColumn aCol = (XViewerColumn) treeColumn.getData();
+         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          DefectItem defectItem = (DefectItem) treeItem.getData();
-         boolean modified = false;
-         if (aCol.equals(DefectXViewerFactory.Closed_Col)) {
-            modified = true;
-            defectItem.setClosed(!defectItem.isClosed());
-         } else if (aCol.equals(DefectXViewerFactory.Severity_Col)) {
-            EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Severity.strValues(),
-                        defectItem.getSeverity().name());
-            if (enumDialog != null) {
-               if (enumDialog.getResult()[0] != null) {
-                  modified = true;
-                  defectItem.setSeverity(Severity.valueOf((String) enumDialog.getResult()[0]));
-               }
-            }
-         } else if (aCol.equals(DefectXViewerFactory.Disposition_Col)) {
-            EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Disposition.strValues(),
-                        defectItem.getDisposition().name());
-            if (enumDialog != null) {
-               if (enumDialog.getResult()[0] != null) {
-                  modified = true;
-                  defectItem.setDisposition(Disposition.valueOf((String) enumDialog.getResult()[0]));
-               }
-            }
-         }
-         if (modified) {
-            SkynetTransaction transaction =
-                  new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch());
-            xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false, transaction);
-            transaction.execute();
-            xDefectViewer.refresh();
-            xDefectViewer.notifyXModifiedListeners();
-            update(defectItem, null);
-            return true;
+         List<DefectItem> defectItems = new ArrayList<DefectItem>();
+         defectItems.add(defectItem);
+         if (xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Severity_Col) || xCol.equals(DefectXViewerFactory.Disposition_Col)) {
+            return promptChangeDate(xCol, defectItems, false);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -208,83 +193,205 @@ public class DefectXViewer extends XViewer {
          return false;
       }
       try {
-         // System.out.println("Column " + treeColumn.getText() + " item " +
-         // treeItem);
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          DefectItem defectItem = (DefectItem) treeItem.getData();
-         boolean modified = false;
-         if (xCol.equals(DefectXViewerFactory.Created_Date_Col)) {
-            Date selDate = XPromptChange.promptChangeDate(xCol.getName(), defectItem.getDate());
-            if (selDate != null) {
-               modified = true;
-               defectItem.setDate(selDate);
+         List<DefectItem> defectItems = new ArrayList<DefectItem>();
+         defectItems.add(defectItem);
+         if (xCol.equals(DefectXViewerFactory.Created_Date_Col) || xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Description_Col) || xCol.equals(DefectXViewerFactory.Resolution_Col) || xCol.equals(DefectXViewerFactory.Location_Col) || xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
+            return promptChangeDate(xCol, defectItems, false);
+         } else {
+            if (!xCol.equals(DefectXViewerFactory.Severity_Col) && !xCol.equals(DefectXViewerFactory.Disposition_Col)) {
+               throw new OseeStateException("Unhandled defect column");
             }
-         } else if (xCol.equals(DefectXViewerFactory.Severity_Col)) {
-            // skip it; handled in left click method
-         } else if (xCol.equals(DefectXViewerFactory.Disposition_Col)) {
-            // skip it; handled in left click method
-         } else if (xCol.equals(DefectXViewerFactory.Closed_Col)) {
-            Boolean closed = XPromptChange.promptChangeBoolean(xCol.getName(), xCol.getName(), defectItem.isClosed());
-            if (closed != null && (defectItem.isClosed() != closed)) {
-               modified = true;
-               defectItem.setClosed(closed);
-            }
-         } else if (xCol.equals(DefectXViewerFactory.Description_Col)) {
-            String desc =
-                  XPromptChange.promptChangeString(xCol.getName(), defectItem.getDescription(), null, Option.MULTI_LINE);
-            if (desc != null && !defectItem.getDescription().equals(desc)) {
-               modified = true;
-               defectItem.setDescription(desc);
-            }
-         } else if (xCol.equals(DefectXViewerFactory.Resolution_Col)) {
-            String resolution =
-                  XPromptChange.promptChangeString(xCol.getName(), defectItem.getResolution(), null, Option.MULTI_LINE);
-            if (resolution != null && !defectItem.getResolution().equals(resolution)) {
-               modified = true;
-               defectItem.setResolution(resolution);
-            }
-         } else if (xCol.equals(DefectXViewerFactory.Location_Col)) {
-            String desc =
-                  XPromptChange.promptChangeString(xCol.getName(), defectItem.getLocation(), null, Option.MULTI_LINE);
-            if (desc != null && !defectItem.getLocation().equals(desc)) {
-               modified = true;
-               defectItem.setLocation(desc);
-            }
-         } else if (xCol.equals(DefectXViewerFactory.User_Col)) {
-            UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
-            int result = ld.open();
-            if (result == 0) {
-               User selectedUser = ld.getSelection();
-               if (selectedUser != null && defectItem.getUser() != selectedUser) {
-                  modified = true;
-                  defectItem.setUser(selectedUser);
-               }
-            }
-         } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
-            EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), InjectionActivity.strValues(),
-                        defectItem.getInjectionActivity().name());
-            if (enumDialog != null) {
-               if (enumDialog.getResult()[0] != null) {
-                  modified = true;
-                  defectItem.setInjectionActivity(InjectionActivity.valueOf((String) enumDialog.getResult()[0]));
-               }
-            }
-         } else
-            throw new OseeStateException("Unhandled defect column");
-
-         if (modified) {
-            SkynetTransaction transaction =
-                  new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch());
-            xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false, transaction);
-            transaction.execute();
-            xDefectViewer.notifyXModifiedListeners();
-            update(defectItem, null);
-            return true;
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiDebug.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
+   }
+
+   private boolean setInjectionActivity(Collection<DefectItem> defectItems, InjectionActivity newInjectionActivity) {
+      boolean modified = false;
+      for (DefectItem defectItem : defectItems) {
+         if (!defectItem.getInjectionActivity().equals(newInjectionActivity)) {
+            defectItem.setInjectionActivity(newInjectionActivity);
+            // at least one in the list has been changed.
+            if (!modified) modified = true;
+         }
+      }
+      return modified;
+   }
+
+   private boolean setUser(Collection<DefectItem> defectItems, User user) {
+      boolean modified = false;
+      for (DefectItem defectItem : defectItems) {
+         if (!defectItem.getUser().equals(user)) {
+            defectItem.setUser(user);
+            // at least one in the list has been changed.
+            if (!modified) modified = true;
+         }
+      }
+      return modified;
+   }
+
+   private boolean setLocation(Collection<DefectItem> defectItems, String loc) {
+      boolean modified = false;
+      for (DefectItem defectItem : defectItems) {
+         if (!defectItem.getLocation().equals(loc)) {
+            defectItem.setLocation(loc);
+            if (!modified) modified = true;
+         }
+      }
+      return modified;
+   }
+
+   private boolean setDescription(Collection<DefectItem> defectItems, String desc) {
+      boolean modified = false;
+      for (DefectItem defectItem : defectItems) {
+         if (!defectItem.equals(desc)) {
+            defectItem.setDescription(desc);
+            if (!modified) modified = true;
+         }
+
+      }
+      return modified;
+   }
+
+   private boolean setClosed(Collection<DefectItem> defectItems, boolean closed) {
+      boolean modified = false;
+      for (DefectItem defectItem : defectItems) {
+         if (defectItem.isClosed() != closed) {
+            defectItem.setClosed(closed);
+            if (!modified) modified = true;
+         }
+      }
+      return modified;
+   }
+
+   private boolean setSeverity(Collection<DefectItem> defectItems, Severity severity) {
+      boolean modified = false;
+      for (DefectItem defectItem : defectItems) {
+         if (!defectItem.getSeverity().equals(severity)) {
+            defectItem.setSeverity(severity);
+            if (!modified) modified = true;
+         }
+      }
+      return modified;
+   }
+
+   private boolean setDisposition(Collection<DefectItem> defectItems, Disposition disposition) {
+      boolean modified = false;
+      for (DefectItem defectItem : defectItems) {
+         if (!defectItem.getDisposition().equals(disposition)) {
+            defectItem.setDisposition(disposition);
+            if (!modified) modified = true;
+         }
+      }
+      return modified;
+   }
+
+   private boolean setDate(Collection<DefectItem> defectItems, Date date) {
+      boolean modified = false;
+      for (DefectItem defectItem : defectItems) {
+         if (!defectItem.getDate().equals(date)) {
+            defectItem.setDate(date);
+            if (!modified) modified = true;
+         }
+      }
+      return modified;
+   }
+
+   private boolean setResolution(Collection<DefectItem> defectItems, String resolution) {
+      boolean modified = false;
+      for (DefectItem defectItem : defectItems) {
+         defectItem.setResolution(resolution);
+         if (!modified) modified = true;
+      }
+      return modified;
+   }
+
+   public boolean promptChangeDate(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit) throws OseeCoreException {
+      boolean modified = false;
+      if (defectItems != null && !defectItems.isEmpty()) {
+         DefectItem defectItem = (DefectItem) defectItems.toArray()[0];
+         if (xCol.equals(DefectXViewerFactory.Severity_Col)) {
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Severity.strValues(),
+                        ((columnMultiEdit) ? null : defectItem.getSeverity().name()));
+            if (enumDialog != null && enumDialog.getResult() != null) {
+               modified = setSeverity(defectItems, Severity.valueOf((String) enumDialog.getResult()[0]));
+            }
+         } else if (xCol.equals(DefectXViewerFactory.Disposition_Col)) {
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Disposition.strValues(),
+                        ((columnMultiEdit) ? null : defectItem.getDisposition().name()));
+            if (enumDialog != null && enumDialog.getResult() != null) {
+               modified = setDisposition(defectItems, Disposition.valueOf((String) enumDialog.getResult()[0]));
+            }
+         } else if (xCol.equals(DefectXViewerFactory.Created_Date_Col)) {
+            Date selDate =
+                  XPromptChange.promptChangeDate(xCol.getName(), ((columnMultiEdit) ? defectItem.getDate() : null));
+            if (selDate != null) {
+               modified = setDate(defectItems, selDate);
+            }
+         } else if (xCol.equals(DefectXViewerFactory.Closed_Col)) {
+            Boolean closed =
+                  XPromptChange.promptChangeBoolean(xCol.getName(), xCol.getName(),
+                        ((columnMultiEdit) ? false : defectItem.isClosed()));
+            if (closed != null) {
+               modified = setClosed(defectItems, closed);
+            }
+         } else if (xCol.equals(DefectXViewerFactory.Description_Col)) {
+            String desc =
+                  XPromptChange.promptChangeString(xCol.getName(),
+                        ((columnMultiEdit) ? null : defectItem.getDescription()), null, Option.MULTI_LINE);
+            if (desc != null) {
+               modified = setDescription(defectItems, desc);
+            }
+         } else if (xCol.equals(DefectXViewerFactory.Resolution_Col)) {
+            String resolution =
+                  XPromptChange.promptChangeString(xCol.getName(),
+                        (columnMultiEdit ? null : defectItem.getResolution()), null, Option.MULTI_LINE);
+            if (resolution != null) {
+               modified = setResolution(defectItems, resolution);
+            }
+         } else if (xCol.equals(DefectXViewerFactory.Location_Col)) {
+            String loc =
+                  XPromptChange.promptChangeString(xCol.getName(),
+                        ((columnMultiEdit) ? null : defectItem.getLocation()), null, Option.MULTI_LINE);
+            if (loc != null) {
+               modified = setLocation(defectItems, loc);
+            }
+         } else if (xCol.equals(DefectXViewerFactory.User_Col)) {
+            UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
+            int result = ld.open();
+            if (result == 0) {
+               modified = setUser(defectItems, ld.getSelection());
+            }
+         } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), InjectionActivity.strValues(),
+                        ((columnMultiEdit) ? null : defectItem.getInjectionActivity().name()));
+            if (enumDialog != null && enumDialog.getResult() != null) {
+               modified =
+                     setInjectionActivity(defectItems, InjectionActivity.valueOf((String) enumDialog.getResult()[0]));
+            }
+         }
+         if (modified) {
+            return executeTransaction(defectItems);
+         }
+      }
+      return false;
+   }
+
+   public boolean executeTransaction(Collection<DefectItem> defectItems) throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch());
+      for (DefectItem defectItem : defectItems) {
+         xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false, transaction);
+         update(defectItem, null);
+      }
+      transaction.execute();
+      xDefectViewer.notifyXModifiedListeners();
+      return true;
    }
 }
