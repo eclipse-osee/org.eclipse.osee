@@ -74,19 +74,23 @@ public class BlamOperations {
       Map<String, XNavigateItem> nameToParent = new HashMap<String, XNavigateItem>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations");
       for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
-         // If categories not specified, add to top level
-         if (blamOperation.getCategories().size() == 0) {
-            new XNavigateItemBlam(blamOperationItems, blamOperation);
-         }
-         // Create categories
+
+         // Create categories first (so can have them up top)
          for (String category : blamOperation.getCategories()) {
             if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || (category.contains("Admin") && AccessControlManager.isOseeAdmin())) {
                createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
             }
          }
-         // Add this navigate item to categories
+      }
+      // Add blams to categories
+      for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
+         // If categories not specified, add to top level
+         if (blamOperation.getCategories().size() == 0) {
+            new XNavigateItemBlam(blamOperationItems, blamOperation);
+         }
          for (String category : blamOperation.getCategories()) {
-            if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || (category.contains("Admin") && AccessControlManager.isOseeAdmin())) {
+            // Category will be null if admin category and not admin
+            if (nameToParent.get(category) != null) {
                new XNavigateItemBlam(nameToParent.get(category), blamOperation);
             }
          }

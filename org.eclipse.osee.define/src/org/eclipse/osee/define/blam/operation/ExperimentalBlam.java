@@ -36,6 +36,6 @@ public class ExperimentalBlam extends AbstractBlam {
    }
 
    public Collection<String> getCategories() {
-      return Arrays.asList("Define.Example");
+      return Arrays.asList("Util");
    }
 }

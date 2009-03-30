@@ -82,6 +82,6 @@ public class XWidgetPopulateExample extends AbstractBlam {
    }
 
    public Collection<String> getCategories() {
-      return Arrays.asList("Example");
+      return Arrays.asList("Util");
    }
 }
