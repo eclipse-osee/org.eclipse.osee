@@ -441,7 +441,7 @@ public class AtsBranchManager {
                for (AccessControlData acd : AccessControlManager.getInstance().getAccessControlList(branch)) {
                   // If subject is NOT an assignee, remove access control
                   if (!smaMgr.getStateMgr().getAssignees().contains(acd.getSubject())) {
-                     AccessControlManager.getInstance().removeAccessControlData(acd);
+                     AccessControlManager.getInstance().removeAccessControlData(acd, true);
                   }
                }
                // If subject doesn't have access, add it
