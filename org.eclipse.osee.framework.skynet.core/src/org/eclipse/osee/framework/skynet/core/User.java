@@ -82,13 +82,6 @@ public class User extends Artifact implements Serializable {
       }
    }
 
-   public boolean equals(User users[]) {
-      for (int i = 0; i < users.length; i++) {
-         if (users[i].equals(this)) return true;
-      }
-      return false;
-   }
-
    public String getUserId() throws OseeCoreException {
       return getSoleAttributeValue(userIdAttributeName, "");
    }
