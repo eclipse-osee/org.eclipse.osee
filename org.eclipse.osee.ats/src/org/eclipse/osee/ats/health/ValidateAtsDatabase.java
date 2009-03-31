@@ -32,18 +32,22 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -70,11 +74,11 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
     * @param parent
     */
    public ValidateAtsDatabase(XNavigateItem parent) {
-      super(parent, "Validate ATS Database");
+      this("Validate ATS Database", parent);
    }
 
-   public ValidateAtsDatabase() {
-      this(null);
+   public ValidateAtsDatabase(String name, XNavigateItem parent) {
+      super(parent, name);
    }
 
    /*
@@ -123,7 +127,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
-      monitor.beginTask(getName(), 11);
+      monitor.beginTask(getName(), 12);
       loadAtsBranchArtifacts();
       monitor.worked(1);
       testArtifactIds();
@@ -142,6 +146,8 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       monitor.worked(1);
       testTeamWorkflows();
       monitor.worked(1);
+      testVersionArtifacts();
+      monitor.worked(1);
       testStateMachineAssignees();
       monitor.worked(1);
       testAtsLogs();
@@ -150,7 +156,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
    }
 
-   public void testArtifactIds() throws OseeCoreException {
+   private void testArtifactIds() throws OseeCoreException {
       xResultData.log(monitor, "testArtifactIds");
       this.hrids.clear();
       this.legacyPcrIdToParentHrid.clear();
@@ -178,7 +184,25 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testTeamWorkflows() throws OseeCoreException {
+   private void testVersionArtifacts() throws OseeCoreException {
+      xResultData.log(monitor, "testVersionArtifacts");
+      for (Artifact art : artifacts) {
+         if (art instanceof VersionArtifact) {
+            VersionArtifact verArt = (VersionArtifact) art;
+            try {
+               String parentBranchId =
+                     verArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
+               if (parentBranchId != null) {
+                  validateBranchId(verArt, parentBranchId);
+               }
+            } catch (Exception ex) {
+               xResultData.logError(verArt.getArtifactTypeName() + " " + verArt.getHumanReadableId() + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
+            }
+         }
+      }
+   }
+
+   private void testTeamWorkflows() throws OseeCoreException {
       xResultData.log(monitor, "testTeamWorkflows");
       for (Artifact art : artifacts) {
          if (art instanceof TeamWorkFlowArtifact) {
@@ -190,6 +214,11 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
                if (teamArt.getTeamDefinition() == null) {
                   xResultData.logError("TeamWorkflow " + teamArt.getHumanReadableId() + " has no TeamDefinition");
                }
+               String parentBranchId =
+                     teamArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
+               if (parentBranchId != null) {
+                  validateBranchId(teamArt, parentBranchId);
+               }
             } catch (Exception ex) {
                xResultData.logError(teamArt.getArtifactTypeName() + " " + teamArt.getHumanReadableId() + " exception testing testTeamWorkflows: " + ex.getLocalizedMessage());
             }
@@ -197,7 +226,18 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void loadAtsBranchArtifacts() throws OseeCoreException {
+   private void validateBranchId(Artifact art, String parentBranchId) throws OseeCoreException {
+      try {
+         Branch branch = BranchManager.getBranch(new Integer(parentBranchId));
+         if (branch.isArchived()) {
+            xResultData.logError(art.getArtifactTypeName() + " " + art.getHumanReadableId() + " references archived parent in Parent Branch Id: " + parentBranchId);
+         }
+      } catch (BranchDoesNotExist ex) {
+         xResultData.logError(art.getArtifactTypeName() + " " + art.getHumanReadableId() + " branch does not exist for Parent Branch Id: " + parentBranchId);
+      }
+   }
+
+   private void loadAtsBranchArtifacts() throws OseeCoreException {
       xResultData.log(monitor, "testLoadAllCommonArtifacts - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
       artifacts = ArtifactQuery.getArtifactsFromBranch(AtsPlugin.getAtsBranch(), false);
       if (xResultData == null) {
@@ -209,12 +249,12 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       xResultData.log(monitor, "testLoadAllCommonArtifacts - Completed " + XDate.getDateNow(XDate.MMDDYYHHMM));
    }
 
-   public void testAtsBranchAttributeValues() throws OseeCoreException {
+   private void testAtsBranchAttributeValues() throws OseeCoreException {
       xResultData.log(monitor, "testAtsBranchAttributeValues");
       for (Artifact artifact : artifacts) {
          for (Attribute<?> attr : artifact.getAttributes(false)) {
             if (attr.getValue() == null) {
-               xResultData.logError("Artifact: " + artifact.getHumanReadableId() + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute: " + attr.getNameValueDescription());
+               xResultData.logError("Artifact: " + artifact.getHumanReadableId() + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
                if (fixAttributeValues) {
                   attr.delete();
                }
@@ -224,7 +264,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testAtsActionsHaveTeamWorkflow() throws OseeCoreException {
+   private void testAtsActionsHaveTeamWorkflow() throws OseeCoreException {
       xResultData.log(monitor, "testAtsActionsHaveTeamWorkflow");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ActionArtifact) {
@@ -235,7 +275,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testAtsWorkflowsHaveAction() throws OseeCoreException {
+   private void testAtsWorkflowsHaveAction() throws OseeCoreException {
       xResultData.log(monitor, "testAtsActionsHaveTeamWorkflow");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
@@ -246,7 +286,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testAtsWorkflowsHaveZeroOrOneVersion() throws OseeCoreException {
+   private void testAtsWorkflowsHaveZeroOrOneVersion() throws OseeCoreException {
       xResultData.log(monitor, "testAtsWorkflowsHaveZeroOrOneVersion");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
@@ -260,7 +300,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
 
    }
 
-   public void testTasksHaveParentWorkflow() throws OseeCoreException {
+   private void testTasksHaveParentWorkflow() throws OseeCoreException {
       xResultData.log(monitor, "testTasksHaveParentWorkflow");
       Set<Artifact> badTasks = new HashSet<Artifact>(30);
       for (Artifact artifact : artifacts) {
@@ -278,7 +318,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testReviewsHaveParentWorkflowOrActionableItems() throws OseeCoreException {
+   private void testReviewsHaveParentWorkflowOrActionableItems() throws OseeCoreException {
       xResultData.log(monitor, "testReviewsHaveParentWorkflowOrActionableItems");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ReviewSMArtifact) {
@@ -290,7 +330,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testAtsLogs() throws OseeCoreException {
+   private void testAtsLogs() throws OseeCoreException {
       xResultData.log(monitor, "testAtsLogs");
       for (Artifact art : artifacts) {
          if (art instanceof StateMachineArtifact) {
@@ -340,7 +380,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testStateMachineAssignees() throws OseeCoreException {
+   private void testStateMachineAssignees() throws OseeCoreException {
       xResultData.log(monitor, "testStateMachineAssignees");
       User unAssignedUser = UserManager.getUser(SystemUser.UnAssigned);
       User oseeSystemUser = UserManager.getUser(SystemUser.OseeSystem);
