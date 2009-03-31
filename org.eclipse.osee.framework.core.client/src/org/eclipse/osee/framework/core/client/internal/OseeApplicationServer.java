@@ -19,6 +19,7 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,8 +86,8 @@ public class OseeApplicationServer {
       } else {
          isServerAlive = checkStatus();
          if (isServerAlive) {
-            OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.INFO, "%s [%s] Running Since: %s", oseeServer,
-                  serverInfo.getVersion(), format.format(serverInfo.getDateStarted())));
+            OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.INFO, "%s %s Running Since: %s", oseeServer,
+                  Arrays.deepToString(serverInfo.getVersion()), format.format(serverInfo.getDateStarted())));
          }
       }
    }
