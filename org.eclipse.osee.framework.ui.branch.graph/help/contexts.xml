@@ -1,0 +1,6 @@
+<contexts>
+	<context id="oseeBranchGraph" title="OSEE Branch Graph">
+		<description>Shows a graphical representation of branches in the system</description>
+		<topic href="help/oseeBranchGraph.html" label="OSEE Branch Graph"/>
+	</context>
+</contexts>

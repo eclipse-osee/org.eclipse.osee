@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+<extension
+         point="org.eclipse.ui.editors">
+           <editor
+            class="org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditor"
+            contributorClass="org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphActionBarContributor"
+            default="true"
+            icon="images/graph.gif"
+            id="org.eclipse.osee.framework.ui.branch.graph.BranchGraphEditor"
+            name="Branch Graph">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.osee.framework.ui.branch.graph.OpenBranchGraph"
+            description="Open the Branch Graph"
+            id="org.eclipse.osee.framework.ui.branch.graph.command.open.branch.graph"
+            name="Open Branch Graph">
+      </command>
+   </extension>
+      <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
+         <command
+               commandId="org.eclipse.osee.framework.ui.branch.graph.command.open.branch.graph"
+               icon="images/graph.gif"
+               label="Open Branch Graph"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
+         <command
+               commandId="org.eclipse.osee.framework.ui.branch.graph.command.open.branch.graph"
+               icon="images/graph.gif"
+               label="Open Branch Graph"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+      <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="help/toc.xml"
+            primary="false">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="help/contexts.xml">
+      </contexts>
+   </extension>
+</plugin>

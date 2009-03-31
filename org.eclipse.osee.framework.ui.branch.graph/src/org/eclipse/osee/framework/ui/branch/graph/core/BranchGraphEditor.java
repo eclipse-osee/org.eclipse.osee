@@ -1,0 +1,247 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.ui.branch.graph.core;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.gef.ContextMenuProvider;
+import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.KeyHandler;
+import org.eclipse.gef.KeyStroke;
+import org.eclipse.gef.MouseWheelHandler;
+import org.eclipse.gef.MouseWheelZoomHandler;
+import org.eclipse.gef.RootEditPart;
+import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
+import org.eclipse.gef.editparts.ScalableRootEditPart;
+import org.eclipse.gef.editparts.ZoomManager;
+import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.ui.actions.ActionRegistry;
+import org.eclipse.gef.ui.actions.GEFActionConstants;
+import org.eclipse.gef.ui.actions.ZoomInAction;
+import org.eclipse.gef.ui.actions.ZoomOutAction;
+import org.eclipse.gef.ui.palette.PaletteCustomizer;
+import org.eclipse.gef.ui.palette.PaletteViewer;
+import org.eclipse.gef.ui.palette.PaletteViewerProvider;
+import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
+import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
+import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;
+import org.eclipse.osee.framework.ui.branch.graph.operation.LoadGraphOperation;
+import org.eclipse.osee.framework.ui.branch.graph.parts.GraphEditPartFactory;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.swt.SWT;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.part.IPageSite;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
+
+   public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.branch.graph.BranchGraphEditor";
+   private static final String MAIN_HELP_CONTEXT = "oseeBranchGraph";
+
+   private BranchGraphOutlinePage overviewOutlinePage;
+   private ActionRegistry actionRegistry;
+   private BranchGraphPaletteProvider paletteProvider;
+   private KeyHandler shareKeyHandler;
+
+   public BranchGraphEditor() {
+      super();
+      setEditDomain(new DefaultEditDomain(this));
+   }
+
+   public ActionRegistry getActionRegistry() {
+      if (actionRegistry == null) {
+         actionRegistry = new ActionRegistry();
+      }
+      return actionRegistry;
+   }
+
+   public void setFocus() {
+   }
+
+   public void showGraphFor(BranchGraphEditorInput editorInput) {
+      setPartName(editorInput.getName() + " Graph");
+      LoadGraphOperation task =
+            new LoadGraphOperation(getSite().getPart(), getGraphicalViewer(), this, editorInput.getBranch());
+      Jobs.run(task.getName(), task, BranchGraphActivator.class, BranchGraphActivator.PLUGIN_ID, true);
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public Object getAdapter(Class adapter) {
+      if (adapter == GraphicalViewer.class || adapter == EditPartViewer.class) {
+         return getGraphicalViewer();
+      } else if (adapter == ZoomManager.class) {
+         return ((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
+      } else if (adapter == IContentOutlinePage.class) {
+         return getOverviewOutlinePage();
+      }
+      return super.getAdapter(adapter);
+   }
+
+   public void refresh() {
+      getGraphicalViewer().setContents("Loading graph... This can take several minutes");
+      showGraphFor((BranchGraphEditorInput) getEditorInput());
+   }
+
+   public void doSave(IProgressMonitor monitor) {
+   }
+
+   public void doSaveAs() {
+   }
+
+   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+      setSite(site);
+      setInput(input);
+   }
+
+   public boolean isDirty() {
+      return false;
+   }
+
+   public boolean isSaveAsAllowed() {
+      return false;
+   }
+
+   public GraphicalViewer getViewer() {
+      return getGraphicalViewer();
+   }
+
+   private BranchGraphOutlinePage getOverviewOutlinePage() {
+      if (null == overviewOutlinePage && null != getGraphicalViewer()) {
+         RootEditPart rootEditPart = getGraphicalViewer().getRootEditPart();
+         if (rootEditPart instanceof ScalableRootEditPart) {
+            overviewOutlinePage = new BranchGraphOutlinePage((ScalableRootEditPart) rootEditPart);
+         }
+      }
+      return overviewOutlinePage;
+   }
+
+   protected void configureGraphicalViewer() {
+      super.configureGraphicalViewer();
+
+      GraphicalViewer viewer = getGraphicalViewer();
+      viewer.setRootEditPart(new ScalableRootEditPart());
+      viewer.setEditPartFactory(new GraphEditPartFactory(viewer));
+
+      getSite().setSelectionProvider(viewer);
+
+      viewer.setContents("Loading graph... This can take several minutes");
+
+      ContextMenuProvider cmProvider = new BranchGraphEditorContextMenuProvider(viewer, this);
+      viewer.setContextMenu(cmProvider);
+
+      IEditorInput input = getEditorInput();
+      if (input instanceof BranchGraphEditorInput) {
+         BranchGraphEditorInput editorInput = (BranchGraphEditorInput) input;
+         showGraphFor(editorInput);
+      }
+
+      ZoomManager zoomManager = ((ScalableRootEditPart) viewer.getRootEditPart()).getZoomManager();
+      IAction zoomIn = new ZoomInAction(zoomManager);
+      IAction zoomOut = new ZoomOutAction(zoomManager);
+      getActionRegistry().registerAction(zoomIn);
+      getActionRegistry().registerAction(zoomOut);
+
+      viewer.setKeyHandler(getCommonKeyHandler());
+
+      // Scroll-wheel Zoom
+      viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
+
+      getSite().getKeyBindingService().registerAction(zoomIn);
+      getSite().getKeyBindingService().registerAction(zoomOut);
+      List<String> zoomContributions =
+            Arrays.asList(new String[] {ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH});
+      zoomManager.setZoomLevelContributions(zoomContributions);
+
+      try {
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+               "org.eclipse.ui.views.ContentOutline");
+      } catch (PartInitException ex) {
+         OseeLog.log(BranchGraphActivator.class, Level.SEVERE, ex);
+      }
+      //      viewer.setHelpContext(MAIN_HELP_CONTEXT);
+   }
+
+   protected KeyHandler getCommonKeyHandler() {
+      if (shareKeyHandler == null) {
+         shareKeyHandler = new GraphicalViewerKeyHandler(getViewer());
+         shareKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0), getActionRegistry().getAction(
+               GEFActionConstants.DIRECT_EDIT));
+      }
+      return shareKeyHandler;
+   }
+
+   protected void initializeGraphicalViewer() {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
+    */
+   @Override
+   protected PaletteRoot getPaletteRoot() {
+      if (paletteProvider == null) {
+         paletteProvider = new BranchGraphPaletteProvider();
+      }
+      return paletteProvider.getPaletteRoot();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPaletteViewerProvider()
+    */
+   @Override
+   protected PaletteViewerProvider createPaletteViewerProvider() {
+      return new PaletteViewerProvider(getEditDomain()) {
+         protected void configurePaletteViewer(PaletteViewer viewer) {
+            super.configurePaletteViewer(viewer);
+            viewer.setCustomizer(new PaletteCustomizer() {
+               public void revertToSaved() {
+               }
+
+               public void save() {
+               }
+            });
+            viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));
+         }
+      };
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPalettePage()
+    */
+   @Override
+   protected CustomPalettePage createPalettePage() {
+      return new CustomPalettePage(getPaletteViewerProvider()) {
+         public void init(IPageSite pageSite) {
+            super.init(pageSite);
+            IAction copy = getActionRegistry().getAction(ActionFactory.COPY.getId());
+            pageSite.getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), copy);
+         }
+      };
+   }
+
+   public void setOutlineContent(GraphCache graph) {
+      getOverviewOutlinePage().setTreeContent(graph);
+   }
+}
