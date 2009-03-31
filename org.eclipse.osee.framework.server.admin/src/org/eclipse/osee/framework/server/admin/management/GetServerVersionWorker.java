@@ -25,7 +25,7 @@ public class GetServerVersionWorker extends BaseCmdWorker {
    @Override
    protected void doWork(long startTime) throws Exception {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("\nOsee Application Server: ");
+      buffer.append("Osee Application Server: ");
       buffer.append(Arrays.deepToString(CoreServerActivator.getApplicationServerManager().getSupportedVersions()));
       buffer.append("\n");
       println(buffer.toString());

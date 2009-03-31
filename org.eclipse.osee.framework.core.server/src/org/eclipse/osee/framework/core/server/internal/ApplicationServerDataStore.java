@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.core.server.internal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
@@ -45,6 +47,9 @@ public class ApplicationServerDataStore {
          "SELECT count(1) FROM osee_session WHERE managed_by_server_id = ?";
 
    private static final String SELECT_FROM_LOOKUP_TABLE = "SELECT * FROM osee_server_lookup";
+
+   private static final String SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID =
+         "SELECT version_id FROM osee_server_lookup where server_id = ?";
 
    static void removeByServerId(List<OseeServerInfo> infos) throws OseeDataStoreException {
       if (!infos.isEmpty()) {
@@ -154,6 +159,27 @@ public class ApplicationServerDataStore {
          }
       }
       return servers.values();
+   }
+
+   static Set<String> getOseeVersionsByServerId(String serverId) throws OseeDataStoreException {
+      Set<String> supportedVersions = new HashSet<String>();
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         if (ConnectionHandler.doesTableExist("osee_server_lookup")) {
+            chStmt.runPreparedQuery(SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID, serverId);
+            while (chStmt.next()) {
+               String version = chStmt.getString("version_id");
+               if (Strings.isValid(version)) {
+                  supportedVersions.add(version);
+               }
+            }
+         } else {
+            OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
+         }
+      } finally {
+         chStmt.close();
+      }
+      return supportedVersions;
    }
 
    static int getNumberOfSessions(String serverId) throws OseeDataStoreException {
