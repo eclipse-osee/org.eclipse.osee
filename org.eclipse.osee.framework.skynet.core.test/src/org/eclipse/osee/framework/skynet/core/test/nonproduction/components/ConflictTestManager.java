@@ -72,19 +72,26 @@ public class ConflictTestManager {
       protected String destValue;
       protected String mergeValue;
       protected Class<?> clas;
+      protected boolean deleted;
 
       protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas) {
+         this(attributeName, sourceValue, destValue, mergeValue, clas, false);
+      }
+      
+      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas, boolean deleted) {
          this.attributeName = attributeName;
          this.sourceValue = sourceValue;
          this.destValue = destValue;
          this.mergeValue = mergeValue;
          this.clas = clas;
+         this.deleted = deleted;
       }
 
       protected AttributeValue(String attributeName, String sourceValue, Class<?> clas) {
          this.attributeName = attributeName;
          this.sourceValue = sourceValue;
          this.clas = clas;
+         deleted = false;
       }
    }
 
@@ -229,13 +236,17 @@ public class ConflictTestManager {
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          for (AttributeValue value : conflictDefs[i].values) {
-            if (value.sourceValue != null) {
-               conflictDefs[i].sourceModified = true;
-               sourceArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas,
-                     value.sourceValue));
-            }
-            if (value.sourceValue != null && value.destValue != null) {
-               conflictDefs[i].numConflicts++;
+            if (value.deleted) {
+               sourceArtifacts[i].getSoleAttribute(value.attributeName).delete();
+            } else {
+               if (value.sourceValue != null) {
+                  conflictDefs[i].sourceModified = true;
+                  sourceArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas,
+                        value.sourceValue));
+               }
+               if (value.sourceValue != null && value.destValue != null) {
+                  conflictDefs[i].numConflicts++;
+               }
             }
          }
          sourceArtifacts[i].persistAttributes();
@@ -502,7 +513,12 @@ public class ConflictTestManager {
                if (value.destValue == null) {
                   expected = value.sourceValue;
                }
-               if (!stringToObject(value.clas, expected).toString().equals(
+               if (value.deleted){
+                  if (destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, "Deleted").equals("Deleted")){
+                     System.err.println("The attribute should have been deleted but wasn't");
+                     return false;
+                  }
+               } else if (!stringToObject(value.clas, expected).toString().equals(
                      destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, " ")) && !destArtifacts[i].isDeleted()) {
                   System.err.println("Expected the " + value.attributeName + " attribute to have a value of " + stringToObject(
                         value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
@@ -597,6 +613,9 @@ public class ConflictTestManager {
       conflictDefs[14].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[14].values.add(new AttributeValue("Name", "Test Artifact Number 14 - Parent", null, "Source",
             StringAttribute.class));
+      conflictDefs[14].values.add(new AttributeValue("Safety Criticality", "5", null, "Source",
+            StringAttribute.class, true));
+      
       conflictDefs[15].setValues("Software Requirement", false, false, 14, DELETION_TEST_QUERY);
       conflictDefs[15].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[15].values.add(new AttributeValue("Name", "Test Artifact Number 15 - Child", null, "Source",
