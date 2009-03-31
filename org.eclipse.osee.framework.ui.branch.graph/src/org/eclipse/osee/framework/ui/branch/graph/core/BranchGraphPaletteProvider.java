@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.branch.graph.core;
 
+import org.eclipse.gef.Tool;
 import org.eclipse.gef.palette.MarqueeToolEntry;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteDrawer;
@@ -17,7 +18,13 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PaletteToolbar;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
 import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.gef.tools.AbstractTool;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphImageConstants;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Roberto E. Escobar
@@ -26,9 +33,11 @@ public class BranchGraphPaletteProvider {
 
    private static final String[] drawerNames = new String[] {"Filters"};
    private PaletteRoot paletteRoot;
+   private BranchGraphEditor editor;
 
-   public BranchGraphPaletteProvider() {
+   public BranchGraphPaletteProvider(BranchGraphEditor editor) {
       this.paletteRoot = null;
+      this.editor = editor;
    }
 
    public PaletteRoot getPaletteRoot() {
@@ -72,6 +81,44 @@ public class BranchGraphPaletteProvider {
       palette.setDefaultEntry(tool);
 
       toolbar.add(new MarqueeToolEntry());
+
+      final Action action =
+            OseeAts.createBugAction(BranchGraphActivator.getInstance(), editor, BranchGraphEditor.EDITOR_ID,
+                  "Branch Graph");
+      final ImageDescriptor img = action.getImageDescriptor();
+
+      toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
+
+         /* (non-Javadoc)
+          * @see org.eclipse.gef.palette.ToolEntry#createTool()
+          */
+         @Override
+         public Tool createTool() {
+            return new AbstractTool() {
+
+               @Override
+               protected String getCommandName() {
+                  return action.getText();
+               }
+
+               /* (non-Javadoc)
+                * @see org.eclipse.gef.tools.AbstractTool#activate()
+                */
+               @Override
+               public void activate() {
+                  super.activate();
+                  Display.getDefault().asyncExec(new Runnable() {
+                     public void run() {
+                        deactivate();
+                        action.run();
+                     }
+                  });
+
+               }
+            };
+         }
+
+      });
 
       return toolbar;
    }

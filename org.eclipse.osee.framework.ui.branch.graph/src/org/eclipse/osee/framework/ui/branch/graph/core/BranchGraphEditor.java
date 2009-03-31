@@ -202,7 +202,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
    @Override
    protected PaletteRoot getPaletteRoot() {
       if (paletteProvider == null) {
-         paletteProvider = new BranchGraphPaletteProvider();
+         paletteProvider = new BranchGraphPaletteProvider(this);
       }
       return paletteProvider.getPaletteRoot();
    }
