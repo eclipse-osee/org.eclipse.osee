@@ -116,6 +116,8 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
       createTaskActionBar(mainComp);
 
+      (new Label(mainComp, SWT.None)).setText("Select \"New Defect\" to add.  Select icon in cell to update value or Alt-Left-Click to update field.");
+
       xViewer = new DefectXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xViewer.setContentProvider(new DefectContentProvider(xViewer));
       xViewer.setLabelProvider(new DefectLabelProvider(xViewer));
@@ -135,7 +137,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       handleExpandCollapseDefectTableList();
 
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
-      (new Label(mainComp, SWT.None)).setText("Select \"New Defect\" to add.  Select icon in cell to update value or Alt-Left-Click to update field.");
       loadTable();
    }
 
@@ -300,7 +301,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       }
       xViewer.refresh();
       if (getForm(parentComposite) != null) {
-         ((ScrolledForm) getForm(parentComposite)).reflow(true);
+         (getForm(parentComposite)).reflow(true);
       }
    }
 

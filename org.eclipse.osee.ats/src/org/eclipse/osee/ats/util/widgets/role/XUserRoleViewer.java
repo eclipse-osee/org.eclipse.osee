@@ -98,6 +98,8 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
       createTaskActionBar(mainComp);
 
+      (new Label(mainComp, SWT.None)).setText("Select \"New Role\" to add.  Select icon in cell to update value.");
+
       xViewer = new UserRoleXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -125,7 +127,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       tree.setLinesVisible(true);
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
 
-      (new Label(mainComp, SWT.None)).setText("Select \"New Role\" to add.  Select icon in cell to update value.");
       loadTable();
    }
 
