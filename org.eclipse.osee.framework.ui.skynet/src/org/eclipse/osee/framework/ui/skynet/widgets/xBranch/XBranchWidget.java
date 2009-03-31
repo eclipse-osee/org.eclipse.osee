@@ -133,7 +133,7 @@ public class XBranchWidget extends XWidget implements IActionable {
       branchXViewer.setContentProvider(branchContentProvider);
       xBranchLabelProvider = new XBranchLabelProvider(branchXViewer);
       branchXViewer.setLabelProvider(xBranchLabelProvider);
-      sorter = new FavoriteSorter(xBranchLabelProvider);
+      sorter = new FavoriteSorter(branchXViewer);
       branchXViewer.setSorter(sorter);
 
       if (toolkit != null) toolkit.adapt(branchXViewer.getStatusLabel(), false, false);
