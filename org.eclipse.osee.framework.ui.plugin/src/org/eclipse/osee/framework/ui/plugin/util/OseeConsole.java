@@ -67,10 +67,13 @@ public class OseeConsole {
          public void run() {
             streamOut = console.newOutputStream();// newMessageStream();
             streamOut.setColor(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
+            streamOut.setActivateOnWrite(false);
             streamErr = console.newOutputStream();
             streamErr.setColor(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+            streamErr.setActivateOnWrite(false);
             streamPrompt = console.newOutputStream();
             streamPrompt.setColor(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
+            streamPrompt.setActivateOnWrite(false);
          }
       });
       thread.start();
@@ -116,7 +119,7 @@ public class OseeConsole {
     * @param popup bring console window forward
     */
    public void write(String str, boolean popup) {
-      write(str, CONSOLE_OUT, true);
+      write(str, CONSOLE_OUT, popup);
    }
 
    /**
