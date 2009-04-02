@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
+import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
@@ -71,11 +72,9 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitHandler;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ListDialogSortable;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -241,22 +240,6 @@ public class AtsBranchManager {
    }
 
    /**
-    * Display change report associated with the branch, if exists, or transaction, if branch has been committed.
-    */
-   public void showCommitManager() {
-      try {
-         if (smaMgr.getBranchMgr().getWorkingBranch() == null) {
-            AWorkbench.popup("ERROR", "No working branch");
-         } else if (!(smaMgr.getSma() instanceof IBranchArtifact)) {
-            AWorkbench.popup("ERROR", "Not IBranchArtifact");
-         } else
-            CommitManagerView.openViewUpon((IBranchArtifact) smaMgr.getSma());
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
-   /**
     * Return working branch associated with SMA; This data is cached across all workflows with the cache being updated
     * by local and remote events.
     * 
@@ -343,7 +326,9 @@ public class AtsBranchManager {
             StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(smaMgr, workRuleDef);
             if (eventType != null && eventType == stateEventType) {
                if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
-                  DecisionReviewArtifact decArt = AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, smaMgr);
+                  DecisionReviewArtifact decArt =
+                        AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, smaMgr,
+                              DecisionRuleOption.TransitionToDecision);
                   if (decArt != null) decArt.persistAttributesAndRelations(transaction);
                } else if (ruleId.equals(AtsAddPeerToPeerReviewRule.ID)) {
                   PeerToPeerReviewArtifact peerArt =

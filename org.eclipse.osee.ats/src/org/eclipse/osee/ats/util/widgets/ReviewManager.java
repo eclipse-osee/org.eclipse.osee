@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -84,8 +85,8 @@ public class ReviewManager {
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
 
          SMAManager revSmaMgr = new SMAManager(decRev);
-         revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), smaMgr.getOriginator(), true,
-               transaction);
+         revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), smaMgr.getOriginator(),
+               transaction, TransitionOption.Persist);
 
          return decRev;
 
@@ -108,8 +109,8 @@ public class ReviewManager {
                   transaction);
 
       SMAManager revSmaMgr = new SMAManager(decRev);
-      revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), assignees, true, false,
-            transaction);
+      revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), assignees, transaction,
+            TransitionOption.Persist, TransitionOption.OverrideAssigneeCheck);
       return decRev;
    }
 

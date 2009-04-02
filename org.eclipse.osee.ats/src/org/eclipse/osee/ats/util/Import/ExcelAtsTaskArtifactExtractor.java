@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
@@ -207,7 +208,9 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
             }
          }
          AtsPlugin.setEmailEnabled(true);
-         if (taskArt.isCompleted()) taskArt.transitionToCompleted(false, transaction);
+         if (taskArt.isCompleted()) {
+            taskArt.transitionToCompleted(transaction, TransitionOption.None);
+         }
          // always persist
          taskArt.persistAttributesAndRelations(transaction);
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {

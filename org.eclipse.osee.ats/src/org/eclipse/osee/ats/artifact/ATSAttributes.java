@@ -74,6 +74,7 @@ public class ATSAttributes {
          new ATSAttributes("Notes", "ats.SMA Note", "Notes applicable to ATS object");
    public static final ATSAttributes WORK_PACKAGE_ATTRIBUTE =
          new ATSAttributes("Work Package", "Designated accounting work package for completing workflow.");
+   public static final ATSAttributes COMMIT_BRANCH_ATTRIBUTE = new ATSAttributes("Commit Branch", "Commit branches.");
    public static final ATSAttributes CATEGORY_ATTRIBUTE =
          new ATSAttributes("Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final ATSAttributes CATEGORY2_ATTRIBUTE =

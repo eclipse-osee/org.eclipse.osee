@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.branch.CommitWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
-import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
+import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
 import org.eclipse.osee.ats.editor.service.branch.ShowMergeManagerService;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
@@ -97,7 +97,7 @@ public class ServicesArea {
             if (AtsPlugin.isAtsAdmin()) {
                sideBarServices.add(new CommitWorkingBranchService(smaMgr, true));
             }
-            sideBarServices.add(new DeleteWorkingBranch(smaMgr));
+            sideBarServices.add(new DeleteWorkingBranchService(smaMgr));
          }
          // Add state specific items (these can also contain branch items through extending BranchableStateItem class
          for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {

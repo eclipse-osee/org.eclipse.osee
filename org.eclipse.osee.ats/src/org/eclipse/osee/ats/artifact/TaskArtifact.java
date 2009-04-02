@@ -19,11 +19,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -215,14 +217,14 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return smaMgr.isCompleted();
    }
 
-   public void transitionToCancelled(String reason, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Cancelled.name())) return;
       setSoleAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
-      Result result = smaMgr.transition(DefaultTeamState.Cancelled.name(), (User) null, persist, transaction);
+      Result result = smaMgr.transition(DefaultTeamState.Cancelled.name(), (User) null, transaction, transitionOption);
       if (result.isFalse()) result.popup();
    }
 
-   public void transitionToCompleted(boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitionToCompleted(SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Completed.name())) return;
       // Assign current user if unassigned
       try {
@@ -232,17 +234,18 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      Result result = smaMgr.transition(DefaultTeamState.Completed.name(), (User) null, persist, transaction);
+      Result result = smaMgr.transition(DefaultTeamState.Completed.name(), (User) null, transaction, transitionOption);
       if (result.isFalse()) result.popup();
    }
 
-   public void transitionToInWork(User toUser, int percentComplete, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitionToInWork(User toUser, int percentComplete, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name())) return;
-      Result result = smaMgr.transition(TaskStates.InWork.name(), toUser, false, transaction);
+      Result result = smaMgr.transition(TaskStates.InWork.name(), toUser, transaction, transitionOption);
       if (smaMgr.getStateMgr().getPercentComplete() == 100) {
          smaMgr.getStateMgr().updateMetrics(0, percentComplete, true);
       }
-      if (persist) smaMgr.getSma().saveSMA(transaction);
+      if (Collections.getAggregate(transitionOption).contains(TransitionOption.Persist)) smaMgr.getSma().saveSMA(
+            transaction);
       if (result.isFalse()) result.popup();
    }
 
@@ -256,17 +259,17 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     */
    public void statusPercentChanged(int percentComplete, SkynetTransaction transaction) throws OseeCoreException {
       if (smaMgr.getStateMgr().getPercentComplete() == 100 && !isCompleted())
-         transitionToCompleted(false, transaction);
+         transitionToCompleted(transaction, TransitionOption.None);
       else if (smaMgr.getStateMgr().getPercentComplete() != 100 && isCompleted()) {
-         transitionToInWork(UserManager.getUser(), percentComplete, true, transaction);
+         transitionToInWork(UserManager.getUser(), percentComplete, transaction, TransitionOption.Persist);
       }
    }
 
-   public void parentWorkFlowTransitioned(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void parentWorkFlowTransitioned(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isInWork())
-         transitionToCancelled("Parent Cancelled", persist, transaction);
+         transitionToCancelled("Parent Cancelled", transaction, transitionOption);
       else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) transitionToInWork(
-            UserManager.getUser(), 99, persist, transaction);
+            UserManager.getUser(), 99, transaction, transitionOption);
    }
 
    /*

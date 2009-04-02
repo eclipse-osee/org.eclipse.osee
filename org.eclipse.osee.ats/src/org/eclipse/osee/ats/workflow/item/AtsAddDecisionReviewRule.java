@@ -14,16 +14,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
@@ -36,6 +37,10 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
    public static enum DecisionParameter {
       title, forState, forEvent, reviewBlockingType, assignees, options, description
    };
+
+   public static enum DecisionRuleOption {
+      None, TransitionToDecision
+   }
 
    public AtsAddDecisionReviewRule() {
       this(ID, ID);
@@ -72,7 +77,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
     * @return DecisionReviewArtifact
     * @throws OseeCoreException
     */
-   public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SMAManager smaMgr) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SkynetTransaction transaction, SMAManager smaMgr, DecisionRuleOption... decisionRuleOption) throws OseeCoreException {
       if (!atsAddDecisionReviewRule.getId().startsWith(AtsAddDecisionReviewRule.ID)) {
          throw new IllegalArgumentException("WorkRuleDefinition must be AtsAddDecisionReviewRule.ID");
       }
@@ -81,12 +86,24 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
          // Already created this review
          return null;
       }
-      DecisionReviewArtifact decArt =
-            NewDecisionReviewJob.createNewDecisionReview(smaMgr.getSma(), getReviewBlockTypeOrDefault(smaMgr,
-                  atsAddDecisionReviewRule), title, getValueOrDefault(smaMgr, atsAddDecisionReviewRule,
-                  DecisionParameter.forState), getValueOrDefault(smaMgr, atsAddDecisionReviewRule,
-                  DecisionParameter.description), getValueOrDefault(smaMgr, atsAddDecisionReviewRule,
-                  DecisionParameter.options), getAssigneesOrDefault(smaMgr, atsAddDecisionReviewRule));
+      DecisionReviewArtifact decArt = null;
+      if (Collections.getAggregate(decisionRuleOption).contains(DecisionRuleOption.TransitionToDecision)) {
+         decArt =
+               smaMgr.getReviewManager().createNewDecisionReviewAndTransitionToDecision(title,
+                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.description),
+                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.forState),
+                     getReviewBlockTypeOrDefault(smaMgr, atsAddDecisionReviewRule),
+                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.options),
+                     getAssigneesOrDefault(smaMgr, atsAddDecisionReviewRule), transaction);
+      } else {
+         decArt =
+               smaMgr.getReviewManager().createNewDecisionReview(title,
+                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.description),
+                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.forState),
+                     getReviewBlockTypeOrDefault(smaMgr, atsAddDecisionReviewRule),
+                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.options),
+                     getAssigneesOrDefault(smaMgr, atsAddDecisionReviewRule), transaction);
+      }
 
       decArt.getSmaMgr().getLog().addLog(LogType.Note, null,
             "Review auto-generated off rule " + atsAddDecisionReviewRule.getId());

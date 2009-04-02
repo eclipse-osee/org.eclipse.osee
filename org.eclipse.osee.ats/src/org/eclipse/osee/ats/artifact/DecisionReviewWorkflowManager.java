@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.artifact;
 
+import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -48,7 +49,7 @@ public class DecisionReviewWorkflowManager {
          result =
                reviewArt.getSmaMgr().transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(),
                      (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
-                     false, transaction);
+                     transaction, TransitionOption.None);
       }
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -67,7 +68,8 @@ public class DecisionReviewWorkflowManager {
 
       result =
             reviewArt.getSmaMgr().transition(toState.name(),
-                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false, transaction);
+                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+                  transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;

@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -32,11 +32,11 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class CommitManagerService extends WorkPageService implements IBranchEventListener {
+public class DeleteWorkingBranchService extends WorkPageService implements IBranchEventListener {
 
    private Hyperlink link;
 
-   public CommitManagerService(SMAManager smaMgr) {
+   public DeleteWorkingBranchService(SMAManager smaMgr) {
       super(smaMgr);
    }
 
@@ -53,42 +53,23 @@ public class CommitManagerService extends WorkPageService implements IBranchEven
     */
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(page.getName()) && isEnabled()) {
-         link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
-         if (smaMgr.getSma().isReadOnly())
-            link.addHyperlinkListener(readOnlyHyperlinkListener);
-         else
-            link.addHyperlinkListener(new IHyperlinkListener() {
+      link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
+      if (smaMgr.getSma().isReadOnly())
+         link.addHyperlinkListener(readOnlyHyperlinkListener);
+      else
+         link.addHyperlinkListener(new IHyperlinkListener() {
 
-               public void linkEntered(HyperlinkEvent e) {
-               }
+            public void linkEntered(HyperlinkEvent e) {
+            }
 
-               public void linkExited(HyperlinkEvent e) {
-               }
+            public void linkExited(HyperlinkEvent e) {
+            }
 
-               public void linkActivated(HyperlinkEvent e) {
-                  smaMgr.getBranchMgr().showCommitManager();
-               }
-            });
-
-      }
-      refresh();
+            public void linkActivated(HyperlinkEvent e) {
+               smaMgr.getBranchMgr().deleteEmptyWorkingBranch();
+            }
+         });
       OseeEventManager.addListener(this);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
-    */
-   @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      refresh();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.BranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
       refresh();
    }
 
@@ -97,7 +78,7 @@ public class CommitManagerService extends WorkPageService implements IBranchEven
     */
    @Override
    public String getName() {
-      return "Commit Manager";
+      return "Delete Working Branch";
    }
 
    /* (non-Javadoc)
@@ -108,28 +89,52 @@ public class CommitManagerService extends WorkPageService implements IBranchEven
       return AtsBranchManager.BRANCH_CATEGORY;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#refresh()
-    */
    @Override
    public void refresh() {
       if (link != null && !link.isDisposed()) {
-         link.setEnabled(isEnabled());
-         link.setUnderlined(isEnabled());
+         boolean enabled = false;
+         try {
+            enabled = smaMgr.getBranchMgr().isWorkingBranch();
+         } catch (Exception ex) {
+            // do nothing
+         }
+         link.setEnabled(enabled);
+         link.setUnderlined(enabled);
       }
    }
 
-   private boolean isEnabled() {
-      boolean enabled = false;
-      try {
-         enabled =
-               ((smaMgr.getSma() instanceof IBranchArtifact) && ((IBranchArtifact) smaMgr.getSma()).getWorkingBranch() != null);
-      } catch (Exception ex) {
-         // do nothing
-      }
-      return enabled;
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            refresh();
+         }
+      });
+
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            refresh();
+         }
+      });
+
    }
 
    /*

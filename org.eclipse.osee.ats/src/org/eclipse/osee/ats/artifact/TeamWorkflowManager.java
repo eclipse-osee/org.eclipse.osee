@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.artifact;
 
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -41,7 +42,7 @@ public class TeamWorkflowManager {
     * @param toState
     * @param user User to transition to OR null if should use user of current state
     * @param popup
-    * @param transaction 
+    * @param transaction
     * @return Result
     * @throws Exception
     */
@@ -53,7 +54,8 @@ public class TeamWorkflowManager {
       }
       result =
             smaMgr.transition(DefaultTeamState.Analyze.name(),
-                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), false, transaction);
+                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), transaction,
+                  TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -67,7 +69,8 @@ public class TeamWorkflowManager {
       }
       result =
             smaMgr.transition(DefaultTeamState.Authorize.name(),
-                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), false, transaction);
+                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), transaction,
+                  TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -82,7 +85,8 @@ public class TeamWorkflowManager {
 
       result =
             smaMgr.transition(DefaultTeamState.Implement.name(),
-                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), false, transaction);
+                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), transaction,
+                  TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -91,7 +95,8 @@ public class TeamWorkflowManager {
 
       result =
             smaMgr.transition(DefaultTeamState.Completed.name(),
-                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), false, transaction);
+                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), transaction,
+                  TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;

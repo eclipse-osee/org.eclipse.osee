@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -92,6 +93,13 @@ public class SMAManager {
    private final ATSNote atsNote;
    private static final AtsStateItems stateItems = new AtsStateItems();
    private boolean inTransition = false;
+   public static enum TransitionOption {
+      None, Persist,
+      // Override check whether workflow allows transition to state
+      OverrideTransitionValidityCheck,
+      // Allows transition to occur with UnAssigned, OseeSystem or Guest
+      OverrideAssigneeCheck
+   };
 
    public SMAManager(StateMachineArtifact sma, SMAEditor editor) {
       super();
@@ -807,35 +815,29 @@ public class SMAManager {
       return taskMgr;
    }
 
-   public Result transition(String toStateName, User toAssignee, boolean persist, SkynetTransaction transaction) {
-      List<User> users = new ArrayList<User>();
-      if (toAssignee != null && !toStateName.equals(DefaultTeamState.Completed.name()) && !toStateName.equals(DefaultTeamState.Cancelled.name())) users.add(toAssignee);
-      return transition(toStateName, users, persist, false, transaction);
-   }
-
-   public Result transitionToCancelled(String reason, boolean persist, SkynetTransaction transaction) {
+   public Result transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
       Result result =
-            transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason, false,
-                  transaction);
+            transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), reason, transaction,
+                  transitionOption);
       return result;
    }
 
-   public Result transitionToCompleted(String reason, boolean persist, SkynetTransaction transaction) {
+   public Result transitionToCompleted(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
       Result result =
-            transition(DefaultTeamState.Completed.name(), Arrays.asList(new User[] {}), persist, reason, false,
-                  transaction);
+            transition(DefaultTeamState.Completed.name(), Arrays.asList(new User[] {}), reason, transaction,
+                  transitionOption);
       return result;
    }
 
-   public Result transition(String toStateName, Collection<User> toAssignees, boolean persist, boolean overrideTransitionCheck, SkynetTransaction transaction) {
-      return transition(toStateName, toAssignees, persist, null, overrideTransitionCheck, transaction);
-   }
-
-   public Result isTransitionValid(final String toStateName, final Collection<User> toAssignees, boolean overrideTransitionCheck) throws OseeCoreException {
+   public Result isTransitionValid(final String toStateName, final Collection<User> toAssignees, TransitionOption... transitionOption) throws OseeCoreException {
+      boolean overrideTransitionCheck =
+            Collections.getAggregate(transitionOption).contains(TransitionOption.OverrideTransitionValidityCheck);
+      boolean overrideAssigneeCheck =
+            Collections.getAggregate(transitionOption).contains(TransitionOption.OverrideAssigneeCheck);
       // Validate assignees
-      if (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || getStateMgr().getAssignees().contains(
+      if (!overrideAssigneeCheck && (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || getStateMgr().getAssignees().contains(
             UserManager.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
-            UserManager.getUser(SystemUser.UnAssigned))) {
+            UserManager.getUser(SystemUser.UnAssigned)))) {
          return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
       }
 
@@ -870,10 +872,21 @@ public class SMAManager {
       return Result.TrueResult;
    }
 
-   private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String completeOrCancelReason, boolean overrideTransitionCheck, SkynetTransaction transaction) {
-      try {
+   public Result transition(String toStateName, User toAssignee, SkynetTransaction transaction, TransitionOption... transitionOption) {
+      List<User> users = new ArrayList<User>();
+      if (toAssignee != null && !toStateName.equals(DefaultTeamState.Completed.name()) && !toStateName.equals(DefaultTeamState.Cancelled.name())) users.add(toAssignee);
+      return transition(toStateName, users, transaction, transitionOption);
+   }
 
-         Result result = isTransitionValid(toStateName, toAssignees, overrideTransitionCheck);
+   public Result transition(String toStateName, Collection<User> toAssignees, SkynetTransaction transaction, TransitionOption... transitionOption) {
+      return transition(toStateName, toAssignees, null, transaction, transitionOption);
+   }
+
+   private Result transition(final String toStateName, final Collection<User> toAssignees, final String completeOrCancelReason, SkynetTransaction transaction, TransitionOption... transitionOption) {
+      try {
+         final boolean persist = Collections.getAggregate(transitionOption).contains(TransitionOption.Persist);
+
+         Result result = isTransitionValid(toStateName, toAssignees, transitionOption);
          if (result.isFalse()) return result;
 
          final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();

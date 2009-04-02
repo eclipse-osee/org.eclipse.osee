@@ -16,6 +16,7 @@ import java.util.Iterator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -43,13 +45,14 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitViewer extends XWidget {
+public class XCommitViewer extends XWidget implements IArtifactWidget {
 
    private CommitXViewer xCommitViewer;
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
    private Artifact artifact;
+   private ICommitViewerArtifact iCommitViewerArtifact;
 
    /**
     * @param label
@@ -108,6 +111,7 @@ public class XCommitViewer extends XWidget {
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
 
+      loadTable();
    }
 
    public void createTaskActionBar(Composite parent) {
@@ -177,8 +181,10 @@ public class XCommitViewer extends XWidget {
 
    public void loadTable() {
       try {
-         if (artifact != null && (artifact instanceof IBranchArtifact)) xCommitViewer.setWorkingBranch(((IBranchArtifact) artifact).getWorkingBranch());
-         extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
+         if (xCommitViewer != null && artifact != null && (artifact instanceof IBranchArtifact) && ((IBranchArtifact) artifact).getWorkingBranch() != null) {
+            xCommitViewer.setWorkingBranch(((IBranchArtifact) artifact).getWorkingBranch());
+            extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
+         }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -215,6 +221,7 @@ public class XCommitViewer extends XWidget {
 
    @Override
    public void refresh() {
+      if (xCommitViewer == null) return;
       xCommitViewer.refresh();
       setLabelError();
       refreshActionEnablement();
@@ -284,7 +291,32 @@ public class XCommitViewer extends XWidget {
     */
    public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException {
       this.artifact = artifact;
+      if (this.artifact instanceof ICommitViewerArtifact) {
+         this.iCommitViewerArtifact = (ICommitViewerArtifact) artifact;
+      }
       loadTable();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
+    */
+   @Override
+   public Result isDirty() throws OseeCoreException {
+      return Result.FalseResult;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
+   @Override
+   public void revert() throws OseeCoreException {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
+    */
+   @Override
+   public void saveToArtifact() throws OseeCoreException {
    }
 
 }

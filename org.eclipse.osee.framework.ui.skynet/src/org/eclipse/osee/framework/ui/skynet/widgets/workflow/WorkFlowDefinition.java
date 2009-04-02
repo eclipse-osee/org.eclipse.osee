@@ -271,6 +271,10 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       WorkFlowDefinition.addPageTransition(pageIdToPageIdsViaTransitionType, fromPageId, toPageId, transitionType);
    }
 
+   public void removePageTransition(String fromPageId, String toPageId, TransitionType... transitionType) {
+      WorkFlowDefinition.removePageTransition(pageIdToPageIdsViaTransitionType, fromPageId, toPageId, transitionType);
+   }
+
    /**
     * Register transition for from and to pages. The use of simple page names (eg "Endorse") allows for other workflows
     * to inherit this workflow by just using the same state names. id will be prepended to name prior to retrieving the
@@ -296,6 +300,22 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
          }
          toPageIds.add(toPageId);
 
+         transitionTypeToPageIds.put(transType, toPageIds);
+         pageIdToPageIdsViaTransitionType.put(fromPageId, transitionTypeToPageIds);
+      }
+   }
+
+   public static void removePageTransition(Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType, String fromPageId, String toPageId, TransitionType... transitionType) {
+      Map<TransitionType, Set<String>> transitionTypeToPageIds = pageIdToPageIdsViaTransitionType.get(fromPageId);
+      if (transitionTypeToPageIds == null) {
+         return;
+      }
+      for (TransitionType transType : transitionType) {
+         Set<String> toPageIds = transitionTypeToPageIds.get(transType);
+         if (toPageIds == null) {
+            return;
+         }
+         toPageIds.remove(toPageId);
          transitionTypeToPageIds.put(transType, toPageIds);
          pageIdToPageIdsViaTransitionType.put(fromPageId, transitionTypeToPageIds);
       }

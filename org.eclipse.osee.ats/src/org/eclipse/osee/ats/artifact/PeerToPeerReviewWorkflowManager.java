@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -35,7 +36,7 @@ public class PeerToPeerReviewWorkflowManager {
     * @param toState
     * @param user User to transition to OR null if should use user of current state
     * @param popup
-    * @param transaction 
+    * @param transaction
     * @return Result
     * @throws Exception
     */
@@ -47,7 +48,8 @@ public class PeerToPeerReviewWorkflowManager {
       }
       result =
             reviewArt.getSmaMgr().transition(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(),
-                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false, transaction);
+                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+                  transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -62,7 +64,8 @@ public class PeerToPeerReviewWorkflowManager {
 
       result =
             reviewArt.getSmaMgr().transition(DefaultTeamState.Completed.name(),
-                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false, transaction);
+                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+                  transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;

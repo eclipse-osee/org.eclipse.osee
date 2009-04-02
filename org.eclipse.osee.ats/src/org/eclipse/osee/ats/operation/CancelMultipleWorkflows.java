@@ -9,6 +9,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -44,7 +45,8 @@ public class CancelMultipleWorkflows implements IAtsWorldEditorMenuItem {
          return;
       }
       for (StateMachineArtifact sma : smas) {
-         Result result = sma.getSmaMgr().isTransitionValid(DefaultTeamState.Cancelled.name(), null, false);
+         Result result =
+               sma.getSmaMgr().isTransitionValid(DefaultTeamState.Cancelled.name(), null, TransitionOption.None);
          if (result.isFalse()) {
             result.popup();
             return;
@@ -54,7 +56,7 @@ public class CancelMultipleWorkflows implements IAtsWorldEditorMenuItem {
       if (ed.open() == 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          for (StateMachineArtifact sma : smas) {
-            Result result = sma.getSmaMgr().transitionToCancelled(ed.getEntry(), true, transaction);
+            Result result = sma.getSmaMgr().transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);
             if (result.isFalse()) {
                result.popup();
                return;

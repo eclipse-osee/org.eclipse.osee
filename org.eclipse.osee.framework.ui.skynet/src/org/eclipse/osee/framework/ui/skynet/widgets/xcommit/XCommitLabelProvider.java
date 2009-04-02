@@ -102,8 +102,10 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    private Image getCommitStatusImage(Branch branch) throws OseeCoreException {
       if (branch.equals(commitXViewer.getWorkingBranch()))
          return null;
-      else if (branch.equals(commitXViewer.getWorkingBranch().getParentBranch()) || branch.isBaselineBranch()) return isCommittedInto(branch) ? SkynetGuiPlugin.getInstance().getImage(
-            "green_light.gif") : SkynetGuiPlugin.getInstance().getImage("red_light.gif");
+      else if (branch.equals(commitXViewer.getWorkingBranch().getParentBranch()) || branch.isBaselineBranch()) {
+         return isCommittedInto(branch) ? SkynetGuiPlugin.getInstance().getImage("green_light.gif") : SkynetGuiPlugin.getInstance().getImage(
+               "red_light.gif");
+      }
       return null;
    }
 }

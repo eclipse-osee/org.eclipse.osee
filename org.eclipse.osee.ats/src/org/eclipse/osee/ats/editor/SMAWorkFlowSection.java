@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.util.AtsLib;
@@ -574,7 +575,8 @@ public class SMAWorkFlowSection extends SectionPart {
             EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
             if (cancelDialog.open() != 0) return;
             SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-            Result result = smaMgr.transitionToCancelled(cancelDialog.getEntry(), true, transaction);
+            Result result =
+                  smaMgr.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
             transaction.execute();
             if (result.isFalse()) {
                result.popup();
@@ -667,7 +669,8 @@ public class SMAWorkFlowSection extends SectionPart {
 
          // Perform transition separate from persist of previous changes to state machine artifact
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         Result result = smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true, false, transaction);
+         Result result =
+               smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, transaction, TransitionOption.Persist);
          transaction.execute();
          if (result.isFalse()) {
             result.popup();

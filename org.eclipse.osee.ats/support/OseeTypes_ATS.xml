@@ -99,10 +99,10 @@
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R212C1:R237C5"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R213C1:R240C5"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="243" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="246" x:FullColumns="1"
    x:FullRows="1">
    <Column ss:AutoFitWidth="0" ss:Width="286.5"/>
    <Column ss:AutoFitWidth="0" ss:Width="339.75"/>
@@ -1360,6 +1360,15 @@
     <Cell><Data ss:Type="String">Fav</Data></Cell>
     <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
+   <Row>
+    <Cell><Data ss:Type="String">ChildVersionsToCommitTo</Data></Cell>
+    <Cell><Data ss:Type="String">Parent</Data></Cell>
+    <Cell><Data ss:Type="String">has children</Data></Cell>
+    <Cell><Data ss:Type="String">Child</Data></Cell>
+    <Cell><Data ss:Type="String">has parent</Data></Cell>
+    <Cell><Data ss:Type="String">CmtVer</Data></Cell>
+    <Cell><Data ss:Type="String">Yes</Data></Cell>
+   </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22"/>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell><Data ss:Type="String"># NOTE: The way relations are added and because All Artifacts are of SuperType &quot;Artifact&quot;, line Defect,ArtifactToDef will set Defect's max with 0,0 and Artifact,ArtifactToDefect will add n,0 to all other artifact types</Data></Cell>
@@ -1581,6 +1590,27 @@
     <Cell><Data ss:Type="String">Workflow</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
    </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell><Data ss:Type="String">Version</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
+    <Cell><Data ss:Type="String">ChildVersionsToCommitTo</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell><Data ss:Type="String">Action</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Version</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
+    <Cell><Data ss:Type="String">ChildVersionsToCommitTo</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell><Data ss:Type="String">Workflow</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+   </Row>
    <Row>
     <Cell><Data ss:Type="String">Task</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">SmaToTask</Data><NamedCell
@@ -1718,13 +1748,12 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>168</TopRowVisible>
-   <LeftColumnVisible>3</LeftColumnVisible>
+   <TopRowVisible>204</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>196</ActiveRow>
-     <ActiveCol>6</ActiveCol>
+     <ActiveRow>231</ActiveRow>
+     <ActiveCol>2</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
