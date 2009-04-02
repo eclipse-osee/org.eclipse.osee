@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextResourceDropDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
 import org.osgi.framework.Bundle;
 
 /**
@@ -110,6 +111,8 @@ public class XWidgetFactory {
          xWidget = new XMultiXWidgetTextDam(name);
       else if (xWidgetName.equals("XFileSelectionDialog"))
          xWidget = new XFileTextWithSelectionDialog(name);
+      else if (xWidgetName.equals("XDirectorySelectionDialog"))
+         xWidget = new XFileTextWithSelectionDialog(name, Type.Directory);
       else if (xWidgetName.equals("XDateDam"))
          xWidget = new XDateDam(name);
       else if (xWidgetName.equals("XTextResourceDropDam"))
