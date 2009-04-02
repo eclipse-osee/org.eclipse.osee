@@ -76,10 +76,10 @@ public class XViewer extends TreeViewer {
    private TreeItem rightClickSelectedItem = null;
    private Color searchColor;
 
-	public XViewer(Composite parent, int style, IXViewerFactory xViewerFactory){
-	   this (parent, style, xViewerFactory, false, false);
-	}
-	
+   public XViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
+      this(parent, style, xViewerFactory, false, false);
+   }
+
    public XViewer(Composite parent, int style, IXViewerFactory xViewerFactory, boolean filterRealTime, boolean searchRealTime) {
       super(parent, style);
       this.xViewerFactory = xViewerFactory;
@@ -301,7 +301,6 @@ public class XViewer extends TreeViewer {
     * @return true if handled
     */
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      XViewerColumn aCol = (XViewerColumn) treeColumn.getData();
       return false;
    }
 
