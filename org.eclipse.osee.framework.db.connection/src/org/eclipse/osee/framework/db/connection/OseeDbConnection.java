@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class OseeDbConnection {
    private static final Timer timer = new Timer();
    private static final Map<String, OseeConnectionPool> dbInfoToPools = new HashMap<String, OseeConnectionPool>();
+   private static final TransactionMonitor txMonitor = new TransactionMonitor();
 
    public static boolean hasOpenConnection() throws OseeDataStoreException {
       IDatabaseInfo databaseInfo = getDatabaseInfoProvider();
@@ -64,52 +64,107 @@ public class OseeDbConnection {
       return InternalActivator.getApplicationDatabaseProvider().getDatabaseInfo();
    }
 
-   private static final HashMap<Thread, ObjectPair<DbTransaction, Exception>> currentTxs =
-         new HashMap<Thread, ObjectPair<DbTransaction, Exception>>();
-   private static final HashMap<Thread, ObjectPair<DbTransaction, Exception>> txCreateds =
-         new HashMap<Thread, ObjectPair<DbTransaction, Exception>>();
-
-   public static void reportTxStart(DbTransaction transaction) throws OseeWrappedException {
-      ObjectPair<DbTransaction, Exception> currentPair = currentTxs.get(Thread.currentThread());
-      if (currentPair != null) {
-         throw new OseeWrappedException(currentPair.object2);
-      }
-      currentTxs.put(Thread.currentThread(), new ObjectPair<DbTransaction, Exception>(transaction, new Exception()));
+   public static void reportTxStart(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
+      txMonitor.reportTxStart(transaction);
    }
 
-   public static void reportTxEnd(DbTransaction transaction) throws OseeWrappedException, OseeStateException {
-      ObjectPair<DbTransaction, Exception> currentPair = txCreateds.get(Thread.currentThread());
-      if (currentPair == null) {
-         throw new OseeStateException(
-               "reportTxEnd called for thread: " + Thread.currentThread() + " but reportTxCreation had not been called.");
-      }
-      DbTransaction txCreated = currentPair.object1;
-      if (txCreated == transaction) {
-         txCreateds.put(Thread.currentThread(), null);
-      } else {
-         throw new OseeWrappedException(currentPair.object2);
-      }
-
-      currentPair = currentTxs.get(Thread.currentThread());
-      DbTransaction currentTx = currentPair.object1;
-      if (currentTx == transaction) {
-         currentTxs.put(Thread.currentThread(), null);
-      } else {
-         throw new OseeWrappedException(currentPair.object2);
-      }
+   public static void reportTxEnd(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
+      txMonitor.reportTxEnd(transaction);
    }
 
-   public static void reportTxCreation(DbTransaction transaction) throws OseeWrappedException {
-      ObjectPair<DbTransaction, Exception> currentPair = txCreateds.get(Thread.currentThread());
-      if (currentPair != null) {
-         // This log is to support debugging the case where skynet transactions are nested and should
-         // use the same transaction.
-         // This case may happen legitimately if an exception happened before transaction.execute(), so
-         // it is only notification that this is occurring.
-         OseeLog.log(InternalActivator.class, Level.SEVERE, "New transaction created over Last transaction",
-               currentPair.object2);
+   public static void reportTxCreation(final DbTransaction transaction) throws OseeWrappedException {
+      txMonitor.reportTxCreation(transaction);
+   }
+
+   private final static class TransactionMonitor {
+      private enum TxState {
+         CREATED, RUNNING, ENDED;
       }
 
-      txCreateds.put(Thread.currentThread(), new ObjectPair<DbTransaction, Exception>(transaction, new Exception()));
+      private final Map<Thread, TxOperation> txMap = new HashMap<Thread, TxOperation>();
+
+      public synchronized void reportTxCreation(final DbTransaction transaction) throws OseeWrappedException {
+         final Thread currentThread = Thread.currentThread();
+         TxOperation currentTx = txMap.get(currentThread);
+         if (currentTx != null) {
+            // This log is to support debugging the case where skynet transactions are nested and should
+            // use the same transaction.
+            // This case may happen legitimately if an exception happened before transaction.execute(), so
+            // it is only notification that this is occurring.
+            OseeLog.log(InternalActivator.class, Level.SEVERE, "New transaction created over Last transaction",
+                  currentTx.getError());
+         }
+         txMap.put(currentThread, new TxOperation(transaction));
+      }
+
+      public synchronized void reportTxStart(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
+         final Thread currentThread = Thread.currentThread();
+         TxOperation currentTx = txMap.get(currentThread);
+         if (currentTx == null) {
+            throw new OseeStateException(
+                  "reportTxStart called for thread: " + currentThread + " but reportTxCreation had not been called.");
+         } else if (currentTx.getState() != TxState.CREATED) {
+            throw new OseeWrappedException(currentTx.getError());
+         }
+
+         if (currentTx.getTransaction().equals(transaction)) {
+            currentTx.setState(TxState.RUNNING);
+         } else {
+            throw new OseeStateException(
+                  "reportTxStart called for thread: " + currentThread + " but was called for incorrect transaction");
+         }
+      }
+
+      public synchronized void reportTxEnd(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
+         final Thread currentThread = Thread.currentThread();
+
+         TxOperation currentTx = txMap.get(currentThread);
+         if (currentTx == null) {
+            throw new OseeStateException(
+                  "reportTxEnd called for thread: " + currentThread + " but reportTxCreation had not been called.");
+         } else if (currentTx.getState() != TxState.RUNNING) {
+            // This is a valid case -- can add a log to detect when a reportTxEnd is called before a transaction has a chance to run 
+         }
+
+         if (currentTx.getTransaction().equals(transaction)) {
+            txMap.remove(currentThread);
+         } else {
+            throw new OseeWrappedException(currentTx.getError());
+         }
+      }
+
+      private final class TxOperation {
+
+         private final DbTransaction tx;
+         private Throwable throwable;
+         private TxState txState;
+
+         public TxOperation(DbTransaction tx) {
+            this.tx = tx;
+            this.txState = TxState.CREATED;
+            // Not null for stack trace purposes;
+            this.throwable = new Exception();
+         }
+
+         public DbTransaction getTransaction() {
+            return tx;
+         }
+
+         public TxState getState() {
+            return txState;
+         }
+
+         public void setState(TxState txState) {
+            this.txState = txState;
+         }
+
+         public void setError(Throwable throwable) {
+            this.throwable = throwable;
+         }
+
+         public Throwable getError() {
+            return throwable;
+         }
+      }
    }
 }
