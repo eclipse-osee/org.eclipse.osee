@@ -36,8 +36,8 @@ public enum AtsRelation implements IRelationEnumeration {
    TeamMember_Team(true, "TeamMember"),
    TeamMember_Member(false, "TeamMember"),
    //
-   ChildVersionsToCommitTo_Parent(true, "ChildVersionsToCommitTo"),
-   ChildVersionsToCommitTo_Child(false, "ChildVersionsToCommitTo"),
+   ParallelVersion_Parent(true, "ParallelVersion"),
+   ParallelVersion_Child(false, "ParallelVersion"),
    //
    PrivilegedMember_Team(true, "PrivilegedMember"),
    PrivilegedMember_Member(false, "PrivilegedMember"),

@@ -15,8 +15,8 @@
   <DoNotRelyOnCSS/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>11130</WindowHeight>
-  <WindowWidth>18900</WindowWidth>
+  <WindowHeight>8445</WindowHeight>
+  <WindowWidth>15165</WindowWidth>
   <WindowTopX>-15</WindowTopX>
   <WindowTopY>-15</WindowTopY>
   <ProtectStructure>False</ProtectStructure>
@@ -1361,12 +1361,12 @@
     <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">ChildVersionsToCommitTo</Data></Cell>
+    <Cell><Data ss:Type="String">ParallelVersion</Data></Cell>
     <Cell><Data ss:Type="String">Parent</Data></Cell>
-    <Cell><Data ss:Type="String">has children</Data></Cell>
+    <Cell><Data ss:Type="String">has parallel version</Data></Cell>
     <Cell><Data ss:Type="String">Child</Data></Cell>
-    <Cell><Data ss:Type="String">has parent</Data></Cell>
-    <Cell><Data ss:Type="String">CmtVer</Data></Cell>
+    <Cell><Data ss:Type="String">is parallel version of</Data></Cell>
+    <Cell><Data ss:Type="String">PV</Data></Cell>
     <Cell><Data ss:Type="String">Yes</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22"/>
@@ -1592,7 +1592,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String">Version</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
-    <Cell><Data ss:Type="String">ChildVersionsToCommitTo</Data><NamedCell
+    <Cell><Data ss:Type="String">ParallelVersion</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1602,7 +1602,7 @@
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Version</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
-    <Cell><Data ss:Type="String">ChildVersionsToCommitTo</Data><NamedCell
+    <Cell><Data ss:Type="String">ParallelVersion</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1753,7 +1753,7 @@
     <Pane>
      <Number>3</Number>
      <ActiveRow>231</ActiveRow>
-     <ActiveCol>2</ActiveCol>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

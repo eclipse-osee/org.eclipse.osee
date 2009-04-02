@@ -64,7 +64,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
                return XViewerCells.getCellExceptionString(ex);
             }
          }
-         return "";
+         return "Unknown";
       } else if (xCol.equals(CommitXViewerFactory.Status_Col)) {
          if (branch.equals(commitXViewer.getWorkingBranch()))
             return "";
