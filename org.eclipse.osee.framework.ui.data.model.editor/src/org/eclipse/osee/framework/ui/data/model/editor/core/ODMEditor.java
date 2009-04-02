@@ -148,7 +148,6 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
 
       viewer.setContents("Loading graph... This can take several minutes");
 
-      // configure the context menu provider
       ContextMenuProvider cmProvider = new ODMEditorContextMenuProvider(viewer, this);
       viewer.setContextMenu(cmProvider);
 
