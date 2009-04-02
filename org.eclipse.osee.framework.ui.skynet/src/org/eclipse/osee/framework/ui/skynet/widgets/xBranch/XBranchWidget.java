@@ -320,7 +320,7 @@ public class XBranchWidget extends XWidget implements IActionable {
    public void setFavoritesFirst(boolean favoritesFirst) {
       if (branchContentProvider != null) {
          sorter.setFavoritesFirst(favoritesFirst);
-         branchXViewer.refresh();
+         refresh();
       }
    }
 
@@ -382,6 +382,7 @@ public class XBranchWidget extends XWidget implements IActionable {
          if (obj instanceof Branch && (Branch) obj == branch) {
             branchXViewer.reveal(obj);
             branchXViewer.setSelection(new StructuredSelection(obj), true);
+            refresh();
             return;
          }
       }
