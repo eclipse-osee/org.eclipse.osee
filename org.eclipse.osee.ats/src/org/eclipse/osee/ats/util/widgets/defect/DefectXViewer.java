@@ -130,6 +130,7 @@ public class DefectXViewer extends XViewer {
       return arts;
    }
 
+   @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (!xDefectViewer.isEditable()) {
          return;
@@ -154,6 +155,8 @@ public class DefectXViewer extends XViewer {
       if (xCol.equals(DefectXViewerFactory.User_Col)) {
          return handleLeftClick(treeColumn, treeItem);
       } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
+         return handleLeftClick(treeColumn, treeItem);
+      } else if (xCol.equals(DefectXViewerFactory.Closed_Col)) {
          return handleLeftClick(treeColumn, treeItem);
       }
       return false;
