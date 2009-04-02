@@ -43,7 +43,8 @@ public class Sender {
 
    public boolean isRemote() throws OseeAuthenticationRequiredException {
       OseeClientSession session = ClientSessionManager.getSession();
-      return !oseeSession.getId().equals(session.getId()) && oseeSession.getVersion().equals(session.getVersion());
+      //Don't add version check here - can't assume events come from clients using the same version - could be old clients;
+      return !oseeSession.getId().equals(session.getId());
    }
 
    public boolean isLocal() throws OseeAuthenticationRequiredException {
