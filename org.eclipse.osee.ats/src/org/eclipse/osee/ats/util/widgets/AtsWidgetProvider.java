@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.util.widgets;
 
+import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -36,6 +37,9 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          XHyperlabelGroupSelection widget = new XHyperlabelGroupSelection(name);
          widget.setToolTip(widgetLayoutData.getToolTip());
          toReturn = widget;
+      }
+      if (widgetName.equals("XCommitManager")) {
+         return new XCommitManager();
       }
       return toReturn;
    }
