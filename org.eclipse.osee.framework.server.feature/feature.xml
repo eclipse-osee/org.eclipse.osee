@@ -59,13 +59,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.resource.locator.snapshot"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.resource.management"
          download-size="0"
          install-size="0"
@@ -88,13 +81,6 @@
 
    <plugin
          id="org.eclipse.osee.framework.resource.provider.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.resource.provider.snapshot"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -130,6 +116,48 @@
 
    <plugin
          id="org.eclipse.osee.framework.session.management.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.core.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.db.connection"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.jdk.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.oracle"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.postgresql"
          download-size="0"
          install-size="0"
          version="0.0.0"
