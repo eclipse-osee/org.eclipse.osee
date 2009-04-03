@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.OseeInfo;
@@ -47,9 +48,13 @@ public class Requirements {
    public static String INTERFACE_REQUIREMENT = "Interface Requirement";
    public static String COMPONENT = "Component";
 
+   public static String ABSTRACT_TEST_UNIT = "Abstract Test Unit";
+
    public static String TEST_INFORMATION_SHEET = "Test Information Sheet";
    public static String OSEE_INFO_TEST_CASE_KEY = "Test Case Type Name";
    public static String TEST_CASE = getTestCaseString();
+   public static String TEST_SUPPORT = "Test Support";
+
    public static String TEST_CASES = "Test Cases";
    public static String TEST_PROCEDURE = "Test Procedure";
 
@@ -70,10 +75,17 @@ public class Requirements {
    }
 
    public static boolean isSoftwareRequirement(Artifact artifact) {
-      return Requirements.Software_RequirementTypes.contains(artifact.getArtifactTypeName());
+      return Requirements.ALL_SOFTWARES_REQUIREMENT_TYPES.contains(artifact.getArtifactTypeName());
    }
 
-   public static List<String> Software_RequirementTypes =
-         Arrays.asList(SOFTWARE_REQUIREMENT, INDIRECT_SOFTWARE_REQUIREMENT, "Button Requirement", "UIG Artifact",
-               "Stand Alone Local Data");
+   public final static List<String> DIRECT_SOFTWARE_REQUIREMENT_TYPES =
+         Arrays.asList(SOFTWARE_REQUIREMENT, "Button Requirement", "UIG Artifact", "Stand Alone Local Data");
+
+   public final static List<String> ALL_SOFTWARES_REQUIREMENT_TYPES = new ArrayList<String>();
+   static {
+      ALL_SOFTWARES_REQUIREMENT_TYPES.addAll(DIRECT_SOFTWARE_REQUIREMENT_TYPES);
+      ALL_SOFTWARES_REQUIREMENT_TYPES.add(INDIRECT_SOFTWARE_REQUIREMENT);
+   }
+
+   public static List<String> ALL_TEST_UNIT_TYPES = Arrays.asList(TEST_CASE, TEST_SUPPORT);
 }

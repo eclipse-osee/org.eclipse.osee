@@ -65,7 +65,8 @@ public class RequirementData {
          reset();
          monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchShortName()));
 
-         directSwRequirements.addAll(ArtifactQuery.getArtifactsFromType(Requirements.SOFTWARE_REQUIREMENT, getBranch()));
+         directSwRequirements.addAll(ArtifactQuery.getArtifactsFromTypes(
+               Requirements.DIRECT_SOFTWARE_REQUIREMENT_TYPES, getBranch(), false));
          populateTraceMap(monitor, directSwRequirements, directMap);
          monitor.worked(30);
 

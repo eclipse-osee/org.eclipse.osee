@@ -2,6 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="DefineNavigateItem" name="DefineNavigateItem" schema="schema/DefineNavigateItem.exsd"/>
+   <extension-point id="TestUnitTrace" name="TestUnitTrace" schema="schema/TestUnitTrace.exsd"/>
       <extension
             point="org.eclipse.ui.importWizards">
          <category
@@ -168,6 +169,13 @@
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
           className="org.eclipse.osee.define.blam.operation.SubsystemToLowLevelReqTraceReport">
+    </Operation>
+ </extension>
+ <extension
+       id="ImportTestScriptsBlam"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.traceability.ImportTestScriptsBlam">
     </Operation>
  </extension>
 </plugin>

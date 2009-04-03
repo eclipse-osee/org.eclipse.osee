@@ -55,6 +55,9 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
    Verification__Requirement(true, "Verification"),
    Verification__Verifier(false, "Verification"),
 
+   Uses__Requirement(true, "Uses"),
+   Uses__TestUnit(false, "Uses"),
+
    TestConfigurationRelation_TestScript(true, "Test Configuration Relation"),
    TestConfigurationRelation_TestConfiguration(false, "Test Configuration Relation"),
    RunByRelation_User(true, "Run By Relation"),

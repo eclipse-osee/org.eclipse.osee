@@ -28,9 +28,6 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
    private ImportTraceabilityPage mainPage;
    private IStructuredSelection selection;
 
-   /**
-    * 
-    */
    public ImportTraceabilityWizard() {
       super();
       setWindowTitle("Traceability Import Wizard");

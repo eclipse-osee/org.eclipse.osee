@@ -58,7 +58,6 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
     * (non-Javadoc) Method declared on IDialogPage.
     */
    public void createControl(Composite parent) {
-
       initializeDialogUnits(parent);
 
       Composite composite = new Composite(parent, SWT.NULL);
