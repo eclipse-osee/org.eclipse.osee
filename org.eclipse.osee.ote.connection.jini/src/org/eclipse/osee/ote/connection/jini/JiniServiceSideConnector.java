@@ -50,7 +50,7 @@ public class JiniServiceSideConnector extends JiniConnector implements
 	private final ServiceItem serviceItem;
 	private final BasicJeriExporter linkExporter;
 	private final IJiniConnectorLink exportedThis;
-
+	private boolean stopped = false;
 	public JiniServiceSideConnector(Remote service, EnhancedProperties props) throws UnknownHostException, ExportException {
 		super(props);
 		this.service = service;
@@ -82,6 +82,10 @@ public class JiniServiceSideConnector extends JiniConnector implements
 	 */
 	@Override
 	public synchronized void stop() throws Exception {
+		if (stopped) {
+			return;
+		}
+		stopped = true;
 		super.stop();
 		removeAllRegistrations();
 		serviceExporter.unexport(true);

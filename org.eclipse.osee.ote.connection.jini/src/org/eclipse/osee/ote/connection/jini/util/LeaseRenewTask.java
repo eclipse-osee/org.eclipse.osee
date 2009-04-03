@@ -27,13 +27,17 @@ public class LeaseRenewTask extends TimerTask {
    private static final long RENEWAL_TIME = 2 * 60 * 1000; // 2 minutes
 
    private final ServiceRegistration registration;
-
+   private volatile boolean canceled = false;
+   
    public LeaseRenewTask(Timer timer, ServiceRegistration registration) {
       this.registration = registration;
       timer.scheduleAtFixedRate(this, 0, RENEWAL_TIME);
    }
 
    public void run() {
+	   if (canceled) {
+		   return;
+	   }
       try {
          // Renew for the maximum amount of time allowed
 	    registration.getLease().renew(RENEWAL_TIME + 10000);
@@ -47,6 +51,7 @@ public class LeaseRenewTask extends TimerTask {
     */
    @Override
    public boolean cancel() {
+	   canceled = true;
       boolean result = super.cancel();
       try {
          registration.getLease().cancel();
