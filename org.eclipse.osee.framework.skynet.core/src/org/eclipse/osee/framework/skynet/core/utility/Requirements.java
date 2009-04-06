@@ -53,8 +53,10 @@ public class Requirements {
    public static String TEST_INFORMATION_SHEET = "Test Information Sheet";
    public static String OSEE_INFO_TEST_CASE_KEY = "Test Case Type Name";
    public static String TEST_CASE = getTestCaseString();
+   public static String TEST_RUN = "Test Run";
    public static String TEST_SUPPORT = "Test Support";
 
+   public static String TEST_SUPPORT_UNITS = TEST_SUPPORT + " Units";
    public static String TEST_CASES = "Test Cases";
    public static String TEST_PROCEDURE = "Test Procedure";
 
