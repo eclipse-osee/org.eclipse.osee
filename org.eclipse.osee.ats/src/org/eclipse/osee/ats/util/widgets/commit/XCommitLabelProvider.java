@@ -26,6 +26,25 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    Font font = null;
 
    private final CommitXManager commitXManager;
+   public static enum CommitStatus {
+      Branch_Not_Configured("Branch Not Configured"),
+      Commit_Needed("Start Commit"),
+      Merge_Needed("Merge Needed"),
+      Committed("Committed");
+
+      private final String displayName;
+
+      private CommitStatus(String displayName) {
+         this.displayName = displayName;
+      }
+
+      /**
+       * @return the displayName
+       */
+      public String getDisplayName() {
+         return displayName;
+      }
+   };
 
    public XCommitLabelProvider(CommitXManager commitXManager) {
       super(commitXManager);
@@ -43,12 +62,32 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return SkynetGuiPlugin.getInstance().getImage("branch.gif");
       } else if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
-            return getCommitStatusImage(branch);
+            CommitStatus commitStatus = getCommitStatus(verArt);
+            if (commitStatus == CommitStatus.Branch_Not_Configured)
+               return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
+            else if (commitStatus == CommitStatus.Commit_Needed)
+               return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
+            else if (commitStatus == CommitStatus.Merge_Needed)
+               return SkynetGuiPlugin.getInstance().getImage("yellow_light.gif");
+            else if (commitStatus == CommitStatus.Committed) {
+               return SkynetGuiPlugin.getInstance().getImage("green_light.gif");
+            }
+            return null;
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       return null;
+   }
+
+   public static CommitStatus getCommitStatus(VersionArtifact verArt) throws OseeCoreException {
+      Branch branch = verArt.getParentBranch();
+      if (branch == null)
+         return CommitStatus.Branch_Not_Configured;
+      else if (false)
+         return CommitStatus.Merge_Needed;
+      else
+         return false ? CommitStatus.Committed : CommitStatus.Commit_Needed;
    }
 
    @Override
@@ -58,22 +97,13 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CommitXManagerFactory.Type_Col)) {
          if (branch == null)
             return "";
-         else if (commitXManager.getWorkingBranch() != null && branch.equals(commitXManager.getWorkingBranch()))
-            return "Working";
          else if (commitXManager.getWorkingBranch() != null && branch.equals(commitXManager.getWorkingBranch().getParentBranch()))
             return "Parent Baseline";
          else {
             return "Parallel Branch";
          }
       } else if (xCol.equals(CommitXManagerFactory.Status_Col)) {
-         if (branch == null)
-            return "";
-         else if (branch.equals(commitXManager.getWorkingBranch()))
-            return "";
-         else if (isMergeNeeded(branch))
-            return "Merge Needed";
-         else
-            return isCommittedInto(branch) ? "Committed" : "Commit Needed";
+         return getCommitStatus(verArt).getDisplayName();
       } else if (xCol.equals(CommitXManagerFactory.Name_Col)) {
          if (branch == null)
             return verArt + " - " + (branch == null ? "Parent Branch Not Configured" : branch.getBranchShortName());
@@ -82,14 +112,15 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       } else if (xCol.equals(CommitXManagerFactory.Short_Name_Col)) {
          return verArt + " - " + (branch == null ? "Parent Branch Not Configured" : branch.getBranchShortName());
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
-         if (branch == null) {
+         CommitStatus commitStatus = getCommitStatus(verArt);
+         if (commitStatus == CommitStatus.Branch_Not_Configured)
             return "Configure Branch";
-         } else if (true) {
+         else if (commitStatus == CommitStatus.Commit_Needed)
             return "Start Commit";
-         } else if (true) {
+         else if (commitStatus == CommitStatus.Merge_Needed)
             return "Merge Conflicts";
-         } else if (true) {
-            return "Show Change Report";
+         else if (commitStatus == CommitStatus.Committed) {
+            return "Show Change/Merge Report";
          }
          return "Error: Need to handle this";
       }
@@ -123,15 +154,4 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return false;
    }
 
-   private Image getCommitStatusImage(Branch branch) throws OseeCoreException {
-      if (branch == null)
-         return null;
-      else if (commitXManager.getWorkingBranch() != null && branch.equals(commitXManager.getWorkingBranch()))
-         return null;
-      else if (commitXManager.getWorkingBranch() != null && !isCommittedInto(branch)) {
-         return isCommittedInto(branch) ? SkynetGuiPlugin.getInstance().getImage("green_light.gif") : SkynetGuiPlugin.getInstance().getImage(
-               "red_light.gif");
-      }
-      return null;
-   }
 }

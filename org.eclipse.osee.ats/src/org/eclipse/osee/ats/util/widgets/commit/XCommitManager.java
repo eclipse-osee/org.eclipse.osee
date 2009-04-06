@@ -57,7 +57,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
    private Artifact artifact;
-   private final int defaultTableHeightHint = 20;
    private final int paddedTableHeightHint = 2;
 
    /**
@@ -335,6 +334,13 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
     */
    @Override
    public void saveToArtifact() throws OseeCoreException {
+   }
+
+   /**
+    * @return the artifact
+    */
+   public Artifact getArtifact() {
+      return artifact;
    }
 
 }
