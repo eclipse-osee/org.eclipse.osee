@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
@@ -43,6 +45,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
@@ -53,6 +56,7 @@ public class NewActionPage1 extends WizardPage {
    private WorkPage page;
    private OSEECheckedFilteredTree treeViewer;
    private static PatternFilter patternFilter = new PatternFilter();
+   private static Text descriptionLabel;
 
    /**
     * @param actionWizard
@@ -63,7 +67,7 @@ public class NewActionPage1 extends WizardPage {
       this.wizard = actionWizard;
    }
 
-   private XModifiedListener xModListener = new XModifiedListener() {
+   private final XModifiedListener xModListener = new XModifiedListener() {
       public void widgetModified(XWidget widget) {
          getContainer().updateButtons();
       }
@@ -104,6 +108,15 @@ public class NewActionPage1 extends WizardPage {
             }
          });
 
+         (new Label(aiComp, SWT.NONE)).setText("Description of highlighted Actionable Item (if any):");
+         descriptionLabel = new Text(aiComp, SWT.BORDER | SWT.WRAP);
+         GridData gd = new GridData(GridData.FILL_BOTH);
+         gd.heightHint = 30;
+         descriptionLabel.setLayoutData(gd);
+         descriptionLabel.setEnabled(false);
+
+         treeViewer.getViewer().addSelectionChangedListener(new SelectionChangedListener());
+
          Button deselectAll = new Button(aiComp, SWT.PUSH);
          deselectAll.setText("De-Select All");
          deselectAll.addSelectionListener(new SelectionListener() {
@@ -125,6 +138,19 @@ public class NewActionPage1 extends WizardPage {
          ((XText) getXWidget("Title")).setFocus();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private class SelectionChangedListener implements ISelectionChangedListener {
+      public void selectionChanged(SelectionChangedEvent event) {
+         IStructuredSelection sel = (IStructuredSelection) treeViewer.getViewer().getSelection();
+         if (sel.isEmpty()) return;
+         ActionableItemArtifact aia = (ActionableItemArtifact) sel.getFirstElement();
+         try {
+            descriptionLabel.setText(aia.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         }
       }
    }
 
