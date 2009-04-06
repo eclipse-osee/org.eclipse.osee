@@ -165,9 +165,9 @@ public class WordUtil {
    }
 
    public static String textOnly(String str) {
-      str = paragraphPattern.matcher(Xml.unescape(str)).replaceAll(" ");
+      str = paragraphPattern.matcher(str).replaceAll(" ");
       str = tagKiller.matcher(str).replaceAll("").trim();
-      return str;
+      return Xml.unescape(str).toString();
    }
 
    public static boolean isHeadingStyle(String paragraphStyle) {
