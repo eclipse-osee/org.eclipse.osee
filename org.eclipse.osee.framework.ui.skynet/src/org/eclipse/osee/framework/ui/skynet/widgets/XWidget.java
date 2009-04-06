@@ -151,7 +151,9 @@ public abstract class XWidget {
    }
 
    public void adaptControls(FormToolkit toolkit) {
-      if (getControl() != null) toolkit.adapt(getControl(), true, true);
+      if (getControl() != null) {
+         toolkit.adapt(getControl(), true, false);
+      }
       if (labelWidget != null) {
          toolkit.adapt(labelWidget, true, true);
          toolkit.adapt(labelWidget.getParent(), true, true);
