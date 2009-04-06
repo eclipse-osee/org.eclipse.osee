@@ -46,7 +46,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
    private Button showChangeReport;
    private Button deleteBranch;
    public static enum Status {
-      Not_Started, Changes_InProgress, Changes_NotPermitted
+      Not_Started, Changes_InProgress, Changes_NotPermitted, Committed
    }
 
    public XWorkingBranch() {
@@ -56,6 +56,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
    /**
     * 
     */
+   @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
       setSMAMgr();
       if (horizontalSpan < 2) horizontalSpan = 2;
@@ -158,6 +159,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
    private String getStatus() {
       try {
          if (getWorkingBranch() == null) {
+            if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isCommittedBranch()) {
+               return Status.Committed.name();
+            }
             return Status.Not_Started.name();
          } else if (smaMgr.getStateMgr().getCurrentStateName().equals("Promote")) {
             return Status.Changes_NotPermitted.name();
@@ -170,6 +174,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
       }
    }
 
+   @Override
    public void setFocus() {
    }
 
@@ -236,14 +241,18 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
             if (showArtifactExplorer != null) {
                if (getWorkingBranch() == null)
                   showArtifactExplorer.setEnabled(false);
-               else
-                  showArtifactExplorer.setEnabled(true);
+               else {
+                  if (getStatus().equals(Status.Changes_NotPermitted.name())) {
+                     showArtifactExplorer.setEnabled(false);
+                  } else
+                     showArtifactExplorer.setEnabled(true);
+               }
             }
             if (showChangeReport != null) {
                if (smaMgr.getBranchMgr().isWorkingBranch())
                   showChangeReport.setEnabled(true);
                else
-                  showChangeReport.setEnabled(smaMgr.getBranchMgr().isCommittedBranch());
+                  showChangeReport.setEnabled(false);
             }
             if (deleteBranch != null) {
                deleteBranch.setEnabled(smaMgr.getBranchMgr().isWorkingBranch());
