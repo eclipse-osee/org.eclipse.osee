@@ -15,7 +15,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitLabelProvider.CommitStatus;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -68,7 +67,7 @@ public class CommitXManager extends XViewer {
    /**
     * @return the xUserRoleViewer
     */
-   public XCommitManager getXUserRoleViewer() {
+   public XCommitManager getXCommitViewer() {
       return xCommitManager;
    }
 
@@ -86,19 +85,16 @@ public class CommitXManager extends XViewer {
    public void handleDoubleClick() {
       try {
          VersionArtifact verArt = getSelectedVersions().iterator().next();
-         CommitStatus commitStatus = XCommitLabelProvider.getCommitStatus(verArt);
+         CommitStatus commitStatus = XCommitLabelProvider.getCommitStatus(xCommitManager.getTeamArt(), verArt);
          if (commitStatus == CommitStatus.Branch_Not_Configured) {
             AWorkbench.popup(commitStatus.getDisplayName(),
                   "Talk to project lead or admin to configure branch for version [" + verArt + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) xCommitManager.getArtifact();
-            teamArt.getSmaMgr().getBranchMgr().commitWorkingBranch(true, false);
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false);
          } else if (commitStatus == CommitStatus.Merge_Needed) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) xCommitManager.getArtifact();
-            teamArt.getSmaMgr().getBranchMgr().commitWorkingBranch(true, false);
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false);
          } else if (commitStatus == CommitStatus.Committed) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) xCommitManager.getArtifact();
-            teamArt.getSmaMgr().getBranchMgr().showChangeReport();
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReport();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

@@ -22,7 +22,8 @@ import org.eclipse.swt.SWT;
  */
 public class BranchXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn branch_name =
-         new XViewerColumn("framework.branch.branchName", "Branch Name", 250, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.branch.branchName", "Branch Name", 250, SWT.LEFT, true, SortDataType.String,
+               false, null);
    public static XViewerColumn time_stamp =
          new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.String, false,
                null);
@@ -30,12 +31,15 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn("framework.branch.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn comment =
          new XViewerColumn("framework.branch.comment", "Comment", 250, SWT.LEFT, true, SortDataType.String, false, null);
+   public static XViewerColumn associatedArtifact =
+         new XViewerColumn("framework.branch.assocArt", "Associated Artifact", 100, SWT.LEFT, true,
+               SortDataType.String, false, null);
 
    public static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(branch_name, time_stamp, author, comment);
+      registerColumn(branch_name, time_stamp, author, comment, associatedArtifact);
    }
 
    @Override

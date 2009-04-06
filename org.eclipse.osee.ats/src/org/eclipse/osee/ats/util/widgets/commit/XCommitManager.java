@@ -56,7 +56,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
-   private Artifact artifact;
+   private TeamWorkFlowArtifact teamArt;
    private final int paddedTableHeightHint = 2;
 
    /**
@@ -83,7 +83,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
          }
       }
 
-      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
       try {
          if (!teamArt.getSmaMgr().getBranchMgr().isWorkingBranch() && !teamArt.getSmaMgr().getBranchMgr().isCommittedBranch()) {
             labelWidget.setText(label + ": No working or committed branch available.");
@@ -189,14 +188,14 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
 
    public void loadTable() {
       try {
-         if (xCommitManager != null && artifact != null && (artifact instanceof TeamWorkFlowArtifact)) {
+         if (xCommitManager != null && teamArt != null && (teamArt instanceof TeamWorkFlowArtifact)) {
             Set<VersionArtifact> versionSet = new HashSet<VersionArtifact>();
-            if (((TeamWorkFlowArtifact) artifact).getSmaMgr().getTargetedForVersion() != null) {
-               ((TeamWorkFlowArtifact) artifact).getSmaMgr().getTargetedForVersion().getParallelVersions(versionSet);
+            if ((teamArt).getSmaMgr().getTargetedForVersion() != null) {
+               (teamArt).getSmaMgr().getTargetedForVersion().getParallelVersions(versionSet);
             }
             xCommitManager.setInput(versionSet);
-            if (((IBranchArtifact) artifact).getWorkingBranch() != null) {
-               extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
+            if (((IBranchArtifact) teamArt).getWorkingBranch() != null) {
+               extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) teamArt).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) teamArt).getWorkingBranch().getBranchShortName() + "\"");
             }
          }
       } catch (Exception ex) {
@@ -306,7 +305,10 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
     */
    public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException {
-      this.artifact = artifact;
+      if (!(artifact instanceof TeamWorkFlowArtifact)) {
+         throw new IllegalStateException("Must be TeamWorkflowArtifact, set was a " + artifact.getArtifactTypeName());
+      }
+      this.teamArt = (TeamWorkFlowArtifact) artifact;
       loadTable();
    }
 
@@ -319,7 +321,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
    }
 
    public Branch getWorkingBranch() throws OseeCoreException {
-      return ((IBranchArtifact) artifact).getWorkingBranch();
+      return ((IBranchArtifact) teamArt).getWorkingBranch();
    }
 
    /* (non-Javadoc)
@@ -339,8 +341,8 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
    /**
     * @return the artifact
     */
-   public Artifact getArtifact() {
-      return artifact;
+   public TeamWorkFlowArtifact getTeamArt() {
+      return teamArt;
    }
 
 }

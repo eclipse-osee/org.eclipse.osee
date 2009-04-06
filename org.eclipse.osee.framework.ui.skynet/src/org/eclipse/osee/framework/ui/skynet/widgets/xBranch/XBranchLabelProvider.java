@@ -21,7 +21,10 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
@@ -87,7 +90,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
 
    private String getBranchText(Branch branch, XViewerColumn cCol, int columnIndex) {
       String columnText = "";
-      StringBuilder stringBuilder = new StringBuilder(); 
+      StringBuilder stringBuilder = new StringBuilder();
 
       try {
          if (AccessControlManager.isOseeAdmin()) {
@@ -99,10 +102,10 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      if(branch.isArchived()){
+      if (branch.isArchived()) {
          stringBuilder.insert(0, "[Archived] - ");
       }
-      
+
       if (cCol.equals(BranchXViewerFactory.branch_name)) {
          columnText = stringBuilder.toString();
       } else if (cCol.equals(BranchXViewerFactory.time_stamp)) {
@@ -111,6 +114,14 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = UserManager.getUserNameById(branch.getAuthorId());
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
          columnText = branch.getCreationComment();
+      } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
+         try {
+            if (branch.getAssociatedArtifact() != null) {
+               columnText = branch.getAssociatedArtifact().getDescriptiveName();
+            }
+         } catch (OseeCoreException ex) {
+            return XViewerCells.getCellExceptionString(ex);
+         }
       }
       return columnText;
    }
@@ -126,6 +137,17 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = UserManager.getUserNameById(transaction.getAuthorArtId());
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
          columnText = transaction.getComment();
+      } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
+         try {
+            if (transaction.getCommitArtId() == 0) return "";
+            Artifact art =
+                  ArtifactQuery.getArtifactFromId(transaction.getCommitArtId(), BranchManager.getCommonBranch());
+            if (art != null) {
+               columnText = art.getDescriptiveName();
+            }
+         } catch (OseeCoreException ex) {
+            return XViewerCells.getCellExceptionString(ex);
+         }
       }
       return columnText;
    }
@@ -146,10 +168,33 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
+      if (xCol.equals(BranchXViewerFactory.associatedArtifact)) {
+         if (element instanceof Branch) {
+            try {
+               if (((Branch) element).getAssociatedArtifact() != null) {
+                  return ((Branch) element).getAssociatedArtifact().getImage();
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         } else if (element instanceof TransactionId) {
+            try {
+               if (((TransactionId) element).getCommitArtId() == 0) return null;
+               Artifact art =
+                     ArtifactQuery.getArtifactFromId(((TransactionId) element).getCommitArtId(),
+                           BranchManager.getCommonBranch());
+               if (art != null) {
+                  return art.getImage();
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         }
+      }
       Image returnImage = BranchViewImageHandler.getImage(element, columnIndex);
       return returnImage;
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
     */

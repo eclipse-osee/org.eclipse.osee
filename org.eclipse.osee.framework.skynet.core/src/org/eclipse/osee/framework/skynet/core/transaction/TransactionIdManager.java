@@ -13,10 +13,12 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -29,9 +31,13 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 
 /**
  * Manages a cache of <code>TransactionId</code>.
@@ -66,6 +72,19 @@ public final class TransactionIdManager {
          chStmt.close();
       }
       return transactions;
+   }
+
+   public static Collection<TransactionId> getCommittedArtifactTransactionIds(Artifact artifact) throws OseeCoreException {
+      List<TransactionId> transactionIds = new ArrayList<TransactionId>();
+      try {
+         for (Integer transIdInt : RevisionManager.getInstance().getTransactionDataPerCommitArtifact(artifact)) {
+            transactionIds.add(TransactionIdManager.getTransactionId(transIdInt));
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         // there may be times where the transaction id cache is not up-to-date yet; don't throw error
+      }
+      return transactionIds;
    }
 
    /**

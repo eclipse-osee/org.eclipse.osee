@@ -60,7 +60,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -165,16 +164,7 @@ public class AtsBranchManager {
     * @return TransactionId associated with this state machine artifact
     */
    public Collection<TransactionId> getTransactionIds() throws OseeCoreException {
-      List<TransactionId> transactionIds = new ArrayList<TransactionId>();
-      try {
-         for (Integer transIdInt : RevisionManager.getInstance().getTransactionDataPerCommitArtifact(smaMgr.getSma())) {
-            transactionIds.add(TransactionIdManager.getTransactionId(transIdInt));
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         // there may be times where the transaction id cache is not up-to-date yet; don't throw error
-      }
-      return transactionIds;
+      return TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
    }
 
    public TransactionId getEarliestTransactionId() throws OseeCoreException {
