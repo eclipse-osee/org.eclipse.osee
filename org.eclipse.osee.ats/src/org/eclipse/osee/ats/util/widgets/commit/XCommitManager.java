@@ -36,15 +36,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 
 /**
@@ -55,7 +50,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
    private CommitXManager xCommitManager;
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
-   private Label extraInfoLabel;
    private TeamWorkFlowArtifact teamArt;
    private final int paddedTableHeightHint = 2;
 
@@ -93,7 +87,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
             mainComp.setLayout(ALayout.getZeroMarginLayout());
             if (toolkit != null) toolkit.paintBordersFor(mainComp);
 
-            createTaskActionBar(mainComp);
+            labelWidget.setText(label + ": Double-click to perform Action");
 
             xCommitManager = new CommitXManager(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
             xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -135,54 +129,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
       tree.setLinesVisible(true);
    }
 
-   public void createTaskActionBar(Composite parent) {
-
-      // Button composite for state transitions, etc
-      Composite bComp = new Composite(parent, SWT.NONE);
-      // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
-      bComp.setLayout(new GridLayout(2, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-      Composite leftComp = new Composite(bComp, SWT.NONE);
-      leftComp.setLayout(new GridLayout());
-      leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
-
-      extraInfoLabel = new Label(leftComp, SWT.NONE);
-      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      extraInfoLabel.setText("");
-
-      Composite rightComp = new Composite(bComp, SWT.NONE);
-      rightComp.setLayout(new GridLayout());
-      rightComp.setLayoutData(new GridData(GridData.END));
-
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      toolBar.setLayoutData(gd);
-      ToolItem item = null;
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
-      item.setToolTipText("Refresh");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            loadTable();
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            xCommitManager.getCustomizeMgr().handleTableCustomization();
-         }
-      });
-
-      refreshActionEnablement();
-   }
-
    public void refreshActionEnablement() {
    }
 
@@ -194,9 +140,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
                (teamArt).getSmaMgr().getTargetedForVersion().getParallelVersions(versionSet);
             }
             xCommitManager.setInput(versionSet);
-            if (((IBranchArtifact) teamArt).getWorkingBranch() != null) {
-               extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) teamArt).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) teamArt).getWorkingBranch().getBranchShortName() + "\"");
-            }
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

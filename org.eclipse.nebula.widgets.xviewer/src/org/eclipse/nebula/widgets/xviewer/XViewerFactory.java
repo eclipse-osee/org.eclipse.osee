@@ -122,7 +122,7 @@ public abstract class XViewerFactory implements IXViewerFactory {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isFilterUiAvailable()
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isFilterUiAvailable()
     */
    @Override
    public boolean isFilterUiAvailable() {
@@ -130,7 +130,7 @@ public abstract class XViewerFactory implements IXViewerFactory {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isHeaderBarAvailable()
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isHeaderBarAvailable()
     */
    @Override
    public boolean isHeaderBarAvailable() {
@@ -138,7 +138,7 @@ public abstract class XViewerFactory implements IXViewerFactory {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isLoadedStatusLabelAvailable()
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isLoadedStatusLabelAvailable()
     */
    @Override
    public boolean isLoadedStatusLabelAvailable() {
@@ -146,7 +146,7 @@ public abstract class XViewerFactory implements IXViewerFactory {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isSearchUiAvailable()
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isSearchUiAvailable()
     */
    @Override
    public boolean isSearchUiAvailable() {

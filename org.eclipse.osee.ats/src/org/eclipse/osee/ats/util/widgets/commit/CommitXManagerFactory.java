@@ -37,7 +37,7 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isFilterUiAvailable()
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isFilterUiAvailable()
     */
    @Override
    public boolean isFilterUiAvailable() {
@@ -45,7 +45,7 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isHeaderBarAvailable()
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isHeaderBarAvailable()
     */
    @Override
    public boolean isHeaderBarAvailable() {
@@ -53,7 +53,7 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isLoadedStatusLabelAvailable()
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isLoadedStatusLabelAvailable()
     */
    @Override
    public boolean isLoadedStatusLabelAvailable() {
@@ -61,7 +61,7 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isSearchUiAvailable()
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isSearchUiAvailable()
     */
    @Override
    public boolean isSearchUiAvailable() {
