@@ -128,7 +128,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
    private boolean isEnabled() {
       boolean enabled = false;
       try {
-         enabled = smaMgr.getBranchMgr().isWorkingBranch() || smaMgr.getBranchMgr().isCommittedBranch();
+         enabled = smaMgr.getBranchMgr().isWorkingBranch() || smaMgr.getBranchMgr().isCommittedBranchExists();
       } catch (Exception ex) {
          // do nothing
       }

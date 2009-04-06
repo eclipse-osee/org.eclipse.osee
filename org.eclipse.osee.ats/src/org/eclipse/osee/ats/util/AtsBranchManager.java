@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +65,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -93,7 +93,7 @@ public class AtsBranchManager {
 
    public void showMergeManager() {
       try {
-         if (!isWorkingBranch() && !isCommittedBranch()) {
+         if (!isWorkingBranch() && !isCommittedBranchExists()) {
             AWorkbench.popup("ERROR", "No Current Working or Committed Branch");
             return;
          }
@@ -106,7 +106,7 @@ public class AtsBranchManager {
             MergeView.openView(getWorkingBranch(), branch,
                   TransactionIdManager.getStartEndPoint(getWorkingBranch()).getKey());
 
-         } else if (isCommittedBranch()) {
+         } else if (isCommittedBranchExists()) {
             TransactionId transactionId = getTransactionIdOrPopupChoose();
             if (transactionId == null) return;
             MergeView.openView(transactionId);
@@ -217,7 +217,7 @@ public class AtsBranchManager {
       try {
          if (isWorkingBranch()) {
             ChangeView.open(getWorkingBranch());
-         } else if (isCommittedBranch()) {
+         } else if (isCommittedBranchExists()) {
             TransactionId transactionId = getTransactionIdOrPopupChoose();
             if (transactionId == null) return;
             ChangeView.open(transactionId);
@@ -254,11 +254,68 @@ public class AtsBranchManager {
       return getWorkingBranch() != null;
    }
 
+   public Collection<VersionArtifact> getVersionsToCommitTo() throws OseeCoreException {
+      Set<VersionArtifact> versionSet = new HashSet<VersionArtifact>();
+      if (smaMgr.getTargetedForVersion() != null) {
+         smaMgr.getTargetedForVersion().getParallelVersions(versionSet);
+      }
+      return versionSet;
+   }
+
+   public boolean isAllVersionsToCommitToConfigured() throws OseeCoreException {
+      return getVersionsToCommitTo().size() == getBranchesToCommitTo().size();
+   }
+
+   public Collection<Branch> getBranchesLeftToCommit() throws OseeCoreException {
+      Set<Branch> branchesLeft = new HashSet<Branch>();
+      Collection<Branch> committedTo = getBranchesCommittedTo();
+      for (Branch branchToCommit : getBranchesToCommitTo()) {
+         if (!committedTo.contains(branchToCommit)) {
+            branchesLeft.add(branchToCommit);
+         }
+      }
+      return branchesLeft;
+   }
+
+   public Collection<Branch> getBranchesToCommitTo() throws OseeCoreException {
+      Set<Branch> branches = new HashSet<Branch>();
+      for (VersionArtifact verArt : getVersionsToCommitTo()) {
+         if (verArt.getBranch() != null) {
+            branches.add(verArt.getBranch());
+         }
+      }
+      return branches;
+   }
+
+   public Collection<Branch> getBranchesCommittedTo() throws OseeCoreException {
+      Set<Branch> branches = new HashSet<Branch>();
+      for (TransactionId transId : getTransactionIds()) {
+         branches.add(transId.getBranch());
+      }
+      return branches;
+   }
+
    /**
-    * @return true if there are committed changes associated with this state machine artifact
+    * @return true if there is at least one destination branch committed to
     */
-   public boolean isCommittedBranch() throws OseeCoreException {
-      return (getTransactionIds().size() > 0);
+   public boolean isCommittedBranchExists() throws OseeCoreException {
+      return (getBranchesCommittedTo().size() > 0);
+   }
+
+   /**
+    * Return true if all commit destination branches have been committed to
+    * 
+    * @return true
+    * @throws OseeCoreException
+    */
+   public boolean isBranchesAllCommitted() throws OseeCoreException {
+      Collection<Branch> committedTo = getBranchesCommittedTo();
+      for (Branch destBranch : getBranchesToCommitTo()) {
+         if (!committedTo.contains(destBranch)) {
+            return false;
+         }
+      }
+      return true;
    }
 
    /**
@@ -281,7 +338,7 @@ public class AtsBranchManager {
     */
    public Result createWorkingBranch(String pageId, boolean popup) {
       try {
-         if (isCommittedBranch()) {
+         if (isCommittedBranchExists()) {
             if (popup) AWorkbench.popup("ERROR",
                   "Can not create another working branch once changes have been committed.");
             return new Result("Committed branch already exists.");
@@ -413,51 +470,20 @@ public class AtsBranchManager {
    private final class AtsCommitJob extends Job {
       private final boolean commitPopup;
       private final boolean overrideStateValidation;
+      private final Branch destinationBranch;
+      private final boolean archiveWorkingBranch;
 
       /**
        * @param name
        * @param commitPopup
        * @param overrideStateValidation
        */
-      public AtsCommitJob(boolean commitPopup, boolean overrideStateValidation) {
+      public AtsCommitJob(boolean commitPopup, boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) {
          super("Commit Branch");
          this.commitPopup = commitPopup;
          this.overrideStateValidation = overrideStateValidation;
-      }
-
-      private class ParentMismatchWarning implements Runnable {
-         private final Branch configuredBranch;
-         private final Branch workflowWorkingBranchParent;
-         private final String sourceBranchDetails;
-         private boolean commit;
-
-         /**
-          * @param configuredBranch
-          * @param sourceBranchDetails
-          * @param workflowWorkingBranchParent
-          */
-         public ParentMismatchWarning(Branch configuredBranch, String sourceBranchDetails, Branch workflowWorkingBranchParent) {
-            super();
-            this.configuredBranch = configuredBranch;
-            this.sourceBranchDetails = sourceBranchDetails;
-            this.workflowWorkingBranchParent = workflowWorkingBranchParent;
-         }
-
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         @Override
-         public void run() {
-            commit =
-                  MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
-                        "Warning: committing into a branch other than its direct parent", String.format(
-                              "\"%s\" branch \"%s\" does not match parent branch \"%s\"", sourceBranchDetails,
-                              configuredBranch.getBranchShortName(), workflowWorkingBranchParent.getBranchShortName()));
-         }
-
-         public boolean stopCommit() {
-            return !commit;
-         }
+         this.destinationBranch = destinationBranch;
+         this.archiveWorkingBranch = archiveWorkingBranch;
       }
 
       /* (non-Javadoc)
@@ -467,56 +493,9 @@ public class AtsBranchManager {
       protected IStatus run(IProgressMonitor monitor) {
          try {
             Branch workflowWorkingBranch = getWorkingBranch();
-            Branch configuredBranch = null;
             if (workflowWorkingBranch == null) {
                return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
                      "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId());
-            }
-
-            // If team uses versions, then validate that the parent branch id is specified by either
-            // the team definition's attribute or the related version's attribute
-            if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-               final TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
-
-               // If team uses versions, Confirm that team is targeted for version
-               if (team.getTeamDefinition().isTeamUsesVersions() && team.getWorldViewTargetedVersion() == null) {
-                  return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, String.format(
-                        "Commit Branch Failed: Workflow \"%s\" must be targeted for a version.",
-                        smaMgr.getSma().getHumanReadableId()));
-               }
-
-               // Validate that a parent branch is specified in ATS configuration; first targted version, then
-               // team definition
-               configuredBranch = getConfiguredBranchForWorkflow();
-               if (configuredBranch == null) {
-                  return new Status(
-                        Status.ERROR,
-                        AtsPlugin.PLUGIN_ID,
-                        String.format(
-                              "Commit Branch Failed: Workflow \"%s\" can't access parent branch to commit to.\n\nSince the configured Team Definition uses versions, the parent branch must be specified in either the targeted Version Artifact or the Team Definition Artifact.",
-                              smaMgr.getSma().getHumanReadableId()));
-               }
-
-               // Validate that the configured parentBranch is the same as the working branch's
-               // parent branch.
-               Branch workflowWorkingBranchParent = workflowWorkingBranch.getParentBranch();
-               if (!configuredBranch.equals(workflowWorkingBranchParent)) {
-                  String sourceBranchDetails = "";
-                  if (team.getTeamDefinition().isTeamUsesVersions()) {
-                     sourceBranchDetails =
-                           String.format("Targeted version \"%s\" ",
-                                 team.getWorldViewTargetedVersion().getDescriptiveName());
-                  } else {
-                     sourceBranchDetails =
-                           String.format("Team Definition's \"%s\" ", team.getTeamDefinition().getDescriptiveName());
-                  }
-                  ParentMismatchWarning runnable =
-                        new ParentMismatchWarning(configuredBranch, sourceBranchDetails, workflowWorkingBranchParent);
-                  Displays.ensureInDisplayThread(runnable, true);
-                  if (runnable.stopCommit()) {
-                     return Status.OK_STATUS;
-                  }
-               }
             }
 
             // Confirm that all blocking reviews are completed
@@ -540,29 +519,30 @@ public class AtsBranchManager {
                }
             }
 
-            commit(commitPopup, workflowWorkingBranch, configuredBranch);
+            commit(commitPopup, workflowWorkingBranch, destinationBranch, archiveWorkingBranch);
          } catch (OseeCoreException ex) {
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
          }
          return Status.OK_STATUS;
       }
 
-      private void commit(boolean commitPopup, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-         boolean branchCommitted = false;
-         ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, sourceBranch);
+   }
 
-         if (commitPopup) {
-            branchCommitted = CommitHandler.commitBranch(conflictManager, true);
-         } else {
-            BranchManager.commitBranch(conflictManager, true, true);
-            branchCommitted = true;
-         }
-         if (branchCommitted) {
-            // Create reviews as necessary
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-            createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
-            transaction.execute();
-         }
+   public void commit(boolean commitPopup, Branch sourceBranch, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
+      boolean branchCommitted = false;
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, sourceBranch);
+
+      if (commitPopup) {
+         branchCommitted = CommitHandler.commitBranch(conflictManager, archiveWorkingBranch);
+      } else {
+         BranchManager.commitBranch(conflictManager, true, archiveWorkingBranch);
+         branchCommitted = true;
+      }
+      if (branchCommitted) {
+         // Create reviews as necessary
+         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
+         transaction.execute();
       }
    }
 
@@ -576,11 +556,11 @@ public class AtsBranchManager {
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     *           used for developmental testing or automation
     */
-   public void commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation) throws OseeCoreException {
+   public void commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
       if (isBranchInCommit()) {
          throw new OseeCoreException("Branch is currently being committed.");
       }
-      Jobs.startJob(new AtsCommitJob(commitPopup, overrideStateValidation));
+      Jobs.startJob(new AtsCommitJob(commitPopup, overrideStateValidation, destinationBranch, archiveWorkingBranch));
    }
 
    /**
@@ -593,7 +573,7 @@ public class AtsBranchManager {
       ChangeData changeData = null;
       if (smaMgr.getBranchMgr().isWorkingBranch()) {
          changeData = ChangeManager.getChangeDataPerBranch(getWorkingBranch(), null);
-      } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
+      } else if (smaMgr.getBranchMgr().isCommittedBranchExists()) {
          TransactionId transactionId = getEarliestTransactionId();
          if (changeDataCacheForCommittedBranch.get(transactionId) == null) {
             changeDataCacheForCommittedBranch.put(transactionId, ChangeManager.getChangeDataPerTransaction(

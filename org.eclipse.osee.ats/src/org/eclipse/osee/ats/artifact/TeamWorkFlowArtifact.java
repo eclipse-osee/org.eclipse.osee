@@ -586,7 +586,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       try {
          if (getSmaMgr().getBranchMgr().isWorkingBranch())
             return "Working";
-         else if (getSmaMgr().getBranchMgr().isCommittedBranch()) return "Committed";
+         else if (getSmaMgr().getBranchMgr().isCommittedBranchExists()) return "Committed";
          return "";
       } catch (Exception ex) {
          return "Exception: " + ex.getLocalizedMessage();

@@ -61,10 +61,11 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       VersionArtifact verArt = (VersionArtifact) element;
       Branch branch = verArt.getParentBranch();
-      if (branch == null) return null;
       if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          return SkynetGuiPlugin.getInstance().getImage("nav_forward.gif");
-      } else if (xCol.equals(CommitXManagerFactory.Status_Col)) {
+      }
+      if (branch == null) return null;
+      if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
             if (commitStatus == CommitStatus.Branch_Not_Configured)
@@ -131,13 +132,10 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt).getDisplayName();
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          return getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt) == CommitStatus.Merge_Needed ? "Click to Show Merge Manager" : "";
-      } else if (xCol.equals(CommitXManagerFactory.Name_Col)) {
-         if (branch == null)
-            return verArt + " - " + (branch == null ? "Parent Branch Not Configured" : branch.getBranchShortName());
-         else
-            return branch.getBranchName();
-      } else if (xCol.equals(CommitXManagerFactory.Short_Name_Col)) {
-         return verArt + " - " + (branch == null ? "Parent Branch Not Configured" : branch.getBranchShortName());
+      } else if (xCol.equals(CommitXManagerFactory.Version_Col)) {
+         return verArt.getDescriptiveName();
+      } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Col)) {
+         return (branch == null ? "Parent Branch Not Configured for Version [" + verArt + "]" : branch.getBranchShortName());
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
          if (commitStatus == CommitStatus.Branch_Not_Configured)

@@ -138,7 +138,7 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
          if (smaMgr.getBranchMgr().isWorkingBranch()) {
             enabled = true;
          } else {
-            enabled = smaMgr.getBranchMgr().isCommittedBranch();
+            enabled = smaMgr.getBranchMgr().isCommittedBranchExists();
          }
       } catch (Exception ex) {
          // do nothing

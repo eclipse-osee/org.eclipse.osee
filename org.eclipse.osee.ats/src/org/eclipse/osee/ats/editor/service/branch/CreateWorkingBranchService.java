@@ -102,7 +102,7 @@ public class CreateWorkingBranchService extends WorkPageService implements IBran
       if (link != null && !link.isDisposed()) {
          boolean enabled = false;
          try {
-            enabled = !smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranch();
+            enabled = !smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranchExists();
          } catch (Exception ex) {
             // do nothing
          }

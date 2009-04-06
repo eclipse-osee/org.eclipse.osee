@@ -90,9 +90,13 @@ public class CommitXManager extends XViewer {
             AWorkbench.popup(commitStatus.getDisplayName(),
                   "Talk to project lead or admin to configure branch for version [" + verArt + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed) {
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false);
+            Branch destBranch = verArt.getParentBranch();
+            Branch workingBranch = xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getWorkingBranch();
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,
+                  xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getBranchesLeftToCommit().size() == 1);
          } else if (commitStatus == CommitStatus.Merge_Needed) {
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false);
+            Branch destBranch = verArt.getParentBranch();
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, false);
          } else if (commitStatus == CommitStatus.Committed) {
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReport();
          }

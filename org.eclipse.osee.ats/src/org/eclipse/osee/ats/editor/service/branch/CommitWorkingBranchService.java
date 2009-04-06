@@ -11,15 +11,12 @@
 
 package org.eclipse.osee.ats.editor.service.branch;
 
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -74,11 +71,12 @@ public class CommitWorkingBranchService extends WorkPageService implements IBran
                }
 
                public void linkActivated(HyperlinkEvent e) {
-                  try {
-                     smaMgr.getBranchMgr().commitWorkingBranch(true, overrideStateValidation);
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
+                  System.err.println("Not working...remove or implement");
+                  //                  try {
+                  //                     smaMgr.getBranchMgr().commitWorkingBranch(true, overrideStateValidation);
+                  //                  } catch (OseeCoreException ex) {
+                  //                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  //                  }
                }
             });
       }
@@ -112,7 +110,7 @@ public class CommitWorkingBranchService extends WorkPageService implements IBran
       if (link != null && !link.isDisposed()) {
          boolean enabled = false;
          try {
-            enabled = smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranch();
+            enabled = smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isBranchesAllCommitted();
          } catch (Exception ex) {
             // do nothing
          }

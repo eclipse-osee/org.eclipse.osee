@@ -30,14 +30,16 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
          new XViewerColumn("osee.commit.status", "Status", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Merge_Col =
          new XViewerColumn("osee.commit.merge", "Merge", 50, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Name_Col =
-         new XViewerColumn("osee.commit.name", "Name", 450, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Short_Name_Col =
-         new XViewerColumn("osee.commit.shortName", "Short Name", 200, SWT.LEFT, true, SortDataType.String, false, null);
+   public static XViewerColumn Dest_Branch_Col =
+         new XViewerColumn("osee.commit.name", "Destination Branch", 450, SWT.LEFT, true, SortDataType.String, false,
+               null);
+   public static XViewerColumn Version_Col =
+         new XViewerColumn("osee.commit.shortName", "Destination Version", 200, SWT.LEFT, true, SortDataType.String,
+               false, null);
 
    public CommitXManagerFactory() {
       super("osee.skynet.gui.CommitXViewer");
-      registerColumn(Empty_Col, Action_Col, Status_Col, Merge_Col, Type_Col, Short_Name_Col, Name_Col);
+      registerColumn(Empty_Col, Action_Col, Status_Col, Merge_Col, Type_Col, Dest_Branch_Col, Version_Col);
    }
 
    /* (non-Javadoc)

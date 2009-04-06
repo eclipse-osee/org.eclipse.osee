@@ -109,7 +109,7 @@ public class ServicesArea {
    public void loadToolbarServices(AtsWorkPage atsWorkPage) throws OseeCoreException {
       if (toolBarServices.size() == 0) {
          // Toolbar Services
-         if (atsWorkPage != null && (atsWorkPage.isAllowCommitBranch() || atsWorkPage.isAllowCreateBranch() || smaMgr.getBranchMgr().isCommittedBranch() || smaMgr.getBranchMgr().isWorkingBranch())) {
+         if (atsWorkPage != null && (atsWorkPage.isAllowCommitBranch() || atsWorkPage.isAllowCreateBranch() || smaMgr.getBranchMgr().isCommittedBranchExists() || smaMgr.getBranchMgr().isWorkingBranch())) {
             toolBarServices.add(new ShowMergeManagerService(smaMgr));
             toolBarServices.add(new ShowChangeReportService(smaMgr));
          }

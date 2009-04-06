@@ -12,9 +12,8 @@
 package org.eclipse.osee.ats.util.widgets.commit;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -28,6 +27,13 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
@@ -36,28 +42,36 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 
 /**
  * @author Donald G. Dunne
  */
-public class XCommitManager extends XWidget implements IArtifactWidget {
+public class XCommitManager extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener, IBranchEventListener {
 
    private CommitXManager xCommitManager;
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private TeamWorkFlowArtifact teamArt;
    private final int paddedTableHeightHint = 2;
+   private Label extraInfoLabel;
 
    /**
     * @param label
     */
    public XCommitManager() {
       super("Commit Manager");
+      OseeEventManager.addListener(this);
    }
 
    /*
@@ -78,14 +92,16 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
       }
 
       try {
-         if (!teamArt.getSmaMgr().getBranchMgr().isWorkingBranch() && !teamArt.getSmaMgr().getBranchMgr().isCommittedBranch()) {
-            labelWidget.setText(label + ": No working or committed branch available.");
+         if (!teamArt.getSmaMgr().getBranchMgr().isWorkingBranch() && !teamArt.getSmaMgr().getBranchMgr().isCommittedBranchExists()) {
+            labelWidget.setText(label + ": No working or committed branches available.");
          } else {
 
             Composite mainComp = new Composite(parent, SWT.BORDER);
             mainComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             mainComp.setLayout(ALayout.getZeroMarginLayout());
             if (toolkit != null) toolkit.paintBordersFor(mainComp);
+
+            createTaskActionBar(mainComp);
 
             labelWidget.setText(label + ": Double-click to perform Action");
 
@@ -117,6 +133,9 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
       }
    }
 
+   public void refreshActionEnablement() {
+   }
+
    public void setXviewerTree() {
       Tree tree = xCommitManager.getTree();
       GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
@@ -129,16 +148,59 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
       tree.setLinesVisible(true);
    }
 
-   public void refreshActionEnablement() {
+   public void createTaskActionBar(Composite parent) {
+
+      // Button composite for state transitions, etc
+      Composite bComp = new Composite(parent, SWT.NONE);
+      // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
+      bComp.setLayout(new GridLayout(2, false));
+      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+      Composite leftComp = new Composite(bComp, SWT.NONE);
+      leftComp.setLayout(new GridLayout());
+      leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
+
+      extraInfoLabel = new Label(leftComp, SWT.NONE);
+      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      extraInfoLabel.setText("");
+      extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+
+      Composite rightComp = new Composite(bComp, SWT.NONE);
+      rightComp.setLayout(new GridLayout());
+      rightComp.setLayoutData(new GridData(GridData.END));
+
+      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      toolBar.setLayoutData(gd);
+      ToolItem item = null;
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
+      item.setToolTipText("Refresh");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            loadTable();
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
+      item.setToolTipText("Customize Table");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            xCommitManager.getCustomizeMgr().handleTableCustomization();
+         }
+      });
+
+      refreshActionEnablement();
    }
 
    public void loadTable() {
       try {
          if (xCommitManager != null && teamArt != null && (teamArt instanceof TeamWorkFlowArtifact)) {
-            Set<VersionArtifact> versionSet = new HashSet<VersionArtifact>();
-            if ((teamArt).getSmaMgr().getTargetedForVersion() != null) {
-               (teamArt).getSmaMgr().getTargetedForVersion().getParallelVersions(versionSet);
-            }
+            Collection<VersionArtifact> versionSet = teamArt.getSmaMgr().getBranchMgr().getVersionsToCommitTo();
             xCommitManager.setInput(versionSet);
          }
       } catch (Exception ex) {
@@ -178,7 +240,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
 
    @Override
    public void refresh() {
-      if (xCommitManager == null) return;
+      if (xCommitManager == null || xCommitManager.getTree() == null || xCommitManager.getTree().isDisposed()) return;
       xCommitManager.refresh();
       setLabelError();
       refreshActionEnablement();
@@ -286,6 +348,41 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
     */
    public TeamWorkFlowArtifact getTeamArt() {
       return teamArt;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
+      if (transData.getBranchId() != AtsPlugin.getAtsBranch().getBranchId()) return;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            loadTable();
+         }
+      });
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
+      if (branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            loadTable();
+         }
+      });
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
 }

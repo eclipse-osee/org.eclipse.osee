@@ -159,7 +159,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
    private String getStatus() {
       try {
          if (getWorkingBranch() == null) {
-            if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isCommittedBranch()) {
+            if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isCommittedBranchExists()) {
                return Status.Committed.name();
             }
             return Status.Not_Started.name();
@@ -236,7 +236,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
       try {
          if (smaMgr != null && smaMgr.getBranchMgr() != null) {
             if (createBranch != null) {
-               createBranch.setEnabled(!smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranch());
+               createBranch.setEnabled(!smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranchExists());
             }
             if (showArtifactExplorer != null) {
                if (getWorkingBranch() == null)

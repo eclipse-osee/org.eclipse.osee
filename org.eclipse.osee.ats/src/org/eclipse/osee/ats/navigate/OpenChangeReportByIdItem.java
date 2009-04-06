@@ -71,7 +71,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                   for (Artifact artifact : artifacts) {
                      if (artifact instanceof ActionArtifact) {
                         for (TeamWorkFlowArtifact team : ((ActionArtifact) artifact).getTeamWorkFlowArtifacts()) {
-                           if (team.getSmaMgr().getBranchMgr().isCommittedBranch() || team.getSmaMgr().getBranchMgr().isWorkingBranch()) {
+                           if (team.getSmaMgr().getBranchMgr().isCommittedBranchExists() || team.getSmaMgr().getBranchMgr().isWorkingBranch()) {
                               addedArts.add(team);
                            }
                         }
