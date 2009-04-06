@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -66,6 +67,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          if (branch.equals(commitXManager.getWorkingBranch())) return SkynetGuiPlugin.getInstance().getImage(
                "nav_forward.gif");
          return SkynetGuiPlugin.getInstance().getImage("branch.gif");
+      } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
+         return AtsPlugin.getInstance().getImage("go.gif");
       } else if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);

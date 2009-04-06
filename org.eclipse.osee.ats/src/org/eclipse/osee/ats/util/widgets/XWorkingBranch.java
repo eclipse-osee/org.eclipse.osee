@@ -45,6 +45,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
    private Button showArtifactExplorer;
    private Button showChangeReport;
    private Button deleteBranch;
+   public static enum Status {
+      Not_Started, Changes_InProgress, Changes_NotPermitted
+   }
 
    public XWorkingBranch() {
       super("Working Branch", "");
@@ -53,7 +56,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
    /**
     * 
     */
-   @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
       setSMAMgr();
       if (horizontalSpan < 2) horizontalSpan = 2;
@@ -68,8 +70,12 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
       Composite bComp = new Composite(parent, SWT.NONE);
       bComp.setLayout(new GridLayout(4, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      if (toolkit != null) toolkit.adapt(bComp);
 
-      createBranch = new Button(bComp, SWT.PUSH);
+      if (toolkit != null)
+         createBranch = toolkit.createButton(bComp, null, SWT.PUSH);
+      else
+         createBranch = new Button(bComp, SWT.PUSH);
       if (getWorkingBranch() != null) createBranch.setEnabled(false);
       createBranch.setToolTipText("Create Working Branch");
       createBranch.addListener(SWT.Selection, new Listener() {
@@ -79,7 +85,10 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
          }
       });
 
-      showArtifactExplorer = new Button(bComp, SWT.PUSH);
+      if (toolkit != null)
+         showArtifactExplorer = toolkit.createButton(bComp, null, SWT.PUSH);
+      else
+         showArtifactExplorer = new Button(bComp, SWT.PUSH);
       if (getWorkingBranch() == null) showArtifactExplorer.setEnabled(false);
       showArtifactExplorer.setToolTipText("Show Artifact Explorer");
       showArtifactExplorer.addListener(SWT.Selection, new Listener() {
@@ -88,7 +97,10 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
          }
       });
 
-      showChangeReport = new Button(bComp, SWT.PUSH);
+      if (toolkit != null)
+         showChangeReport = toolkit.createButton(bComp, null, SWT.PUSH);
+      else
+         showChangeReport = new Button(bComp, SWT.PUSH);
       if (getWorkingBranch() == null) showChangeReport.setEnabled(false);
       showChangeReport.setToolTipText("Show Change Report");
       showChangeReport.addListener(SWT.Selection, new Listener() {
@@ -97,7 +109,10 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
          }
       });
 
-      deleteBranch = new Button(bComp, SWT.PUSH);
+      if (toolkit != null)
+         deleteBranch = toolkit.createButton(bComp, null, SWT.PUSH);
+      else
+         deleteBranch = new Button(bComp, SWT.PUSH);
       if (getWorkingBranch() == null) deleteBranch.setEnabled(false);
       deleteBranch.setToolTipText("Delete Working Branch");
       deleteBranch.addListener(SWT.Selection, new Listener() {
@@ -143,13 +158,11 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
    private String getStatus() {
       try {
          if (getWorkingBranch() == null) {
-            return "Not Started";
-         } else
-
-         if (smaMgr.getStateMgr().getCurrentStateName().equals("Promote")) {
-            return "Changes Not Permitted";
+            return Status.Not_Started.name();
+         } else if (smaMgr.getStateMgr().getCurrentStateName().equals("Promote")) {
+            return Status.Changes_NotPermitted.name();
          } else {
-            return "Changes In-Progress";
+            return Status.Changes_InProgress.name();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
@@ -157,7 +170,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
       }
    }
 
-   @Override
    public void setFocus() {
    }
 
@@ -216,29 +228,29 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
       if (labelWidget != null) {
          labelWidget.setText(label + ": " + getWorkingBranchShortName() + " " + getStatus());
       }
-      if (createBranch != null) {
-         if (getWorkingBranch() != null)
-            createBranch.setEnabled(false);
-         else
-            createBranch.setEnabled(true);
-      }
-      if (showArtifactExplorer != null) {
-         if (getWorkingBranch() == null)
-            showArtifactExplorer.setEnabled(false);
-         else
-            showArtifactExplorer.setEnabled(true);
-      }
-      if (showChangeReport != null) {
-         if (getWorkingBranch() == null)
-            showChangeReport.setEnabled(false);
-         else
-            showChangeReport.setEnabled(true);
-      }
-      if (deleteBranch != null) {
-         if (getWorkingBranch() == null)
-            deleteBranch.setEnabled(false);
-         else
-            deleteBranch.setEnabled(true);
+      try {
+         if (smaMgr != null && smaMgr.getBranchMgr() != null) {
+            if (createBranch != null) {
+               createBranch.setEnabled(!smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranch());
+            }
+            if (showArtifactExplorer != null) {
+               if (getWorkingBranch() == null)
+                  showArtifactExplorer.setEnabled(false);
+               else
+                  showArtifactExplorer.setEnabled(true);
+            }
+            if (showChangeReport != null) {
+               if (smaMgr.getBranchMgr().isWorkingBranch())
+                  showChangeReport.setEnabled(true);
+               else
+                  showChangeReport.setEnabled(smaMgr.getBranchMgr().isCommittedBranch());
+            }
+            if (deleteBranch != null) {
+               deleteBranch.setEnabled(smaMgr.getBranchMgr().isWorkingBranch());
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
    }
 
