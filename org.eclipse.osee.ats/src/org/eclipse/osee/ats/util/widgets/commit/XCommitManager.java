@@ -12,17 +12,22 @@
 package org.eclipse.osee.ats.util.widgets.commit;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
@@ -52,7 +57,8 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
    private Artifact artifact;
-   private ICommitManagerArtifact iCommitViewerArtifact;
+   private final int defaultTableHeightHint = 20;
+   private final int paddedTableHeightHint = 2;
 
    /**
     * @param label
@@ -78,40 +84,57 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
          }
       }
 
-      Composite mainComp = new Composite(parent, SWT.BORDER);
-      mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-      mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+      try {
+         if (!teamArt.getSmaMgr().getBranchMgr().isWorkingBranch() && !teamArt.getSmaMgr().getBranchMgr().isCommittedBranch()) {
+            labelWidget.setText(label + ": No working or committed branch available.");
+         } else {
 
-      createTaskActionBar(mainComp);
+            Composite mainComp = new Composite(parent, SWT.BORDER);
+            mainComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            mainComp.setLayout(ALayout.getZeroMarginLayout());
+            if (toolkit != null) toolkit.paintBordersFor(mainComp);
 
-      xCommitManager = new CommitXManager(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
-      xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+            createTaskActionBar(mainComp);
 
-      xCommitManager.setContentProvider(new XCommitContentProvider(xCommitManager));
-      xCommitManager.setLabelProvider(new XCommitLabelProvider(xCommitManager));
-      xCommitManager.addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
-         public void selectionChanged(SelectionChangedEvent event) {
-            refreshActionEnablement();
+            xCommitManager = new CommitXManager(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+            xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+            xCommitManager.setContentProvider(new XCommitContentProvider(xCommitManager));
+            xCommitManager.setLabelProvider(new XCommitLabelProvider(xCommitManager));
+            xCommitManager.addSelectionChangedListener(new ISelectionChangedListener() {
+               /*
+                * (non-Javadoc)
+                * 
+                * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+                */
+               public void selectionChanged(SelectionChangedEvent event) {
+                  refreshActionEnablement();
+               }
+            });
+
+            if (toolkit != null && xCommitManager.getStatusLabel() != null) toolkit.adapt(
+                  xCommitManager.getStatusLabel(), false, false);
+
+            setXviewerTree();
+
+            loadTable();
          }
-      });
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
 
-      if (toolkit != null) toolkit.adapt(xCommitManager.getStatusLabel(), false, false);
-
+   public void setXviewerTree() {
       Tree tree = xCommitManager.getTree();
-      GridData gridData = new GridData(GridData.FILL_BOTH);
-      gridData.heightHint = 100;
+      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+      int defectListSize = xCommitManager.getTree().getItemCount();
+      int treeItemHeight = xCommitManager.getTree().getItemHeight();
+      gridData.heightHint = treeItemHeight * (paddedTableHeightHint + defectListSize);
       tree.setLayout(ALayout.getZeroMarginLayout());
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-
-      loadTable();
    }
 
    public void createTaskActionBar(Composite parent) {
@@ -138,20 +161,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
-      item.setToolTipText("Show Change Report");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            if (xCommitManager.getWorkingBranch() != null)
-               //ChangeReportView.openViewUpon(xCommitViewer.getWorkingBranch());
-               AWorkbench.popup("ERROR", "Not implemented yet.");
-            else
-               AWorkbench.popup("ERROR", "Not implemented yet.");
-         }
-      });
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
@@ -181,9 +190,15 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
 
    public void loadTable() {
       try {
-         if (xCommitManager != null && artifact != null && (artifact instanceof IBranchArtifact) && ((IBranchArtifact) artifact).getWorkingBranch() != null) {
-            xCommitManager.setWorkingBranch(((IBranchArtifact) artifact).getWorkingBranch());
-            extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
+         if (xCommitManager != null && artifact != null && (artifact instanceof TeamWorkFlowArtifact)) {
+            Set<VersionArtifact> versionSet = new HashSet<VersionArtifact>();
+            if (((TeamWorkFlowArtifact) artifact).getSmaMgr().getTargetedForVersion() != null) {
+               ((TeamWorkFlowArtifact) artifact).getSmaMgr().getTargetedForVersion().getParallelVersions(versionSet);
+            }
+            xCommitManager.setInput(versionSet);
+            if (((IBranchArtifact) artifact).getWorkingBranch() != null) {
+               extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -206,17 +221,18 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
 
    @Override
    public Control getControl() {
+      if (xCommitManager == null) return null;
       return xCommitManager.getTree();
    }
 
    @Override
    public void dispose() {
-      xCommitManager.dispose();
+      if (xCommitManager != null) xCommitManager.dispose();
    }
 
    @Override
    public void setFocus() {
-      xCommitManager.getTree().setFocus();
+      if (xCommitManager != null) xCommitManager.getTree().setFocus();
    }
 
    @Override
@@ -225,6 +241,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
       xCommitManager.refresh();
       setLabelError();
       refreshActionEnablement();
+      setXviewerTree();
    }
 
    @Override
@@ -291,9 +308,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
     */
    public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException {
       this.artifact = artifact;
-      if (this.artifact instanceof ICommitManagerArtifact) {
-         this.iCommitViewerArtifact = (ICommitManagerArtifact) artifact;
-      }
       loadTable();
    }
 
@@ -303,6 +317,10 @@ public class XCommitManager extends XWidget implements IArtifactWidget {
    @Override
    public Result isDirty() throws OseeCoreException {
       return Result.FalseResult;
+   }
+
+   public Branch getWorkingBranch() throws OseeCoreException {
+      return ((IBranchArtifact) artifact).getWorkingBranch();
    }
 
    /* (non-Javadoc)

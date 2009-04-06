@@ -11,8 +11,6 @@
 package org.eclipse.osee.ats.util.widgets.commit;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -31,7 +29,6 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CommitXManager extends XViewer {
 
    private final XCommitManager xCommitManager;
-   private Branch workingBranch;
 
    public CommitXManager(Composite parent, int style, XCommitManager xRoleViewer) {
       super(parent, style, new CommitXManagerFactory());
@@ -80,14 +77,6 @@ public class CommitXManager extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setWorkingBranch(Branch workingBranch) throws OseeCoreException {
-      this.workingBranch = workingBranch;
-      Set<Branch> branches = new HashSet<Branch>();
-      branches.add(workingBranch.getParentBranch());
-      setInput(branches.toArray());
-      expandAll();
-   }
-
    /**
     * Release resources
     */
@@ -114,8 +103,8 @@ public class CommitXManager extends XViewer {
    /**
     * @return the workingBranch
     */
-   public Branch getWorkingBranch() {
-      return workingBranch;
+   public Branch getWorkingBranch() throws OseeCoreException {
+      return xCommitManager.getWorkingBranch();
    }
 
 }

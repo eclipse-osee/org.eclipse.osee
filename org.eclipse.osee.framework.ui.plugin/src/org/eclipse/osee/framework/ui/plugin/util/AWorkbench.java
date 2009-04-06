@@ -66,6 +66,10 @@ public class AWorkbench {
       return editors;
    }
 
+   public static void popup(final String message) {
+      popup(message, message);
+   }
+
    public static void popup(final String title, final String message) {
       if (!PlatformUI.isWorkbenchRunning()) {
          OseeLog.log(AWorkbench.class, Level.SEVERE, message);

@@ -14,7 +14,6 @@ package org.eclipse.nebula.widgets.xviewer.customize;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.util.internal.dialog.DialogWithEntry;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -28,7 +27,7 @@ public class ColumnFilterDataUI {
       this.xViewer = xViewer;
    }
 
-   public void createWidgets(Composite comp) {
+   public void createWidgets() {
    }
 
    public void dispose() {

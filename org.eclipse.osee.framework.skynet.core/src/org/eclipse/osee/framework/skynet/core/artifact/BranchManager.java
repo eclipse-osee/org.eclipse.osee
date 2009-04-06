@@ -533,7 +533,7 @@ public class BranchManager {
             HttpBranchCreation.createRootBranch(null, branchName, staticBranchName, systemRootBranch.getBranchId(),
                   systemRootBranch.getParentTransactionId(), false);
       if (staticBranchName != null) {
-         createKeyedBranch(staticBranchName, branch);
+         setKeyedBranch(staticBranchName, branch);
       }
       if (initializeArtifacts) {
          RootBranchInitializer rootInitializer = new RootBranchInitializer();
@@ -633,10 +633,9 @@ public class BranchManager {
    public static Branch getLastBranch() {
       return instance.defaultBranch.get();
    }
-   
 
    public static void setLastBranch(Branch branch) {
-      if (branch != null){
+      if (branch != null) {
          instance.defaultBranch.set(branch);
       }
    }
@@ -669,7 +668,7 @@ public class BranchManager {
       return transactionId;
    }
 
-   public static void createKeyedBranch(String keyname, Branch branch) throws OseeCoreException {
+   public static void setKeyedBranch(String keyname, Branch branch) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       instance.keynameBranchMap.put(keyname.toLowerCase(), branch);
    }

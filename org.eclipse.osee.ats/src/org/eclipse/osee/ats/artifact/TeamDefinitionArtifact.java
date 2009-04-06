@@ -93,6 +93,18 @@ public class TeamDefinitionArtifact extends Artifact {
       AtsCache.cache(this);
    }
 
+   public Branch getParentBranch() throws OseeCoreException {
+      try {
+         Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), 0);
+         if (branchId != null && branchId > 0) {
+            return BranchManager.getBranch(branchId);
+         }
+      } catch (BranchDoesNotExist ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return null;
+   }
+
    /**
     * This method will walk up the TeamDefinition tree until a def is found that configured with versions. This allows
     * multiple TeamDefinitions to be versioned/released together by having the parent hold the versions. It is not

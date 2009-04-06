@@ -33,4 +33,5 @@ public interface IXViewerCustomizations {
    public void deleteCustomization(CustomizeData custData) throws Exception;
 
    public boolean isCustomizationPersistAvailable();
+
 }

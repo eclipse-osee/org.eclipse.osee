@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.util.widgets.commit;
 
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -34,7 +34,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      Branch branch = ((Branch) element);
+      VersionArtifact verArt = (VersionArtifact) element;
+      Branch branch = verArt.getParentBranch();
+      if (branch == null) return null;
       if (xCol.equals(CommitXManagerFactory.Name_Col)) {
          if (branch.equals(commitXManager.getWorkingBranch())) return SkynetGuiPlugin.getInstance().getImage(
                "nav_forward.gif");
@@ -51,28 +53,46 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      Branch branch = ((Branch) element);
+      VersionArtifact verArt = (VersionArtifact) element;
+      Branch branch = verArt.getParentBranch();
       if (xCol.equals(CommitXManagerFactory.Type_Col)) {
-         if (branch.equals(commitXManager.getWorkingBranch()))
+         if (branch == null)
+            return "";
+         else if (commitXManager.getWorkingBranch() != null && branch.equals(commitXManager.getWorkingBranch()))
             return "Working";
-         else if (branch.equals(commitXManager.getWorkingBranch().getParentBranch()))
+         else if (commitXManager.getWorkingBranch() != null && branch.equals(commitXManager.getWorkingBranch().getParentBranch()))
             return "Parent Baseline";
          else {
-            try {
-               if (branch.isBaselineBranch()) return "Baseline";
-            } catch (Exception ex) {
-               return XViewerCells.getCellExceptionString(ex);
-            }
+            return "Parallel Branch";
          }
-         return "Unknown";
       } else if (xCol.equals(CommitXManagerFactory.Status_Col)) {
-         if (branch.equals(commitXManager.getWorkingBranch()))
+         if (branch == null)
             return "";
-         else if (branch.equals(commitXManager.getWorkingBranch().getParentBranch()) || branch.isBaselineBranch()) return isCommittedInto(branch) ? "Committed" : "UnCommitted";
-         return "";
-      } else if (xCol.equals(CommitXManagerFactory.Name_Col))
-         return branch.getBranchName();
-      else if (xCol.equals(CommitXManagerFactory.Short_Name_Col)) return branch.getBranchShortName();
+         else if (branch.equals(commitXManager.getWorkingBranch()))
+            return "";
+         else if (isMergeNeeded(branch))
+            return "Merge Needed";
+         else
+            return isCommittedInto(branch) ? "Committed" : "Commit Needed";
+      } else if (xCol.equals(CommitXManagerFactory.Name_Col)) {
+         if (branch == null)
+            return verArt + " - " + (branch == null ? "Parent Branch Not Configured" : branch.getBranchShortName());
+         else
+            return branch.getBranchName();
+      } else if (xCol.equals(CommitXManagerFactory.Short_Name_Col)) {
+         return verArt + " - " + (branch == null ? "Parent Branch Not Configured" : branch.getBranchShortName());
+      } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
+         if (branch == null) {
+            return "Configure Branch";
+         } else if (true) {
+            return "Start Commit";
+         } else if (true) {
+            return "Merge Conflicts";
+         } else if (true) {
+            return "Show Change Report";
+         }
+         return "Error: Need to handle this";
+      }
       return "unhandled column";
    }
 
@@ -96,13 +116,19 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private boolean isCommittedInto(Branch branch) {
-      return !branch.getBranchName().equals("ftb2");
+      return false;
+   }
+
+   private boolean isMergeNeeded(Branch branch) {
+      return false;
    }
 
    private Image getCommitStatusImage(Branch branch) throws OseeCoreException {
-      if (branch.equals(commitXManager.getWorkingBranch()))
+      if (branch == null)
          return null;
-      else if (branch.equals(commitXManager.getWorkingBranch().getParentBranch()) || branch.isBaselineBranch()) {
+      else if (commitXManager.getWorkingBranch() != null && branch.equals(commitXManager.getWorkingBranch()))
+         return null;
+      else if (commitXManager.getWorkingBranch() != null && !isCommittedInto(branch)) {
          return isCommittedInto(branch) ? SkynetGuiPlugin.getInstance().getImage("green_light.gif") : SkynetGuiPlugin.getInstance().getImage(
                "red_light.gif");
       }

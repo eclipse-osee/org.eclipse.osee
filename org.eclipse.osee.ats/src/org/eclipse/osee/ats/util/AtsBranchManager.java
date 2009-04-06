@@ -350,30 +350,13 @@ public class AtsBranchManager {
       if (smaMgr.isTeamUsesVersions()) {
          VersionArtifact verArt = smaMgr.getTargetedForVersion();
          if (verArt != null) {
-            try {
-               Integer branchId =
-                     verArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), 0);
-               if (branchId != null && branchId > 0) {
-                  parentBranch = BranchManager.getBranch(branchId);
-               }
-            } catch (BranchDoesNotExist ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            }
+            parentBranch = verArt.getParentBranch();
          }
       }
 
       // If not defined in version, check for parent branch from team definition
       if (parentBranch == null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact)) {
-         try {
-            Integer branchId =
-                  ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleAttributeValue(
-                        ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
-            if (branchId != null && branchId > 0) {
-               parentBranch = BranchManager.getBranch(branchId);
-            }
-         } catch (OseeCoreException ex) {
-            // do nothing
-         }
+         parentBranch = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch();
       }
 
       // If not defined, return null

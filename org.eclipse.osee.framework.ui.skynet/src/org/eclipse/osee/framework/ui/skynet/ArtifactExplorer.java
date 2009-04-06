@@ -288,7 +288,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             public void handleEvent(Event event) {
                try {
                   branch = branchSelect.getData();
-                  explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
+                  if (branch != null) {
+                     explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
+                  }
                } catch (Exception ex) {
                   OseeLog.log(getClass(), Level.SEVERE, ex);
                }
@@ -1253,22 +1255,22 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       /**
        * @param parentArtifact
        * @param artifactsToBeRelated
-       * @throws OseeCoreException 
+       * @throws OseeCoreException
        */
       private void dropArtifactIntoDifferentBranch(Artifact parentArtifact, Artifact[] artifactsToBeRelated) throws OseeCoreException {
          //TODO need to lock this down if user doesn't have access to the parent Artifacts branch..
          List<Artifact> descendents = parentArtifact.getDescendants();
          List<Integer> artifactIds = new ArrayList<Integer>();
          artifactIds.add(parentArtifact.getArtId());
-         for (Artifact artifact : descendents){
+         for (Artifact artifact : descendents) {
             artifactIds.add(artifact.getArtId());
          }
-         for (Artifact newArtifact : artifactsToBeRelated){
-            if (artifactIds.contains(newArtifact.getArtId())){
+         for (Artifact newArtifact : artifactsToBeRelated) {
+            if (artifactIds.contains(newArtifact.getArtId())) {
                //update the artifact
-            } else if(artifactIsAlreadyOnTheBranch()){
-                  //move artifact and update
-            } else if(artifactsShareHierarchy()){
+            } else if (artifactIsAlreadyOnTheBranch()) {
+               //move artifact and update
+            } else if (artifactsShareHierarchy()) {
                //Copy artifact onto branch as baseline.
             } else {
                //copy artifact onto branch as a modification.

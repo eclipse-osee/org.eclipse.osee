@@ -121,4 +121,36 @@ public abstract class XViewerFactory implements IXViewerFactory {
       return null;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isFilterUiAvailable()
+    */
+   @Override
+   public boolean isFilterUiAvailable() {
+      return true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isHeaderBarAvailable()
+    */
+   @Override
+   public boolean isHeaderBarAvailable() {
+      return true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isLoadedStatusLabelAvailable()
+    */
+   @Override
+   public boolean isLoadedStatusLabelAvailable() {
+      return true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isSearchUiAvailable()
+    */
+   @Override
+   public boolean isSearchUiAvailable() {
+      return true;
+   }
+
 }

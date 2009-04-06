@@ -76,4 +76,13 @@ public interface IXViewerFactory {
     * @return XViewerTreeReport
     */
    XViewerTreeReport getXViewerTreeReport(XViewer xViewer);
+
+   public boolean isSearchUiAvailable();
+
+   public boolean isFilterUiAvailable();
+
+   public boolean isLoadedStatusLabelAvailable();
+
+   public boolean isHeaderBarAvailable();
+
 }

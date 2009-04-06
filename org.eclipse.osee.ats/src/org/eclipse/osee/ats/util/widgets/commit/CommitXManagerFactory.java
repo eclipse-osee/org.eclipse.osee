@@ -22,6 +22,8 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
 
    public static XViewerColumn Type_Col =
          new XViewerColumn("osee.commit.type", "Type", 100, SWT.LEFT, true, SortDataType.String, false, null);
+   public static XViewerColumn Action_Col =
+         new XViewerColumn("osee.commit.action", "Action", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Status_Col =
          new XViewerColumn("osee.commit.status", "Status", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Name_Col =
@@ -31,7 +33,39 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
 
    public CommitXManagerFactory() {
       super("osee.skynet.gui.CommitXViewer");
-      registerColumn(Type_Col, Status_Col, Name_Col, Short_Name_Col);
+      registerColumn(Type_Col, Status_Col, Action_Col, Name_Col, Short_Name_Col);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isFilterUiAvailable()
+    */
+   @Override
+   public boolean isFilterUiAvailable() {
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isHeaderBarAvailable()
+    */
+   @Override
+   public boolean isHeaderBarAvailable() {
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isLoadedStatusLabelAvailable()
+    */
+   @Override
+   public boolean isLoadedStatusLabelAvailable() {
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations#isSearchUiAvailable()
+    */
+   @Override
+   public boolean isSearchUiAvailable() {
+      return false;
    }
 
 }

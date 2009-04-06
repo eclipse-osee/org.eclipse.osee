@@ -11,21 +11,15 @@
 package org.eclipse.osee.ats.util.widgets.commit;
 
 import java.util.Collection;
-import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 public class XCommitContentProvider implements ITreeContentProvider {
 
-   private final CommitXManager commitXManager;
    private static Object[] EMPTY_ARRAY = new Object[0];
 
    public XCommitContentProvider(CommitXManager commitXManager) {
       super();
-      this.commitXManager = commitXManager;
    }
 
    @SuppressWarnings("unchecked")
@@ -35,13 +29,6 @@ public class XCommitContentProvider implements ITreeContentProvider {
       }
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
-      }
-      if (parentElement instanceof Branch) {
-         try {
-            return ((Branch) parentElement).getChildBranches().toArray();
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
       }
       return EMPTY_ARRAY;
    }

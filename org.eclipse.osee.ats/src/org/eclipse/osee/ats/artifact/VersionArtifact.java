@@ -14,14 +14,19 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 public class VersionArtifact extends Artifact {
 
@@ -35,6 +40,18 @@ public class VersionArtifact extends Artifact {
       super(parentFactory, guid, humandReadableId, branch, artifactType);
    }
 
+   public Branch getParentBranch() throws OseeCoreException {
+      try {
+         Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), 0);
+         if (branchId != null && branchId > 0) {
+            return BranchManager.getBranch(branchId);
+         }
+      } catch (BranchDoesNotExist ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return null;
+   }
+
    public TeamDefinitionArtifact getParentTeamDefinition() throws OseeCoreException {
       return getRelatedArtifacts(AtsRelation.TeamDefinitionToVersion_TeamDefinition, TeamDefinitionArtifact.class).iterator().next();
    }
@@ -45,6 +62,13 @@ public class VersionArtifact extends Artifact {
 
    public Boolean isNextVersion() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false);
+   }
+
+   public void getParallelVersions(Set<VersionArtifact> versions) throws OseeCoreException {
+      versions.add(this);
+      for (VersionArtifact verArt : getRelatedArtifacts(AtsRelation.ParallelVersion_Child, VersionArtifact.class)) {
+         verArt.getParallelVersions(versions);
+      }
    }
 
    @Override

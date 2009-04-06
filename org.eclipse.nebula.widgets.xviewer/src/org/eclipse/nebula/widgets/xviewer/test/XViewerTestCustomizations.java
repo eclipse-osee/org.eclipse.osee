@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
+import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.util.internal.FileUtil;
 import org.eclipse.nebula.widgets.xviewer.util.internal.MatchFilter;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
@@ -23,7 +23,7 @@ import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
  * 
  * @author Donald G. Dunne
  */
-public class XViewerTestCustomizations implements IXViewerCustomizations {
+public class XViewerTestCustomizations extends XViewerCustomizations {
 
    public XViewerTestCustomizations() {
    }

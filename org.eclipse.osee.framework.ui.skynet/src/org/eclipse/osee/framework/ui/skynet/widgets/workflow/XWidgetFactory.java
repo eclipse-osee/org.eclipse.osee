@@ -209,7 +209,7 @@ public class XWidgetFactory {
             throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
 
       } else {
-         throw new IllegalArgumentException("Unhandled XWidget \"" + xWidgetName + "\"");
+         xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
       }
       if (xWidget instanceof XText) {
          ((XText) xWidget).addXTextSpellModifyDictionary(new SkynetSpellModifyDictionary());
