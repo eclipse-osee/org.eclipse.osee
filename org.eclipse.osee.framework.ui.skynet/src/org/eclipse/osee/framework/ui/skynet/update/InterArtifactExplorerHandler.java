@@ -6,19 +6,20 @@ package org.eclipse.osee.framework.ui.skynet.update;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactBaselineUpdate;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.update.TransferMessage.Type;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
- *
  */
 public class InterArtifactExplorerHandler {
-   
+
    public void dropArtifactIntoDifferentBranch(Artifact parentArtifact, Artifact[] sourceArtifacts) throws OseeCoreException {
       if(parentArtifact == null || sourceArtifacts == null || sourceArtifacts.length < 1){
          throw new OseeCoreException("");
@@ -54,9 +55,26 @@ public class InterArtifactExplorerHandler {
          }
       }
       
-      updateArtifacts(updateArtifacts, parentArtifact.getBranch(), sourceBranch);
-      addNewArtifactToBaseline(newBaselineArtifacts, parentArtifact.getBranch(), sourceBranch);
-      addNewArtifact(newNonBaselineArtifacts, parentArtifact.getBranch(), sourceBranch);
+      String message = "";
+      
+      if(!updateArtifacts.isEmpty()){
+         message += "Are you sure you want to update " + updateArtifacts.size() + " artifacts from thier parent branch? \n";
+      }
+      if(!newBaselineArtifacts.isEmpty()){
+         message += "Are you sure you want to add " + newBaselineArtifacts.size() + " artifacts from thier parent branch? \n";
+      }
+      if(!newNonBaselineArtifacts.isEmpty()){
+         message += "Are you sure you want to add " + newNonBaselineArtifacts.size() + " new artifacts from this branch? \n";
+      }
+      
+      if (MessageDialog.openQuestion(
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+            "Confirm Action", message)) {
+         
+         updateArtifacts(updateArtifacts, parentArtifact.getBranch(), sourceBranch);
+         addNewArtifactToBaseline(newBaselineArtifacts, parentArtifact.getBranch(), sourceBranch);
+         addNewArtifact(newNonBaselineArtifacts, parentArtifact.getBranch(), sourceBranch);
+      }
    }
 
    /**
@@ -66,7 +84,7 @@ public class InterArtifactExplorerHandler {
     */
    private void addNewArtifact(List<ArtifactTransferObject> updateArtifacts, Branch branch, Branch sourceBranch) {
       // TODO Auto-generated method stub
-      
+
    }
 
    /**
@@ -76,14 +94,14 @@ public class InterArtifactExplorerHandler {
     */
    private void addNewArtifactToBaseline(List<ArtifactTransferObject> updateArtifacts, Branch branch, Branch sourceBranch) {
       // TODO Auto-generated method stub
-      
+
    }
 
    private void updateArtifacts(List<ArtifactTransferObject> updateArtifacts, Branch destinationBranch, Branch sourceBranch) throws OseeCoreException {
-      if(updateArtifacts.isEmpty()){
+      if (updateArtifacts.isEmpty()) {
          return;
       }
-      
+
       List<Artifact> artifacts = new LinkedList<Artifact>();
       for (ArtifactTransferObject artifactTransferObject : updateArtifacts) {
          artifacts.add(artifactTransferObject.getArtifact());
@@ -91,9 +109,10 @@ public class InterArtifactExplorerHandler {
 
       ArtifactBaselineUpdate.updateArtifacts(destinationBranch, artifacts, sourceBranch);
    }
+
    /**
     * @return
-    * @throws OseeCoreException 
+    * @throws OseeCoreException
     */
    private boolean artifactOnParentBranch(Branch branch, Artifact artifact) throws OseeCoreException {
       return ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch).getChildren().contains(artifact);
