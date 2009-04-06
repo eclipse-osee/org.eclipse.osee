@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,7 +24,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -33,6 +31,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -43,10 +42,8 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -71,17 +68,15 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
-import org.eclipse.osee.framework.ui.plugin.util.Wizards;
-import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
@@ -93,18 +88,15 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
+import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.TreeEditor;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -164,6 +156,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private MenuItem copyMenuItem;
    private MenuItem pasteMenuItem;
    private MenuItem renameArtifactMenuItem;
+   private MenuItem findOnAnotherBranch;
    private NeedArtifactMenuListener needArtifactListener;
    private NeedProjectMenuListener needProjectListener;
    private Tree myTree;
@@ -171,6 +164,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private Text myTextBeingRenamed;
    private Action newArtifactExplorer;
    private Action collapseAllAction;
+   private Action showChangeReport;
    private XBranchSelectWidget branchSelect;
    private Branch branch;
    IGlobalMenuHelper globalMenuHelper;
@@ -289,7 +283,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                try {
                   branch = branchSelect.getData();
                   if (branch != null) {
-                     explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
+                  explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
                   }
                } catch (Exception ex) {
                   OseeLog.log(getClass(), Level.SEVERE, ex);
@@ -328,6 +322,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          createCollapseAllAction();
          createUpAction();
          createNewArtifactExplorerAction();
+         createShowChangeReportAction();
 
          artifactDecorator.addActions(getViewSite().getActionBars().getMenuManager(), this);
 
@@ -341,7 +336,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          myTreeEditor.grabHorizontal = true;
          myTreeEditor.minimumWidth = 50;
 
-         new ArtifactExplorerDragAndDrop(tree, VIEW_ID);
+         new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this);
          parent.layout();
 
          OseeAts.addBugToViewToolbar(this, this, SkynetActivator.getInstance(), VIEW_ID, "Artifact Explorer");
@@ -411,6 +406,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
       createOpenMenuItem(popupMenu);
       createOpenWithMenuItem(popupMenu);
+      new MenuItem(popupMenu, SWT.SEPARATOR);
+      createFindOnDifferentBranchItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createNewItemMenuItem(popupMenu);
       createGoIntoMenuItem(popupMenu);
@@ -490,6 +487,24 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(newArtifactExplorer);
+   }
+   
+   private void createShowChangeReportAction() {
+      showChangeReport = new Action("Show Change Report") {
+         @Override
+         public void run() {
+            try {
+               ChangeView.open(branch);
+            } catch (OseeArgumentException ex) {
+               OseeLog.log(SkynetGuiPlugin.class,OseeLevel.SEVERE, ex);
+            }
+         }
+      };
+
+      showChangeReport.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
+
+      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+      toolbarManager.add(showChangeReport);
    }
 
    private void createCollapseAllAction() {
@@ -623,6 +638,34 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         }
+      });
+   }
+
+   private void createFindOnDifferentBranchItem(Menu parentMenu) {
+      findOnAnotherBranch = new MenuItem(parentMenu, SWT.PUSH);
+      findOnAnotherBranch.setText("Reveal On Another Branch");
+      needArtifactListener.add(findOnAnotherBranch);
+
+      ArtifactMenuListener listener = new ArtifactMenuListener();
+      parentMenu.addMenuListener(listener);
+      findOnAnotherBranch.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent ev) {
+            LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
+            TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
+            Branch branch = BranchSelectionDialog.getBranchFromUser();
+            if (branch != null) {
+               for (Artifact artifact : selectedItems) {
+                  try {
+                     ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, String.format("Could not find Artifact \'%s\' on Branch \'%s\'",artifact.getDescriptiveName(), branch.getBranchName()));
+                  }
+               }
+               
             }
          }
       });
@@ -1138,159 +1181,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    public String getActionDescription() {
       return "";
-   }
-
-   private class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
-
-      public ArtifactExplorerDragAndDrop(Tree tree, String viewId) {
-         super(tree, tree, viewId);
-      }
-
-      @Override
-      public Artifact[] getArtifacts() {
-         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         Object[] objects = selection.toArray();
-         Artifact[] artifacts = new Artifact[objects.length];
-
-         for (int index = 0; index < objects.length; index++)
-            artifacts[index] = (Artifact) objects[index];
-
-         return artifacts;
-      }
-
-      @Override
-      public void performDragOver(DropTargetEvent event) {
-         event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL | DND.FEEDBACK_EXPAND;
-
-         if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-            event.detail = DND.DROP_COPY;
-         } else if (isValidForArtifactDrop(event)) {
-            event.detail = DND.DROP_MOVE;
-         } else {
-            event.detail = DND.DROP_NONE;
-         }
-      }
-
-      private boolean isValidForArtifactDrop(DropTargetEvent event) {
-         if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
-            ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-
-            if (artData != null) {
-
-               Artifact parentArtifact = getSelectedArtifact(event);
-               if (parentArtifact != null && artData.getSource().equals(VIEW_ID)) {
-                  Artifact[] artifactsToBeRelated = artData.getArtifacts();
-
-                  for (Artifact artifact : artifactsToBeRelated) {
-                     if (parentArtifact.equals(artifact)) {
-                        return false;
-                     }
-                  }
-                  return true;
-               }
-            } else {
-               // only occurs during the drag on some platforms
-               return true;
-            }
-         }
-         return false;
-      }
-
-      private Artifact getSelectedArtifact(DropTargetEvent event) {
-         TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
-
-         if (selected != null && selected.getData() instanceof Artifact) {
-            return (Artifact) selected.getData();
-         }
-         return null;
-      }
-
-      @Override
-      public void performDrop(final DropTargetEvent event) {
-         final Artifact parentArtifact = getSelectedArtifact(event);
-
-         if (parentArtifact != null) {
-            ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-            final Artifact[] artifactsToBeRelated = artData.getArtifacts();
-            if (artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
-                  parentArtifact.getBranch())) {
-               try {
-                  dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
-               }
-            } else {
-               if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType) && isValidForArtifactDrop(event) && MessageDialog.openQuestion(
-                     getViewSite().getShell(),
-                     "Confirm Move",
-                     "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getDescriptiveName() + "?")) {
-                  try {
-                     SkynetTransaction transaction = new SkynetTransaction(parentArtifact.getBranch());
-                     // Replace all of the parent relations
-                     for (Artifact artifact : artifactsToBeRelated) {
-                        artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
-                        artifact.persistAttributesAndRelations(transaction);
-                     }
-                     transaction.execute();
-                  } catch (Exception ex) {
-                     OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-                  }
-               }
-
-               else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-                  Object object = FileTransfer.getInstance().nativeToJava(event.currentDataType);
-                  if (object instanceof String[]) {
-                     String filename = ((String[]) object)[0];
-
-                     ArtifactImportWizard wizard = new ArtifactImportWizard();
-                     wizard.setImportResourceAndArtifactDestination(new File(filename), parentArtifact);
-
-                     Wizards.initAndOpen(wizard, ArtifactExplorer.this);
-                  }
-               }
-            }
-         }
-      }
-
-      /**
-       * @param parentArtifact
-       * @param artifactsToBeRelated
-       * @throws OseeCoreException
-       */
-      private void dropArtifactIntoDifferentBranch(Artifact parentArtifact, Artifact[] artifactsToBeRelated) throws OseeCoreException {
-         //TODO need to lock this down if user doesn't have access to the parent Artifacts branch..
-         List<Artifact> descendents = parentArtifact.getDescendants();
-         List<Integer> artifactIds = new ArrayList<Integer>();
-         artifactIds.add(parentArtifact.getArtId());
-         for (Artifact artifact : descendents) {
-            artifactIds.add(artifact.getArtId());
-         }
-         for (Artifact newArtifact : artifactsToBeRelated) {
-            if (artifactIds.contains(newArtifact.getArtId())) {
-               //update the artifact
-            } else if (artifactIsAlreadyOnTheBranch()) {
-               //move artifact and update
-            } else if (artifactsShareHierarchy()) {
-               //Copy artifact onto branch as baseline.
-            } else {
-               //copy artifact onto branch as a modification.
-            }
-         }
-      }
-
-      /**
-       * @return
-       */
-      private boolean artifactsShareHierarchy() {
-         return false;
-      }
-
-      /**
-       * @return
-       */
-      private boolean artifactIsAlreadyOnTheBranch() {
-         return false;
-      }
    }
 
    public void addSelectionChangedListener(ISelectionChangedListener listener) {

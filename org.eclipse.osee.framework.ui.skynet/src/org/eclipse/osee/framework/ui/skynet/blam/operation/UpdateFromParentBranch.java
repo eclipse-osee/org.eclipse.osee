@@ -35,7 +35,7 @@ public class UpdateFromParentBranch extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Update From Parent Branch", IProgressMonitor.UNKNOWN);
       Branch childBranch = variableMap.getBranch("Child Branch Name");
-      ArtifactBaselineUpdate.replaceArtifactsWithArtifactsFromAnotherBranch(childBranch, variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch"), childBranch.getParentBranch());
+      ArtifactBaselineUpdate.updateArtifacts(childBranch, variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch"), childBranch.getParentBranch());
    }
 
    /* (non-Javadoc)

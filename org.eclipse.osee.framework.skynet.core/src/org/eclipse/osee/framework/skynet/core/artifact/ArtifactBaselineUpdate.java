@@ -50,7 +50,7 @@ public class ArtifactBaselineUpdate {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public static void replaceArtifactsWithArtifactsFromAnotherBranch(Branch branchToUpdate, List<Artifact> artifactVersions, Branch updatingSourceBranch) throws OseeCoreException {
+   public static void updateArtifacts(Branch branchToUpdate, List<Artifact> artifactVersions, Branch updatingSourceBranch) throws OseeCoreException {
       if (updatingSourceBranch == null) {
          if (!artifactVersions.isEmpty()) {
             updatingSourceBranch = artifactVersions.get(0).getBranch();

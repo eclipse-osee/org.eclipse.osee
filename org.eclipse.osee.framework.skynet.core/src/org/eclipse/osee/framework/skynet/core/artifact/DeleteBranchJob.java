@@ -36,11 +36,11 @@ class DeleteBranchJob extends Job {
    private static final String COUNT_CHILD_BRANCHES =
          "SELECT count(branch_id) as child_branches FROM OSEE_BRANCH WHERE parent_branch_id = ?";
    private static final String SEARCH_FOR_DELETABLE_GAMMAS =
-         " SELECT ?, gamma_id FROM OSEE_TX_DETAILS det1, OSEE_TXS txs1 WHERE det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND det1.transaction_id <> (SELECT MIN(transaction_id) FROM OSEE_TX_DETAILS WHERE branch_id = ?) and NOT EXISTS (SELECT 'not_matter' FROM OSEE_TX_DETAILS det2, OSEE_TXS txs2 WHERE txs1.gamma_id = txs2.gamma_id AND det2.transaction_id = txs2.transaction_id AND det1.transaction_id <> det2.transaction_id)";
+         " SELECT ?, gamma_id FROM OSEE_TX_DETAILS det1, OSEE_TXS txs1 WHERE det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND NOT EXISTS (SELECT 'not_matter' FROM OSEE_TX_DETAILS det2, OSEE_TXS txs2 WHERE txs1.gamma_id = txs2.gamma_id AND det2.transaction_id = txs2.transaction_id AND det1.branch_id <> det2.branch_id)";
    private static final String POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS =
          " INSERT INTO OSEE_BRANCH_DELETE_HELPER (branch_id, gamma_id) " + SEARCH_FOR_DELETABLE_GAMMAS;
    private static final String SEARCH_FOR_REMOVED_DELETABLE_GAMMAS =
-         " SELECT ?, rem_gamma_id AS gamma_id FROM OSEE_TX_DETAILS det1, OSEE_REMOVED_TXS txs1  WHERE det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND det1.transaction_id <> (SELECT MIN(transaction_id) FROM OSEE_TX_DETAILS WHERE branch_id = ?) and NOT EXISTS (SELECT 'not_matter' FROM OSEE_TX_DETAILS det2, OSEE_REMOVED_TXS txs2 WHERE txs1.rem_gamma_id = txs2.rem_gamma_id AND det2.transaction_id = txs2.transaction_id AND det1.transaction_id <> det2.transaction_id)";
+         " SELECT ?, rem_gamma_id AS gamma_id FROM OSEE_TX_DETAILS det1, OSEE_REMOVED_TXS txs1  WHERE det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND NOT EXISTS (SELECT 'not_matter' FROM OSEE_TX_DETAILS det2, OSEE_TXS txs2 WHERE txs1.rem_gamma_id = txs2.gamma_id AND det2.transaction_id = txs2.transaction_id AND det1.branch_id <> det2.branch_id)";
    private static final String POPULATE_BRANCH_DELETE_HELPER_WITH_REMOVED_GAMMAS =
          " INSERT INTO OSEE_BRANCH_DELETE_HELPER (branch_id, gamma_id) " + SEARCH_FOR_REMOVED_DELETABLE_GAMMAS;
     private static final String DELETE_GAMMAS_RIGHT_HAND_SIDE =
@@ -111,24 +111,13 @@ class DeleteBranchJob extends Job {
          monitor.beginTask("Delete Branch: " + branch, 10);
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
          try {
-            chStmt.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, branch.getBranchId(), branch.getBranchId(),
-                  branch.getBranchId());
-
-            if (chStmt.next()) {// checking to see if there are any gammas to delete
-               // before inserting into delete table
-               ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS, branch.getBranchId(),
+            ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS, branch.getBranchId(),
+                     branch.getBranchId());
+            monitor.worked(1);
+            ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_REMOVED_GAMMAS,
                      branch.getBranchId(), branch.getBranchId());
-               monitor.worked(1);
-            }
-            chStmt.runPreparedQuery(SEARCH_FOR_REMOVED_DELETABLE_GAMMAS, branch.getBranchId(), branch.getBranchId(),
-                  branch.getBranchId());
-
-            if (chStmt.next()) {// checking to see if there are any gammas to delete
-               // before inserting into delete table
-               ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_REMOVED_GAMMAS,
-                     branch.getBranchId(), branch.getBranchId(), branch.getBranchId());
-               monitor.worked(1);
-            }
+            monitor.worked(1);
+            
             deleteAttributeVersions();
             deleteRelationVersions();
             deleteArtifactVersions();
