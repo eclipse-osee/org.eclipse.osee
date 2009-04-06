@@ -23,6 +23,7 @@ public class ATSAttributes {
    private final String description;
    private static Map<String, ATSAttributes> attrNameToAttr = new HashMap<String, ATSAttributes>();
 
+   public static final ATSAttributes WORKING_BRANCH_WIDGET = new ATSAttributes("Working Branch");
    public static final ATSAttributes ROLE_ATTRIBUTE = new ATSAttributes("Role");
    public static final ATSAttributes ACTIONABLE_ITEM_GUID_ATTRIBUTE =
          new ATSAttributes("Actionable Item", "Actionable Items that are impacted by this change.");
@@ -129,6 +130,7 @@ public class ATSAttributes {
    public static final ATSAttributes RELEASE_DATE_ATTRIBUTE =
          new ATSAttributes("Release Date", "Date the changes were made available to the users.");
    public static final ATSAttributes MAN_DAYS_NEEDED_ATTRIBUTE = new ATSAttributes("Man Days Needed");
+   public static final ATSAttributes BRANCH_ID_ATTRIBUTE = new ATSAttributes("Working Branch");
 
    protected ATSAttributes(String displayName, String storeName, String description) {
       this.displayName = displayName;

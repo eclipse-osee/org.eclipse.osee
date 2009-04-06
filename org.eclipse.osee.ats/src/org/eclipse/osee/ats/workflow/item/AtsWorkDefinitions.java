@@ -130,6 +130,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.WORK_PACKAGE_ATTRIBUTE, "XTextDam",
             XOption.HORIZONTAL_LABEL));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.WORKING_BRANCH_WIDGET, "XWorkingBranch", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem("Question",
             AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, "Name", "XLabelDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem("Decision",

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -29,7 +30,6 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -49,12 +49,21 @@ import org.eclipse.swt.widgets.TreeItem;
 public class DefectXViewer extends XViewer {
 
    private final XDefectViewer xDefectViewer;
+   private Action editSeverityAction;
+   private Action editDispositionAction;
+   private Action editClosedAction;
+   private Action editUserAction;
+   private Action editCreatedDateAction;
+   private Action editInjectionAction;
+   private Action editDescriptionAction;
+   private Action editLocationAction;
+   private Action editResolutionAction;
 
    /**
     * @param parent
     * @param style
     */
-   public DefectXViewer(Composite parent, int style, XDefectViewer xDefectViewer) {
+   DefectXViewer(Composite parent, int style, XDefectViewer xDefectViewer) {
       this(parent, style, new DefectXViewerFactory(), xDefectViewer);
    }
 
@@ -83,11 +92,165 @@ public class DefectXViewer extends XViewer {
             updateMenuActions();
          }
       });
+
+      editSeverityAction = new Action("Edit Severity", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+            defectItems = getSelectedDefectItems();
+            try {
+               promptChangeData(DefectXViewerFactory.Severity_Col, defectItems, columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
+
+      editClosedAction = new Action("Edit Closed ", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+            defectItems = getSelectedDefectItems();
+            try {
+               promptChangeData(DefectXViewerFactory.Closed_Col, defectItems, columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
+
+      editCreatedDateAction = new Action("Edit Created Date ", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+            defectItems = getSelectedDefectItems();
+            try {
+               promptChangeData(DefectXViewerFactory.Created_Date_Col, defectItems, columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
+
+      editDescriptionAction = new Action("Edit Description ", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+            defectItems = getSelectedDefectItems();
+            try {
+               promptChangeData(DefectXViewerFactory.Description_Col, defectItems, columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
+
+      editDispositionAction = new Action("Edit Disposition ", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+            defectItems = getSelectedDefectItems();
+            try {
+               promptChangeData(DefectXViewerFactory.Disposition_Col, defectItems, columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
+
+      editInjectionAction = new Action("Edit Injection ", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+            defectItems = getSelectedDefectItems();
+            try {
+               promptChangeData(DefectXViewerFactory.Injection_Activity_Col, defectItems, columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
+
+      editLocationAction = new Action("Edit Location ", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+            defectItems = getSelectedDefectItems();
+            try {
+               promptChangeData(DefectXViewerFactory.Location_Col, defectItems, columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
+
+      editResolutionAction = new Action("Edit Resolution ", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+            defectItems = getSelectedDefectItems();
+            try {
+               promptChangeData(DefectXViewerFactory.Resolution_Col, defectItems, columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
+
+      editUserAction = new Action("Edit User ", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
+            defectItems = getSelectedDefectItems();
+            try {
+               promptChangeData(DefectXViewerFactory.User_Col, defectItems, columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
    }
 
    public void updateEditMenuActions() {
-      // MenuManager mm = getMenuManager();
+      MenuManager mm = getMenuManager();
       // EDIT MENU BLOCK
+      mm.insertBefore(MENU_GROUP_PRE, editSeverityAction);
+      editSeverityAction.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editClosedAction);
+      editClosedAction.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editCreatedDateAction);
+      editCreatedDateAction.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editDescriptionAction);
+      editDescriptionAction.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editDispositionAction);
+      editDispositionAction.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editInjectionAction);
+      editInjectionAction.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editLocationAction);
+      editLocationAction.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editResolutionAction);
+      editResolutionAction.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editUserAction);
+      editUserAction.setEnabled(true);
+
    }
 
    public void updateMenuActions() {
@@ -130,7 +293,6 @@ public class DefectXViewer extends XViewer {
       return arts;
    }
 
-   @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (!xDefectViewer.isEditable()) {
          return;
@@ -140,7 +302,7 @@ public class DefectXViewer extends XViewer {
          defectItems.add((DefectItem) item.getData());
       }
       try {
-         promptChangeDate((XViewerColumn) treeColumn.getData(), defectItems, isColumnMultiEditEnabled());
+         promptChangeData((XViewerColumn) treeColumn.getData(), defectItems, isColumnMultiEditEnabled());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -152,34 +314,8 @@ public class DefectXViewer extends XViewer {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-      if (xCol.equals(DefectXViewerFactory.User_Col)) {
-         return handleLeftClick(treeColumn, treeItem);
-      } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
-         return handleLeftClick(treeColumn, treeItem);
-      } else if (xCol.equals(DefectXViewerFactory.Closed_Col)) {
-         return handleLeftClick(treeColumn, treeItem);
-      }
-      return false;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#handleLeftClick(org.eclipse.swt.widgets.TreeColumn, org.eclipse.swt.widgets.TreeItem)
-    */
-   @Override
-   public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      if (!xDefectViewer.isEditable()) {
-         return false;
-      }
-      try {
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         DefectItem defectItem = (DefectItem) treeItem.getData();
-         List<DefectItem> defectItems = new ArrayList<DefectItem>();
-         defectItems.add(defectItem);
-         if (xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Severity_Col) || xCol.equals(DefectXViewerFactory.Disposition_Col)) {
-            return promptChangeDate(xCol, defectItems, false);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      if (xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(DefectXViewerFactory.Injection_Activity_Col) || xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Severity_Col)) {
+         return handleAltLeftClick(treeColumn, treeItem);
       }
       return false;
    }
@@ -200,12 +336,8 @@ public class DefectXViewer extends XViewer {
          DefectItem defectItem = (DefectItem) treeItem.getData();
          List<DefectItem> defectItems = new ArrayList<DefectItem>();
          defectItems.add(defectItem);
-         if (xCol.equals(DefectXViewerFactory.Created_Date_Col) || xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Description_Col) || xCol.equals(DefectXViewerFactory.Resolution_Col) || xCol.equals(DefectXViewerFactory.Location_Col) || xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
-            return promptChangeDate(xCol, defectItems, false);
-         } else {
-            if (!xCol.equals(DefectXViewerFactory.Severity_Col) && !xCol.equals(DefectXViewerFactory.Disposition_Col)) {
-               throw new OseeStateException("Unhandled defect column");
-            }
+         if (xCol.equals(DefectXViewerFactory.Severity_Col) || xCol.equals(DefectXViewerFactory.Disposition_Col) || xCol.equals(DefectXViewerFactory.Created_Date_Col) || xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Description_Col) || xCol.equals(DefectXViewerFactory.Resolution_Col) || xCol.equals(DefectXViewerFactory.Location_Col) || xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
+            return promptChangeData(xCol, defectItems, false);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiDebug.class, OseeLevel.SEVERE_POPUP, ex);
@@ -313,7 +445,7 @@ public class DefectXViewer extends XViewer {
       return modified;
    }
 
-   public boolean promptChangeDate(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit) throws OseeCoreException {
+   public boolean promptChangeData(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit) throws OseeCoreException {
       boolean modified = false;
       if (defectItems != null && !defectItems.isEmpty()) {
          DefectItem defectItem = (DefectItem) defectItems.toArray()[0];

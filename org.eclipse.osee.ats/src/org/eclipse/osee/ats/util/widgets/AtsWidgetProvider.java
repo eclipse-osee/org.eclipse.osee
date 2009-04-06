@@ -41,6 +41,9 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       if (widgetName.equals("XCommitManager")) {
          return new XCommitManager();
       }
+      if (widgetName.equals("XWorkingBranch")) {
+         return new XWorkingBranch();
+      }
       return toReturn;
    }
 
