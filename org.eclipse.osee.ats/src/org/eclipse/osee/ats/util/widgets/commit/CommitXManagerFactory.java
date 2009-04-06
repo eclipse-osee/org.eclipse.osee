@@ -20,12 +20,16 @@ import org.eclipse.swt.SWT;
  */
 public class CommitXManagerFactory extends SkynetXViewerFactory {
 
+   public static XViewerColumn Empty_Col =
+         new XViewerColumn("osee.commit.empty", "Empty", 0, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Type_Col =
-         new XViewerColumn("osee.commit.type", "Type", 100, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("osee.commit.type", "Type", 120, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Action_Col =
          new XViewerColumn("osee.commit.action", "Action", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Status_Col =
          new XViewerColumn("osee.commit.status", "Status", 100, SWT.LEFT, true, SortDataType.String, false, null);
+   public static XViewerColumn Merge_Col =
+         new XViewerColumn("osee.commit.merge", "Merge", 50, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Name_Col =
          new XViewerColumn("osee.commit.name", "Name", 450, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Short_Name_Col =
@@ -33,7 +37,7 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
 
    public CommitXManagerFactory() {
       super("osee.skynet.gui.CommitXViewer");
-      registerColumn(Action_Col, Status_Col, Type_Col, Short_Name_Col, Name_Col);
+      registerColumn(Empty_Col, Action_Col, Status_Col, Merge_Col, Type_Col, Short_Name_Col, Name_Col);
    }
 
    /* (non-Javadoc)

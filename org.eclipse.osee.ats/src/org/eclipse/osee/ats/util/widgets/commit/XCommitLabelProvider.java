@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -63,12 +62,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       VersionArtifact verArt = (VersionArtifact) element;
       Branch branch = verArt.getParentBranch();
       if (branch == null) return null;
-      if (xCol.equals(CommitXManagerFactory.Name_Col)) {
-         if (branch.equals(commitXManager.getWorkingBranch())) return SkynetGuiPlugin.getInstance().getImage(
-               "nav_forward.gif");
-         return SkynetGuiPlugin.getInstance().getImage("branch.gif");
-      } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
-         return AtsPlugin.getInstance().getImage("go.gif");
+      if (xCol.equals(CommitXManagerFactory.Action_Col)) {
+         return SkynetGuiPlugin.getInstance().getImage("nav_forward.gif");
       } else if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
@@ -81,6 +76,15 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             else if (commitStatus == CommitStatus.Committed) {
                return SkynetGuiPlugin.getInstance().getImage("green_light.gif");
             }
+            return null;
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
+         try {
+            CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
+            if (commitStatus == CommitStatus.Merge_Needed) return SkynetGuiPlugin.getInstance().getImage(
+                  "branch_merge.gif");
             return null;
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -125,6 +129,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          }
       } else if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          return getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt).getDisplayName();
+      } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
+         return getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt) == CommitStatus.Merge_Needed ? "Click to Show Merge Manager" : "";
       } else if (xCol.equals(CommitXManagerFactory.Name_Col)) {
          if (branch == null)
             return verArt + " - " + (branch == null ? "Parent Branch Not Configured" : branch.getBranchShortName());
@@ -141,7 +147,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          else if (commitStatus == CommitStatus.Merge_Needed)
             return "Merge Conflicts";
          else if (commitStatus == CommitStatus.Committed) {
-            return "Show Change/Merge Report";
+            return "Show Change Report";
          }
          return "Error: Need to handle this";
       }
