@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IBranchEventListener extends IEventListner {
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId);
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException;
 
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender);
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) throws OseeCoreException;
 
 }
