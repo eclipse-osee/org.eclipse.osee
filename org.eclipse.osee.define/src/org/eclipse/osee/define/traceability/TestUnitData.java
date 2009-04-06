@@ -110,7 +110,7 @@ public class TestUnitData {
    /**
     * @return the allTestUnits
     */
-   public Set<Artifact> getAllSwRequirements() {
+   public Set<Artifact> getAllTestUnits() {
       return allTestUnits;
    }
 

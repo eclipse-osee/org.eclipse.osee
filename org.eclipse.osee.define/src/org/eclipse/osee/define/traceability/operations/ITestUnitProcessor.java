@@ -7,6 +7,7 @@ package org.eclipse.osee.define.traceability.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.TestUnit;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -14,9 +15,9 @@ import org.eclipse.osee.define.traceability.TestUnit;
 public interface ITestUnitProcessor {
    public void initialize(IProgressMonitor monitor);
 
-   public void onComplete(IProgressMonitor monitor);
+   public void onComplete(IProgressMonitor monitor) throws OseeCoreException;
 
    public void clear();
 
-   public void process(IProgressMonitor monitor, TestUnit testUnit);
+   public void process(IProgressMonitor monitor, TestUnit testUnit) throws OseeCoreException;
 }

@@ -5,11 +5,30 @@
  */
 package org.eclipse.osee.define.traceability.operations;
 
+import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.RequirementData;
 import org.eclipse.osee.define.traceability.TestUnit;
 import org.eclipse.osee.define.traceability.TestUnitData;
+import org.eclipse.osee.define.traceability.TraceabilityExtractor;
+import org.eclipse.osee.define.traceability.ITraceParser.TraceMark;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Roberto E. Escobar
@@ -19,22 +38,30 @@ public class TestUnitToArtifactProcessor implements ITestUnitProcessor {
    private TestUnitData testUnitData;
 
    private final Branch importIntoBranch;
-   private final Branch requirementsBranch;
+   private SkynetTransaction transaction;
 
-   public TestUnitToArtifactProcessor(Branch requirementsBranch, Branch importIntoBranch) {
+   private final XResultData resultData;
+
+   public TestUnitToArtifactProcessor(XResultData resultData, Branch importIntoBranch) {
+      this.resultData = resultData;
       this.importIntoBranch = importIntoBranch;
-      this.requirementsBranch = requirementsBranch;
    }
 
    @Override
    public void clear() {
+      transaction = null;
       requirementData = null;
       testUnitData = null;
    }
 
    @Override
    public void initialize(IProgressMonitor monitor) {
-      requirementData = new RequirementData(requirementsBranch);
+      transaction = null;
+      resultData.addRaw(AHTML.beginMultiColumnTable(95, 1));
+      resultData.addRaw(AHTML.bold("Unable to find requirements for test unit trace marks"));
+      resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Test Unit Type", "Test Unit Name",
+            "Trace Type", "Trace Mark"}));
+      requirementData = new RequirementData(importIntoBranch);
       if (!monitor.isCanceled()) {
          requirementData.initialize(monitor);
          testUnitData = new TestUnitData(importIntoBranch);
@@ -45,99 +72,171 @@ public class TestUnitToArtifactProcessor implements ITestUnitProcessor {
    }
 
    @Override
-   public void process(IProgressMonitor monitor, TestUnit testUnit) {
-      for (String traceTypes : testUnit.getTraceMarkTypes()) {
-         for (String traceMark : testUnit.getTraceMarksByType(traceTypes)) {
-            if (monitor.isCanceled()) break;
-            // DO WORK HERE
-            System.out.println(String.format("[%s] %s -- %s --> %s", testUnit.getTestUnitType(), testUnit.getName(),
-                  traceTypes, traceMark));
+   public void process(IProgressMonitor monitor, TestUnit testUnit) throws OseeCoreException {
+      if (transaction == null) {
+         transaction = new SkynetTransaction(importIntoBranch);
+      }
+      boolean hasChange = false;
+      boolean testUnitWasCreated = false;
+
+      Artifact testUnitArtifact = testUnitData.getTestUnitByName(testUnit.getName());
+      if (testUnitArtifact == null) {
+         testUnitArtifact =
+               ArtifactTypeManager.addArtifact(testUnit.getTestUnitType(), transaction.getBranch(), testUnit.getName());
+         testUnitWasCreated = true;
+      }
+
+      for (TraceMark traceMark : testUnit.getTraceMarks()) {
+         if (monitor.isCanceled()) break;
+
+         Artifact requirementArtifact = getRequirementArtifact(traceMark.getRawTraceMark(), requirementData);
+         if (requirementArtifact != null) {
+            IRelationEnumeration relationType = getRelationFromTraceType(traceMark.getTraceType());
+            if (!requirementArtifact.isRelated(relationType, testUnitArtifact)) {
+               requirementArtifact.addRelation(relationType, testUnitArtifact);
+               hasChange = true;
+            }
+         } else {
+            // Report Trace not found
+            resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTestUnitType(), testUnit.getName(),
+                  traceMark.getTraceType(), traceMark.getRawTraceMark()));
+         }
+      }
+
+      //      if (testUnitWasCreated && allTraceMarksNotFound) {
+      //         //         resultData
+      //         // Report have a new test unit but no trace ?
+      //      }
+
+      if (hasChange) {
+         HierarchyHandler.addArtifact(transaction, testUnitArtifact);
+         TestRunHandler.linkWithTestUnit(transaction, testUnitArtifact);
+         testUnitArtifact.persistAttributesAndRelations(transaction);
+      }
+   }
+
+   private boolean isUsesTraceType(String traceType) {
+      return traceType.equalsIgnoreCase("USES");
+   }
+
+   private IRelationEnumeration getRelationFromTraceType(String traceType) {
+      if (isUsesTraceType(traceType)) {
+         return CoreRelationEnumeration.Uses__TestUnit;
+      } else {
+         return CoreRelationEnumeration.Verification__Verifier;
+      }
+   }
+
+   private Artifact getRequirementArtifact(String traceMark, RequirementData requirementData) {
+      Artifact toReturn = requirementData.getRequirementFromTraceMark(traceMark);
+      if (toReturn == null) {
+         Pair<String, String> structuredRequirement =
+               TraceabilityExtractor.getInstance().getStructuredRequirement(traceMark);
+         if (structuredRequirement != null) {
+            toReturn = requirementData.getRequirementFromTraceMark(structuredRequirement.getKey());
+         }
+      }
+      return toReturn;
+   }
+
+   @Override
+   public void onComplete(IProgressMonitor monitor) throws OseeCoreException {
+      resultData.addRaw(AHTML.endMultiColumnTable());
+      if (!monitor.isCanceled()) {
+         if (transaction != null) {
+            transaction.execute();
          }
       }
    }
 
-   @Override
-   public void onComplete(IProgressMonitor monitor) {
-      if (!monitor.isCanceled()) {
-         //            SkynetTransaction transaction = new SkynetTransaction(importIntoBranch);
-         //
-         //            // Bulk Load all test script artifacts and create any missing ones
-         //            final Map<String, Artifact> testScriptMap =
-         //                  getAllTestScriptsAndCreateMissingOnes(monitor, branch, collector.getScriptNames());
-         //
-         //            if (monitor.isCanceled() != true) {
-         //               // Create ScriptName to Requirement Map
-         //               final HashCollection<String, Artifact> scriptNamesToRequirements =
-         //                     convertToArtifactRequirement(monitor, requirementData, collector.getUnitToTraceMarks());
-         //
-         //               if (monitor.isCanceled() != true) {
-         //                  // Persist and Relate all test scripts to requirements
-         //                  int count = 1;
-         //                  final int size = testScriptMap.keySet().size();
-         //                  for (String key : testScriptMap.keySet()) {
-         //                     monitor.subTask(String.format("Committing: [%s] [%s of %s]", key, count++, size));
-         //                     Artifact testScript = testScriptMap.get(key);
-         //                     Collection<Artifact> requirements = scriptNamesToRequirements.getValues(key);
-         //                     if (requirements != null) {
-         //                        for (Artifact requirement : requirements) {
-         //                           testScript.addRelation(CoreRelationEnumeration.Verification__Requirement, requirement);
-         //                        }
-         //                     }
-         //                     testScript.persistAttributesAndRelations(transaction);
-         //                  }
-         //                  transaction.execute();
-         //               }
-         //            }
+   private static final class TestRunHandler {
+
+      private static void createGuidLink(Artifact testCase, Artifact testRun) throws OseeCoreException {
+         if (testCase != null) {
+            testRun.setSoleAttributeValue("Test Script GUID", testCase.getGuid());
+         }
+      }
+
+      public static void linkWithTestUnit(SkynetTransaction transaction, Artifact testCase) throws OseeCoreException {
+         if (testCase.isOfType(Requirements.TEST_CASE)) {
+            List<Artifact> testRuns =
+                  ArtifactQuery.getArtifactsFromTypeAndName(Requirements.TEST_RUN, testCase.getDescriptiveName(),
+                        transaction.getBranch());
+
+            for (Artifact testRun : testRuns) {
+               createGuidLink(testCase, testRun);
+            }
+         }
       }
    }
 
-   //   private final class TestUnitsToArtifacts {
-   //      private Map<String, Artifact> getAllTestScriptsAndCreateMissingOnes(IProgressMonitor monitor, Branch branch, Set<String> scriptNames) throws OseeCoreException {
-   //         monitor.subTask(String.format("Load and Create Test Sript Artifacts into branch [%s]", branch.getBranchName()));
-   //         Map<String, Artifact> testScripts =
-   //               TestRunOperator.getTestScriptFetcher().getAllArtifactsIndexedByName(branch);
-   //
-   //         for (String scriptName : scriptNames) {
-   //            if (testScripts.containsKey(scriptName) != true) {
-   //               Artifact artifact = TestRunOperator.getTestScriptFetcher().getNewArtifact(branch);
-   //               artifact.setDescriptiveName(scriptName);
-   //               testScripts.put(artifact.getDescriptiveName(), artifact);
-   //            }
-   //            if (monitor.isCanceled() == true) {
-   //               break;
-   //            }
-   //         }
-   //         monitor.worked(1);
-   //         return testScripts;
-   //      }
-   //
-   //      private HashCollection<String, Artifact> convertToArtifactRequirement(IProgressMonitor monitor, RequirementData requirementData, HashCollection<String, String> toConvert) {
-   //         monitor.subTask("Mapping ScriptNames/Trace Marks to Requirements");
-   //         HashCollection<String, Artifact> toReturn = new HashCollection<String, Artifact>();
-   //         for (String unit : toConvert.keySet()) {
-   //            Collection<String> traceMarks = toConvert.getValues(unit);
-   //            for (String traceMark : traceMarks) {
-   //               Artifact artifact = getRequirementArtifact(traceMark, requirementData);
-   //               if (artifact != null) {
-   //                  toReturn.put(unit, artifact);
-   //               }
-   //            }
-   //            if (monitor.isCanceled() == true) {
-   //               break;
-   //            }
-   //         }
-   //         return toReturn;
-   //      }
-   //
-   //      private Artifact getRequirementArtifact(String traceMark, RequirementData requirementData) {
-   //         Artifact toReturn = requirementData.getRequirementFromTraceMark(traceMark);
-   //         if (toReturn == null) {
-   //            Pair<String, String> structuredRequirement = extractor.getStructuredRequirement(traceMark);
-   //            if (structuredRequirement != null) {
-   //               toReturn = requirementData.getRequirementFromTraceMark(structuredRequirement.getKey());
-   //            }
-   //         }
-   //         return toReturn;
-   //      }
-   //   }
+   private static final class HierarchyHandler {
+
+      public static void addArtifact(SkynetTransaction transaction, Artifact testUnit) throws OseeCoreException {
+         Artifact folder = null;
+         if (testUnit.isOfType(Requirements.TEST_CASE)) {
+            folder = getOrCreateTestCaseFolder(transaction);
+         } else if (testUnit.isOfType(Requirements.TEST_SUPPORT)) {
+            folder = getOrCreateTestSupportFolder(transaction);
+         } else {
+            folder = getOrCreateUnknownTestUnitFolder(transaction);
+         }
+
+         if (folder != null && !folder.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, testUnit)) {
+            folder.addChild(testUnit);
+            folder.persistAttributesAndRelations(transaction);
+         }
+      }
+
+      private static Artifact getOrCreateUnknownTestUnitFolder(SkynetTransaction transaction) throws OseeCoreException {
+         return getOrCreateTestUnitSubFolder(transaction, "Unknown Test Unit Type");
+      }
+
+      private static Artifact getOrCreateTestSupportFolder(SkynetTransaction transaction) throws OseeCoreException {
+         return getOrCreateTestUnitSubFolder(transaction, Requirements.TEST_SUPPORT_UNITS);
+      }
+
+      private static Artifact getOrCreateTestCaseFolder(SkynetTransaction transaction) throws OseeCoreException {
+         return getOrCreateTestUnitSubFolder(transaction, Requirements.TEST_CASES);
+      }
+
+      private static Artifact getOrCreateTestUnitSubFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
+         Artifact subFolder = getOrCreateFolder(transaction, folderName);
+         Artifact testUnits = getOrCreateTestUnitsFolder(transaction);
+         if (!testUnits.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, subFolder)) {
+            testUnits.addChild(subFolder);
+            testUnits.persistAttributesAndRelations(transaction);
+         }
+         return subFolder;
+      }
+
+      private static Artifact getOrCreateTestUnitsFolder(SkynetTransaction transaction) throws OseeCoreException {
+         Artifact testUnitFolder = getOrCreateFolder(transaction, "Test Units");
+         Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(transaction.getBranch());
+         if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, testUnitFolder)) {
+            root.addChild(testUnitFolder);
+            root.persistAttributesAndRelations(transaction);
+         }
+         return testUnitFolder;
+      }
+
+      private static Artifact getOrCreateFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
+         Artifact folder = null;
+         String key = "Folder:" + folderName;
+         Branch branch = transaction.getBranch();
+         try {
+            folder = ArtifactCache.getByTextId(key, branch);
+            if (folder == null) {
+               folder = ArtifactQuery.getArtifactFromTypeAndName("Folder", folderName, branch);
+               ArtifactCache.putByTextId(key, folder);
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetActivator.class, Level.INFO, "Created " + folderName + " because was not found.");
+            folder = ArtifactTypeManager.addArtifact("Folder", branch, folderName);
+            folder.persistAttributes();
+            ArtifactCache.putByTextId(key, folder);
+         }
+         return folder;
+      }
+   }
 }

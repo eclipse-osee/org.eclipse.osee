@@ -34,7 +34,7 @@ public class TraceabilityExtractor {
    private static final Pattern embeddedVolumePattern = Pattern.compile("\\{\\d+ (.*)\\}[ .]*");
    private static final Pattern nonWordPattern = Pattern.compile("[^A-Z_0-9]");
    private static final Pattern structuredReqNamePattern = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)");
-
+   private static final Pattern stripTrailingReqNamePatern = Pattern.compile("(:?\\}|\\])\\s+(.*)");
    private static TraceabilityExtractor instance = null;
    private final Matcher scriptReqTraceMatcher;
    private final Matcher ofpReqTraceMatcher;
@@ -42,6 +42,7 @@ public class TraceabilityExtractor {
    private final Matcher embeddedVolumeMatcher;
    private final Matcher nonWordMatcher;
    private final Matcher structuredRequirementMatcher;
+   private final Matcher stripTrailingReqNameMatcher;
 
    private TraceabilityExtractor() {
       this.ofpReqTraceMatcher = ofpTraceabilityPattern.matcher("");
@@ -50,6 +51,7 @@ public class TraceabilityExtractor {
       this.embeddedVolumeMatcher = embeddedVolumePattern.matcher("");
       this.nonWordMatcher = nonWordPattern.matcher("");
       this.structuredRequirementMatcher = structuredReqNamePattern.matcher("");
+      this.stripTrailingReqNameMatcher = stripTrailingReqNamePatern.matcher("");
    }
 
    public static TraceabilityExtractor getInstance() {
@@ -104,8 +106,15 @@ public class TraceabilityExtractor {
             canonicalReqReference = embeddedVolumeMatcher.group(1);
          }
 
+         // Added to strip trailing artifact descriptive names } ... or ] ....
+         stripTrailingReqNameMatcher.reset(canonicalReqReference);
+         if (stripTrailingReqNameMatcher.find()) {
+            canonicalReqReference = canonicalReqReference.substring(0, stripTrailingReqNameMatcher.start(1) + 1);
+         }
+
          nonWordMatcher.reset(canonicalReqReference);
          canonicalReqReference = nonWordMatcher.replaceAll("");
+
       }
       return canonicalReqReference;
    }

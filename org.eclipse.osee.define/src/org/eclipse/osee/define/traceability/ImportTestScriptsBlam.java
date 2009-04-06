@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -47,7 +48,7 @@ public class ImportTestScriptsBlam extends AbstractBlam {
       builder.append("<xWidgets>");
       builder.append("<XWidget xwidgetType=\"XDirectorySelectionDialog\" displayName=\"Select Test Script Folder\" defaultValue=\"L:/root/lba_users/rbrooks/v13scripts/\" />");
 
-      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" />");
+      //      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" />");
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Import Into Branch\" />");
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Test Unit Types:\"/>");
@@ -73,7 +74,7 @@ public class ImportTestScriptsBlam extends AbstractBlam {
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       try {
-         Branch requirementsBranch = variableMap.getBranch("Requirements Branch");
+         //         Branch requirementsBranch = variableMap.getBranch("Requirements Branch");
          Branch importToBranch = variableMap.getBranch("Import Into Branch");
          boolean isRecursive = variableMap.getBoolean("Is Recursive");
          boolean isPersistChanges = variableMap.getBoolean("Persist Changes");
@@ -95,13 +96,17 @@ public class ImportTestScriptsBlam extends AbstractBlam {
             }
          }
 
+         XResultData resultData = new XResultData();
          if (isPersistChanges) {
-            TestUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, requirementsBranch,
+            resultData.log("Persisting Changes");
+            TestUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, resultData,
                   importToBranch, testUnitIds.toArray(new String[testUnitIds.size()]));
          } else {
-            TestUnitFromResourceOperation.printTraceFromTestUnits(monitor, source, isRecursive,
+            resultData.log("Report-Only, Changes are not persisted");
+            TestUnitFromResourceOperation.printTraceFromTestUnits(monitor, source, isRecursive, resultData,
                   testUnitIds.toArray(new String[testUnitIds.size()]));
          }
+         resultData.report(getName());
       } finally {
          monitor.subTask("Done");
          System.gc();

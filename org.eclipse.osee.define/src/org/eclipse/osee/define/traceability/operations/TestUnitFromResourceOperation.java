@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Roberto E. Escobar
@@ -50,19 +51,19 @@ public class TestUnitFromResourceOperation {
       return testUnitOperation;
    }
 
-   public static void printTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, String... testUnitTraceIds) throws OseeCoreException {
+   public static void printTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, XResultData resultData, String... testUnitTraceIds) throws OseeCoreException {
       ResourceToTestUnit testUnitOperation = getResourceToTestUnit(source, isRecursive, testUnitTraceIds);
       if (monitor == null) monitor = new NullProgressMonitor();
-      testUnitOperation.addTraceProcessor(new PrintTestUnitTraceProcessor());
+      testUnitOperation.addTraceProcessor(new PrintTestUnitTraceProcessor(resultData));
       testUnitOperation.execute(monitor);
    }
 
-   public static void importTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, Branch requirementsBranch, Branch importToBranch, String... testUnitTraceIds) throws OseeCoreException {
-      checkBranchArguments(requirementsBranch, importToBranch);
+   public static void importTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, XResultData resultData, Branch importToBranch, String... testUnitTraceIds) throws OseeCoreException {
+      checkBranchArguments(importToBranch);
 
       ResourceToTestUnit testUnitOperation = getResourceToTestUnit(source, isRecursive, testUnitTraceIds);
       if (monitor == null) monitor = new NullProgressMonitor();
-      testUnitOperation.addTraceProcessor(new TestUnitToArtifactProcessor(requirementsBranch, importToBranch));
+      testUnitOperation.addTraceProcessor(new TestUnitToArtifactProcessor(resultData, importToBranch));
       testUnitOperation.execute(monitor);
    }
 
@@ -100,10 +101,7 @@ public class TestUnitFromResourceOperation {
       }
    }
 
-   private static void checkBranchArguments(Branch requirementsBranch, Branch importToBranch) throws OseeArgumentException {
-      if (requirementsBranch == null) {
-         throw new OseeArgumentException("Requirements branch was null");
-      }
+   private static void checkBranchArguments(Branch importToBranch) throws OseeArgumentException {
       if (importToBranch == null) {
          throw new OseeArgumentException("Branch to import into was null");
       }

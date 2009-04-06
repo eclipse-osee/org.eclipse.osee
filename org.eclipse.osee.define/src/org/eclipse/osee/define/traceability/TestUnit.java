@@ -8,7 +8,7 @@ package org.eclipse.osee.define.traceability;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.define.traceability.ITraceParser.TraceMark;
 
 /**
  * @author Roberto E. Escobar
@@ -16,12 +16,12 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 public class TestUnit {
    private final String testUnitType;
    private final String name;
-   private final HashCollection<String, String> traceMarkCollection;
+   private final Collection<TraceMark> traceMarks;
 
    public TestUnit(String testUnitType, String name) {
       this.name = name;
       this.testUnitType = testUnitType;
-      this.traceMarkCollection = new HashCollection<String, String>(false, HashSet.class);
+      this.traceMarks = new HashSet<TraceMark>();
    }
 
    public String getTestUnitType() {
@@ -32,19 +32,33 @@ public class TestUnit {
       return name;
    }
 
-   public void addAllTraceMarks(String type, Collection<String> traceMarks) {
-      traceMarkCollection.put(type, traceMarks);
+   public void addAllTraceMarks(Collection<TraceMark> traceItems) {
+      traceMarks.addAll(traceItems);
    }
 
-   public void addTraceMark(String type, String traceMark) {
-      traceMarkCollection.put(type, traceMark);
+   public void addTraceMark(TraceMark traceMark) {
+      traceMarks.add(traceMark);
+   }
+
+   public Collection<TraceMark> getTraceMarks() {
+      return traceMarks;
    }
 
    public Set<String> getTraceMarkTypes() {
-      return traceMarkCollection.keySet();
+      Set<String> toReturn = new HashSet<String>();
+      for (TraceMark traceMark : traceMarks) {
+         toReturn.add(traceMark.getTraceType());
+      }
+      return toReturn;
    }
 
-   public Collection<String> getTraceMarksByType(String type) {
-      return traceMarkCollection.getValues(type);
+   public Collection<TraceMark> getTraceMarksByType(String type) {
+      Set<TraceMark> toReturn = new HashSet<TraceMark>();
+      for (TraceMark traceMark : traceMarks) {
+         if (traceMark.getTraceType().equalsIgnoreCase(type)) {
+            toReturn.add(traceMark);
+         }
+      }
+      return toReturn;
    }
 }
