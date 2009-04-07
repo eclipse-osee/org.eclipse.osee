@@ -103,7 +103,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IFramewo
 
             createTaskActionBar(mainComp);
 
-            labelWidget.setText(label + ": Double-click to perform Action");
+            labelWidget.setText(label + ": Double-click item to perform Action");
 
             xCommitManager = new CommitXManager(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
             xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
