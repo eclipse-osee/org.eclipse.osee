@@ -26,6 +26,10 @@ public class DefaultHierSorter {
       childrenMap = new HashMap<Artifact, Set<Artifact>>();
       orderedList = new ArrayList<Artifact>();
       orginalList = new HashSet<Artifact>();
+      
+      if(artifacts.isEmpty()){
+         return orderedList;
+      }
 
       for (Artifact artifact : artifacts) {
          createAncestorTree(artifact);

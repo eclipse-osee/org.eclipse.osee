@@ -190,7 +190,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       ArtifactExplorer artifactExplorer = findView(inputBranch, page);
 
       artifactExplorer.setPartName("Artifacts");
-      artifactExplorer.setContentDescription("These artifact must be handled individually");
+      artifactExplorer.setContentDescription("These artifacts could not be handled");
       artifactExplorer.treeViewer.setInput(artifacts);
       artifactExplorer.initializeSelectionBox();
    }
