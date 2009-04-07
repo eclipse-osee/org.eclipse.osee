@@ -180,7 +180,20 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             branchIds = new String[0];
          }
       }
-      setCombo(branchIds, lastSelected);
+
+      List<String> branchIdsToUse = new ArrayList<String>();
+      for (String id : branchIds) {
+         try {
+            Branch branch = BranchManager.getBranch(Integer.parseInt(id));
+            if (branch != null) {
+               branchIdsToUse.add(id);
+            }
+         } catch (Exception ex) {
+            // Do nothing
+         }
+      }
+
+      setCombo(branchIdsToUse.toArray(new String[branchIdsToUse.size()]), lastSelected);
    }
 
    private void setCombo(String[] values, String lastSelected) {
