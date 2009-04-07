@@ -249,6 +249,10 @@ public class BranchManager {
       return null;
    }
 
+   public static boolean isMergeBranch(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+      return (getMergeBranch(sourceBranch, destBranch)) != null;
+   }
+
    public static Collection<Branch> getWorkingBranches(Branch parentBranch) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       List<Branch> branches = new ArrayList<Branch>(500);

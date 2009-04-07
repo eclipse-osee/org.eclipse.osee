@@ -93,9 +93,9 @@ public class CommitXManager extends XViewer {
             Branch destBranch = verArt.getParentBranch();
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,
                   xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getBranchesLeftToCommit().size() == 1);
-         } else if (commitStatus == CommitStatus.Merge_Needed) {
+         } else if (commitStatus == CommitStatus.Merge_In_Progress) {
             Branch destBranch = verArt.getParentBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, false);
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
          } else if (commitStatus == CommitStatus.Committed) {
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReport();
          }

@@ -117,6 +117,23 @@ public class AtsBranchManager {
       }
    }
 
+   public boolean isMergeBranchExists(Branch destinationBranch) throws OseeCoreException {
+      return BranchManager.isMergeBranch(getWorkingBranch(true), destinationBranch);
+   }
+
+   public void showMergeManager(Branch destinationBranch) throws OseeCoreException {
+      if (isWorkingBranch()) {
+         MergeView.openView(getWorkingBranch(), destinationBranch, TransactionIdManager.getStartEndPoint(
+               getWorkingBranch()).getKey());
+      } else if (isCommittedBranchExists()) {
+         for (TransactionId transactionId : getTransactionIds()) {
+            if (transactionId.getBranch() == destinationBranch) {
+               MergeView.openView(transactionId);
+            }
+         }
+      }
+   }
+
    /**
     * Opens the branch currently associated with this state machine artifact.
     */
