@@ -67,9 +67,15 @@ public final class SkynetTransaction extends DbTransaction {
 
    private final Branch branch;
    private boolean madeChanges = false;
+   private String comment;
 
    public SkynetTransaction(Branch branch) throws OseeCoreException {
+      this(branch, ""); 
+   }
+   
+   public SkynetTransaction(Branch branch, String comment) throws OseeCoreException {
       this.branch = branch;
+      this.comment = comment;
    }
 
    /**
@@ -183,7 +189,7 @@ public final class SkynetTransaction extends DbTransaction {
     */
    TransactionId internalGetTransactionId() throws OseeCoreException {
       if (transactionId == null) {
-         transactionId = TransactionIdManager.createNextTransactionId(branch, UserManager.getUser(), "");
+         transactionId = TransactionIdManager.createNextTransactionId(branch, UserManager.getUser(), comment);
       }
       return transactionId;
    }

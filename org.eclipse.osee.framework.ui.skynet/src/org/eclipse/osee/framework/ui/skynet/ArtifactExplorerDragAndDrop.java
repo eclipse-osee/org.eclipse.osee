@@ -4,9 +4,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -20,10 +17,7 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
-import org.eclipse.osee.framework.ui.skynet.update.ArtifactTransferObject;
-import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerHandler;
-import org.eclipse.osee.framework.ui.skynet.update.TransferMessage;
-import org.eclipse.osee.framework.ui.skynet.update.TransferMessage.Type;
+import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -39,7 +33,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    private TreeViewer treeViewer;
    private String viewId;
    private IViewPart viewPart;
-   private InterArtifactExplorerHandler interArtifactExplorerHandler;
+   private InterArtifactExplorerDropHandler interArtifactExplorerHandler;
    
    public ArtifactExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IViewPart viewPart) {
       super(treeViewer.getTree(), treeViewer.getTree(), viewId);
@@ -47,7 +41,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       this.treeViewer = treeViewer;
       this.viewId = viewId;
       this.viewPart = viewPart;
-      this.interArtifactExplorerHandler = new InterArtifactExplorerHandler();
+      this.interArtifactExplorerHandler = new InterArtifactExplorerDropHandler();
    }
 
    @Override
@@ -154,54 +148,5 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             }
          }
       }
-   }
-
-   /**
-    * @param parentArtifact
-    * @param sourceArtifacts
-    * @throws OseeCoreException
-    */
-   private void dropArtifactIntoDifferentBranch(Artifact parentArtifact, Artifact[] sourceArtifacts) throws OseeCoreException {
-      //TODO need to lock this down if user doesn't have access to the parent Artifacts branch..
-      List<Artifact> descendents = parentArtifact.getDescendants();
-      List<Integer> artifactIds = new ArrayList<Integer>();
-      artifactIds.add(parentArtifact.getArtId());
-      for (Artifact artifact : descendents) {
-         artifactIds.add(artifact.getArtId());
-      }
-      
-      List<ArtifactTransferObject> updateArtifacts = new LinkedList<ArtifactTransferObject>();
-      List<ArtifactTransferObject> newBaselineArtifacts = new LinkedList<ArtifactTransferObject>();
-      List<ArtifactTransferObject> newNonBaselineArtifacts = new LinkedList<ArtifactTransferObject>();
-      
-      for (Artifact source : sourceArtifacts) {
-         if (artifactIds.contains(source.getArtId())) {
-            updateArtifacts.add(new ArtifactTransferObject(source, new TransferMessage(Type.INFO, "")));
-         } else if (artifactOnBranch()) {
-            updateArtifacts.add(new ArtifactTransferObject(source, new TransferMessage(Type.INFO, "")));
-         } else if (artifactOnParentBranch()) {
-            newBaselineArtifacts.add(new ArtifactTransferObject(source, new TransferMessage(Type.INFO, "")));
-         } else {
-            newNonBaselineArtifacts.add(new ArtifactTransferObject(source, new TransferMessage(Type.INFO, "")));
-         }
-      }
-      
-      
-      
-      //               ArtifactBaselineUpdate.updateArtifacts(parentArtifact.getBranch(), Arrays.asList(newArtifact), newArtifact.getBranch());
-   }
-
-   /**
-    * @return
-    */
-   private boolean artifactOnParentBranch() {
-      return false;
-   }
-
-   /**
-    * @return
-    */
-   private boolean artifactOnBranch() {
-      return false;
    }
 }
