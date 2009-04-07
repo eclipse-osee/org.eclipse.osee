@@ -101,7 +101,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       else if (false)
          return CommitStatus.Merge_Needed;
       else {
-         Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(teamArt);
+         Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(teamArt, false);
          if (branches.contains(branch)) {
             return CommitStatus.Committed;
          } else {

@@ -236,7 +236,17 @@ public class AtsBranchManager {
     * @return Branch
     */
    public Branch getWorkingBranch() throws OseeCoreException {
-      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma());
+      return getWorkingBranch(false);
+   }
+
+   /**
+    * Return working branch associated with SMA, even if it's been archived; This data is cached across all workflows
+    * with the cache being updated by local and remote events.
+    * 
+    * @return Branch
+    */
+   public Branch getWorkingBranch(boolean includeArchived) throws OseeCoreException {
+      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived);
       if (branches.size() == 0) {
          return null;
       } else if (branches.size() > 1) {
@@ -280,8 +290,8 @@ public class AtsBranchManager {
    public Collection<Branch> getBranchesToCommitTo() throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
       for (VersionArtifact verArt : getVersionsToCommitTo()) {
-         if (verArt.getBranch() != null) {
-            branches.add(verArt.getBranch());
+         if (verArt.getParentBranch() != null) {
+            branches.add(verArt.getParentBranch());
          }
       }
       return branches;

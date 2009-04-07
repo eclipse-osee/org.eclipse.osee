@@ -92,11 +92,10 @@ public class CommitXManager extends XViewer {
          } else if (commitStatus == CommitStatus.Commit_Needed) {
             Branch destBranch = verArt.getParentBranch();
             Branch workingBranch = xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getWorkingBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,
-                  xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getBranchesLeftToCommit().size() == 1);
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, true);
          } else if (commitStatus == CommitStatus.Merge_Needed) {
             Branch destBranch = verArt.getParentBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, false);
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, true);
          } else if (commitStatus == CommitStatus.Committed) {
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReport();
          }
