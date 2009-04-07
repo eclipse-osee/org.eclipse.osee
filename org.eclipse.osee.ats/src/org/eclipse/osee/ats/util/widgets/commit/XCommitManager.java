@@ -231,6 +231,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IFramewo
    @Override
    public void dispose() {
       if (xCommitManager != null) xCommitManager.dispose();
+      OseeEventManager.removeListener(this);
    }
 
    @Override

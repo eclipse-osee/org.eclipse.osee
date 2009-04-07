@@ -91,10 +91,11 @@ public class CommitXManager extends XViewer {
                   "Talk to project lead or admin to configure branch for version [" + verArt + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed) {
             Branch destBranch = verArt.getParentBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, true);
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,
+                  xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getBranchesLeftToCommit().size() == 1);
          } else if (commitStatus == CommitStatus.Merge_Needed) {
             Branch destBranch = verArt.getParentBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, true);
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, false);
          } else if (commitStatus == CommitStatus.Committed) {
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReport();
          }
@@ -102,4 +103,5 @@ public class CommitXManager extends XViewer {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
+
 }

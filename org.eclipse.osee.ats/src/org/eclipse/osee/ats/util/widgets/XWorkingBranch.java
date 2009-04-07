@@ -18,6 +18,11 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -37,7 +42,7 @@ import org.eclipse.swt.widgets.Listener;
 /**
  * @author Megumi Telles
  */
-public class XWorkingBranch extends XWidget implements IArtifactWidget {
+public class XWorkingBranch extends XWidget implements IArtifactWidget, IBranchEventListener {
 
    private Artifact artifact;
    private SMAManager smaMgr;
@@ -51,6 +56,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
 
    public XWorkingBranch() {
       super("Working Branch", "");
+      OseeEventManager.addListener(this);
    }
 
    /**
@@ -183,6 +189,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
     */
    @Override
    public void dispose() {
+      OseeEventManager.removeListener(this);
    }
 
    /* (non-Javadoc)
@@ -306,6 +313,27 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget {
    @Override
    public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
       this.artifact = artifact;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
+      if (branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            refresh();
+         }
+      });
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) throws OseeCoreException {
    }
 
 }
