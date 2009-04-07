@@ -261,7 +261,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Committing branch");
-      reqTeam.getSmaMgr().getBranchMgr().commitWorkingBranch(false, true);
+      reqTeam.getSmaMgr().getBranchMgr().commitWorkingBranch(false, true,
+            reqTeam.getSmaMgr().getTargetedForVersion().getParentBranch(), true);
 
       DemoDbUtil.sleep(5000);
 
@@ -292,8 +293,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       branchArtifact.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
       branchArtifact.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
       Artifact comArt =
-            ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                  DemoDbUtil.getDefaultBranch());
+            ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API", DemoDbUtil.getDefaultBranch());
       branchArtifact.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
       branchArtifact.persistAttributesAndRelations();
 
@@ -501,8 +501,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create Test Script Artifacts
          Set<Artifact> verificationTests = new HashSet<Artifact>();
          Artifact verificationHeader =
-               ArtifactQuery.getArtifactFromTypeAndName("Folder", "Verification Tests",
-                     DemoDbUtil.getDefaultBranch());
+               ArtifactQuery.getArtifactFromTypeAndName("Folder", "Verification Tests", DemoDbUtil.getDefaultBranch());
          if (verificationHeader == null) throw new IllegalStateException("Could not find Verification Tests header");
          for (String str : new String[] {"A", "B", "C"}) {
             Artifact newArt =

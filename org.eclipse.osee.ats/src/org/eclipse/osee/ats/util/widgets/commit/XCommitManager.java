@@ -199,7 +199,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IFramewo
 
    public void loadTable() {
       try {
-         if (xCommitManager != null && teamArt != null && (teamArt instanceof TeamWorkFlowArtifact)) {
+         if (xCommitManager != null && teamArt != null && (teamArt instanceof TeamWorkFlowArtifact) && xCommitManager.getContentProvider() != null) {
             Collection<VersionArtifact> versionSet = teamArt.getSmaMgr().getBranchMgr().getVersionsToCommitTo();
             xCommitManager.setInput(versionSet);
          }
@@ -369,7 +369,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IFramewo
     */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
-      if (branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

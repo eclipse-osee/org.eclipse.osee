@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.editor.service.branch;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -23,11 +22,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
@@ -48,29 +42,7 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
-      return isCurrentState(page);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
-    */
-   @Override
-   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
-      link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
-      link.addHyperlinkListener(new IHyperlinkListener() {
-
-         public void linkEntered(HyperlinkEvent e) {
-         }
-
-         public void linkExited(HyperlinkEvent e) {
-         }
-
-         public void linkActivated(HyperlinkEvent e) {
-            performService();
-         }
-      });
-      OseeEventManager.addListener(this);
-      refresh();
+      return false;
    }
 
    private Action toolBarAction;
@@ -122,11 +94,6 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
     */
    @Override
    public void refresh() {
-      if (link != null && !link.isDisposed()) {
-         boolean enabled = isEnabled();
-         link.setEnabled(enabled);
-         link.setUnderlined(enabled);
-      }
       if (toolBarAction != null) {
          toolBarAction.setEnabled(isEnabled());
       }

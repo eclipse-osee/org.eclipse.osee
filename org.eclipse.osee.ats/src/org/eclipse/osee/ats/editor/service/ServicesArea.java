@@ -23,12 +23,8 @@ import org.eclipse.osee.ats.editor.AtsStateItems;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.service.branch.CommitWorkingBranchService;
-import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
-import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
 import org.eclipse.osee.ats.editor.service.branch.ShowMergeManagerService;
-import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -85,20 +81,6 @@ public class ServicesArea {
          sideBarServices.add(new AddDecisionReviewService(smaMgr));
          sideBarServices.add(new AddPeerToPeerReviewService(smaMgr));
          sideBarServices.add(new BlockingReview(smaMgr));
-         // Add page configured branchable state items
-         if (page != null && (page.isAllowCommitBranch() || page.isAllowCreateBranch())) {
-            if (page.isAllowCreateBranch()) sideBarServices.add(new CreateWorkingBranchService(smaMgr));
-            sideBarServices.add(new ShowWorkingBranchService(smaMgr));
-            sideBarServices.add(new ShowChangeReportService(smaMgr));
-            sideBarServices.add(new ShowMergeManagerService(smaMgr));
-            if (page.isAllowCommitBranch()) {
-               sideBarServices.add(new CommitWorkingBranchService(smaMgr, false));
-            }
-            if (AtsPlugin.isAtsAdmin()) {
-               sideBarServices.add(new CommitWorkingBranchService(smaMgr, true));
-            }
-            sideBarServices.add(new DeleteWorkingBranchService(smaMgr));
-         }
          // Add state specific items (these can also contain branch items through extending BranchableStateItem class
          for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
             sideBarServices.addAll(item.getSidebarServices(smaMgr));

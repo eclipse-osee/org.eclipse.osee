@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -496,13 +497,15 @@ public class AtsBranchManager {
          this.archiveWorkingBranch = archiveWorkingBranch;
       }
 
+      private boolean adminOverride;
+
       /* (non-Javadoc)
        * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
        */
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            Branch workflowWorkingBranch = getWorkingBranch();
+            Branch workflowWorkingBranch = getWorkingBranch(true);
             if (workflowWorkingBranch == null) {
                return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
                      "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId());
@@ -520,11 +523,28 @@ public class AtsBranchManager {
             }
 
             if (!overrideStateValidation) {
-               // Check extenstion points for valid commit
+               adminOverride = false;
+               // Check extension points for valid commit
                for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(smaMgr.getWorkPageDefinition().getId())) {
-                  Result tempResult = item.committing(smaMgr);
+                  final Result tempResult = item.committing(smaMgr);
                   if (tempResult.isFalse()) {
-                     return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, tempResult.getText());
+                     // Allow Admin to override state validation
+                     if (AtsPlugin.isAtsAdmin()) {
+                        Displays.ensureInDisplayThread(new Runnable() {
+                           /* (non-Javadoc)
+                            * @see java.lang.Runnable#run()
+                            */
+                           @Override
+                           public void run() {
+                              if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+                                    "Override State Validation",
+                                    tempResult.getText() + "\n\nYou are set as Admin, OVERRIDE this?")) {
+                                 adminOverride = true;
+                              }
+                           }
+                        }, true);
+                     }
+                     if (!adminOverride) return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, tempResult.getText());
                   }
                }
             }
@@ -535,7 +555,6 @@ public class AtsBranchManager {
          }
          return Status.OK_STATUS;
       }
-
    }
 
    public void commit(boolean commitPopup, Branch sourceBranch, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
