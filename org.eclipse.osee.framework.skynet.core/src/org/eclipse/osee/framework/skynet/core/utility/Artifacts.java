@@ -96,6 +96,14 @@ public final class Artifacts {
       transaction.execute();
    }
 
+   public static void persistInTransaction(String comment, Artifact... artifacts) throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(artifacts[0].getBranch(), comment);
+      for (Artifact art : artifacts) {
+         art.persistAttributesAndRelations(transaction);
+      }
+      transaction.execute();
+   }
+
    /**
     * Recurses default hierarchy and collections children of parentArtifact that are of type class
     * 
