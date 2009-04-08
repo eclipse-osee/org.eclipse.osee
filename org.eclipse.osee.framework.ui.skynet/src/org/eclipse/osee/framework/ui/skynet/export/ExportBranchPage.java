@@ -29,7 +29,7 @@ public class ExportBranchPage extends WizardDataTransferPage {
    private DirectoryOrFileSelector directoryFileSelector;
 
    @SuppressWarnings("unused")
-   private Branch branch;
+   private final Branch branch;
 
    /**
     * @param name
@@ -39,8 +39,8 @@ public class ExportBranchPage extends WizardDataTransferPage {
       super(name);
       this.branch = branch;
 
-      setTitle("Import Skynet types into Define");
-      setDescription("Import Skynet types into Define");
+      setTitle("Import OSEE Types");
+      setDescription("Import OSEE Types");
    }
 
    /**
@@ -66,8 +66,8 @@ public class ExportBranchPage extends WizardDataTransferPage {
    }
 
    /**
-    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all
-    * events and enablements for controls on this page. Subclasses may extend.
+    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
+    * and enablements for controls on this page. Subclasses may extend.
     * 
     * @param event Event
     */
@@ -93,6 +93,7 @@ public class ExportBranchPage extends WizardDataTransferPage {
    /*
     * @see WizardPage#becomesVisible
     */
+   @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
       // policy: wizards are not allowed to come up with an error message
@@ -117,7 +118,7 @@ public class ExportBranchPage extends WizardDataTransferPage {
          //         job.schedule();
       } catch (Exception ex) {
          ex.printStackTrace();
-         ErrorDialog.openError(getShell(), "Define Import Error", "An error has occured while importing a document.",
+         ErrorDialog.openError(getShell(), "OSEE Import Error", "An error has occured while importing a document.",
                new Status(IStatus.ERROR, "org.eclipse.osee.framework.jdk.core", IStatus.ERROR,
                      "Unknown exception occurred in the import", ex));
       }

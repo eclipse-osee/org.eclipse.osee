@@ -92,13 +92,13 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
             "org.eclipse.osee.framework.messaging.event.skynet", "org.eclipse.osee.framework.jdk.core"}));
 
       Dictionary dictionary = null;
-      String name = "Skynet Event Service";
+      String name = "OSEE Event Service";
       String manufacturer = "Eclipse.org";
       String vendor = "Eclipse.org";
       String version = "0.0";
       String model = "SES";
       String serialNumber = "0.0";
-      String description = "Skynet Event Service - Skynet Cache Network Manager";
+      String description = "OSEE Event Service - OSEE Cache Network Manager";
 
       OseeActivator plugin = SkynetEventPlugin.getInstance();
       if (plugin != null) {
@@ -109,7 +109,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
             new ServiceInfo(name, manufacturer, vendor, version, model, serialNumber), new Name(name),
             new Comment(description)}, dictionary);
 
-      System.out.println("....................Skynet Event Service(" + dbConfig + ") is Alive....................");
+      System.out.println("....................OSEE Event Service(" + dbConfig + ") is Alive....................");
       this.stayAlive();
    }
 

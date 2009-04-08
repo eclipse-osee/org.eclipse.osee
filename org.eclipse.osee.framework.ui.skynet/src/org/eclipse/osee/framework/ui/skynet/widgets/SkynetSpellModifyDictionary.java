@@ -32,7 +32,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
 
    private static String ATTRIBUTE_NAME = "Dictionary";
    private static Set<String> dictionary;
-   private boolean debug = false;
+   private final boolean debug = false;
 
    /*
     * (non-Javadoc)
@@ -89,8 +89,8 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
    public boolean isWord(String word) {
       loadDictionary(false);
       boolean contains = dictionary.contains(word);
-      if (debug) System.out.println("Checking SkynetSpell => \"" + word + "\" " + contains);
-      if (debug) System.out.println("SkynetSpellDict => " + Collections.toString(",", dictionary));
+      if (debug) System.out.println("Checking OSEESpell => \"" + word + "\" " + contains);
+      if (debug) System.out.println("OSEESpellDict => " + Collections.toString(",", dictionary));
       return contains;
    }
 

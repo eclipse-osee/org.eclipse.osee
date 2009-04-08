@@ -31,11 +31,12 @@ public class ImportMetaJob extends Job {
    private final File file;
 
    public ImportMetaJob(File file, Branch branch) {
-      super("Importing Skynet Types");
+      super("Importing OSEE Types");
       this.branch = branch;
       this.file = file;
    }
 
+   @Override
    public IStatus run(IProgressMonitor monitor) {
       try {
          ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor());
