@@ -93,7 +93,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
             CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
-            if (commitStatus == CommitStatus.Merge_In_Progress) {
+            if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Commit_Needed_After_Merge) {
                return SkynetGuiPlugin.getInstance().getImage("branch_merge.gif");
             }
             return null;
@@ -106,7 +106,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, VersionArtifact verArt) throws OseeCoreException {
       Branch branch = verArt.getParentBranch();
-      if (teamArt.getSmaMgr().getBranchMgr().getWorkingBranch() == null) {
+      if (teamArt.getSmaMgr().getBranchMgr().getWorkingBranch(true) == null) {
          return CommitStatus.Working_Branch_Not_Created;
       } else if (branch == null)
          return CommitStatus.Branch_Not_Configured;
@@ -161,11 +161,11 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             return "Merge Conflicts";
          else if (commitStatus == CommitStatus.Commit_Needed_After_Merge)
             return "Finish Commit";
-         else if (commitStatus == CommitStatus.Committed) {
+         else if (commitStatus == CommitStatus.Committed)
             return "Show Change Report";
-         } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
-            return "Working Branch Not Created";
-         }
+         else if (commitStatus == CommitStatus.Committed_With_Merge)
+            return "Show Change/Merge Report";
+         else if (commitStatus == CommitStatus.Working_Branch_Not_Created) return "Working Branch Not Created";
          return "Error: Need to handle this";
       }
       return "unhandled column";

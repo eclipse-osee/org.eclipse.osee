@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets.commit;
 import java.util.ArrayList;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -100,8 +102,26 @@ public class CommitXManager extends XViewer {
             destBranch = verArt.getParentBranch();
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
          } else if (commitStatus == CommitStatus.Committed) {
-            destBranch = verArt.getParentBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
+            // If merge branch exists, popup dialog to ask which to choose
+            if (xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().isMergeBranchExists(destBranch)) {
+               destBranch = verArt.getParentBranch();
+               MessageDialog dialog =
+                     new MessageDialog(Display.getCurrent().getActiveShell(), "Select Report", null,
+                           "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
+                           new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);
+               int result = dialog.open();
+               if (result == 2) return;
+               // change report
+               if (result == 0) {
+                  xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
+               }
+               // merge manager
+               else {
+                  xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
+               }
+            } else {
+               xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

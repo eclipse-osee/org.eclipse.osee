@@ -264,7 +264,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
                   showChangeReport.setEnabled(false);
             }
             if (deleteBranch != null) {
-               deleteBranch.setEnabled(smaMgr.getBranchMgr().isWorkingBranch());
+               deleteBranch.setEnabled(smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranchExists());
             }
          }
       } catch (OseeCoreException ex) {

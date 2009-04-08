@@ -251,11 +251,13 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IFramewo
    @Override
    public Result isValid() {
       try {
-         if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isAllVersionsToCommitToConfigured()) {
-            return new Result(false, "All branches must be configured and committed.");
-         }
-         if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
-            return new Result(false, "All branches must be committed.");
+         if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr() != null) {
+            if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isAllVersionsToCommitToConfigured()) {
+               return new Result(false, "All branches must be configured and committed.");
+            }
+            if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
+               return new Result(false, "All branches must be committed.");
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
