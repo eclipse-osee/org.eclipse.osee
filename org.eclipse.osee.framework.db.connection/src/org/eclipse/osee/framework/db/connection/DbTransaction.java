@@ -56,12 +56,12 @@ public abstract class DbTransaction {
       boolean initialAutoCommit = true;
       try {
          OseeLog.log(InternalActivator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
-         initialAutoCommit = connection.getAutoCommit();
-         connection.setAutoCommit(false);
-         ConnectionHandler.deferConstraintChecking(connection);
          if (commit) {
             OseeDbConnection.reportTxStart(this);
          }
+         initialAutoCommit = connection.getAutoCommit();
+         connection.setAutoCommit(false);
+         ConnectionHandler.deferConstraintChecking(connection);
          handleTxWork(connection);
          if (commit) {
             connection.commit();
@@ -97,8 +97,8 @@ public abstract class DbTransaction {
 
    /**
     * When an exception is detected during transaction processing, the exception is caught and passed to this method.
-    * This convenience method is provided so child classes have access to the exception. <br/> <b>Override to handle
-    * transaction exception</b>
+    * This convenience method is provided so child classes have access to the exception. <br/>
+    * <b>Override to handle transaction exception</b>
     * 
     * @param ex
     * @throws Exception
@@ -108,7 +108,8 @@ public abstract class DbTransaction {
 
    /**
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
-    * the end of the transaction, regardless of exceptions. <br/><b>Override to add additional code to finally block</b>
+    * the end of the transaction, regardless of exceptions. <br/>
+    * <b>Override to add additional code to finally block</b>
     * 
     * @throws Exception
     */
