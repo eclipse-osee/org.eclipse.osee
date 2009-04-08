@@ -19,7 +19,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -42,7 +44,7 @@ import org.eclipse.swt.widgets.Listener;
 /**
  * @author Megumi Telles
  */
-public class XWorkingBranch extends XWidget implements IArtifactWidget, IBranchEventListener {
+public class XWorkingBranch extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener, IBranchEventListener {
 
    private Artifact artifact;
    private SMAManager smaMgr;
@@ -165,11 +167,11 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IBranchE
    private String getStatus() {
       try {
          if (getWorkingBranch() == null) {
-            if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isCommittedBranchExists()) {
+            if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isBranchesAllCommitted()) {
                return Status.Committed.name();
             }
             return Status.Not_Started.name();
-         } else if (smaMgr.getStateMgr().getCurrentStateName().equals("Promote")) {
+         } else if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isCommittedBranchExists()) {
             return Status.Changes_NotPermitted.name();
          } else {
             return Status.Changes_InProgress.name();
@@ -320,7 +322,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IBranchE
     */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
-      if (branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -334,6 +335,19 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IBranchE
     */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) throws OseeCoreException {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            refresh();
+         }
+      });
    }
 
 }

@@ -252,6 +252,18 @@ public class AtsBranchManager {
       }
    }
 
+   public void showChangeReportForBranch(Branch destinationBranch) {
+      try {
+         for (TransactionId transactionId : getTransactionIds()) {
+            if (transactionId.getBranch() == destinationBranch) {
+               ChangeView.open(transactionId);
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't show change report.", ex);
+      }
+   }
+
    /**
     * Return working branch associated with SMA; This data is cached across all workflows with the cache being updated
     * by local and remote events.

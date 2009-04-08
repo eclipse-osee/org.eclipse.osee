@@ -85,19 +85,21 @@ public class CommitXManager extends XViewer {
    public void handleDoubleClick() {
       try {
          VersionArtifact verArt = getSelectedVersions().iterator().next();
+         Branch destBranch = verArt.getParentBranch();
          CommitStatus commitStatus = XCommitLabelProvider.getCommitStatus(xCommitManager.getTeamArt(), verArt);
          if (commitStatus == CommitStatus.Branch_Not_Configured) {
             AWorkbench.popup(commitStatus.getDisplayName(),
                   "Talk to project lead or admin to configure branch for version [" + verArt + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed) {
-            Branch destBranch = verArt.getParentBranch();
+            destBranch = verArt.getParentBranch();
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,
                   xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getBranchesLeftToCommit().size() == 1);
          } else if (commitStatus == CommitStatus.Merge_In_Progress) {
-            Branch destBranch = verArt.getParentBranch();
+            destBranch = verArt.getParentBranch();
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
          } else if (commitStatus == CommitStatus.Committed) {
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReport();
+            destBranch = verArt.getParentBranch();
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
