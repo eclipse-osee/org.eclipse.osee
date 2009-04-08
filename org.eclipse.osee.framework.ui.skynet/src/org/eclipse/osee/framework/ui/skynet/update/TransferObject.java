@@ -8,11 +8,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Jeff C. Phillips
  */
-public class TransferObjects {
+public class TransferObject {
    private TransferStatus status;
    private Artifact artifact;
 
-   public TransferObjects(Artifact artifact, TransferStatus status) {
+   public TransferObject(Artifact artifact, TransferStatus status) {
       super();
       this.status = status;
       this.artifact = artifact;
