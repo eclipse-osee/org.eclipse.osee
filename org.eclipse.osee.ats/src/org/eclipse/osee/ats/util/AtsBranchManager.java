@@ -121,6 +121,11 @@ public class AtsBranchManager {
       return BranchManager.isMergeBranch(getWorkingBranch(true), destinationBranch);
    }
 
+   public boolean isMergeCompleted(Branch destinationBranch) throws OseeCoreException {
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, getWorkingBranch(true));
+      return !conflictManager.remainingConflictsExist();
+   }
+
    public void showMergeManager(Branch destinationBranch) throws OseeCoreException {
       if (isWorkingBranch()) {
          MergeView.openView(getWorkingBranch(), destinationBranch, TransactionIdManager.getStartEndPoint(

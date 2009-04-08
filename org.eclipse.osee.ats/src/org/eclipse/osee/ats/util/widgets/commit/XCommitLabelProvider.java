@@ -35,8 +35,10 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    public static enum CommitStatus {
       Branch_Not_Configured("Branch Not Configured"),
       Commit_Needed("Start Commit"),
-      Merge_In_Progress("Merge Needed"),
-      Committed("Committed");
+      Merge_In_Progress("Merge in Progress"),
+      Commit_After_Merge("Finish Commit"),
+      Committed("Committed"),
+      Committed_With_Merge("Committed With Merge");
 
       private final String displayName;
 
@@ -74,9 +76,12 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
                return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
             else if (commitStatus == CommitStatus.Merge_In_Progress)
                return SkynetGuiPlugin.getInstance().getImage("yellow_light.gif");
-            else if (commitStatus == CommitStatus.Committed) {
+            else if (commitStatus == CommitStatus.Commit_After_Merge)
+               return SkynetGuiPlugin.getInstance().getImage("yellow_light.gif");
+            else if (commitStatus == CommitStatus.Committed)
                return SkynetGuiPlugin.getInstance().getImage("green_light.gif");
-            }
+            else if (commitStatus == CommitStatus.Committed_With_Merge) return SkynetGuiPlugin.getInstance().getImage(
+                  "green_light.gif");
             return null;
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -99,9 +104,12 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       Branch branch = verArt.getParentBranch();
       if (branch == null)
          return CommitStatus.Branch_Not_Configured;
-      else if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch()))
+      else if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
+         if (teamArt.getSmaMgr().getBranchMgr().isMergeCompleted(verArt.getParentBranch())) {
+            return CommitStatus.Commit_After_Merge;
+         }
          return CommitStatus.Merge_In_Progress;
-      else {
+      } else {
          Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(teamArt, false);
          if (branches.contains(branch)) {
             return CommitStatus.Committed;
@@ -145,6 +153,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             return "Start Commit";
          else if (commitStatus == CommitStatus.Merge_In_Progress)
             return "Merge Conflicts";
+         else if (commitStatus == CommitStatus.Commit_After_Merge)
+            return "Finish Commit";
          else if (commitStatus == CommitStatus.Committed) {
             return "Show Change Report";
          }
