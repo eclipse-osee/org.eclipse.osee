@@ -233,7 +233,7 @@ public class TestUnitToArtifactProcessor implements ITestUnitProcessor {
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetActivator.class, Level.INFO, "Created " + folderName + " because was not found.");
             folder = ArtifactTypeManager.addArtifact("Folder", branch, folderName);
-            folder.persistAttributes();
+            folder.persistAttributes(transaction);
             ArtifactCache.putByTextId(key, folder);
          }
          return folder;
