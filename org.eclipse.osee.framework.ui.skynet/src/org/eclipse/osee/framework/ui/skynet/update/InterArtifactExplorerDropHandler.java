@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -18,7 +19,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUpdateHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
@@ -43,10 +43,7 @@ public class InterArtifactExplorerDropHandler {
             artifactIds.add(artifact.getArtId());
          }
 
-         List<Artifact> updateSelectedArtifacts = new LinkedList<Artifact>();
-         List<Artifact> updateArtifactsFoundOnBranch = new LinkedList<Artifact>();
-         List<Artifact> newBaselineArtifacts = new LinkedList<Artifact>();
-         List<Artifact> newNonBaselineArtifacts = new LinkedList<Artifact>();
+         List<TransferObjects> transferObjects = new LinkedList<TransferObjects>();
          List<Artifact> artifactsNotDropped = new LinkedList<Artifact>();
          Branch sourceBranch = null;
 
@@ -61,22 +58,21 @@ public class InterArtifactExplorerDropHandler {
             if (artifactTransactionDetailsType != null) {
                if (artifactTransactionDetailsType.equals(TransactionDetailsType.Baselined)) {
                   if (artifactIds.contains(sourceArtifact.getArtId())) {
-                     updateSelectedArtifacts.add(sourceArtifact);
+                     transferObjects.add(new TransferObjects(sourceArtifact, TransferStatus.UPDATE_DROP));
                   } else {
-                     updateArtifactsFoundOnBranch.add(sourceArtifact);
+                     transferObjects.add(new TransferObjects(sourceArtifact, TransferStatus.UPDATE_SOMEWHERE_ON_BRANCH));
                   }
                } else {
                   artifactsNotDropped.add(sourceArtifact);
                }
             } else if (artifactOnParentBranch(destinationParentArtifact.getBranch(), sourceArtifact)) {
-               newBaselineArtifacts.add(sourceArtifact);
+               transferObjects.add(new TransferObjects(sourceArtifact, TransferStatus.ADD_TO_BASELINE));
             } else {
-               newNonBaselineArtifacts.add(sourceArtifact);
+               transferObjects.add(new TransferObjects(sourceArtifact, TransferStatus.ADD_NOT_TO_BASELINE));
             }
          }
 
-         confirmUsersRequestAndProcess(destinationParentArtifact, sourceBranch, updateSelectedArtifacts,
-               updateArtifactsFoundOnBranch, newBaselineArtifacts, newNonBaselineArtifacts);
+         confirmUsersRequestAndProcess(destinationParentArtifact, sourceBranch, transferObjects);
 
          if (!artifactsNotDropped.isEmpty()) {
             ArtifactExplorer.explore(artifactsNotDropped);
@@ -89,52 +85,49 @@ public class InterArtifactExplorerDropHandler {
       }
    }
 
-   private void confirmUsersRequestAndProcess(Artifact destinationArtifact, Branch sourceBranch, List<Artifact> updateSelectedArtifacts, List<Artifact> updateArtifactsFoundOnBranch, List<Artifact> newBaselineArtifacts, List<Artifact> newNonBaselineArtifacts) throws OseeCoreException {
-      StringBuilder message = new StringBuilder();
-
-      if (!updateSelectedArtifacts.isEmpty()) {
-         message.append(" 1 Are you sure you want to update " + updateSelectedArtifacts.size() + " artifacts from thier parent branch? \n");
-      }
-      if (!updateArtifactsFoundOnBranch.isEmpty()) {
-         message.append(" 2 These artifacts were already found on your branch. Are you sure you want to update " + updateArtifactsFoundOnBranch.size() + " artifacts from thier parent branch? \n");
-      }
-      if (!newBaselineArtifacts.isEmpty()) {
-         message.append(" 3 Are you sure you want to add " + newBaselineArtifacts.size() + " artifacts from thier parent branch? \n");
-      }
-      if (!newNonBaselineArtifacts.isEmpty()) {
-         message.append(" 4 Are you sure you want to add " + newNonBaselineArtifacts.size() + " new artifacts from this branch? \n");
-      }
-
-      if (message.length() > 0 && MessageDialog.openQuestion(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Confirm Action", message.toString())) {
-
+   private void confirmUsersRequestAndProcess(Artifact destinationArtifact, Branch sourceBranch, List<TransferObjects> transferObjects) throws OseeCoreException {
+      UpdateArtifactStatusDialog updateArtifactStatusDialog = new UpdateArtifactStatusDialog(transferObjects);
+      
+      if (!transferObjects.isEmpty() && updateArtifactStatusDialog.open() == Window.OK) {
          Branch destinationBranch = destinationArtifact.getBranch();
-         updateArtifacts(updateSelectedArtifacts, destinationBranch, sourceBranch);
-         updateArtifacts(updateArtifactsFoundOnBranch, destinationBranch, sourceBranch);
-         addNewArtifactToBaseline(newBaselineArtifacts, destinationBranch, sourceBranch);
-         addNewArtifact(destinationArtifact, newNonBaselineArtifacts, sourceBranch);
+         updateArtifacts(transferObjects, destinationBranch, sourceBranch);
+         addNewArtifact(destinationArtifact, transferObjects, sourceBranch);
       }
    }
 
-   private void addNewArtifact(Artifact destinationArtifact, List<Artifact> updateArtifacts, Branch sourceBranch) throws OseeCoreException {
-      ArtifactUpdateHandler.updateArtifacts(destinationArtifact.getBranch(), updateArtifacts, sourceBranch,
+   private void addNewArtifact(Artifact destinationArtifact, List<TransferObjects> transferObjects, Branch sourceBranch) throws OseeCoreException {
+      List<Artifact> artifacts = new LinkedList<Artifact>();
+
+      for (TransferObjects transferObject : transferObjects) {
+         if (transferObject.getStatus().equals(TransferStatus.ADD_NOT_TO_BASELINE)) {
+            artifacts.add(transferObject.getArtifact());
+         }
+      }
+
+      if (artifacts.isEmpty()) {
+         return;
+      }
+      
+      ArtifactUpdateHandler.updateArtifacts(destinationArtifact.getBranch(), artifacts, sourceBranch,
             destinationArtifact, true);
    }
 
-   private void addNewArtifactToBaseline(List<Artifact> updateArtifacts, Branch destinationBranch, Branch sourceBranch) throws OseeCoreException {
-      if (updateArtifacts.isEmpty()) {
+  
+
+   private void updateArtifacts(List<TransferObjects> transferObjects, Branch destinationBranch, Branch sourceBranch) throws OseeCoreException {
+      List<Artifact> artifacts = new LinkedList<Artifact>();
+
+      for (TransferObjects transferObject : transferObjects) {
+         if (!transferObject.getStatus().equals(TransferStatus.ADD_NOT_TO_BASELINE)) {
+            artifacts.add(transferObject.getArtifact());
+         }
+      }
+      
+      if (artifacts.isEmpty()) {
          return;
       }
 
-      ArtifactUpdateHandler.updateArtifacts(destinationBranch, updateArtifacts, sourceBranch);
-   }
-
-   private void updateArtifacts(List<Artifact> updateArtifacts, Branch destinationBranch, Branch sourceBranch) throws OseeCoreException {
-      if (updateArtifacts.isEmpty()) {
-         return;
-      }
-
-      ArtifactUpdateHandler.updateArtifacts(destinationBranch, updateArtifacts, sourceBranch);
+      ArtifactUpdateHandler.updateArtifacts(destinationBranch, artifacts, sourceBranch);
    }
 
    private boolean artifactOnParentBranch(Branch branch, Artifact artifact) throws OseeCoreException {
