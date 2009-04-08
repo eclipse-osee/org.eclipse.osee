@@ -99,10 +99,10 @@
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R214C1:R241C5"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R211C1:R238C5"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="247" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="244" x:FullColumns="1"
    x:FullRows="1">
    <Column ss:AutoFitWidth="0" ss:Width="286.5"/>
    <Column ss:AutoFitWidth="0" ss:Width="339.75"/>
@@ -193,33 +193,6 @@
     <Cell><Data ss:Type="String">ats.Active</Data></Cell>
     <Cell ss:Index="6"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">1</Data></Cell>
-    <Cell><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
-   </Row>
-   <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BooleanAttribute</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Resolution Override</Data></Cell>
-    <Cell ss:Index="6"><Data ss:Type="String">no</Data></Cell>
-    <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
-    <Cell><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
-   </Row>
-   <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BooleanAttribute</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Proposed Resolution Override</Data></Cell>
-    <Cell ss:Index="6"><Data ss:Type="String">no</Data></Cell>
-    <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
-    <Cell><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
-   </Row>
-   <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BooleanAttribute</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Problem Override</Data></Cell>
-    <Cell ss:Index="6"><Data ss:Type="String">no</Data></Cell>
-    <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
    </Row>
@@ -458,7 +431,7 @@
    </Row>
    <Row>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Proposed Resolution</Data></Cell>
     <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
@@ -538,7 +511,7 @@
    </Row>
    <Row>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s22"><Data ss:Type="String">ats.SMA Note</Data></Cell>
     <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
@@ -1752,12 +1725,12 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>102</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>123</ActiveRow>
+     <ActiveRow>15</ActiveRow>
      <ActiveCol>1</ActiveCol>
+     <RangeSelection>R16:R18</RangeSelection>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
