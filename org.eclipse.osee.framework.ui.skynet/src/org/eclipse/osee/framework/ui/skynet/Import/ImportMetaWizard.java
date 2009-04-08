@@ -34,7 +34,7 @@ public class ImportMetaWizard extends Wizard implements IImportWizard {
     */
    public ImportMetaWizard() {
       super();
-      setWindowTitle("Skynet Types Import Wizard");
+      setWindowTitle("OSEE Types Import Wizard");
    }
 
    /*
@@ -49,7 +49,7 @@ public class ImportMetaWizard extends Wizard implements IImportWizard {
          File file = mainPage.getImportFile();
          Jobs.startJob(new ImportMetaJob(file, branch));
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Define Import Error", ex);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "OSEE Import Error", ex);
       }
       return true;
    }
@@ -70,8 +70,8 @@ public class ImportMetaWizard extends Wizard implements IImportWizard {
    @Override
    public void addPages() {
       mainPage = new ImportMetaPage(selection);
-      mainPage.setTitle("Import Skynet types into Define");
-      mainPage.setDescription("Import Skynet types into Define");
+      mainPage.setTitle("Import OSEE Types");
+      mainPage.setDescription("Import OSEE Types");
 
       addPage(mainPage);
    }
