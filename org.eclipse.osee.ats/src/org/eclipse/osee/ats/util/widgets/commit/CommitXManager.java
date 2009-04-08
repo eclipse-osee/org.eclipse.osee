@@ -87,10 +87,12 @@ public class CommitXManager extends XViewer {
          VersionArtifact verArt = getSelectedVersions().iterator().next();
          Branch destBranch = verArt.getParentBranch();
          CommitStatus commitStatus = XCommitLabelProvider.getCommitStatus(xCommitManager.getTeamArt(), verArt);
-         if (commitStatus == CommitStatus.Branch_Not_Configured) {
+         if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
+            AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
+         } else if (commitStatus == CommitStatus.Branch_Not_Configured) {
             AWorkbench.popup(commitStatus.getDisplayName(),
                   "Talk to project lead or admin to configure branch for version [" + verArt + "]");
-         } else if (commitStatus == CommitStatus.Commit_Needed) {
+         } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Commit_Needed_After_Merge) {
             destBranch = verArt.getParentBranch();
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,
                   xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getBranchesLeftToCommit().size() == 1);

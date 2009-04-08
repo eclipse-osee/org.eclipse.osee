@@ -33,10 +33,11 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private final CommitXManager commitXManager;
    public static enum CommitStatus {
+      Working_Branch_Not_Created("Working Branch Not Created"),
       Branch_Not_Configured("Branch Not Configured"),
       Commit_Needed("Start Commit"),
       Merge_In_Progress("Merge in Progress"),
-      Commit_After_Merge("Finish Commit"),
+      Commit_Needed_After_Merge("Finish Commit"),
       Committed("Committed"),
       Committed_With_Merge("Committed With Merge");
 
@@ -76,12 +77,15 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
                return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
             else if (commitStatus == CommitStatus.Merge_In_Progress)
                return SkynetGuiPlugin.getInstance().getImage("yellow_light.gif");
-            else if (commitStatus == CommitStatus.Commit_After_Merge)
+            else if (commitStatus == CommitStatus.Commit_Needed_After_Merge)
                return SkynetGuiPlugin.getInstance().getImage("yellow_light.gif");
             else if (commitStatus == CommitStatus.Committed)
                return SkynetGuiPlugin.getInstance().getImage("green_light.gif");
-            else if (commitStatus == CommitStatus.Committed_With_Merge) return SkynetGuiPlugin.getInstance().getImage(
-                  "green_light.gif");
+            else if (commitStatus == CommitStatus.Committed_With_Merge)
+               return SkynetGuiPlugin.getInstance().getImage("green_light.gif");
+            else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
+               return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
+            }
             return null;
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -102,11 +106,13 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, VersionArtifact verArt) throws OseeCoreException {
       Branch branch = verArt.getParentBranch();
-      if (branch == null)
+      if (teamArt.getSmaMgr().getBranchMgr().getWorkingBranch() == null) {
+         return CommitStatus.Working_Branch_Not_Created;
+      } else if (branch == null)
          return CommitStatus.Branch_Not_Configured;
       else if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
          if (teamArt.getSmaMgr().getBranchMgr().isMergeCompleted(verArt.getParentBranch())) {
-            return CommitStatus.Commit_After_Merge;
+            return CommitStatus.Commit_Needed_After_Merge;
          }
          return CommitStatus.Merge_In_Progress;
       } else {
@@ -153,10 +159,12 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             return "Start Commit";
          else if (commitStatus == CommitStatus.Merge_In_Progress)
             return "Merge Conflicts";
-         else if (commitStatus == CommitStatus.Commit_After_Merge)
+         else if (commitStatus == CommitStatus.Commit_Needed_After_Merge)
             return "Finish Commit";
          else if (commitStatus == CommitStatus.Committed) {
             return "Show Change Report";
+         } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
+            return "Working Branch Not Created";
          }
          return "Error: Need to handle this";
       }

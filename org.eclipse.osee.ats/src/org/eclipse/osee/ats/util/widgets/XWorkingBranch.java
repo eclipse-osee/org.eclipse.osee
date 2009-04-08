@@ -90,7 +90,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       createBranch.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
             Result result = smaMgr.getBranchMgr().createWorkingBranch(null, true);
-            if (result.isFalse()) result.popup();
+            if (result.isFalse() && !result.getText().equals("")) result.popup();
          }
       });
 
@@ -133,11 +133,11 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
       if (AtsPlugin.getInstance() != null) {
          createBranch.setImage(AtsPlugin.getInstance().getImage("branch.gif"));
+         deleteBranch.setImage(AtsPlugin.getInstance().getImage("trash.gif"));
       }
       if (SkynetGuiPlugin.getInstance() != null) {
          showArtifactExplorer.setImage(SkynetGuiPlugin.getInstance().getImage("artifact_explorer.gif"));
          showChangeReport.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
-         deleteBranch.setImage(SkynetGuiPlugin.getInstance().getImage("delete.gif"));
       }
       refresh();
    }
