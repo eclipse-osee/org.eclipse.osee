@@ -182,7 +182,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          XNavigateItem reportItems = new XNavigateItem(null, "Reports");
          new FirstTimeQualityMetricReportItem(reportItems);
          new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World");
-         new ExampleBarChartResult(reportItems);
+         new BarChartExample(reportItems);
          new ResultsEditorExample(reportItems);
          //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 

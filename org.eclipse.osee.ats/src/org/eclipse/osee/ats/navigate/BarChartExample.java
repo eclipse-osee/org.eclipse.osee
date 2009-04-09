@@ -46,14 +46,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
-public class ExampleBarChartResult extends XNavigateItemAction {
+public class BarChartExample extends XNavigateItemAction {
 
    /**
     * @param parent
     * @param action
     */
-   public ExampleBarChartResult(XNavigateItem parent) {
-      super(parent, "Open Example Bar Chart");
+   public BarChartExample(XNavigateItem parent) {
+      super(parent, "Bar Chart Example");
    }
 
    /* (non-Javadoc)
@@ -73,7 +73,7 @@ public class ExampleBarChartResult extends XNavigateItemAction {
             List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
             tabs.add(new ResultsEditorChartTab("Chart", createMyChart()));
             tabs.add(getReportHtmlTab());
-            return null;
+            return tabs;
          }
 
       });
