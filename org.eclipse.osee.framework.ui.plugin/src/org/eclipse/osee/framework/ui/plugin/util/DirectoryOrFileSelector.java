@@ -44,11 +44,14 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
     */
    public DirectoryOrFileSelector(Composite parent, int style, String name, Listener listener) {
       super(parent, style);
-      setLayout(new GridLayout());
+      GridLayout gdMain = new GridLayout();
+      gdMain.marginHeight = 0;
+      gdMain.marginWidth = 0;
+      setLayout(gdMain);
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       Group composite = new Group(this, style);
-      composite.setText("Import Source");
+      composite.setText(name);
       GridLayout gd = new GridLayout();
       gd.numColumns = 3;
       composite.setLayout(gd);
