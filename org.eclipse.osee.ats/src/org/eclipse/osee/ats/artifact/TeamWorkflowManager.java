@@ -108,10 +108,6 @@ public class TeamWorkflowManager {
    public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Endorse")) return new Result(
             "Action not in Endorse state");
-      if (propRes == null || propRes.equals(""))
-         teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
-      else
-         teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
       smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
@@ -119,14 +115,6 @@ public class TeamWorkflowManager {
    public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Analyze")) return new Result(
             "Action not in Analyze state");
-      if (problem == null || problem.equals(""))
-         teamArt.setSoleAttributeValue(ATSAttributes.PROBLEM_OVERRIDE_ATTRIBUTE.getStoreName(), true);
-      else
-         teamArt.setSoleAttributeValue(ATSAttributes.PROBLEM_ATTRIBUTE.getStoreName(), problem);
-      if (propRes == null || propRes.equals(""))
-         teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
-      else
-         teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
       teamArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
       smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
@@ -142,10 +130,6 @@ public class TeamWorkflowManager {
    public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Implement")) return new Result(
             "Action not in Implement state");
-      if (resolution == null || resolution.equals(""))
-         teamArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
-      else
-         teamArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), resolution);
       smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }

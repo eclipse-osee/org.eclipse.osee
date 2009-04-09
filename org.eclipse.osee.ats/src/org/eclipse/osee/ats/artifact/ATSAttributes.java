@@ -109,14 +109,6 @@ public class ATSAttributes {
          new ATSAttributes("Requires Followup", "True if review requires someone to folloup after decision.");
    public static final ATSAttributes PROPOSED_RESOLUTION_ATTRIBUTE =
          new ATSAttributes("Proposed Resolution", "Recommended resolution.");
-   public static final ATSAttributes PROBLEM_OVERRIDE_ATTRIBUTE =
-         new ATSAttributes("Problem Override", "Select if Problem is same as Title/Description");
-   public static final ATSAttributes PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE =
-         new ATSAttributes("Proposed Resolution Override",
-               "Select if Proposed Resolution is same as Title/Description/Problem");
-   public static final ATSAttributes RESOLUTION_OVERRIDE_ATTRIBUTE =
-         new ATSAttributes("Resolution Override",
-               "Select if Proposed Resolution is same as Title/Description/Problem/Proposed Resolution");
    // TODO Remove this after 0.5.0 release
    public static final ATSAttributes BLOCKING_REVIEW_ATTRIBUTE =
          new ATSAttributes("Blocking Review",
