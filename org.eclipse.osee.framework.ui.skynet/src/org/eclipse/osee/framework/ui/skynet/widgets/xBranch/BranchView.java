@@ -53,7 +53,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
       OseeEventManager.addListener(this);
    }
-   
+
    @Override
    public void dispose() {
       super.dispose();
@@ -84,7 +84,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       xBranchWidget = new XBranchWidget();
       xBranchWidget.setDisplayLabel(false);
       xBranchWidget.createWidgets(parent, 1);
-      
+
       branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
       xBranchWidget.loadData();
 
@@ -109,7 +109,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    public String getActionDescription() {
       return "";
    }
-   
+
    /**
     * Reveal a branch in the viewer and select it.
     */
@@ -133,7 +133,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
-      if (branchModType == BranchEventType.Committed || branchModType == BranchEventType.Added) {
+      if (branchModType == BranchEventType.Committed || branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                try {
@@ -152,7 +152,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener#handleTransactionsDeletedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int[])
     */
@@ -189,14 +189,14 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, showMergeBranches);
       }
    }
-   
+
    public void changeArchivedBranchPresentation(boolean showArchivedBranches) {
       if (branchViewPresentationPreferences != null) {
          branchViewPresentationPreferences.getViewPreference().putBoolean(
                BranchViewPresentationPreferences.SHOW_ARCHIVED_BRANCHES, showArchivedBranches);
       }
    }
-   
+
    public void changeFavoritesFirstPresentation(boolean showArchivedBranches) {
       if (branchViewPresentationPreferences != null) {
          branchViewPresentationPreferences.getViewPreference().putBoolean(
@@ -205,35 +205,40 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
+    * of the regular API.
     */
    protected void setPresentation(boolean flat) {
       xBranchWidget.setPresentation(flat);
    }
 
    /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
+    * of the regular API.
     */
    protected void setFavoritesFirst(boolean favoritesFirst) {
       xBranchWidget.setFavoritesFirst(favoritesFirst);
    }
 
    /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
+    * of the regular API.
     */
    protected void setShowMergeBranches(boolean showMergeBranches) {
       xBranchWidget.setShowMergeBranches(showMergeBranches);
    }
 
    /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
+    * of the regular API.
     */
    protected void setShowTransactions(boolean showTransactions) {
       xBranchWidget.setShowTransactions(showTransactions);
    }
 
    /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part of the regular API.
+    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
+    * of the regular API.
     */
    protected void setShowArchivedBranches(boolean showArchivedBranches) {
       xBranchWidget.setShowArchivedBranches(showArchivedBranches);

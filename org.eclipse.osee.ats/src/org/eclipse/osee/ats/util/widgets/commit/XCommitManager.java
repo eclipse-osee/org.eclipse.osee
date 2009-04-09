@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IMergeBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -57,7 +59,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitManager extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener, IBranchEventListener {
+public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBranchEventListener, IFrameworkTransactionEventListener, IBranchEventListener {
 
    private CommitXManager xCommitManager;
    private IDirtiableEditor editor;
@@ -395,6 +397,19 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IFramewo
     */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IMergeBranchEventListener#handleMergeBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType, int)
+    */
+   @Override
+   public void handleMergeBranchEvent(Sender sender, MergeBranchEventType branchModType, int branchId) throws OseeCoreException {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            refresh();
+         }
+      });
    }
 
 }

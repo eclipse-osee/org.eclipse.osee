@@ -78,6 +78,19 @@ public class OseeEventManager {
    }
 
    /**
+    * Kick LOCAL and REMOTE branch events
+    * 
+    * @param sender
+    * @param mergeBranchEventType
+    * @param branchId
+    * @throws OseeCoreException
+    */
+   public static void kickMergeBranchEvent(Object source, MergeBranchEventType branchEventType, int branchId) throws OseeCoreException {
+      if (isDisableEvents()) return;
+      InternalEventManager.kickMergeBranchEvent(getSender(source), branchEventType, branchId);
+   }
+
+   /**
     * Kick LOCAL and REMOTE access control events
     * 
     * @param sender

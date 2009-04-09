@@ -78,8 +78,8 @@ public class BranchCreation implements IBranchCreation {
       protected int branchId;
       protected int authorId;
       protected String creationComment;
-      private BranchType branchType;
-      private int parentTransactionId;
+      private final BranchType branchType;
+      private final int parentTransactionId;
 
       public CreateBranchTx(int parentTransactionId, int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, BranchType branchType) throws OseeCoreException {
          this.parentBranchId = parentBranchId;
@@ -96,6 +96,7 @@ public class BranchCreation implements IBranchCreation {
          return branchId;
       }
 
+      @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          branchId =
@@ -139,7 +140,7 @@ public class BranchCreation implements IBranchCreation {
 
    private final class CreateTopLevelBranchTx extends CreateBranchTx {
 
-      private String staticBranchName;
+      private final String staticBranchName;
 
       public CreateTopLevelBranchTx(int parentTransactionId, int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName, boolean systemRootBranch) throws OseeCoreException {
          super(parentTransactionId, parentBranchId, childBranchShortName, childBranchName, creationComment,
@@ -153,10 +154,13 @@ public class BranchCreation implements IBranchCreation {
       @Override
       public void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException {
          if (staticBranchName != null) {
-            ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, staticBranchName, branchId);
+            insertKeyedBranchIntoDatabase(connection, staticBranchName, newBranchId);
          }
-
       }
+   }
+
+   public static void insertKeyedBranchIntoDatabase(OseeConnection connection, String staticBranchName, int branchId) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, staticBranchName, branchId);
    }
 
    private final class CreateChildBranchTx extends CreateBranchTx {

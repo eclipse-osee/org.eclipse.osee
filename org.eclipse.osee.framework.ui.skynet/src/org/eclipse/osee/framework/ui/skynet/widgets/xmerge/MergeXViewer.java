@@ -22,7 +22,10 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpBranchCreation;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
@@ -182,6 +185,8 @@ public class MergeXViewer extends XViewer {
                MergeUtility.showInformationalConflict(shell);
             } else {
                conflict.handleResolvedSelection();
+               OseeEventManager.kickMergeBranchEvent(HttpBranchCreation.class, MergeBranchEventType.ConflictResolved,
+                     conflict.getMergeBranchID());
             }
          }
 

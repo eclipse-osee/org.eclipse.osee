@@ -37,6 +37,8 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -153,6 +155,10 @@ public class BranchCreator {
    public Branch createMergeBranch(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws OseeCoreException {
       CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, destBranch, artIds);
       createMergeBranchTx.execute();
+
+      OseeEventManager.kickBranchEvent(HttpBranchCreation.class, BranchEventType.Added,
+            createMergeBranchTx.getMergeBranch().getBranchId());
+
       return createMergeBranchTx.getMergeBranch();
    }
 

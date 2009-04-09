@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactPu
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkBroadcastEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkCommitBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkDeletedBranchEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkMergeBranchConflictResolvedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
@@ -233,6 +234,67 @@ public class InternalEventManager {
                      } catch (Exception ex) {
                         // do nothing
                      }
+                  }
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      execute(runnable);
+   }
+
+   /**
+    * Kick LOCAL and REMOTE branch events
+    * 
+    * @param sender
+    * @param mergeBranchEventType
+    * @param branchId
+    * @throws OseeCoreException
+    */
+   static void kickMergeBranchEvent(final Sender sender, final MergeBranchEventType branchEventType, final int branchId) {
+      if (isDisableEvents()) return;
+      try {
+         if (DEBUG) {
+            OseeLog.log(InternalEventManager.class, Level.INFO,
+                  "OEM: kickMergeBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.INFO, ex);
+      }
+      Runnable runnable = new Runnable() {
+         public void run() {
+            try {
+               // Log if this is a loopback and what is happening
+               if (enableRemoteEventLoopback) {
+                  OseeLog.log(
+                        InternalEventManager.class,
+                        Level.WARNING,
+                        "OEM: MergeBranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               }
+
+               // Kick LOCAL
+               if (!enableRemoteEventLoopback || (enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote())) {
+                  if (sender.isRemote() || (sender.isLocal() && branchEventType.isLocalEventType())) {
+                     for (IEventListner listener : listeners) {
+                        if (listener instanceof IMergeBranchEventListener) {
+                           // Don't fail on any one listener's exception
+                           try {
+                              ((IMergeBranchEventListener) listener).handleMergeBranchEvent(sender, branchEventType,
+                                    branchId);
+                           } catch (Exception ex) {
+                              OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                           }
+                        }
+                     }
+                  }
+               }
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
+
+               if (sender.isLocal() && branchEventType.isRemoteEventType()) {
+                  if (branchEventType == MergeBranchEventType.ConflictResolved) {
+                     RemoteEventManager.kick(new NetworkMergeBranchConflictResolvedEvent(branchId,
+                           sender.getNetworkSender()));
                   }
                }
             } catch (Exception ex) {

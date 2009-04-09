@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -73,6 +74,8 @@ public class BranchManager {
 
    private static final String UPDATE_TRANSACTION_BRANCH =
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
+   private static final String INSERT_DEFAULT_BRANCH_NAMES =
+         "INSERT INTO OSEE_BRANCH_DEFINITIONS (static_branch_name, mapped_branch_id) VALUES (?, ?)";
 
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
    private static final String ARCHIVE_BRANCH =
@@ -545,7 +548,7 @@ public class BranchManager {
             HttpBranchCreation.createRootBranch(null, branchName, staticBranchName, systemRootBranch.getBranchId(),
                   systemRootBranch.getParentTransactionId(), false);
       if (staticBranchName != null) {
-         setKeyedBranch(staticBranchName, branch);
+         setKeyedBranchInCache(staticBranchName, branch);
       }
       if (initializeArtifacts) {
          RootBranchInitializer rootInitializer = new RootBranchInitializer();
@@ -681,6 +684,12 @@ public class BranchManager {
    }
 
    public static void setKeyedBranch(String keyname, Branch branch) throws OseeCoreException {
+      setKeyedBranchInCache(keyname, branch);
+      ConnectionHandler.runPreparedUpdate(OseeDbConnection.getConnection(), INSERT_DEFAULT_BRANCH_NAMES, keyname,
+            branch.getBranchId());
+   }
+
+   public static void setKeyedBranchInCache(String keyname, Branch branch) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       instance.keynameBranchMap.put(keyname.toLowerCase(), branch);
    }

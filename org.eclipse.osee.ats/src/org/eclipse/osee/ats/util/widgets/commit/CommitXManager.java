@@ -102,25 +102,22 @@ public class CommitXManager extends XViewer {
             destBranch = verArt.getParentBranch();
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
          } else if (commitStatus == CommitStatus.Committed) {
-            // If merge branch exists, popup dialog to ask which to choose
-            if (xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().isMergeBranchExists(destBranch)) {
-               destBranch = verArt.getParentBranch();
-               MessageDialog dialog =
-                     new MessageDialog(Display.getCurrent().getActiveShell(), "Select Report", null,
-                           "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
-                           new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);
-               int result = dialog.open();
-               if (result == 2) return;
-               // change report
-               if (result == 0) {
-                  xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
-               }
-               // merge manager
-               else {
-                  xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
-               }
-            } else {
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
+         } else if (commitStatus == CommitStatus.Committed_With_Merge) {
+            destBranch = verArt.getParentBranch();
+            MessageDialog dialog =
+                  new MessageDialog(Display.getCurrent().getActiveShell(), "Select Report", null,
+                        "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
+                        new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);
+            int result = dialog.open();
+            if (result == 2) return;
+            // change report
+            if (result == 0) {
                xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
+            }
+            // merge manager
+            else {
+               xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
             }
          }
       } catch (OseeCoreException ex) {

@@ -93,7 +93,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
             CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
-            if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Commit_Needed_After_Merge) {
+            if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Commit_Needed_After_Merge || commitStatus == CommitStatus.Committed_With_Merge) {
                return SkynetGuiPlugin.getInstance().getImage("branch_merge.gif");
             }
             return null;
@@ -112,7 +112,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return CommitStatus.Branch_Not_Configured;
       else if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
          if (teamArt.getSmaMgr().getBranchMgr().isMergeCompleted(verArt.getParentBranch())) {
-            Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(teamArt, false);
+            Collection<Branch> branches = teamArt.getSmaMgr().getBranchMgr().getBranchesCommittedTo();
             if (branches.contains(branch)) {
                return CommitStatus.Committed_With_Merge;
             }

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor.service.branch;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
-import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -44,7 +43,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
       toolBarAction = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            performService();
+            smaMgr.getBranchMgr().showMergeManager();
          }
       };
       toolBarAction.setToolTipText(getName());
@@ -61,14 +60,6 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
    @Override
    public String getName() {
       return "Show Merge Manager";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
-    */
-   @Override
-   public String getSidebarCategory() {
-      return AtsBranchManager.BRANCH_CATEGORY;
    }
 
    /*
@@ -140,10 +131,6 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
          }
       });
 
-   }
-
-   private void performService() {
-      smaMgr.getBranchMgr().showMergeManager();
    }
 
    /* (non-Javadoc)

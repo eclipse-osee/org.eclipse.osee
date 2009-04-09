@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor.service.branch;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
-import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -22,14 +21,11 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
  */
 public class ShowChangeReportService extends WorkPageService implements IBranchEventListener {
-
-   private Hyperlink link;
 
    // Since this service is only going to be added for the Implement state, Location.AllState will
    // work
@@ -55,7 +51,7 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
       toolBarAction = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            performService();
+            smaMgr.getBranchMgr().showChangeReport();
          }
       };
       toolBarAction.setToolTipText(getName());
@@ -77,14 +73,6 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
    @Override
    public String getName() {
       return "Show Change Report";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
-    */
-   @Override
-   public String getSidebarCategory() {
-      return AtsBranchManager.BRANCH_CATEGORY;
    }
 
    /*
@@ -145,10 +133,6 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
          }
       });
 
-   }
-
-   private void performService() {
-      smaMgr.getBranchMgr().showChangeReport();
    }
 
 }
