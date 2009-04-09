@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
+import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups.GroupType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -130,7 +131,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(otherItems);
 
          items.add(new SearchNavigateItem(null, new TaskSearchWorldSearchItem()));
-	         items.add(new SearchNavigateItem(null, new GroupWorldSearchItem(null)));
+         items.add(new SearchNavigateItem(null, new GroupWorldSearchItem(null)));
          items.add(new SearchNavigateItem(null, new TeamWorkflowSearchWorkflowSearchItem()));
          items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));
          items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search",
@@ -182,6 +183,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new FirstTimeQualityMetricReportItem(reportItems);
          new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World");
          new ExampleBarChartResult(reportItems);
+         new ResultsEditorExample(reportItems);
          //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 
          XNavigateItem emailItems = new XNavigateItem(null, "Email");

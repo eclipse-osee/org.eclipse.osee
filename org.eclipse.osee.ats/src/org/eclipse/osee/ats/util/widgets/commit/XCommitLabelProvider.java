@@ -112,6 +112,10 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return CommitStatus.Branch_Not_Configured;
       else if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
          if (teamArt.getSmaMgr().getBranchMgr().isMergeCompleted(verArt.getParentBranch())) {
+            Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(teamArt, false);
+            if (branches.contains(branch)) {
+               return CommitStatus.Committed_With_Merge;
+            }
             return CommitStatus.Commit_Needed_After_Merge;
          }
          return CommitStatus.Merge_In_Progress;
