@@ -32,7 +32,7 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn comment =
          new XViewerColumn("framework.branch.comment", "Comment", 250, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn associatedArtifact =
-         new XViewerColumn("framework.branch.assocArt", "Associated Artifact", 100, SWT.LEFT, true,
+         new XViewerColumn("framework.branch.assocArt", "Associated Artifact", 100, SWT.LEFT, false,
                SortDataType.String, false, null);
 
    public static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
