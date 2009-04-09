@@ -439,7 +439,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s36"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
-    <Cell ss:StyleID="s39"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
+    <Cell ss:StyleID="s39"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">General String Data</Data></Cell>
     <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s28"/>

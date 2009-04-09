@@ -86,11 +86,11 @@ public class OseeDbConnection {
       public synchronized void reportTxCreation(final DbTransaction transaction) throws OseeWrappedException {
          final Thread currentThread = Thread.currentThread();
          TxOperation currentTx = txMap.get(currentThread);
-         if (currentTx != null) {//&& currentTx.getState() == TxState.RUNNING) {
+         if (currentTx != null) {
             // This log is to support debugging the case where skynet transactions are nested and should
             // use the same transaction.
-            // This case may happens legitimately if an exception occurs outside this API before transaction.execute() is called,
-            // so it is only notification that this is occurring.
+            // This case may happen legitimately if an exception happened before transaction.execute(), so
+            // it is only notification that this is occurring.
             OseeLog.log(InternalActivator.class, Level.SEVERE, "New transaction created over Last transaction",
                   currentTx.getError());
          }
@@ -127,8 +127,7 @@ public class OseeDbConnection {
          }
 
          if (currentTx.getTransaction().equals(transaction)) {
-            currentTx.setState(TxState.ENDED);
-            //            txMap.remove(currentThread);
+            txMap.remove(currentThread);
          } else {
             throw new OseeWrappedException(currentTx.getError());
          }
