@@ -99,10 +99,10 @@
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R211C1:R238C5"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R208C1:R235C5"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="244" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="241" x:FullColumns="1"
    x:FullRows="1">
    <Column ss:AutoFitWidth="0" ss:Width="286.5"/>
    <Column ss:AutoFitWidth="0" ss:Width="339.75"/>
@@ -616,7 +616,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22"/>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String"># Map attribute to artifact type</Data></Cell>
+    <Cell><Data ss:Type="String"># Map attribute to artifact type </Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
     <Cell ss:StyleID="s26"><Data ss:Type="String">Artifact Type Name</Data></Cell>
@@ -960,10 +960,6 @@
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Problem Override</Data></Cell>
-   </Row>
-   <Row>
-    <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
     <Cell><Data ss:Type="String">ats.Proposed Resolution</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
@@ -1001,15 +997,7 @@
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Proposed Resolution Override</Data></Cell>
-   </Row>
-   <Row>
-    <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
     <Cell><Data ss:Type="String">ats.Resolution</Data></Cell>
-   </Row>
-   <Row>
-    <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Resolution Override</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
@@ -1725,12 +1713,12 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
+   <TopRowVisible>27</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>15</ActiveRow>
-     <ActiveCol>1</ActiveCol>
-     <RangeSelection>R16:R18</RangeSelection>
+     <ActiveRow>64</ActiveRow>
+     <ActiveCol>2</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
