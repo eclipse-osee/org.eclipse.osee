@@ -179,9 +179,7 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeStringAttribute(String attributeName, String displayName, String validationRegEx, final Collection<? extends Artifact> smas, boolean persist, boolean multiLine) throws OseeCoreException {
-      EntryDialog ed =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
-                  "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
+      EntryDialog ed = new EntryDialog("Enter " + displayName, "Enter " + displayName);
       ed.setFillVertically(multiLine);
       if (smas.size() == 1) {
          Object obj = smas.iterator().next().getSoleAttributeValueAsString(attributeName, null);

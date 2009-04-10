@@ -19,6 +19,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -42,6 +43,7 @@ public class XViewerTextWidget extends XViewerWidget {
    private final boolean debug = false;
    private int width = 0;
    private int height = 0;
+   private Font font;
 
    public XViewerTextWidget() {
       super("AText", "text");
@@ -176,6 +178,7 @@ public class XViewerTextWidget extends XViewerWidget {
       if (fillText) updateTextWidget();
       setLabelError();
       sText.setEditable(editable);
+      if (font != null) sText.setFont(font);
       parent.layout();
    }
 
@@ -485,6 +488,23 @@ public class XViewerTextWidget extends XViewerWidget {
     */
    public StyledText getStyledText() {
       return sText;
+   }
+
+   /**
+    * @return the font
+    */
+   public Font getFont() {
+      return font;
+   }
+
+   /**
+    * @param font the font to set
+    */
+   public void setFont(Font font) {
+      this.font = font;
+      if (sText != null) {
+         sText.setFont(font);
+      }
    }
 
 }

@@ -86,16 +86,12 @@ public class XPromptChange {
    }
 
    public static String promptChangeString(String displayName, String currEntry, String validationRegEx, Option option) {
-      DialogWithEntry ed =
-            new DialogWithEntry(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
-                  "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
+      DialogWithEntry ed = new DialogWithEntry("Enter " + displayName, "Enter " + displayName);
       if (option == Option.MULTI_LINE) ed.setFillVertically(true);
       if (currEntry != null && !currEntry.equals("")) ed.setEntry(currEntry);
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
-      if (result == 0)
-         return ed.getEntry();
-      else if (result == 1) return "";
+      if (result == 0) return ed.getEntry();
       return null;
    }
 

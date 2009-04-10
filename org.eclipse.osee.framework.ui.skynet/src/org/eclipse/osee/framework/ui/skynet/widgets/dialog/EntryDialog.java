@@ -22,7 +22,10 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -36,7 +39,7 @@ import org.eclipse.swt.widgets.Shell;
 public class EntryDialog extends MessageDialog {
 
    XText text;
-   Composite c;
+   Composite comp;
    String entryText = "";
    String validationRegularExpression = null;
    String validationErrorString = "";
@@ -44,6 +47,8 @@ public class EntryDialog extends MessageDialog {
    MouseMoveListener listener;
    Label errorLabel;
    boolean fillVertically = false;
+   private static Font font = null;
+   private Button fontButton;
 
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<IShellCloseEvent>();
 
@@ -60,9 +65,9 @@ public class EntryDialog extends MessageDialog {
    @Override
    protected Control createCustomArea(Composite parent) {
 
-      c = new Composite(parent, SWT.NONE);
-      c.setLayout(new GridLayout(2, false));
-      c.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+      comp = new Composite(parent, SWT.NONE);
+      comp.setLayout(new GridLayout(2, false));
+      comp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 
       listener = new MouseMoveListener() {
 
@@ -70,23 +75,71 @@ public class EntryDialog extends MessageDialog {
             setInitialButtonState();
          }
       };
-      c.addMouseMoveListener(listener);
+      comp.addMouseMoveListener(listener);
+
+      Composite headerComp = new Composite(comp, SWT.NONE);
+      headerComp.setLayout(new GridLayout(3, false));
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.horizontalSpan = 2;
+      headerComp.setLayoutData(gd);
+
+      if (fillVertically) {
+         // Create error label
+         Button button = new Button(headerComp, SWT.PUSH);
+         button.setText("Clear");
+         button.addSelectionListener(new SelectionAdapter() {
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               text.setText("");
+            }
+         });
+         // Create error label
+         fontButton = new Button(headerComp, SWT.CHECK);
+         fontButton.setText("Fixed Font");
+         fontButton.addSelectionListener(new SelectionAdapter() {
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               if (fontButton.getSelection()) {
+                  if (font == null) {
+                     font = new Font(Display.getCurrent(), "Courier New", 8, SWT.NORMAL);
+                  }
+                  text.setFont(font);
+               } else
+                  text.setFont(null);
+            }
+         });
+      }
 
       // Create error label
-      errorLabel = new Label(c, SWT.NONE);
+      errorLabel = new Label(headerComp, SWT.NONE);
       errorLabel.setSize(errorLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
       errorLabel.setText("");
+      if (!fillVertically) {
+         gd = new GridData();
+         gd.horizontalSpan = 3;
+         errorLabel.setLayoutData(gd);
+      }
 
       text = new XText();
       text.setFillHorizontally(true);
       text.setFocus();
       text.setDisplayLabel(false);
-      if (!entryText.equals("")) text.set(entryText);
       if (fillVertically) {
          text.setFillVertically(true);
          text.setHeight(200);
+
+         text.setFont(font);
       }
-      text.createWidgets(c, 2);
+      text.createWidgets(comp, 2);
+      if (!entryText.equals("")) text.set(entryText);
 
       ModifyListener modifyListener = new ModifyListener() {
 
@@ -95,10 +148,10 @@ public class EntryDialog extends MessageDialog {
          }
       };
       text.addModifyListener(modifyListener);
-      createExtendedArea(c);
-      c.layout();
+      createExtendedArea(comp);
+      comp.layout();
       parent.layout();
-      return c;
+      return comp;
    }
 
    @Override
@@ -119,22 +172,22 @@ public class EntryDialog extends MessageDialog {
          ok = getButton(0);
          handleModified();
       }
-      c.removeMouseMoveListener(listener);
+      comp.removeMouseMoveListener(listener);
    }
 
    public void handleModified() {
       if (text != null) {
          entryText = text.get();
-         if (text.get().equals("") || !isEntryValid()) {
+         if (!isEntryValid()) {
             getButton(getDefaultButtonIndex()).setEnabled(false);
             errorLabel.setText(validationErrorString);
             errorLabel.update();
-            c.layout();
+            comp.layout();
          } else {
             getButton(getDefaultButtonIndex()).setEnabled(true);
             errorLabel.setText("");
             errorLabel.update();
-            c.layout();
+            comp.layout();
          }
       }
    }

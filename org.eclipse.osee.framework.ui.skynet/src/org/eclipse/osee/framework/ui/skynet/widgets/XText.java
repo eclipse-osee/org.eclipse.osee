@@ -24,6 +24,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -46,11 +47,12 @@ public class XText extends XWidget {
 
    private boolean dragableArtifact = false;
    private boolean spellCheck = true;
-   private boolean debug = false;
+   private final boolean debug = false;
    private int width = 0;
    private int height = 0;
    private XTextSpellCheckPaintListener spellPaintListener;
    private XTextSpellModifyDictionary modDict;
+   private Font font;
 
    public XText() {
       super("AText", "text");
@@ -83,6 +85,7 @@ public class XText extends XWidget {
       if (sText != null && !sText.isDisposed()) sText.setSize(sText.getSize().x, height);
    }
 
+   @Override
    public String toString() {
       return label + ": *" + text + "*";
    }
@@ -101,6 +104,7 @@ public class XText extends XWidget {
     * Create Text Widgets. Widgets Created: Label: "text entry" horizonatalSpan takes up 2 columns; horizontalSpan must
     * be >=2
     */
+   @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
       createWidgets(parent, horizontalSpan, true);
    }
@@ -188,6 +192,7 @@ public class XText extends XWidget {
       if (fillText) updateTextWidget();
       setLabelError();
       sText.setEditable(editable);
+      if (font != null) sText.setFont(font);
       parent.layout();
    }
 
@@ -218,6 +223,7 @@ public class XText extends XWidget {
       cut.setText("Cut");
       cut.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             sText.cut();
             sText.redraw();
@@ -227,6 +233,7 @@ public class XText extends XWidget {
       copy.setText("Copy");
       copy.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             sText.copy();
          }
@@ -235,6 +242,7 @@ public class XText extends XWidget {
       paste.setText("Paste");
       paste.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             sText.paste();
             sText.redraw();
@@ -256,6 +264,7 @@ public class XText extends XWidget {
       if (parent != null && !parent.isDisposed()) parent.layout();
    }
 
+   @Override
    public void setFocus() {
       if (sText != null) sText.setFocus();
    }
@@ -269,6 +278,7 @@ public class XText extends XWidget {
       this.spellCheck = spellCheck;
    }
 
+   @Override
    public void setEditable(boolean editable) {
       super.setEditable(editable);
       if (sText != null && !sText.isDisposed()) {
@@ -298,6 +308,7 @@ public class XText extends XWidget {
       }
    }
 
+   @Override
    public void setFillVertically(boolean fillVertically) {
       super.setFillVertically(fillVertically);
    }
@@ -340,6 +351,7 @@ public class XText extends XWidget {
       return num.doubleValue();
    }
 
+   @Override
    public void setRequiredEntry(boolean requiredEntry) {
       super.setRequiredEntry(requiredEntry);
       setLabelError();
@@ -358,6 +370,7 @@ public class XText extends XWidget {
       return text;
    }
 
+   @Override
    public String getXmlData() {
       if (sText == null || sText.isDisposed())
          return AXml.textToXml(text);
@@ -369,6 +382,7 @@ public class XText extends XWidget {
          }
    }
 
+   @Override
    public String toXml() {
       if (xmlSubRoot.equals("")) {
          return toXml(xmlRoot);
@@ -377,22 +391,26 @@ public class XText extends XWidget {
       }
    }
 
+   @Override
    public String toXml(String xmlRoot) {
       String s = "<" + xmlRoot + ">" + getXmlData() + "</" + xmlRoot + ">\n";
       return s;
    }
 
+   @Override
    public String toXml(String xmlRoot, String xmlSubRoot) {
       String s =
             "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + getXmlData() + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
       return s;
    }
 
+   @Override
    public void setXmlData(String str) {
       set(str);
       if (debug) System.err.println("setFromXml *" + str + "*");
    }
 
+   @Override
    public void setFromXml(String xml) {
       Matcher m;
       m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
@@ -442,10 +460,12 @@ public class XText extends XWidget {
       updateTextWidget();
    }
 
+   @Override
    public void refresh() {
       updateTextWidget();
    }
 
+   @Override
    public String getReportData() {
       String s = "";
       String textStr = new String(text);
@@ -467,6 +487,7 @@ public class XText extends XWidget {
       return s;
    }
 
+   @Override
    public String toHTML(String labelFont) {
       return toHTML(labelFont, false);
    }
@@ -489,6 +510,7 @@ public class XText extends XWidget {
       if (debug) System.err.println("AText :" + str);
    }
 
+   @Override
    public Result isValid() {
       if (isRequiredEntry() && get().equals("")) {
          return new Result(String.format("Must enter \"%s\"", label));
@@ -511,6 +533,23 @@ public class XText extends XWidget {
     */
    public StyledText getStyledText() {
       return sText;
+   }
+
+   /**
+    * @return the font
+    */
+   public Font getFont() {
+      return font;
+   }
+
+   /**
+    * @param font the font to set
+    */
+   public void setFont(Font font) {
+      this.font = font;
+      if (sText != null) {
+         sText.setFont(font);
+      }
    }
 
 }
