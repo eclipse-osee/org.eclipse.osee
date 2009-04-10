@@ -138,7 +138,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       xChangeWidget.createWidgets(parent, 1);
 
       changeViewPresentationPreferences = new ChangeViewPresentationPreferences(this);
-      
+
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
@@ -150,8 +150,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
 
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
       xChangeWidget.getXViewer().getTree().setMenu(menuManager.createContextMenu(xChangeWidget.getXViewer().getTree()));
-      getSite().registerContextMenu(VIEW_ID, menuManager,
-            xChangeWidget.getXViewer());
+      getSite().registerContextMenu(VIEW_ID, menuManager, xChangeWidget.getXViewer());
 
       getSite().setSelectionProvider(xChangeWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
@@ -254,17 +253,6 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
             }
          });
          // refresh view with new branch and transaction id
-      } else if (branchModType == BranchEventType.DefaultBranchChanged) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            @Override
-            public void run() {
-               if (xChangeWidget == null || xChangeWidget.getXViewer().getTree() == null || xChangeWidget.getXViewer().getTree().isDisposed()) return;
-               xChangeWidget.getXViewer().getTree().setEnabled(branch.getBranchId() == branchId);
-            }
-         });
       }
    }
 
@@ -306,12 +294,12 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
                ChangeViewPresentationPreferences.SHOW_DOC_ORDER, showDocOrder);
       }
    }
-   
+
    /**
     * @param showArchivedBranches
     */
    protected void setShowDocumentOrder(boolean showDocOrder) {
       xChangeWidget.setShowDocumentOrder(showDocOrder);
-      
+
    }
 }

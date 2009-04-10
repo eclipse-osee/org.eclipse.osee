@@ -314,17 +314,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
             }
          });
          // refresh view with new branch and transaction id
-      } else if (branchModType == BranchEventType.DefaultBranchChanged) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            @Override
-            public void run() {
-               if (xHistoryWidget == null || xHistoryWidget.getXViewer().getTree() == null || xHistoryWidget.getXViewer().getTree().isDisposed()) return;
-               xHistoryWidget.getXViewer().getTree().setEnabled(artifact.getBranch().getBranchId() == branchId);
-            }
-         });
       }
    }
 

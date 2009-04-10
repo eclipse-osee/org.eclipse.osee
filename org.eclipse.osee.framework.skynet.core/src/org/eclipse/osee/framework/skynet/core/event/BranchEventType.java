@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -20,10 +19,7 @@ public enum BranchEventType {
    Deleted(EventType.LocalAndRemote),
    Added(EventType.LocalAndRemote),
    Renamed(EventType.LocalAndRemote),
-   Committed(EventType.LocalAndRemote),
-
-   // Local event only; Does not get sent Remote
-   DefaultBranchChanged(EventType.LocalOnly);
+   Committed(EventType.LocalAndRemote);
 
    private final EventType eventType;
 

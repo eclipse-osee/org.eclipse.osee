@@ -29,9 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -64,7 +62,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorer extends ViewPart implements IBranchEventListener, IFrameworkTransactionEventListener, IActionable {
+public class GroupExplorer extends ViewPart implements IFrameworkTransactionEventListener, IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
    private GroupTreeViewer treeViewer;
    private Artifact rootArt;
@@ -100,7 +98,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
 
       parent.setLayout(gridLayout);
       parent.setLayoutData(gridData);
-      
+
       branchSelect = new XBranchSelectWidget("");
       branchSelect.setDisplayLabel(false);
       branch = BranchManager.getLastBranch();
@@ -409,30 +407,6 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
 
    public String getActionDescription() {
       return "";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
-    */
-   @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      if (branchModType == BranchEventType.DefaultBranchChanged) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               refresh();
-               restoreExpandedAndSelection();
-            }
-         });
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-
    }
 
    /* (non-Javadoc)
