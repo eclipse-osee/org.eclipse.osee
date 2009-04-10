@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.define.traceability;
+package org.eclipse.osee.define.traceability.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,9 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.define.traceability.TraceabilityExtractor;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -30,20 +28,17 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 /**
  * @author Roberto E. Escobar
  */
-public class RequirementData {
+public class RequirementData extends BaseTraceDataCache {
    private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
 
-   private Branch requirementsBranch;
-   private List<Artifact> directSwRequirements;
-   private List<Artifact> inDirectSwRequirements;
-   private Set<Artifact> allSwRequirements;
-
+   private final List<Artifact> directSwRequirements;
+   private final List<Artifact> inDirectSwRequirements;
+   private final Set<Artifact> allSwRequirements;
    private final HashMap<String, Artifact> directMap;
    private final HashMap<String, Artifact> indirectMap;
 
-   public RequirementData(Branch requirementsBranch) {
-      this.requirementsBranch = requirementsBranch;
-
+   public RequirementData(Branch branch) {
+      super("Software Requirements Data", branch);
       this.directMap = new HashMap<String, Artifact>();
       this.indirectMap = new HashMap<String, Artifact>();
       this.directSwRequirements = new ArrayList<Artifact>();
@@ -51,7 +46,8 @@ public class RequirementData {
       this.allSwRequirements = new TreeSet<Artifact>();
    }
 
-   private void reset() {
+   public void reset() {
+      super.reset();
       this.directMap.clear();
       this.indirectMap.clear();
       this.directSwRequirements.clear();
@@ -59,53 +55,34 @@ public class RequirementData {
       this.allSwRequirements.clear();
    }
 
-   public IStatus initialize(IProgressMonitor monitor) {
-      IStatus toReturn = Status.CANCEL_STATUS;
-      try {
-         reset();
-         monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchShortName()));
+   protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
+      directSwRequirements.addAll(ArtifactQuery.getArtifactsFromTypes(Requirements.DIRECT_SOFTWARE_REQUIREMENT_TYPES,
+            getBranch(), false));
+      populateTraceMap(monitor, directSwRequirements, directMap);
+      monitor.worked(30);
 
-         directSwRequirements.addAll(ArtifactQuery.getArtifactsFromTypes(
-               Requirements.DIRECT_SOFTWARE_REQUIREMENT_TYPES, getBranch(), false));
-         populateTraceMap(monitor, directSwRequirements, directMap);
-         monitor.worked(30);
+      if (!monitor.isCanceled()) {
+         monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
+               getBranch().getBranchShortName()));
+         inDirectSwRequirements.addAll(ArtifactQuery.getArtifactsFromType(Requirements.INDIRECT_SOFTWARE_REQUIREMENT,
+               getBranch()));
+         populateTraceMap(monitor, inDirectSwRequirements, indirectMap);
+         monitor.worked(7);
 
-         if (monitor.isCanceled() != true) {
-            monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
-                  getBranch().getBranchShortName()));
-            inDirectSwRequirements.addAll(ArtifactQuery.getArtifactsFromType(
-                  Requirements.INDIRECT_SOFTWARE_REQUIREMENT, getBranch()));
-            populateTraceMap(monitor, inDirectSwRequirements, indirectMap);
-            monitor.worked(7);
-
-            if (monitor.isCanceled() != true) {
-               allSwRequirements.addAll(directSwRequirements);
-               allSwRequirements.addAll(inDirectSwRequirements);
-               monitor.worked(1);
-            }
+         if (!monitor.isCanceled()) {
+            allSwRequirements.addAll(directSwRequirements);
+            allSwRequirements.addAll(inDirectSwRequirements);
+            monitor.worked(1);
          }
-         if (monitor.isCanceled() != true) {
-            toReturn = Status.OK_STATUS;
-         }
-      } catch (Exception ex) {
-         toReturn = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, "Loading requirement data.", ex);
-      }
-      return toReturn;
-   }
-
-   private void populateTraceMap(IProgressMonitor monitor, List<Artifact> artList, HashMap<String, Artifact> toPopulate) {
-      for (Artifact artifact : artList) {
-         toPopulate.put(traceExtractor.getCanonicalRequirementName(artifact.getDescriptiveName()), artifact);
       }
    }
 
-   /**
-    * Get requirements source branch
-    * 
-    * @return source branch
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.define.traceability.data.BaseTraceDataCache#asTraceMapKey(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
-   public Branch getBranch() {
-      return requirementsBranch;
+   @Override
+   protected String asTraceMapKey(Artifact artifact) {
+      return traceExtractor.getCanonicalRequirementName(artifact.getDescriptiveName());
    }
 
    /**

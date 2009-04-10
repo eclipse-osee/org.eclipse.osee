@@ -11,13 +11,15 @@
 package org.eclipse.osee.define.traceability;
 
 import java.nio.CharBuffer;
-import java.util.Collection;
-import org.eclipse.osee.define.traceability.data.TraceMark;
+import org.eclipse.osee.define.utility.IResourceLocator;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ITraceParser {
+public interface ITraceUnitResourceLocator extends IResourceLocator {
 
-   public Collection<TraceMark> getTraceMarks(CharBuffer fileBuffer);
+   public String UNIT_TYPE_UNKNOWN = "Unknown";
+
+   public String getTraceUnitType(String name, CharBuffer fileBuffer);
+
 }

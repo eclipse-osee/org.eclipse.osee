@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.osee.define" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.osee.define" id="TestUnitTrace" name="TestUnitTrace"/>
+         <meta.schema plugin="org.eclipse.osee.define" id="TraceUnitHandler" name="TraceUnitHandler"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="TestUnitTrace"/>
+            <element ref="TraceUnitHandler"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -34,7 +34,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="name" type="string">
+         <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
                   
@@ -47,9 +47,9 @@
       </complexType>
    </element>
 
-   <element name="TestUnitTrace">
+   <element name="TraceUnitHandler">
       <complexType>
-         <attribute name="TestUnitResourceLocator" type="string" use="required">
+         <attribute name="TraceUnitResourceLocator" type="string" use="required">
             <annotation>
                <documentation>
                   
@@ -59,7 +59,7 @@
                </appInfo>
             </annotation>
          </attribute>
-         <attribute name="TestUnitTraceParser" type="string" use="required">
+         <attribute name="TraceUnitParser" type="string" use="required">
             <annotation>
                <documentation>
                   

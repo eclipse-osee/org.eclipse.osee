@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="DefineNavigateItem" name="DefineNavigateItem" schema="schema/DefineNavigateItem.exsd"/>
-   <extension-point id="TestUnitTrace" name="TestUnitTrace" schema="schema/TestUnitTrace.exsd"/>
+   <extension-point id="TraceUnitHandler" name="TraceUnitHandler" schema="schema/TraceUnitHandler.exsd"/>
       <extension
             point="org.eclipse.ui.importWizards">
          <category
@@ -17,6 +17,23 @@
                name="Traceability into OSEE">
             <description>
                Import Skynet relations.
+            </description>
+         </wizard>
+      </extension>
+      <extension
+            point="org.eclipse.ui.importWizards">
+         <category
+               id="org.eclipse.osee.define.import.category"
+               name="OSEE">
+         </category>
+         <wizard
+               category="org.eclipse.osee.define.import.category"
+               class="org.eclipse.osee.define.traceability.importer.ImportTraceUnitWizard"
+               icon="images/importTrace.gif"
+               id="ImportTraceUnitsWizard"
+               name="Trace Units Into OSEE">
+            <description>
+               Imports trace units into OSEE and updates relations.
             </description>
          </wizard>
       </extension>

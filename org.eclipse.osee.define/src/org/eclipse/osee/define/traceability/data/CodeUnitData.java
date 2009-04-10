@@ -1,0 +1,48 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.define.traceability.data;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class CodeUnitData extends BaseTraceDataCache {
+
+   private final Map<String, Artifact> codeUnitMap;
+
+   public CodeUnitData(Branch branch) {
+      super("Code Unit Data", branch);
+      this.codeUnitMap = new HashMap<String, Artifact>();
+   }
+
+   protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
+      List<Artifact> codeUnits = ArtifactQuery.getArtifactsFromType(Requirements.CODE_UNIT, getBranch());
+      populateTraceMap(monitor, codeUnits, codeUnitMap);
+      monitor.worked(30);
+   }
+
+   public void reset() {
+      super.reset();
+      codeUnitMap.clear();
+   }
+
+   public Artifact getCodeUnitByName(String codeUnitName) {
+      return codeUnitMap.get(codeUnitName);
+   }
+}

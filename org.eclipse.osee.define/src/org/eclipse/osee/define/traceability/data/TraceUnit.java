@@ -1,31 +1,35 @@
-/*
- * Created on Apr 1, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
-package org.eclipse.osee.define.traceability;
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.define.traceability.data;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.define.traceability.ITraceParser.TraceMark;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TestUnit {
-   private final String testUnitType;
+public class TraceUnit {
+   private final String traceUnitType;
    private final String name;
    private final Collection<TraceMark> traceMarks;
 
-   public TestUnit(String testUnitType, String name) {
+   public TraceUnit(String traceUnitType, String name) {
       this.name = name;
-      this.testUnitType = testUnitType;
+      this.traceUnitType = traceUnitType;
       this.traceMarks = new HashSet<TraceMark>();
    }
 
-   public String getTestUnitType() {
-      return testUnitType;
+   public String getTraceUnitType() {
+      return traceUnitType;
    }
 
    public String getName() {

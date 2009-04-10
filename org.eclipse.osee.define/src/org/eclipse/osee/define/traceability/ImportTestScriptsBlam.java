@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.traceability.operations.TestUnitFromResourceOperation;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
+import org.eclipse.osee.define.traceability.operations.TraceUnitFromResourceOperation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -52,7 +53,7 @@ public class ImportTestScriptsBlam extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Import Into Branch\" />");
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Test Unit Types:\"/>");
-      Collection<String> testUnitIds = getTestUnitTraceIds().values();
+      Collection<String> testUnitIds = getTraceHandlerIds().values();
       if (testUnitIds.isEmpty()) {
          builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"        *** No Test Unit Types Available ***\"/>");
       } else {
@@ -61,6 +62,7 @@ public class ImportTestScriptsBlam extends AbstractBlam {
          }
       }
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Is Recursive\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Is File With Multi-Paths\" labelAfter=\"true\" horizontalLabel=\"true\" />");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Persist Changes\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       builder.append("</xWidgets>");
       return builder.toString();
@@ -78,6 +80,7 @@ public class ImportTestScriptsBlam extends AbstractBlam {
          Branch importToBranch = variableMap.getBranch("Import Into Branch");
          boolean isRecursive = variableMap.getBoolean("Is Recursive");
          boolean isPersistChanges = variableMap.getBoolean("Persist Changes");
+         boolean isFileWithMultiPaths = variableMap.getBoolean("Is File With Multi-Paths");
          URI source = null;
          String testScriptFolder = variableMap.getString("Select Test Script Folder");
          if (Strings.isValid(testScriptFolder)) {
@@ -88,8 +91,8 @@ public class ImportTestScriptsBlam extends AbstractBlam {
          }
 
          List<String> testUnitIds = new ArrayList<String>();
-         Map<String, String> mappedIds = getTestUnitTraceIds();
-         for (String id : TestUnitFromResourceOperation.getTestUnitTraceIds()) {
+         Map<String, String> mappedIds = getTraceHandlerIds();
+         for (String id : TraceUnitFromResourceOperation.getTraceUnitHandlerIds()) {
             String name = mappedIds.get(id);
             if (name != null && variableMap.getBoolean(name)) {
                testUnitIds.add(id);
@@ -99,12 +102,12 @@ public class ImportTestScriptsBlam extends AbstractBlam {
          XResultData resultData = new XResultData();
          if (isPersistChanges) {
             resultData.log("Persisting Changes");
-            TestUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, resultData,
-                  importToBranch, testUnitIds.toArray(new String[testUnitIds.size()]));
+            TraceUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, isFileWithMultiPaths,
+                  resultData, importToBranch, testUnitIds.toArray(new String[testUnitIds.size()]));
          } else {
             resultData.log("Report-Only, Changes are not persisted");
-            TestUnitFromResourceOperation.printTraceFromTestUnits(monitor, source, isRecursive, resultData,
-                  testUnitIds.toArray(new String[testUnitIds.size()]));
+            TraceUnitFromResourceOperation.printTraceFromTestUnits(monitor, source, isRecursive, isFileWithMultiPaths,
+                  resultData, testUnitIds.toArray(new String[testUnitIds.size()]));
          }
          resultData.report(getName());
       } finally {
@@ -113,16 +116,11 @@ public class ImportTestScriptsBlam extends AbstractBlam {
       }
    }
 
-   private Map<String, String> getTestUnitTraceIds() {
+   private Map<String, String> getTraceHandlerIds() {
       Map<String, String> idMap = new HashMap<String, String>();
       try {
-         for (String id : TestUnitFromResourceOperation.getTestUnitTraceIds()) {
-            String value = id;
-            int index = id.lastIndexOf(".");
-            if (index > -1) {
-               value = value.substring(index + 1, value.length());
-            }
-            idMap.put(id, value);
+         for (TraceHandler handler : TraceUnitExtensionManager.getInstance().getAllTraceHandlers()) {
+            idMap.put(handler.getId(), handler.getName());
          }
       } catch (Exception ex) {
          // Do Nothing

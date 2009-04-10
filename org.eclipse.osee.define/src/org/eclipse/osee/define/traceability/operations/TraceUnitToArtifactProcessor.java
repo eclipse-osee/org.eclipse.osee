@@ -1,18 +1,23 @@
-/*
- * Created on Apr 1, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.define.traceability.operations;
 
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.traceability.RequirementData;
-import org.eclipse.osee.define.traceability.TestUnit;
-import org.eclipse.osee.define.traceability.TestUnitData;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
-import org.eclipse.osee.define.traceability.ITraceParser.TraceMark;
+import org.eclipse.osee.define.traceability.data.RequirementData;
+import org.eclipse.osee.define.traceability.data.TestUnitData;
+import org.eclipse.osee.define.traceability.data.TraceMark;
+import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -33,7 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 /**
  * @author Roberto E. Escobar
  */
-public class TestUnitToArtifactProcessor implements ITestUnitProcessor {
+public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private RequirementData requirementData;
    private TestUnitData testUnitData;
 
@@ -42,7 +47,7 @@ public class TestUnitToArtifactProcessor implements ITestUnitProcessor {
 
    private final XResultData resultData;
 
-   public TestUnitToArtifactProcessor(XResultData resultData, Branch importIntoBranch) {
+   public TraceUnitToArtifactProcessor(XResultData resultData, Branch importIntoBranch) {
       this.resultData = resultData;
       this.importIntoBranch = importIntoBranch;
    }
@@ -72,17 +77,19 @@ public class TestUnitToArtifactProcessor implements ITestUnitProcessor {
    }
 
    @Override
-   public void process(IProgressMonitor monitor, TestUnit testUnit) throws OseeCoreException {
+   public void process(IProgressMonitor monitor, TraceUnit testUnit) throws OseeCoreException {
       if (transaction == null) {
          transaction = new SkynetTransaction(importIntoBranch);
       }
       boolean hasChange = false;
       boolean testUnitWasCreated = false;
 
+      String traceUnit = testUnit.getTraceUnitType();
+
       Artifact testUnitArtifact = testUnitData.getTestUnitByName(testUnit.getName());
       if (testUnitArtifact == null) {
          testUnitArtifact =
-               ArtifactTypeManager.addArtifact(testUnit.getTestUnitType(), transaction.getBranch(), testUnit.getName());
+               ArtifactTypeManager.addArtifact(testUnit.getTraceUnitType(), transaction.getBranch(), testUnit.getName());
          testUnitWasCreated = true;
       }
 
@@ -98,15 +105,21 @@ public class TestUnitToArtifactProcessor implements ITestUnitProcessor {
             }
          } else {
             // Report Trace not found
-            resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTestUnitType(), testUnit.getName(),
+            resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTraceUnitType(), testUnit.getName(),
                   traceMark.getTraceType(), traceMark.getRawTraceMark()));
          }
       }
 
-      //      if (testUnitWasCreated && allTraceMarksNotFound) {
-      //         //         resultData
-      //         // Report have a new test unit but no trace ?
-      //      }
+      // Report Items that were not used from the TEST UNIT DATA Structure
+      // Not Part of this class though
+
+      if (testUnitArtifact.isOfType(Requirements.TEST_CASE)) {
+         // Create even if no Change;
+         //      if (testUnitWasCreated && allTraceMarksNotFound) {
+         //         //         resultData
+         //         // Report have a new test unit but no trace ?
+         //      }
+      }
 
       if (hasChange) {
          HierarchyHandler.addArtifact(transaction, testUnitArtifact);

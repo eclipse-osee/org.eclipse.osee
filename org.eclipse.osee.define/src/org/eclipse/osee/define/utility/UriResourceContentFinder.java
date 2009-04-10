@@ -1,11 +1,17 @@
-/*
- * Created on Mar 7, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.define.utility;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -31,11 +37,13 @@ public class UriResourceContentFinder {
    private final URI source;
    private final HashCollection<IResourceLocator, IResourceHandler> locatorMap;
    private final boolean isRecursionAllowed;
+   private final boolean isFileWithMultiplePaths;
 
-   public UriResourceContentFinder(final URI source, final boolean isRecursionAllowed) {
+   public UriResourceContentFinder(final URI source, final boolean isRecursionAllowed, final boolean isFileWithMultiplePaths) {
       super();
       this.source = source;
       this.isRecursionAllowed = isRecursionAllowed;
+      this.isFileWithMultiplePaths = isFileWithMultiplePaths;
       this.locatorMap = new HashCollection<IResourceLocator, IResourceHandler>();
    }
 
@@ -57,11 +65,27 @@ public class UriResourceContentFinder {
 
    public void execute(IProgressMonitor monitor) throws OseeCoreException {
       try {
-         processFileStore(monitor, EFS.getStore(source));
+         IFileStore fileStore = EFS.getStore(source);
+         if (isFileWithMultiplePaths) {
+            processFileWithPaths(monitor, fileStore);
+         } else {
+            processFileStore(monitor, fileStore);
+         }
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }
+   }
 
+   private void processFileWithPaths(IProgressMonitor monitor, IFileStore fileStore) throws Exception {
+      IFileInfo info = fileStore.fetchInfo(EFS.NONE, monitor);
+      if (info != null && info.exists()) {
+         for (String path : Lib.readListFromFile(new File(fileStore.toURI()), true)) {
+            processFileStore(monitor, EFS.getStore(new URI(path)));
+            if (monitor.isCanceled()) {
+               break;
+            }
+         }
+      }
    }
 
    private void processFileStore(IProgressMonitor monitor, IFileStore fileStore) throws Exception {

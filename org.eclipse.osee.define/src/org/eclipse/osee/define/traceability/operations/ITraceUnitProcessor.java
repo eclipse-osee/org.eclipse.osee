@@ -8,16 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.traceability;
+package org.eclipse.osee.define.traceability.operations;
 
-import java.nio.CharBuffer;
-import java.util.Collection;
-import org.eclipse.osee.define.traceability.data.TraceMark;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.define.traceability.data.TraceUnit;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ITraceParser {
+public interface ITraceUnitProcessor {
 
-   public Collection<TraceMark> getTraceMarks(CharBuffer fileBuffer);
+   public void initialize(IProgressMonitor monitor);
+
+   public void onComplete(IProgressMonitor monitor) throws OseeCoreException;
+
+   public void clear();
+
+   public void process(IProgressMonitor monitor, TraceUnit testUnit) throws OseeCoreException;
 }

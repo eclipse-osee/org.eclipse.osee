@@ -34,7 +34,8 @@ public class TraceabilityExtractor {
    private static final Pattern embeddedVolumePattern = Pattern.compile("\\{\\d+ (.*)\\}[ .]*");
    private static final Pattern nonWordPattern = Pattern.compile("[^A-Z_0-9]");
    private static final Pattern structuredReqNamePattern = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)");
-   private static final Pattern stripTrailingReqNamePatern = Pattern.compile("(:?\\}|\\])\\s+(.*)");
+   private static final Pattern stripTrailingReqNamePatern = Pattern.compile("(:?\\}|\\])^\\.(.*)");
+
    private static TraceabilityExtractor instance = null;
    private final Matcher scriptReqTraceMatcher;
    private final Matcher ofpReqTraceMatcher;

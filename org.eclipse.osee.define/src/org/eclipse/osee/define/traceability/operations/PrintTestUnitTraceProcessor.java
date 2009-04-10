@@ -1,13 +1,18 @@
-/*
- * Created on Apr 1, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.define.traceability.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.traceability.TestUnit;
-import org.eclipse.osee.define.traceability.ITraceParser.TraceMark;
+import org.eclipse.osee.define.traceability.data.TraceMark;
+import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -15,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 /**
  * @author Roberto E. Escobar
  */
-public final class PrintTestUnitTraceProcessor implements ITestUnitProcessor {
+public final class PrintTestUnitTraceProcessor implements ITraceUnitProcessor {
    private long startTime;
    private long startMemory;
    private XResultData resultData;
@@ -40,12 +45,12 @@ public final class PrintTestUnitTraceProcessor implements ITestUnitProcessor {
    }
 
    @Override
-   public void process(IProgressMonitor monitor, TestUnit testUnit) {
+   public void process(IProgressMonitor monitor, TraceUnit testUnit) {
       if (testUnit != null) {
          for (String traceTypes : testUnit.getTraceMarkTypes()) {
             for (TraceMark traceMark : testUnit.getTraceMarksByType(traceTypes)) {
                if (monitor.isCanceled()) break;
-               resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTestUnitType(), testUnit.getName(),
+               resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTraceUnitType(), testUnit.getName(),
                      traceMark.getTraceType(), traceMark.getRawTraceMark()));
             }
          }
