@@ -82,7 +82,7 @@ public class BranchSelectComposite extends Composite implements Listener {
     */
    public void handleEvent(Event event) {
       if (event.widget == branchSelectButton) {
-         if (areOnlyWorkingBranchesAllowed() != false) {
+         if (areOnlyWorkingBranchesAllowed()) {
             setSelected(BranchSelectionDialog.getWorkingBranchFromUser());
          } else {
             setSelected(BranchSelectionDialog.getBranchFromUser());

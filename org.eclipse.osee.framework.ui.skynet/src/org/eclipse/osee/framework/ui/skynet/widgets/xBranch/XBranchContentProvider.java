@@ -118,12 +118,16 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchTypes.add(BranchType.BASELINE);
             branchTypes.add(BranchType.WORKING);
          }
-         List<Branch> branches =
-               showOnlyWorkingBranches ? BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED,
-                     BranchType.WORKING) : BranchManager.getBranches(branchState, BranchControlled.ALL,
-                     branchTypes.toArray(new BranchType[branchTypes.size()]));
 
-         return branches.toArray();
+         List<Branch> branchesToReturn = new ArrayList<Branch>();
+         if (showOnlyWorkingBranches) {
+            branchesToReturn.addAll(BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.ALL,
+                  BranchType.WORKING));
+         } else {
+            branchesToReturn.addAll(BranchManager.getBranches(branchState, BranchControlled.ALL,
+                  branchTypes.toArray(new BranchType[branchTypes.size()])));
+         }
+         return branchesToReturn.toArray();
       } catch (OseeCoreException ex) {
          OseeLog.log(this.getClass(), Level.WARNING, ex);
       }
