@@ -60,6 +60,7 @@ public class Requirements {
    public static String TEST_CASES = "Test Cases";
    public static String TEST_PROCEDURE = "Test Procedure";
 
+   public static String CODE_UNIT = "Code Unit";
    public static String SUBSYSTEM = "Subsystem";
    public static String PARTITION = "Partition";
    public static String CSCI = "CSCI";
