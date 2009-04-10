@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -22,6 +23,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -70,6 +72,8 @@ public class XComboViewer extends XWidget {
    public XComboViewer(String displayLabel, String xmlRoot, String xmlSubRoot) {
       super(displayLabel, xmlRoot, xmlSubRoot);
       setReportType(XWidget.RPT_SINGLE_LINE);
+      contentProvider = new ArrayContentProvider();
+      labelProvider = new ArtifactLabelProvider();
    }
 
    /*
@@ -238,10 +242,6 @@ public class XComboViewer extends XWidget {
       for (Object name : names) {
          add(name);
       }
-   }
-
-   public void add(Collection<String> names) {
-      input.addAll(names);
    }
 
    public void setSelected(ArrayList<Object> selected) {

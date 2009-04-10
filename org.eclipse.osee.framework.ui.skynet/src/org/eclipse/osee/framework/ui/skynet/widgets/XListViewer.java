@@ -133,8 +133,7 @@ public class XListViewer extends XWidget {
 
    public void setInputArtifacts(Collection<? extends Artifact> arts) {
       ArrayList<Object> objs = new ArrayList<Object>();
-      for (Artifact art : arts)
-         objs.add((Object) art);
+      objs.addAll(arts);
       setInput(objs);
    }
 

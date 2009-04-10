@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditorInput;
 import org.eclipse.osee.framework.ui.data.model.editor.input.OseeDataTypeFactory;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ODMDiagram;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.swt.widgets.Display;
 
 /**

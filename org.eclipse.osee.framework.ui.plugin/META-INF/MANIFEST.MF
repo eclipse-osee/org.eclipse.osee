@@ -24,7 +24,6 @@ Require-Bundle: org.apache.commons.lang,
  org.eclipse.osee.framework.db.connection
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.ui.plugin,
- org.eclipse.osee.framework.ui.plugin.event,
  org.eclipse.osee.framework.ui.plugin.io,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.plugin.views.property

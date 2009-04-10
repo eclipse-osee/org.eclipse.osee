@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.define.feature"
-      label="Define (Incubation)"
-      version="0.4.0.qualifier"
+      label="Eclipse OSEE Define (Incubation)"
+      version="1.0.0.qualifier-suffix"
       provider-name="Eclipse.org"
       plugin="org.eclipse.osee.framework.ui.product">
 

@@ -16,8 +16,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 

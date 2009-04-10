@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.Collection;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.ui.plugin.util.ObjectList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;

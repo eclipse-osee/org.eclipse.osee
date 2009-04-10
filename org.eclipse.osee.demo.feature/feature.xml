@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.demo.feature"
-      label="Demo Feature  (Incubation)"
-      version="1.0.0.qualifier">
+      label="Eclipse OSEE Demo Feature  (Incubation)"
+      version="1.0.0.qualifier-suffix"
+      provider-name="Eclipse.org"
+      plugin="org.eclipse.osee.framework.ui.product">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -17,7 +19,7 @@
    </license>
 
    <url>
-      <update label="Osee Update Site" url="http:lba-cte.msc.az.boeing.com:31110/osee/3.4/lba"/>
+      <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
 
    <plugin

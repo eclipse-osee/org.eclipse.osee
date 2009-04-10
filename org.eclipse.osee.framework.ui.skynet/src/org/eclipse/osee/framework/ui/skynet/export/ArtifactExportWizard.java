@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 

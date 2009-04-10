@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin.util;
+package org.eclipse.osee.framework.plugin.core.util;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 

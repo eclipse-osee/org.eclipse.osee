@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog;
@@ -166,6 +168,8 @@ public class XWidgetFactory {
             else
                combo.set("");
          }
+      } else if (xWidgetName.startsWith("XComboViewer")) {
+         xWidget = new XComboViewer(name);
       } else if (xWidgetName.startsWith("XCombo")) {
          String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
@@ -207,7 +211,10 @@ public class XWidgetFactory {
                   ",")));
          } else
             throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
-
+      } else if (xWidgetName.startsWith("XArtifactList")) {
+         XArtifactList artifactList = new XArtifactList(name);
+         artifactList.setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT));
+         xWidget = artifactList;
       } else {
          xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
       }

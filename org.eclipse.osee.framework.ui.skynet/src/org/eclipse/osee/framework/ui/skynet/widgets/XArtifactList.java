@@ -25,11 +25,11 @@ public class XArtifactList extends XListViewer {
       this("ArtList", "", "");
    }
 
-   public XArtifactList(String displayLabel) throws OseeCoreException {
+   public XArtifactList(String displayLabel) {
       this(displayLabel, "", "");
    }
 
-   public XArtifactList(String displayLabel, String xmlRoot, String xmlSubRoot) throws OseeCoreException {
+   public XArtifactList(String displayLabel, String xmlRoot, String xmlSubRoot) {
       super(displayLabel, xmlRoot, xmlSubRoot);
       super.setLabelProvider(new ArtifactLabelProvider());
       super.setContentProvider(new ArrayContentProvider());

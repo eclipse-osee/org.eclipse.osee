@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.framework.server.external.feature"
-      label="Eclipse OSEE Server External Dependencies Feature"
-      version="1.0.0.qualifier"
-      provider-name="Eclipse.org">
+      label="Eclipse OSEE Server External Dependencies Feature (Incubation)"
+      version="1.0.0.qualifier-suffix"
+      provider-name="Eclipse.org"
+      plugin="org.eclipse.osee.framework.ui.product">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -16,6 +17,10 @@
    <license url="http://www.example.com/license">
       [Enter License Description here.]
    </license>
+
+   <url>
+      <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
+   </url>
 
    <plugin
          id="javax.servlet"

@@ -109,6 +109,8 @@ public class XWidgetParser {
             element.setAttribute("labelAfter", "true");
          else if (xOption == XOption.LABEL_BEFORE)
             element.setAttribute("labelAfter", "false");
+         else if (xOption == XOption.MULTI_SELECT)
+            element.setAttribute("multiSelect", "true");
          else if (xOption == XOption.NONE)
             // do nothing
             ;
@@ -153,16 +155,19 @@ public class XWidgetParser {
          else if (nodeName.equals("editable"))
             dynamicXWidgetLayoutData.getXOptionHandler().add(
                   Boolean.parseBoolean(node.getNodeValue()) ? XOption.EDITABLE : XOption.NONE);
-         else if (nodeName.equals("xwidgetType"))
+         else if (nodeName.equals("xwidgetType")) {
             dynamicXWidgetLayoutData.setXWidgetName(node.getNodeValue());
-         else if (nodeName.equals("fill")) {
+         } else if (nodeName.equals("multiSelect")) {
+            dynamicXWidgetLayoutData.getXOptionHandler().add(
+                  Boolean.parseBoolean(node.getNodeValue()) ? XOption.MULTI_SELECT : XOption.NONE);
+         } else if (nodeName.equals("fill")) {
             String value = node.getNodeValue();
             if (value.equalsIgnoreCase("Horizontally"))
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
             else if (value.equalsIgnoreCase("Vertically"))
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             else
-               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,  new IllegalArgumentException(
+               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, new IllegalArgumentException(
                      "Unknown Fill Value \"" + value + "\""));
          } else if (nodeName.equals("height"))
             dynamicXWidgetLayoutData.setHeight(Integer.parseInt(node.getNodeValue()));
@@ -175,14 +180,14 @@ public class XWidgetParser {
             else if (value.equalsIgnoreCase("Center"))
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_CENTER);
             else
-               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,  new IllegalArgumentException(
+               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, new IllegalArgumentException(
                      "Unknown Align Value \"" + value + "\""));
          } else if (nodeName.equals("defaultValue"))
             dynamicXWidgetLayoutData.setDefaultValue(node.getNodeValue());
          else if (nodeName.equals("keyedBranch"))
             dynamicXWidgetLayoutData.setKeyedBranchName(node.getNodeValue());
          else {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,  new IllegalArgumentException(
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new IllegalArgumentException(
                   "Unsupported XWidget attribute \"" + nodeName + "\""));
          }
       }

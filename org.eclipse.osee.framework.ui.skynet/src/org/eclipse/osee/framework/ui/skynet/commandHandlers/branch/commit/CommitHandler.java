@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewPresentationPreferences;
@@ -107,15 +107,15 @@ public abstract class CommitHandler extends CommandHandler {
                                  message.toString(), MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, 0);
                      dialogResult.setValue(dialog.open());
                   } else {
-                     MessageDialog dialog =
-                           new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null,
+               MessageDialog dialog =
+                     new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null,
                                  message.toString(), MessageDialog.QUESTION, new String[] {"Ok",
                                        "Launch Merge Manager", "Cancel"}, 0);
-                     dialogResult.setValue(dialog.open());
-                     if (dialogResult.getValue() == 1) {
-                        MergeView.openView(sourceBranch, destinationBranch, transactionId);
-                     }
-                  }
+               dialogResult.setValue(dialog.open());
+               if (dialogResult.getValue() == 1) {
+                  MergeView.openView(sourceBranch, destinationBranch, transactionId);
+               }
+            }
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -133,11 +133,11 @@ public abstract class CommitHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
       Branch sourceBranch = branches.iterator().next();
-
+      
       try {
          Branch destinationBranch = null;
          if (useParentBranch) {
@@ -157,21 +157,21 @@ public abstract class CommitHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       boolean enabled = false;
-
+      
       IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-
+         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-
-      if (branches.size() == 1) {
+      
+      if(branches.size() == 1){
          Branch branch = branches.iterator().next();
          enabled = useParentBranchValid(branch) || (!useParentBranch && AccessControlManager.isOseeAdmin());
       }
       return enabled;
    }
-
-   protected boolean useParentBranchValid(Branch branch) {
-      return branch.hasParentBranch() && useParentBranch && !branch.isChangeManaged() && !branch.isArchived();
+   
+   protected boolean useParentBranchValid(Branch branch){
+      return branch.hasParentBranch() && useParentBranch && ! branch.isChangeManaged() && !branch.isArchived();
    }
 
    private class CommitJob extends Job {
