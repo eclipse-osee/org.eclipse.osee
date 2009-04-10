@@ -139,15 +139,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       VersionArtifact verArt = (VersionArtifact) element;
       Branch branch = verArt.getParentBranch();
-      if (xCol.equals(CommitXManagerFactory.Type_Col)) {
-         if (branch == null)
-            return "";
-         else if (commitXManager.getWorkingBranch() != null && branch.equals(commitXManager.getWorkingBranch().getParentBranch()))
-            return "Parent Baseline";
-         else {
-            return "Parallel Branch";
-         }
-      } else if (xCol.equals(CommitXManagerFactory.Status_Col)) {
+      if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          return getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt).getDisplayName();
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          return "";
