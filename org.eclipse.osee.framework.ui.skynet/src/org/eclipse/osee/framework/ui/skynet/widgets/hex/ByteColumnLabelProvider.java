@@ -11,20 +11,18 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.hex;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Display;
 
 public class ByteColumnLabelProvider extends ColumnLabelProvider {
 
    private final int column;
-   private final static Font font = new Font(Display.getDefault(), new FontData("Courier New", 8, SWT.NONE));
+   private final Font font;
 
-   public ByteColumnLabelProvider(int column) {
+   public ByteColumnLabelProvider(Font font, int column) {
       super();
+      this.font = font;
       this.column = column;
    }
 

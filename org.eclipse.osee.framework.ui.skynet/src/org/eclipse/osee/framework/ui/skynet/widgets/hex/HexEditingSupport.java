@@ -5,6 +5,8 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
@@ -13,12 +15,15 @@ public class HexEditingSupport extends EditingSupport {
 	private final TextCellEditor textEditor;
 	private final int column;
 	private final TableViewer viewer;
+	private final Font font;
 	
-	public HexEditingSupport(TableViewer viewer, int column) {
+	public HexEditingSupport(Font font, TableViewer viewer, int column) {
 		super(viewer);
+		this.font = font;
 		this.viewer = viewer;
-		textEditor = new TextCellEditor(viewer.getTable());
+		textEditor = new CustomTextCellEditor(viewer.getTable(), SWT.SINGLE);
 		((Text) textEditor.getControl()).setTextLimit(2);
+		textEditor.getControl().setFont(font);
 		this.column = column;
 
 	}
@@ -31,13 +36,14 @@ public class HexEditingSupport extends EditingSupport {
 		HexTableRow row = (HexTableRow) element;
 		int index = row.offset / row.length;
 		Rectangle rect = viewer.getTable().getItem(index).getBounds(column);
+		rect.width = 20;
 		textEditor.getControl().setBounds(rect);
 		return textEditor;
 	}
 
 	protected Object getValue(Object element) {
 		HexTableRow row = (HexTableRow) element;
-		return Integer.toHexString((row.array[row.offset + column] & 0xFF)).toUpperCase();
+		return String.format("%02X", row.array[row.offset + column] & 0xFF);
 	}
 
 	protected void setValue(Object element, Object value) {

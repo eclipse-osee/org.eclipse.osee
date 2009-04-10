@@ -7,15 +7,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets.hex;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnPixelData;
-import org.eclipse.jface.viewers.ColumnViewerEditor;
-import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
-import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TableViewerEditor;
-import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -35,7 +29,7 @@ public class BasicHexTable extends HexTable{
 	 * @param bytesPerRow
 	 */
 	public BasicHexTable(Composite parent, byte[] array, int bytesPerRow) {
-		super(parent, array, bytesPerRow);
+		super(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, array, bytesPerRow);
 	}
 
 	/* (non-Javadoc)
@@ -53,11 +47,11 @@ public class BasicHexTable extends HexTable{
 		layout.setColumnData(column.getColumn(), new ColumnPixelData(50));
 		for (int i = 0; i < bytesPerRow; i++) {
 			TableViewerColumn c = new TableViewerColumn(v, SWT.LEFT);
-			c.setLabelProvider(new ByteColumnLabelProvider(i));
+			c.setLabelProvider(createByteColumnLabelProvider(i));
 			c.getColumn().setText(Integer.toHexString(i));
 			c.getColumn().setResizable(false);
 			c.getColumn().setMoveable(false);
-			c.setEditingSupport(new HexEditingSupport(v, i));
+			c.setEditingSupport(createHexEditingSupport(i));
 			layout.setColumnData(c.getColumn(), new ColumnPixelData(26));
 		}
 
@@ -73,21 +67,6 @@ public class BasicHexTable extends HexTable{
 			c.getColumn().setMoveable(false);
 			layout.setColumnData(c.getColumn(), new ColumnPixelData(20));
 		}
-
-		TableViewerFocusCellManager focusCellManager =
-			new TableViewerFocusCellManager(v, new FocusCellOwnerDrawHighlighter(v));
-		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(v) {
-			protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
-				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL || event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION || (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.CR) || event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
-			}
-		};
-
-		TableViewerEditor.create(
-				v,
-				focusCellManager,
-				actSupport,
-				ColumnViewerEditor.TABBING_HORIZONTAL | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL | ColumnViewerEditor.KEYBOARD_ACTIVATION);
-
 	}
 
 	/**
