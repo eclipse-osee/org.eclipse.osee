@@ -38,10 +38,10 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          widget.setToolTip(widgetLayoutData.getToolTip());
          toReturn = widget;
       }
-      if (widgetName.equals("XCommitManager")) {
+      if (name.equals("Commit Manager") || widgetName.equals("XCommitManager")) {
          return new XCommitManager();
       }
-      if (widgetName.equals("XWorkingBranch")) {
+      if (name.equals("Working Branch") || widgetName.equals("XWorkingBranch")) {
          return new XWorkingBranch();
       }
       return toReturn;

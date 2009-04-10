@@ -106,11 +106,11 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, VersionArtifact verArt) throws OseeCoreException {
       Branch branch = verArt.getParentBranch();
-      if (teamArt.getSmaMgr().getBranchMgr().getWorkingBranch(true) == null) {
-         return CommitStatus.Working_Branch_Not_Created;
-      } else if (branch == null)
+      if (branch == null)
          return CommitStatus.Branch_Not_Configured;
-      else if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
+      else if (teamArt.getSmaMgr().getBranchMgr().getWorkingBranch(true) == null) {
+         return CommitStatus.Working_Branch_Not_Created;
+      } else if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
          if (teamArt.getSmaMgr().getBranchMgr().isMergeCompleted(verArt.getParentBranch())) {
             Collection<Branch> branches = teamArt.getSmaMgr().getBranchMgr().getBranchesCommittedTo();
             if (branches.contains(branch)) {
