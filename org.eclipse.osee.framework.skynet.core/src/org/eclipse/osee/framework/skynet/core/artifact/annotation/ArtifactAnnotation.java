@@ -23,7 +23,7 @@ public class ArtifactAnnotation {
    private Type type;
    private String namespace;
    private String content;
-   public enum Type {
+   public static enum Type {
       None(null, null),
       Info("info2.gif", null),
       Warning("warn.gif", "alert_8_8.gif"),

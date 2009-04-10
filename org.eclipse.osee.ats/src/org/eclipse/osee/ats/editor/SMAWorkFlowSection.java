@@ -191,6 +191,8 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
 
+      SMAWorkFlowTab.createStateReviewsFooter(workComp, toolkit, smaMgr, 2, atsWorkPage.getName());
+
       createCurrentPageTransitionLine(workComp, atsWorkPage, toolkit);
 
       return workComp;
@@ -552,17 +554,17 @@ public class SMAWorkFlowSection extends SectionPart {
 
             if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getPageName().equals(
                   DefaultTeamState.Cancelled.name())) {
-               AWorkbench.popup("ERROR",
+               AWorkbench.popup("Transition Blocked",
                      "Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
                return;
             }
             if (smaMgr.getBranchMgr().isBranchInCommit()) {
-               AWorkbench.popup("ERROR",
+               AWorkbench.popup("Transition Blocked",
                      "Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
                return;
             }
             if (!atsWorkPage.isAllowTransitionWithWorkingBranch()) {
-               AWorkbench.popup("ERROR",
+               AWorkbench.popup("Transition Blocked",
                      "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
                return;
             }
@@ -599,7 +601,7 @@ public class SMAWorkFlowSection extends SectionPart {
          if (smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || smaMgr.getStateMgr().getAssignees().contains(
                UserManager.getUser(SystemUser.Guest)) || smaMgr.getStateMgr().getAssignees().contains(
                UserManager.getUser(SystemUser.UnAssigned))) {
-            AWorkbench.popup("ERROR",
+            AWorkbench.popup("Transition Blocked",
                   "Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
             return;
          }
@@ -626,7 +628,7 @@ public class SMAWorkFlowSection extends SectionPart {
                for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifactsFromCurrentState()) {
                   if (taskArt.isInWork()) {
                      AWorkbench.popup(
-                           "Error",
+                           "Transition Blocked",
                            "Task Not Complete\n\nTitle: " + taskArt.getDescriptiveName() + "\n\nHRID: " + taskArt.getHumanReadableId());
                      return;
                   }
@@ -637,7 +639,7 @@ public class SMAWorkFlowSection extends SectionPart {
             if (smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || smaMgr.getWorkPageDefinition().hasWorkRule(
                   AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name())) {
                if (smaMgr.getSma().getWorldViewTargetedVersion() == null && !toWorkPageDefinition.isCancelledPage()) {
-                  AWorkbench.popup("Error",
+                  AWorkbench.popup("Transition Blocked",
                         "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
                   return;
                }
@@ -646,9 +648,7 @@ public class SMAWorkFlowSection extends SectionPart {
             // Loop through this state's blocking reviews to confirm complete
             for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
-                  AWorkbench.popup(
-                        "Error",
-                        "Blocking Review must be completed before transition.\n\nReview Title: \"" + reviewArt.getDescriptiveName() + "\"\nHRID: " + reviewArt.getHumanReadableId());
+                  AWorkbench.popup("Transition Blocked", "All Blocking Reviews must be completed before transition.");
                   return;
                }
             }
