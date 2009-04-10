@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.operations.TraceUnitFromResourceOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Roberto E. Escobar
@@ -51,17 +50,13 @@ public class ImportTraceUnitsJob extends Job {
    protected IStatus run(IProgressMonitor monitor) {
       IStatus status = Status.CANCEL_STATUS;
       try {
-         XResultData resultData = new XResultData();
          if (isPersistChanges) {
-            resultData.log("Persisting Changes");
             TraceUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, fileWithMultiPaths,
-                  resultData, importToBranch, traceTypeIds);
+                  importToBranch, traceTypeIds);
          } else {
-            resultData.log("Report-Only, Changes are not persisted");
             TraceUnitFromResourceOperation.printTraceFromTestUnits(monitor, source, isRecursive, fileWithMultiPaths,
-                  resultData, traceTypeIds);
+                  traceTypeIds);
          }
-         resultData.report(getName());
          if (!monitor.isCanceled()) {
             status = Status.OK_STATUS;
          }

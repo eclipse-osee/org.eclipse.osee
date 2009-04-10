@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Roberto E. Escobar
@@ -54,21 +53,21 @@ public class TraceUnitFromResourceOperation {
       return operation;
    }
 
-   public static void printTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, XResultData resultData, String... traceUnitHandlerIds) throws OseeCoreException {
+   public static void printTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, String... traceUnitHandlerIds) throws OseeCoreException {
       ResourceToTraceUnit operation =
             getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
       if (monitor == null) monitor = new NullProgressMonitor();
-      operation.addTraceProcessor(new PrintTestUnitTraceProcessor(resultData));
+      operation.addTraceProcessor(new TraceUnitReportProcessor());
       operation.execute(monitor);
    }
 
-   public static void importTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, XResultData resultData, Branch importToBranch, String... traceUnitHandlerIds) throws OseeCoreException {
+   public static void importTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, Branch importToBranch, String... traceUnitHandlerIds) throws OseeCoreException {
       checkBranchArguments(importToBranch);
 
       ResourceToTraceUnit operation =
             getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
       if (monitor == null) monitor = new NullProgressMonitor();
-      operation.addTraceProcessor(new TraceUnitToArtifactProcessor(resultData, importToBranch));
+      operation.addTraceProcessor(new TraceUnitToArtifactProcessor(importToBranch));
       operation.execute(monitor);
    }
 

@@ -33,7 +33,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.database,
  org.eclipse.ui.forms,
  org.eclipse.osee.framework.messaging.event.skynet,
- org.eclipse.osee.framework.jini
+ org.eclipse.osee.framework.jini,
+ org.eclipse.nebula.widgets.xviewer;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.enums,

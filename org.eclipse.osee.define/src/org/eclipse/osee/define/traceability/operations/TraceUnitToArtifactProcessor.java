@@ -10,9 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.operations;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
 import org.eclipse.osee.define.traceability.data.CodeUnitData;
 import org.eclipse.osee.define.traceability.data.RequirementData;
@@ -20,9 +27,11 @@ import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -34,7 +43,13 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
+import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
+import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
+import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
+import org.eclipse.swt.SWT;
 
 /**
  * @author Roberto E. Escobar
@@ -48,50 +63,59 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private final Branch importIntoBranch;
    private SkynetTransaction transaction;
 
-   private final XResultData resultData;
+   private HashCollection<TraceUnit, TraceMark> reportTraceNotFound;
+   private HashCollection<String, String> unknownRelationError;
+   private Set<String> unRelatedUnits;
 
-   public TraceUnitToArtifactProcessor(XResultData resultData, Branch importIntoBranch) {
-      this.resultData = resultData;
+   public TraceUnitToArtifactProcessor(Branch importIntoBranch) {
       this.importIntoBranch = importIntoBranch;
+      this.reportTraceNotFound = new HashCollection<TraceUnit, TraceMark>(false, HashSet.class);
+      this.unknownRelationError = new HashCollection<String, String>(false, HashSet.class);
+      this.unRelatedUnits = new HashSet<String>();
    }
 
    @Override
    public void clear() {
       transaction = null;
-      requirementData.reset();
-      requirementData = null;
-      testUnitData.reset();
-      testUnitData = null;
-      codeUnitData.reset();
-      codeUnitData = null;
+      if (requirementData != null) {
+         requirementData.reset();
+         requirementData = null;
+      }
+      if (testUnitData != null) {
+         testUnitData.reset();
+         testUnitData = null;
+      }
+      if (codeUnitData != null) {
+         codeUnitData.reset();
+         codeUnitData = null;
+      }
    }
 
    @Override
    public void initialize(IProgressMonitor monitor) {
       transaction = null;
-      resultData.addRaw(AHTML.beginMultiColumnTable(95, 1));
-      resultData.addRaw(AHTML.bold("Unable to find requirements for test unit trace marks"));
-      resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Test Unit Type", "Test Unit Name",
-            "Trace Type", "Trace Mark"}));
-
       requirementData = new RequirementData(importIntoBranch);
       if (!monitor.isCanceled()) {
          requirementData.initialize(monitor);
-         testUnitData = new TestUnitData(importIntoBranch);
-         if (!monitor.isCanceled()) {
-            testUnitData.initialize(monitor);
-         }
-         codeUnitData = new CodeUnitData(importIntoBranch);
-         if (!monitor.isCanceled()) {
-            codeUnitData.initialize(monitor);
-         }
       }
    }
 
-   private Artifact getArtifactFromCache(String artifactType, String name) {
+   private Artifact getArtifactFromCache(IProgressMonitor monitor, String artifactType, String name) {
       if (Requirements.ALL_TEST_UNIT_TYPES.contains(artifactType)) {
+         if (testUnitData == null) {
+            testUnitData = new TestUnitData(importIntoBranch);
+            if (!monitor.isCanceled()) {
+               testUnitData.initialize(monitor);
+            }
+         }
          return testUnitData.getTestUnitByName(name);
       } else if (Requirements.CODE_UNIT.equals(artifactType)) {
+         if (codeUnitData == null) {
+            codeUnitData = new CodeUnitData(importIntoBranch);
+            if (!monitor.isCanceled()) {
+               codeUnitData.initialize(monitor);
+            }
+         }
          return codeUnitData.getCodeUnitByName(name);
       }
       return null;
@@ -104,10 +128,10 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
       boolean hasChange = false;
       boolean artifactWasCreated = false;
-
+      boolean wasRelated = false;
       String traceUnitType = traceUnit.getTraceUnitType();
 
-      Artifact traceUnitArtifact = getArtifactFromCache(traceUnitType, traceUnit.getName());
+      Artifact traceUnitArtifact = getArtifactFromCache(monitor, traceUnitType, traceUnit.getName());
       if (traceUnitArtifact == null) {
          traceUnitArtifact =
                ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(),
@@ -122,32 +146,26 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          if (requirementArtifact != null) {
             IRelationEnumeration relationType = getRelationFromTraceType(traceUnitArtifact, traceMark.getTraceType());
             if (relationType == null) {
-               // TODO Report Unknown Relation for trace unit artifact
-               //               resultData.addRaw(AHTML.addRowMultiColumnTable(traceUnit.getTraceUnitType(), traceUnit.getName(),
-               //                     traceMark.getTraceType(), traceMark.getRawTraceMark()));
+               unknownRelationError.put(traceUnitArtifact.getArtifactTypeName(), traceMark.getTraceType());
             } else if (!requirementArtifact.isRelated(relationType, traceUnitArtifact)) {
                requirementArtifact.addRelation(relationType, traceUnitArtifact);
                hasChange = true;
+               wasRelated = true;
+            } else {
+               wasRelated = true;
             }
          } else {
-            // Report Trace not found
-            resultData.addRaw(AHTML.addRowMultiColumnTable(traceUnit.getTraceUnitType(), traceUnit.getName(),
-                  traceMark.getTraceType(), traceMark.getRawTraceMark()));
+            reportTraceNotFound.put(traceUnit, traceMark);
          }
       }
 
       // TODO Report Items that were not used from the TEST UNIT DATA Structure
       // Not Part of this class though
-
-      if (traceUnitArtifact.isOfType(Requirements.TEST_CASE)) {
-         // Create even if no Change;
-         //      if (testUnitWasCreated && allTraceMarksNotFound) {
-         //         //         resultData
-         //         // Report have a new test unit but no trace ?
-         //      }
+      if (!wasRelated) {
+         unRelatedUnits.add(traceUnitArtifact.getDescriptiveName());
       }
 
-      if (hasChange) {
+      if (hasChange || artifactWasCreated) {
          HierarchyHandler.addArtifact(transaction, traceUnitArtifact);
          if (traceUnitArtifact.isOfType(Requirements.ABSTRACT_TEST_UNIT)) {
             TestRunHandler.linkWithTestUnit(transaction, traceUnitArtifact);
@@ -187,12 +205,30 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
    @Override
    public void onComplete(IProgressMonitor monitor) throws OseeCoreException {
-      resultData.addRaw(AHTML.endMultiColumnTable());
-      if (!monitor.isCanceled()) {
-         if (transaction != null) {
-            transaction.execute();
+      try {
+         if (!monitor.isCanceled()) {
+            if (transaction != null) {
+               transaction.execute();
+            }
          }
+      } finally {
+         openReport();
       }
+   }
+
+   private void openReport() {
+      IExceptionableRunnable runnable = new IExceptionableRunnable() {
+
+         @Override
+         public void run(IProgressMonitor monitor) throws Exception {
+            try {
+               ResultsEditor.open(new ResultEditorProvider());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      Jobs.run("Trace Unit to Artifact Report", runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);
    }
 
    private static final class TestRunHandler {
@@ -295,6 +331,73 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             ArtifactCache.putByTextId(key, folder);
          }
          return folder;
+      }
+   }
+
+   private final class ResultEditorProvider implements IResultsEditorProvider {
+
+      @Override
+      public String getEditorName() throws OseeCoreException {
+         return "Trace Units To Artifacts Report";
+      }
+
+      private List<XViewerColumn> createColumns(String... columnNames) {
+         List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+         for (String name : columnNames) {
+            columns.add(new XViewerColumn(name, name, 80, SWT.LEFT, true, SortDataType.String, false, ""));
+         }
+         return columns;
+      }
+
+      private void addUnRelatedTraceUnit(List<IResultsEditorTab> toReturn) {
+         if (!unRelatedUnits.isEmpty()) {
+            List<XViewerColumn> columns = createColumns("Trace Unit Name");
+            List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+            for (String artifactName : unRelatedUnits) {
+               rows.add(new ResultsXViewerRow(new String[] {artifactName}));
+            }
+            toReturn.add(new ResultsEditorTableTab("Trace Units Created But Had No Relations", columns, rows));
+         }
+      }
+
+      private void addTraceNotFoundTab(List<IResultsEditorTab> toReturn) {
+         if (!reportTraceNotFound.isEmpty()) {
+            List<XViewerColumn> columns =
+                  createColumns("Trace Unit Name", "Trace Unit Type", "Trace Mark Type", "Trace Mark");
+
+            List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+            for (TraceUnit unit : reportTraceNotFound.keySet()) {
+               Collection<TraceMark> traceMarks = reportTraceNotFound.getValues(unit);
+               for (TraceMark traceMark : traceMarks) {
+                  rows.add(new ResultsXViewerRow(new String[] {unit.getName(), unit.getTraceUnitType(),
+                        traceMark.getTraceType(), traceMark.getRawTraceMark()}));
+               }
+            }
+            toReturn.add(new ResultsEditorTableTab("Trace Marks Not Found", columns, rows));
+         }
+      }
+
+      private void addRelationTypeNotFoundTab(List<IResultsEditorTab> toReturn) {
+         if (!unknownRelationError.isEmpty()) {
+            List<XViewerColumn> columns = createColumns("Artifact Type", "Trace Mark Type");
+            List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+            for (String artifactType : unknownRelationError.keySet()) {
+               Collection<String> traceTypes = unknownRelationError.getValues(artifactType);
+               for (String traceType : traceTypes) {
+                  rows.add(new ResultsXViewerRow(new String[] {artifactType, traceType}));
+               }
+            }
+            toReturn.add(new ResultsEditorTableTab("Invalid Artifact Type to Trace Relation", columns, rows));
+         }
+      }
+
+      @Override
+      public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+         List<IResultsEditorTab> toReturn = new ArrayList<IResultsEditorTab>();
+         addTraceNotFoundTab(toReturn);
+         addUnRelatedTraceUnit(toReturn);
+         addRelationTypeNotFoundTab(toReturn);
+         return toReturn;
       }
    }
 }

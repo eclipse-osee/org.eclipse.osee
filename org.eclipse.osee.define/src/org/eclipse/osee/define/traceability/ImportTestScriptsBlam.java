@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -99,17 +98,13 @@ public class ImportTestScriptsBlam extends AbstractBlam {
             }
          }
 
-         XResultData resultData = new XResultData();
          if (isPersistChanges) {
-            resultData.log("Persisting Changes");
             TraceUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, isFileWithMultiPaths,
-                  resultData, importToBranch, testUnitIds.toArray(new String[testUnitIds.size()]));
+                  importToBranch, testUnitIds.toArray(new String[testUnitIds.size()]));
          } else {
-            resultData.log("Report-Only, Changes are not persisted");
             TraceUnitFromResourceOperation.printTraceFromTestUnits(monitor, source, isRecursive, isFileWithMultiPaths,
-                  resultData, testUnitIds.toArray(new String[testUnitIds.size()]));
+                  testUnitIds.toArray(new String[testUnitIds.size()]));
          }
-         resultData.report(getName());
       } finally {
          monitor.subTask("Done");
          System.gc();

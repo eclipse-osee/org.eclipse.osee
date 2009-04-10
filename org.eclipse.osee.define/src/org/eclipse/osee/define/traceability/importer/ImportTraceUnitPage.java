@@ -12,6 +12,7 @@ package org.eclipse.osee.define.traceability.importer;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -147,6 +148,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
             if (button != null && !button.isDisposed()) {
                button.setEnabled(!directoryFileSelector.isDirectorySelected());
             }
+            setPageComplete(determinePageCompletion());
          }
       });
    }
@@ -182,6 +184,13 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
 
       branchSelectComposite = new BranchSelectComposite(composite, SWT.BORDER, true);
       branchSelectComposite.setToolTipText(IMPORT_BRANCH_TOOLTIP);
+      branchSelectComposite.addListener(new Listener() {
+
+         @Override
+         public void handleEvent(Event event) {
+            setPageComplete(determinePageCompletion());
+         }
+      });
    }
 
    protected void createParserSelectArea(Composite parent) {
@@ -210,8 +219,10 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          public void widgetSelected(SelectionEvent e) {
             Object source = e.getSource();
             if (source instanceof Button) {
-               traceUnitHandlers.get(((Button) source).getSelection());
+               Button button = (Button) source;
+               traceUnitHandlers.put(button, button.getSelection());
             }
+            setPageComplete(determinePageCompletion());
          }
       });
       traceUnitHandlers.put(handlerButton, false);
@@ -244,6 +255,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
             if (object instanceof Button) {
                toModify.setValue(((Button) object).getSelection());
             }
+            setPageComplete(determinePageCompletion());
          }
       });
       optionButton.setSelection(toModify.getValue());
@@ -265,6 +277,13 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    @Override
    protected boolean validateSourceGroup() {
       boolean result = directoryFileSelector.validate(this);
+      if (result) {
+         Branch branch = getSelectedBranch();
+         if (branch == null) {
+            result = false;
+            setErrorMessage("Please select a valid working branch");
+         }
+      }
       if (result) {
          result &= validateParser(this);
       }
@@ -324,9 +343,12 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
 
          String source = settings.get(SOURCE_URI_KEY);
          if (Strings.isValid(source)) {
-            String uri = new File(source).getAbsolutePath();
             directoryFileSelector.setDirectorySelected(settings.getBoolean(SOURCE_URI_IS_DIRECTORY_KEY));
-            directoryFileSelector.setText(uri);
+            try {
+               directoryFileSelector.setText(new File(new URI(source)).getAbsolutePath());
+            } catch (URISyntaxException ex) {
+               // Do Nothing
+            }
          }
 
          for (String id : optionButtons.keySet()) {

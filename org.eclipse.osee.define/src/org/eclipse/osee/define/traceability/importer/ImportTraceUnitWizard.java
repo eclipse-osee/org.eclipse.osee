@@ -32,6 +32,7 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
 
    public ImportTraceUnitWizard() {
       super();
+      setDialogSettings(DefinePlugin.getInstance().getDialogSettings());
       setWindowTitle("Import Trace Units Wizard");
    }
 
@@ -54,6 +55,7 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
                new ImportTraceUnitsJob("Import Trace Units", importToBranch, source, isRecursive, isPersistChanges,
                      fileWithMultiPaths, traceUnitHandlerIds);
          Jobs.startJob(job, true);
+         page.saveWidgetValues();
       } catch (Exception ex) {
          OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Import Trace Unit Error", ex);
       }
