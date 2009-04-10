@@ -89,8 +89,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       createBranch.setToolTipText("Create Working Branch");
       createBranch.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
-            Result result = smaMgr.getBranchMgr().createWorkingBranch(null, true);
-            if (result.isFalse() && !result.getText().equals("")) result.popup();
+            smaMgr.getBranchMgr().createWorkingBranch(null, true);
          }
       });
 

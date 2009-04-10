@@ -246,12 +246,13 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       createViewRelationTreeMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createDeleteRelationMenuItem(popupMenu);
-      createDeleteArtifactMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createExpandAllMenuItem(popupMenu);
       createSelectAllMenuItem(popupMenu);
 
+      new MenuItem(popupMenu, SWT.SEPARATOR);
+      createDeleteArtifactMenuItem(popupMenu);
       return popupMenu;
    }
 
@@ -475,21 +476,20 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
     */
    private void performDeleteArtifact(IStructuredSelection selection) {
       ArrayList<Artifact> artifactsToBeDeleted = new ArrayList<Artifact>(selection.size());
-      
+
       try {
          //Add all of the artifacts to a list first
          for (Object object : selection.toList()) {
             if (object instanceof RelationLink) {
                RelationLink relLink = (RelationLink) object;
-               if (relLink.getArtifactA() == artifact){
+               if (relLink.getArtifactA() == artifact) {
                   artifactsToBeDeleted.add(relLink.getArtifactB());
-               }
-               else{
+               } else {
                   artifactsToBeDeleted.add(relLink.getArtifactA());
                }
             }
          }
-         
+
          //Ask if they are sure they want all artifacts to be deleted
          if (!artifactsToBeDeleted.isEmpty()) {
             if (MessageDialog.openConfirm(
@@ -502,7 +502,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                }
             }
          }
-         
+
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -23,6 +23,8 @@ public class ATSAttributes {
    private final String description;
    private static Map<String, ATSAttributes> attrNameToAttr = new HashMap<String, ATSAttributes>();
 
+   public static final ATSAttributes ALLOW_CREATE_BRANCH = new ATSAttributes("Allow Create Branch");
+   public static final ATSAttributes ALLOW_COMMIT_BRANCH = new ATSAttributes("Allow Commit Branch");
    public static final ATSAttributes WORKING_BRANCH_WIDGET = new ATSAttributes("Working Branch");
    public static final ATSAttributes ROLE_ATTRIBUTE = new ATSAttributes("Role");
    public static final ATSAttributes ACTIONABLE_ITEM_GUID_ATTRIBUTE =

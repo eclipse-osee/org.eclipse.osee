@@ -93,7 +93,10 @@ public class CommitXManager extends XViewer {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
          } else if (commitStatus == CommitStatus.Branch_Not_Configured) {
             AWorkbench.popup(commitStatus.getDisplayName(),
-                  "Talk to project lead or admin to configure branch for version [" + verArt + "]");
+                  "Talk to project lead to configure branch for version [" + verArt + "]");
+         } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
+            AWorkbench.popup(commitStatus.getDisplayName(),
+                  "Talk to project lead as to why commit disabled for version [" + verArt + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Commit_Needed_After_Merge) {
             destBranch = verArt.getParentBranch();
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,

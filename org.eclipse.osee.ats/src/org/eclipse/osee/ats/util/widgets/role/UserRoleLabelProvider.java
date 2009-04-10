@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -39,7 +40,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
          if (roleItem.getUser().equals(UserManager.getUser()))
             return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
          else
-            return SkynetGuiPlugin.getInstance().getImage("user_sm.gif");
+            return ArtifactTypeManager.getType("User").getImage();
       } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
          return AtsPlugin.getInstance().getImage("role.gif");
       } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {

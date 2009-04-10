@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -35,6 +36,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    public static enum CommitStatus {
       Working_Branch_Not_Created("Working Branch Not Created"),
       Branch_Not_Configured("Branch Not Configured"),
+      Branch_Commit_Disabled("Branch Commit Disabled"),
       Commit_Needed("Start Commit"),
       Merge_In_Progress("Merge in Progress"),
       Commit_Needed_After_Merge("Finish Commit"),
@@ -71,20 +73,26 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
-            if (commitStatus == CommitStatus.Branch_Not_Configured)
+            if (commitStatus == CommitStatus.Branch_Not_Configured ||
+            //
+            commitStatus == CommitStatus.Branch_Commit_Disabled ||
+            //
+            commitStatus == CommitStatus.Commit_Needed ||
+            //
+            commitStatus == CommitStatus.Working_Branch_Not_Created) {
                return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
-            else if (commitStatus == CommitStatus.Commit_Needed)
-               return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
-            else if (commitStatus == CommitStatus.Merge_In_Progress)
+            }
+
+            if (commitStatus == CommitStatus.Merge_In_Progress ||
+            //
+            commitStatus == CommitStatus.Commit_Needed_After_Merge) {
                return SkynetGuiPlugin.getInstance().getImage("yellow_light.gif");
-            else if (commitStatus == CommitStatus.Commit_Needed_After_Merge)
-               return SkynetGuiPlugin.getInstance().getImage("yellow_light.gif");
-            else if (commitStatus == CommitStatus.Committed)
+            }
+
+            if (commitStatus == CommitStatus.Committed ||
+            //
+            commitStatus == CommitStatus.Committed_With_Merge) {
                return SkynetGuiPlugin.getInstance().getImage("green_light.gif");
-            else if (commitStatus == CommitStatus.Committed_With_Merge)
-               return SkynetGuiPlugin.getInstance().getImage("green_light.gif");
-            else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
-               return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
             }
             return null;
          } catch (Exception ex) {
@@ -106,9 +114,12 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, VersionArtifact verArt) throws OseeCoreException {
       Branch branch = verArt.getParentBranch();
-      if (branch == null)
-         return CommitStatus.Branch_Not_Configured;
-      else if (teamArt.getSmaMgr().getBranchMgr().getWorkingBranch(true) == null) {
+      if (branch == null) return CommitStatus.Branch_Not_Configured;
+      Result result = teamArt.getSmaMgr().getBranchMgr().isCommitBranchAllowed(verArt);
+      if (result.isFalse()) {
+         return CommitStatus.Branch_Commit_Disabled;
+      }
+      if (teamArt.getSmaMgr().getBranchMgr().getWorkingBranch(true) == null) {
          return CommitStatus.Working_Branch_Not_Created;
       } else if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
          if (teamArt.getSmaMgr().getBranchMgr().isMergeCompleted(verArt.getParentBranch())) {
@@ -151,6 +162,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
          if (commitStatus == CommitStatus.Branch_Not_Configured)
             return "Configure Branch";
+         else if (commitStatus == CommitStatus.Branch_Commit_Disabled)
+            return "Enable Branch Commit";
          else if (commitStatus == CommitStatus.Commit_Needed)
             return "Start Commit";
          else if (commitStatus == CommitStatus.Merge_In_Progress)

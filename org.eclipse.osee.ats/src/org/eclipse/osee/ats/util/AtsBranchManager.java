@@ -240,6 +240,29 @@ public class AtsBranchManager {
       return null;
    }
 
+   public Result isCreateBranchAllowed() throws OseeCoreException {
+      if (smaMgr.getTargetedForVersion() == null) {
+         return new Result(false, "Workflow not targeted for Version");
+      }
+      if (smaMgr.getTargetedForVersion().getParentBranch() == null) {
+         return new Result(false, "Parent Branch not configured for Version [" + smaMgr.getTargetedForVersion() + "]");
+      }
+      if (smaMgr.getTargetedForVersion().getSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), false) == false) {
+         return new Result(false, "Branch creation disabled for Version [" + smaMgr.getTargetedForVersion() + "]");
+      }
+      return Result.TrueResult;
+   }
+
+   public Result isCommitBranchAllowed(VersionArtifact verArt) throws OseeCoreException {
+      if (verArt.getParentBranch() == null) {
+         return new Result(false, "Parent Branch not configured for Version [" + verArt + "]");
+      }
+      if (verArt.getSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), false) == false) {
+         return new Result(false, "Version [" + verArt + "] not configured to allow branch commit.");
+      }
+      return Result.TrueResult;
+   }
+
    /**
     * Display change report associated with the branch, if exists, or transaction, if branch has been committed.
     */
@@ -402,6 +425,11 @@ public class AtsBranchManager {
             if (popup) AWorkbench.popup("ERROR", errorStr);
             return new Result(errorStr);
          }
+         Result result = isCreateBranchAllowed();
+         if (result.isFalse()) {
+            if (popup) result.popup();
+            return result;
+         }
          // Retrieve parent branch to create working branch from
          if (popup && !MessageDialog.openConfirm(
                Display.getCurrent().getActiveShell(),
@@ -559,7 +587,7 @@ public class AtsBranchManager {
                   return new Status(
                         Status.ERROR,
                         AtsPlugin.PLUGIN_ID,
-                        "Blocking Review must be completed before commit.\n\nReview Title: \"" + reviewArt.getDescriptiveName() + "\"\nHRID: " + reviewArt.getHumanReadableId());
+                        "Blocking Review must be completed before commit.");
                }
             }
 
@@ -598,7 +626,7 @@ public class AtsBranchManager {
       }
    }
 
-   public void commit(boolean commitPopup, Branch sourceBranch, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
+   private void commit(boolean commitPopup, Branch sourceBranch, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
       boolean branchCommitted = false;
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, sourceBranch);
 

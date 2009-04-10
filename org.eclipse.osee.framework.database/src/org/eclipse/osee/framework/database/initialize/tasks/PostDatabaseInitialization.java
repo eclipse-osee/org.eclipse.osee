@@ -36,7 +36,7 @@ public class PostDatabaseInitialization implements IDbInitializationTask {
       SupportedDatabase supportedDb = SupportedDatabase.getDatabaseType(connection);
       switch (supportedDb) {
          case postgresql:
-            OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Vacuumiing PostgreSQL");
+            OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Vacuuming PostgreSQL");
             ConnectionHandler.runPreparedUpdate(POSTGRESQL_VACUUM_AND_STATS);
             break;
          case oracle:

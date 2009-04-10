@@ -99,10 +99,10 @@
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R208C1:R235C5"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R212C1:R239C5"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="241" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="245" x:FullColumns="1"
    x:FullRows="1">
    <Column ss:AutoFitWidth="0" ss:Width="286.5"/>
    <Column ss:AutoFitWidth="0" ss:Width="339.75"/>
@@ -263,6 +263,24 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BooleanAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Actionable</Data></Cell>
+    <Cell ss:Index="6"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BooleanAttribute</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Allow Create Branch</Data></Cell>
+    <Cell ss:Index="6"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BooleanAttribute</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Allow Commit Branch</Data></Cell>
     <Cell ss:Index="6"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
@@ -1177,6 +1195,14 @@
     <Cell><Data ss:Type="String">Version</Data></Cell>
     <Cell><Data ss:Type="String">ats.Parent Branch Id</Data></Cell>
    </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Version</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Allow Create Branch</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Version</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Allow Commit Branch</Data></Cell>
+   </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22"/>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String"># Relation Type definition</Data></Cell>
@@ -1713,12 +1739,13 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>27</TopRowVisible>
+   <TopRowVisible>157</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>64</ActiveRow>
-     <ActiveCol>2</ActiveCol>
+     <ActiveRow>184</ActiveRow>
+     <ActiveCol>1</ActiveCol>
+     <RangeSelection>R185C2:R186C2</RangeSelection>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
