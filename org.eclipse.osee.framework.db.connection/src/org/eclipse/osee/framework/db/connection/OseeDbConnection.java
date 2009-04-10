@@ -14,12 +14,11 @@ package org.eclipse.osee.framework.db.connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.db.connection.internal.TransactionMonitor;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -74,97 +73,5 @@ public class OseeDbConnection {
 
    public static void reportTxCreation(final DbTransaction transaction) throws OseeWrappedException {
       txMonitor.reportTxCreation(transaction);
-   }
-
-   private final static class TransactionMonitor {
-      private enum TxState {
-         CREATED, RUNNING, ENDED;
-      }
-
-      private final Map<Thread, TxOperation> txMap = new HashMap<Thread, TxOperation>();
-
-      public synchronized void reportTxCreation(final DbTransaction transaction) throws OseeWrappedException {
-         final Thread currentThread = Thread.currentThread();
-         TxOperation currentTx = txMap.get(currentThread);
-         if (currentTx != null) {
-            // This log is to support debugging the case where skynet transactions are nested and should
-            // use the same transaction.
-            // This case may happen legitimately if an exception happened before transaction.execute(), so
-            // it is only notification that this is occurring.
-            OseeLog.log(InternalActivator.class, Level.SEVERE, "New transaction created over Last transaction",
-                  currentTx.getError());
-         }
-         txMap.put(currentThread, new TxOperation(transaction));
-      }
-
-      public synchronized void reportTxStart(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
-         final Thread currentThread = Thread.currentThread();
-         TxOperation currentTx = txMap.get(currentThread);
-         if (currentTx == null) {
-            throw new OseeStateException(
-                  "reportTxStart called for thread: " + currentThread + " but reportTxCreation had not been called.");
-         } else if (currentTx.getState() != TxState.CREATED) {
-            throw new OseeWrappedException(currentTx.getError());
-         }
-
-         if (currentTx.getTransaction().equals(transaction)) {
-            currentTx.setState(TxState.RUNNING);
-         } else {
-            throw new OseeStateException(
-                  "reportTxStart called for thread: " + currentThread + " but was called for incorrect transaction");
-         }
-      }
-
-      public synchronized void reportTxEnd(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
-         final Thread currentThread = Thread.currentThread();
-
-         TxOperation currentTx = txMap.get(currentThread);
-         if (currentTx == null) {
-            throw new OseeStateException(
-                  "reportTxEnd called for thread: " + currentThread + " but reportTxCreation had not been called.");
-         } else if (currentTx.getState() != TxState.RUNNING) {
-            // This is a valid case -- can add a log to detect when a reportTxEnd is called before a transaction has a chance to run 
-         }
-
-         if (currentTx.getTransaction().equals(transaction)) {
-            txMap.remove(currentThread);
-         } else {
-            throw new OseeWrappedException(currentTx.getError());
-         }
-      }
-
-      private final class TxOperation {
-
-         private final DbTransaction tx;
-         private Throwable throwable;
-         private TxState txState;
-
-         public TxOperation(DbTransaction tx) {
-            this.tx = tx;
-            this.txState = TxState.CREATED;
-            // Not null for stack trace purposes;
-            this.throwable = new Exception();
-         }
-
-         public DbTransaction getTransaction() {
-            return tx;
-         }
-
-         public TxState getState() {
-            return txState;
-         }
-
-         public void setState(TxState txState) {
-            this.txState = txState;
-         }
-
-         public void setError(Throwable throwable) {
-            this.throwable = throwable;
-         }
-
-         public Throwable getError() {
-            return throwable;
-         }
-      }
    }
 }
