@@ -129,7 +129,6 @@ public class DialogWithEntry extends MessageDialog {
       if (fillVertically) {
          text.setFillVertically(true);
          text.setHeight(200);
-
          text.setFont(font);
       }
       text.createWidgets(comp, 2);
