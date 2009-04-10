@@ -101,6 +101,11 @@ public class EntryDialog extends MessageDialog {
       return c;
    }
 
+   @Override
+   protected boolean isResizable() {
+      return true;
+   }
+
    /**
     * Override to provide other widgets
     * 

@@ -51,6 +51,11 @@ public class HtmlDialog extends MessageDialog {
    }
 
    @Override
+   protected boolean isResizable() {
+      return true;
+   }
+
+   @Override
    protected Control createDialogArea(Composite parent) {
       Composite c = (Composite) super.createDialogArea(parent);
       b = new Browser(c, SWT.BORDER);
