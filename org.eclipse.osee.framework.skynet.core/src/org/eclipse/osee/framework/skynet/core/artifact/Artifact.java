@@ -301,6 +301,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return whether this artifact's type or any of its super-types are the specified type
     */
    public boolean isOfType(String artifactType) {
+      if (artifactType.equals(Requirements.ABSTRACT_TEST_UNIT) && Requirements.ALL_TEST_UNIT_TYPES.contains(getArtifactTypeName())) {
+         return true;
+      }
       if (artifactType.equals(Requirements.ABSTRACT_SOFTWARE_REQUIREMENT) && Requirements.ALL_SOFTWARES_REQUIREMENT_TYPES.contains(getArtifactTypeName())) {
          return true;
       }

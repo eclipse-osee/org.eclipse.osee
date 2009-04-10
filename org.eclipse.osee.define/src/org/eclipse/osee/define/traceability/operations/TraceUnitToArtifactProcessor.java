@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
+import org.eclipse.osee.define.traceability.data.CodeUnitData;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
@@ -40,6 +41,8 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
  */
 public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private RequirementData requirementData;
+
+   private CodeUnitData codeUnitData;
    private TestUnitData testUnitData;
 
    private final Branch importIntoBranch;
@@ -55,8 +58,12 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    @Override
    public void clear() {
       transaction = null;
+      requirementData.reset();
       requirementData = null;
+      testUnitData.reset();
       testUnitData = null;
+      codeUnitData.reset();
+      codeUnitData = null;
    }
 
    @Override
@@ -66,6 +73,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       resultData.addRaw(AHTML.bold("Unable to find requirements for test unit trace marks"));
       resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Test Unit Type", "Test Unit Name",
             "Trace Type", "Trace Mark"}));
+
       requirementData = new RequirementData(importIntoBranch);
       if (!monitor.isCanceled()) {
          requirementData.initialize(monitor);
@@ -73,47 +81,65 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          if (!monitor.isCanceled()) {
             testUnitData.initialize(monitor);
          }
+         codeUnitData = new CodeUnitData(importIntoBranch);
+         if (!monitor.isCanceled()) {
+            codeUnitData.initialize(monitor);
+         }
       }
    }
 
+   private Artifact getArtifactFromCache(String artifactType, String name) {
+      if (Requirements.ALL_TEST_UNIT_TYPES.contains(artifactType)) {
+         return testUnitData.getTestUnitByName(name);
+      } else if (Requirements.CODE_UNIT.equals(artifactType)) {
+         return codeUnitData.getCodeUnitByName(name);
+      }
+      return null;
+   }
+
    @Override
-   public void process(IProgressMonitor monitor, TraceUnit testUnit) throws OseeCoreException {
+   public void process(IProgressMonitor monitor, TraceUnit traceUnit) throws OseeCoreException {
       if (transaction == null) {
          transaction = new SkynetTransaction(importIntoBranch);
       }
       boolean hasChange = false;
-      boolean testUnitWasCreated = false;
+      boolean artifactWasCreated = false;
 
-      String traceUnit = testUnit.getTraceUnitType();
+      String traceUnitType = traceUnit.getTraceUnitType();
 
-      Artifact testUnitArtifact = testUnitData.getTestUnitByName(testUnit.getName());
-      if (testUnitArtifact == null) {
-         testUnitArtifact =
-               ArtifactTypeManager.addArtifact(testUnit.getTraceUnitType(), transaction.getBranch(), testUnit.getName());
-         testUnitWasCreated = true;
+      Artifact traceUnitArtifact = getArtifactFromCache(traceUnitType, traceUnit.getName());
+      if (traceUnitArtifact == null) {
+         traceUnitArtifact =
+               ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(),
+                     traceUnit.getName());
+         artifactWasCreated = true;
       }
 
-      for (TraceMark traceMark : testUnit.getTraceMarks()) {
+      for (TraceMark traceMark : traceUnit.getTraceMarks()) {
          if (monitor.isCanceled()) break;
 
          Artifact requirementArtifact = getRequirementArtifact(traceMark.getRawTraceMark(), requirementData);
          if (requirementArtifact != null) {
-            IRelationEnumeration relationType = getRelationFromTraceType(traceMark.getTraceType());
-            if (!requirementArtifact.isRelated(relationType, testUnitArtifact)) {
-               requirementArtifact.addRelation(relationType, testUnitArtifact);
+            IRelationEnumeration relationType = getRelationFromTraceType(traceUnitArtifact, traceMark.getTraceType());
+            if (relationType == null) {
+               // TODO Report Unknown Relation for trace unit artifact
+               //               resultData.addRaw(AHTML.addRowMultiColumnTable(traceUnit.getTraceUnitType(), traceUnit.getName(),
+               //                     traceMark.getTraceType(), traceMark.getRawTraceMark()));
+            } else if (!requirementArtifact.isRelated(relationType, traceUnitArtifact)) {
+               requirementArtifact.addRelation(relationType, traceUnitArtifact);
                hasChange = true;
             }
          } else {
             // Report Trace not found
-            resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTraceUnitType(), testUnit.getName(),
+            resultData.addRaw(AHTML.addRowMultiColumnTable(traceUnit.getTraceUnitType(), traceUnit.getName(),
                   traceMark.getTraceType(), traceMark.getRawTraceMark()));
          }
       }
 
-      // Report Items that were not used from the TEST UNIT DATA Structure
+      // TODO Report Items that were not used from the TEST UNIT DATA Structure
       // Not Part of this class though
 
-      if (testUnitArtifact.isOfType(Requirements.TEST_CASE)) {
+      if (traceUnitArtifact.isOfType(Requirements.TEST_CASE)) {
          // Create even if no Change;
          //      if (testUnitWasCreated && allTraceMarksNotFound) {
          //         //         resultData
@@ -122,9 +148,11 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       if (hasChange) {
-         HierarchyHandler.addArtifact(transaction, testUnitArtifact);
-         TestRunHandler.linkWithTestUnit(transaction, testUnitArtifact);
-         testUnitArtifact.persistAttributesAndRelations(transaction);
+         HierarchyHandler.addArtifact(transaction, traceUnitArtifact);
+         if (traceUnitArtifact.isOfType(Requirements.ABSTRACT_TEST_UNIT)) {
+            TestRunHandler.linkWithTestUnit(transaction, traceUnitArtifact);
+         }
+         traceUnitArtifact.persistAttributesAndRelations(transaction);
       }
    }
 
@@ -132,12 +160,17 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       return traceType.equalsIgnoreCase("USES");
    }
 
-   private IRelationEnumeration getRelationFromTraceType(String traceType) {
-      if (isUsesTraceType(traceType)) {
-         return CoreRelationEnumeration.Uses__TestUnit;
-      } else {
-         return CoreRelationEnumeration.Verification__Verifier;
+   private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) {
+      if (traceUnitArtifact.isOfType(Requirements.ABSTRACT_TEST_UNIT)) {
+         if (isUsesTraceType(traceType)) {
+            return CoreRelationEnumeration.Uses__TestUnit;
+         } else {
+            return CoreRelationEnumeration.Verification__Verifier;
+         }
+      } else if (traceUnitArtifact.isOfType(Requirements.CODE_UNIT)) {
+         return CoreRelationEnumeration.CodeRequirement_CodeUnit;
       }
+      return null;
    }
 
    private Artifact getRequirementArtifact(String traceMark, RequirementData requirementData) {
@@ -191,6 +224,8 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             folder = getOrCreateTestCaseFolder(transaction);
          } else if (testUnit.isOfType(Requirements.TEST_SUPPORT)) {
             folder = getOrCreateTestSupportFolder(transaction);
+         } else if (testUnit.isOfType(Requirements.CODE_UNIT)) {
+            folder = getOrCreateCodeUnitFolder(transaction);
          } else {
             folder = getOrCreateUnknownTestUnitFolder(transaction);
          }
@@ -211,6 +246,16 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       private static Artifact getOrCreateTestCaseFolder(SkynetTransaction transaction) throws OseeCoreException {
          return getOrCreateTestUnitSubFolder(transaction, Requirements.TEST_CASES);
+      }
+
+      private static Artifact getOrCreateCodeUnitFolder(SkynetTransaction transaction) throws OseeCoreException {
+         Artifact codeUnitFolder = getOrCreateFolder(transaction, "Code Units");
+         Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(transaction.getBranch());
+         if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, codeUnitFolder)) {
+            root.addChild(codeUnitFolder);
+            root.persistAttributesAndRelations(transaction);
+         }
+         return codeUnitFolder;
       }
 
       private static Artifact getOrCreateTestUnitSubFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
