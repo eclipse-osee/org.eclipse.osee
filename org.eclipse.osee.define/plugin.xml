@@ -198,10 +198,10 @@
  <extension
        point="org.eclipse.ui.popupMenus">
     <viewerContribution
-          id="viewConf"
+          id="traceFind"
           targetID="#CompilationUnitEditorContext">
        <action
-             class="org.eclipse.osee.define.traceability.FindTraceUnitActionDelegate"
+             class="org.eclipse.osee.define.traceability.action.FindTraceUnitEditorAction"
              icon="images/artifact_search.gif"
              id="org.eclipse.osee.define.action.FindTraceUnitFromResource"
              label="Find Trace Unit Artifact"
@@ -214,7 +214,7 @@
           id="osee.database.projectContribution"
           objectClass="org.eclipse.core.resources.IResource">
        <action
-             class="org.eclipse.osee.define.traceability.FindTraceUnitActionDelegate"
+             class="org.eclipse.osee.define.traceability.action.FindTraceUnitActionDelegate"
              icon="images/artifact_search.gif"
              id="org.eclipse.osee.define.action.FindTraceUnitFromResource2"
              label="Find Trace Unit Artifact"
