@@ -195,4 +195,34 @@
           className="org.eclipse.osee.define.traceability.ImportTestScriptsBlam">
     </Operation>
  </extension>
+ <extension
+       point="org.eclipse.ui.popupMenus">
+    <viewerContribution
+          id="viewConf"
+          targetID="#CompilationUnitEditorContext">
+       <action
+             class="org.eclipse.osee.define.traceability.FindTraceUnitActionDelegate"
+             icon="images/artifact_search.gif"
+             id="org.eclipse.osee.define.action.FindTraceUnitFromResource"
+             label="Find Trace Unit Artifact"
+             menubarPath="org.eclipse.jdt.ui.source.menu"
+             tooltip="Searches for trace units in OSEE">
+       </action>
+    </viewerContribution>
+    <objectContribution
+          adaptable="true"
+          id="osee.database.projectContribution"
+          objectClass="org.eclipse.core.resources.IResource">
+       <action
+             class="org.eclipse.osee.define.traceability.FindTraceUnitActionDelegate"
+             icon="images/artifact_search.gif"
+             id="org.eclipse.osee.define.action.FindTraceUnitFromResource2"
+             label="Find Trace Unit Artifact"
+             menubarPath="osee.define.menu.main/main"
+             state="true"
+             style="push"
+             tooltip="Searches for trace units in OSEE">
+       </action>
+    </objectContribution>
+ </extension>
 </plugin>
