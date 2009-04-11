@@ -13,15 +13,21 @@ package org.eclipse.osee.framework.ui.skynet.results.table;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerContentProvider;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerLabelProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 /**
  * @author Donald G. Dunne
@@ -69,7 +75,8 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    @Override
    public Composite createTab(Composite parent, ResultsEditor resultsEditor) throws OseeCoreException {
       Composite comp = ALayout.createCommonPageComposite(parent);
-      resultsEditor.createToolBar(comp);
+      ToolBar toolBar = resultsEditor.createToolBar(comp);
+      addToolBarItems(toolBar);
 
       GridData gd = new GridData(GridData.FILL_BOTH);
       resultsXViewer = new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, getTableColumns());
@@ -78,7 +85,23 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       resultsXViewer.setLabelProvider(new ResultsXViewerLabelProvider(resultsXViewer));
       resultsXViewer.setInput(getTableRows());
       resultsXViewer.getTree().setLayoutData(gd);
-
       return comp;
+   }
+
+   private void addToolBarItems(ToolBar toolBar) {
+      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("export.gif"));
+      item.setToolTipText("Export Table");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            XViewerTreeReport report = resultsXViewer.getXViewerFactory().getXViewerTreeReport(resultsXViewer);
+            if (report != null) {
+               report.open();
+            } else {
+               new XViewerTreeReport(resultsXViewer).open();
+            }
+         }
+      });
    }
 }

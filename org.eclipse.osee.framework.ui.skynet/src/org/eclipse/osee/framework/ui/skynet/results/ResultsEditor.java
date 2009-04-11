@@ -60,7 +60,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
          IResultsEditorProvider provider = getResultsEditorProvider();
 
          List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();
-         if (tabs.size() == 0) {
+         if (tabs.isEmpty()) {
             tabs.add(new ResultsEditorHtmlTab("Error", "Error",
                   AHTML.simplePage("Error: Pages creation error for \"" + provider.getEditorName() + "\"")));
          }
