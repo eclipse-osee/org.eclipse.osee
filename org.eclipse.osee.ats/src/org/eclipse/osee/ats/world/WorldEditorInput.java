@@ -66,7 +66,12 @@ public class WorldEditorInput implements IEditorInput {
     * @see org.eclipse.ui.IEditorInput#getToolTipText()
     */
    public String getToolTipText() {
-      return "";
+      try {
+         return iWorldEditorProvider.getName();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return "Exception getting name: " + ex.getLocalizedMessage();
+      }
    }
 
    /* (non-Javadoc)

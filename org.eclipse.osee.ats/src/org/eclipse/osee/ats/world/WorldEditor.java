@@ -267,4 +267,5 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    public double getManHoursPerDayPreference() throws OseeCoreException {
       return actionPage.getWorldComposite().getManHoursPerDayPreference();
    }
+
 }
