@@ -22,6 +22,8 @@ import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XmlUtil;
 
 /**
+ * Provides object for storage of sorting data
+ * 
  * @author Donald G. Dunne
  */
 public class SortingData {

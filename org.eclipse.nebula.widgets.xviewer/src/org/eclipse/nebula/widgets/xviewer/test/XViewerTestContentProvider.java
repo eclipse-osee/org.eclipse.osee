@@ -15,6 +15,11 @@ import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+/**
+ * Content provider for example XViewer implementation
+ * 
+ * @author Donald G. Dunne
+ */
 public class XViewerTestContentProvider implements ITreeContentProvider {
 
    protected Collection<IXViewerTestTask> rootSet = new HashSet<IXViewerTestTask>();

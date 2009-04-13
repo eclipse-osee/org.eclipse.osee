@@ -33,6 +33,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DialogWithEntry extends MessageDialog {
 
    XViewerTextWidget text;

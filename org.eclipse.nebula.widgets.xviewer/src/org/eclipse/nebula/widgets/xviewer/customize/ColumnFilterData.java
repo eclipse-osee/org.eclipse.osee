@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XmlUtil;
 
 /**
+ * Storage for column filters
+ * 
  * @author Donald G. Dunne
  */
 public class ColumnFilterData {

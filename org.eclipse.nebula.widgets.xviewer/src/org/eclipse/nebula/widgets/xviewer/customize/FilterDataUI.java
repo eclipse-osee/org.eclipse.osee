@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 /**
+ * Provides UI for display of current filter
+ * 
  * @author Donald G. Dunne
  */
 public class FilterDataUI {
@@ -31,7 +33,7 @@ public class FilterDataUI {
    private Text filterText;
    private Label filterLabel;
    private final XViewer xViewer;
-   private boolean filterRealTime;
+   private final boolean filterRealTime;
 
    public FilterDataUI(XViewer xViewer, boolean filterRealTime) {
       this.xViewer = xViewer;

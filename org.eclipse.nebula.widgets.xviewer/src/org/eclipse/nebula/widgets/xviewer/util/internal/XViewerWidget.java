@@ -31,6 +31,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Abstract class for all widgets used in Wizards and Editors
+ * 
+ * @author Donald G. Dunne
  */
 public abstract class XViewerWidget {
 
@@ -53,7 +55,8 @@ public abstract class XViewerWidget {
    }
 
    protected boolean displayLabel = true;
-   private final Set<XViewerWidgetModifiedListener> modifiedListeners = new LinkedHashSet<XViewerWidgetModifiedListener>();
+   private final Set<XViewerWidgetModifiedListener> modifiedListeners =
+         new LinkedHashSet<XViewerWidgetModifiedListener>();
    private MouseListener mouseLabelListener;
 
    /**

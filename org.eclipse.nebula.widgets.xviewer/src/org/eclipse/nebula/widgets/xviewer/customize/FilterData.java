@@ -13,6 +13,8 @@ package org.eclipse.nebula.widgets.xviewer.customize;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XmlUtil;
 
 /**
+ * Provides storage of filter
+ * 
  * @author Donald G. Dunne
  */
 public class FilterData {

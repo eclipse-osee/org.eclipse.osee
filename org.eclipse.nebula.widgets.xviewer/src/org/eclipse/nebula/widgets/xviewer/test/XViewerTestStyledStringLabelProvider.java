@@ -20,6 +20,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * Label provider for example StyledStringLabelProvider implementation
+ * 
+ * @author Andrew M. Finkbeiner
+ */
 public class XViewerTestStyledStringLabelProvider extends XViewerStyledTextLabelProvider {
    Font font = null;
    private final XViewerStyledStringLableProviderTest xViewerTest;

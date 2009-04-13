@@ -17,9 +17,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class OverlayUtil extends CompositeImageDescriptor {
 
-   private Image baseImage;
+   private final Image baseImage;
    private ImageDescriptor overlayImageDescriptor;
    private int xValue = 0;
    private int yValue = 0;
@@ -76,6 +79,7 @@ public class OverlayUtil extends CompositeImageDescriptor {
       this.yValue = yValue;
    }
 
+   @Override
    protected void drawCompositeImage(int width, int height) {
       // To draw a composite image, the base image should be
       // drawn first (first layer) and then the overlay image
@@ -100,6 +104,7 @@ public class OverlayUtil extends CompositeImageDescriptor {
       }
    }
 
+   @Override
    protected Point getSize() {
       // System.err.println("Width = " + baseImage.getBounds().width);
       // System.err.println("Height = " + baseImage.getBounds().height);

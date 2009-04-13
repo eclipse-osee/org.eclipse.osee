@@ -1,10 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.nebula.widgets.xviewer;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -15,6 +24,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author Donald G. Dunne
+ */
 public abstract class XViewerStyledTextLabelProvider extends StyledCellLabelProvider {
 
    private final XViewer viewer;
@@ -67,10 +79,10 @@ public abstract class XViewerStyledTextLabelProvider extends StyledCellLabelProv
 
       if (!Arrays.equals(oldStyleRanges, newStyleRanges)) {
          cell.setStyleRanges(newStyleRanges);
-//         if (cell.getText().equals(newText)) {
-//            // make sure there will be a refresh from a change
-//            cell.setText(""); //$NON-NLS-1$
-//         }
+         //         if (cell.getText().equals(newText)) {
+         //            // make sure there will be a refresh from a change
+         //            cell.setText(""); //$NON-NLS-1$
+         //         }
       }
 
       cell.setText(newText);
@@ -137,15 +149,15 @@ public abstract class XViewerStyledTextLabelProvider extends StyledCellLabelProv
 
    private Color getBackground(Object element, int columnIndex) {
       try {
-    	  
+
          XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
-        
-         if(viewer.isSearch()){
-        	  StyledString text = getStyledText(element,columnIndex);
-	          if(viewer.searchMatch(text.getString())){
-	         	return viewer.getSearchMatchColor(); 
-	          }  
-   	     } 
+
+         if (viewer.isSearch()) {
+            StyledString text = getStyledText(element, columnIndex);
+            if (viewer.searchMatch(text.getString())) {
+               return viewer.getSearchMatchColor();
+            }
+         }
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return null;
          if (xViewerColumn instanceof XViewerValueColumn) {

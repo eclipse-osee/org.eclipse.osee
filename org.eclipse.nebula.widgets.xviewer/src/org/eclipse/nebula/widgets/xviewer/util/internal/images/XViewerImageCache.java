@@ -1,8 +1,13 @@
-/*
- * Created on Mar 24, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.nebula.widgets.xviewer.util.internal.images;
 
 import java.net.URL;
@@ -21,7 +26,7 @@ public class XViewerImageCache {
    /**
     * Return image
     * 
-    * @param eg: clear.gif
+    * @param example clear.gif
     * @return the clearImage
     */
    public static Image getImage(String imageName) {

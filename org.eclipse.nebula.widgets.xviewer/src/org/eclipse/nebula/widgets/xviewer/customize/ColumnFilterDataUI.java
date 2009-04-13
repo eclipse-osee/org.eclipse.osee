@@ -17,6 +17,8 @@ import org.eclipse.nebula.widgets.xviewer.util.internal.dialog.DialogWithEntry;
 import org.eclipse.swt.widgets.Display;
 
 /**
+ * UI for the display of column filter data
+ * 
  * @author Donald G. Dunne
  */
 public class ColumnFilterDataUI {

@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 
 /**
+ * Provides for xml packing/unpacking of columns
+ * 
  * @author Donald G. Dunne
  */
 public class ColumnData {

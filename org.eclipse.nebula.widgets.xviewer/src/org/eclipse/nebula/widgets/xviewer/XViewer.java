@@ -244,7 +244,6 @@ public class XViewer extends TreeViewer {
                }
                count++;
             }
-            XViewerColumn xCol = getXTreeColumn(columnOrder[count]);
             handleDoubleClick(getTree().getColumn(columnOrder[count]), getTree().getItem(new Point(e.x, e.y)));
          }
 

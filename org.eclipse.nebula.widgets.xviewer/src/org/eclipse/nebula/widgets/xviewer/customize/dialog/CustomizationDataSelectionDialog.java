@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ListDialog;
 
 /**
+ * Provides dialog for saving table customizations.
+ * 
  * @author Donald G. Dunne
  */
 public class CustomizationDataSelectionDialog extends ListDialog {

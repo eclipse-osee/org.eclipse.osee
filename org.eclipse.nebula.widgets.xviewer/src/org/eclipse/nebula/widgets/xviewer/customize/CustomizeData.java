@@ -23,6 +23,8 @@ import org.eclipse.nebula.widgets.xviewer.util.internal.OverlayUtil.Location;
 import org.eclipse.swt.graphics.Image;
 
 /**
+ * Single customization object storing name, id, sort, filter and column filter
+ * 
  * @author Donald G. Dunne
  */
 public class CustomizeData {

@@ -66,6 +66,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * Provides dialog for table customization
+ * 
+ * @author Donald G. Dunne
+ */
 public class XViewerCustomizeDialog extends MessageDialog {
    private String title = "Customize Table";
    private static String buttons[] = new String[] {"Ok", "Apply", "Cancel"};

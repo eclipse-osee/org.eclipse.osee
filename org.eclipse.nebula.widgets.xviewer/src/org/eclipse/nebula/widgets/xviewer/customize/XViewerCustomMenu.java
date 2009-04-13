@@ -59,7 +59,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ListDialog;
 
 /**
- * Allow for the customization of the xViewer's right-click menus
+ * Allow for the customization of the xViewer's right-click menus. Full menu can be used or selected Actions accessed
+ * for partial implementation in existing menus
  * 
  * @author Donald G. Dunne
  */

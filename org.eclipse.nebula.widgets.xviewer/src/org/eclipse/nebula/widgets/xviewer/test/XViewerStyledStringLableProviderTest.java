@@ -1,8 +1,13 @@
-/*
- * Created on Jun 28, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.nebula.widgets.xviewer.test;
 
 import java.util.ArrayList;
@@ -20,7 +25,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * @author Donald G. Dunne
+ * Example implementation of XViewer that shows usage of styled string label provider
+ * 
+ * @author Andrew M. Finkbeiner
  */
 public class XViewerStyledStringLableProviderTest extends XViewer {
    private final Set<IXViewerTestTask> runList = new HashSet<IXViewerTestTask>();

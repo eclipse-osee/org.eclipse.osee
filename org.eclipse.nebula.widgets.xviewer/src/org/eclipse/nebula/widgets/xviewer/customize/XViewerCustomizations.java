@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Default implementation of IViewerCustomizations interface
+ * 
  * @author Donald G. Dunne
  */
 public class XViewerCustomizations implements IXViewerCustomizations {

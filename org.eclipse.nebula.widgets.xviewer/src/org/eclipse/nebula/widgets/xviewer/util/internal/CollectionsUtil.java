@@ -211,6 +211,7 @@ public class CollectionsUtil {
     * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
     * @return
     */
+   @SuppressWarnings("unchecked")
    private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
       List<A> results = new ArrayList<A>(objects.size());
       for (Object object : objects)
@@ -227,6 +228,7 @@ public class CollectionsUtil {
     * @param objects
     * @return List
     */
+   @SuppressWarnings("unchecked")
    public static <A> List<A> castAll(Collection<?> objects) {
       List<A> results = new ArrayList<A>(objects.size());
       for (Object object : objects) {

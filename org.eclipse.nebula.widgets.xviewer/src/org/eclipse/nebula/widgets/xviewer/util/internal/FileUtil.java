@@ -38,7 +38,7 @@ public class FileUtil {
     * exceptions
     * 
     * @param stream
-    * @return
+    * @return string
     */
    public static String readFile(String filename) {
       return readFile(new File(filename));
@@ -49,7 +49,7 @@ public class FileUtil {
     * exceptions
     * 
     * @param stream
-    * @return
+    * @return string
     */
    public static String readFile(File file) {
       try {

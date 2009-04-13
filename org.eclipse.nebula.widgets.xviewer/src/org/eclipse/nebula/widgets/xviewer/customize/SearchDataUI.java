@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 /**
+ * Provides UI for displaying/entering search string
+ * 
  * @author Andrew M. Finkbeiner
  */
 public class SearchDataUI {
@@ -38,7 +40,7 @@ public class SearchDataUI {
    private boolean search = false;
    private Button regularExpression;
    private boolean regex;
-   private boolean searchRealTime;
+   private final boolean searchRealTime;
 
    public SearchDataUI(XViewer xViewer, boolean searchRealTime) {
       this.xViewer = xViewer;
@@ -139,7 +141,7 @@ public class SearchDataUI {
 
    /**
     * @param text
-    * @return
+    * @return true if matched
     */
    public boolean match(String textString) {
       if (search) {
@@ -156,7 +158,7 @@ public class SearchDataUI {
    }
 
    /**
-    * @return
+    * @return true if in search mode
     */
    public boolean isSearch() {
       return search;

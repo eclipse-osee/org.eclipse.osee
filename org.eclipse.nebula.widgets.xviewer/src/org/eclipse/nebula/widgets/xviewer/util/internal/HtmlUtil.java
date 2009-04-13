@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author Michael A. Winston
+ * @author Donald G. Dunne
  */
 public class HtmlUtil {
    private static final String HTTP_CHARSET_ENCODING =

@@ -18,6 +18,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * Example implementation for XViewerTest XViewer
+ * 
+ * @author Donald G. Dunne
+ */
 public class XViewerTestLabelProvider extends XViewerLabelProvider {
    Font font = null;
    private final XViewerTest xViewerTest;

@@ -26,6 +26,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DateSelectionDialog extends MessageDialog {
 
    private Date selectedDate;
@@ -61,6 +64,7 @@ public class DateSelectionDialog extends MessageDialog {
          /* (non-Javadoc)
           * @see org.eclipse.nebula.widgets.calendarcombo.ICalendarListener#dateChanged(java.util.Calendar)
           */
+         @Override
          public void dateChanged(Calendar date) {
             if (date == null) {
                noneSelected = true;

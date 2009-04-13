@@ -27,6 +27,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XViewerTreeReport {
 
    protected final XViewer xViewer;

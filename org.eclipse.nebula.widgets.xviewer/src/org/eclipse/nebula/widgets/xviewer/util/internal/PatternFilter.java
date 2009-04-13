@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.nebula.widgets.xviewer.util.internal;
 
 import java.text.BreakIterator;
@@ -21,15 +31,18 @@ import org.eclipse.ui.internal.misc.StringMatcher;
  * @see org.eclipse.ui.dialogs.FilteredTree
  * @since 3.2
  */
+@SuppressWarnings("restriction")
 public class PatternFilter extends ViewerFilter {
    /*
     * Cache of filtered elements in the tree
     */
+   @SuppressWarnings( {"unchecked"})
    private final Map cache = new HashMap();
 
    /*
     * Maps parent elements to TRUE or FALSE
     */
+   @SuppressWarnings( {"unchecked"})
    private final Map foundAnyCache = new HashMap();
 
    private boolean useCache = false;
@@ -51,6 +64,7 @@ public class PatternFilter extends ViewerFilter {
    /* (non-Javadoc)
     * @see org.eclipse.jface.viewers.ViewerFilter#filter(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object[])
     */
+   @SuppressWarnings("unchecked")
    @Override
    public final Object[] filter(Viewer viewer, Object parent, Object[] elements) {
       // we don't want to optimize if we've extended the filter ... this
@@ -86,6 +100,7 @@ public class PatternFilter extends ViewerFilter {
     * @param elements the elements (must not be an empty array)
     * @return true if any of the elements makes it through the filter.
     */
+   @SuppressWarnings("unchecked")
    private boolean isAnyVisible(Viewer viewer, Object parent, Object[] elements) {
       if (matcher == null) {
          return true;
@@ -254,6 +269,7 @@ public class PatternFilter extends ViewerFilter {
     * @param text
     * @return an array of words
     */
+   @SuppressWarnings("unchecked")
    private String[] getWords(String text) {
       List words = new ArrayList();
       // Break the text up into words, separating based on whitespace and
