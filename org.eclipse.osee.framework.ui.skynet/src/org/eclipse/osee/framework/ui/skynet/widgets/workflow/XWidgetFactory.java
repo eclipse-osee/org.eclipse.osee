@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeListViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -97,6 +98,8 @@ public class XWidgetFactory {
          xWidget = new XInteger(name);
       else if (xWidgetName.equals("XTextDam"))
          xWidget = new XTextDam(name);
+      else if (xWidgetName.equals("XButton"))
+         xWidget = new XButton(name);
       else if (xWidgetName.equals("XLabelDam"))
          xWidget = new XLabelDam(name);
       else if (xWidgetName.equals("XMembersList")) {

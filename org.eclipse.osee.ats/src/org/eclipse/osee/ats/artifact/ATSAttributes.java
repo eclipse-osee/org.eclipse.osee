@@ -26,6 +26,7 @@ public class ATSAttributes {
    public static final ATSAttributes ALLOW_CREATE_BRANCH = new ATSAttributes("Allow Create Branch");
    public static final ATSAttributes ALLOW_COMMIT_BRANCH = new ATSAttributes("Allow Commit Branch");
    public static final ATSAttributes WORKING_BRANCH_WIDGET = new ATSAttributes("Working Branch");
+   public static final ATSAttributes VALIDATE_REQ_CHANGES_WIDGET = new ATSAttributes("Validate Requirement Changes");
    public static final ATSAttributes ROLE_ATTRIBUTE = new ATSAttributes("Role");
    public static final ATSAttributes ACTIONABLE_ITEM_GUID_ATTRIBUTE =
          new ATSAttributes("Actionable Item", "Actionable Items that are impacted by this change.");
