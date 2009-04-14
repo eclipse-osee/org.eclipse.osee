@@ -105,7 +105,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
             createTaskActionBar(mainComp);
 
-            labelWidget.setText(label + ": Double-click item to perform Action");
+            labelWidget.setText(label + ": ");
 
             xCommitManager = new CommitXManager(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
             xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -255,11 +255,17 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       try {
          if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr() != null) {
             if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isAllVersionsToCommitToConfigured()) {
+               extraInfoLabel.setText("All branches must be configured and committed - Double-click item to perform Action");
+               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
                return new Result(false, "All branches must be configured and committed.");
             }
             if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
+               extraInfoLabel.setText("All branches must be committed - Double-click item to perform Action");
+               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
                return new Result(false, "All branches must be committed.");
             }
+            extraInfoLabel.setText("Double-click item to perform Action");
+            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
