@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
@@ -262,11 +263,11 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
          searchComposite.setHelpContextForOption(option.asLabel(), option.getHelpContext());
          searchComposite.setToolTipForOption(option.asLabel(), option.getToolTip());
       }
-      
+
       branchLabel = new Label(parent, SWT.NONE);
       branchLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       branchLabel.setText("");
-      
+
    }
 
    private void createActions() {
@@ -283,22 +284,20 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
    }
 
    public void handleEvent(Event event) {
-      branchLabel.setText("");
-      if (branchSelect.getData() == null) {
-         branchLabel.setText("Error: Must Select a Branch");
-         throw new IllegalArgumentException("Must select a Branch");
-      }
-      if (searchComposite != null) {
-         if (searchComposite.isExecuteSearchEvent(event)) {
+      if (branchLabel != null && !branchLabel.isDisposed() && branchSelect != null) {
+         branchLabel.setText("");
+         final Branch branch = branchSelect.getData();
+         if (branch == null) {
+            branchLabel.setText("Error: Must Select a Branch");
+         } else if (searchComposite != null && searchComposite.isExecuteSearchEvent(event)) {
             NewSearchUI.activateSearchResultView();
             if (searchComposite.isOptionSelected(SearchOption.By_Id.asLabel())) {
-               NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(),
-                     branchSelect.getData(),
+               NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(), branch,
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel())));
             } else {
                NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(
                      searchComposite.getQuery(),
-                     branchSelect.getData(),
+                     branch,
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.Match_Word_Order.asLabel()),
                      searchComposite.isOptionSelected(SearchOption.All_Match_Locations.asLabel()),
