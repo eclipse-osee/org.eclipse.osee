@@ -151,10 +151,10 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    }
 
    public String getHtml(String backgroundColor) {
-      return getHtml(backgroundColor, "");
+      return getHtml(backgroundColor, "", "");
    }
 
-   public String getHtml(String backgroundColor, String preHtml) {
+   public String getHtml(String backgroundColor, String preHtml, String postHtml) {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.startBorderTable(100, backgroundColor, getName()));
       if (preHtml != null) {
@@ -162,6 +162,9 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       }
       for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
          sb.append(layoutData.getXWidget().toHTML(AHTML.LABEL_FONT) + AHTML.newline());
+      }
+      if (postHtml != null) {
+         sb.append(postHtml);
       }
       sb.append(AHTML.endBorderTable());
       return sb.toString();

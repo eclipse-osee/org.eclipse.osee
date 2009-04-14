@@ -59,6 +59,7 @@ public class SMAHistoryComposite extends Composite {
 
    public void refresh() throws OseeCoreException {
       if (xResultsComp != null && !xResultsComp.isDisposed()) {
+         //         System.out.println("SMAHistoryComposite refresh...");
          xResultsComp.setHtmlText(smaMgr.getLog().getHtml(true), smaMgr.getSma().getArtifactTypeName() + " History");
       }
    }

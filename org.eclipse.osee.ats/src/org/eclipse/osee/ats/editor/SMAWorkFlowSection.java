@@ -95,6 +95,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public static String TRANSITION_TO_STATE_COMBO = "Transition To State Combo";
    private Composite mainComp;
    private DynamicXWidgetLayout dynamicXWidgetLayout;
+   private SMAReviewComposite reviewComposite;
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws OseeCoreException {
       super(parent, toolkit, style);
@@ -191,7 +192,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
 
-      SMAWorkFlowTab.createStateReviewsFooter(workComp, toolkit, smaMgr, 2, atsWorkPage.getName());
+      reviewComposite = new SMAReviewComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
 
       createCurrentPageTransitionLine(workComp, atsWorkPage, toolkit);
 

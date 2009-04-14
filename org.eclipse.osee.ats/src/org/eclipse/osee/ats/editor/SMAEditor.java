@@ -136,7 +136,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                workFlowTab.saveXWidgetToArtifact();
                smaMgr.getSma().saveSMA(transaction);
                transaction.execute();
-               workFlowTab.refresh();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -484,7 +483,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    public void refreshPages() throws OseeCoreException {
       if (getContainer() == null || getContainer().isDisposed()) return;
-      setTitleImage(smaMgr.getSma().getImage());
       if (workFlowTab != null) workFlowTab.refresh();
       if (historyComposite != null) historyComposite.refresh();
       if (relationsComposite != null) relationsComposite.refreshArtifact(smaMgr.getSma());
@@ -752,6 +750,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                         }
                      }
                   });
+                  // Only refresh editor for first review that has event
+                  break;
                }
             }
          } catch (Exception ex) {

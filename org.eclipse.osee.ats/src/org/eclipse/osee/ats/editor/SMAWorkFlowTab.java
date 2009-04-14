@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.NoteItem;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
@@ -35,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -184,7 +182,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private final static String activeColor = "#EEEEEE";
 
    public String getHtml() throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
+      StringBuffer htmlSb = new StringBuffer();
       for (WorkPage wPage : pages) {
          AtsWorkPage page = (AtsWorkPage) wPage;
          StringBuffer notesSb = new StringBuffer();
@@ -194,12 +192,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             }
          }
          if (smaMgr.isCurrentState(page.getName()) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
-            sb.append(page.getHtml(smaMgr.isCurrentState(page.getName()) ? activeColor : normalColor,
-                  notesSb.toString()));
-            sb.append(AHTML.newline());
+            htmlSb.append(page.getHtml(smaMgr.isCurrentState(page.getName()) ? activeColor : normalColor,
+                  notesSb.toString(), SMAReviewComposite.toHTML(smaMgr, page.getName())));
+            htmlSb.append(AHTML.newline());
          }
       }
-      return sb.toString();
+      return htmlSb.toString();
    }
 
    private void fillBody(IManagedForm managedForm) throws OseeCoreException {
@@ -510,21 +508,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public static void createStateReviewsFooter(Composite comp, XFormToolkit toolkit, SMAManager smaMgr, int horizontalSpan, String forStateName) throws OseeCoreException {
-      (new Label(comp, SWT.NONE)).setText("\"" + smaMgr.getStateMgr().getCurrentStateName() + "\" State Reviews: ");
-
-      Composite workComp = toolkit.createContainer(comp, 1);
-      workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-      GridData gd = new GridData();
-      gd.horizontalIndent = 20;
-      workComp.setLayoutData(gd);
-
-      // workComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
-      for (ReviewSMArtifact revArt : smaMgr.getReviewManager().getReviews(forStateName)) {
-         createReviewHyperlink(workComp, toolkit, horizontalSpan, revArt);
-      }
-   }
-
    private static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final String str, boolean onlyState) {
       if (str.length() > 150) {
          Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
@@ -548,42 +531,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          gd.horizontalSpan = horizontalSpan;
          label.setLayoutData(gd);
       }
-   }
-
-   private static void createReviewHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final ReviewSMArtifact revArt) throws OseeCoreException {
-
-      Composite workComp = toolkit.createContainer(comp, 1);
-      workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-      workComp.setLayout(ALayout.getZeroMarginLayout(3, false));
-
-      Label imageLabel = new Label(workComp, SWT.NONE);
-      Label strLabel = new Label(workComp, SWT.NONE);
-      if (revArt.isBlocking() && !revArt.getSmaMgr().isCancelledOrCompleted()) {
-         imageLabel.setImage(ArtifactAnnotation.Type.Error.getImage());
-         strLabel.setText("Blocking [" + revArt.getArtifactTypeName() + "] must be completed: ");
-         strLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-      } else if (!revArt.getSmaMgr().isCancelledOrCompleted()) {
-         imageLabel.setImage(ArtifactAnnotation.Type.Warning.getImage());
-         strLabel.setText("Open [" + revArt.getArtifactTypeName() + "] exists: ");
-      } else {
-         strLabel.setText(revArt.getSmaMgr().getStateMgr().getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
-      }
-
-      String str = "[" + revArt.getDescriptiveName() + "]";
-      Hyperlink hyperLabel =
-            toolkit.createHyperlink(workComp, ((str.length() > 300) ? Strings.truncate(str, 300) + "..." : str),
-                  SWT.NONE);
-      hyperLabel.setToolTipText("select to open review");
-      hyperLabel.addListener(SWT.MouseUp, new Listener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
-         public void handleEvent(Event event) {
-            SMAEditor.editArtifact(revArt);
-         }
-      });
    }
 
    private void createOriginatorHeader(Composite comp, XFormToolkit toolkit) throws OseeCoreException {
@@ -638,6 +585,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    public void refresh() throws OseeCoreException {
       if (smaMgr.getEditor() != null && !smaMgr.isInTransition()) {
+         //         System.out.println("SMAWorkFlowTab refresh...");
          for (SMAWorkFlowSection section : sections) {
             section.dispose();
          }
