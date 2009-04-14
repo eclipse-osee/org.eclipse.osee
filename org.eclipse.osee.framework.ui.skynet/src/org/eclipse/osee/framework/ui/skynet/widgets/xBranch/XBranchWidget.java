@@ -60,23 +60,23 @@ public class XBranchWidget extends XWidget implements IActionable {
    private boolean filterRealTime;
    private boolean searchRealTime;
 
-   
    public XBranchWidget(boolean filterRealTime, boolean searchRealTime) {
       this();
-      
+
       this.filterRealTime = filterRealTime;
       this.searchRealTime = searchRealTime;
    }
+
    /**
     * @param label
     */
    public XBranchWidget() {
       super(VIEW_ID);
-      
+
       this.filterRealTime = false;
       this.searchRealTime = false;
    }
-   
+
    public void setBranchOptions(BranchOptions... options) {
       for (BranchOptions option : options) {
 
@@ -99,6 +99,7 @@ public class XBranchWidget extends XWidget implements IActionable {
          }
       }
    }
+
    /*
     * (non-Javadoc)
     * 
@@ -126,7 +127,9 @@ public class XBranchWidget extends XWidget implements IActionable {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      branchXViewer = new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, filterRealTime, searchRealTime);
+      branchXViewer =
+            new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, filterRealTime,
+                  searchRealTime);
       branchXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       branchContentProvider = new XBranchContentProvider(branchXViewer);
@@ -264,7 +267,9 @@ public class XBranchWidget extends XWidget implements IActionable {
    }
 
    public void loadData() {
-      extraInfoLabel.setText(LOADING);
+      if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {
+         extraInfoLabel.setText(LOADING);
+      }
 
       Job job = new Job("Banch Manager") {
 
@@ -273,8 +278,12 @@ public class XBranchWidget extends XWidget implements IActionable {
 
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
-                  extraInfoLabel.setText("");
-                  branchXViewer.setInput(BranchManager.getInstance());
+                  if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {
+                     extraInfoLabel.setText("");
+                  }
+                  if (branchXViewer != null) {
+                     branchXViewer.setInput(BranchManager.getInstance());
+                  }
                }
             });
             return Status.OK_STATUS;
