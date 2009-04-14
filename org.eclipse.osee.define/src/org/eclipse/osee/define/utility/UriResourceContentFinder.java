@@ -145,7 +145,7 @@ public class UriResourceContentFinder {
                monitor.subTask(String.format("Checking: [%s]", fileStore.getName()));
                CharBuffer fileBuffer = getContents(monitor, fileStore);
                if (locator.hasValidContent(fileBuffer)) {
-                  String fileName = locator.getIdentifier(null, fileStore, fileBuffer);
+                  String fileName = locator.getIdentifier(fileStore, fileBuffer);
                   if (!monitor.isCanceled()) {
                      notifyListeners(locator, fileStore.toURI(), fileName, fileBuffer);
                   }

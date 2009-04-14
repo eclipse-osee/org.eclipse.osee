@@ -24,5 +24,5 @@ public interface IResourceLocator {
 
    public boolean hasValidContent(CharBuffer fileBuffer);
 
-   public String getIdentifier(String basePath, IFileStore fileStore, CharBuffer fileBuffer) throws Exception;
+   public String getIdentifier(IFileStore fileStore, CharBuffer fileBuffer) throws Exception;
 }
