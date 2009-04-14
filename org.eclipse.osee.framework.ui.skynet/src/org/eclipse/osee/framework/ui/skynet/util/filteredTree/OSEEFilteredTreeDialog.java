@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -32,6 +31,8 @@ public abstract class OSEEFilteredTreeDialog extends MessageDialog {
    private Button okButton;
    private OSEEFilteredTree treeViewer;
    private final PatternFilter patternFilter;
+   private boolean checkTree = true;
+   private boolean multiSelect = true;
 
    public OSEEFilteredTreeDialog(String dialogTitle, String dialogMessage, PatternFilter patternFilter) {
       super(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
@@ -70,15 +71,16 @@ public abstract class OSEEFilteredTreeDialog extends MessageDialog {
 
       createPreCustomArea(parent);
 
-      Composite aiComp = new Composite(parent, SWT.NONE);
-      aiComp.setLayout(ALayout.getZeroMarginLayout());
-      aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+      Composite comp = new Composite(parent, SWT.NONE);
+      comp.setLayout(ALayout.getZeroMarginLayout());
+      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       treeViewer =
-            new OSEECheckedFilteredTree(aiComp,
-                  SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
+            new OSEECheckedFilteredTree(
+                  comp,
+                  (multiSelect ? SWT.MULTI : SWT.SINGLE) | (isCheckTree() ? SWT.CHECK : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
+                  patternFilter);
       treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      treeViewer.getViewer().setSorter(new ArtifactNameSorter());
       treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             updateStatusLabel();
@@ -118,6 +120,34 @@ public abstract class OSEEFilteredTreeDialog extends MessageDialog {
     */
    public OSEEFilteredTree getTreeViewer() {
       return treeViewer;
+   }
+
+   /**
+    * @return the isCheckTree
+    */
+   public boolean isCheckTree() {
+      return checkTree;
+   }
+
+   /**
+    * @param isCheckTree the isCheckTree to set
+    */
+   public void setCheckTree(boolean checkTree) {
+      this.checkTree = checkTree;
+   }
+
+   /**
+    * @return the isMultiSelect
+    */
+   public boolean isMultiSelect() {
+      return multiSelect;
+   }
+
+   /**
+    * @param isMultiSelect the isMultiSelect to set
+    */
+   public void setMultiSelect(boolean multiSelect) {
+      this.multiSelect = multiSelect;
    }
 
 }

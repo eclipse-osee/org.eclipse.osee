@@ -85,8 +85,8 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
       aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       treeViewer =
-            new OSEECheckedFilteredTree(aiComp, SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
-                  patternFilter);
+            new OSEECheckedFilteredTree(aiComp,
+                  SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
       treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.getViewer().setContentProvider(contentProvider);
       treeViewer.getViewer().setLabelProvider(labelProvider);

@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.PaintEvent;
@@ -30,7 +29,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
  */
 public class OSEECheckedFilteredTree extends OSEEFilteredTree {
 
-   private Set<Object> checked = new HashSet<Object>();
+   private final Set<Object> checked = new HashSet<Object>();
 
    /**
     * @param parent
@@ -38,7 +37,7 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
     * @param filter
     */
    public OSEECheckedFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
-      super(parent, treeStyle | SWT.CHECK, filter);
+      super(parent, treeStyle, filter);
    }
 
    /* (non-Javadoc)

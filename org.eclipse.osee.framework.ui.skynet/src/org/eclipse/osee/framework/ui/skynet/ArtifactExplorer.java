@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -89,6 +88,7 @@ import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
@@ -283,7 +283,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                try {
                   branch = branchSelect.getData();
                   if (branch != null) {
-                  explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
+                     explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
                   }
                } catch (Exception ex) {
                   OseeLog.log(getClass(), Level.SEVERE, ex);
@@ -488,7 +488,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(newArtifactExplorer);
    }
-   
+
    private void createShowChangeReportAction() {
       showChangeReport = new Action("Show Change Report") {
          @Override
@@ -496,7 +496,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             try {
                ChangeView.open(branch);
             } catch (OseeArgumentException ex) {
-               OseeLog.log(SkynetGuiPlugin.class,OseeLevel.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
             }
          }
       };
@@ -533,60 +533,55 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    private void createNewItemMenuItem(Menu parentMenu) {
-      SelectionAdapter listener = new NewArtifactMenuListener();
-      createMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      Menu subMenu = new Menu(parentMenu.getShell(), SWT.DROP_DOWN);
-      createMenuItem.setMenu(subMenu);
+      createMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       needProjectListener.add(createMenuItem);
       createMenuItem.setText("&New Child");
       createMenuItem.setEnabled(true);
-
-      try {
-         Collection<ArtifactType> data = TypeValidityManager.getValidArtifactTypes(branchSelect.getData());
-         List<ArtifactType> descriptors = new ArrayList<ArtifactType>(data);
-         Collections.sort(descriptors);
-         for (ArtifactType descriptor : descriptors) {
-            if (!descriptor.getName().equals("Root Artifact")) {
-               MenuItem item = new MenuItem(subMenu, SWT.PUSH);
-               item.setText(descriptor.getName());
-               item.setImage(descriptor.getImage());
-               item.setData(descriptor);
-               item.addSelectionListener(listener);
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   private class NewArtifactMenuListener extends SelectionAdapter {
-      @Override
-      public void widgetSelected(SelectionEvent ev) {
-         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         Iterator<?> itemsIter = selection.iterator();
-         ArtifactType descriptor = (ArtifactType) ((MenuItem) ev.getSource()).getData();
-
-         EntryDialog ed =
-               new EntryDialog("New \"" + descriptor.getName() + "\" Artifact",
-                     "Enter name for \"" + descriptor.getName() + "\" Artifact");
-         if (ed.open() != 0) return;
-         try {
-            // If nothing was selected, then the child belongs at the root
-            if (!itemsIter.hasNext()) {
-               exploreRoot.addNewChild(descriptor, ed.getEntry()).persistAttributesAndRelations();
-               ;
-            } else {
-               while (itemsIter.hasNext()) {
-                  ((Artifact) itemsIter.next()).addNewChild(descriptor, ed.getEntry()).persistAttributesAndRelations();
-                  ;
+      createMenuItem.addSelectionListener(new SelectionAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+          */
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            super.widgetSelected(e);
+            try {
+               Collection<ArtifactType> data = TypeValidityManager.getValidArtifactTypes(branchSelect.getData());
+               List<ArtifactType> descriptors = new ArrayList<ArtifactType>();
+               for (ArtifactType descriptor : new ArrayList<ArtifactType>(data)) {
+                  if (!descriptor.getName().equals("Root Artifact")) {
+                     descriptors.add(descriptor);
+                  }
                }
+               ArtifactTypeFilteredTreeDialog dialog =
+                     new ArtifactTypeFilteredTreeDialog("New Child", "Select Artifact to Create", descriptors);
+
+               if (dialog.open() == 0) {
+
+                  ArtifactType descriptor = dialog.getSelection();
+                  EntryDialog ed =
+                        new EntryDialog("New \"" + descriptor.getName() + "\" Artifact",
+                              "Enter name for \"" + descriptor.getName() + "\" Artifact");
+                  if (ed.open() != 0) return;
+                  IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+                  Iterator<?> itemsIter = selection.iterator();
+                  // If nothing was selected, then the child belongs at the root
+                  if (!itemsIter.hasNext()) {
+                     exploreRoot.addNewChild(descriptor, ed.getEntry()).persistAttributesAndRelations();
+                     ;
+                  } else {
+                     while (itemsIter.hasNext()) {
+                        ((Artifact) itemsIter.next()).addNewChild(descriptor, ed.getEntry()).persistAttributesAndRelations();
+                        ;
+                     }
+                  }
+                  treeViewer.refresh();
+                  treeViewer.refresh(false);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
-            treeViewer.refresh();
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-         treeViewer.refresh(false);
-      }
+      });
    }
 
    private void createGoIntoMenuItem(Menu parentMenu) {
@@ -662,10 +657,12 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   try {
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, String.format("Could not find Artifact \'%s\' on Branch \'%s\'",artifact.getDescriptiveName(), branch.getBranchName()));
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, String.format(
+                           "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getDescriptiveName(),
+                           branch.getBranchName()));
                   }
                }
-               
+
             }
          }
       });

@@ -92,7 +92,7 @@ public class NewActionPage1 extends WizardPage {
          (new Label(aiComp, SWT.NONE)).setText("Select Actionable Items:");
          treeViewer =
                new OSEECheckedFilteredTree(aiComp,
-                     SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
+                     SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
          treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
          treeViewer.getViewer().setLabelProvider(new ArtifactLabelProvider());
