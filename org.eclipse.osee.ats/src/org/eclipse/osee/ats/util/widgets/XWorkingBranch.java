@@ -238,9 +238,10 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
     */
    @Override
    public void refresh() {
-      if (labelWidget != null) {
-         labelWidget.setText(label + ": " + getWorkingBranchShortName() + " " + getStatus());
+      if (labelWidget == null || labelWidget.isDisposed()) {
+         return;
       }
+      labelWidget.setText(label + ": " + getWorkingBranchShortName() + " " + getStatus());
       try {
          if (smaMgr != null && smaMgr.getBranchMgr() != null) {
             if (createBranch != null) {

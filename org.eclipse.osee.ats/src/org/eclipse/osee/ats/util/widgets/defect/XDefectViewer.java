@@ -116,8 +116,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
       createTaskActionBar(mainComp);
 
-      (new Label(mainComp, SWT.None)).setText("Select \"New Defect\" to add.  Select icon in cell to update value or Alt-Left-Click to update field.");
-
       xViewer = new DefectXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xViewer.setContentProvider(new DefectContentProvider(xViewer));
       xViewer.setLabelProvider(new DefectLabelProvider(xViewer));
@@ -445,20 +443,23 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
    public Result isValid() {
       try {
          if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
-            extraInfoLabel.setText("At least one defect entry is required");
+            extraInfoLabel.setText("At least one defect entry is required.  Select \"New Defect\" to add.");
+            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             return new Result("At least one defect entry is required");
          }
          if (reviewArt != null) {
             for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
                if (item.isClosed() == false || item.getDisposition() == Disposition.None || (item.getSeverity() == Severity.None && (item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject))) {
-                  extraInfoLabel.setText("Review not complete until all items are marked for severity, disposition and closed");
+                  extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
+                  extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
                   return new Result(
                         "Review not complete until all items are marked for severity, disposition and closed");
                }
 
             }
          }
-         extraInfoLabel.setText("");
+         extraInfoLabel.setText("Select \"New Defect\" to add.  Select icon in cell or right-click to update field.");
+         extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
          return Result.TrueResult;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

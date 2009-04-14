@@ -98,8 +98,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
       createTaskActionBar(mainComp);
 
-      (new Label(mainComp, SWT.None)).setText("Select \"New Role\" to add.  Select icon in cell to update value.");
-
       xViewer = new UserRoleXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -301,15 +299,18 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    public Result isValid() {
       try {
          if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
-            extraInfoLabel.setText("At least one role entry is required");
+            extraInfoLabel.setText("At least one role entry is required. Select \"New Role\" to add.");
+            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             return new Result("At least one role entry is required");
          }
          Result result = reviewArt.isUserRoleValid();
          if (result.isFalse()) {
-            extraInfoLabel.setText(result.getText());
+            extraInfoLabel.setText(result.getText() + " - Select \"New Role\" to add.  Select icon in cell to update value.");
+            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             return result;
          }
-         extraInfoLabel.setText("");
+         extraInfoLabel.setText("Select \"New Role\" to add.  Select icon in cell to update value.");
+         extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
          return Result.TrueResult;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
