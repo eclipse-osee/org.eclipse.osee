@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
 /**
@@ -145,12 +146,16 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          @Override
          public void handleEvent(Event event) {
             Button button = optionButtons.get(IS_FILE_WITH_MULTI_PATHS_KEY);
-            if (button != null && !button.isDisposed()) {
+            if (isWidgetAccessible(button) && isWidgetAccessible(directoryFileSelector)) {
                button.setEnabled(!directoryFileSelector.isDirectorySelected());
             }
             setPageComplete(determinePageCompletion());
          }
       });
+   }
+
+   private boolean isWidgetAccessible(Widget widget) {
+      return widget != null && !widget.isDisposed();
    }
 
    /**
@@ -302,11 +307,11 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    }
 
    public URI getSourceURI() {
-      return directoryFileSelector.getFile().toURI();
+      return isWidgetAccessible(directoryFileSelector) ? directoryFileSelector.getFile().toURI() : null;
    }
 
    public Branch getSelectedBranch() {
-      return branchSelectComposite.getSelectedBranch();
+      return isWidgetAccessible(branchSelectComposite) ? branchSelectComposite.getSelectedBranch() : null;
    }
 
    public boolean isFolderRecursionAllowed() {
@@ -318,7 +323,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    }
 
    public boolean isFileContainingMultiplePaths() {
-      return !directoryFileSelector.isDirectorySelected() && isFileContainingMultiplePaths.getValue();
+      return isWidgetAccessible(directoryFileSelector) ? !directoryFileSelector.isDirectorySelected() && isFileContainingMultiplePaths.getValue() : isFileContainingMultiplePaths.getValue();
    }
 
    public String[] getTraceUnitHandlerIds() {
@@ -342,12 +347,14 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       if (settings != null) {
 
          String source = settings.get(SOURCE_URI_KEY);
-         if (Strings.isValid(source)) {
-            directoryFileSelector.setDirectorySelected(settings.getBoolean(SOURCE_URI_IS_DIRECTORY_KEY));
-            try {
-               directoryFileSelector.setText(new File(new URI(source)).getAbsolutePath());
-            } catch (URISyntaxException ex) {
-               // Do Nothing
+         if (currentResourceSelection == null || !currentResourceSelection.isAccessible()) {
+            if (Strings.isValid(source)) {
+               directoryFileSelector.setDirectorySelected(settings.getBoolean(SOURCE_URI_IS_DIRECTORY_KEY));
+               try {
+                  directoryFileSelector.setText(new File(new URI(source)).getAbsolutePath());
+               } catch (URISyntaxException ex) {
+                  // Do Nothing
+               }
             }
          }
 

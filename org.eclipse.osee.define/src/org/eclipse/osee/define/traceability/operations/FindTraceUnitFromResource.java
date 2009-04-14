@@ -63,12 +63,12 @@ public class FindTraceUnitFromResource {
       try {
          IFileStore fileStore = EFS.getStore(resource.getLocationURI());
          for (ITraceUnitResourceLocator locator : locators) {
-            if (locator.isValidFileStore(fileStore)) {
+            if (locator.isValidFile(fileStore)) {
                InputStream inputStream = null;
                try {
                   inputStream = fileStore.openInputStream(EFS.NONE, new NullProgressMonitor());
                   CharBuffer buffer = Lib.inputStreamToCharBuffer(inputStream);
-                  String identifier = locator.getIdentifier(fileStore, buffer);
+                  String identifier = locator.getIdentifier(null, fileStore, buffer);
                   String traceType = locator.getTraceUnitType(identifier, buffer);
                   idStore.put(traceType, identifier);
                } catch (Exception ex) {

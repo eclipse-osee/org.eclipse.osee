@@ -18,9 +18,11 @@ import org.eclipse.core.filesystem.IFileStore;
  */
 public interface IResourceLocator {
 
-   public boolean isValidFileStore(IFileStore fileStore);
+   public boolean isValidDirectory(IFileStore fileStore);
+
+   public boolean isValidFile(IFileStore fileStore);
 
    public boolean hasValidContent(CharBuffer fileBuffer);
 
-   public String getIdentifier(IFileStore fileStore, CharBuffer fileBuffer) throws Exception;
+   public String getIdentifier(String basePath, IFileStore fileStore, CharBuffer fileBuffer) throws Exception;
 }

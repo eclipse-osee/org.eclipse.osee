@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -80,7 +81,9 @@ public class UriResourceContentFinder {
       IFileInfo info = fileStore.fetchInfo(EFS.NONE, monitor);
       if (info != null && info.exists()) {
          for (String path : Lib.readListFromFile(new File(fileStore.toURI()), true)) {
-            processFileStore(monitor, EFS.getStore(new URI(path)));
+            if (Strings.isValid(path)) {
+               processFileStore(monitor, EFS.getStore(new File(path).toURI()));
+            }
             if (monitor.isCanceled()) {
                break;
             }
@@ -99,21 +102,38 @@ public class UriResourceContentFinder {
       }
    }
 
-   private void processDirectory(IProgressMonitor monitor, IFileStore fileStore) throws Exception {
-      boolean isProcessingAllowed = false;
-      for (IFileStore childStore : fileStore.childStores(EFS.NONE, monitor)) {
-         System.out.println(childStore.getName());
+   private boolean isValidDirectory(IProgressMonitor monitor, IFileStore fileStore) {
+      boolean result = false;
+      for (IResourceLocator locator : locatorMap.keySet()) {
          if (monitor.isCanceled()) {
             break;
          }
-         if (!isRecursionAllowed) {
-            isProcessingAllowed = !childStore.fetchInfo().isDirectory();
-         } else {
-            isProcessingAllowed = true;
+         if (locator.isValidDirectory(fileStore)) {
+            result = true;
+            break;
          }
+      }
+      return result;
+   }
 
-         if (isProcessingAllowed) {
-            processFileStore(monitor, childStore);
+   private void processDirectory(IProgressMonitor monitor, IFileStore fileStore) throws Exception {
+      if (isValidDirectory(monitor, fileStore)) {
+         boolean isProcessingAllowed = false;
+         for (IFileStore childStore : fileStore.childStores(EFS.NONE, monitor)) {
+            isProcessingAllowed = false;
+            if (monitor.isCanceled()) {
+               break;
+            }
+            if (!isRecursionAllowed) {
+               isProcessingAllowed = !childStore.fetchInfo().isDirectory();
+            } else {
+               isProcessingAllowed = true;
+            }
+
+            if (isProcessingAllowed) {
+               System.out.println(childStore.toURI().toASCIIString() + " - " + childStore.getName());
+               processFileStore(monitor, childStore);
+            }
          }
       }
    }
@@ -121,11 +141,11 @@ public class UriResourceContentFinder {
    private void processFile(IProgressMonitor monitor, IFileStore fileStore) throws Exception {
       if (!monitor.isCanceled()) {
          for (IResourceLocator locator : locatorMap.keySet()) {
-            if (locator.isValidFileStore(fileStore)) {
+            if (locator.isValidFile(fileStore)) {
                monitor.subTask(String.format("Checking: [%s]", fileStore.getName()));
                CharBuffer fileBuffer = getContents(monitor, fileStore);
                if (locator.hasValidContent(fileBuffer)) {
-                  String fileName = locator.getIdentifier(fileStore, fileBuffer);
+                  String fileName = locator.getIdentifier(null, fileStore, fileBuffer);
                   if (!monitor.isCanceled()) {
                      notifyListeners(locator, fileStore.toURI(), fileName, fileBuffer);
                   }

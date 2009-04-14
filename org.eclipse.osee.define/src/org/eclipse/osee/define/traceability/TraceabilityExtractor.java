@@ -34,7 +34,7 @@ public class TraceabilityExtractor {
    private static final Pattern embeddedVolumePattern = Pattern.compile("\\{\\d+ (.*)\\}[ .]*");
    private static final Pattern nonWordPattern = Pattern.compile("[^A-Z_0-9]");
    private static final Pattern structuredReqNamePattern = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)");
-   private static final Pattern stripTrailingReqNamePatern = Pattern.compile("(:?\\}|\\])^\\.(.*)");
+   private static final Pattern stripTrailingReqNamePatern = Pattern.compile("(\\}|\\])(.*)");
 
    private static TraceabilityExtractor instance = null;
    private final Matcher scriptReqTraceMatcher;
@@ -110,7 +110,10 @@ public class TraceabilityExtractor {
          // Added to strip trailing artifact descriptive names } ... or ] ....
          stripTrailingReqNameMatcher.reset(canonicalReqReference);
          if (stripTrailingReqNameMatcher.find()) {
-            canonicalReqReference = canonicalReqReference.substring(0, stripTrailingReqNameMatcher.start(1) + 1);
+            String trail = stripTrailingReqNameMatcher.group(2);
+            if (Strings.isValid(trail) && !trail.startsWith(".")) {
+               canonicalReqReference = canonicalReqReference.substring(0, stripTrailingReqNameMatcher.start(1) + 1);
+            }
          }
 
          nonWordMatcher.reset(canonicalReqReference);
