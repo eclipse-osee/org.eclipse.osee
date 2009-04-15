@@ -21,8 +21,10 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -69,8 +71,16 @@ public class SMAReviewComposite extends Composite {
                      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
                      for (ReviewSMArtifact revArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
                         if (!revArt.getSmaMgr().isCancelledOrCompleted()) {
-                           revArt.getSmaMgr().transitionToCompleted("", transaction,
-                                 TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
+                           if (revArt.getSmaMgr().getStateMgr().isUnAssigned()) {
+                              revArt.getSmaMgr().getStateMgr().setAssignee(UserManager.getUser());
+                           }
+                           Result result =
+                                 revArt.getSmaMgr().transitionToCompleted("", transaction,
+                                       TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
+                           if (result.isFalse()) {
+                              result.popup();
+                              return;
+                           }
                         }
                      }
                      transaction.execute();
