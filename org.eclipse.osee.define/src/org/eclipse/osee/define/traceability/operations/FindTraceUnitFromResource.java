@@ -12,6 +12,7 @@ package org.eclipse.osee.define.traceability.operations;
 
 import java.io.InputStream;
 import java.nio.CharBuffer;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -108,7 +109,13 @@ public class FindTraceUnitFromResource {
 
          if (!artifacts.isEmpty()) {
             openArtifacts(artifacts);
+         } else {
+            AWorkbench.popup("Find Trace Unit from Resource", String.format("Unable to find trace for: %s",
+                  Arrays.deepToString(resources)));
          }
+      } else {
+         AWorkbench.popup("Find Trace Unit from Resource", String.format("Unable to find trace handler for: %s",
+               Arrays.deepToString(resources)));
       }
    }
 

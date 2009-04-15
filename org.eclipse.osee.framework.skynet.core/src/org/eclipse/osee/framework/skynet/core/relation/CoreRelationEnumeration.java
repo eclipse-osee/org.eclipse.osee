@@ -58,8 +58,8 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
    Uses__Requirement(true, "Uses"),
    Uses__TestUnit(false, "Uses"),
 
-   CodeRequirement_Requirement(true, "Code-Requirement"),
-   CodeRequirement_CodeUnit(false, "Code-Requirement"),
+   CodeRequirement_Requirement(false, "Code-Requirement"),
+   CodeRequirement_CodeUnit(true, "Code-Requirement"),
 
    TestConfigurationRelation_TestScript(true, "Test Configuration Relation"),
    TestConfigurationRelation_TestConfiguration(false, "Test Configuration Relation"),

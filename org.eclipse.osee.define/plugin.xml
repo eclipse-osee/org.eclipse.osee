@@ -189,13 +189,6 @@
     </Operation>
  </extension>
  <extension
-       id="ImportTestScriptsBlam"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.traceability.ImportTestScriptsBlam">
-    </Operation>
- </extension>
- <extension
        point="org.eclipse.ui.popupMenus">
     <viewerContribution
           id="traceFind"
@@ -224,5 +217,21 @@
              tooltip="Searches for trace units in OSEE">
        </action>
     </objectContribution>
+ </extension>
+ <extension
+       id="UiToTestBlam"
+       name="UiToTestBlam"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.traceability.blam.UiToTestBlam">
+    </Operation>
+ </extension>
+ <extension
+       id="TraceReport"
+       name="TraceReport"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.traceability.blam.TraceReportBlam">
+    </Operation>
  </extension>
 </plugin>

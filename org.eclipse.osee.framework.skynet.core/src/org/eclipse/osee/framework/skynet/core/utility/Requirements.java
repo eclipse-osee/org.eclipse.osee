@@ -14,11 +14,6 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.OseeInfo;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -64,18 +59,6 @@ public class Requirements {
    public static String SUBSYSTEM = "Subsystem";
    public static String PARTITION = "Partition";
    public static String CSCI = "CSCI";
-
-   public static String getTestCaseString() {
-      try {
-         if (OseeInfo.getValue(OSEE_INFO_TEST_CASE_KEY) == null) {
-            return "Test Case";
-         }
-         return OseeInfo.getValue(OSEE_INFO_TEST_CASE_KEY);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, OseeLevel.SEVERE, ex);
-      }
-      return "Test Case";
-   }
 
    public static boolean isSoftwareRequirement(Artifact artifact) {
       return Requirements.ALL_SOFTWARES_REQUIREMENT_TYPES.contains(artifact.getArtifactTypeName());

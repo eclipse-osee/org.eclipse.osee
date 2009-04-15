@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.data;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,10 @@ public class CodeUnitData extends BaseTraceDataCache {
    public void reset() {
       super.reset();
       codeUnitMap.clear();
+   }
+
+   public Collection<Artifact> getAllCodeUnits() {
+      return codeUnitMap.values();
    }
 
    public Artifact getCodeUnitByName(String codeUnitName) {

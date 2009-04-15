@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
@@ -397,6 +398,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          addTraceNotFoundTab(toReturn);
          addUnRelatedTraceUnit(toReturn);
          addRelationTypeNotFoundTab(toReturn);
+         if (toReturn.isEmpty()) {
+            toReturn.add(new ResultsEditorHtmlTab("Trace Unit Import Status", "Import Status", "All Items Linked"));
+         }
          return toReturn;
       }
    }

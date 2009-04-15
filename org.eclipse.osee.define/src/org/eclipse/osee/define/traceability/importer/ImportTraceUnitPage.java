@@ -49,7 +49,7 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
 /**
- * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
  */
 public class ImportTraceUnitPage extends WizardDataTransferPage {
    private static final String PAGE_NAME = "org.eclipse.osee.define.traceability.importer.importTraceUnitPage";
