@@ -389,11 +389,11 @@ public class AtsBranchManager {
     * @return true if there is at least one destination branch committed to
     */
    public boolean isCommittedBranchExists() throws OseeCoreException {
-      return (getBranchesCommittedTo().size() > 0);
+      return isAllVersionsToCommitToConfigured() && (getBranchesCommittedTo().size() > 0);
    }
 
    /**
-    * Return true if all commit destination branches have been committed to
+    * Return true if all commit destination branches are configured and have been committed to
     * 
     * @return true
     * @throws OseeCoreException
