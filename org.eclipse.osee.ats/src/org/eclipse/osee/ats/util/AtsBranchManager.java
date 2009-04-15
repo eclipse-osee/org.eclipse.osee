@@ -344,6 +344,10 @@ public class AtsBranchManager {
       return getWorkingBranch() != null;
    }
 
+   public boolean isWorkingBranch(boolean includeArchived) throws OseeCoreException {
+      return getWorkingBranch(includeArchived) != null;
+   }
+
    public Collection<VersionArtifact> getVersionsToCommitTo() throws OseeCoreException {
       Set<VersionArtifact> versionSet = new HashSet<VersionArtifact>();
       if (smaMgr.getTargetedForVersion() != null) {
