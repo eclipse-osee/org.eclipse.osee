@@ -115,35 +115,36 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, VersionArtifact verArt) throws OseeCoreException {
       Branch branch = verArt.getParentBranch();
       if (branch == null) return CommitStatus.Branch_Not_Configured;
+
+      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(teamArt, false);
+      if (branches.contains(branch)) {
+         return CommitStatus.Committed;
+      }
+      Collection<TransactionId> transactions = TransactionIdManager.getCommittedArtifactTransactionIds(teamArt);
+      for (TransactionId transId : transactions) {
+         if (transId.getBranchId() == branch.getBranchId()) {
+            return CommitStatus.Committed;
+         }
+      }
+
       Result result = teamArt.getSmaMgr().getBranchMgr().isCommitBranchAllowed(verArt);
       if (result.isFalse()) {
          return CommitStatus.Branch_Commit_Disabled;
       }
       if (teamArt.getSmaMgr().getBranchMgr().getWorkingBranch(true) == null) {
          return CommitStatus.Working_Branch_Not_Created;
-      } else if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
+      }
+      if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
          if (teamArt.getSmaMgr().getBranchMgr().isMergeCompleted(verArt.getParentBranch())) {
-            Collection<Branch> branches = teamArt.getSmaMgr().getBranchMgr().getBranchesCommittedTo();
-            if (branches.contains(branch)) {
+            Collection<Branch> committedToBranches = teamArt.getSmaMgr().getBranchMgr().getBranchesCommittedTo();
+            if (committedToBranches.contains(branch)) {
                return CommitStatus.Committed_With_Merge;
             }
             return CommitStatus.Commit_Needed_After_Merge;
          }
          return CommitStatus.Merge_In_Progress;
-      } else {
-         Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(teamArt, false);
-         if (branches.contains(branch)) {
-            return CommitStatus.Committed;
-         } else {
-            Collection<TransactionId> transactions = TransactionIdManager.getCommittedArtifactTransactionIds(teamArt);
-            for (TransactionId transId : transactions) {
-               if (transId.getBranchId() == branch.getBranchId()) {
-                  return CommitStatus.Committed;
-               }
-            }
-            return CommitStatus.Commit_Needed;
-         }
       }
+      return CommitStatus.Commit_Needed;
    }
 
    @Override
