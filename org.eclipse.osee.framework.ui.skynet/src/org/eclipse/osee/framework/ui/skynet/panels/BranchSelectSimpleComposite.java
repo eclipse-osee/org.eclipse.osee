@@ -118,7 +118,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             toReturn = (Branch) branchSelectCombo.getData(branchName);
             if (toReturn == null) {
                try {
-                  toReturn = BranchManager.getKeyedBranch(branchName);
+                  toReturn = BranchManager.getBranch(branchName);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
@@ -159,7 +159,8 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             newItems[oldLength] = branchName;
             this.branchSelectCombo.setItems(newItems);
             selectionIndex = oldLength;
-            branchSelectCombo.setData(Integer.toString(branch.getBranchId()), branch);
+            branchSelectCombo.setData(branch.getBranchName(), branch);
+            branchSelectCombo.setData(String.valueOf(branch.getBranchId()), branch);
          }
          this.branchSelectCombo.select(selectionIndex);
       }
@@ -207,6 +208,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
                if (isBranchAllowed(branch) != false) {
                   String branchName = branch.getBranchName();
                   branchSelectCombo.add(branchName);
+                  branchSelectCombo.setData(String.valueOf(branch.getBranchId()), branch);
                   branchSelectCombo.setData(branchName, branch);
                   if (toStore.equals(lastSelected)) {
                      toSelect = i;
@@ -234,7 +236,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       for (String item : items) {
          Branch branch = (Branch) branchSelectCombo.getData(item);
          if (branch != null) {
-            toReturn.add(Integer.toString(branch.getBranchId()));
+            toReturn.add(String.valueOf(branch.getBranchId()));
          }
       }
       return toReturn.toArray(new String[toReturn.size()]);
