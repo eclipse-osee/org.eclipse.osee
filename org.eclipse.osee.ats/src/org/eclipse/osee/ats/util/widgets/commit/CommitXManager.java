@@ -99,8 +99,7 @@ public class CommitXManager extends XViewer {
                   "Talk to project lead as to why commit disabled for version [" + verArt + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Commit_Needed_After_Merge) {
             destBranch = verArt.getParentBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,
-                  xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getBranchesLeftToCommit().size() == 1);
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, true);
          } else if (commitStatus == CommitStatus.Merge_In_Progress) {
             destBranch = verArt.getParentBranch();
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
