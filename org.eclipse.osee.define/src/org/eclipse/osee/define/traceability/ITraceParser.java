@@ -20,4 +20,9 @@ import org.eclipse.osee.define.traceability.data.TraceMark;
 public interface ITraceParser {
 
    public Collection<TraceMark> getTraceMarks(CharBuffer fileBuffer);
+
+   public CharBuffer removeTraceMarks(CharBuffer fileBuffer);
+
+   public boolean isTraceRemovalAllowed();
+
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.define.traceability.ITraceParser;
 import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.traceability.data.TraceMark;
@@ -78,7 +79,6 @@ public class ResourceToTraceUnit {
    }
 
    public void execute(IProgressMonitor monitor) throws OseeCoreException {
-      monitor.beginTask("Importing Test Units", IProgressMonitor.UNKNOWN);
       List<TraceUnitCollector> collectors = new ArrayList<TraceUnitCollector>();
       try {
          for (ITraceUnitResourceLocator locator : traceUnitHandlers.keySet()) {
@@ -90,26 +90,37 @@ public class ResourceToTraceUnit {
             }
          }
 
-         resourceFinder.execute(monitor);
+         final int TOTAL_WORK = Integer.MAX_VALUE;
+         final int QUARTER_TOTAL = TOTAL_WORK / 4;
+
+         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL);
+         resourceFinder.execute(subMonitor);
 
          if (!monitor.isCanceled()) {
-            notifyOnInitialize(monitor);
+            subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL);
+            notifyOnInitialize(subMonitor);
          }
 
-         for (TraceUnitCollector collector : collectors) {
-            if (monitor.isCanceled()) break;
-            if (!collector.isEmpty()) {
-               processCollector(monitor, collector);
+         if (!monitor.isCanceled()) {
+            subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL);
+            subMonitor.beginTask("Processing", collectors.size());
+            for (TraceUnitCollector collector : collectors) {
+               if (monitor.isCanceled()) break;
+               if (!collector.isEmpty()) {
+                  processCollector(subMonitor, collector);
+               }
+               subMonitor.worked(1);
             }
+            subMonitor.done();
          }
 
          if (!monitor.isCanceled()) {
-            notifyOnComplete(monitor);
+            subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL);
+            notifyOnComplete(subMonitor);
          }
       } finally {
          collectors.clear();
          clear();
-         monitor.done();
       }
    }
 
@@ -119,6 +130,7 @@ public class ResourceToTraceUnit {
          Map<String, TraceUnit> unitToTrace = testUnitCollector.getUnitsToTraceMarks(testUnitType);
          if (unitToTrace != null) {
             for (String testUnitName : unitToTrace.keySet()) {
+               monitor.subTask(String.format("Processing [%s - %s]", testUnitType, testUnitName));
                if (monitor.isCanceled()) break;
                TraceUnit testUnit = unitToTrace.get(testUnitName);
                if (testUnit != null) {
@@ -136,14 +148,20 @@ public class ResourceToTraceUnit {
    }
 
    private void notifyOnInitialize(IProgressMonitor monitor) {
+      monitor.beginTask("Initialize", traceProcessors.size());
       for (ITraceUnitProcessor traceProcessor : traceProcessors) {
+         monitor.subTask(String.format("Initializing [%s]", traceProcessor.getClass().getSimpleName()));
          traceProcessor.initialize(monitor);
+         monitor.worked(1);
       }
    }
 
    private void notifyOnComplete(IProgressMonitor monitor) throws OseeCoreException {
+      monitor.beginTask("On Completion", traceProcessors.size());
       for (ITraceUnitProcessor traceProcessor : traceProcessors) {
+         monitor.subTask(String.format("Completing [%s]", traceProcessor.getClass().getSimpleName()));
          traceProcessor.onComplete(monitor);
+         monitor.worked(1);
       }
    }
 

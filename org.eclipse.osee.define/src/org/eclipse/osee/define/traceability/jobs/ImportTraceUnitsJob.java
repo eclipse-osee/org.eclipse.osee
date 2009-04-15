@@ -50,6 +50,7 @@ public class ImportTraceUnitsJob extends Job {
    protected IStatus run(IProgressMonitor monitor) {
       IStatus status = Status.CANCEL_STATUS;
       try {
+         monitor.beginTask(getName(), Integer.MAX_VALUE);
          if (isPersistChanges) {
             TraceUnitFromResourceOperation.importTraceFromTestUnits(monitor, source, isRecursive, fileWithMultiPaths,
                   importToBranch, traceTypeIds);
@@ -62,6 +63,8 @@ public class ImportTraceUnitsJob extends Job {
          }
       } catch (Exception ex) {
          status = new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, "", ex);
+      } finally {
+         monitor.done();
       }
       return status;
    }

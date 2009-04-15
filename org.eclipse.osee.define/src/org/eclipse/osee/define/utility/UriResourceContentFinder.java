@@ -17,11 +17,14 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.CharBuffer;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
@@ -64,30 +67,56 @@ public class UriResourceContentFinder {
       }
    }
 
+   private int getTotalWork(IFileStore fileStore) throws CoreException {
+      int totalWork = 0;
+      if (fileStore.fetchInfo().isDirectory()) {
+         IFileStore[] stores = fileStore.childStores(EFS.NONE, new NullProgressMonitor());
+         if (isRecursionAllowed) {
+            for (IFileStore store : stores) {
+               totalWork += getTotalWork(store);
+            }
+         } else {
+            totalWork = stores.length;
+         }
+      } else {
+         totalWork = 1;
+      }
+      return totalWork;
+   }
+
    public void execute(IProgressMonitor monitor) throws OseeCoreException {
       try {
          IFileStore fileStore = EFS.getStore(source);
          if (isFileWithMultiplePaths) {
             processFileWithPaths(monitor, fileStore);
          } else {
+            monitor.beginTask("Scanning files", 1);
             processFileStore(monitor, fileStore);
+            monitor.worked(1);
          }
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
+      } finally {
+         monitor.done();
       }
    }
 
    private void processFileWithPaths(IProgressMonitor monitor, IFileStore fileStore) throws Exception {
       IFileInfo info = fileStore.fetchInfo(EFS.NONE, monitor);
       if (info != null && info.exists()) {
-         for (String path : Lib.readListFromFile(new File(fileStore.toURI()), true)) {
+         List<String> paths = Lib.readListFromFile(new File(fileStore.toURI()), true);
+         monitor.beginTask("Searching for files", paths.size());
+         for (String path : paths) {
             if (Strings.isValid(path)) {
                processFileStore(monitor, EFS.getStore(new File(path).toURI()));
             }
             if (monitor.isCanceled()) {
                break;
             }
+            monitor.worked(1);
          }
+      } else {
+         monitor.beginTask("Searching for files", 1);
       }
    }
 
@@ -131,22 +160,22 @@ public class UriResourceContentFinder {
             }
 
             if (isProcessingAllowed) {
-               System.out.println(childStore.toURI().toASCIIString() + " - " + childStore.getName());
                processFileStore(monitor, childStore);
             }
          }
       }
+      monitor.worked(1);
    }
 
    private void processFile(IProgressMonitor monitor, IFileStore fileStore) throws Exception {
       if (!monitor.isCanceled()) {
          for (IResourceLocator locator : locatorMap.keySet()) {
             if (locator.isValidFile(fileStore)) {
-               monitor.subTask(String.format("Checking: [%s]", fileStore.getName()));
                CharBuffer fileBuffer = getContents(monitor, fileStore);
                if (locator.hasValidContent(fileBuffer)) {
                   String fileName = locator.getIdentifier(fileStore, fileBuffer);
                   if (!monitor.isCanceled()) {
+                     monitor.subTask(String.format("processing [%s]", fileStore.getName()));
                      notifyListeners(locator, fileStore.toURI(), fileName, fileBuffer);
                   }
                }

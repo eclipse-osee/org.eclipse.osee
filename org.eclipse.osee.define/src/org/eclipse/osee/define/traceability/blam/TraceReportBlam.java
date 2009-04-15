@@ -10,19 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.blam;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.define.DefinePlugin;
@@ -92,7 +91,7 @@ public class TraceReportBlam extends AbstractBlam {
     */
    @Override
    public String getDescriptionUsage() {
-      return "Usage Info here";
+      return "Generates a trace report by scanning the selected branch for the selected trace unit types.";
    }
 
    private String getOperationsCheckBoxes(String value) {
@@ -106,7 +105,7 @@ public class TraceReportBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
-      builder.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"Select UI List File\" />");
+      //      builder.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"Select UI List File\" />");
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" />");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Trace Types:\"/>");
       for (TraceTypeEnum traceType : TraceTypeEnum.values()) {
@@ -119,24 +118,24 @@ public class TraceReportBlam extends AbstractBlam {
       return builder.toString();
    }
 
-   private String getUIsFilterFromFile(IProgressMonitor monitor, String filePath) throws Exception {
-      String input;
-      File file = new File(filePath);
-      if (file == null || !file.exists()) {
-         throw new OseeArgumentException("UI list file not accessible");
-      }
-      IFileStore fileStore = EFS.getStore(file.toURI());
-      InputStream inputStream = null;
-      try {
-         inputStream = new BufferedInputStream(fileStore.openInputStream(EFS.NONE, monitor));
-         input = Lib.inputStreamToString(inputStream);
-      } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
-      }
-      return input;
-   }
+   //   private String getUIsFilterFromFile(IProgressMonitor monitor, String filePath) throws Exception {
+   //      String input;
+   //      File file = new File(filePath);
+   //      if (file == null || !file.exists()) {
+   //         throw new OseeArgumentException("UI list file not accessible");
+   //      }
+   //      IFileStore fileStore = EFS.getStore(file.toURI());
+   //      InputStream inputStream = null;
+   //      try {
+   //         inputStream = new BufferedInputStream(fileStore.openInputStream(EFS.NONE, monitor));
+   //         input = Lib.inputStreamToString(inputStream);
+   //      } finally {
+   //         if (inputStream != null) {
+   //            inputStream.close();
+   //         }
+   //      }
+   //      return input;
+   //   }
 
    private List<TraceTypeEnum> getCheckedTraceItems(VariableMap variableMap) throws OseeArgumentException {
       List<TraceTypeEnum> toReturn = new ArrayList<TraceTypeEnum>();
@@ -165,6 +164,7 @@ public class TraceReportBlam extends AbstractBlam {
     */
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+
       //      String fileName = variableMap.getString("Select UI List File");
       Branch branch = variableMap.getBranch("Requirements Branch");
       if (branch == null) {
@@ -182,25 +182,36 @@ public class TraceReportBlam extends AbstractBlam {
       }
       ISheetWriter writer = null;
       CharBackedInputStream excelInputStream = null;
-      List<AbstractArtifactRelationReport> reports = new ArrayList<AbstractArtifactRelationReport>();
+      Map<String, AbstractArtifactRelationReport> reports = new LinkedHashMap<String, AbstractArtifactRelationReport>();
       List<BaseTraceDataCache> traceCache = new ArrayList<BaseTraceDataCache>();
       RequirementData reqData = new RequirementData(branch);
       CodeUnitData codeUnit = null;
       TestUnitData testUnit = null;
       try {
-         reqData.initialize(monitor);
+         int TOTAL_WORK = Integer.MAX_VALUE;
+         int TASK_WORK = TOTAL_WORK / 5;
+         monitor.beginTask("Generate Trace Report", TOTAL_WORK);
+
+         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
+         reqData.initialize(subMonitor);
          traceCache.add(reqData);
 
+         subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
          if (isCodeUnitNeeded(traceTypes)) {
             codeUnit = new CodeUnitData(branch);
-            codeUnit.initialize(monitor);
+            codeUnit.initialize(subMonitor);
             traceCache.add(codeUnit);
+         } else {
+            subMonitor.done();
          }
 
+         subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
          if (isTestCaseNeeded(traceTypes) || isTestSupportNeeded(traceTypes)) {
             testUnit = new TestUnitData(branch);
-            testUnit.initialize(monitor);
+            testUnit.initialize(subMonitor);
             traceCache.add(testUnit);
+         } else {
+            subMonitor.done();
          }
 
          if (!monitor.isCanceled()) {
@@ -214,30 +225,59 @@ public class TraceReportBlam extends AbstractBlam {
                   testUnit, traceTypes));
             buildReport(reports, "Requirement Trace Counts", output, writer, getTraceCountReport(reqData, traceTypes));
 
-            for (AbstractArtifactRelationReport report : reports) {
-               if (monitor.isCanceled()) break;
-               report.process(monitor);
+            subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
+            executeReports(subMonitor, reports);
+         }
+         subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
+         displayReports(subMonitor, writer, excelInputStream);
+      } finally {
+         try {
+            for (AbstractArtifactRelationReport report : reports.values()) {
                report.clear();
             }
+            for (BaseTraceDataCache cache : traceCache) {
+               cache.reset();
+            }
+            reports.clear();
+            traceCache.clear();
+
+            resultsTabs.clear();
+         } finally {
+            monitor.done();
          }
+      }
+   }
+
+   private void executeReports(IProgressMonitor monitor, Map<String, AbstractArtifactRelationReport> reports) throws OseeCoreException {
+      try {
+         monitor.beginTask("Create Reports", reports.size());
+         for (String key : reports.keySet()) {
+            monitor.subTask(String.format("Creating [%s]", key));
+            if (monitor.isCanceled()) break;
+            AbstractArtifactRelationReport report = reports.get(key);
+            report.process(monitor);
+            report.clear();
+            monitor.worked(1);
+         }
+      } finally {
+         monitor.done();
+      }
+   }
+
+   private void displayReports(IProgressMonitor monitor, ISheetWriter writer, InputStream inputStream) throws IOException, OseeCoreException {
+      try {
+         monitor.beginTask("Open Reports", !resultsTabs.isEmpty() ? (inputStream != null ? 2 : 1) : 1);
          if (!resultsTabs.isEmpty()) {
-            if (excelInputStream != null) {
+            if (inputStream != null) {
                writer.endWorkbook();
-               openExcel(excelInputStream);
+               openExcel(inputStream);
+               monitor.worked(1);
             }
             openReport(resultsTabs);
          }
+         monitor.worked(1);
       } finally {
-         for (AbstractArtifactRelationReport report : reports) {
-            report.clear();
-         }
-         for (BaseTraceDataCache cache : traceCache) {
-            cache.reset();
-         }
-         reports.clear();
-         traceCache.clear();
-
-         resultsTabs.clear();
+         monitor.done();
       }
    }
 
@@ -245,14 +285,14 @@ public class TraceReportBlam extends AbstractBlam {
       return output == OutputType.Excel || output == OutputType.Both;
    }
 
-   private void buildReport(List<AbstractArtifactRelationReport> reports, String title, OutputType output, ISheetWriter writer, AbstractArtifactRelationReport report) {
+   private void buildReport(Map<String, AbstractArtifactRelationReport> reports, String title, OutputType output, ISheetWriter writer, AbstractArtifactRelationReport report) {
       if (isExcelOutput(output)) {
          report.addReportDataCollector(new ExcelReport(title, writer));
       }
       if (output == OutputType.ResultsEditor || output == OutputType.Both) {
          report.addReportDataCollector(new ResultEditorReport(title));
       }
-      reports.add(report);
+      reports.put(title, report);
    }
 
    private void openExcel(final InputStream inputStream) throws OseeCoreException {

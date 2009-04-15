@@ -234,4 +234,12 @@
           className="org.eclipse.osee.define.traceability.blam.TraceReportBlam">
     </Operation>
  </extension>
+ <extension
+       id="RemoveTraceMarksFromTraceUnits"
+       name="RemoveTraceMarksFromTraceUnits"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.traceability.blam.RemoveTraceMarksFromTraceUnits">
+    </Operation>
+ </extension>
 </plugin>
