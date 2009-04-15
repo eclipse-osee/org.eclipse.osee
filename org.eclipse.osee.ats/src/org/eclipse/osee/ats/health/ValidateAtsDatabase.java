@@ -127,7 +127,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
-      monitor.beginTask(getName(), 12);
+      monitor.beginTask(getName(), 13);
       loadAtsBranchArtifacts();
       monitor.worked(1);
       testArtifactIds();
@@ -143,6 +143,8 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       testTasksHaveParentWorkflow();
       monitor.worked(1);
       testReviewsHaveParentWorkflowOrActionableItems();
+      monitor.worked(1);
+      testReviewsHaveValidDefectAndRoleXml();
       monitor.worked(1);
       testTeamWorkflows();
       monitor.worked(1);
@@ -315,6 +317,21 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
       if (badTasks.size() > 0) {
          TaskEditor.open(new TaskEditorSimpleProvider("ValidateATSDatabase: Tasks have !=1 parent workflows.", badTasks));
+      }
+   }
+
+   private void testReviewsHaveValidDefectAndRoleXml() throws OseeCoreException {
+      xResultData.log(monitor, "testReviewsHaveValidDefectAndRoleXml");
+      for (Artifact artifact : artifacts) {
+         if (artifact instanceof ReviewSMArtifact) {
+            ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
+            if (reviewArtifact.getAttributes(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().size() == 0) {
+               xResultData.logError("Review " + reviewArtifact.getHumanReadableId() + " has defect attribute, but no defects (xml parsing error).");
+            }
+            if (reviewArtifact.getAttributes(ATSAttributes.ROLE_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().size() == 0) {
+               xResultData.logError("Review " + reviewArtifact.getHumanReadableId() + " has role attribute, but no roles (xml parsing error).");
+            }
+         }
       }
    }
 
