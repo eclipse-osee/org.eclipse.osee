@@ -108,7 +108,7 @@ public class AtsBranchManager {
                   TransactionIdManager.getStartEndPoint(getWorkingBranch()).getKey());
 
          } else if (isCommittedBranchExists()) {
-            TransactionId transactionId = getTransactionIdOrPopupChoose();
+            TransactionId transactionId = getTransactionIdOrPopupChoose(true);
             if (transactionId == null) return;
             MergeView.openView(transactionId);
          }
@@ -138,9 +138,10 @@ public class AtsBranchManager {
          MergeView.openView(getWorkingBranch(), destinationBranch, TransactionIdManager.getStartEndPoint(
                getWorkingBranch()).getKey());
       } else if (isCommittedBranchExists()) {
-         for (TransactionId transactionId : getTransactionIds()) {
+         for (TransactionId transactionId : getTransactionIds(true)) {
             if (transactionId.getBranch() == destinationBranch) {
                MergeView.openView(transactionId);
+
             }
          }
       }
@@ -193,12 +194,23 @@ public class AtsBranchManager {
    /**
     * @return TransactionId associated with this state machine artifact
     */
-   public Collection<TransactionId> getTransactionIds() throws OseeCoreException {
-      return TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
+   public Collection<TransactionId> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
+      if (showMergeManager) {
+         // grab only the transaction that had merge conflicts
+         Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
+         for (TransactionId transactionId : TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma())) {
+            if (isMergeBranchExists(transactionId.getBranch())) {
+               transactionIds.add(transactionId);
+            }
+         }
+         return transactionIds;
+      } else {
+         return TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
+      }
    }
 
    public TransactionId getEarliestTransactionId() throws OseeCoreException {
-      Collection<TransactionId> transactionIds = getTransactionIds();
+      Collection<TransactionId> transactionIds = getTransactionIds(false);
       if (transactionIds.size() == 1) return transactionIds.iterator().next();
       TransactionId earliestTransactionId = transactionIds.iterator().next();
       for (TransactionId transactionId : transactionIds) {
@@ -209,8 +221,8 @@ public class AtsBranchManager {
       return earliestTransactionId;
    }
 
-   public TransactionId getTransactionIdOrPopupChoose() throws OseeCoreException {
-      Collection<TransactionId> transactionIds = getTransactionIds();
+   public TransactionId getTransactionIdOrPopupChoose(boolean showMergeManager) throws OseeCoreException {
+      Collection<TransactionId> transactionIds = getTransactionIds(showMergeManager);
       if (transactionIds.size() == 1) {
          return transactionIds.iterator().next();
       }
@@ -271,7 +283,7 @@ public class AtsBranchManager {
          if (isWorkingBranch()) {
             ChangeView.open(getWorkingBranch());
          } else if (isCommittedBranchExists()) {
-            TransactionId transactionId = getTransactionIdOrPopupChoose();
+            TransactionId transactionId = getTransactionIdOrPopupChoose(false);
             if (transactionId == null) return;
             ChangeView.open(transactionId);
          } else {
@@ -282,9 +294,12 @@ public class AtsBranchManager {
       }
    }
 
+   /**
+    * Grab the change report for the indicated branch
+    */
    public void showChangeReportForBranch(Branch destinationBranch) {
       try {
-         for (TransactionId transactionId : getTransactionIds()) {
+         for (TransactionId transactionId : getTransactionIds(false)) {
             if (transactionId.getBranch() == destinationBranch) {
                ChangeView.open(transactionId);
             }
@@ -364,7 +379,7 @@ public class AtsBranchManager {
 
    public Collection<Branch> getBranchesCommittedTo() throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
-      for (TransactionId transId : getTransactionIds()) {
+      for (TransactionId transId : getTransactionIds(false)) {
          branches.add(transId.getBranch());
       }
       return branches;
@@ -584,9 +599,7 @@ public class AtsBranchManager {
             // Loop through this state's blocking reviews to confirm complete
             for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
-                  return new Status(
-                        Status.ERROR,
-                        AtsPlugin.PLUGIN_ID,
+                  return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
                         "Blocking Review must be completed before commit.");
                }
             }
