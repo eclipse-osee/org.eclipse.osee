@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OSEE (Incubation)
+Bundle-Name: Eclipse OSEE Product (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.ui.product;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.ui.product.OseeProductActivator
