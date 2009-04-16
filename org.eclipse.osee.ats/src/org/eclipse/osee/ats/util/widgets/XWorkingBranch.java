@@ -125,7 +125,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       deleteBranch.setToolTipText("Delete Working Branch");
       deleteBranch.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
-            smaMgr.getBranchMgr().deleteEmptyWorkingBranch();
+            smaMgr.getBranchMgr().deleteEmptyWorkingBranch(true);
             refresh();
          }
       });
@@ -163,12 +163,18 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       return "";
    }
 
-   private String getStatus() {
+   public String getStatus() {
       try {
          if (getWorkingBranch() == null) {
+            // all committed
             if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isBranchesAllCommitted()) {
                return Status.Committed.name();
             }
+            // at least one branch committed
+            else if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isCommittedBranchExists()) {
+               return Status.Changes_NotPermitted.name();
+            }
+            // otherwise, assume no working branch 
             return Status.Not_Started.name();
          } else if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isCommittedBranchExists()) {
             return Status.Changes_NotPermitted.name();
@@ -348,6 +354,22 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
             refresh();
          }
       });
+   }
+
+   public Button getCreateBranchButton() {
+      return createBranch;
+   }
+
+   public Button getShowArtifactExplorerButton() {
+      return showArtifactExplorer;
+   }
+
+   public Button getShowChangeReportButton() {
+      return showChangeReport;
+   }
+
+   public Button getDeleteBranchButton() {
+      return deleteBranch;
    }
 
 }
