@@ -61,14 +61,24 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
-      Artifact artifact = getArtifactInstance(guid, humandReadableId, transactionId.getBranch(), artifactType);
+   public synchronized Artifact reflectExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch) throws OseeCoreException {
+      return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch,
+            ModificationType.REFLECTED, false, null);
+   }
+
+   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, ModificationType modType, boolean historical, TransactionId transactionId) throws OseeCoreException {
+      Artifact artifact = getArtifactInstance(guid, humandReadableId, branch, artifactType);
 
       artifact.setArtId(artId);
       artifact.internalSetPersistenceData(gammaId, transactionId, modType, historical);
 
       ArtifactCache.cache(artifact);
       return artifact;
+   }
+
+   public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
+      return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, transactionId.getBranch(),
+            modType, historical, transactionId);
    }
 
    /**

@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 /**
  * @author Robert A. Fisher
  */
-public final class SkynetTransaction extends DbTransaction {
+public class SkynetTransaction extends DbTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
          "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
    private static final String GET_EXISTING_ATTRIBUTE_IDS =
@@ -70,9 +70,9 @@ public final class SkynetTransaction extends DbTransaction {
    private String comment;
 
    public SkynetTransaction(Branch branch) throws OseeCoreException {
-      this(branch, ""); 
+      this(branch, "");
    }
-   
+
    public SkynetTransaction(Branch branch, String comment) throws OseeCoreException {
       this.branch = branch;
       this.comment = comment;
@@ -206,28 +206,46 @@ public final class SkynetTransaction extends DbTransaction {
       artifact.persistAttributesAndRelations(this);
    }
 
+   public void addReflectedArtifact(Artifact artifact) throws OseeCoreException {
+      addArtifactHelper(artifact, artifact.getModType());
+
+      // Add Attributes to Transaction
+      for (Attribute<?> attribute : artifact.internalGetAttributes()) {
+         if (attribute != null) {
+            addReflectedAttribute(artifact, attribute);
+         }
+      }
+   }
+
    public void addArtifact(Artifact artifact) throws OseeCoreException {
       checkBranch(artifact);
       madeChanges = true;
 
-      ModificationType modificationType;
-
-      if (!artifact.isInDb()) {
-         modificationType = ModificationType.NEW;
-      } else {
-         if (artifact.isDeleted()) {
-            modificationType = ModificationType.DELETED;
-         } else {
-            modificationType = ModificationType.CHANGE;
-         }
+      if (artifact.getModType() == ModificationType.REFLECTED) {
+         addReflectedArtifact(artifact);
       }
 
-      addArtifactHelper(artifact, modificationType);
+      ModificationType modificationType;
 
-      // Add Attributes to Transaction
-      for (Attribute<?> attribute : artifact.internalGetAttributes()) {
-         if (attribute != null && attribute.isDirty()) {
-            addAttribute(artifact, attribute);
+      if (artifact.anAttributeIsDirty()) {
+
+         if (!artifact.isInDb() && artifact.getModType() != ModificationType.REFLECTED) {
+            modificationType = ModificationType.NEW;
+         } else {
+            if (artifact.isDeleted()) {
+               modificationType = ModificationType.DELETED;
+            } else {
+               modificationType = ModificationType.CHANGE;
+            }
+         }
+
+         addArtifactHelper(artifact, modificationType);
+
+         // Add Attributes to Transaction
+         for (Attribute<?> attribute : artifact.internalGetAttributes()) {
+            if (attribute != null && attribute.isDirty()) {
+               addAttribute(artifact, attribute);
+            }
          }
       }
    }
@@ -241,6 +259,10 @@ public final class SkynetTransaction extends DbTransaction {
          updateTxItem(txItem, modificationType);
       }
 
+   }
+
+   private void addReflectedAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
+      addAttributeHelper(artifact, attribute, artifact.getModType());
    }
 
    private void addAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
@@ -261,7 +283,16 @@ public final class SkynetTransaction extends DbTransaction {
             modificationType = ModificationType.NEW;
          }
       }
+      addAttributeHelper(artifact, attribute, modificationType);
+   }
 
+   /**
+    * @param artifact
+    * @param attribute
+    * @param modificationType
+    * @throws OseeDataStoreException
+    */
+   private void addAttributeHelper(Artifact artifact, Attribute<?> attribute, ModificationType modificationType) throws OseeDataStoreException {
       if (attribute.getAttrId() == 0) {
          attribute.internalSetAttributeId(getNewAttributeId(artifact, attribute));
       }

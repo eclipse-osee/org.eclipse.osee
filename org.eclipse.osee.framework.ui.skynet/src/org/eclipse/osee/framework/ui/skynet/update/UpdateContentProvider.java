@@ -18,7 +18,6 @@ public class UpdateContentProvider implements ITreeContentProvider{
     */
    @Override
    public Object[] getChildren(Object parentElement) {
-      // TODO Auto-generated method stub
       return null;
    }
 
@@ -27,7 +26,6 @@ public class UpdateContentProvider implements ITreeContentProvider{
     */
    @Override
    public Object getParent(Object element) {
-      // TODO Auto-generated method stub
       return null;
    }
 
@@ -36,7 +34,6 @@ public class UpdateContentProvider implements ITreeContentProvider{
     */
    @Override
    public boolean hasChildren(Object element) {
-      // TODO Auto-generated method stub
       return false;
    }
 
@@ -49,18 +46,13 @@ public class UpdateContentProvider implements ITreeContentProvider{
          return (Object[]) inputElement;
       }
         if (inputElement instanceof Collection) {
-         return ((Collection) inputElement).toArray();
+         return ((Collection<?>) inputElement).toArray();
       }
         return new Object[0];
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-    */
    @Override
    public void dispose() {
-      // TODO Auto-generated method stub
-      
    }
 
    /* (non-Javadoc)
@@ -68,8 +60,6 @@ public class UpdateContentProvider implements ITreeContentProvider{
     */
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      // TODO Auto-generated method stub
-      
    }
 
 }

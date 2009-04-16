@@ -52,7 +52,7 @@ public class RelationTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
-      if (getModificationType() != ModificationType.ARTIFACT_DELETED) {
+      if (getModificationType() != ModificationType.ARTIFACT_DELETED && getModificationType() != ModificationType.REFLECTED) {
          internalAddInsertToBatch(transaction, 4, INSERT_INTO_RELATION_TABLE, relation.getRelationId(),
                relation.getRelationType().getRelationTypeId(), relation.getAArtifactId(), relation.getBArtifactId(),
                relation.getRationale(), relation.getAOrder(), relation.getBOrder(), getGammaId(),
@@ -88,7 +88,7 @@ public class RelationTransactionData extends BaseTransactionData {
    @Override
    protected int createGammaId() throws OseeCoreException {
       int newGammaId = 0;
-      if (getModificationType() == ModificationType.ARTIFACT_DELETED) {
+      if (getModificationType() == ModificationType.ARTIFACT_DELETED || getModificationType() == ModificationType.REFLECTED) {
          newGammaId = relation.getGammaId();
       } else {
          newGammaId = SequenceManager.getNextGammaId();

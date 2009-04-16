@@ -266,7 +266,6 @@ public class InternalChangeManager {
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
       ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
-      ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
       ModificationType artModType;
       boolean hasBranch = sourceBranch != null;
       long time = System.currentTimeMillis();
@@ -277,7 +276,6 @@ public class InternalChangeManager {
       }
       TransactionId fromTransactionId;
       TransactionId toTransactionId;
-      int queryId;
 
       for (Change change : changes) {// cache in map for performance look ups
          artModTypes.put(change.getArtId(), change.getModificationType());
@@ -320,6 +318,7 @@ public class InternalChangeManager {
                artModType = ModificationType.CHANGE;
             }
 
+            //This will be false iff the artifact was new and then deleted
             if (!newAndDeletedArtifactIds.contains(artId)) {
                // Want to add an artifact changed item once if any attribute was modified && artifact was not
                // NEW or DELETED
@@ -332,7 +331,8 @@ public class InternalChangeManager {
                   modifiedArtifacts.add(artId);
                }
 
-               if (modificationType != ModificationType.DELETED && modificationType != ModificationType.ARTIFACT_DELETED) {
+               //Modtypes will be temporarily set to new and then revised for based on the existence of a was value
+               if (modificationType == ModificationType.CHANGE && artModType != ModificationType.REFLECTED) {
                   modificationType = ModificationType.NEW;
                }
 
@@ -352,69 +352,83 @@ public class InternalChangeManager {
          }
          monitor.updateWork(13);
          monitor.setSubtaskName("Gathering Was values");
-         //Load was values for branch change reports only
-         if (!artIds.isEmpty()) {
-            time = System.currentTimeMillis();
-            int sqlParamter; // Will either be a branch id or transaction id
-            Branch wasValueBranch;
-            String sql;
-
-            if (hasBranch) {
-               wasValueBranch = sourceBranch;
-               sql = ClientSessionManager.getSQL(OseeSql.Changes.SELECT_BRANCH_ATTRIBUTE_WAS_CHANGE);
-               sqlParamter = wasValueBranch.getBranchId();
-            } else {
-               wasValueBranch = transactionId.getBranch();
-               sql = ClientSessionManager.getSQL(OseeSql.Changes.SELECT_TRANSACTION_ATTRIBUTE_WAS_CHANGE);
-               sqlParamter = transactionId.getTransactionNumber();
-            }
-
-            queryId = ArtifactLoader.getNewQueryId();
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            List<Object[]> datas = new LinkedList<Object[]>();
-
-            try {
-               // insert into the artifact_join_table
-               for (int artId : artIds) {
-                  datas.add(new Object[] {queryId, insertTime, artId, wasValueBranch.getBranchId(),
-                        SQL3DataType.INTEGER});
-               }
-               ArtifactLoader.insertIntoArtifactJoin(datas);
-
-               chStmt2.runPreparedQuery(sql, sqlParamter, queryId);
-               int previousAttrId = -1;
-
-               count = 0;
-               while (chStmt2.next()) {
-                  count++;
-                  int attrId = chStmt2.getInt("attr_id");
-                  
-                  if (previousAttrId != attrId) {
-                     String wasValue = chStmt2.getString("was_value");
-                     if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChanged) {
-                        AttributeChanged changed = (AttributeChanged) attributesWasValueCache.get(attrId);
-                        
-                        if(changed.getArtModType() != ModificationType.NEW){
-                        	if (changed.getModificationType() != ModificationType.DELETED && changed.getModificationType() != ModificationType.ARTIFACT_DELETED) {
-                        	changed.setModType(ModificationType.CHANGE);
-                        	}
-                        	changed.setWasValue(wasValue);
-                        }
-                     }
-                     previousAttrId = attrId;
-                  }
-               }
-            } finally {
-               ArtifactLoader.clearQuery(queryId);
-            }
-            if (DEBUG) {
-               System.out.println(String.format("        Loaded %d was values in %s", count, Lib.getElapseString(time)));
-            }
-            monitor.updateWork(12);
-         }
+         
+         loadAttributeWasValues(sourceBranch, transactionId, artIds, monitor, attributesWasValueCache, hasBranch);
       } finally {
          chStmt1.close();
-         chStmt2.close();
+      }
+   }
+
+   /**
+    * @param sourceBranch
+    * @param transactionId
+    * @param artIds
+    * @param monitor
+    * @param attributesWasValueCache
+    * @param hasBranch
+    * @throws OseeCoreException
+    * @throws OseeDataStoreException
+    */
+   private void loadAttributeWasValues(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, IStatusMonitor monitor, Map<Integer, Change> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
+      if (!artIds.isEmpty()) {
+         int count = 0;
+         long time = System.currentTimeMillis();
+         int sqlParamter; // Will either be a branch id or transaction id
+         Branch wasValueBranch;
+         String sql;
+
+         if (hasBranch) {
+            wasValueBranch = sourceBranch;
+            sql = ClientSessionManager.getSQL(OseeSql.Changes.SELECT_BRANCH_ATTRIBUTE_WAS_CHANGE);
+            sqlParamter = wasValueBranch.getBranchId();
+         } else {
+            wasValueBranch = transactionId.getBranch();
+            sql = ClientSessionManager.getSQL(OseeSql.Changes.SELECT_TRANSACTION_ATTRIBUTE_WAS_CHANGE);
+            sqlParamter = transactionId.getTransactionNumber();
+         }
+
+         int queryId = ArtifactLoader.getNewQueryId();
+         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+         List<Object[]> datas = new LinkedList<Object[]>();
+         ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
+
+         try {
+            // insert into the artifact_join_table
+            for (int artId : artIds) {
+               datas.add(new Object[] {queryId, insertTime, artId, wasValueBranch.getBranchId(),
+                     SQL3DataType.INTEGER});
+            }
+            ArtifactLoader.insertIntoArtifactJoin(datas);
+            chStmt2.runPreparedQuery(sql, sqlParamter, queryId);
+            int previousAttrId = -1;
+
+            while (chStmt2.next()) {
+               count++;
+               int attrId = chStmt2.getInt("attr_id");
+               
+               if (previousAttrId != attrId) {
+                  String wasValue = chStmt2.getString("was_value");
+                  if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChanged) {
+                     AttributeChanged changed = (AttributeChanged) attributesWasValueCache.get(attrId);
+                     
+                     if(changed.getArtModType() != ModificationType.NEW){
+                     	if (changed.getModificationType() != ModificationType.DELETED && changed.getModificationType() != ModificationType.ARTIFACT_DELETED) {
+                     	changed.setModType(ModificationType.CHANGE);
+                     	}
+                     	changed.setWasValue(wasValue);
+                     }
+                  }
+                  previousAttrId = attrId;
+               }
+            }
+         } finally {
+            ArtifactLoader.clearQuery(queryId);
+            chStmt2.close();
+         }
+         if (DEBUG) {
+            System.out.println(String.format("        Loaded %d was values in %s", count, Lib.getElapseString(time)));
+         }
+         monitor.updateWork(12);
       }
    }
 

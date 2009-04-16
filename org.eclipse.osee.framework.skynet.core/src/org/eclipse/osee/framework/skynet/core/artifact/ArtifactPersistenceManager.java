@@ -372,7 +372,7 @@ public class ArtifactPersistenceManager {
             artifact.setDeleted();
             transaction.deleteArtifact(artifact, reorderRelations);
          } catch (OseeCoreException ex) {
-            artifact.setNotDeleted();
+            artifact.resetToPreviousModType();
             throw ex;
          }
       }

@@ -56,6 +56,7 @@ public class ArtifactQueryBuilder {
    private boolean firstTable = true;
    private final boolean tableOrderForward;
    private final TransactionId transactionId;
+   
 
    /**
     * @param artId
@@ -445,13 +446,16 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   public Artifact getArtifact() throws OseeCoreException {
+   public Artifact getOrCheckArtifact(QueryType queryType) throws OseeCoreException {
       if (emptyCriteria) {
          throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
       }
       Collection<Artifact> artifacts = getArtifacts(1, null);
 
       if (artifacts.size() == 0) {
+         if (queryType.equals(QueryType.CHECK)) {
+            return null;
+         }
          throw new ArtifactDoesNotExist(getSoleExceptionMessage(artifacts.size()));
       }
       if (artifacts.size() > 1) {
@@ -459,7 +463,7 @@ public class ArtifactQueryBuilder {
       }
       return artifacts.iterator().next();
    }
-
+   
    private String getSoleExceptionMessage(int artifactCount) {
       StringBuilder message = new StringBuilder(250);
       if (artifactCount == 0) {

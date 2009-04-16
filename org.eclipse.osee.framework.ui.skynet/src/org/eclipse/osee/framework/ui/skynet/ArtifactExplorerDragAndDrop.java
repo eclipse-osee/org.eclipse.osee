@@ -115,7 +115,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             try {
                interArtifactExplorerHandler.dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated);
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          } else {
             if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType) && isValidForArtifactDrop(event) && MessageDialog.openQuestion(
@@ -130,7 +130,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                      artifact.persistAttributesAndRelations(transaction);
                   }
                   transaction.execute();
-               } catch (Exception ex) {
+               } catch (OseeCoreException ex) {
                   OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
                }
             }

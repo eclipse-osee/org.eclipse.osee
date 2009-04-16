@@ -30,9 +30,13 @@ public abstract class BaseTransactionData {
    private Integer gammaId;
 
    public BaseTransactionData(int itemId, ModificationType modificationType) {
+      this(itemId, modificationType, null);
+   }
+
+   public BaseTransactionData(int itemId, ModificationType modificationType, Integer gammaId) {
       this.modificationType = modificationType;
       this.itemId = itemId;
-      this.gammaId = null;
+      this.gammaId = gammaId;
    }
 
    /* (non-Javadoc)

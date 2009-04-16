@@ -14,13 +14,10 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -58,17 +55,26 @@ public class ArtifactQuery {
     * @throws ArtifactDoesNotExist if no artifacts are found
     */
    public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws OseeCoreException {
-      try {
-         Artifact artifact = ArtifactCache.getActive(artId, branch.getBranchId());
-         if (artifact != null) {
-            return artifact;
-         }
-         return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getArtifact();
-      } catch (MultipleArtifactsExist ex) {
-         // it is not possible to have two artifacts with the same artifact id
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-         return null;
+      return getOrCheckArtifactFromId(artId, branch, allowDeleted, QueryType.GET);
+   }
+
+   private static Artifact getOrCheckArtifactFromId(int artId, Branch branch, boolean allowDeleted, QueryType queryType) throws OseeCoreException {
+      Artifact artifact = ArtifactCache.getActive(artId, branch.getBranchId());
+      if (artifact != null) {
+         return artifact;
       }
+      return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getOrCheckArtifact(queryType);
+   }
+   /**
+    * Check for existence of an artifact by id
+    * 
+    * @param artId the id of the desired artifact
+    * @param branch
+    * @param allowDeleted whether to return the artifact even if it has been deleted
+    * @return one artifact by one its id if it exists, otherwise null
+    */
+   public static Artifact checkArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(artId, branch, allowDeleted, QueryType.CHECK);
    }
 
    /**
@@ -99,7 +105,7 @@ public class ArtifactQuery {
       if (artifact != null) {
          return artifact;
       }
-      return new ArtifactQueryBuilder(guidOrHrid, branch, allowDeleted, FULL).getArtifact();
+      return new ArtifactQueryBuilder(guidOrHrid, branch, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
    }
 
    /**
@@ -113,7 +119,7 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).getArtifact();
+      return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).getOrCheckArtifact(QueryType.GET);
    }
 
    /**
@@ -147,7 +153,7 @@ public class ArtifactQuery {
    }
 
    public static Artifact getHistoricalArtifactFromId(String guidOrHrid, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(Arrays.asList(guidOrHrid), transactionId, allowDeleted, FULL).getArtifact();
+      return new ArtifactQueryBuilder(Arrays.asList(guidOrHrid), transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
    }
 
    public static List<Artifact> getArtifactsFromName(String artifactName, Branch branch, boolean allowDeleted) throws OseeCoreException {
@@ -172,7 +178,7 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getArtifact();
+      return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getOrCheckArtifact(QueryType.GET);
    }
 
    /**
@@ -187,7 +193,7 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName, attributeValue)).getArtifact();
+      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName, attributeValue)).getOrCheckArtifact(QueryType.GET);
    }
 
    public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, boolean allowDeleted) throws OseeCoreException {

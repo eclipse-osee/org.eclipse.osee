@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUpdateHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.update.UpdateArtifactDbTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -35,7 +35,8 @@ public class UpdateFromParentBranch extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Update From Parent Branch", IProgressMonitor.UNKNOWN);
       Branch childBranch = variableMap.getBranch("Child Branch Name");
-      ArtifactUpdateHandler.updateArtifacts(childBranch, variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch"), childBranch.getParentBranch());
+      UpdateArtifactDbTransaction dbTransaction = new UpdateArtifactDbTransaction(childBranch, childBranch.getParentBranch(), variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch"));
+      dbTransaction.execute();
    }
 
    /* (non-Javadoc)

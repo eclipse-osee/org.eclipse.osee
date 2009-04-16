@@ -54,12 +54,14 @@ public class ArtifactTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
-      if (getModificationType() == ModificationType.NEW) {
-         internalAddInsertToBatch(transaction, 1, INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(),
-               artifact.getGuid(), artifact.getHumanReadableId());
+      if (getModificationType() != ModificationType.REFLECTED) {
+         if (getModificationType() == ModificationType.NEW) {
+            internalAddInsertToBatch(transaction, 1, INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(),
+                  artifact.getGuid(), artifact.getHumanReadableId());
+         }
+         internalAddInsertToBatch(transaction, 2, INSERT_ARTIFACT_VERSION, getItemId(), getGammaId(),
+               getModificationType().getValue());
       }
-      internalAddInsertToBatch(transaction, 2, INSERT_ARTIFACT_VERSION, getItemId(), getGammaId(),
-            getModificationType().getValue());
    }
 
    /* (non-Javadoc)
@@ -90,6 +92,9 @@ public class ArtifactTransactionData extends BaseTransactionData {
     */
    @Override
    protected int createGammaId() throws OseeCoreException {
+      if (getModificationType() == ModificationType.REFLECTED) {
+         return artifact.getGammaId();
+      }
       return SequenceManager.getNextGammaId();
    }
 

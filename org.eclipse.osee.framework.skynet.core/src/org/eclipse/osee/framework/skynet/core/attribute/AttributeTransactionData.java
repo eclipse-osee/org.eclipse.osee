@@ -58,7 +58,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
-      if (getModificationType() != ModificationType.ARTIFACT_DELETED) {
+      if (getModificationType() != ModificationType.ARTIFACT_DELETED && getModificationType() != ModificationType.REFLECTED) {
          if (getModificationType() == ModificationType.CHANGE || getModificationType() == ModificationType.NEW) {
             attribute.getAttributeDataProvider().persist(getGammaId());
             daoToSql.setData(attribute.getAttributeDataProvider().getData());
@@ -108,7 +108,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected int createGammaId() throws OseeCoreException {
       int newGammaId = 0;
-      if (getModificationType() == ModificationType.ARTIFACT_DELETED) {
+      if (getModificationType() == ModificationType.ARTIFACT_DELETED || getModificationType() == ModificationType.REFLECTED) {
          newGammaId = attribute.getGammaId();
       } else {
          newGammaId = SequenceManager.getNextGammaId();

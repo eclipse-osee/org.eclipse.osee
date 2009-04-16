@@ -22,6 +22,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -59,7 +60,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
       for (ArtifactChange artifactChange : artifactChanges) {
          try {
             Artifact baseArtifact =
-                  artifactChange.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                  (artifactChange.getModType() == NEW || artifactChange.getModType() == ModificationType.REFLECTED) ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                         artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
             Artifact newerArtifact =
                   artifactChange.getModType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(

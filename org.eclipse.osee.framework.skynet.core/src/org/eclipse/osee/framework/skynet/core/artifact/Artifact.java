@@ -75,13 +75,19 @@ import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
 public class Artifact implements IAdaptable, Comparable<Artifact> {
+   /**
+    * @return the modType
+    */
+   public ModificationType getModType() {
+      return modType;
+   }
+
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    private final HashCollection<String, Attribute<?>> attributes =
          new HashCollection<String, Attribute<?>>(false, LinkedList.class, 12);
    private boolean dirty = false;
-   private boolean deleted = false;
    private final Branch branch;
    private final String guid;
    private String humanReadableId;
@@ -93,6 +99,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private int gammaId;
    private boolean linksLoaded;
    private boolean historical;
+   private ModificationType modType;
+   private ModificationType lastValidModType;
    private static String[] WholeArtifactMatches =
          new String[] {"Checklist (WordML)", "Guideline", "How To", "Renderer Template", "Roadmap",
                "Template (WordML)", "Test Procedure WML", "Work Instruction", "Work Sheet (WordML)"};
@@ -940,14 +948,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * This is used to mark that the artifact deleted. This should only be called by the RemoteEventManager.
     */
    public void setDeleted() {
-      this.deleted = true;
+      this.modType = ModificationType.DELETED;
    }
 
    /**
     * This is used to mark that the artifact not deleted. This should only be called by the RemoteEventManager.
     */
-   public void setNotDeleted() {
-      this.deleted = false;
+   public void resetToPreviousModType() {
+      this.modType = lastValidModType;
    }
 
    /**
@@ -980,14 +988,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public boolean isReadOnly() {
       try {
-         return deleted || isHistorical() || !AccessControlManager.checkObjectPermission(this, PermissionEnum.WRITE);
+         return isDeleted() || isHistorical() || !AccessControlManager.checkObjectPermission(this, PermissionEnum.WRITE);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return false;
       }
    }
 
-   private boolean anAttributeIsDirty() {
+   public boolean anAttributeIsDirty() {
       return reportAnAttributeIsDirty().isTrue();
    }
 
@@ -1180,11 +1188,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean isDeleted() {
-      return deleted;
-   }
-
-   public void setDirty() {
-      dirty = true;
+      return modType == ModificationType.DELETED;
    }
 
    public void setLinksLoaded() {
@@ -1410,7 +1414,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public Artifact duplicate(Branch branch) throws OseeCoreException {
       Artifact newArtifact = artifactType.makeNewArtifact(branch);
-      //we do this because attributes were added on creation to meet the minimium attribute requirements      
+      //we do this because attributes were added on creation to meet the minimum attribute requirements      
       newArtifact.attributes.clear();
       copyAttributes(newArtifact);
       return newArtifact;
@@ -1420,6 +1424,21 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       for (Attribute<?> attribute : getAttributes(false)) {
          artifact.addAttribute(attribute.getAttributeType().getName(), attribute.getValue());
       }
+   }
+
+   public Artifact reflect(Branch branch) throws OseeCoreException {
+      if(ArtifactQuery.checkArtifactFromId(getArtId(), branch, true)!= null){
+         throw new OseeArgumentException("Artifact " + getDescriptiveName() + " already exists on branch " + branch);
+      }
+      
+      Artifact reflectedArtifact = artifactType.getFactory().reflectExisitingArtifact(artId, guid, humanReadableId, artifactType, gammaId,
+            branch);
+      reflectedArtifact.dirty = true;
+      
+      for(Attribute<?> attribute : attributes.getValues()){
+         Attribute.initializeAttribute(reflectedArtifact, attribute.getAttributeType().getAttrTypeId(), attribute.getAttrId(), attribute.getGammaId(), attribute.getAttributeDataProvider().getData());
+      }
+      return reflectedArtifact;
    }
 
    /**
@@ -1647,10 +1666,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param historical
     */
    void internalSetPersistenceData(int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) {
-      this.deleted = modType == ModificationType.DELETED;
       this.gammaId = gammaId;
       this.transactionId = transactionId;
       this.historical = historical;
+      this.modType = modType;
+      this.lastValidModType = modType;
    }
 
    public Date getLastModified() throws OseeCoreException {
