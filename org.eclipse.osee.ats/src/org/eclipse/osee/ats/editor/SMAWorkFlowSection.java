@@ -31,6 +31,8 @@ import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
+import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -780,6 +782,24 @@ public class SMAWorkFlowSection extends SectionPart {
     */
    public Composite getMainComp() {
       return mainComp;
+   }
+
+   public XWorkingBranch getXWorkingBranch() {
+      for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+         if (widget instanceof XWorkingBranch) {
+            return (XWorkingBranch) widget;
+         }
+      }
+      return null;
+   }
+
+   public XCommitManager getXCommitManager() {
+      for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+         if (widget instanceof XCommitManager) {
+            return (XCommitManager) widget;
+         }
+      }
+      return null;
    }
 
 }

@@ -29,6 +29,8 @@ import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
+import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -867,5 +869,13 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    public void setTaskComposite(SMATaskComposite taskComposite) {
       this.taskComposite = taskComposite;
+   }
+
+   public XWorkingBranch getXworkingBranch() {
+      return workFlowTab.getXworkingBranch();
+   }
+
+   public XCommitManager getXcommitManager() {
+      return workFlowTab.getXcommitBranch();
    }
 }

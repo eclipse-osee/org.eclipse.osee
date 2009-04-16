@@ -26,6 +26,8 @@ import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
+import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
@@ -595,4 +597,30 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          refreshToolbar();
       }
    }
+
+   public List<AtsWorkPage> getPages() {
+      return pages;
+   }
+
+   public List<SMAWorkFlowSection> getSections() {
+      return sections;
+   }
+
+   public SMAWorkFlowSection getSectionForCurrentState() {
+      for (SMAWorkFlowSection section : sections) {
+         if (section.isCurrentState()) {
+            return section;
+         }
+      }
+      return null;
+   }
+
+   public XWorkingBranch getXworkingBranch() {
+      return getSectionForCurrentState().getXWorkingBranch();
+   }
+
+   public XCommitManager getXcommitBranch() {
+      return getSectionForCurrentState().getXCommitManager();
+   }
+
 }
