@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -51,7 +52,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
@@ -105,7 +108,32 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
             createTaskActionBar(mainComp);
 
-            labelWidget.setText(label + ": ");
+            labelWidget.setText(label + ": ");// If ATS Admin, allow right-click to auto-complete reviews
+            if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {
+               labelWidget.addListener(SWT.MouseUp, new Listener() {
+                  /* (non-Javadoc)
+                               * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+                               */
+                  @Override
+                  public void handleEvent(Event event) {
+                     if (event.button == 3) {
+                        if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Auto Commit Branches",
+                              "ATS Admin\n\nAuto Commit Branches?")) {
+                           return;
+                        }
+                        try {
+                           for (Branch destinationBranch : teamArt.getSmaMgr().getBranchMgr().getBranchesLeftToCommit()) {
+                              teamArt.getSmaMgr().getBranchMgr().commitWorkingBranch(false, true, destinationBranch,
+                                    true);
+                              Thread.sleep(1000);
+                           }
+                        } catch (Exception ex) {
+                           OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                        }
+                     }
+                  }
+               });
+            }
 
             xCommitManager = new CommitXManager(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
             xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

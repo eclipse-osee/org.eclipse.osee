@@ -97,7 +97,6 @@ public class ServicesArea {
          toolBarServices.add(new OpenParent(smaMgr));
          toolBarServices.add(new EmailActionService(smaMgr));
          toolBarServices.add(new AddNoteOperation(smaMgr));
-         toolBarServices.add(new ShowNotesOperation(smaMgr));
          toolBarServices.add(new OpenInAtsWorldOperation(smaMgr));
          toolBarServices.add(new OpenInArtifactEditorOperation(smaMgr));
          toolBarServices.add(new OpenInSkyWalkerOperation(smaMgr));
