@@ -273,7 +273,10 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
          String delta = getDelta(original, modified);
          String[] entries = delta.split("\n");
          for (String diff : entries) {
-            modifiedRows.add(new ResultsXViewerRow(new String[] {name, diff}));
+            diff = diff.trim();
+            if (Strings.isValid(diff)) {
+               modifiedRows.add(new ResultsXViewerRow(new String[] {name, diff}));
+            }
          }
       }
 
