@@ -264,7 +264,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
                }
             }
             if (showChangeReport != null) {
-               if (smaMgr.getBranchMgr().isWorkingBranch())
+               if (smaMgr.getBranchMgr().isWorkingBranch(true) || smaMgr.getBranchMgr().isCommittedBranchExists())
                   showChangeReport.setEnabled(true);
                else
                   showChangeReport.setEnabled(false);
