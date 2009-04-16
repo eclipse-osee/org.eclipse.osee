@@ -63,8 +63,6 @@ public class ServicesArea {
    public void loadSidebarServices(AtsWorkPage page) throws OseeCoreException {
       if (sideBarServices.size() == 0) {
          // Operations
-         sideBarServices.add(new FavoriteOperation(smaMgr));
-         sideBarServices.add(new SubscribedOperation(smaMgr));
          sideBarServices.add(new OpenLatestVersion(smaMgr));
          sideBarServices.add(new DebugOperations(smaMgr));
          sideBarServices.add(new PrivilegedEditService(smaMgr));
@@ -95,6 +93,7 @@ public class ServicesArea {
             toolBarServices.add(new ShowMergeManagerService(smaMgr));
             toolBarServices.add(new ShowChangeReportService(smaMgr));
          }
+         toolBarServices.add(new FavoriteOperation(smaMgr));
          toolBarServices.add(new OpenParent(smaMgr));
          toolBarServices.add(new EmailActionService(smaMgr));
          toolBarServices.add(new AddNoteOperation(smaMgr));
@@ -104,6 +103,7 @@ public class ServicesArea {
          toolBarServices.add(new OpenInSkyWalkerOperation(smaMgr));
          toolBarServices.add(new OpenVersionArtifact(smaMgr));
          toolBarServices.add(new OpenTeamDefinition(smaMgr));
+         toolBarServices.add(new SubscribedOperation(smaMgr));
          toolBarServices.add(new CopyActionDetailsService(smaMgr));
          for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
             toolBarServices.addAll(item.getToolbarServices(smaMgr));

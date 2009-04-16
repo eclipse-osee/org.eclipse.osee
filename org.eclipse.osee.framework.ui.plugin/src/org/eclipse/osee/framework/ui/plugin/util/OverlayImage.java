@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Point;
 
 public class OverlayImage extends CompositeImageDescriptor {
 
-   private Image baseImage;
+   private final Image baseImage;
    private ImageDescriptor overlayImageDescriptor;
    private int xValue = 0;
    private int yValue = 0;
@@ -28,6 +28,10 @@ public class OverlayImage extends CompositeImageDescriptor {
    public static enum Location {
       TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT
    };
+
+   public ImageDescriptor getImageDescriptor() {
+      return overlayImageDescriptor;
+   }
 
    public static class ImageInfo {
       public ImageDescriptor descriptor;
@@ -76,6 +80,7 @@ public class OverlayImage extends CompositeImageDescriptor {
       this.yValue = yValue;
    }
 
+   @Override
    protected void drawCompositeImage(int width, int height) {
       // To draw a composite image, the base image should be
       // drawn first (first layer) and then the overlay image
@@ -100,6 +105,7 @@ public class OverlayImage extends CompositeImageDescriptor {
       }
    }
 
+   @Override
    protected Point getSize() {
       // System.err.println("Width = " + baseImage.getBounds().width);
       // System.err.println("Height = " + baseImage.getBounds().height);

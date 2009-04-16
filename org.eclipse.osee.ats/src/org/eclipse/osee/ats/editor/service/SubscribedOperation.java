@@ -10,28 +10,41 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
  */
 public class SubscribedOperation extends WorkPageService {
 
-   private Hyperlink link;
+   private Action action;
+   private static ImageDescriptor subscribeEmailDescriptor;
 
    public SubscribedOperation(SMAManager smaMgr) {
       super(smaMgr);
+   }
+
+   @Override
+   public Action createToolbarService() {
+      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            (new Subscribe(smaMgr.getSma())).toggleSubscribe();
+         }
+      };
+      action.setToolTipText(getName());
+      if (subscribeEmailDescriptor == null) {
+         subscribeEmailDescriptor = AtsPlugin.getInstance().getImageDescriptor("subscribedEmail.gif");
+      }
+      action.setImageDescriptor(subscribeEmailDescriptor);
+      return action;
    }
 
    /* (non-Javadoc)
@@ -39,37 +52,7 @@ public class SubscribedOperation extends WorkPageService {
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
-      return smaMgr.isCurrentState(page.getName());
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
-    */
-   @Override
-   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, final SMAWorkFlowSection section) throws OseeCoreException {
-      link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
-      link.addHyperlinkListener(new IHyperlinkListener() {
-
-         public void linkEntered(HyperlinkEvent e) {
-         }
-
-         public void linkExited(HyperlinkEvent e) {
-         }
-
-         public void linkActivated(HyperlinkEvent e) {
-            (new Subscribe(smaMgr.getSma())).toggleSubscribe();
-            section.refreshStateServices();
-         }
-      });
-      refresh();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
-    */
-   @Override
-   public String getSidebarCategory() {
-      return ServicesArea.OPERATION_CATEGORY;
+      return false;
    }
 
    /*
@@ -79,7 +62,7 @@ public class SubscribedOperation extends WorkPageService {
     */
    @Override
    public void refresh() {
-      if (link != null && !link.isDisposed()) link.setText(((ISubscribableArtifact) smaMgr.getSma()).amISubscribed() ? "Un-Subscribe" : "Subscribe");
+      if (action != null) action.setToolTipText(((ISubscribableArtifact) smaMgr.getSma()).amISubscribed() ? "Remove Subscribed" : "Add Subscribed");
    }
 
    /* (non-Javadoc)
@@ -87,6 +70,6 @@ public class SubscribedOperation extends WorkPageService {
     */
    @Override
    public String getName() {
-      return "Subscribe";
+      return "Subscribe to Email Notifications";
    }
 }
