@@ -11,7 +11,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.ui,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.team.core,
- org.polarion.eclipse.team.svn.connector;resolution:=optional,
  org.eclipse.team.svn,
  org.eclipse.team.svn.core,
  org.eclipse.team.svn.ui
