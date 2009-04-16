@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryType;
 
 /**
  * @author Andrew M Finkbeiner
@@ -66,7 +67,7 @@ public class ArtifactQueryPerformanceTests extends TestCase {
       Artifact art = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(common);
       ArtifactQueryBuilder builder = new ArtifactQueryBuilder(art.getHumanReadableId(), common, true, FULL);
       long startTime = System.currentTimeMillis();
-      Artifact result = builder.getArtifact();
+      Artifact result = builder.getOrCheckArtifact(QueryType.GET);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactByHRID took %dms", elapsedTime));
       assertNotNull("No artifact found", result);
