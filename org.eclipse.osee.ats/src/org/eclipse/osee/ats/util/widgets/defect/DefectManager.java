@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
+import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
@@ -55,11 +57,12 @@ public class DefectManager {
 
    public Set<DefectItem> getDefectItems() throws OseeCoreException {
       Set<DefectItem> defectItems = new HashSet<DefectItem>();
-      String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
-      defectMatcher.reset(xml);
-      while (defectMatcher.find()) {
-         DefectItem item = new DefectItem(defectMatcher.group());
-         defectItems.add(item);
+      for (String xml : artifact.getAttributesToStringList(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+         defectMatcher.reset(xml);
+         while (defectMatcher.find()) {
+            DefectItem item = new DefectItem(defectMatcher.group());
+            defectItems.add(item);
+         }
       }
       return defectItems;
    }
@@ -87,11 +90,41 @@ public class DefectManager {
 
    private void saveDefectItems(Set<DefectItem> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
-         StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
-         for (DefectItem item : defectItems)
-            sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
-         sb.append("</" + ATS_DEFECT_TAG + ">");
-         artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
+         String expandDefects = OseeInfo.getValue("expandDefects");
+         if (expandDefects != null && expandDefects.equals("true")) {
+            StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
+            for (DefectItem item : defectItems)
+               sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
+            sb.append("</" + ATS_DEFECT_TAG + ">");
+            artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
+         } else {
+            // Change existing ones
+            for (Attribute<?> attr : artifact.getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+               DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
+               for (DefectItem pItem : defectItems) {
+                  if (pItem.equals(dbPromoteItem)) {
+                     attr.setFromString(AXml.addTagData(DEFECT_ITEM_TAG, pItem.toXml()));
+                  }
+               }
+            }
+            Set<DefectItem> dbPromoteItems = getDefectItems();
+            // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
+            for (DefectItem delPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
+                  dbPromoteItems, defectItems)) {
+               for (Attribute<?> attr : artifact.getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+                  DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
+                  if (dbPromoteItem.equals(delPromoteItem)) {
+                     attr.delete();
+                  }
+               }
+            }
+            // Add new ones: items in promoteItems that are not in dbPromoteItems
+            for (DefectItem newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
+                  defectItems, dbPromoteItems)) {
+               artifact.addAttributeFromString(REVIEW_DEFECT_ATTRIBUTE_NAME, AXml.addTagData(DEFECT_ITEM_TAG,
+                     newPromoteItem.toXml()));
+            }
+         }
          if (persist) artifact.persistAttributes(transaction);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats review defect document", ex);
