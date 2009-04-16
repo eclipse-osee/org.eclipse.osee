@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -34,6 +35,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,6 +53,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -74,6 +77,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -99,6 +103,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    private MenuItem openMenuItem;
    private MenuItem editMenuItem;
    private MenuItem viewRelationTreeItem;
+   private MenuItem orderRelationMenuItem;
    private MenuItem deleteRelationMenuItem;
    private MenuItem deleteArtifactMenuItem;
    private MenuItem massEditMenuItem;
@@ -245,6 +250,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createViewRelationTreeMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+      createOrderRelationTreeMenuItem(popupMenu);
+      new MenuItem(popupMenu, SWT.SEPARATOR);
       createDeleteRelationMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
@@ -260,6 +267,86 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       public void doubleClick(DoubleClickEvent event) {
          openViewer((IStructuredSelection) event.getSelection());
       }
+   }
+
+   private void createOrderRelationTreeMenuItem(final Menu parentMenu) {
+      orderRelationMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+      orderRelationMenuItem.setText("&Order Relation");
+      needSelectedArtifactListener.add(orderRelationMenuItem);
+      orderRelationMenuItem.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            performOrderRelation();
+         }
+      });
+      parentMenu.addListener(SWT.Show, new Listener() {
+
+         @Override
+         public void handleEvent(Event event) {
+            String errorMessage = checkSelectionForOrderRelation();
+            orderRelationMenuItem.setEnabled(!Strings.isValid(errorMessage));
+            if (errorMessage.length() > 0) {
+               errorMessage = ": " + errorMessage;
+            }
+            orderRelationMenuItem.setText(String.format("&Order Relation%s", errorMessage));
+         }
+
+      });
+      orderRelationMenuItem.setEnabled(true);
+   }
+
+   private Set<RelationLink> getSelectionForOrderRelation() {
+      Set<RelationLink> selectedItems = new HashSet<RelationLink>();
+      IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+      Iterator<?> iter = selection.iterator();
+      while (iter.hasNext()) {
+         Object object = iter.next();
+         if (object instanceof RelationLink) {
+            selectedItems.add((RelationLink) object);
+         }
+      }
+      return selectedItems;
+   }
+
+   private String checkSelectionForOrderRelation() {
+      String errorMessage = "";
+      IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+      if (selection.isEmpty()) {
+         errorMessage = "None Selected";
+      } else {
+         Set<RelationLink> selectedItems = getSelectionForOrderRelation();
+         if (selectedItems.isEmpty()) {
+            errorMessage = "No Artifacts Selected";
+         } else if (selectedItems.size() == 1) {
+            RelationLink link = selectedItems.iterator().next();
+            errorMessage = String.format("Select more than 1 artifact for [%s]", link.getRelationType().getTypeName());
+         } else {
+            Artifact aArtifact = null;
+            for (RelationLink link : selectedItems) {
+               RelationType type = link.getRelationType();
+               if (!type.isOrdered()) {
+                  errorMessage = String.format("Item with static order selected [%s]", type.getTypeName());
+                  break;
+               }
+               try {
+                  Artifact aSide = link.getArtifactA();
+                  if (aArtifact == null) {
+                     aArtifact = aSide;
+                  } else {
+                     if (!aSide.equals(aArtifact)) {
+                        errorMessage =
+                              String.format("Item from different link sides selected [%s]", aSide.getDescriptiveName());
+                        break;
+                     }
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         }
+      }
+      return errorMessage;
    }
 
    private void createDeleteRelationMenuItem(final Menu parentMenu) {
@@ -358,6 +445,21 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
          ArtifactEditor.editArtifact(selectedArtifact);
+      }
+   }
+
+   private void performOrderRelation() {
+      try {
+         Set<RelationLink> selectedItems = getSelectionForOrderRelation();
+         List<RelationLink> items = new ArrayList<RelationLink>(selectedItems);
+
+         RelationLink link = items.iterator().next();
+         RelationSide side = link.getSide(link.getArtifactB());
+         java.util.Collections.sort(items, new AlphabeticalRelationComparator(side));
+         System.out.println(items);
+         AWorkbench.popup("This feature is not yet supported");
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
