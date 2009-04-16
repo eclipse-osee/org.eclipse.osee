@@ -35,4 +35,10 @@ public class AtsAttributeXWidgetWorkItem extends WorkWidgetDefinition {
       this(atsAttribute.getDisplayName(), atsAttribute.getStoreName(), atsAttribute.getStoreName(), xWidgetName,
             xOption);
    }
+
+   public void setDefaultValue(String defaultValue) {
+      DynamicXWidgetLayoutData data = get();
+      data.setDefaultValue(defaultValue);
+      set(data);
+   }
 }

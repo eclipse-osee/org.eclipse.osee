@@ -23,26 +23,35 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XLabel extends XWidget {
 
+   private final String showString;
+
    public XLabel(String displayLabel) {
+      this(displayLabel, displayLabel);
+   }
+
+   public XLabel(String displayLabel, String showString) {
       super(displayLabel, "");
+      this.showString = showString;
    }
 
    /**
     * Create Data Widgets. Widgets Created: Data: "--select--" horizonatalSpan takes up 2 columns; horizontalSpan must
     * be >=2 the string "--select--" will be added to the sent in dataStrings array
     */
+   @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
       if (horizontalSpan < 2) horizontalSpan = 2;
       // Create Data Widgets
       if (!label.equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label);
+         labelWidget.setText(showString);
          if (toolTip != null) {
             labelWidget.setToolTipText(toolTip);
          }
       }
    }
 
+   @Override
    public void setFocus() {
    }
 

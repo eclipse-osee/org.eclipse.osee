@@ -130,9 +130,13 @@ public class XWidgetFactory {
          xWidget = new org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam(name);
       else if (xWidgetName.equals("XFileTextWithSelectionDialog"))
          xWidget = new XFileTextWithSelectionDialog(name);
-      else if (xWidgetName.equals("XLabel"))
-         xWidget = new XLabel(name);
-      else if (xWidgetName.equals("XCheckBox")) {
+      else if (xWidgetName.equals("XLabel")) {
+         if (!xWidgetLayoutData.getDefaultValue().equals("")) {
+            xWidget = new XLabel(name, xWidgetLayoutData.getDefaultValue());
+         } else {
+            xWidget = new XLabel(name);
+         }
+      } else if (xWidgetName.equals("XCheckBox")) {
          XCheckBox checkBox = new XCheckBox(name);
          checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
          if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) checkBox.set(xWidgetLayoutData.getDefaultValue().equals(
