@@ -133,6 +133,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.WORKING_BRANCH_WIDGET, "XWorkingBranch", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.VALIDATE_REQ_CHANGES_WIDGET,
             "XValidateReqChangesButton", XOption.NONE));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CHECK_SIGNALS_VIA_CDB_WIDGET,
+            "XCheckSiganlsViaCDBButton", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem("Question",
             AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, "Name", "XLabelDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem("Decision",

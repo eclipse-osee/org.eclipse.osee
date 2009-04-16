@@ -108,7 +108,7 @@ public class AtsBranchManager {
                   TransactionIdManager.getStartEndPoint(getWorkingBranch()).getKey());
 
          } else if (isCommittedBranchExists()) {
-            TransactionId transactionId = getTransactionIdOrPopupChoose(true);
+            TransactionId transactionId = getTransactionIdOrPopupChoose("Show Merge Manager", true);
             if (transactionId == null) return;
             MergeView.openView(transactionId);
          }
@@ -222,7 +222,7 @@ public class AtsBranchManager {
       return earliestTransactionId;
    }
 
-   public TransactionId getTransactionIdOrPopupChoose(boolean showMergeManager) throws OseeCoreException {
+   public TransactionId getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
       Collection<TransactionId> transactionIds = getTransactionIds(showMergeManager);
       if (transactionIds.size() == 1) {
          return transactionIds.iterator().next();
@@ -244,8 +244,8 @@ public class AtsBranchManager {
             return 0;
          }
       });
-      ld.setTitle("Select Transaction");
-      ld.setMessage("Select Transaction");
+      ld.setTitle(title);
+      ld.setMessage("Select Commit Branch");
       ld.setInput(transactionIds);
       if (ld.open() == 0) {
          return (TransactionId) ld.getResult()[0];
@@ -284,7 +284,7 @@ public class AtsBranchManager {
          if (isWorkingBranch()) {
             ChangeView.open(getWorkingBranch());
          } else if (isCommittedBranchExists()) {
-            TransactionId transactionId = getTransactionIdOrPopupChoose(false);
+            TransactionId transactionId = getTransactionIdOrPopupChoose("Show Change Report", false);
             if (transactionId == null) return;
             ChangeView.open(transactionId);
          } else {
