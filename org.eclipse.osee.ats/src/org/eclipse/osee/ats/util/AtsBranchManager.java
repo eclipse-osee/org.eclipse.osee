@@ -170,21 +170,22 @@ public class AtsBranchManager {
    /**
     * If working branch has no changes, allow for deletion.
     */
-   public void deleteEmptyWorkingBranch() {
+   public void deleteEmptyWorkingBranch(boolean popup) {
       try {
          Branch branch = getWorkingBranch();
-         if (branch.hasChanges()) {
+         if (branch.hasChanges() && popup) {
             if (!MessageDialog.openQuestion(
                   PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                   "Delete Branch with Changes",
                   "Warning: Changes have been made on this branch.\n\nAre you sure you want to delete the branch: " + branch)) return;
-         } else if (!MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               "Delete Branch", "Are you sure you want to delete the branch: " + branch)) {
+         } else if (popup && !MessageDialog.openQuestion(
+               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Branch",
+               "Are you sure you want to delete the branch: " + branch)) {
          }
          Job job = BranchManager.deleteBranch(branch);
          job.join();
 
-         AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
+         if (popup) AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
 
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.");
