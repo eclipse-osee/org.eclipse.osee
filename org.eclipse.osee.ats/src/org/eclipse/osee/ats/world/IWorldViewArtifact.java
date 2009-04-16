@@ -87,6 +87,8 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewParentID() throws OseeCoreException;
 
+   public String getWorldViewParentState() throws OseeCoreException;
+
    public String getWorldViewDaysInCurrentState() throws OseeCoreException;
 
    public String getWorldViewImplementer() throws OseeCoreException;

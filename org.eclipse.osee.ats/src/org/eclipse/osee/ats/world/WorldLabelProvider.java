@@ -164,6 +164,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Review_Decider_Col)) return wva.getWorldViewReviewDecider();
          if (xCol.equals(WorldXViewerFactory.Actions_Initiating_Workflow_Col)) return wva.getWorldViewActionsIntiatingWorkflow();
          if (xCol.equals(WorldXViewerFactory.Parent_ID_Col)) return wva.getWorldViewParentID();
+         if (xCol.equals(WorldXViewerFactory.Parent_State_Col)) return wva.getWorldViewParentState();
          if (xCol.equals(WorldXViewerFactory.Days_In_Current_State)) return wva.getWorldViewDaysInCurrentState();
          if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) return AtsLib.doubleToStrString(
                wva.getWorldViewWeeklyBenefit(), true);

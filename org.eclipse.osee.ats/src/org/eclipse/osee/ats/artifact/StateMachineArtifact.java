@@ -1362,4 +1362,15 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return AtsLib.doubleToStrString(timeInCurrState / XDate.MILLISECONDS_IN_A_DAY);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentState()
+    */
+   @Override
+   public String getWorldViewParentState() throws OseeCoreException {
+      if (getParentSMA() != null) {
+         return getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName();
+      }
+      return "";
+   }
+
 }

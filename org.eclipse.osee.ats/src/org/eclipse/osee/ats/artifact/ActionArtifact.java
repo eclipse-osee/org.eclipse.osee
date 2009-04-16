@@ -1304,4 +1304,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public String getWorldViewParentID() throws OseeCoreException {
       return "";
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentState()
+    */
+   @Override
+   public String getWorldViewParentState() throws OseeCoreException {
+      return null;
+   }
 }
