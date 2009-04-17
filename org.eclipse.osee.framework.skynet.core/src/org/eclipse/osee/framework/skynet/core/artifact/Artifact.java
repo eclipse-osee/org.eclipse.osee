@@ -1426,11 +1426,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
+   public Artifact update(Branch branch) throws OseeCoreException {
+    return  reflectHelper(branch);
+ }
+   
    public Artifact reflect(Branch branch) throws OseeCoreException {
       if(ArtifactQuery.checkArtifactFromId(getArtId(), branch, true)!= null){
          throw new OseeArgumentException("Artifact " + getDescriptiveName() + " already exists on branch " + branch);
       }
-      
+      return reflectHelper(branch);
+   }
+   
+   private Artifact reflectHelper(Branch branch) throws OseeCoreException{
       Artifact reflectedArtifact = artifactType.getFactory().reflectExisitingArtifact(artId, guid, humanReadableId, artifactType, gammaId,
             branch);
       reflectedArtifact.dirty = true;

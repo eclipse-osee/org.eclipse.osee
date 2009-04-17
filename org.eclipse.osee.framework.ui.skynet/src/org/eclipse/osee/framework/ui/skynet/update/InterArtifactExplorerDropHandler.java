@@ -102,11 +102,14 @@ public class InterArtifactExplorerDropHandler {
          Artifact sourceArtifact = transferObject.getArtifact();
 
          if (status == TransferStatus.INTRODUCE || status == TransferStatus.UPDATE) {
-            Artifact parentArtifact = removeReflectedArtifact(sourceArtifact, destinationArtifact);
-            Artifact reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
+            Artifact parentArtifact = revertIntrodcuedAndGetParent(sourceArtifact, destinationArtifact, status);
 
-            if (transferObject.getStatus() == TransferStatus.INTRODUCE) {
+            Artifact reflectedArtifact;
+            if (status == TransferStatus.INTRODUCE) {
+               reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
                reflectedArtifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+            } else {
+               reflectedArtifact = sourceArtifact.update(destinationArtifact.getBranch());
             }
             reflectedArtifact.persistAttributesAndRelations(transaction);
          }
@@ -114,14 +117,17 @@ public class InterArtifactExplorerDropHandler {
       transaction.execute();
    }
 
-   private Artifact removeReflectedArtifact(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeCoreException {
+   private Artifact revertIntrodcuedAndGetParent(Artifact sourceArtifact, Artifact destinationArtifact, TransferStatus status) throws OseeCoreException {
       Artifact reflectedArtifact =
             ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationArtifact.getBranch(), true);
       Artifact newDestinationArtifact = destinationArtifact;
 
       if (reflectedArtifact != null) {
          newDestinationArtifact = reflectedArtifact.getParent();
-         reflectedArtifact.revert();
+
+         if (status == TransferStatus.INTRODUCE) {
+            reflectedArtifact.revert();
+         }
 
          if (!reflectedArtifact.equals(newDestinationArtifact)) {
             newDestinationArtifact.reloadAttributesAndRelations();
