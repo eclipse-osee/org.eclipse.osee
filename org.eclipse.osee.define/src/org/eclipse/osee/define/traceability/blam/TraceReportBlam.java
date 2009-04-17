@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
-import org.eclipse.osee.framework.ui.skynet.results.table.IResultsEditorTableTab;
+import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
@@ -64,10 +64,10 @@ import org.eclipse.swt.program.Program;
  * @author Roberto E. Escobar
  */
 public class TraceReportBlam extends AbstractBlam {
-   private List<IResultsEditorTableTab> resultsTabs;
+   private List<IResultsEditorTab> resultsTabs;
 
    public TraceReportBlam() {
-      this.resultsTabs = new ArrayList<IResultsEditorTableTab>();
+      this.resultsTabs = new ArrayList<IResultsEditorTab>();
    }
 
    /* (non-Javadoc)
@@ -266,15 +266,17 @@ public class TraceReportBlam extends AbstractBlam {
 
    private void displayReports(IProgressMonitor monitor, ISheetWriter writer, InputStream inputStream) throws IOException, OseeCoreException {
       try {
-         monitor.beginTask("Open Reports", !resultsTabs.isEmpty() ? (inputStream != null ? 2 : 1) : 1);
-         if (!resultsTabs.isEmpty()) {
-            if (inputStream != null) {
-               writer.endWorkbook();
-               openExcel(inputStream);
-               monitor.worked(1);
-            }
-            openReport(resultsTabs);
+         boolean wasEmpty = resultsTabs.isEmpty();
+         monitor.beginTask("Open Reports", !wasEmpty ? (inputStream != null ? 2 : 1) : 1);
+         if (wasEmpty) {
+            resultsTabs.add(new ResultsEditorHtmlTab(getName(), getName(), "Nothing Reported"));
          }
+         if (inputStream != null && writer != null) {
+            writer.endWorkbook();
+            openExcel(inputStream);
+            monitor.worked(1);
+         }
+         openReport(resultsTabs);
          monitor.worked(1);
       } finally {
          monitor.done();
@@ -285,11 +287,15 @@ public class TraceReportBlam extends AbstractBlam {
       return output == OutputType.Excel || output == OutputType.Both;
    }
 
+   private boolean isEditorOutput(OutputType output) {
+      return output == OutputType.ResultsEditor || output == OutputType.Both;
+   }
+
    private void buildReport(Map<String, AbstractArtifactRelationReport> reports, String title, OutputType output, ISheetWriter writer, AbstractArtifactRelationReport report) {
       if (isExcelOutput(output)) {
          report.addReportDataCollector(new ExcelReport(title, writer));
       }
-      if (output == OutputType.ResultsEditor || output == OutputType.Both) {
+      if (isEditorOutput(output)) {
          report.addReportDataCollector(new ResultEditorReport(title));
       }
       reports.put(title, report);
@@ -298,7 +304,6 @@ public class TraceReportBlam extends AbstractBlam {
    private void openExcel(final InputStream inputStream) throws OseeCoreException {
       IFile iFile = OseeData.getIFile("Trace_Report_" + Lib.getDateTimeString() + ".xml");
       AIFile.writeToFile(iFile, inputStream);
-      Program.launch(iFile.getLocation().toOSString());
       if (inputStream != null) {
          try {
             inputStream.close();
@@ -306,9 +311,10 @@ public class TraceReportBlam extends AbstractBlam {
             // Do Nothing
          }
       }
+      Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void openReport(final List<IResultsEditorTableTab> resultsTabs) {
+   private void openReport(final List<IResultsEditorTab> resultsTabs) {
       final List<IResultsEditorTab> results = new ArrayList<IResultsEditorTab>(resultsTabs);
       if (!results.isEmpty()) {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
