@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
@@ -131,7 +132,8 @@ public class XWidgetFactory {
       else if (xWidgetName.equals("XFileTextWithSelectionDialog"))
          xWidget = new XFileTextWithSelectionDialog(name);
       else if (xWidgetName.equals("XLabel")) {
-         if (!xWidgetLayoutData.getDefaultValue().equals("")) {
+         String defaultValue = xWidgetLayoutData.getDefaultValue();
+         if (Strings.isValid(defaultValue)) {
             xWidget = new XLabel(name, xWidgetLayoutData.getDefaultValue());
          } else {
             xWidget = new XLabel(name);
