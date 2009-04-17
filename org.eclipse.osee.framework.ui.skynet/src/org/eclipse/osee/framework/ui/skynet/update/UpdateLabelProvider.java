@@ -56,15 +56,16 @@ public class UpdateLabelProvider extends LabelProvider implements IStyledLabelPr
 
       if (element instanceof TransferObject) {
          TransferObject transferObject = (TransferObject) element;
+         TransferStatus status = transferObject.getStatus();
 
-         if (transferObject.getStatus().equals(TransferStatus.ERROR)) {
+         if (status == TransferStatus.ERROR) {
             styledString.append(transferObject.getArtifact().getDescriptiveName(), StyledString.DECORATIONS_STYLER);
             styledString.append(DASH);
-            styledString.append(transferObject.getStatus().getMessage(), HIGHLIGHT_STYLE);
+            styledString.append(status.getMessage(), HIGHLIGHT_STYLE);
          } else {
             styledString.append(transferObject.getArtifact().getDescriptiveName());
             styledString.append(DASH);
-            styledString.append(transferObject.getStatus().getMessage(), StyledString.COUNTER_STYLER);
+            styledString.append(status.getMessage(), StyledString.COUNTER_STYLER);
          }
       }
       return styledString;
