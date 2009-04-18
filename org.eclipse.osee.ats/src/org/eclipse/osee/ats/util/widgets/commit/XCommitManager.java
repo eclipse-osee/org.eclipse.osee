@@ -20,8 +20,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -70,6 +70,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    private TeamWorkFlowArtifact teamArt;
    private final int paddedTableHeightHint = 2;
    private Label extraInfoLabel;
+   public final static String WIDGET_ID = ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName();
 
    /**
     * @param label
@@ -230,8 +231,9 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    public void loadTable() {
       try {
          if (xCommitManager != null && teamArt != null && (teamArt instanceof TeamWorkFlowArtifact) && xCommitManager.getContentProvider() != null) {
-            Collection<VersionArtifact> versionSet = teamArt.getSmaMgr().getBranchMgr().getVersionsToCommitTo();
-            xCommitManager.setInput(versionSet);
+            Collection<ICommitConfigArtifact> configArtSet =
+                  teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsToCommitTo();
+            xCommitManager.setInput(configArtSet);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -282,7 +284,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    public Result isValid() {
       try {
          if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr() != null) {
-            if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isAllVersionsToCommitToConfigured()) {
+            if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isAllObjectsToCommitToConfigured()) {
                extraInfoLabel.setText("All branches must be configured and committed - Double-click item to perform Action");
                extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
                return new Result(false, "All branches must be configured and committed.");

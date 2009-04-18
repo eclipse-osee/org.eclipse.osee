@@ -33,11 +33,13 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
@@ -254,26 +256,61 @@ public class AtsBranchManager {
    }
 
    public Result isCreateBranchAllowed() throws OseeCoreException {
-      if (smaMgr.getTargetedForVersion() == null) {
-         return new Result(false, "Workflow not targeted for Version");
+      if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return Result.FalseResult;
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) smaMgr.getSma();
+
+      if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
+         if (smaMgr.getTargetedForVersion() == null) {
+            return new Result(false, "Workflow not targeted for Version");
+         }
+         Result result = smaMgr.getTargetedForVersion().isCreateBranchAllowed();
+         if (result.isFalse()) return result;
+
+         if (smaMgr.getTargetedForVersion().getParentBranch() == null) {
+            return new Result(false,
+                  "Parent Branch not configured for Version [" + smaMgr.getTargetedForVersion() + "]");
+         }
+         return Result.TrueResult;
+
+      } else {
+         Result result = teamArt.getTeamDefinition().isCreateBranchAllowed();
+         if (result.isFalse()) return result;
+
+         if (teamArt.getTeamDefinition().getParentBranch() == null) {
+            return new Result(false,
+                  "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
+         }
+         return Result.TrueResult;
       }
-      if (smaMgr.getTargetedForVersion().getParentBranch() == null) {
-         return new Result(false, "Parent Branch not configured for Version [" + smaMgr.getTargetedForVersion() + "]");
-      }
-      if (smaMgr.getTargetedForVersion().getSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), false) == false) {
-         return new Result(false, "Branch creation disabled for Version [" + smaMgr.getTargetedForVersion() + "]");
-      }
-      return Result.TrueResult;
    }
 
-   public Result isCommitBranchAllowed(VersionArtifact verArt) throws OseeCoreException {
-      if (verArt.getParentBranch() == null) {
-         return new Result(false, "Parent Branch not configured for Version [" + verArt + "]");
+   public Result isCommitBranchAllowed(ICommitConfigArtifact configArt) throws OseeCoreException {
+      if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return Result.FalseResult;
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) smaMgr.getSma();
+
+      if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
+         if (smaMgr.getTargetedForVersion() == null) {
+            return new Result(false, "Workflow not targeted for Version");
+         }
+         Result result = smaMgr.getTargetedForVersion().isCommitBranchAllowed();
+         if (result.isFalse()) return result;
+
+         if (smaMgr.getTargetedForVersion().getParentBranch() == null) {
+            return new Result(false,
+                  "Parent Branch not configured for Version [" + smaMgr.getTargetedForVersion() + "]");
+         }
+         return Result.TrueResult;
+
+      } else {
+         Result result = teamArt.getTeamDefinition().isCommitBranchAllowed();
+         if (result.isFalse()) return result;
+
+         if (teamArt.getTeamDefinition().getParentBranch() == null) {
+            return new Result(false,
+                  "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
+         }
+         return Result.TrueResult;
       }
-      if (verArt.getSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), false) == false) {
-         return new Result(false, "Version [" + verArt + "] not configured to allow branch commit.");
-      }
-      return Result.TrueResult;
    }
 
    /**
@@ -349,16 +386,22 @@ public class AtsBranchManager {
       return getWorkingBranch(includeArchived) != null;
    }
 
-   public Collection<VersionArtifact> getVersionsToCommitTo() throws OseeCoreException {
-      Set<VersionArtifact> versionSet = new HashSet<VersionArtifact>();
-      if (smaMgr.getTargetedForVersion() != null) {
-         smaMgr.getTargetedForVersion().getParallelVersions(versionSet);
+   public Collection<ICommitConfigArtifact> getConfigArtifactsToCommitTo() throws OseeCoreException {
+      Set<ICommitConfigArtifact> configObjects = new HashSet<ICommitConfigArtifact>();
+      if (smaMgr.isTeamUsesVersions()) {
+         if (smaMgr.getTargetedForVersion() != null) {
+            smaMgr.getTargetedForVersion().getParallelVersions(configObjects);
+         }
+      } else {
+         if (((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch() != null) {
+            configObjects.add(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition());
+         }
       }
-      return versionSet;
+      return configObjects;
    }
 
-   public boolean isAllVersionsToCommitToConfigured() throws OseeCoreException {
-      return getVersionsToCommitTo().size() == getBranchesToCommitTo().size();
+   public boolean isAllObjectsToCommitToConfigured() throws OseeCoreException {
+      return getConfigArtifactsToCommitTo().size() == getBranchesToCommitTo().size();
    }
 
    public Collection<Branch> getBranchesLeftToCommit() throws OseeCoreException {
@@ -374,9 +417,11 @@ public class AtsBranchManager {
 
    public Collection<Branch> getBranchesToCommitTo() throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
-      for (VersionArtifact verArt : getVersionsToCommitTo()) {
-         if (verArt.getParentBranch() != null) {
-            branches.add(verArt.getParentBranch());
+      for (Object obj : getConfigArtifactsToCommitTo()) {
+         if ((obj instanceof VersionArtifact) && ((VersionArtifact) obj).getParentBranch() != null) {
+            branches.add(((VersionArtifact) obj).getParentBranch());
+         } else if ((obj instanceof TeamDefinitionArtifact) && ((TeamDefinitionArtifact) obj).getParentBranch() != null) {
+            branches.add(((TeamDefinitionArtifact) obj).getParentBranch());
          }
       }
       return branches;
@@ -394,7 +439,7 @@ public class AtsBranchManager {
     * @return true if there is at least one destination branch committed to
     */
    public boolean isCommittedBranchExists() throws OseeCoreException {
-      return isAllVersionsToCommitToConfigured() && (getBranchesCommittedTo().size() > 0);
+      return isAllObjectsToCommitToConfigured() && (getBranchesCommittedTo().size() > 0);
    }
 
    /**

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -55,6 +56,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    public static enum Status {
       Not_Started, Changes_InProgress, Changes_NotPermitted, Committed
    }
+   public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName();
 
    public XWorkingBranch() {
       super("Working Branch", "");

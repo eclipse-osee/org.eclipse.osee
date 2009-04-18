@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -27,8 +28,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 
-public class VersionArtifact extends Artifact {
+public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    public static String ARTIFACT_NAME = "Version";
 
@@ -38,6 +40,26 @@ public class VersionArtifact extends Artifact {
 
    public VersionArtifact(ArtifactFactory parentFactory, String guid, String humandReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humandReadableId, branch, artifactType);
+   }
+
+   public Result isCreateBranchAllowed() throws OseeCoreException {
+      if (getSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), false) == false) {
+         return new Result(false, "Branch creation disabled for Version [" + this + "]");
+      }
+      if (getParentBranch() == null) {
+         return new Result(false, "Parent Branch not configured for Version [" + this + "]");
+      }
+      return Result.TrueResult;
+   }
+
+   public Result isCommitBranchAllowed() throws OseeCoreException {
+      if (getSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), false) == false) {
+         return new Result(false, "Version [" + this + "] not configured to allow branch commit.");
+      }
+      if (getParentBranch() == null) {
+         return new Result(false, "Parent Branch not configured for Version [" + this + "]");
+      }
+      return Result.TrueResult;
    }
 
    public Branch getParentBranch() throws OseeCoreException {
@@ -64,10 +86,10 @@ public class VersionArtifact extends Artifact {
       return getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false);
    }
 
-   public void getParallelVersions(Set<VersionArtifact> versions) throws OseeCoreException {
-      versions.add(this);
+   public void getParallelVersions(Set<ICommitConfigArtifact> configArts) throws OseeCoreException {
+      configArts.add(this);
       for (VersionArtifact verArt : getRelatedArtifacts(AtsRelation.ParallelVersion_Child, VersionArtifact.class)) {
-         verArt.getParallelVersions(versions);
+         verArt.getParallelVersions(configArts);
       }
    }
 

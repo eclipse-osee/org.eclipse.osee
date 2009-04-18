@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
@@ -46,7 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 /**
  * @author Donald G. Dunne
  */
-public class TeamDefinitionArtifact extends Artifact {
+public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArtifact {
 
    public static String ARTIFACT_NAME = "Team Definition";
    public static String TOP_TEAM_STATIC_ID = "osee.ats.TopTeamDefinition";
@@ -63,6 +65,26 @@ public class TeamDefinitionArtifact extends Artifact {
     */
    public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
+   }
+
+   public Result isCreateBranchAllowed() throws OseeCoreException {
+      if (getSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), false) == false) {
+         return new Result(false, "Branch creation disabled for Team Definition [" + this + "]");
+      }
+      if (getParentBranch() == null) {
+         return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
+      }
+      return Result.TrueResult;
+   }
+
+   public Result isCommitBranchAllowed() throws OseeCoreException {
+      if (getSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), false) == false) {
+         return new Result(false, "Team Definition [" + this + "] not configured to allow branch commit.");
+      }
+      if (getParentBranch() == null) {
+         return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
+      }
+      return Result.TrueResult;
    }
 
    public void initialize(String fullname, String description, Collection<User> leads, Collection<User> members, Collection<ActionableItemArtifact> actionableItems, TeamDefinitionOptions... teamDefinitionOptions) throws OseeCoreException {
@@ -446,6 +468,14 @@ public class TeamDefinitionArtifact extends Artifact {
          teamDefs.addAll(AtsCache.getArtifactsByName(teamDefName, TeamDefinitionArtifact.class));
       }
       return teamDefs;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact#getFullDisplayName()
+    */
+   @Override
+   public String getFullDisplayName() throws OseeCoreException {
+      return getDescriptiveName();
    }
 
 }

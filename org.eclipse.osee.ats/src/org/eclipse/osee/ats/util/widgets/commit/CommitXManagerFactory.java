@@ -36,10 +36,13 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Version_Col =
          new XViewerColumn("osee.commit.shortName", "Destination Version", 200, SWT.LEFT, true, SortDataType.String,
                false, null);
+   public static XViewerColumn Configuring_Object_Col =
+         new XViewerColumn("osee.commit.configObj", "Configuring Object", 200, SWT.LEFT, true, SortDataType.String,
+               false, null);
 
    public CommitXManagerFactory() {
       super("osee.skynet.gui.CommitXViewer");
-      registerColumn(Empty_Col, Action_Col, Status_Col, Merge_Col, Dest_Branch_Col, Version_Col);
+      registerColumn(Empty_Col, Action_Col, Status_Col, Merge_Col, Dest_Branch_Col, Version_Col, Configuring_Object_Col);
    }
 
    /* (non-Javadoc)

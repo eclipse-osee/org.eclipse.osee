@@ -23,6 +23,8 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
+import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
@@ -64,8 +66,6 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       atsAddDecisionValidateBlockingReview("Work Page Option: Will auto-create a blocking decision review for this state requesting validation for this workflow."),
       atsAddDecisionValidateNonBlockingReview("Work Page Option: Will auto-create a non blocking decision review requesting validation of workflow changes."),
       atsAllowTransitionWithWorkingBranch("Work Page Option: Will allow transition to next state without committing current working branch."),
-      atsAllowCreateBranch("Work Page Option: Allows a working branch to be created in this state."),
-      atsAllowCommitBranch("Work Page Option: Allows a working branch to be committed in this state."),
       atsForceAssigneesToTeamLeads("Work Page Option: Will force this state to be assigned back to the configured team leads.  Useful for authorization state."),
       atsRequireTargetedVersion("Work Page and Team Definition Option: Requires workflow to be targeted for version before transition is allowed."),
       atsAllowPriviledgedEditToTeamMember("Work Page and Team Definition Option: Allow team member to priviledged edit workflow assigned to team."),
@@ -85,8 +85,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    public static void relatePageToBranchCommitRules(String pageId) throws OseeCoreException {
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, RuleWorkItemId.atsAllowCommitBranch.name());
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, RuleWorkItemId.atsAllowCreateBranch.name());
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, XWorkingBranch.WIDGET_ID);
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, XCommitManager.WIDGET_ID);
    }
 
    public static List<WorkItemDefinition> getAtsWorkDefinitions() {
@@ -97,8 +97,6 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowCreateBranch.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowCommitBranch.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsForceAssigneesToTeamLeads.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsRequireTargetedVersion.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()));
@@ -165,6 +163,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             XOption.HORIZONTAL_LABEL, XOption.LABEL_BEFORE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.USER_COMMUNITY_ATTRIBUTE,
             "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.HORIZONTAL_LABEL, XOption.REQUIRED));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.COMMIT_MANAGER_WIDGET, "XCommitManager"));
       workItems.add(new AtsAttributeReviewDefectXWidgetWorkItem(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE));
       workItems.add(new AtsAttributeReviewRolesXWidgetWorkItem(ATSAttributes.ROLE_ATTRIBUTE));
 
@@ -233,11 +232,11 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    public static boolean isAllowCreateBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowCreateBranch.name()) != null);
+      return (workPageDefinition.getWorkItemDefinition(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName()) != null);
    }
 
    public static boolean isAllowCommitBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowCommitBranch.name()) != null);
+      return (workPageDefinition.getWorkItemDefinition(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()) != null);
    }
 
    public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, WorkItemDefinition workItemDefinition) throws OseeCoreException {

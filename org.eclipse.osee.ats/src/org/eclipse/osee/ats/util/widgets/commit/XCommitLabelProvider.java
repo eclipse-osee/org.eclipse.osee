@@ -16,10 +16,12 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -64,15 +66,15 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      VersionArtifact verArt = (VersionArtifact) element;
-      Branch branch = verArt.getParentBranch();
+      ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
+      Branch branch = configArt.getParentBranch();
       if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          return SkynetGuiPlugin.getInstance().getImage("nav_forward.gif");
       }
       if (branch == null) return null;
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
-            CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
+            CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt);
             if (commitStatus == CommitStatus.Branch_Not_Configured ||
             //
             commitStatus == CommitStatus.Branch_Commit_Disabled ||
@@ -100,7 +102,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          }
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
-            CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
+            CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Commit_Needed_After_Merge || commitStatus == CommitStatus.Committed_With_Merge) {
                return SkynetGuiPlugin.getInstance().getImage("branch_merge.gif");
             }
@@ -112,8 +114,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return null;
    }
 
-   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, VersionArtifact verArt) throws OseeCoreException {
-      Branch branch = verArt.getParentBranch();
+   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
+      Branch branch = configArt.getParentBranch();
       if (branch == null) return CommitStatus.Branch_Not_Configured;
 
       Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(teamArt, false);
@@ -123,23 +125,23 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       Collection<TransactionId> transactions = TransactionIdManager.getCommittedArtifactTransactionIds(teamArt);
       for (TransactionId transId : transactions) {
          if (transId.getBranchId() == branch.getBranchId()) {
-            return CommitStatus.Committed;
+            if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(branch)) {
+               return CommitStatus.Committed_With_Merge;
+            } else {
+               return CommitStatus.Committed;
+            }
          }
       }
 
-      Result result = teamArt.getSmaMgr().getBranchMgr().isCommitBranchAllowed(verArt);
+      Result result = teamArt.getSmaMgr().getBranchMgr().isCommitBranchAllowed(configArt);
       if (result.isFalse()) {
          return CommitStatus.Branch_Commit_Disabled;
       }
       if (teamArt.getSmaMgr().getBranchMgr().getWorkingBranch(true) == null) {
          return CommitStatus.Working_Branch_Not_Created;
       }
-      if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(verArt.getParentBranch())) {
-         if (teamArt.getSmaMgr().getBranchMgr().isMergeCompleted(verArt.getParentBranch())) {
-            Collection<Branch> committedToBranches = teamArt.getSmaMgr().getBranchMgr().getBranchesCommittedTo();
-            if (committedToBranches.contains(branch)) {
-               return CommitStatus.Committed_With_Merge;
-            }
+      if (teamArt.getSmaMgr().getBranchMgr().isMergeBranchExists(branch)) {
+         if (teamArt.getSmaMgr().getBranchMgr().isMergeCompleted(branch)) {
             return CommitStatus.Commit_Needed_After_Merge;
          }
          return CommitStatus.Merge_In_Progress;
@@ -149,18 +151,25 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      VersionArtifact verArt = (VersionArtifact) element;
-      Branch branch = verArt.getParentBranch();
+      ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
+      Branch branch = configArt.getParentBranch();
+
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
-         return getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt).getDisplayName();
+         return getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt).getDisplayName();
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          return "";
       } else if (xCol.equals(CommitXManagerFactory.Version_Col)) {
-         return verArt.getDescriptiveName();
+         return ((Artifact) element).getDescriptiveName();
+      } else if (xCol.equals(CommitXManagerFactory.Configuring_Object_Col)) {
+         return ((Artifact) element).getArtifactTypeName();
       } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Col)) {
-         return (branch == null ? "Parent Branch Not Configured for Version [" + verArt + "]" : branch.getBranchShortName());
+         if (element instanceof VersionArtifact) {
+            return (branch == null ? "Parent Branch Not Configured for Version [" + (element) + "]" : branch.getBranchShortName());
+         } else if (element instanceof TeamDefinitionArtifact) {
+            return (branch == null ? "Parent Branch Not Configured for Team Definition [" + (element) + "]" : branch.getBranchShortName());
+         }
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
-         CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), verArt);
+         CommitStatus commitStatus = getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), configArt);
          if (commitStatus == CommitStatus.Branch_Not_Configured)
             return "Configure Branch";
          else if (commitStatus == CommitStatus.Branch_Commit_Disabled)
