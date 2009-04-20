@@ -69,6 +69,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
@@ -1426,8 +1427,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public Artifact update(Branch branch) throws OseeCoreException {
-    return  reflectHelper(branch);
+   public Artifact update(Branch branch, SkynetTransaction transaction) throws OseeCoreException {
+    Artifact updatedArtifact = reflectHelper(branch);
+    updatedArtifact.transactionId = TransactionIdManager.getlatestTransactionForBranch(branch);
+    return  updatedArtifact;
  }
    
    public Artifact reflect(Branch branch) throws OseeCoreException {

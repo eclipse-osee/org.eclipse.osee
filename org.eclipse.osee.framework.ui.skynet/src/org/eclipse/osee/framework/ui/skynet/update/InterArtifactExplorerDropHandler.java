@@ -96,42 +96,49 @@ public class InterArtifactExplorerDropHandler {
 
    private void addArtifactsToNewTransaction(Artifact destinationArtifact, List<TransferObject> transferObjects, Branch sourceBranch) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(destinationArtifact.getBranch());
+      ArrayList<Artifact> reloadArtifacts = new ArrayList<Artifact>();
 
       for (TransferObject transferObject : transferObjects) {
          TransferStatus status = transferObject.getStatus();
          Artifact sourceArtifact = transferObject.getArtifact();
 
          if (status == TransferStatus.INTRODUCE || status == TransferStatus.UPDATE) {
-            Artifact parentArtifact = revertIntrodcuedAndGetParent(sourceArtifact, destinationArtifact, status);
+            Artifact parentArtifact = getParent(sourceArtifact, destinationArtifact, status);
 
-            Artifact reflectedArtifact;
+            Artifact introducedArtifact;
             if (status == TransferStatus.INTRODUCE) {
-               reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
-               reflectedArtifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+               introducedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
+               introducedArtifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
             } else {
-               reflectedArtifact = sourceArtifact.update(destinationArtifact.getBranch());
+               introducedArtifact = sourceArtifact.update(destinationArtifact.getBranch(), transaction);
+               reloadArtifacts.add(introducedArtifact);
             }
-            reflectedArtifact.persistAttributesAndRelations(transaction);
+            introducedArtifact.persistAttributesAndRelations(transaction);
          }
       }
       transaction.execute();
+      
+      for(Artifact reloadArtifact :  reloadArtifacts){
+         reloadArtifact.reloadAttributesAndRelations();
+      }
    }
 
-   private Artifact revertIntrodcuedAndGetParent(Artifact sourceArtifact, Artifact destinationArtifact, TransferStatus status) throws OseeCoreException {
+   private Artifact getParent(Artifact sourceArtifact, Artifact destinationArtifact, TransferStatus status) throws OseeCoreException {
       Artifact reflectedArtifact =
             ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationArtifact.getBranch(), true);
       Artifact newDestinationArtifact = destinationArtifact;
 
       if (reflectedArtifact != null) {
          newDestinationArtifact = reflectedArtifact.getParent();
-
-         if (status == TransferStatus.INTRODUCE) {
-            reflectedArtifact.revert();
-         }
-
-         if (!reflectedArtifact.equals(newDestinationArtifact)) {
-            newDestinationArtifact.reloadAttributesAndRelations();
-         }
+//    Causes transaction errors so we can only introduce the same artifact once.
+//         if (status == TransferStatus.INTRODUCE) {
+//            reflectedArtifact.revert();
+//            ArtifactPersistenceManager.revertArtifact(null, reflectedArtifact);
+//         }
+//
+//         if (!reflectedArtifact.equals(newDestinationArtifact)) {
+//            newDestinationArtifact.reloadAttributesAndRelations();
+//         }
       }
       return newDestinationArtifact;
    }

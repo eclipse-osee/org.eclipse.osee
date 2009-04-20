@@ -162,11 +162,11 @@ public class InternalChangeManager {
          while (chStmt.next()) {
             count++;
             int artId = chStmt.getInt("art_id");
+            ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
             ArtifactChanged artifactChanged =
                   new ArtifactChanged(sourceBranch, chStmt.getInt("art_type_id"), chStmt.getInt("gamma_id"), artId,
-                        toTransactionId, fromTransactionId, ModificationType.getMod(chStmt.getInt("mod_type")),
-                        ChangeType.OUTGOING, !hasBranch);
+                        toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, !hasBranch);
 
             //We do not want to display artifacts that were new and then deleted
             //The only was this could happen is if the artifact was in here twice
@@ -175,7 +175,8 @@ public class InternalChangeManager {
                artIds.add(artId);
                changes.add(artifactChanged);
                artifactChanges.put(artId, artifactChanged);
-            } else {
+               //The same artifact can have this change many times on a branch. We only want to capture that it occurred once in the change report
+            } else if (modificationType != ModificationType.REFLECTED) {
                changes.remove(artifactChanges.get(artId));
                newAndDeletedArtifactIds.add(artId);
             }
