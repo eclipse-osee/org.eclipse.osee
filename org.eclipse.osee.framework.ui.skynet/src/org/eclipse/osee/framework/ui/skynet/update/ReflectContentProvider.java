@@ -11,7 +11,7 @@ import org.eclipse.jface.viewers.Viewer;
  * @author Jeff C. Phillips
  *
  */
-public class UpdateContentProvider implements ITreeContentProvider{
+public class ReflectContentProvider implements ITreeContentProvider{
 
    /* (non-Javadoc)
     * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)

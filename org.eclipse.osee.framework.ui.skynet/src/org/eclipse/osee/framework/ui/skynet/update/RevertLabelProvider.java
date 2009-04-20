@@ -15,14 +15,14 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Jeff C. Phillips
  */
-public class UpdateLabelProvider extends LabelProvider implements IStyledLabelProvider {
+public class RevertLabelProvider extends LabelProvider implements IStyledLabelProvider {
    private static final String HIGHLIGHT_WRITE_BG_COLOR_NAME = "org.eclipse.jdt.ui.ColoredLabels.writeaccess_highlight"; //$NON-NLS-1$
    private static final Styler HIGHLIGHT_STYLE =
          StyledString.createColorRegistryStyler(null, HIGHLIGHT_WRITE_BG_COLOR_NAME);
    private static final String DASH = " - ";
    private final Map<Image, Image> disabledMap;
 
-   public UpdateLabelProvider() {
+   public RevertLabelProvider() {
       super();
 
       this.disabledMap = new HashMap<Image, Image>();

@@ -38,7 +38,7 @@ public enum ModificationType implements Serializable {
    ARTIFACT_DELETED("Artifact Deleted", 5),
    
    // Artifact, Attribute or Relation has been reflected from another branch
-   REFLECTED("Reflected", 6);
+   INTRODUCED("Introduced", 6);
 
    private int value;
    private String displayName;

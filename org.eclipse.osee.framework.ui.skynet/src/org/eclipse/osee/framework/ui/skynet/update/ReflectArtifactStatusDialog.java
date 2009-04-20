@@ -15,13 +15,13 @@ import org.eclipse.swt.widgets.Display;
  * @author Jeff C. Phillips
  *
  */
-public class UpdateArtifactStatusDialog extends MessageDialog{
+public class ReflectArtifactStatusDialog extends MessageDialog{
    private static final String TITLE = "Confirm Inter Artifact Explorer Drop";
    private static final String OK = "Ok";
    private static final String CANCEL = "Cancel";
    private List<TransferObject> transferObjects;
    
-   public UpdateArtifactStatusDialog(List<TransferObject> transferObjects) {
+   public ReflectArtifactStatusDialog(List<TransferObject> transferObjects) {
       super(Display.getCurrent().getActiveShell(), TITLE, null, null, MessageDialog.NONE,
             new String[] {OK, CANCEL}, 0);
       this.transferObjects = transferObjects;
@@ -34,8 +34,8 @@ public class UpdateArtifactStatusDialog extends MessageDialog{
       gridData.heightHint = 270;
       gridData.widthHint = 500;
       listViewer.getControl().setLayoutData(gridData);
-      listViewer.setContentProvider(new UpdateContentProvider());
-      listViewer.setLabelProvider(new UpdateDecoratingLabelProvider(new UpdateLabelProvider()));
+      listViewer.setContentProvider(new ReflectContentProvider());
+      listViewer.setLabelProvider(new ReflectDecoratingLabelProvider(new RevertLabelProvider()));
       listViewer.setInput(transferObjects);
       
       return listViewer.getControl();

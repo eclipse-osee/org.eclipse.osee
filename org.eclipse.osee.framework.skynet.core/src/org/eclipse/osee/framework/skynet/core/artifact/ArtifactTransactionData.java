@@ -36,7 +36,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    private final Artifact artifact;
 
    public ArtifactTransactionData(Artifact artifact, ModificationType modificationType) throws OseeDataStoreException {
-      super(artifact.getArtId(), modificationType);
+      super(artifact.getArtId(), modificationType, artifact.isReflected());
       this.artifact = artifact;
    }
 
@@ -54,7 +54,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
-      if (getModificationType() != ModificationType.REFLECTED) {
+      if (!useExistingBackingData()) {
          if (getModificationType() == ModificationType.NEW) {
             internalAddInsertToBatch(transaction, 1, INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(),
                   artifact.getGuid(), artifact.getHumanReadableId());
@@ -92,7 +92,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
     */
    @Override
    protected int createGammaId() throws OseeCoreException {
-      if (getModificationType() == ModificationType.REFLECTED) {
+      if (useExistingBackingData()) {
          return artifact.getGammaId();
       }
       return SequenceManager.getNextGammaId();

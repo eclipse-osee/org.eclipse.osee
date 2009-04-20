@@ -39,7 +39,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    private final DAOToSQL daoToSql;
 
    public AttributeTransactionData(Attribute<?> attribute, ModificationType modificationType) throws OseeDataStoreException {
-      super(attribute.getAttrId(), modificationType);
+      super(attribute.getAttrId(), modificationType, attribute.getArtifact().isReflected() || modificationType == ModificationType.ARTIFACT_DELETED);
       this.attribute = attribute;
       this.daoToSql = new DAOToSQL();
    }
@@ -58,7 +58,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
-      if (getModificationType() != ModificationType.ARTIFACT_DELETED && getModificationType() != ModificationType.REFLECTED) {
+      if (!useExistingBackingData()) {
          if (getModificationType() == ModificationType.CHANGE || getModificationType() == ModificationType.NEW) {
             attribute.getAttributeDataProvider().persist(getGammaId());
             daoToSql.setData(attribute.getAttributeDataProvider().getData());
@@ -108,7 +108,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected int createGammaId() throws OseeCoreException {
       int newGammaId = 0;
-      if (getModificationType() == ModificationType.ARTIFACT_DELETED || getModificationType() == ModificationType.REFLECTED) {
+      if (useExistingBackingData()) {
          newGammaId = attribute.getGammaId();
       } else {
          newGammaId = SequenceManager.getNextGammaId();

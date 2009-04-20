@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Jeff C. Phillips
  *
  */
-public class UpdateArtifactDbTransaction extends DbTransaction{
+public class RebaselineDbTransaction extends DbTransaction{
    private UpdateArtifactHandler updateArtifactHandler;
    private Branch branchToUpdate;
    private List<Artifact> artifactVersions;
@@ -29,7 +29,7 @@ public class UpdateArtifactDbTransaction extends DbTransaction{
    /**
     * @throws OseeCoreException
     */
-   public UpdateArtifactDbTransaction(Branch branchToUpdate, Branch updatingSourceBranch, List<Artifact> artifactVersions) throws OseeCoreException {
+   public RebaselineDbTransaction(Branch branchToUpdate, Branch updatingSourceBranch, List<Artifact> artifactVersions) throws OseeCoreException {
       super();
       
       this.branchToUpdate = branchToUpdate;
@@ -66,11 +66,11 @@ public class UpdateArtifactDbTransaction extends DbTransaction{
             if (parent != null) {
                parent.reloadAttributesAndRelations();
             }
-            OseeEventManager.kickArtifactModifiedEvent(UpdateArtifactDbTransaction.class, ArtifactModType.Reverted,
+            OseeEventManager.kickArtifactModifiedEvent(RebaselineDbTransaction.class, ArtifactModType.Reverted,
                   droppedArtifact);
             
             if(parent != null){
-               OseeEventManager.kickArtifactModifiedEvent(UpdateArtifactDbTransaction.class, ArtifactModType.Changed, parent);
+               OseeEventManager.kickArtifactModifiedEvent(RebaselineDbTransaction.class, ArtifactModType.Changed, parent);
             }
          }
       }

@@ -21,9 +21,9 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Jeff C. Phillips
  */
-public class UpdateDecoratingLabelProvider extends DecoratingStyledCellLabelProvider implements ILabelProvider {
+public class ReflectDecoratingLabelProvider extends DecoratingStyledCellLabelProvider implements ILabelProvider {
    
-   public UpdateDecoratingLabelProvider(UpdateLabelProvider labelProvider) {
+   public ReflectDecoratingLabelProvider(RevertLabelProvider labelProvider) {
       super(labelProvider, PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(), null);
    }
 

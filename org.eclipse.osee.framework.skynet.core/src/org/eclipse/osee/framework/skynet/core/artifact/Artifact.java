@@ -76,13 +76,6 @@ import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
 public class Artifact implements IAdaptable, Comparable<Artifact> {
-   /**
-    * @return the modType
-    */
-   public ModificationType getModType() {
-      return modType;
-   }
-
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -98,6 +91,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private TransactionId transactionId;
    private int artId;
    private int gammaId;
+   private boolean reflected;
    private boolean linksLoaded;
    private boolean historical;
    private ModificationType modType;
@@ -1427,26 +1421,25 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public Artifact update(Branch branch, SkynetTransaction transaction) throws OseeCoreException {
-    Artifact updatedArtifact = reflectHelper(branch);
-    updatedArtifact.transactionId = TransactionIdManager.getlatestTransactionForBranch(branch);
-    return  updatedArtifact;
- }
-   
    public Artifact reflect(Branch branch) throws OseeCoreException {
-      if(ArtifactQuery.checkArtifactFromId(getArtId(), branch, true)!= null){
-         throw new OseeArgumentException("Artifact " + getDescriptiveName() + " already exists on branch " + branch);
-      }
-      return reflectHelper(branch);
+      Artifact reflectedArtifact = reflectHelper(branch);
+      reflectedArtifact.transactionId = TransactionIdManager.getlatestTransactionForBranch(branch);
+      reflectedArtifact.reflected = true;
+      return reflectedArtifact;
    }
-   
-   private Artifact reflectHelper(Branch branch) throws OseeCoreException{
-      Artifact reflectedArtifact = artifactType.getFactory().reflectExisitingArtifact(artId, guid, humanReadableId, artifactType, gammaId,
-            branch);
-      reflectedArtifact.dirty = true;
+
+   private Artifact reflectHelper(Branch branch) throws OseeCoreException {
+      ModificationType modificationType = modType == ModificationType.NEW ? ModificationType.INTRODUCED : modType;
       
-      for(Attribute<?> attribute : attributes.getValues()){
-         Attribute.initializeAttribute(reflectedArtifact, attribute.getAttributeType().getAttrTypeId(), attribute.getAttrId(), attribute.getGammaId(), attribute.getAttributeDataProvider().getData());
+      Artifact reflectedArtifact =
+            artifactType.getFactory().reflectExisitingArtifact(artId, guid, humanReadableId, artifactType, gammaId,
+                  branch, modificationType);
+      
+      reflectedArtifact.dirty = true;
+
+      for (Attribute<?> attribute : attributes.getValues()) {
+         Attribute.initializeAttribute(reflectedArtifact, attribute.getAttributeType().getAttrTypeId(),
+               attribute.getAttrId(), attribute.getGammaId(), attribute.getAttributeDataProvider().getData());
       }
       return reflectedArtifact;
    }
@@ -1703,5 +1696,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             }
          }
       }
+   }
+   
+   /**
+    * @return the reflected
+    */
+   public boolean isReflected() {
+      return reflected;
+   }
+
+   /**
+    * @return the modType
+    */
+   public ModificationType getModType() {
+      return modType;
    }
 }

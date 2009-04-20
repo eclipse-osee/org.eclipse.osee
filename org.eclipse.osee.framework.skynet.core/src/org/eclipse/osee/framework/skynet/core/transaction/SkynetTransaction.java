@@ -221,7 +221,7 @@ public class SkynetTransaction extends DbTransaction {
       checkBranch(artifact);
       madeChanges = true;
 
-      if (artifact.getModType() == ModificationType.REFLECTED) {
+      if (artifact.isReflected()) {
          addReflectedArtifact(artifact);
       }
 
@@ -229,7 +229,7 @@ public class SkynetTransaction extends DbTransaction {
 
       if (artifact.anAttributeIsDirty()) {
 
-         if (!artifact.isInDb() && artifact.getModType() != ModificationType.REFLECTED) {
+         if (!artifact.isInDb() && artifact.getModType() != ModificationType.INTRODUCED) {
             modificationType = ModificationType.NEW;
          } else {
             if (artifact.isDeleted()) {

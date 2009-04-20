@@ -28,17 +28,26 @@ public abstract class BaseTransactionData {
    private final int itemId;
    private ModificationType modificationType;
    private Integer gammaId;
+   boolean useExistingBackingData;
 
-   public BaseTransactionData(int itemId, ModificationType modificationType) {
-      this(itemId, modificationType, null);
+   public BaseTransactionData(int itemId, ModificationType modificationType, boolean useExistingBackingData) {
+      this(itemId, modificationType, null, useExistingBackingData);
    }
 
-   public BaseTransactionData(int itemId, ModificationType modificationType, Integer gammaId) {
+   public BaseTransactionData(int itemId, ModificationType modificationType, Integer gammaId, boolean useExistingBackingData) {
       this.modificationType = modificationType;
       this.itemId = itemId;
       this.gammaId = gammaId;
+      this.useExistingBackingData = useExistingBackingData;
    }
 
+   /**
+    * @return the useExistingBackingData
+    */
+   public boolean useExistingBackingData() {
+      return useExistingBackingData;
+   }
+   
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)
     */

@@ -14,28 +14,28 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.update.UpdateArtifactDbTransaction;
+import org.eclipse.osee.framework.skynet.core.artifact.update.RebaselineDbTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Ryan D. Brooks
  */
-public class UpdateFromParentBranch extends AbstractBlam {
+public class RebaselineArtifacts extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
     */
    @Override
    public String getName() {
-      return "Update From ParentBranch";
+      return "Rebaseline";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      monitor.beginTask("Update From Parent Branch", IProgressMonitor.UNKNOWN);
+      monitor.beginTask("Rebaseline", IProgressMonitor.UNKNOWN);
       Branch childBranch = variableMap.getBranch("Child Branch Name");
-      UpdateArtifactDbTransaction dbTransaction = new UpdateArtifactDbTransaction(childBranch, childBranch.getParentBranch(), variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch"));
+      RebaselineDbTransaction dbTransaction = new RebaselineDbTransaction(childBranch, childBranch.getParentBranch(), variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch"));
       dbTransaction.execute();
    }
 

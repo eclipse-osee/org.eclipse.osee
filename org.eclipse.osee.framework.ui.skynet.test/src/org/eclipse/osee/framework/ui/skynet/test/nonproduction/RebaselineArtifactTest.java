@@ -20,14 +20,14 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictTestManager;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateFromParentBranch;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.RebaselineArtifacts;
 
 /**
  * Tests the BLAM operation updateFromParentBranch.
  * 
  * @author Jeff C. Phillips
  */
-public class UpdateFromParentTest extends TestCase {
+public class RebaselineArtifactTest extends TestCase {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet.test/debug/Junit"));
 
@@ -61,7 +61,7 @@ public class UpdateFromParentTest extends TestCase {
 
       variableMap.setValue("Parent Branch Artifacts to update to Child Branch", destinationArtifacts);
       variableMap.setValue("Child Branch Name", sourceArtifacts.iterator().next().getBranch());
-      UpdateFromParentBranch updateFromParentBranch = new UpdateFromParentBranch();
+      RebaselineArtifacts updateFromParentBranch = new RebaselineArtifacts();
       updateFromParentBranch.runOperation(variableMap, new NullProgressMonitor());
       sourceArtifact.reloadAttributesAndRelations();
 

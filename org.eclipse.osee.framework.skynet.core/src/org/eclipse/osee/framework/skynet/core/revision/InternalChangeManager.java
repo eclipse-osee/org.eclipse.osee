@@ -176,7 +176,7 @@ public class InternalChangeManager {
                changes.add(artifactChanged);
                artifactChanges.put(artId, artifactChanged);
                //The same artifact can have this change many times on a branch. We only want to capture that it occurred once in the change report
-            } else if (modificationType != ModificationType.REFLECTED) {
+            } else if (modificationType != ModificationType.INTRODUCED) {
                changes.remove(artifactChanges.get(artId));
                newAndDeletedArtifactIds.add(artId);
             }
@@ -333,7 +333,7 @@ public class InternalChangeManager {
                }
 
                //Modtypes will be temporarily set to new and then revised for based on the existence of a was value
-               if (modificationType == ModificationType.CHANGE && artModType != ModificationType.REFLECTED) {
+               if (modificationType == ModificationType.CHANGE && artModType != ModificationType.INTRODUCED) {
                   modificationType = ModificationType.NEW;
                }
 
