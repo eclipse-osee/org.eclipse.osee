@@ -24,15 +24,12 @@
 
 	<ConnectionDescription id="postgresql">
 		<Driver>org.postgresql.Driver</Driver>
-		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#
-		</Url>
+		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#</Url>		
 	</ConnectionDescription>
 
 	<ConnectionDescription id="NetDerbyClient">
-		<Driver>org.apache.derby.jdbc.ClientDriver
-		</Driver>
-		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#;
-		</Url>
+		<Driver>org.apache.derby.jdbc.ClientDriver</Driver>
+		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#;</Url>
 		<UrlAttributes>
 			<Entry>create=true</Entry>
 		</UrlAttributes>
