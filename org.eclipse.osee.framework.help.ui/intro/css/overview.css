@@ -1,0 +1,15 @@
+a#osee-overview img {
+	background-image: url(../../images/topiclabel/ov_mylyn48.gif);
+}
+
+a#osee-overview:hover img {
+	background-image: url(../../images/topiclabel/ov_mylyn48_hov.gif);
+}
+
+a#osee-legend img {
+	background-image: url(../../images/topiclabel/ov_legend48.gif);
+}
+
+a#osee-legend:hover img {
+	background-image: url(../../images/topiclabel/ov_legend48_hov.gif);
+}

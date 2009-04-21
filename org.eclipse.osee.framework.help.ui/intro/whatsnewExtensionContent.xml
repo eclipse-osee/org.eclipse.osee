@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<introContent>
+	<extensionContent id="org.eclipse.osee" name="OSEE"
+		style="css/whatsnew.css" path="whatsnew/@">
+		<group id="content-group" style-id="content-group">
+			<link label="OSEE" url="http://www.eclipse.org/osee/new/" id="osee-noteworthy"
+				style-id="content-link">
+				<text>
+					Find out the significant changes made to OSEE
+				</text>
+			</link>
+		</group>
+	</extensionContent>
+</introContent>
+
+	<!--
+		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.eclipse.osee.framework.ui.help/doc/new.html"
+	-->

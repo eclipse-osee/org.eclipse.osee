@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<introContent>
+	<extensionContent id="org.eclipse.osee" name="OSEE"
+		style="css/tutorials.css" path="tutorials/@">
+		<group label="Task-focused programming" id="OSEE" style-id="content-group">
+			<link 
+				url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.eclipse.mylyn.cheatsheet.query" 
+				label="Use the Task List" id="mylyn-query"	style-id="content-link">
+				<text>Learn how to create tasks and task repository queries</text>
+			</link>
+			<link
+				url="http://www.eclipse.org/mylyn/start/"
+				label="Visit the Mylyn homepage" id="mylyn-task" style-id="content-link">
+				<text>Learn about the benefits of task-focused programming with Mylyn</text>
+			</link>
+		</group>
+	</extensionContent>
+</introContent>
+
+<!--
+<link
+	url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.eclipse.mylyn.cheatsheet.taskfocus"
+	label="Focus on Java" id="osee-task" style-id="content-link">
+	<text>Learn how to reduce information overload and multitask with ease.</text>
+</link>
+-->

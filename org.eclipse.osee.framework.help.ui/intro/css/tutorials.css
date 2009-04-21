@@ -1,0 +1,15 @@
+a#osee-query img {
+	background-image: url(../../images/topiclabel/tu_query48.gif);
+}
+
+a#osee-query:hover img {
+	background-image: url(../../images/topiclabel/tu_query48_hov.gif);
+}
+
+a#osee-task img {
+	background-image: url(../../images/topiclabel/tu_task48.gif);
+}
+
+a#osee-task:hover img {
+	background-image: url(../../images/topiclabel/tu_task48_hov.gif);
+}
