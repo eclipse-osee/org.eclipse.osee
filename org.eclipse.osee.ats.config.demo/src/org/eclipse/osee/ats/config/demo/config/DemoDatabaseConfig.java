@@ -149,7 +149,11 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      AtsPlugin.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+         if (verName.contains("2")) {
+            ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+            ver.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
+            ver.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
+         }
          DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
          ver.persistAttributesAndRelations();
       }
