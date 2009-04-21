@@ -92,12 +92,6 @@ public class DefectManager {
       try {
          String expandDefects = OseeInfo.getValue("expandDefects");
          if (expandDefects != null && expandDefects.equals("true")) {
-            StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
-            for (DefectItem item : defectItems)
-               sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
-            sb.append("</" + ATS_DEFECT_TAG + ">");
-            artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
-         } else {
             // Change existing ones
             for (Attribute<?> attr : artifact.getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
                DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
@@ -124,6 +118,12 @@ public class DefectManager {
                artifact.addAttributeFromString(REVIEW_DEFECT_ATTRIBUTE_NAME, AXml.addTagData(DEFECT_ITEM_TAG,
                      newPromoteItem.toXml()));
             }
+         } else {
+            StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
+            for (DefectItem item : defectItems)
+               sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
+            sb.append("</" + ATS_DEFECT_TAG + ">");
+            artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
          }
          if (persist) artifact.persistAttributes(transaction);
       } catch (Exception ex) {
