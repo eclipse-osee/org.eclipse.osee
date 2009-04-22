@@ -112,7 +112,7 @@ public class ExtensionDefinedObjects<T> {
          }
       }
       if (loadedObjects.size() == 0) {
-         OseeLog.log(OseeActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(OseeActivator.class, Level.WARNING, String.format(
                "No Objects loaded for [%s] with element name [%s] and attribute [%s]", extensionPointId, elementName,
                classNameAttribute));
       }
