@@ -393,7 +393,7 @@ public class AtsBranchManager {
             smaMgr.getTargetedForVersion().getParallelVersions(configObjects);
          }
       } else {
-         if (((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch() != null) {
+         if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch() != null) {
             configObjects.add(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition());
          }
       }
